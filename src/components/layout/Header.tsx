@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Star, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import Button from '../ui/Button';
 
 const navigation = [
@@ -80,11 +80,12 @@ export default function Header() {
       <header className={headerClasses}>
         <nav className='container-adaptive py-4'>
           <div className='flex items-center justify-between'>
-            <Link to='/' className='flex items-center gap-2'>
-              <Star className={`h-8 w-8 ${textClasses} fill-current`} />
-              <span className={`text-2xl font-playfair font-bold ${textClasses}`}>
-                Etoilys
-              </span>
+            <Link to='/' className='flex items-center'>
+              <img
+                src='/Logo complet - site web.svg'
+                alt='Etoilys'
+                className='h-12 w-auto'
+              />
             </Link>
 
             <div className='hidden lg:flex items-center gap-6' ref={dropdownRef}>
