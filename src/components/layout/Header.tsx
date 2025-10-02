@@ -27,6 +27,7 @@ export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -84,7 +85,7 @@ export default function Header() {
               <img
                 src='/Logo complet - site web.svg'
                 alt='Etoilys'
-                className='h-12 w-auto'
+                className='h-20 w-auto scale-110 md:h-20'
               />
             </Link>
 
@@ -95,12 +96,26 @@ export default function Header() {
                   (hasSubmenu && item.submenu?.some(sub => location.pathname === sub.href));
 
                 if (hasSubmenu) {
+                  const handleMouseEnter = () => {
+                    if (closeTimeoutRef.current) {
+                      clearTimeout(closeTimeoutRef.current);
+                      closeTimeoutRef.current = null;
+                    }
+                    setOpenDropdown(item.name);
+                  };
+
+                  const handleMouseLeave = () => {
+                    closeTimeoutRef.current = setTimeout(() => {
+                      setOpenDropdown(null);
+                    }, 150);
+                  };
+
                   return (
                     <div
                       key={item.name}
                       className='relative'
-                      onMouseEnter={() => setOpenDropdown(item.name)}
-                      onMouseLeave={() => setOpenDropdown(null)}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
                     >
                       <button
                         className={`flex items-center gap-1 text-sm font-medium transition-colors duration-200 ${
