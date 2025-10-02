@@ -65,7 +65,7 @@ export default function Home() {
         description='Etoilys vous accompagne dans le classement de votre meublé de tourisme. Obtenez votre certification officielle en étoiles et valorisez votre hébergement.'
         keywords='classement meublé tourisme, location saisonnière, hébergement touristique, certification étoiles, Etoilys'
       />
-      <section className='relative min-h-[600px] flex items-center justify-center text-white' style={{ backgroundImage: 'url(https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg?auto=compress&cs=tinysrgb&w=1920)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <section className='relative min-h-[600px] flex items-center justify-center text-white' style={{ backgroundImage: 'url(https://images.pexels.com/photos/1285625/pexels-photo-1285625.jpeg?auto=compress&cs=tinysrgb&w=1920)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className='absolute inset-0 bg-black/50'></div>
         <div className='container-adaptive relative z-10 py-24 text-center'>
           <h1 className='mb-6 text-white'>

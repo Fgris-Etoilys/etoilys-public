@@ -83,13 +83,13 @@ export default function Header() {
           <div className='flex items-center justify-between'>
             <Link to='/' className='flex items-center'>
               <img
-                src='/Logo complet - site web.svg'
+                src='/Logo complet - site web copy.svg'
                 alt='Etoilys'
                 className='h-20 w-auto scale-110 md:h-20'
               />
             </Link>
 
-            <div className='hidden lg:flex items-center gap-6' ref={dropdownRef}>
+            <div className='hidden xl:flex items-center gap-6' ref={dropdownRef}>
               {navigation.map((item) => {
                 const hasSubmenu = 'submenu' in item && item.submenu;
                 const isActive = location.pathname === item.href ||
@@ -190,7 +190,7 @@ export default function Header() {
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`lg:hidden p-2 ${textClasses}`}
+              className={`xl:hidden p-2 ${textClasses}`}
               aria-label='Toggle menu'
             >
               {isMobileMenuOpen ? (
@@ -204,7 +204,7 @@ export default function Header() {
       </header>
 
       {isMobileMenuOpen && (
-        <div className='fixed inset-0 z-40 bg-white pt-20 lg:hidden overflow-y-auto'>
+        <div className='fixed inset-0 z-40 bg-white pt-20 xl:hidden overflow-y-auto'>
           <nav className='container-adaptive py-8'>
             <div className='flex flex-col gap-4'>
               {navigation.map((item) => {
