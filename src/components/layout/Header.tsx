@@ -145,6 +145,7 @@ export default function Header() {
                                 : 'text-gray-700 hover:text-primary-300 hover:bg-gray-50'
                             }`}
                             role="menuitem"
+                            onClick={() => setOpenDropdown(null)}
                           >
                             {item.name}
                           </Link>
@@ -159,6 +160,7 @@ export default function Header() {
                                   : 'text-gray-700 hover:text-primary-300 hover:bg-gray-50'
                               }`}
                               role="menuitem"
+                              onClick={() => setOpenDropdown(null)}
                             >
                               {subItem.name}
                             </Link>
@@ -241,6 +243,7 @@ export default function Header() {
                                 ? 'text-primary-300 font-medium'
                                 : 'text-gray-700 hover:text-primary-300'
                             }`}
+                            onClick={() => setOpenMobileSubmenu(null)}
                           >
                             Vue d'ensemble
                           </Link>
@@ -253,6 +256,7 @@ export default function Header() {
                                   ? 'text-primary-300 font-medium'
                                   : 'text-gray-700 hover:text-primary-300'
                               }`}
+                              onClick={() => setOpenMobileSubmenu(null)}
                             >
                               {subItem.name}
                             </Link>
