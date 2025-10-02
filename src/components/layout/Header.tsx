@@ -1,15 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Star } from 'lucide-react';
+import { Menu, X, Star, ChevronDown } from 'lucide-react';
 import Button from '../ui/Button';
 
 const navigation = [
   { name: 'Accueil', href: '/' },
-  { name: 'Classement meublé', href: '/classement' },
-  { name: 'Pourquoi classer', href: '/pourquoi-classer' },
-  { name: 'Procédure', href: '/procedure' },
-  { name: 'Simulateur', href: '/simulateur' },
-  { name: 'FAQ', href: '/faq' },
+  {
+    name: 'Classement meublé',
+    href: '/classement',
+    submenu: [
+      { name: 'Pourquoi classer', href: '/pourquoi-classer' },
+      { name: 'Procédure', href: '/procedure' },
+      { name: 'Simulateur', href: '/simulateur' },
+      { name: 'FAQ', href: '/faq' },
+    ]
+  },
   { name: 'Notre équipe', href: '/equipe' },
   { name: 'Actualités', href: '/actualites' },
   { name: 'Recrutement', href: '/recrutement' },
@@ -19,13 +24,18 @@ const navigation = [
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 0);
     };
+
+    handleScroll();
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -33,6 +43,7 @@ export default function Header() {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setOpenMobileSubmenu(null);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -43,15 +54,26 @@ export default function Header() {
     }
   }, [isMobileMenuOpen]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const headerClasses = `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
     isScrolled || !isHomePage || isMobileMenuOpen
       ? 'bg-white shadow-md'
-      : 'bg-transparent'
+      : 'bg-white/95 backdrop-blur-sm shadow-sm'
   }`;
 
   const textClasses = isScrolled || !isHomePage || isMobileMenuOpen
     ? 'text-gray-900'
-    : 'text-white';
+    : 'text-gray-900';
 
   return (
     <>
@@ -65,20 +87,86 @@ export default function Header() {
               </span>
             </Link>
 
-            <div className='hidden lg:flex items-center gap-8'>
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`text-sm font-medium transition-colors duration-200 ${
-                    location.pathname === item.href
-                      ? 'text-primary-300'
-                      : textClasses + ' hover:text-primary-300'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
+            <div className='hidden lg:flex items-center gap-6' ref={dropdownRef}>
+              {navigation.map((item) => {
+                const hasSubmenu = 'submenu' in item && item.submenu;
+                const isActive = location.pathname === item.href ||
+                  (hasSubmenu && item.submenu?.some(sub => location.pathname === sub.href));
+
+                if (hasSubmenu) {
+                  return (
+                    <div
+                      key={item.name}
+                      className='relative'
+                      onMouseEnter={() => setOpenDropdown(item.name)}
+                      onMouseLeave={() => setOpenDropdown(null)}
+                    >
+                      <button
+                        className={`flex items-center gap-1 text-sm font-medium transition-colors duration-200 ${
+                          isActive
+                            ? 'text-primary-300'
+                            : textClasses + ' hover:text-primary-300'
+                        }`}
+                        aria-expanded={openDropdown === item.name}
+                        aria-haspopup="true"
+                      >
+                        {item.name}
+                        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${
+                          openDropdown === item.name ? 'rotate-180' : ''
+                        }`} />
+                      </button>
+
+                      {openDropdown === item.name && (
+                        <div
+                          className='absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50'
+                          role="menu"
+                        >
+                          <Link
+                            to={item.href}
+                            className={`block px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
+                              location.pathname === item.href
+                                ? 'text-primary-300 bg-primary-100'
+                                : 'text-gray-700 hover:text-primary-300 hover:bg-gray-50'
+                            }`}
+                            role="menuitem"
+                          >
+                            {item.name}
+                          </Link>
+                          <div className='my-1 border-t border-gray-100'></div>
+                          {item.submenu?.map((subItem) => (
+                            <Link
+                              key={subItem.name}
+                              to={subItem.href}
+                              className={`block px-4 py-2.5 text-sm transition-colors duration-200 ${
+                                location.pathname === subItem.href
+                                  ? 'text-primary-300 bg-primary-100'
+                                  : 'text-gray-700 hover:text-primary-300 hover:bg-gray-50'
+                              }`}
+                              role="menuitem"
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`text-sm font-medium transition-colors duration-200 ${
+                      isActive
+                        ? 'text-primary-300'
+                        : textClasses + ' hover:text-primary-300'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
               <Button href='/demande-classement' variant='primary'>
                 Demande de classement
               </Button>
@@ -102,20 +190,77 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div className='fixed inset-0 z-40 bg-white pt-20 lg:hidden overflow-y-auto'>
           <nav className='container-adaptive py-8'>
-            <div className='flex flex-col gap-6'>
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`text-lg font-medium transition-colors duration-200 ${
-                    location.pathname === item.href
-                      ? 'text-primary-300'
-                      : 'text-gray-900 hover:text-primary-300'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
+            <div className='flex flex-col gap-4'>
+              {navigation.map((item) => {
+                const hasSubmenu = 'submenu' in item && item.submenu;
+                const isActive = location.pathname === item.href ||
+                  (hasSubmenu && item.submenu?.some(sub => location.pathname === sub.href));
+                const isSubmenuOpen = openMobileSubmenu === item.name;
+
+                if (hasSubmenu) {
+                  return (
+                    <div key={item.name} className='flex flex-col'>
+                      <button
+                        onClick={() => setOpenMobileSubmenu(isSubmenuOpen ? null : item.name)}
+                        className={`flex items-center justify-between text-lg font-medium transition-colors duration-200 py-2 ${
+                          isActive
+                            ? 'text-primary-300'
+                            : 'text-gray-900 hover:text-primary-300'
+                        }`}
+                        aria-expanded={isSubmenuOpen}
+                        aria-label={`${item.name} menu`}
+                      >
+                        {item.name}
+                        <ChevronDown className={`h-5 w-5 transition-transform duration-200 ${
+                          isSubmenuOpen ? 'rotate-180' : ''
+                        }`} />
+                      </button>
+
+                      {isSubmenuOpen && (
+                        <div className='flex flex-col ml-4 mt-2 space-y-2 border-l-2 border-primary-200 pl-4'>
+                          <Link
+                            to={item.href}
+                            className={`text-base transition-colors duration-200 py-1.5 ${
+                              location.pathname === item.href
+                                ? 'text-primary-300 font-medium'
+                                : 'text-gray-700 hover:text-primary-300'
+                            }`}
+                          >
+                            Vue d'ensemble
+                          </Link>
+                          {item.submenu?.map((subItem) => (
+                            <Link
+                              key={subItem.name}
+                              to={subItem.href}
+                              className={`text-base transition-colors duration-200 py-1.5 ${
+                                location.pathname === subItem.href
+                                  ? 'text-primary-300 font-medium'
+                                  : 'text-gray-700 hover:text-primary-300'
+                              }`}
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`text-lg font-medium transition-colors duration-200 py-2 ${
+                      isActive
+                        ? 'text-primary-300'
+                        : 'text-gray-900 hover:text-primary-300'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
               <Button href='/demande-classement' variant='primary' className='w-full mt-4'>
                 Demande de classement
               </Button>
