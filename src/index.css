@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-roboto text-gray-900 antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-playfair font-semibold;
+  }
+
+  h1 {
+    @apply text-h1 leading-tight;
+  }
+
+  h2 {
+    @apply text-h2 leading-tight;
+  }
+
+  h3 {
+    @apply text-h3 leading-snug;
+  }
+
+  h4 {
+    @apply text-h4 leading-snug;
+  }
+
+  p, li {
+    @apply leading-comfortable;
+  }
+
+  a {
+    @apply text-themePrimary-1 hover:text-primary-300 transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .container-adaptive {
+    width: clamp(320px, 90vw, 1400px);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
