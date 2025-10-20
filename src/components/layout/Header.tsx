@@ -79,13 +79,13 @@ export default function Header() {
   return (
     <>
       <header className={headerClasses}>
-        <nav className='container-adaptive py-4'>
+        <nav className='container-adaptive py-1'>
           <div className='flex items-center justify-between'>
             <Link to='/' className='flex items-center'>
               <img
                 src='/Logo complet - site web copy.svg'
                 alt='Etoilys'
-                className='h-20 w-auto scale-110 md:h-20'
+                className='h-20 w-auto scale-100 md:h-20'
               />
             </Link>
 

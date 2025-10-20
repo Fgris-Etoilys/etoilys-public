@@ -1,4 +1,4 @@
-import { Shield, TrendingUp, Clock, Award, Users, FileCheck } from 'lucide-react';
+import { Shield, Zap, Clock, Award, Users, FileCheck } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import ArticleCard from '../components/ui/ArticleCard';
@@ -8,17 +8,17 @@ const features = [
   {
     icon: Shield,
     title: 'Expertise reconnue',
-    description: 'Organisme agréé par les autorités compétentes pour le classement des meublés de tourisme.',
+    description: 'Organisme accrédité par le COFRAC pour le classement des meublés de tourisme.',
   },
   {
-    icon: TrendingUp,
-    title: 'Valorisation immédiate',
-    description: 'Un classement officiel augmente la visibilité et la valeur locative de votre bien.',
+    icon: Zap,
+    title: 'Technologie de pointe',
+    description: 'Des outils digitaux développés en interne pour un suivi en temps réel, des contrôles précis et une transparence maximale.',
   },
   {
     icon: Clock,
-    title: 'Démarche simplifiée',
-    description: 'Accompagnement personnalisé et traitement rapide de votre dossier de classement.',
+    title: 'Proximité et réactivité',
+    description: 'Nos inspecteurs proches de chez vous vous accompagnent personnellement pour un classement rapide et efficace.',
   },
 ];
 
@@ -65,7 +65,7 @@ export default function Home() {
         description='Etoilys vous accompagne dans le classement de votre meublé de tourisme. Obtenez votre certification officielle en étoiles et valorisez votre hébergement.'
         keywords='classement meublé tourisme, location saisonnière, hébergement touristique, certification étoiles, Etoilys'
       />
-      <section className='relative min-h-[600px] flex items-center justify-center text-white' style={{ backgroundImage: 'url(https://images.pexels.com/photos/2082949/pexels-photo-2082949.jpeg?auto=compress&cs=tinysrgb&w=1920)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <section className='relative min-h-[600px] flex items-center justify-center text-white' style={{ backgroundImage: 'url(https://images.pexels.com/photos/13139460/pexels-photo-13139460.jpeg?auto=compress&cs=tinysrgb&w=1920)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className='absolute inset-0 bg-black/50'></div>
         <div className='container-adaptive relative z-10 py-24 text-center'>
           <h1 className='mb-6 text-white'>
