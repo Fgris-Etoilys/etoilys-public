@@ -186,7 +186,7 @@ export default function Header() {
                 );
               })}
               <Button href='/demande-classement' variant='primary'>
-                Demande de classement !
+                Demande de classement
               </Button>
             </div>
 
@@ -282,7 +282,7 @@ export default function Header() {
                 );
               })}
               <Button href='/demande-classement' variant='primary' className='w-full mt-4'>
-                Demande de classement !
+                Demande de classement
               </Button>
             </div>
           </nav>
