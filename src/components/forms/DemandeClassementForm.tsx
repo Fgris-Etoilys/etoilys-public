@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
 import Checkbox from '../ui/Checkbox';
@@ -23,9 +24,7 @@ export default function DemandeClassementForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
@@ -57,8 +56,6 @@ export default function DemandeClassementForm() {
     setIsSubmitting(true);
     setErrors({});
 
-    console.log('Demande de Classement Payload:', formData);
-
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
@@ -79,26 +76,26 @@ export default function DemandeClassementForm() {
   };
 
   return (
-    <div className='bg-white rounded-card border border-gray-200 p-8'>
-      <h2 className='text-2xl font-playfair font-semibold text-gray-900 mb-2'>
+    <div className="bg-white rounded-card border border-gray-200 p-8">
+      <h2 className="text-2xl font-playfair font-semibold text-gray-900 mb-2">
         Formulaire de demande
       </h2>
-      <p className='text-textLight mb-8 leading-comfortable'>
+      <p className="text-textLight mb-8 leading-comfortable">
         Renseignez les informations ci-dessous pour démarrer votre démarche de classement.
       </p>
 
       {isSuccess && (
-        <div className='mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500'>
+        <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
           Votre demande a été envoyée avec succès ! Notre équipe reviendra vers vous sous 24 heures.
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className='space-y-6'>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
-            label='Nom'
-            name='nom'
-            type='text'
+            label="Nom"
+            name="nom"
+            type="text"
             value={formData.nom}
             onChange={handleChange}
             error={errors.nom}
@@ -106,9 +103,9 @@ export default function DemandeClassementForm() {
           />
 
           <Input
-            label='Prénom'
-            name='prenom'
-            type='text'
+            label="Prénom"
+            name="prenom"
+            type="text"
             value={formData.prenom}
             onChange={handleChange}
             error={errors.prenom}
@@ -116,11 +113,11 @@ export default function DemandeClassementForm() {
           />
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
-            label='Email'
-            name='email'
-            type='email'
+            label="Email"
+            name="email"
+            type="email"
             value={formData.email}
             onChange={handleChange}
             error={errors.email}
@@ -128,60 +125,55 @@ export default function DemandeClassementForm() {
           />
 
           <Input
-            label='Téléphone'
-            name='telephone'
-            type='tel'
+            label="Téléphone"
+            name="telephone"
+            type="tel"
             value={formData.telephone}
             onChange={handleChange}
             error={errors.telephone}
-            placeholder='Ex: 06 12 34 56 78'
+            placeholder="Ex: 06 12 34 56 78"
             required
           />
         </div>
 
         <Input
-          label='Adresse du bien'
-          name='adresse'
-          type='text'
+          label="Adresse du bien"
+          name="adresse"
+          type="text"
           value={formData.adresse}
           onChange={handleChange}
           error={errors.adresse}
-          placeholder='Adresse complète de votre meublé de tourisme'
+          placeholder="Adresse complète de votre meublé de tourisme"
           required
         />
 
         <Textarea
-          label='Message'
-          name='message'
+          label="Message"
+          name="message"
           rows={5}
           value={formData.message}
           onChange={handleChange}
           error={errors.message}
-          helperText='Parlez-nous de votre hébergement et de vos attentes (optionnel)'
+          helperText="Parlez-nous de votre hébergement et de vos attentes (optionnel)"
         />
 
         <Checkbox
-          name='consent'
+          name="consent"
           checked={formData.consent}
           onChange={handleChange}
           error={errors.consent}
           label={
             <>
               J'accepte que mes données soient traitées conformément à la{' '}
-              <a href='/confidentialite' className='text-primary-300 hover:text-primary-400'>
+              <Link to="/confidentialite" className="text-primary-300 hover:text-primary-400">
                 politique de confidentialité
-              </a>
+              </Link>
             </>
           }
           required
         />
 
-        <Button
-          type='submit'
-          variant='primary'
-          className='w-full'
-          disabled={isSubmitting}
-        >
+        <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? 'Envoi en cours...' : 'Envoyer ma demande'}
         </Button>
       </form>

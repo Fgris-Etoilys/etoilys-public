@@ -1,4 +1,5 @@
 import { useState, FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
 import Checkbox from '../ui/Checkbox';
@@ -26,9 +27,7 @@ export default function ContactForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
@@ -60,8 +59,6 @@ export default function ContactForm({
     setIsSubmitting(true);
     setErrors({});
 
-    console.log('Contact Form Payload:', formData);
-
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
@@ -79,22 +76,20 @@ export default function ContactForm({
   };
 
   return (
-    <div className='bg-white rounded-card border border-gray-200 p-8'>
-      <h3 className='text-2xl font-playfair font-semibold text-gray-900 mb-6'>
-        {title}
-      </h3>
+    <div className="bg-white rounded-card border border-gray-200 p-8">
+      <h3 className="text-2xl font-playfair font-semibold text-gray-900 mb-6">{title}</h3>
 
       {isSuccess && (
-        <div className='mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500'>
+        <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
           {successMessage}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className='space-y-6'>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <Input
-          label='Nom'
-          name='nom'
-          type='text'
+          label="Nom"
+          name="nom"
+          type="text"
           value={formData.nom}
           onChange={handleChange}
           error={errors.nom}
@@ -102,9 +97,9 @@ export default function ContactForm({
         />
 
         <Input
-          label='Email'
-          name='email'
-          type='email'
+          label="Email"
+          name="email"
+          type="email"
           value={formData.email}
           onChange={handleChange}
           error={errors.email}
@@ -112,8 +107,8 @@ export default function ContactForm({
         />
 
         <Textarea
-          label='Message'
-          name='message'
+          label="Message"
+          name="message"
           rows={5}
           value={formData.message}
           onChange={handleChange}
@@ -122,27 +117,22 @@ export default function ContactForm({
         />
 
         <Checkbox
-          name='consent'
+          name="consent"
           checked={formData.consent}
           onChange={handleChange}
           error={errors.consent}
           label={
             <>
               J'accepte que mes données soient traitées conformément à la{' '}
-              <a href='/confidentialite' className='text-primary-300 hover:text-primary-400'>
+              <Link to="/confidentialite" className="text-primary-300 hover:text-primary-400">
                 politique de confidentialité
-              </a>
+              </Link>
             </>
           }
           required
         />
 
-        <Button
-          type='submit'
-          variant='primary'
-          className='w-full'
-          disabled={isSubmitting}
-        >
+        <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting}>
           {isSubmitting ? 'Envoi en cours...' : submitButtonText}
         </Button>
       </form>

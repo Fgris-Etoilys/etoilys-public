@@ -13,7 +13,7 @@ const navigation = [
       { name: 'Procédure', href: '/procedure' },
       { name: 'Simulateur', href: '/simulateur' },
       { name: 'FAQ', href: '/faq' },
-    ]
+    ],
   },
   { name: 'Notre équipe', href: '/equipe' },
   { name: 'Actualités', href: '/actualites' },
@@ -27,7 +27,7 @@ export default function Header() {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
@@ -72,28 +72,28 @@ export default function Header() {
       : 'bg-white/95 backdrop-blur-sm shadow-sm'
   }`;
 
-  const textClasses = isScrolled || !isHomePage || isMobileMenuOpen
-    ? 'text-gray-900'
-    : 'text-gray-900';
+  const textClasses =
+    isScrolled || !isHomePage || isMobileMenuOpen ? 'text-gray-900' : 'text-gray-900';
 
   return (
     <>
       <header className={headerClasses}>
-        <nav className='container-adaptive py-1'>
-          <div className='flex items-center justify-between'>
-            <Link to='/' className='flex items-center'>
+        <nav className="container-adaptive py-1">
+          <div className="flex items-center justify-between">
+            <Link to="/" className="flex items-center">
               <img
-                src='/Logo complet - site web copy.svg'
-                alt='Etoilys'
-                className='h-20 w-auto scale-100 md:h-20'
+                src="/Logo complet - site web copy.svg"
+                alt="Etoilys"
+                className="h-20 w-auto scale-100 md:h-20"
               />
             </Link>
 
-            <div className='hidden xl:flex items-center gap-6' ref={dropdownRef}>
+            <div className="hidden xl:flex items-center gap-6" ref={dropdownRef}>
               {navigation.map((item) => {
                 const hasSubmenu = 'submenu' in item && item.submenu;
-                const isActive = location.pathname === item.href ||
-                  (hasSubmenu && item.submenu?.some(sub => location.pathname === sub.href));
+                const isActive =
+                  location.pathname === item.href ||
+                  (hasSubmenu && item.submenu?.some((sub) => location.pathname === sub.href));
 
                 if (hasSubmenu) {
                   const handleMouseEnter = () => {
@@ -113,28 +113,28 @@ export default function Header() {
                   return (
                     <div
                       key={item.name}
-                      className='relative'
+                      className="relative"
                       onMouseEnter={handleMouseEnter}
                       onMouseLeave={handleMouseLeave}
                     >
                       <button
                         className={`flex items-center gap-1 text-sm font-medium transition-colors duration-200 ${
-                          isActive
-                            ? 'text-primary-300'
-                            : textClasses + ' hover:text-primary-300'
+                          isActive ? 'text-primary-300' : textClasses + ' hover:text-primary-300'
                         }`}
                         aria-expanded={openDropdown === item.name}
                         aria-haspopup="true"
                       >
                         {item.name}
-                        <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${
-                          openDropdown === item.name ? 'rotate-180' : ''
-                        }`} />
+                        <ChevronDown
+                          className={`h-4 w-4 transition-transform duration-200 ${
+                            openDropdown === item.name ? 'rotate-180' : ''
+                          }`}
+                        />
                       </button>
 
                       {openDropdown === item.name && (
                         <div
-                          className='absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50'
+                          className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50"
                           role="menu"
                         >
                           <Link
@@ -149,7 +149,7 @@ export default function Header() {
                           >
                             {item.name}
                           </Link>
-                          <div className='my-1 border-t border-gray-100'></div>
+                          <div className="my-1 border-t border-gray-100"></div>
                           {item.submenu?.map((subItem) => (
                             <Link
                               key={subItem.name}
@@ -176,16 +176,14 @@ export default function Header() {
                     key={item.name}
                     to={item.href}
                     className={`text-sm font-medium transition-colors duration-200 ${
-                      isActive
-                        ? 'text-primary-300'
-                        : textClasses + ' hover:text-primary-300'
+                      isActive ? 'text-primary-300' : textClasses + ' hover:text-primary-300'
                     }`}
                   >
                     {item.name}
                   </Link>
                 );
               })}
-              <Button href='/demande-classement' variant='primary'>
+              <Button href="/demande-classement" variant="primary">
                 Demande de classement
               </Button>
             </div>
@@ -193,49 +191,46 @@ export default function Header() {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`xl:hidden p-2 ${textClasses}`}
-              aria-label='Toggle menu'
+              aria-label="Toggle menu"
             >
-              {isMobileMenuOpen ? (
-                <X className='h-6 w-6' />
-              ) : (
-                <Menu className='h-6 w-6' />
-              )}
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
         </nav>
       </header>
 
       {isMobileMenuOpen && (
-        <div className='fixed inset-0 z-40 bg-white pt-20 xl:hidden overflow-y-auto'>
-          <nav className='container-adaptive py-8'>
-            <div className='flex flex-col gap-4'>
+        <div className="fixed inset-0 z-40 bg-white pt-20 xl:hidden overflow-y-auto">
+          <nav className="container-adaptive py-8">
+            <div className="flex flex-col gap-4">
               {navigation.map((item) => {
                 const hasSubmenu = 'submenu' in item && item.submenu;
-                const isActive = location.pathname === item.href ||
-                  (hasSubmenu && item.submenu?.some(sub => location.pathname === sub.href));
+                const isActive =
+                  location.pathname === item.href ||
+                  (hasSubmenu && item.submenu?.some((sub) => location.pathname === sub.href));
                 const isSubmenuOpen = openMobileSubmenu === item.name;
 
                 if (hasSubmenu) {
                   return (
-                    <div key={item.name} className='flex flex-col'>
+                    <div key={item.name} className="flex flex-col">
                       <button
                         onClick={() => setOpenMobileSubmenu(isSubmenuOpen ? null : item.name)}
                         className={`flex items-center justify-between text-lg font-medium transition-colors duration-200 py-2 ${
-                          isActive
-                            ? 'text-primary-300'
-                            : 'text-gray-900 hover:text-primary-300'
+                          isActive ? 'text-primary-300' : 'text-gray-900 hover:text-primary-300'
                         }`}
                         aria-expanded={isSubmenuOpen}
                         aria-label={`${item.name} menu`}
                       >
                         {item.name}
-                        <ChevronDown className={`h-5 w-5 transition-transform duration-200 ${
-                          isSubmenuOpen ? 'rotate-180' : ''
-                        }`} />
+                        <ChevronDown
+                          className={`h-5 w-5 transition-transform duration-200 ${
+                            isSubmenuOpen ? 'rotate-180' : ''
+                          }`}
+                        />
                       </button>
 
                       {isSubmenuOpen && (
-                        <div className='flex flex-col ml-4 mt-2 space-y-2 border-l-2 border-primary-200 pl-4'>
+                        <div className="flex flex-col ml-4 mt-2 space-y-2 border-l-2 border-primary-200 pl-4">
                           <Link
                             to={item.href}
                             className={`text-base transition-colors duration-200 py-1.5 ${
@@ -272,16 +267,14 @@ export default function Header() {
                     key={item.name}
                     to={item.href}
                     className={`text-lg font-medium transition-colors duration-200 py-2 ${
-                      isActive
-                        ? 'text-primary-300'
-                        : 'text-gray-900 hover:text-primary-300'
+                      isActive ? 'text-primary-300' : 'text-gray-900 hover:text-primary-300'
                     }`}
                   >
                     {item.name}
                   </Link>
                 );
               })}
-              <Button href='/demande-classement' variant='primary' className='w-full mt-4'>
+              <Button href="/demande-classement" variant="primary" className="w-full mt-4">
                 Demande de classement
               </Button>
             </div>
