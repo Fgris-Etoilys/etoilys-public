@@ -26,24 +26,24 @@ const advantages = [
   {
     icon: Award,
     title: 'Reconnaissance officielle',
-    description: "Obtenez une classification en étoiles reconnue par l'État et valorisez votre hébergement.",
+    description: "Classification en étoiles reconnue par l'État, délivrée par un organisme accrédité COFRAC.",
   },
   {
     icon: Users,
     title: 'Confiance des voyageurs',
-    description: 'Un classement rassure les locataires et améliore votre taux de réservation.',
+    description: 'Le classement en étoiles est un gage de qualité et de transparence pour les locataires.',
   },
   {
     icon: FileCheck,
     title: 'Accompagnement complet',
-    description: "De la constitution du dossier à l'obtention du certificat, nous gérons tout.",
+    description: "De la constitution du dossier à l'obtention du certificat, nous gérons l'intégralité de la démarche.",
   },
 ];
 
 const latestArticles = [
   {
     title: 'Les avantages fiscaux du classement meublé de tourisme',
-    excerpt: "Découvrez comment le classement de votre meublé de tourisme peut vous permettre de bénéficier d'avantages fiscaux significatifs et optimiser votre rentabilité locative.",
+    excerpt: "Les meublés de tourisme classés peuvent bénéficier d'avantages fiscaux prévus par la législation française. Découvrez les dispositifs applicables.",
     image: 'https://images.pexels.com/photos/6863332/pexels-photo-6863332.jpeg?auto=compress&cs=tinysrgb&w=800',
     href: '/actualites/avantages-fiscaux-classement',
     date: '15 mars 2025',
@@ -61,18 +61,18 @@ export default function Home() {
   return (
     <>
       <SEO
-        title='Accueil'
+        title='Classement Meublé de Tourisme | Certification Officielle | Etoilys'
         description='Etoilys vous accompagne dans le classement de votre meublé de tourisme. Obtenez votre certification officielle en étoiles et valorisez votre hébergement.'
-        keywords='classement meublé tourisme, location saisonnière, hébergement touristique, certification étoiles, Etoilys'
+        keywords='classement meublé tourisme, location saisonnière, hébergement touristique, certification étoiles, Etoilys, accréditation COFRAC, classement 1 à 5 étoiles, inspection meublé tourisme, certificat hébergement touristique, organisme classement meublé'
       />
       <section className='relative min-h-[600px] flex items-center justify-center text-white' style={{ backgroundImage: 'url(https://images.pexels.com/photos/13139460/pexels-photo-13139460.jpeg?auto=compress&cs=tinysrgb&w=1920)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
         <div className='absolute inset-0 bg-black/50'></div>
         <div className='container-adaptive relative z-10 py-24 text-center'>
           <h1 className='mb-6 text-white'>
-            Valorisez votre meublé de tourisme avec un classement officiel
+            Classement officiel de votre meublé de tourisme
           </h1>
           <p className='text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-comfortable'>
-            Etoilys vous accompagne dans votre démarche de classement pour obtenir une reconnaissance officielle et augmenter la valeur de votre hébergement.
+            Etoilys vous accompagne dans votre démarche de classement pour obtenir votre certification officielle en étoiles.
           </p>
           <div className='flex flex-col sm:flex-row gap-4 justify-center'>
             <Button href='/demande-classement' variant='primary' size='lg'>
@@ -166,7 +166,7 @@ export default function Home() {
           <div className='text-center mb-16'>
             <h2 className='mb-4'>Nos dernières actualités</h2>
             <p className='text-lg text-textLight max-w-2xl mx-auto leading-comfortable'>
-              Restez informé des nouveautés et conseils pour optimiser votre activité de location meublée.
+              Restez informé des nouveautés réglementaires et des évolutions du secteur de la location meublée de tourisme.
             </p>
           </div>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-8 mb-12'>
@@ -191,9 +191,9 @@ export default function Home() {
 
       <section className='py-section bg-gradient-to-br from-primary-300 to-themePrimary-2 text-white'>
         <div className='container-adaptive text-center'>
-          <h2 className='mb-6 text-white'>Prêt à valoriser votre meublé de tourisme ?</h2>
+          <h2 className='mb-6 text-white'>Besoin d'un classement officiel ?</h2>
           <p className='text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-comfortable'>
-            Obtenez votre classement officiel en quelques semaines et profitez de tous les avantages d'un hébergement reconnu.
+            Obtenez votre certification en étoiles en quelques semaines. Démarche complète gérée par nos équipes.
           </p>
           <Button href='/demande-classement' variant='primary' size='lg' className='bg-white text-primary-300 hover:bg-gray-100'>
             Demander votre classement
