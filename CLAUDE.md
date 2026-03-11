@@ -28,6 +28,16 @@ Whenever you write code, apply this instruction:
 - `src/utils/formValidation.ts`
 - `src/utils/api.ts`
 
+## 2026 Content Sources (Meubles)
+
+- Keep and use both documents:
+  - `docs/sources_infos_search.pdf` = canonical fact base for legal/fiscal assertions (priority, official sources + URLs).
+  - `docs/sources_infos_gpt.pdf` = editorial page-by-page drafting guide (angles, structure, neutral wording).
+- Method:
+  - Validate facts first with `sources_infos_search.pdf`.
+  - Use `sources_infos_gpt.pdf` to convert validated facts into page copy.
+  - If conflict exists, prioritize `sources_infos_search.pdf`, then primary official texts (Legifrance, impots.gouv, Service-Public, Atout France).
+
 ## Best-Practice Research (Context7)
 
 - If a task involves framework/library best practices or architecture tradeoffs, use MCP `context7` before implementation.

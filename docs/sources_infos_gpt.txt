@@ -1,0 +1,1017 @@
+J'ai structuré le livrable selon l'arborescence transmise pour le site public Etoilys : Accueil,
+Classement, Pourquoi classer, Procédure, Simulateur, FAQ, Actualités.
+
+A. Résumé exécu f
+
+Au 11 mars 2026, le classement des meublés de tourisme reste une démarche faculta ve, en 5
+catégories de 1 à 5 étoiles, valable 5 ans. La décision de classement est prononcée par l'organisme
+qui réalise la visite, sur la base d'une grille officielle élaborée par Atout France et homologuée par
+arrêté. (classement.atout-france.fr)
+
+La grille applicable au 11 mars 2026 est toujours celle issue de l'arrêté du 2 août 2010 modifié par
+l'arrêté du 24 novembre 2021. Je n'ai pas iden fié de nouveau référen el homologué 2024-2026
+pour les meublés ; en revanche, Atout France a publié une note de clarifica on en septembre 2025,
+u le pour l'interpréta on pra que des critères. (Direc on générale des Entreprises)
+
+Le classement repose sur 133 critères répar s en trois chapitres : équipements et aménagements,
+services au client, accessibilité et développement durable. Le calcul combine prérequis, critères
+obligatoires non compensables, seuil de points obligatoires et points "à la carte". (classement.atout-
+france.fr)
+
+Le grand tournant 2024-2026 n'est pas le référen el étoiles lui-même, mais l'encadrement juridique
+et fiscal des meublés de tourisme : loi du 19 novembre 2024, obliga ons énergé ques, pouvoirs
+accrus des maires, évolu on de l'enregistrement, et réduc on des avantages du micro-BIC. (vie-
+publique.fr)
+
+Sur la fiscalité, la rupture est ne e entre la situa on "avant réforme" et celle applicable aux revenus
+2025 déclarés en 2026 : pour les meublés non classés, seuil micro-BIC abaissé à 15 000  avec
+aba ement de 30 % ; pour les meublés classés, seuil ramené à 77 700  avec aba ement de 50 %. Le
+régime réel n'a pas été modifié par la loi du 19 novembre 2024 pour l'imposi on courante des
+revenus. (impots.gouv.fr)
+
+Il existe un problème de cohérence documentaire côté fiscal : une page générique d'impots.gouv.fr
+con nue d'afficher d'anciens paramètres (188 700  / 71 % pour les classés), alors que le CGI en
+vigueur, la FAQ fiscale du 27 janvier 2026 et Service-Public ont déjà intégré la réforme. Pour le site
+Etoilys, il faut retenir les sources les plus récentes et spécifiques. (impots.gouv.fr)
+
+Sur les obliga ons locales, le classement ne remplace ni la déclara on en mairie, ni les éventuelles
+règles de changement d'usage, ni l'obten on d'un SIRET. Ces obliga ons dépendent de la situa on
+du bien et de la commune. (Service Public)
+
+Depuis le 1er janvier 2025, les communes qui disposent d'une procédure d'enregistrement peuvent
+abaisser la durée maximale de loca on des résidences principales de 120 jours à un seuil compris
+entre 90 et 119 jours. (Ministère de la Transi on écologique)
+
+Sur le DPE, depuis l'entrée en vigueur de la loi du 19 novembre 2024, un meublé soumis à
+autorisa on de changement d'usage doit disposer d'un DPE A à E pour obtenir ce e autorisa on en
+métropole ; à compter de 2034, les meublés qui ne sont pas la résidence principale devront respecter
+les niveaux de décence énergé que applicables à la loca on longue durée. (Ministère de la Transi on
+écologique)
+
+Le chan er 2026 le plus sensible est l'enregistrement na onal. Juridiquement, le Code du tourisme
+prévoit une bascule à venir au 20 mai 2026 ; opéra onnellement, la DGE décrit encore au 11 mars
+2026 un déploiement en deux temps avec version bêta début mars 2026 et version finale au S2 2026.
+Ce décalage s'explique vraisemblablement par des décrets d'applica on encore a endus. C'est le
+principal point de vigilance éditorial. (Légifrance)
+
+Sur l'impact économique, je n'ai pas trouvé d'étude officielle robuste isolant, à elle seule, la
+performance classé vs non classé pour les meublés de tourisme en France. Les sources officielles
+documentent très bien la croissance du secteur, les enjeux de régula on et les mécanismes fiscaux,
+mais pas une causalité propre du classement sur les revenus ou le taux d'occupa on. Le site devra
+donc rester prudent et dis nguer clairement les effets démontrés des hypothèses marke ng.
+(Direc on générale des Entreprises)
+
+B. Matrice des sources
+
+ID                 Affirma o Organism Natur Date            Date     Lien          Confia Comment
+sour Thème                                                  MAJ                    nce aire
+ce                 n             e           e pub.
+
+                   Le
+
+                   classement
+
+                   des
+
+                   meublés
+
+                   relève du
+
+     Base légale   Code du                                  version                         Source
+                                                                                   Haute juridique
+S01  du            tourisme ;    Légifrance  Officie  n.c.  en       (Légifrance)
+     classement    décision                  lle            vigueur                         de base
+                   prononcée
+                                                            2026
+
+                   par
+
+                   l'organism
+
+                   e ayant
+
+                   réalisé la
+
+                   visite
+
+                   Classemen
+
+                   t
+
+     Principes volontaire,       Atout                      site en (classement.          Source
+                   1à5                       Officie
+S02 du                                               n.c.   ligne atout-           Haute synthé qu
+                   étoiles,      France
+     classement    validité 5                lle            2026 france.fr)               e fiable
+
+                   ans, 133
+
+                   critères
+
+                   95 % de
+
+                   points
+
+     Référen el    obligatoire                                                            U le pour
+     / calcul des  s, ONC non
+S03  points        compensa      Atout       Officie  2022  n.c.     (Atout        Haute  page
+                                 France      lle                     France)              Classemen
+
+                   bles,                                                                  t
+
+                   points "à la
+
+                   carte"
+ID                Affirma o Organism Natur Date Date Lien                             Confia Comment
+sour Thème        n              e         e pub. MAJ                                 nce aire
+ce
+
+                  5/10/20/3
+                  0/40 %
+
+                  Visite
+
+                  obligatoire
+
+                  in situ ; pas
+
+S04 Guide de      de visio ;     Atout     Officie 19/01/2 n.c.  (classement.                Source
+      contrôle    cer ficat      France    lle 022
+                  dans le                                        atout-               Haute opéra onn
+
+                                                                 france.fr)                  elle clé
+
+                  mois ; 15
+
+                  jours pour
+
+                  refuser
+
+                  Listes des
+
+                  organisme
+
+                  s                                                                          À relier à
+                                                                                             un
+     Organisme accrédités Atout            Officie 02/01/2 02/01/2 (classement.              annuaire
+S05               / agréés,                                               atout-      Haute  local
+     s habilités                 France
+                  publica on               lle 026 026
+                                                                          france.fr)
+
+                  électroniq
+
+                  ue et MAJ
+
+                  mensuelle
+
+                  Cerfa
+
+                  11819*03
+
+S06  Démarche     à           r  Service-  Officie 06/12/2 06/12/2 (Service           Haute Formulaire
+     de           transme                  lle 021 021 Public)                                 officiel
+                                 Public
+     demande e à un
+
+                  organisme
+
+                  évaluateur
+
+                     SIRET,                Officie       page en (Service                      Très
+                     déclara on                    n.c.  vigueur                      Haute exploitable
+                     en mairie,
+      Procédure changeme                   lle                      Public)                    en FAQ
+      pra que + nt d'usage, Service-                     2026
+S07
+      obliga ons numéro de Public
+      locales déclara on
+                     ,
+                     classement
+                     , affichage
+ID              Affirma o Organism Natur Date Date Lien                           Confia Comment
+sour Thème      n            e           e pub. MAJ                               nce aire
+ce
+
+                Classemen
+
+                t=
+
+                avantage
+
+                micro,
+
+S08  Posi onne  ANCV,        DGE         Officie 10/02/2  10/02/2  (Direc on      Haute  Source
+     ment DGE   ZFRR                     lle 025          025      générale des          ins tu on
+                possibles,                                         Entreprises)          nelle claire
+
+                5 ans, 133
+
+                critères
+
+                révisés en
+
+                2021
+
+                Loi du 19
+
+                novembre
+
+                2024 :
+
+                fiscalité
+
+     Réforme    moins        Vie         Officie 19/11/2           (vie-                 Très bon
+     2024       favorable,               lle 024                   publique.fr)          point
+S09             DPE,         publique /                   n.c.                    Haute  d'entrée
+                pouvoirs     Légifrance                                                  éditorial
+
+                des
+
+                maires,
+
+                copropriét
+
+                é
+
+                DPE, 90
+
+                jours,
+
+                fiscalité
+
+     Guide      2025, taxe Ministère Officie                       (Ministère de         Source de
+
+S10 réglementa de séjour,    / Écologie lle   2025 n.c.            la Transi on Haute travail
+
+     ire 2025 copropriét                                           écologique)           majeure
+
+                é,
+
+                enregistre
+
+                ment
+
+                CGI art.
+
+                50-0 :
+
+S11 Base fiscale seuils      Légifrance Officie n.c.      21/02/2 (Légifrance) Haute Source
+     légale micro-BIC / CGI lle                           026                            norma ve
+
+                applicables
+
+                en 2026
+
+S12 Fiscalité   15 000       impots.go   Officie 27/01/2  27/01/2  (impots.gouv.  Haute  Source la
+      2025      /30 %        uv.fr       lle 026          026      fr)                   plus
+
+                non classé
+ID               Affirma o Organism Natur Date Date Lien                     Confia Comment
+sour Thème       n            e          e pub. MAJ                          nce aire
+ce
+
+     déclarée    ; 77 700                                                                   opéra onn
+     en 2026     /50 %                                                                      elle
+                 classé
+
+                 Confirma
+
+                 on Service-
+
+     Micro-      Public des Service-                    page en (Service              Renforce
+                 seuils et Public Officie               vigueur              Haute la sécurité
+S13 entreprise                                    n.c.
+                 aba emen Entrepren lle                            Public)            éditoriale
+     / social                                           2026
+                 ts 2025 ; dre
+
+                 rappel
+
+                 social
+
+                 Barème
+
+                 2026 : fixe
+
+      Taxe de    pour         Service-   Officie                   (Service                 Très u le
+S14              classés, 1   Public                    barème Public                       pour
+                                                                                            simulateur
+      séjour     % à 5 % du   Entrepren lle       n.c.                               Haute
+                                                        2026 Entreprendre
+                 coût pour    dre
+                 non                                               )
+
+                 classés /
+
+                 en a ente
+
+                 THRS selon
+
+                 jouissance
+
+                 du bien ;    impots.go                                                     Sujet local,
+                 exonéra o
+     TH / CFE /               uv.fr / Officie 27/01/2         (impots.gouv.                 à
+
+S15  ZFRR        ns ZFRR      Service-   lle      026   2026  fr)            Haute présenter
+                              Public
+                 possibles                                                                  prudemm
+                 sur
+                                                                                            ent
+
+                 délibéra o
+
+                 n
+
+                 bêta début
+
+                 mars 2026
+
+                 ; version
+
+     API         finale S2
+
+     Meublés / 2026 ;                    Officie        page en (Direc on                   Point
+                                         lle 2026
+S16 enregistre futur          DGE                       ligne générale des Haute sensible
+
+     ment 2026 téléservice                              2026 Entreprises)                   majeur
+
+                 na onal ;
+
+                 anciens
+
+                 NER
+
+                 invalides
+ID              Affirma o Organism Natur Date Date Lien                              Confia Comment
+sour Thème      n             e           e pub. MAJ                                 nce aire
+ce
+
+                après
+                transi on
+
+                Future
+
+                rédac on                                                                    À
+
+     Bascule    de L324-1-                                    version                       dis nguer
+
+S17  légale au  1:            Légifrance  Officie  loi  2024  au       (Légifrance)  Haute  du
+     20 mai     enregistre                lle                 20/05/2                       calendrier
+
+     2026       ment via                                      026                           opéra onn
+
+                téléservice                                                                 el
+
+                na onal
+
+                Décret du
+
+                20 février
+
+                2026 :
+
+     Décret     clarifica  o              Officie  20/02/2    22/02/2                         Impact
+     2026       n de la                   lle      026        026 JO                 Haute limité mais
+S18                           Légifrance                               (Légifrance)
+                                                                                              réel
+                radia on
+
+                d'un
+
+                meublé
+
+                classé
+
+                Environ 20
+
+                % des
+
+                nuitées
+
+                saisonnièr                                                                  Contexte
+
+                es en                                                                       sectoriel,
+
+     Chiffrage  France                    Officie 01/06/2     01/06/2  (Direc on     Moyen pas effet
+     secteur                              lle 023             023                    ne du
+S19             sont          DGE                                      générale des
+                                                                       Entreprises)           classemen
+                réalisées
+
+                dans un                                                                     t
+
+                meublé
+
+                loué par
+
+                un
+
+                par culier
+
+                Tarifs de                                                                   À
+
+                visite                                                                      présenter
+
+S20  Tarifs     publiés OT /              Non      2025-      n.c.     (ot-          Moyen  comme
+     observés   localement acteurs        officie  2026                auxerre.fr)   ne     fourche e
+                souvent locaux            lle                                               observée,
+
+                autour de                                                                   pas tarif
+
+                120  à                                                                      na onal
+
+                250  TTC,
+ID          Affirma o Organism Natur Date Date Lien  Confia Comment
+sour Thème  n           e  e pub. MAJ                nce aire
+ce
+
+            hors frais
+            annexes
+
+C. Pack contenu par page
+
+1) Accueil (/)
+
+8 faits clés
+
+    1. Le classement des meublés de tourisme est un disposi f officiel encadré par le Code du
+         tourisme. (Légifrance)
+
+    2. Il est faculta f : un meublé peut être loué sans être classé, sous réserve des autres
+         obliga ons applicables. (classement.atout-france.fr)
+
+    3. Il existe 5 catégories de classement, de 1 à 5 étoiles. (classement.atout-france.fr)
+
+    4. La validité du classement est de 5 ans. (classement.atout-france.fr)
+
+    5. La grille officielle comporte 133 critères portant sur le confort, les équipements, les services,
+         l'accessibilité et le développement durable. (classement.atout-france.fr)
+
+    6. Le classement peut modifier la fiscalité au micro-BIC et la logique de taxe de séjour.
+         (impots.gouv.fr)
+
+    7. Le classement ne supprime pas les obliga ons de déclara on en mairie, de changement
+         d'usage éventuel ou de SIRET. (Service Public)
+
+    8. Les réformes les plus importantes depuis 2024 concernent surtout l'encadrement local, le
+         DPE, l'enregistrement et la fiscalité. (vie-publique.fr)
+
+Brouillon prêt à intégrer
+
+Le classement des meublés de tourisme est une procédure officielle qui a ribue à un logement une
+catégorie de 1 à 5 étoiles selon des critères objec fs de confort, d'équipement et de services. Il est
+faculta f, valable cinq ans, et dis nct des autres démarches applicables à la loca on touris que,
+comme la déclara on en mairie, l'enregistrement local lorsqu'il existe ou le changement d'usage dans
+certaines communes. Au 11 mars 2026, les effets les plus concrets du classement concernent la
+lisibilité de l'offre, la fiscalité micro-BIC, la taxe de séjour et l'accès à certains disposi fs comme
+l'ANCV. (classement.atout-france.fr)
+
+Points sensibles à valider
+
+     Ne pas écrire que le classement est "obligatoire" : ce serait faux. (classement.atout-france.fr)
+
+     Ne pas présenter le classement comme une dispense des obliga ons locales. (Service Public)
+
+     Ne pas prome re un gain de revenus sans étude robuste dédiée. (Direc on générale des
+         Entreprises)
+2) Classement (/classement)
+
+8 faits clés
+
+    1. La base légale se trouve dans les ar cles L. 324-1 et suivants du Code du tourisme.
+         (Légifrance)
+
+    2. La décision de classement est prononcée par l'organisme qui a réalisé la visite. (Légifrance)
+
+    3. Atout France élabore le tableau de classement ; celui-ci est homologué par arrêté ministériel.
+         (Légifrance)
+
+    4. La grille actuelle résulte du référen el 2021-2022 ; aucune nouvelle grille homologuée n'a été
+         iden fiée au 11 mars 2026. (classement.atout-france.fr)
+
+    5. Les 133 critères sont répar s en 3 chapitres : équipements/aménagements, services au
+         client, accessibilité et développement durable. (classement.atout-france.fr)
+
+    6. Pour obtenir le classement, il faut valider le prérequis, les 25 points ONC, 95 % des points
+         obligatoires et le quota "à la carte" propre à chaque niveau. (Atout France)
+
+    7. Pour un studio/T1 de 1 à 2 personnes, les surfaces minimales de base sont de 12 / 14 / 18 /
+         20 / 26 m² selon la catégorie 1* à 5*. (classement.atout-france.fr)
+
+    8. Le loueur doit afficher la décision de classement de manière visible à l'intérieur du meublé ;
+         le panonceau n'est pas obligatoire pour les meublés. (Service Public)
+
+Brouillon prêt à intégrer
+
+Le classement des meublés de tourisme repose sur une grille na onale unique, élaborée par Atout
+France et homologuée par arrêté. Il a ribue au logement une catégorie de 1 à 5 étoiles pour une
+durée de cinq ans. L'évalua on porte notamment sur les surfaces, l'équipement, le confort, les
+services proposés, l'accessibilité et certains critères de développement durable. Le résultat n'est pas
+une simple auto-déclara on : il dépend d'une visite sur place réalisée par un organisme habilité.
+(Légifrance)
+
+Points sensibles à valider
+
+     La note de clarifica on de septembre 2025 aide à lire les critères, mais n'est pas un nouveau
+         référen el homologué. (classement.atout-france.fr)
+
+     Dis nguer clairement classement officiel et labels privés. (Service Public Formulaires)
+
+3) Pourquoi classer (/pourquoi-classer)
+
+8 faits clés
+
+    1. Pour les revenus 2025 déclarés en 2026, le micro-BIC applique 50 % d'aba ement aux
+         meublés classés, contre 30 % aux non classés. (impots.gouv.fr)
+
+    2. Les seuils micro-BIC associés sont de 77 700  pour les classés et 15 000  pour les non
+         classés. (impots.gouv.fr)
+    3. Le classement permet l'adhésion à l'ANCV selon la DGE. (Direc on générale des Entreprises)
+
+    4. En ZFRR / ZFRR+, certaines communes ou EPCI peuvent décider d'exonéra ons locales de
+         taxe d'habita on ou de taxe foncière pour les meublés classés. (Direc on générale des
+         Entreprises)
+
+    5. En taxe de séjour, un meublé classé relève d'un tarif fixe par personne et par nuitée ; un
+         meublé non classé ou en a ente relève généralement d'un pourcentage du coût de la nuitée.
+         (Service Public Entreprendre)
+
+    6. Le classement donne un repère officiel de niveau de confort et d'équipement pour le client.
+         (Service Public)
+
+    7. Aucune étude officielle robuste iden fiée au 11 mars 2026 ne démontre, à elle seule, un
+         surcroît de revenu causé par le classement pour les meublés de tourisme. (Direc on générale
+         des Entreprises)
+
+    8. Le bénéfice économique le plus démontré est donc surtout réglementaire et fiscal, pas un
+         rendement commercial garan . (impots.gouv.fr)
+
+Brouillon prêt à intégrer
+
+Le classement produit d'abord des effets objec vables sur le cadre fiscal et réglementaire du meublé.
+Au 11 mars 2026, il condi onne notamment un régime micro-BIC moins dégradé que celui des
+meublés non classés, un traitement différent en taxe de séjour, ainsi que l'accès à certains disposi fs
+locaux ou ins tu onnels. En revanche, les sources officielles consultées ne perme ent pas d'affirmer
+qu'un meublé classé ob ent systéma quement un meilleur taux d'occupa on ou un revenu supérieur
+à un meublé non classé. (impots.gouv.fr)
+
+Points sensibles à valider
+
+     Éviter toute formula on du type "le classement augmente vos revenus".
+
+     Préférer "peut modifier la fiscalité", "peut changer le régime de taxe de séjour", "cons tue un
+         repère officiel". (impots.gouv.fr)
+
+4) Procédure (/procedure)
+
+8 faits clés
+
+    1. La demande s'effectue via le Cerfa 11819*03 auprès d'un organisme évaluateur. (Service
+         Public)
+
+    2. Le loueur choisit librement un organisme accrédité par le COFRAC ou agréé, figurant sur les
+         listes publiées par Atout France. (Direc on générale des Entreprises)
+
+    3. La visite d'inspec on est déclarée et doit être réalisée sur place. (classement.atout-france.fr)
+
+    4. Dans le mois suivant la visite, l'organisme remet un cer ficat comprenant rapport, grille et
+         proposi on de décision. (Service Public)
+
+    5. Le demandeur dispose de 15 jours pour refuser la proposi on ; à défaut, le classement est
+         acquis. (Service Public)
+    6. La décision est valable 5 ans. (Service Public)
+
+    7. Les tarifs de visite ne sont pas réglementés au niveau na onal ; ils sont librement fixés.
+         (classement.atout-france.fr)
+
+    8. Les fourche es publiées localement tournent souvent autour de 120  à 250  TTC par
+         meublé, hors cas par culiers et frais de déplacement. (ot-auxerre.fr)
+
+Brouillon prêt à intégrer
+
+La procédure de classement débute par une demande adressée à un organisme habilité. Celui-ci
+réalise une visite sur place, puis remet dans le mois un cer ficat de visite comprenant la grille de
+contrôle, le rapport et une proposi on de décision. Le demandeur dispose ensuite de quinze jours
+pour refuser ce e proposi on. En l'absence de refus, le classement devient acquis pour cinq ans. Les
+tarifs de visite sont libres : il n'existe pas de barème na onal obligatoire. (Service Public)
+
+Points sensibles à valider
+
+     Ne pas afficher un "prix officiel du classement" : il n'existe pas. (classement.atout-france.fr)
+
+     Présenter les coûts comme fourche es observées. (ot-auxerre.fr)
+
+     Dis nguer délai officiel (1 mois + 15 jours) et délai pra que de prise de rendez-vous, qui
+         dépend des opérateurs. (Service Public)
+
+5) Simulateur (/simulateur)
+
+8 faits clés
+
+    1. Le simulateur ne doit pas reposer sur des promesses de gain commercial non démontrées.
+         (Direc on générale des Entreprises)
+
+    2. Le socle le plus robuste est fiscal : classé = 77 700  / 50 %, non classé = 15 000  / 30 % pour
+         les revenus 2025 déclarés en 2026. (impots.gouv.fr)
+
+    3. Le simulateur peut intégrer la taxe de séjour, différente selon classement ou absence de
+         classement. (Service Public Entreprendre)
+
+    4. Le simulateur peut afficher un volet "régime réel" à tre compara f, sans automa ser une
+         conclusion. (Ministère de la Transi on écologique)
+
+    5. Les exonéra ons ZFRR doivent rester condi onnelles à une délibéra on locale. (Direc on
+         générale des Entreprises)
+
+    6. Les plafonds de loca on de résidence principale (120 jours ou 90-119 selon commune)
+         peuvent affecter le nombre de nuitées vendables. (Ministère de la Transi on écologique)
+
+    7. Le simulateur peut dis nguer trois scénarios économiques, mais les écarts d'occupa on / prix
+         doivent venir d'hypothèses u lisateur, pas de chiffres "officiels" inventés.
+
+    8. Le simulateur peut intégrer un aver ssement sur le calendrier 2026 de l'enregistrement
+         na onal, encore en transi on. (Légifrance)
+
+Brouillon prêt à intégrer
+Le simulateur peut comparer des scénarios classé / non classé sur des bases transparentes : chiffre
+d'affaires, taux d'aba ement micro-BIC, plafonds applicables, taxe de séjour, nombre de nuitées
+commercialisables et hypothèses de fréquenta on. Les résultats doivent être présentés comme des
+simula ons pédagogiques fondées sur les règles en vigueur et sur des hypothèses explicites, et non
+comme une prévision certaine de revenu. (impots.gouv.fr)
+Points sensibles à valider
+
+     Séparer clairement règle de droit et hypothèse économique.
+     Afficher les sources et la date de référence du simulateur.
+     Ajouter un bandeau "mise à jour juridique requise" pour les évolu ons 2026 sur
+
+         l'enregistrement. (Direc on générale des Entreprises)
+
+6) FAQ (/faq)
+8 faits clés
+
+    1. Le classement est faculta f. (classement.atout-france.fr)
+    2. Il dure 5 ans. (classement.atout-france.fr)
+    3. Il nécessite une visite sur place. (classement.atout-france.fr)
+    4. Il ne remplace ni la déclara on en mairie ni les autres autorisa ons éventuelles. (Service
+
+         Public)
+    5. Il peut modifier le traitement micro-BIC. (impots.gouv.fr)
+    6. Il peut changer la logique de taxe de séjour. (Service Public Entreprendre)
+    7. Il est dis nct d'un label privé. (Service Public Formulaires)
+    8. Le calendrier 2026 d'enregistrement na onal appelle des formula ons prudentes.
+
+         (Légifrance)
+Brouillon prêt à intégrer
+La FAQ doit répondre à des ques ons stables et opéra onnelles : caractère obligatoire ou non du
+classement, durée de validité, coût, démarches, fiscalité, taxe de séjour, SIRET, déclara on en mairie,
+changement d'usage, DPE, loca on de résidence principale et différences entre classement officiel et
+label. Le contenu doit rester factuel, sourcé et daté au 11 mars 2026. (Service Public)
+Points sensibles à valider
+
+     La FAQ fiscale doit être relue à chaque changement de doctrine ou de loi de finances.
+     La FAQ "enregistrement na onal" doit être revue dès publica on des derniers décrets.
+
+         (Légifrance)
+
+7) Actualités (/actualites)
+8 faits clés
+    1. La loi du 19 novembre 2024 est la réforme structurante du secteur. (vie-publique.fr)
+
+    2. Depuis 2025, les communes concernées peuvent abaisser la limite de loca on des résidences
+         principales à 90 jours minimum. (Ministère de la Transi on écologique)
+
+    3. Depuis fin 2024, le DPE entre dans le champ de régula on des meublés de tourisme.
+         (Ministère de la Transi on écologique)
+
+    4. Les revenus 2025 déclarés en 2026 subissent les nouveaux paramètres micro-BIC.
+         (impots.gouv.fr)
+
+    5. Une note de clarifica on Atout France a été publiée en septembre 2025. (classement.atout-
+         france.fr)
+
+    6. En février 2026, un décret a clarifié la radia on d'un meublé classé de la liste des meublés
+         classés. (Légifrance)
+
+    7. La DGE décrit en mars 2026 une API Meublés en version bêta, avec une version finale
+         annoncée au S2 2026. (Direc on générale des Entreprises)
+
+    8. Au 11 mars 2026, l'ar cula on exacte entre bascule légale et déploiement opéra onnel reste
+         un sujet de vigilance. (Légifrance)
+
+Brouillon prêt à intégrer
+
+La rubrique Actualités doit traiter les réformes 2025-2026 sous un angle réglementaire et pra que :
+évolu on du micro-BIC, nouvelles marges d'ac on des communes, DPE, copropriété, enregistrement
+na onal et mise à jour des référen els d'interpréta on. À date, le sujet le plus surveillé est la
+transi on vers le téléservice na onal d'enregistrement, juridiquement annoncée mais encore en
+déploiement opéra onnel. (vie-publique.fr)
+
+Points sensibles à valider
+
+     Éviter les formula ons défini ves sur "ce qui s'appliquera partout dès le 20 mai 2026" sans
+         men on du déploiement en cours. (Légifrance)
+
+D. FAQ consolidée (20 Q/R)
+
+Ques on                     Réponse factuelle                            Source(s)
+
+1. Le classement d'un                                                    (classement.atout-
+meublé de tourisme est-il Non. Le classement est faculta f.              france.fr)
+obligatoire ?
+
+2. Combien d'étoiles        Cinq catégories existent, de 1 à 5 étoiles.  (classement.atout-
+existent ?                                                               france.fr)
+
+3. Quelle est la durée de   Le classement est valable 5 ans.             (classement.atout-
+validité du classement ?                                                 france.fr)
+
+4. Qui décide du            La décision est prononcée par l'organisme qui a (Légifrance)
+classement ?                réalisé la visite.
+Ques on                        Réponse factuelle                                  Source(s)
+
+5. Qui élabore les critères Atout France élabore le tableau de classement,        (Légifrance)
+
+?                              homologué par arrêté.
+
+6. Combien y a-t-il de         La grille officielle compte 133 critères.          (classement.atout-
+critères ?                                                                        france.fr)
+
+7. Une visite sur place est- Oui. La visite doit être effectuée in situ ; la visio (classement.atout-
+
+elle obligatoire ?             n'est pas admise.                                  france.fr)
+
+8. Quel formulaire u liser     La demande s'effectue via le Cerfa 11819*03.       (Service Public)
+
+?
+
+9. Combien de temps            L'organisme remet le cer  ficat de visite dans le  (Service Public)
+après la visite reçoit-on les  mois suivant la visite.
+
+documents ?
+
+10. Peut-on contester la       Oui. Le demandeur dispose de 15 jours pour
+                               refuser la proposi on.
+proposi  on de classement                                                         (Service Public)
+?
+
+11. Le classement                                                                 (Service Public)
+                                  Non. Le classement ne remplace pas les
+
+remplace-t-il la déclara on
+                                  obliga ons de mairie.
+
+en mairie ?
+
+12. Faut-il un numéro          Oui, la loca on meublée touris que suppose une
+SIRET ?                        inscrip on au répertoire Sirène / obten on d'un (Service Public)
+                               SIRET.
+
+13. Le classement est-il Oui. Les formulaires officiels dis nguent le             (Service Public
+                                                                                  Formulaires)
+différent d'un label ?         logement "classé" et le logement "labellisé".
+
+14. Quel est l'avantage        Pour les revenus 2025 déclarés en 2026, le micro-
+fiscal principal du            BIC prévoit 50 % d'aba ement pour les classés (impots.gouv.fr)
+classement en 2026 ?           contre 30 % pour les non classés.
+
+15. Quels sont les seuils      77 700  pour les classés ; 15 000  pour les non    (impots.gouv.fr)
+micro-BIC à retenir ?          classés, pour les revenus 2025 déclarés en 2026.
+
+                                  Oui. Les meublés classés relèvent d'un tarif fixe ;
+16. Le classement change- les non classés ou en a ente relèvent en principe (Service Public
+t-il la taxe de séjour ? d'un pourcentage de 1 % à 5 % du coût de la Entreprendre)
+
+                                  nuitée.
+
+17. Existe-t-il des            Oui, dans certaines communes ou EPCI situés en (Direc on générale
+exonéra ons locales ?          ZFRR/ZFRR+, sous réserve de délibéra on locale. des Entreprises)
+Ques on                     Réponse factuelle                                  Source(s)
+
+18. Le classement garan t-  Aucune étude officielle robuste iden fiée au 11    (Direc on générale
+
+                            mars 2026 ne permet d'affirmer cela de façon       des Entreprises)
+il un meilleur revenu ? générale pour les meublés.
+
+19. Le panonceau est-il     Pour les meublés, non ; en revanche la décision    (Direc on générale
+obligatoire ?               de classement doit être affichée à l'intérieur du
+                                                                               des Entreprises)
+                            logement.
+
+20. Que se passe-t-il en    Le Code prévoit une généralisa on à venir au 20
+2026 sur l'enregistrement
+na onal ?                   mai 2026, mais la DGE décrit au 11 mars 2026 un    (Légifrance)
+                            déploiement en deux temps avec version finale
+
+                            annoncée au S2 2026.
+
+E. Bloc "simulateur"
+Variables d'entrée proposées
+
+     Statut du bien : classé / non classé
+     Catégorie si classé : 1* à 5*
+     Type d'usage : résidence principale / résidence secondaire / bien dédié
+     Commune et régime local : taxe de séjour, enregistrement, changement d'usage, plafond 90-
+
+         120 jours
+     Chiffre d'affaires annuel brut d'hébergement
+     Nombre de nuitées vendues
+     Nombre de nuitées disponibles à la vente
+     Prix moyen par nuitée HT
+     Nombre moyen de personnes imposables par nuitée
+     Régime fiscal testé : micro-BIC / réel
+     Montant annuel des charges déduc bles (si réel)
+     Intérêts d'emprunt (si réel)
+     Amor ssements saisis par l'u lisateur (si réel, bloc informa f)
+     ZFRR / ZFRR+ : oui/non
+     Hypothèses économiques u lisateur : varia on de taux d'occupa on et varia on de prix
+
+         moyen entre scénario prudent / médian / haut
+Formules transparentes
+1. Taux d'occupa on
+[
+\text{Taux d'occupa on} = \frac{\text{Nuitées vendues}}{\text{Nuitées disponibles}}
+]
+
+2. Chiffre d'affaires d'hébergement
+
+[
+\text{CA hébergement} = \text{Nuitées vendues} \ mes \text{Prix moyen HT}
+]
+
+3. Taxe de séjour -- meublé classé
+
+[
+\text{Taxe de séjour} = \text{Nuitées vendues} \ mes \text{Personnes imposables} \ mes \text{Tarif
+fixe local}
+]
+Barème légal 2026 :
+1* : 0,20  à 0,80  ; 2* : 0,30  à 1,00  ; 3* : 0,50  à 1,70  ; 4* : 0,70  à 2,60  ; 5* : 0,70  à 3,60
+, hors taxes addi onnelles locales. (Service Public Entreprendre)
+
+4. Taxe de séjour -- meublé non classé / en a ente
+
+[
+\text{Taxe de séjour} = \text{Nuitées vendues} \ mes \text{Personnes imposables} \ mes
+\min(\text{Coût par personne HT} \ mes \text{taux local}, \text{plafond local})
+]
+avec un taux 2026 compris entre 1 % et 5 %, dans la limite du tarif le plus élevé adopté par la
+collec vité. (Service Public Entreprendre)
+
+5. Base imposable micro-BIC -- classé
+
+Pour les revenus 2025 déclarés en 2026 :
+[
+\text{Base imposable micro} = \text{CA} \ mes 50%
+]
+sous réserve du seuil de 77 700 . (impots.gouv.fr)
+
+6. Base imposable micro-BIC -- non classé
+
+Pour les revenus 2025 déclarés en 2026 :
+[
+\text{Base imposable micro} = \text{CA} \ mes 70%
+]
+sous réserve du seuil de 15 000 . (impots.gouv.fr)
+
+7. Résultat indica f au réel
+
+[
+\text{Résultat réel indica f} = \text{CA} - \text{Charges déduc bles} - \text{Intérêts} - \text{Autres
+déduc ons saisies}
+]
+Le site peut conserver l'amor ssement comme champ d'informa on / simula on avancée, avec
+aver ssement sur la complexité comptable et l'absence de prise en compte automa que des règles
+patrimoniales de sor e.
+
+Scénarios économiques
+
+     Prudent : aucun effet commercial du classement ; seules les différences fiscales et de taxe de
+         séjour sont simulées.
+
+     Médian : l'u lisateur saisit ses propres hypothèses d'écart d'occupa on et/ou de prix.
+
+     Haut : même logique, avec hypothèses u lisateur majorées.
+
+Ce choix est le seul défendable à date : il évite d'inventer un "bonus officiel de revenus" que les
+sources publiques ne démontrent pas. (Direc on générale des Entreprises)
+
+Limites méthodologiques
+
+     Le simulateur ne peut pas déduire automa quement la situa on locale de changement
+         d'usage ou d'exonéra on.
+
+     Les exonéra ons ZFRR restent condi onnées à des délibéra ons locales. (Direc on générale
+         des Entreprises)
+
+     Le calendrier 2026 de l'enregistrement na onal est en transi on. (Légifrance)
+
+     Le simulateur ne doit pas conclure automa quement "classé = plus rentable" ; il doit montrer
+         les mécanismes, pas raconter des contes.
+
+F. Bloc "revenus & a rac vité"
+Inventaire des études chiffrées trouvées
+
+Source            Périmètre             Ce que la      Résultat clé               Limite
+                                        source mesure
+
+DGE, Impact                                            Environ 20 % des nuitées
+
+économique et France, secteur           Poids du       saisonnières en France     Ne compare pas
+                                                                                  classé vs non
+réglementa on des meublés loués         secteur,       sont réalisées dans un     classé
+
+meublés de        par par culiers       régula on, part meublé loué par un
+
+tourisme (2023)                         des nuitées par culier. (Direc on
+
+                                                       générale des Entreprises)
+
+Insee Focus 2025  Hébergements          Fréquenta on   +3,7 % de fréquenta on     Ne porte pas
+                  collec fs de          été 2025       es vale 2025 vs 2024       spécifiquement
+                  tourisme en                          dans les hébergements      sur les meublés
+                  France                               collec fs. (Insee)         classés
+
+                         Plateformes /  Nuitées        Forte progression des      Données
+Insee régional 2025 meublés             réservées via  nuitées en meublés         plateformes, pas
+                                        plateformes    réservés via plateformes
+                         touris ques                                              effet du
+                                                       dans plusieurs régions.
+                                                                                  classement
+                                                       (Insee)
+Source               Périmètre          Ce que la         Résultat clé                  Limite
+                                        source mesure
+
+Service-Public 2026  Règle na  onale                         Classé = tarif fixe ; non  Mécanisme fiscal,
+taxe de séjour                          Impact tarifaire classé = % du coût de la       pas mesure de
+                                        du classement nuitée. (Service Public           revenu observé
+
+                                                             Entreprendre)
+
+                                                          Classé = 77 700 /50 % ;
+
+DGE / Service-       Fiscalité micro-   Impact fiscal du  non classé = 15 000 /30       Mécanisme fiscal,
+Public /             BIC                classement        % pour revenus 2025           pas performance
+impots.gouv 2026                                          déclarés en 2026.             commerciale
+
+                                                          (impots.gouv.fr)
+
+Tableau compara f "ce qui est démontré / ce qui ne l'est pas"
+
+Sujet                                   Démontré par sources            Niveau
+                                        officielles ?
+
+Le classement est un repère officiel                                    Fort (classement.atout-
+                                              Oui                       france.fr)
+
+de confort / équipement
+
+Le classement modifie le micro-BIC Oui                                  Fort (impots.gouv.fr)
+
+Le classement modifie le régime de Oui                                  Fort (Service Public
+taxe de séjour                                                          Entreprendre)
+
+Le classement peut ouvrir certains      Oui                             Fort à moyen (Direc on
+                                                                        générale des Entreprises)
+disposi fs locaux / ANCV
+
+Le classement augmente              on  Non démontré dans les           Faible
+mécaniquement le taux d'occupa          sources officielles consultées
+
+Le classement augmente                  Non démontré dans les
+mécaniquement le prix moyen par                                             Faible
+nuit
+                                        sources officielles consultées
+
+Le classement augmente                  Non démontré dans les           Faible
+mécaniquement le revenu annuel          sources officielles consultées
+
+Conclusion prudente
+
+Ce qui est objec vement démontré au 11 mars 2026, c'est que le classement a des effets juridiques,
+fiscaux et tarifaires concrets : il change le régime micro-BIC applicable, modifie la logique de taxe de
+séjour, sert de repère officiel et peut s'ar culer avec certains disposi fs locaux. En revanche, je n'ai
+pas trouvé de source officielle perme ant d'affirmer proprement qu'un meublé classé ob ent, par
+lui-même, un meilleur taux d'occupa on, un meilleur ADR ou un meilleur revenu qu'un meublé non
+classé. Le site Etoilys gagnera donc en crédibilité en séparant très clairement les bénéfices prouvés
+des effets économiques seulement possibles ou supposés. (impots.gouv.fr)
+Points transverses de vigilance éditoriale
+
+    1. Fiscalité : privilégier le CGI, la FAQ impots.gouv.fr du 27 janvier 2026 et Service-Public ; ne pas
+         reprendre sans vérifica on la page générique encore au vieux régime. (impots.gouv.fr)
+
+    2. Enregistrement 2026 : écrire au condi onnel encadré, avec date et source, car le droit "à
+         venir" et le calendrier opéra onnel DGE ne sont pas parfaitement alignés au 11 mars 2026.
+         (Légifrance)
+
+    3. Critères : ne pas annoncer de "nouvelle grille 2026" tant qu'aucun nouvel arrêté homologué
+         n'est publié. (classement.atout-france.fr)
+
+    4. Performance économique : ne pas inventer des pourcentages de hausse de revenus. Là, ce
+         serait juste du folklore bien emballé.
+
+Si tu veux, je peux maintenant transformer ce matériau en version rédac onnelle prête à publier
+page par page, avec tres H1/H2, paragraphes SEO et blocs de CTA neutres.
+
