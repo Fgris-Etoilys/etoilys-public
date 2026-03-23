@@ -6,10 +6,10 @@ import Button from '../ui/Button';
 const navigation = [
   { name: 'Accueil', href: '/' },
   {
-    name: 'Classement meublé',
+    name: 'Le classement',
     href: '/classement',
     submenu: [
-      { name: 'Pourquoi classer', href: '/pourquoi-classer' },
+      { name: 'Les avantages du classement', href: '/les-avantages-du-classement' },
       { name: 'Procédure', href: '/procedure' },
       { name: 'Simulateur', href: '/simulateur' },
       { name: 'FAQ', href: '/faq' },

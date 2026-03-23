@@ -1,4 +1,4 @@
-import { Shield, Zap, Clock, Award, Users, FileCheck } from 'lucide-react';
+import { Shield, Zap, Clock, Calculator, Users, Globe } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import ArticleCard from '../components/ui/ArticleCard';
@@ -13,45 +13,54 @@ const features = [
   {
     icon: Zap,
     title: 'Technologie de pointe',
-    description: 'Des outils digitaux développés en interne pour un suivi en temps réel, des contrôles précis et une transparence maximale.',
+    description:
+      'Des outils digitaux développés sur-mesure pour un suivi en temps réel, des contrôles précis et une transparence maximale.',
   },
   {
     icon: Clock,
     title: 'Proximité et réactivité',
-    description: 'Nos inspecteurs proches de chez vous vous accompagnent personnellement pour un classement rapide et efficace.',
+    description:
+      'Nos inspecteurs proches de chez vous vous accompagnent personnellement pour un classement rapide et efficace.',
   },
 ];
 
 const advantages = [
   {
-    icon: Award,
-    title: 'Reconnaissance officielle',
-    description: "Classification en étoiles reconnue par l'État, délivrée par un organisme accrédité COFRAC.",
+    icon: Calculator,
+    title: 'Régime fiscal avantageux',
+    description:
+      "Un meublé classé bénéficie d'un abattement fiscal majoré en régime micro-BIC (50 % contre 30 %).",
   },
   {
     icon: Users,
     title: 'Confiance des voyageurs',
-    description: 'Le classement en étoiles est un gage de qualité et de transparence pour les locataires.',
+    description:
+      'Le classement en étoiles est un gage de qualité et de transparence pour les locataires.',
   },
   {
-    icon: FileCheck,
-    title: 'Accompagnement complet',
-    description: "De la constitution du dossier à l'obtention du certificat, nous gérons l'intégralité de la démarche.",
+    icon: Globe,
+    title: 'Référencement officiel',
+    description:
+      "Les meublés classés sont référencés dans les réseaux officiels du tourisme et bénéficient d'une meilleure visibilité.",
   },
 ];
 
 const latestArticles = [
   {
     title: 'Les avantages fiscaux du classement meublé de tourisme',
-    excerpt: "Les meublés de tourisme classés peuvent bénéficier d'avantages fiscaux prévus par la législation française. Découvrez les dispositifs applicables.",
-    image: 'https://images.pexels.com/photos/6863332/pexels-photo-6863332.jpeg?auto=compress&cs=tinysrgb&w=800',
+    excerpt:
+      "Les meublés de tourisme classés peuvent bénéficier d'avantages fiscaux prévus par la législation française. Découvrez les dispositifs applicables.",
+    image:
+      'https://images.pexels.com/photos/6863332/pexels-photo-6863332.jpeg?auto=compress&cs=tinysrgb&w=800',
     href: '/actualites/avantages-fiscaux-classement',
     date: '15 mars 2025',
   },
   {
     title: 'Nouveaux critères de classement 2025',
-    excerpt: "Les critères de classement des meublés de tourisme évoluent en 2025. Retrouvez toutes les nouvelles exigences pour chaque catégorie d'étoiles.",
-    image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800',
+    excerpt:
+      "Les critères de classement des meublés de tourisme évoluent en 2025. Retrouvez toutes les nouvelles exigences pour chaque catégorie d'étoiles.",
+    image:
+      'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800',
     href: '/actualites/nouveaux-criteres-2025',
     date: '8 mars 2025',
   },
@@ -61,61 +70,75 @@ export default function Home() {
   return (
     <>
       <SEO
-        title='Classement Meublé de Tourisme | Certification Officielle | Etoilys'
-        description='Etoilys vous accompagne dans le classement de votre meublé de tourisme. Obtenez votre certification officielle en étoiles et valorisez votre hébergement.'
-        keywords='classement meublé tourisme, location saisonnière, hébergement touristique, certification étoiles, Etoilys, accréditation COFRAC, classement 1 à 5 étoiles, inspection meublé tourisme, certificat hébergement touristique, organisme classement meublé'
+        title="Classement Meublé de Tourisme | Certification Officielle | Etoilys"
+        description="Etoilys vous accompagne dans le classement de votre meublé de tourisme. Obtenez votre certification officielle en étoiles et valorisez votre hébergement."
+        keywords="classement meublé tourisme, location saisonnière, hébergement touristique, certification étoiles, Etoilys, accréditation COFRAC, classement 1 à 5 étoiles, inspection meublé tourisme, certificat hébergement touristique, organisme classement meublé"
       />
-      <section className='relative min-h-[600px] flex items-center justify-center text-white' style={{ backgroundImage: 'url(https://images.pexels.com/photos/13139460/pexels-photo-13139460.jpeg?auto=compress&cs=tinysrgb&w=1920)', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-        <div className='absolute inset-0 bg-black/50'></div>
-        <div className='container-adaptive relative z-10 py-24 text-center'>
-          <h1 className='mb-6 text-white'>
-            Classement officiel de votre meublé de tourisme
-          </h1>
-          <p className='text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-comfortable'>
-            Etoilys vous accompagne dans votre démarche de classement pour obtenir votre certification officielle en étoiles.
+      <section
+        className="relative min-h-[600px] flex items-center justify-center text-white"
+        style={{
+          backgroundImage:
+            'url(https://images.pexels.com/photos/13139460/pexels-photo-13139460.jpeg?auto=compress&cs=tinysrgb&w=1920)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="container-adaptive relative z-10 py-24 text-center">
+          <h1 className="mb-6 text-white">Classement officiel de votre meublé de tourisme</h1>
+          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-comfortable">
+            Etoilys vous accompagne dans votre démarche de classement pour obtenir votre
+            certification officielle en étoiles.
           </p>
-          <div className='flex flex-col sm:flex-row gap-4 justify-center'>
-            <Button href='/demande-classement' variant='primary' size='lg'>
-              Demander un classement
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button href="/demande-classement" variant="primary" size="lg">
+              Demander votre classement
             </Button>
-            <Button href='/simulateur' variant='secondary' size='lg' className='bg-white/10 border-white text-white hover:bg-white/20'>
-              Simuler mon classement
+            <Button
+              href="/les-avantages-du-classement"
+              variant="secondary"
+              size="lg"
+              className="bg-white/10 border-white text-white hover:bg-white/20"
+            >
+              Les avantages du classement
             </Button>
           </div>
         </div>
       </section>
 
-      <section className='py-section bg-white'>
-        <div className='container-adaptive'>
-          <div className='text-center mb-16'>
-            <h2 className='mb-4'>Pourquoi choisir Etoilys ?</h2>
-            <p className='text-lg text-textLight max-w-2xl mx-auto leading-comfortable'>
-              Nous sommes le partenaire de confiance des propriétaires de meublés de tourisme partout en France.
+      <section className="py-section bg-white">
+        <div className="container-adaptive">
+          <div className="text-center mb-16">
+            <h2 className="mb-4">Pourquoi choisir Etoilys ?</h2>
+            <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+              Nous sommes le partenaire de confiance des propriétaires de meublés de tourisme
+              partout en France.
             </p>
           </div>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature) => (
               <FeatureCard
                 key={feature.title}
                 icon={feature.icon}
                 title={feature.title}
                 description={feature.description}
-                iconColor='bicolor'
+                iconColor="bicolor"
               />
             ))}
           </div>
         </div>
       </section>
 
-      <section className='py-section bg-primary-100'>
-        <div className='container-adaptive'>
-          <div className='text-center mb-16'>
-            <h2 className='mb-4'>Les bénéfices d'un classement officiel</h2>
-            <p className='text-lg text-textLight max-w-2xl mx-auto leading-comfortable'>
-              Un classement en étoiles apporte de nombreux avantages pour votre activité de location saisonnière.
+      <section className="py-section bg-primary-100">
+        <div className="container-adaptive">
+          <div className="text-center mb-16">
+            <h2 className="mb-4">Les bénéfices d'un classement officiel</h2>
+            <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+              Un classement en étoiles apporte de nombreux avantages pour votre activité de location
+              saisonnière.
             </p>
           </div>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {advantages.map((advantage) => (
               <FeatureCard
                 key={advantage.title}
@@ -125,51 +148,61 @@ export default function Home() {
               />
             ))}
           </div>
+          <div className="text-center mt-12">
+            <Button href="/les-avantages-du-classement" variant="primary">
+              Découvrir tous les avantages
+            </Button>
+          </div>
         </div>
       </section>
 
-      <section className='py-section bg-white'>
-        <div className='container-adaptive'>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-12 items-center'>
+      <section className="py-section bg-white">
+        <div className="container-adaptive">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className='mb-6'>Une procédure simple et rapide</h2>
-              <div className='space-y-4 text-textLight leading-comfortable'>
+              <h2 className="mb-6">Une procédure simple et rapide</h2>
+              <div className="space-y-4 text-textLight leading-comfortable">
                 <p>
-                  Obtenir le classement de votre meublé de tourisme n'a jamais été aussi simple. Notre équipe d'experts vous accompagne à chaque étape du processus.
+                  La démarche de classement est simple : dès réception de votre demande, un
+                  inspecteur situé près de chez vous vous contacte sous 24 heures pour planifier la
+                  visite selon vos disponibilités et répondre à vos questions.
                 </p>
                 <p>
-                  De la constitution de votre dossier à la visite de contrôle, en passant par l'obtention de votre certificat officiel, nous gérons l'intégralité de la démarche pour vous.
+                  La visite se déroule à votre logement, sur rendez-vous, à une date qui vous
+                  convient.
                 </p>
                 <p>
-                  En moyenne, nos clients obtiennent leur classement en moins de 6 semaines. Profitez rapidement des avantages d'un hébergement classé.
+                  Sous 7 jours suivant la visite, vous recevez une proposition de classement en
+                  étoiles, que vous êtes libre d'accepter ou de refuser.
                 </p>
               </div>
-              <div className='mt-8'>
-                <Button href='/procedure' variant='primary'>
+              <div className="mt-8">
+                <Button href="/procedure" variant="primary">
                   Découvrir la procédure
                 </Button>
               </div>
             </div>
-            <div className='relative'>
+            <div className="relative">
               <img
-                src='https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg?auto=compress&cs=tinysrgb&w=1200'
+                src="https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg?auto=compress&cs=tinysrgb&w=1200"
                 alt="Intérieur d'un meublé de tourisme moderne"
-                className='rounded-card shadow-card-hover w-full'
+                className="rounded-card shadow-card-hover w-full"
               />
             </div>
           </div>
         </div>
       </section>
 
-      <section className='py-section bg-accent-1'>
-        <div className='container-adaptive'>
-          <div className='text-center mb-16'>
-            <h2 className='mb-4'>Nos dernières actualités</h2>
-            <p className='text-lg text-textLight max-w-2xl mx-auto leading-comfortable'>
-              Restez informé des nouveautés réglementaires et des évolutions du secteur de la location meublée de tourisme.
+      <section className="py-section bg-accent-1">
+        <div className="container-adaptive">
+          <div className="text-center mb-16">
+            <h2 className="mb-4">Nos dernières actualités</h2>
+            <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+              Restez informé des nouveautés réglementaires et des évolutions du secteur de la
+              location meublée de tourisme.
             </p>
           </div>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-8 mb-12'>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             {latestArticles.map((article) => (
               <ArticleCard
                 key={article.title}
@@ -181,21 +214,28 @@ export default function Home() {
               />
             ))}
           </div>
-          <div className='text-center'>
-            <Button href='/actualites' variant='secondary'>
+          <div className="text-center">
+            <Button href="/actualites" variant="secondary">
               Voir toutes les actualités
             </Button>
           </div>
         </div>
       </section>
 
-      <section className='py-section bg-gradient-to-br from-primary-300 to-themePrimary-2 text-white'>
-        <div className='container-adaptive text-center'>
-          <h2 className='mb-6 text-white'>Besoin d'un classement officiel ?</h2>
-          <p className='text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-comfortable'>
-            Obtenez votre certification en étoiles en quelques semaines. Démarche complète gérée par nos équipes.
+      <section className="py-section bg-gradient-to-br from-primary-300 to-themePrimary-2 text-white">
+        <div className="container-adaptive text-center">
+          <h2 className="mb-6 text-white">Lancez votre démarche de classement.</h2>
+          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-comfortable">
+            Etoilys prend en charge l'intégralité de la procédure. Un inspecteur de proximité vous
+            accompagne de la première prise de contact jusqu'à la délivrance de votre certificat
+            officiel.
           </p>
-          <Button href='/demande-classement' variant='primary' size='lg' className='bg-white text-primary-300 hover:bg-gray-100'>
+          <Button
+            href="/demande-classement"
+            variant="secondary"
+            size="lg"
+            className="border-white text-white hover:bg-white/20"
+          >
             Demander votre classement
           </Button>
         </div>

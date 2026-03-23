@@ -23,7 +23,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="classement" element={<Classement />} />
-          <Route path="pourquoi-classer" element={<PourquoiClasser />} />
+          <Route path="les-avantages-du-classement" element={<PourquoiClasser />} />
           <Route path="procedure" element={<Procedure />} />
           <Route path="simulateur" element={<Simulateur />} />
           <Route path="faq" element={<FAQ />} />
