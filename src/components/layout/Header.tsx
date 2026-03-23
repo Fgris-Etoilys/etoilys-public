@@ -10,14 +10,15 @@ const navigation = [
     href: '/classement',
     submenu: [
       { name: 'Les avantages du classement', href: '/les-avantages-du-classement' },
+      { name: 'Prérequis au classement', href: '/prerequis-au-classement' },
       { name: 'Procédure', href: '/procedure' },
-      { name: 'Simulateur', href: '/simulateur' },
+      // { name: 'Simulateur', href: '/simulateur' }, // TODO: réactiver quand le simulateur sera prêt
       { name: 'FAQ', href: '/faq' },
     ],
   },
-  { name: 'Notre équipe', href: '/equipe' },
+  // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
   { name: 'Actualités', href: '/actualites' },
-  { name: 'Recrutement', href: '/recrutement' },
+  // { name: 'Recrutement', href: '/recrutement' }, // TODO: réactiver quand la page sera prête
   { name: 'Contact', href: '/contact' },
 ];
 

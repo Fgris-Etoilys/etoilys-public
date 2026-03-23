@@ -156,11 +156,13 @@ export default function PourquoiClasser() {
                   est généralement amorti en moins d'un an.
                 </p>
               </div>
+              {/* TODO: réactiver quand le simulateur sera prêt
               <div className="mt-8">
                 <Button href="/simulateur" variant="primary">
                   Simuler mes économies
                 </Button>
               </div>
+              */}
             </div>
           </div>
         </div>

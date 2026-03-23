@@ -3,12 +3,13 @@ import Layout from './components/layout/Layout';
 import Home from './pages/Home';
 import Classement from './pages/Classement';
 import PourquoiClasser from './pages/PourquoiClasser';
+import Prerequis from './pages/Prerequis';
 import Procedure from './pages/Procedure';
-import Simulateur from './pages/Simulateur';
+// import Simulateur from './pages/Simulateur'; // TODO: réactiver quand le simulateur sera prêt
 import FAQ from './pages/FAQ';
-import Equipe from './pages/Equipe';
+// import Equipe from './pages/Equipe'; // TODO: réactiver quand la page sera prête
 import Actualites from './pages/Actualites';
-import Recrutement from './pages/Recrutement';
+// import Recrutement from './pages/Recrutement'; // TODO: réactiver quand la page sera prête
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
 import Confidentialite from './pages/Confidentialite';
@@ -24,12 +25,16 @@ function App() {
           <Route index element={<Home />} />
           <Route path="classement" element={<Classement />} />
           <Route path="les-avantages-du-classement" element={<PourquoiClasser />} />
+          <Route path="prerequis-au-classement" element={<Prerequis />} />
           <Route path="procedure" element={<Procedure />} />
-          <Route path="simulateur" element={<Simulateur />} />
+          {/* <Route path="simulateur" element={<Simulateur />} /> */}
+          {/* TODO: réactiver quand le simulateur sera prêt */}
           <Route path="faq" element={<FAQ />} />
-          <Route path="equipe" element={<Equipe />} />
+          {/* <Route path="equipe" element={<Equipe />} /> */}
+          {/* TODO: réactiver quand la page sera prête */}
           <Route path="actualites" element={<Actualites />} />
-          <Route path="recrutement" element={<Recrutement />} />
+          {/* <Route path="recrutement" element={<Recrutement />} /> */}
+          {/* TODO: réactiver quand la page sera prête */}
           <Route path="contact" element={<Contact />} />
           <Route path="demande-classement" element={<DemandeClassement />} />
           <Route path="confidentialite" element={<Confidentialite />} />

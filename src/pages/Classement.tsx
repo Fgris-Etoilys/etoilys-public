@@ -1,4 +1,5 @@
-import { Star, CheckCircle, TrendingUp, Shield } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Star, Calculator, Users, Globe } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 
@@ -33,24 +34,24 @@ const classementLevels = [
   },
 ];
 
-const benefits = [
+const advantages = [
   {
-    icon: CheckCircle,
-    title: 'Reconnaissance officielle',
+    icon: Calculator,
+    title: 'Régime fiscal avantageux',
     description:
-      "Le classement est délivré par un organisme accrédité et reconnu par l'État français.",
+      "Un meublé classé bénéficie d'un abattement fiscal majoré en régime micro-BIC (50 % contre 30 %).",
   },
   {
-    icon: TrendingUp,
-    title: 'Augmentation des revenus',
+    icon: Users,
+    title: 'Confiance des voyageurs',
     description:
-      'Les hébergements classés affichent des taux de réservation et des prix moyens supérieurs.',
+      'Le classement en étoiles est un gage de qualité et de transparence pour les locataires.',
   },
   {
-    icon: Shield,
-    title: 'Garantie de qualité',
+    icon: Globe,
+    title: 'Référencement officiel',
     description:
-      'Le classement rassure les voyageurs sur la qualité et la conformité de votre hébergement.',
+      "Les meublés classés sont référencés dans les réseaux officiels du tourisme et bénéficient d'une meilleure visibilité.",
   },
 ];
 
@@ -76,21 +77,58 @@ export default function Classement() {
             <h2 className="mb-8 text-center">Qu'est-ce que le classement meublé de tourisme ?</h2>
             <div className="prose prose-lg max-w-none text-textLight leading-comfortable space-y-4">
               <p>
-                Le classement des meublés de tourisme est une démarche volontaire qui permet aux
-                propriétaires d'obtenir une classification officielle de leur hébergement, de 1 à 5
-                étoiles. Cette certification, valable 5 ans, est délivrée par un organisme accrédité
-                par le COFRAC (Comité français d'accréditation).
+                Le classement des meublés de tourisme est une démarche volontaire permettant
+                d'obtenir une certification officielle de 1 à 5 étoiles, valable 5 ans. Il est régi
+                par le{' '}
+                <a
+                  href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000025576926"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-300 hover:underline"
+                >
+                  Code du tourisme (articles L.324-1 et suivants)
+                </a>{' '}
+                et son référentiel est fixé par l'{' '}
+                <a
+                  href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000044413389"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-300 hover:underline"
+                >
+                  arrêté du 24 novembre 2021
+                </a>
+                , entré en vigueur le 1er février 2022.
               </p>
               <p>
-                Cette reconnaissance officielle atteste de la qualité, du confort et des équipements
-                de votre location meublée selon des critères précis définis par la réglementation
-                française. Le classement est un gage de sérieux et de transparence apprécié par les
-                voyageurs.
+                La visite de contrôle est obligatoirement réalisée en présence physique par un
+                organisme accrédité par le COFRAC ou agréé par Atout France. Les listes des
+                organismes habilités sont publiées et tenues à jour par Atout France.
               </p>
               <p>
-                Que vous soyez propriétaire d'un studio, d'un appartement ou d'une maison, le
-                classement s'adapte à tous les types d'hébergements et valorise vos efforts en
-                matière de qualité d'accueil.
+                Le classement s'applique à tous les types de meublés de tourisme : studios,
+                appartements, maisons, chalets. Il n'est soumis à aucun critère géographique ou de
+                taille minimale autre que ceux du{' '}
+                <a
+                  href="https://www.classement.atout-france.fr/documents/20142/50558/R%C3%A9f%C3%A9rentiel+de+classement+des+meubl%C3%A9s+de+tourisme+2022+V2.pdf/544f474f-0496-d5e8-a191-13b66d4582cc?version=1.0&download=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-300 hover:underline"
+                >
+                  référentiel officiel
+                </a>
+                . Pour plus d'informations sur les conditions d'éligibilité, consultez les{' '}
+                <Link to="/prerequis-au-classement" className="text-primary-300 hover:underline">
+                  prérequis au classement
+                </Link>
+                .
+              </p>
+            </div>
+            <div className="bg-accent-1 border border-accent-2 rounded-card p-4 mt-6">
+              <p className="text-sm text-textLight leading-comfortable">
+                <span className="font-semibold text-gray-900">À noter : </span>
+                le classement ne remplace pas les obligations locales — déclaration en mairie,
+                numéro d'enregistrement si applicable, immatriculation (SIRET). Ces démarches sont
+                distinctes et peuvent être exigées indépendamment du classement.
               </p>
             </div>
           </div>
@@ -123,31 +161,27 @@ export default function Classement() {
 
       <section className="py-section bg-white">
         <div className="container-adaptive">
-          <h2 className="mb-12 text-center">Les avantages du classement</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {benefits.map((benefit) => (
+          <div className="text-center mb-16">
+            <h2 className="mb-4">Les bénéfices d'un classement officiel</h2>
+            <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+              Un classement en étoiles apporte de nombreux avantages pour votre activité de location
+              saisonnière.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {advantages.map((advantage) => (
               <FeatureCard
-                key={benefit.title}
-                icon={benefit.icon}
-                title={benefit.title}
-                description={benefit.description}
+                key={advantage.title}
+                icon={advantage.icon}
+                title={advantage.title}
+                description={advantage.description}
               />
             ))}
           </div>
-          <div className="bg-accent-1 rounded-card p-8 md:p-12">
-            <div className="max-w-3xl mx-auto text-center">
-              <h3 className="text-2xl font-playfair font-semibold text-gray-900 mb-4">
-                Des avantages fiscaux attractifs
-              </h3>
-              <p className="text-textLight leading-comfortable mb-6">
-                En régime micro-BIC, un meublé classé bénéficie d'un abattement de 50 % (plafond 77
-                700 €) contre 30 % (plafond 15 000 €) pour un meublé non classé, depuis la loi du 19
-                novembre 2024.
-              </p>
-              <Button href="/les-avantages-du-classement" variant="primary">
-                En savoir plus sur les avantages
-              </Button>
-            </div>
+          <div className="text-center mt-12">
+            <Button href="/les-avantages-du-classement" variant="primary">
+              Découvrir tous les avantages
+            </Button>
           </div>
         </div>
       </section>
@@ -161,11 +195,11 @@ export default function Classement() {
           </p>
           <Button
             href="/demande-classement"
-            variant="primary"
+            variant="secondary"
             size="lg"
-            className="bg-white text-primary-300 hover:bg-gray-100"
+            className="border-white text-white hover:bg-white/20"
           >
-            Demander un classement
+            Demander votre classement
           </Button>
         </div>
       </section>
