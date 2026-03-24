@@ -80,7 +80,7 @@ export default function FAQ() {
                 Nous contacter
               </Button>
               <Button href="/demande-classement" variant="secondary">
-                Demander un classement
+                Demander votre classement
               </Button>
             </div>
           </div>

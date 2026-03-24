@@ -23,3 +23,12 @@ coverage
 *.sw?
 .env
 .claude/
+
+# Windows cache files
+Thumbs.db
+
+# Raw source packs for official panonceaux (not used directly by the app)
+public/Panonceau 2026 - Meublé de tourisme - */
+
+# Local reference document (not used in app runtime)
+docs/Rapport Annaig le Meur.pdf
