@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import Button from '../ui/Button';
 
 const footerLinks = {
   services: [
@@ -26,7 +25,7 @@ const footerLinks = {
 export default function Footer() {
   return (
     <footer className="bg-gray-50 border-t border-gray-200">
-      <div className="container-adaptive py-section">
+      <div className="container-adaptive pt-section pb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           <div className="lg:col-span-2 lg:-mt-6">
             <Link to="/" className="flex items-center mb-4">
@@ -105,9 +104,6 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-            <Button href="/demande-classement" variant="primary" size="sm">
-              Demande de classement
-            </Button>
           </div>
         </div>
 

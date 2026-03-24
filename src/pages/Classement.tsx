@@ -197,7 +197,7 @@ export default function Classement() {
             href="/demande-classement"
             variant="secondary"
             size="lg"
-            className="border-white text-white hover:bg-white/20"
+            className="border-white text-white hover:!bg-white/20 hover:text-white"
           >
             Demander votre classement
           </Button>

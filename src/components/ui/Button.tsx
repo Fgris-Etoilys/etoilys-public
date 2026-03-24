@@ -21,10 +21,13 @@ export default function Button({
     'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-300 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantClasses = {
-    primary: 'bg-primary-300 text-white hover:bg-primary-400 shadow-sm hover:shadow-md',
-    secondary: 'bg-transparent border-2 border-primary-300 text-primary-300 hover:bg-primary-50',
-    white: 'bg-white text-primary-300 hover:bg-gray-100 shadow-sm hover:shadow-md',
-    ghost: 'bg-transparent border-2 border-white text-white hover:bg-white/10',
+    primary:
+      'bg-primary-300 text-white hover:bg-primary-400 hover:text-white shadow-sm hover:shadow-md',
+    secondary:
+      'bg-transparent border-2 border-primary-300 text-primary-300 hover:bg-white hover:text-primary-300 hover:shadow-sm',
+    white:
+      'bg-white text-primary-300 hover:bg-gray-100 hover:text-primary-300 shadow-sm hover:shadow-md',
+    ghost: 'bg-transparent border-2 border-white text-white hover:bg-white/10 hover:text-white',
   };
 
   const sizeClasses = {

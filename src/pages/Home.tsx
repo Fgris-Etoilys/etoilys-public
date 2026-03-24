@@ -98,7 +98,7 @@ export default function Home() {
               href="/les-avantages-du-classement"
               variant="secondary"
               size="lg"
-              className="bg-white/10 border-white text-white hover:bg-white/20"
+              className="bg-white/10 border-white text-white hover:!bg-white/20 hover:text-white"
             >
               Les avantages du classement
             </Button>
@@ -234,7 +234,7 @@ export default function Home() {
             href="/demande-classement"
             variant="secondary"
             size="lg"
-            className="border-white text-white hover:bg-white/20"
+            className="border-white text-white hover:!bg-white/20 hover:text-white"
           >
             Demander votre classement
           </Button>
