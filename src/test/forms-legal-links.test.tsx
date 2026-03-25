@@ -13,7 +13,7 @@ describe('legal links in forms', () => {
     );
 
     const links = screen.getAllByRole('link', {
-      name: /politique de confidentialité/i,
+      name: /politique de confidentialit(?:e|é)/i,
     });
     expect(links[0]).toHaveAttribute('href', '/confidentialite');
   });
@@ -26,7 +26,7 @@ describe('legal links in forms', () => {
     );
 
     const links = screen.getAllByRole('link', {
-      name: /politique de confidentialité/i,
+      name: /politique de confidentialit(?:e|é)/i,
     });
     expect(links[0]).toHaveAttribute('href', '/confidentialite');
   });

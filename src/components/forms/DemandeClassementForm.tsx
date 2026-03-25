@@ -1,14 +1,30 @@
-import { useState, FormEvent } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
 import Checkbox from '../ui/Checkbox';
 import Button from '../ui/Button';
+import TurnstileField from './TurnstileField';
 import {
   validateDemandeClassementForm,
-  DemandeClassementFormData,
-  ValidationError,
+  type DemandeClassementFormData,
+  type ValidationError,
 } from '../../utils/formValidation';
+import { submitToApi } from '../../utils/api';
+
+type DemandeSubmissionResponse =
+  | {
+      success: true;
+      submissionId: string;
+      message: string;
+    }
+  | {
+      success: false;
+      error: string;
+      fieldErrors?: Record<string, string>;
+    };
+
+const CONSENT_VERSION = 'privacy-v1';
 
 export default function DemandeClassementForm() {
   const [formData, setFormData] = useState<DemandeClassementFormData>({
@@ -23,6 +39,9 @@ export default function DemandeClassementForm() {
   const [errors, setErrors] = useState<ValidationError>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -32,21 +51,37 @@ export default function DemandeClassementForm() {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    setSubmitError(null);
 
     if (errors[name]) {
       setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
+        const nextErrors = { ...prev };
+        delete nextErrors[name];
+        return nextErrors;
       });
     }
   };
 
+  const handleTurnstileChange = useCallback((token: string | null) => {
+    setTurnstileToken(token);
+    setSubmitError(null);
+    setErrors((prev) => {
+      if (!prev.turnstileToken) return prev;
+      const nextErrors = { ...prev };
+      delete nextErrors.turnstileToken;
+      return nextErrors;
+    });
+  }, []);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSuccess(false);
+    setSubmitError(null);
 
     const validationErrors = validateDemandeClassementForm(formData);
+    if (!turnstileToken) {
+      validationErrors.turnstileToken = 'Merci de valider la verification anti-spam.';
+    }
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -56,23 +91,45 @@ export default function DemandeClassementForm() {
     setIsSubmitting(true);
     setErrors({});
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      setFormData({
-        nom: '',
-        prenom: '',
-        email: '',
-        telephone: '',
-        adresse: '',
-        message: '',
-        consent: false,
-      });
+    const response = await submitToApi<DemandeSubmissionResponse, Record<string, unknown>>(
+      '/public/forms/classement',
+      {
+        ...formData,
+        turnstileToken,
+        consentVersion: CONSENT_VERSION,
+      }
+    );
 
-      setTimeout(() => {
-        setIsSuccess(false);
-      }, 5000);
-    }, 1000);
+    setIsSubmitting(false);
+
+    if (!response.success) {
+      setErrors(response.fieldErrors || {});
+      setSubmitError(response.error);
+      return;
+    }
+
+    if (!response.data.success) {
+      setErrors(response.data.fieldErrors || {});
+      setSubmitError(response.data.error || 'La soumission a echoue.');
+      return;
+    }
+
+    setIsSuccess(true);
+    setFormData({
+      nom: '',
+      prenom: '',
+      email: '',
+      telephone: '',
+      adresse: '',
+      message: '',
+      consent: false,
+    });
+    setTurnstileToken(null);
+    setTurnstileResetKey((prev) => prev + 1);
+
+    setTimeout(() => {
+      setIsSuccess(false);
+    }, 5000);
   };
 
   return (
@@ -81,12 +138,18 @@ export default function DemandeClassementForm() {
         Formulaire de demande
       </h2>
       <p className="text-textLight mb-8 leading-comfortable">
-        Renseignez les informations ci-dessous pour démarrer votre démarche de classement.
+        Renseignez les informations ci-dessous pour demarrer votre demarche de classement.
       </p>
 
       {isSuccess && (
         <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
-          Votre demande a été envoyée avec succès ! Notre équipe reviendra vers vous sous 24 heures.
+          Votre demande a ete envoyee avec succes. Notre equipe reviendra vers vous sous 24 heures.
+        </div>
+      )}
+
+      {submitError && (
+        <div className="mb-6 p-4 bg-alert-100 border border-alert-200 rounded-lg text-alert-500">
+          {submitError}
         </div>
       )}
 
@@ -103,7 +166,7 @@ export default function DemandeClassementForm() {
           />
 
           <Input
-            label="Prénom"
+            label="Prenom"
             name="prenom"
             type="text"
             value={formData.prenom}
@@ -125,7 +188,7 @@ export default function DemandeClassementForm() {
           />
 
           <Input
-            label="Téléphone"
+            label="Telephone"
             name="telephone"
             type="tel"
             value={formData.telephone}
@@ -143,7 +206,7 @@ export default function DemandeClassementForm() {
           value={formData.adresse}
           onChange={handleChange}
           error={errors.adresse}
-          placeholder="Adresse complète de votre meublé de tourisme"
+          placeholder="Adresse complete de votre meuble de tourisme"
           required
         />
 
@@ -154,7 +217,7 @@ export default function DemandeClassementForm() {
           value={formData.message}
           onChange={handleChange}
           error={errors.message}
-          helperText="Parlez-nous de votre hébergement et de vos attentes (optionnel)"
+          helperText="Parlez-nous de votre hebergement et de vos attentes (optionnel)"
         />
 
         <Checkbox
@@ -164,13 +227,19 @@ export default function DemandeClassementForm() {
           error={errors.consent}
           label={
             <>
-              J'accepte que mes données soient traitées conformément à la{' '}
+              J'accepte que mes donnees soient traitees conformement a la{' '}
               <Link to="/confidentialite" className="text-primary-300 hover:text-primary-400">
-                politique de confidentialité
+                politique de confidentialite
               </Link>
             </>
           }
           required
+        />
+
+        <TurnstileField
+          onTokenChange={handleTurnstileChange}
+          error={errors.turnstileToken}
+          resetKey={turnstileResetKey}
         />
 
         <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting}>

@@ -1,12 +1,12 @@
 # Etoilys Public
 
-Application web React + TypeScript + Vite pour la présentation et la gestion
-des parcours de classement des meublés de tourisme.
+Application web React + TypeScript + Vite pour la presentation des parcours de classement des meubles de tourisme.
 
-## Prérequis
+## Prerequis
 
 - Node.js 22 LTS (voir `.nvmrc`)
 - npm 10+
+- Supabase CLI (`npx supabase --version`)
 
 ## Installation
 
@@ -14,41 +14,104 @@ des parcours de classement des meublés de tourisme.
 npm ci
 ```
 
+## Variables d'environnement (frontend)
+
+Copier `.env.example` vers `.env.local` puis renseigner:
+
+```bash
+VITE_API_BASE_URL=/api
+VITE_TURNSTILE_SITE_KEY=...
+SUPABASE_FUNCTIONS_BASE_URL=https://<project_ref>.supabase.co/functions/v1
+```
+
+`VITE_API_BASE_URL` reste sur `/api` pour garder un contrat HTTP stable, meme apres migration vers le backend Java.
+
 ## Scripts utiles
 
 ```bash
-npm run dev         # serveur de développement
-npm run typecheck   # vérification TypeScript stricte
-npm run lint        # linting ESLint
-npm run test:run    # tests unitaires (Vitest)
-npm run build       # build production
-npm run preview     # preview local du build
+npm run dev
+npm run typecheck
+npm run lint
+npm run test:run
+npm run build
+npm run preview
 ```
 
-## Workflow recommandé
+## Setup Supabase (transitoire)
 
-1. Développer la fonctionnalité.
-2. Exécuter `npm run typecheck`.
-3. Exécuter `npm run lint`.
-4. Exécuter `npm run test:run`.
-5. Exécuter `npm run build`.
+1. Initialiser le dossier Supabase local:
 
-Le CI GitHub applique ces contrôles sur `main` et sur les pull requests.
+```bash
+npx supabase init
+npx supabase link --project-ref <project_ref>
+```
 
-## Conventions projet
+2. Appliquer les migrations:
 
-- Stack principale: React, React Router, TypeScript, Tailwind CSS, Vite.
-- Les composants réutilisables sont dans `src/components/ui`.
-- Les formulaires sont dans `src/components/forms`.
-- Le routage est centralisé dans `src/App.tsx`.
-- Les pages légales sont routées sur:
-  - `/confidentialite`
-  - `/mentions-legales`
-  - `/cgu`
+```bash
+npx supabase db push
+```
 
-## Dépannage
+3. Deployer les functions:
 
-- Si `npm ci` échoue après un changement de version Node, supprimer `node_modules`
-  puis relancer `npm ci`.
-- Si l’audit npm remonte une alerte runtime, mettre à jour en priorité la
-  dépendance concernée avant livraison.
+```bash
+npx supabase functions deploy public-forms-contact --project-ref <project_ref>
+npx supabase functions deploy public-forms-classement --project-ref <project_ref>
+```
+
+4. Configurer les secrets functions:
+
+```bash
+npx supabase secrets set TURNSTILE_SECRET_KEY=...
+npx supabase secrets set RESEND_API_KEY=...
+npx supabase secrets set RESEND_FROM_EMAIL=...
+npx supabase secrets set NOTIFY_TO_EMAIL=...
+```
+
+Secrets optionnels:
+
+- `ALLOWED_ORIGINS` (liste separee par virgules)
+- `FORM_RATE_LIMIT_IP_PER_HOUR` (defaut: 10)
+- `FORM_RATE_LIMIT_EMAIL_PER_HOUR` (defaut: 5)
+- `BYPASS_TURNSTILE=true` (uniquement pour debug local)
+
+Un exemple local est disponible dans `supabase/functions/.env.example`.
+
+## Contrat API transitoire
+
+- `POST /api/public/forms/contact`
+- `POST /api/public/forms/classement`
+
+Reponse succes:
+
+```json
+{ "success": true, "submissionId": "uuid", "message": "..." }
+```
+
+Reponse erreur:
+
+```json
+{ "success": false, "error": "...", "fieldErrors": { "champ": "..." } }
+```
+
+En developpement, Vite proxy ces routes vers:
+
+- `public-forms-contact`
+- `public-forms-classement`
+
+## Retention et purge
+
+La retention cible est 12 mois.
+
+Commande de purge:
+
+```sql
+select public.purge_form_submissions_older_than(interval '12 months');
+```
+
+## Regles securite
+
+- Ne jamais commiter de secrets (`.env*`, `supabase/.env`, `supabase/functions/.env`).
+- Ne jamais exposer `SUPABASE_SERVICE_ROLE_KEY` dans le frontend.
+- La table `form_submissions` est en RLS forcee, sans policy publique.
+- Les ecritures se font uniquement via Edge Functions.
