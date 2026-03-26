@@ -25,6 +25,24 @@ SUPABASE_FUNCTIONS_BASE_URL=https://<project_ref>.supabase.co/functions/v1
 ```
 
 `VITE_API_BASE_URL` reste sur `/api` pour garder un contrat HTTP stable, meme apres migration vers le backend Java.
+`SUPABASE_FUNCTIONS_BASE_URL` est utilise uniquement en developpement local par le proxy Vite.
+
+## Configuration Vercel (prod)
+
+Pour garder `VITE_API_BASE_URL=/api` aussi en production, ce repo inclut un `vercel.json` qui rewrite:
+
+- `/api/public/forms/contact` -> `public-forms-contact` (Supabase)
+- `/api/public/forms/classement` -> `public-forms-classement` (Supabase)
+
+Variables a definir dans Vercel:
+
+- `VITE_API_BASE_URL=/api`
+- `VITE_TURNSTILE_SITE_KEY=<site_key_turnstile>`
+
+Verifier aussi:
+
+- Les hostnames Turnstile autorises (domaine prod + domaines preview Vercel).
+- `ALLOWED_ORIGINS` cote Supabase Secrets (domaine prod + previews + localhost).
 
 ## Scripts utiles
 
