@@ -217,7 +217,7 @@ export default function DemandeClassementForm() {
           value={formData.message}
           onChange={handleChange}
           error={errors.message}
-          helperText="Parlez-nous de votre hebergement et de vos attentes (optionnel)"
+          placeholder="Parlez-nous de votre hebergement et de vos attentes (optionnel)"
         />
 
         <Checkbox
