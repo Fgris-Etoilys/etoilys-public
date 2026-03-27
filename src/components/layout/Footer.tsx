@@ -37,10 +37,6 @@ export default function Footer() {
               hébergement.
             </p>
             <div className="space-y-3 text-sm text-textLight">
-              <div className="flex items-start gap-2">
-                <MapPin className="h-5 w-5 text-primary-300 flex-shrink-0 mt-0.5" />
-                <span>1345 route de Dautres, 24150 Mauzac et Grand Castang</span>
-              </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-5 w-5 text-primary-300 flex-shrink-0" />
                 <a href="tel:+33649551540" className="hover:text-primary-300">
@@ -52,6 +48,10 @@ export default function Footer() {
                 <a href="mailto:contact@etoilys.fr" className="hover:text-primary-300">
                   contact@etoilys.fr
                 </a>
+              </div>
+              <div className="flex items-start gap-2">
+                <MapPin className="h-5 w-5 text-primary-300 flex-shrink-0 mt-0.5" />
+                <span>1345 route de Dautres, 24150 Mauzac et Grand Castang</span>
               </div>
             </div>
           </div>
