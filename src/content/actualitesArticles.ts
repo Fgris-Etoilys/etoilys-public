@@ -33,10 +33,20 @@ const articles: ActualiteArticle[] = [
     excerpt:
       "La limite des 90 jours ne s'applique pas partout automatiquement. Voici qui est concerné, qui décide et ce que cela change pour votre meublé de tourisme.",
     image:
-      'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=800',
+      'https://images.pexels.com/photos/4468806/pexels-photo-4468806.jpeg?auto=compress&cs=tinysrgb&w=800',
     href: '/actualites/airbnb-residence-principale-limite-90-jours',
     date: '27 mars 2026',
     publishedAt: '2026-03-27',
+  },
+  {
+    title: 'Copropriété et location touristique : ce que le règlement peut désormais prévoir',
+    excerpt:
+      'Depuis fin 2024, les règles ont évolué en copropriété pour les meublés de tourisme. Voici ce que le règlement peut désormais autoriser, interdire ou encadrer.',
+    image:
+      'https://images.pexels.com/photos/27307397/pexels-photo-27307397.jpeg?auto=compress&cs=tinysrgb&w=800',
+    href: '/actualites/copropriete-location-touristique-reglement',
+    date: '23 mars 2026',
+    publishedAt: '2026-03-23',
   },
 ];
 

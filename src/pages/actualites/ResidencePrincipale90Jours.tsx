@@ -5,7 +5,7 @@ import Button from '../../components/ui/Button';
 
 const ARTICLE_URL = 'https://etoilys.fr/actualites/airbnb-residence-principale-limite-90-jours';
 const COVER_IMAGE =
-  'https://images.pexels.com/photos/1396122/pexels-photo-1396122.jpeg?auto=compress&cs=tinysrgb&w=1200';
+  'https://images.pexels.com/photos/4468806/pexels-photo-4468806.jpeg?auto=compress&cs=tinysrgb&w=1200';
 
 export default function ArticleResidencePrincipale90Jours() {
   useEffect(() => {

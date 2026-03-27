@@ -9,6 +9,10 @@ import Procedure from './pages/Procedure';
 import FAQ from './pages/FAQ';
 // import Equipe from './pages/Equipe'; // TODO: réactiver quand la page sera prête
 import Actualites from './pages/Actualites';
+import ArticleMeubles20252026 from './pages/actualites/MeublesChangements20252026';
+import ArticleMicroBic2026 from './pages/actualites/MicroBic2026';
+import ArticleResidencePrincipale90Jours from './pages/actualites/ResidencePrincipale90Jours';
+import ArticleCoproprieteLocationTouristique from './pages/actualites/CoproprieteLocationTouristique';
 // import Recrutement from './pages/Recrutement'; // TODO: réactiver quand la page sera prête
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -33,6 +37,22 @@ function App() {
           {/* <Route path="equipe" element={<Equipe />} /> */}
           {/* TODO: réactiver quand la page sera prête */}
           <Route path="actualites" element={<Actualites />} />
+          <Route
+            path="actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026"
+            element={<ArticleMeubles20252026 />}
+          />
+          <Route
+            path="actualites/micro-bic-2026-meuble-classe-vs-non-classe"
+            element={<ArticleMicroBic2026 />}
+          />
+          <Route
+            path="actualites/airbnb-residence-principale-limite-90-jours"
+            element={<ArticleResidencePrincipale90Jours />}
+          />
+          <Route
+            path="actualites/copropriete-location-touristique-reglement"
+            element={<ArticleCoproprieteLocationTouristique />}
+          />
           {/* <Route path="recrutement" element={<Recrutement />} /> */}
           {/* TODO: réactiver quand la page sera prête */}
           <Route path="contact" element={<Contact />} />

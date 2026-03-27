@@ -63,10 +63,6 @@ export default function Prerequis() {
               lors qu'ils sont propres, fonctionnels, correctement équipés et adaptés à leur
               capacité d'accueil.
             </p>
-            <p className="text-white/80 leading-comfortable">
-              Le plus important est de distinguer ce qui relève du logement lui-même et ce qui
-              relève des démarches administratives autour de la location touristique.
-            </p>
           </div>
         </div>
       </section>
@@ -84,17 +80,8 @@ export default function Prerequis() {
                 d'un appartement ou d'un studio.
               </p>
               <p>
-                Le{' '}
-                <a
-                  href="https://www.classement.atout-france.fr/classement-des-meubles-de-tourisme"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline hover:text-gray-700"
-                >
-                  classement officiel
-                </a>{' '}
-                attribue de 1 à 5 étoiles selon une grille nationale. Il est donc tout à fait
-                possible de viser un classement sans disposer d'un bien "de luxe".
+                Le classement officiel attribue de 1 à 5 étoiles selon une grille nationale. Il est
+                donc tout à fait possible de viser un classement sans disposer d'un bien "de luxe".
               </p>
               <p>
                 Le classement ne commence pas à 4 ou 5 étoiles : il commence à 1 étoile, avec un

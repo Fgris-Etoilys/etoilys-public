@@ -1,7 +1,9 @@
+import { ReactNode } from 'react';
+
 interface TimelineStep {
   number: number;
   title: string;
-  description: string;
+  description: ReactNode;
 }
 
 interface TimelineProps {

@@ -1,62 +1,66 @@
-import { FileText, Search, ClipboardCheck, Award } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Timeline from '../components/ui/Timeline';
-import FeatureCard from '../components/ui/FeatureCard';
 
 const procedureSteps = [
   {
     number: 1,
-    title: 'Constitution du dossier',
+    title: 'Demande de classement',
     description:
-      'Nous vous accompagnons dans la préparation de votre dossier de classement. Vous fournissez les informations sur votre hébergement, les photos et les documents nécessaires. Notre équipe vérifie que tout est conforme avant soumission.',
+      'Votre demande peut être déposée en ligne ou bien en contactant directement Etoilys au 06 49 55 15 40.',
   },
   {
     number: 2,
-    title: 'Dépôt de la demande',
+    title: 'Prise de contact',
     description:
-      "Une fois votre dossier complet, nous le déposons auprès de l'organisme accrédité. Vous recevez un accusé de réception et votre dossier est enregistré officiellement.",
+      "L'inspecteur de votre secteur prend contact avec vous sous 24 heures pour confirmer l'éligibilité de votre logement et convenir avec vous de la date de la visite d'inspection.",
   },
   {
     number: 3,
-    title: 'Visite de contrôle',
-    description:
-      'Un auditeur qualifié se déplace dans votre hébergement pour vérifier la conformité avec les critères de classement. Cette visite dure généralement entre 1h et 2h selon la taille du bien.',
+    title: "Visite d'inspection",
+    description: (
+      <>
+        {"L'inspecteur visite le logement en votre présence et contrôle les "}
+        <a
+          href="/Référentiel de classement des meublés de tourisme 2022 V2.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline hover:text-gray-700"
+        >
+          133 critères du référentiel officiel
+        </a>
+        {
+          ". À l'issue de la visite, vous avez la possibilité d'ajuster le niveau de classement visé en fonction des résultats."
+        }
+      </>
+    ),
   },
   {
     number: 4,
-    title: 'Analyse et notation',
+    title: 'Proposition de classement',
     description:
-      "L'auditeur établit un rapport détaillé évaluant votre hébergement selon une grille de critères officiels. Chaque critère est noté et le nombre d'étoiles est déterminé.",
+      "Vous recevez sous 7 jours le certificat de visite complet incluant la grille de contrôle, le rapport d'inspection détaillé et la proposition de classement officielle. Vous avez alors 15 jours pour faire appel de la décision.",
   },
   {
     number: 5,
-    title: 'Obtention du certificat',
+    title: 'Attribution du classement',
     description:
-      'Si votre hébergement répond aux exigences, vous recevez votre certificat de classement officiel, valable 5 ans. Vous pouvez afficher votre classement en étoiles et bénéficier de tous ses avantages.',
+      "À l'issue de la procédure, le classement obtenu est valable 5 ans et peut figurer sur les annonces et supports de communication du logement.",
   },
 ];
 
-const requiredDocuments = [
-  {
-    icon: FileText,
-    title: 'Descriptif détaillé',
-    description: "Surface, nombre de pièces, équipements, capacité d'accueil de votre hébergement.",
-  },
-  {
-    icon: Search,
-    title: 'Photographies',
-    description: 'Photos récentes et de qualité de toutes les pièces et des équipements.',
-  },
-  {
-    icon: ClipboardCheck,
-    title: 'Justificatifs',
-    description: 'Attestations de conformité électrique et de ramonage si applicable.',
-  },
-  {
-    icon: Award,
-    title: 'Informations légales',
-    description: 'Coordonnées du propriétaire, adresse exacte du bien, statut juridique.',
-  },
+const chifflesCles = [
+  { value: '24h', label: 'Délai de rappel après la demande' },
+  { value: '133', label: 'Critères contrôlés lors de la visite' },
+  { value: '7 jours', label: 'Délai de remise du certificat' },
+  { value: '15 jours', label: "Délai d'appel après la proposition" },
+  { value: '5 ans', label: 'Durée de validité du classement' },
+];
+
+const certificatItems = [
+  'La grille de contrôle complète des 133 critères',
+  "Le rapport d'inspection détaillé",
+  'La proposition de classement officielle',
 ];
 
 export default function Procedure() {
@@ -67,9 +71,8 @@ export default function Procedure() {
           <div className="max-w-3xl">
             <h1 className="mb-6 text-white">La procédure de classement</h1>
             <p className="text-xl text-white/90 leading-comfortable">
-              Obtenir le classement de votre meublé de tourisme est une démarche simple et
-              structurée. Découvrez les étapes à suivre pour valoriser officiellement votre
-              hébergement.
+              Le classement d'un meublé de tourisme suit une procédure structurée en 5 étapes, de la
+              demande initiale à l'attribution officielle du classement.
             </p>
           </div>
         </div>
@@ -86,26 +89,19 @@ export default function Procedure() {
 
       <section className="py-section bg-primary-100">
         <div className="container-adaptive">
-          <h2 className="mb-12 text-center">Documents nécessaires</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            {requiredDocuments.map((doc) => (
-              <FeatureCard
-                key={doc.title}
-                icon={doc.icon}
-                title={doc.title}
-                description={doc.description}
-              />
-            ))}
-          </div>
-          <div className="bg-white rounded-card p-8 max-w-3xl mx-auto">
-            <h3 className="text-xl font-playfair font-semibold text-gray-900 mb-4 text-center">
-              Nous nous occupons de tout
-            </h3>
-            <p className="text-textLight text-center leading-comfortable">
-              Pas d'inquiétude si vous ne savez pas par où commencer. Notre équipe vous guide à
-              chaque étape et vérifie que votre dossier est complet avant soumission. Nous
-              maximisons vos chances d'obtenir le meilleur classement possible.
-            </p>
+          <div className="max-w-4xl mx-auto">
+            <h2 className="mb-12 text-center">Chiffres clés de la procédure</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+              {chifflesCles.map((item) => (
+                <div
+                  key={item.value}
+                  className="bg-white rounded-card p-6 flex flex-col items-center justify-center text-center"
+                >
+                  <div className="text-3xl font-bold text-primary-300 mb-2">{item.value}</div>
+                  <p className="text-sm text-textLight leading-comfortable">{item.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -113,56 +109,18 @@ export default function Procedure() {
       <section className="py-section bg-white">
         <div className="container-adaptive">
           <div className="max-w-3xl mx-auto">
-            <h2 className="mb-8 text-center">Durée et validité</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <div className="bg-accent-1 p-8 rounded-card text-center">
-                <div className="text-4xl font-bold text-primary-300 mb-3">4-6 semaines</div>
-                <h3 className="text-lg font-playfair font-semibold text-gray-900 mb-2">
-                  Délai moyen
-                </h3>
-                <p className="text-textLight leading-comfortable">
-                  Du dépôt de votre dossier complet à l'obtention de votre certificat de classement.
-                </p>
-              </div>
-              <div className="bg-accent-1 p-8 rounded-card text-center">
-                <div className="text-4xl font-bold text-primary-300 mb-3">5 ans</div>
-                <h3 className="text-lg font-playfair font-semibold text-gray-900 mb-2">Validité</h3>
-                <p className="text-textLight leading-comfortable">
-                  Votre classement est valable 5 ans. Vous pouvez ensuite renouveler votre demande.
-                </p>
-              </div>
-            </div>
-            <div className="bg-warning-100 border border-warning-200 rounded-card p-6">
-              <h3 className="text-lg font-playfair font-semibold text-gray-900 mb-3">
-                Important à savoir
-              </h3>
-              <ul className="space-y-2 text-textLight leading-comfortable">
-                <li className="flex gap-2">
-                  <span className="text-warning-400 mt-1">•</span>
-                  <span>
-                    Le classement est facultatif mais fortement recommandé pour valoriser votre
-                    bien.
-                  </span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-warning-400 mt-1">•</span>
-                  <span>
-                    Les critères évoluent régulièrement, nous vous tenons informé des changements.
-                  </span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-warning-400 mt-1">•</span>
-                  <span>
-                    Le classement obtenu doit être affiché dans votre hébergement et sur vos
-                    annonces.
-                  </span>
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-warning-400 mt-1">•</span>
-                  <span>
-                    Vous pouvez demander un classement supérieur après amélioration de votre bien.
-                  </span>
-                </li>
+            <h2 className="mb-4 text-center">Ce que comprend le certificat de visite</h2>
+            <p className="text-textLight leading-comfortable mb-8 text-center">
+              À l'issue de la visite, un dossier complet est transmis dans un délai de 7 jours.
+            </p>
+            <div className="bg-primary-100 rounded-card p-8">
+              <ul className="space-y-4">
+                {certificatItems.map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <CheckCircle className="text-success-400 flex-shrink-0 mt-0.5" size={18} />
+                    <span className="text-gray-800 leading-comfortable">{item}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
