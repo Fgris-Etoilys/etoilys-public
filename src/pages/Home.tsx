@@ -3,6 +3,7 @@ import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import ArticleCard from '../components/ui/ArticleCard';
 import SEO from '../components/ui/SEO';
+import { actualitesArticlesByRecency } from '../content/actualitesArticles';
 
 const features = [
   {
@@ -45,28 +46,8 @@ const advantages = [
   },
 ];
 
-const latestArticles = [
-  {
-    title: 'Les avantages fiscaux du classement meublé de tourisme',
-    excerpt:
-      "Les meublés de tourisme classés peuvent bénéficier d'avantages fiscaux prévus par la législation française. Découvrez les dispositifs applicables.",
-    image:
-      'https://images.pexels.com/photos/6863332/pexels-photo-6863332.jpeg?auto=compress&cs=tinysrgb&w=800',
-    href: '/actualites/avantages-fiscaux-classement',
-    date: '15 mars 2025',
-  },
-  {
-    title: 'Nouveaux critères de classement 2025',
-    excerpt:
-      "Les critères de classement des meublés de tourisme évoluent en 2025. Retrouvez toutes les nouvelles exigences pour chaque catégorie d'étoiles.",
-    image:
-      'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=800',
-    href: '/actualites/nouveaux-criteres-2025',
-    date: '8 mars 2025',
-  },
-];
-
 export default function Home() {
+  const latestArticles = actualitesArticlesByRecency.slice(0, 2);
   return (
     <>
       <SEO
