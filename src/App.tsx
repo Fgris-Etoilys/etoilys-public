@@ -18,7 +18,6 @@ import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
 import Confidentialite from './pages/Confidentialite';
 import MentionsLegales from './pages/MentionsLegales';
-import Cgu from './pages/Cgu';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -59,7 +58,6 @@ function App() {
           <Route path="demande-classement" element={<DemandeClassement />} />
           <Route path="confidentialite" element={<Confidentialite />} />
           <Route path="mentions-legales" element={<MentionsLegales />} />
-          <Route path="cgu" element={<Cgu />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
