@@ -1,12 +1,6 @@
-import SEO from '../components/ui/SEO';
-
 export default function MentionsLegales() {
   return (
     <>
-      <SEO
-        title="Mentions légales"
-        description="Mentions légales et informations d'édition du site Etoilys."
-      />
       <section className="py-section bg-white">
         <div className="container-adaptive max-w-4xl">
           <h1 className="mb-3">Mentions légales</h1>

@@ -57,6 +57,10 @@ export default function DemandeClassement() {
                   <img
                     src="/Inspection_RVB.jpg"
                     alt="Logo Cofrac"
+                    width={1440}
+                    height={2399}
+                    loading="lazy"
+                    decoding="async"
                     className="h-24 w-auto flex-shrink-0"
                   />
                   <p className="text-sm text-gray-600 leading-snug">

@@ -1,51 +1,9 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import SEO from '../../components/ui/SEO';
 import Button from '../../components/ui/Button';
 
-const ARTICLE_URL = 'https://etoilys.fr/actualites/copropriete-location-touristique-reglement';
-const COVER_IMAGE =
-  'https://images.pexels.com/photos/27307397/pexels-photo-27307397.jpeg?auto=compress&cs=tinysrgb&w=1200';
-
 export default function ArticleCoproprieteLocationTouristique() {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'article-schema-copropriete-location-touristique';
-    script.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: 'Copropriété et location touristique : ce que le règlement peut désormais prévoir',
-      author: { '@type': 'Person', name: 'Florian Grisorio' },
-      datePublished: '2026-03-23',
-      dateModified: '2026-03-23',
-      image: COVER_IMAGE,
-      publisher: {
-        '@type': 'Organization',
-        name: 'Etoilys',
-        logo: { '@type': 'ImageObject', url: 'https://etoilys.fr/logo.png' },
-      },
-      mainEntityOfPage: ARTICLE_URL,
-      description:
-        'Depuis fin 2024, les règles ont évolué en copropriété pour les meublés de tourisme. Voici ce que le règlement peut désormais autoriser, interdire ou encadrer.',
-      keywords:
-        'copropriété, règlement de copropriété, location touristique, meublé de tourisme, résidence secondaire, syndic',
-    });
-    document.head.appendChild(script);
-    return () => {
-      const existing = document.getElementById('article-schema-copropriete-location-touristique');
-      if (existing) document.head.removeChild(existing);
-    };
-  }, []);
-
   return (
     <>
-      <SEO
-        title="Copropriété et location touristique : ce que le règlement peut prévoir | Etoilys"
-        description="Depuis fin 2024, les règles ont évolué en copropriété pour les meublés de tourisme. Voici ce que le règlement peut désormais autoriser, interdire ou encadrer."
-        keywords="copropriété, règlement de copropriété, location touristique, meublé de tourisme, résidence secondaire, syndic, article 26"
-      />
-
       {/* Hero */}
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">

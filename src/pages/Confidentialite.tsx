@@ -1,12 +1,6 @@
-import SEO from '../components/ui/SEO';
-
 export default function Confidentialite() {
   return (
     <>
-      <SEO
-        title="Politique de confidentialité"
-        description="Informations sur le traitement des données personnelles dans le cadre des services Etoilys."
-      />
       <section className="py-section bg-white">
         <div className="container-adaptive max-w-4xl">
           <h1 className="mb-3">Politique de confidentialité</h1>

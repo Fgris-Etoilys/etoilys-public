@@ -34,8 +34,11 @@ jobs:
       - name: Tests
         run: npm run test:run
 
-      - name: Build
-        run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build SEO bundle (images + sitemap + prerender)
+        run: npm run build:seo
 
       - name: Audit runtime dependencies
         run: npm audit --omit=dev --audit-level=moderate

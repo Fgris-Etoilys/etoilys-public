@@ -1,49 +1,9 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import SEO from '../../components/ui/SEO';
 import Button from '../../components/ui/Button';
 
-const ARTICLE_URL = 'https://etoilys.fr/actualites/micro-bic-2026-meuble-classe-vs-non-classe';
-const COVER_IMAGE =
-  'https://images.pexels.com/photos/6863332/pexels-photo-6863332.jpeg?auto=compress&cs=tinysrgb&w=1200';
-
 export default function ArticleMicroBic2026() {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'article-schema-micro-bic-2026';
-    script.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: "Micro-BIC 2026 : meublé classé vs non classé, l'écart se creuse",
-      author: { '@type': 'Person', name: 'Florian Grisorio' },
-      datePublished: '2026-03-12',
-      dateModified: '2026-03-12',
-      image: COVER_IMAGE,
-      publisher: {
-        '@type': 'Organization',
-        name: 'Etoilys',
-        logo: { '@type': 'ImageObject', url: 'https://etoilys.fr/logo.png' },
-      },
-      mainEntityOfPage: ARTICLE_URL,
-      description:
-        'Seuils, abattements, régime réel, micro-entreprise : voici ce qui change en 2026 entre un meublé de tourisme classé et non classé.',
-    });
-    document.head.appendChild(script);
-    return () => {
-      const existing = document.getElementById('article-schema-micro-bic-2026');
-      if (existing) document.head.removeChild(existing);
-    };
-  }, []);
-
   return (
     <>
-      <SEO
-        title="Micro-BIC 2026 : meublé classé vs non classé | Etoilys"
-        description="Seuils, abattements, régime réel, micro-entreprise : voici ce qui change en 2026 entre un meublé de tourisme classé et non classé."
-        keywords="micro-BIC 2026, meublé de tourisme classé, meublé non classé, abattement fiscal, régime réel, micro-entreprise, classement meublé"
-      />
-
       {/* Hero */}
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">

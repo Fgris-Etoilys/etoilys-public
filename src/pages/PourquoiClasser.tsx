@@ -2,6 +2,7 @@ import { Award, Calculator, CheckCircle, Globe, Percent, PiggyBank, Ticket } fro
 import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import Card from '../components/ui/Card';
+import SmartImage from '../components/ui/SmartImage';
 
 const mainBenefits = [
   {
@@ -425,6 +426,10 @@ export default function PourquoiClasser() {
                 <img
                   src={src}
                   alt={`Panonceau officiel meublé de tourisme ${label}`}
+                  width={842}
+                  height={1191}
+                  loading="lazy"
+                  decoding="async"
                   className="w-44 sm:w-56 object-contain drop-shadow-lg"
                 />
               </div>
@@ -497,9 +502,10 @@ export default function PourquoiClasser() {
           <h2 className="mb-10 text-center">Référencement touristique</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
-              <img
-                src="https://images.pexels.com/photos/323780/pexels-photo-323780.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                alt="Meublé de tourisme"
+              <SmartImage
+                assetKey="pourquoiReferencement"
+                alt="Meuble de tourisme"
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="rounded-card shadow-card-hover w-full"
               />
             </div>

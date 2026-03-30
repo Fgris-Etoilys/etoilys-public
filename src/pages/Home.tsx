@@ -2,7 +2,7 @@ import { Shield, Zap, Clock, Calculator, Users, Globe } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import ArticleCard from '../components/ui/ArticleCard';
-import SEO from '../components/ui/SEO';
+import SmartImage from '../components/ui/SmartImage';
 import { actualitesArticlesByRecency } from '../content/actualitesArticles';
 
 const features = [
@@ -50,20 +50,16 @@ export default function Home() {
   const latestArticles = actualitesArticlesByRecency.slice(0, 2);
   return (
     <>
-      <SEO
-        title="Classement Meublé de Tourisme | Certification Officielle | Etoilys"
-        description="Etoilys vous accompagne dans le classement de votre meublé de tourisme. Obtenez votre certification officielle en étoiles et valorisez votre hébergement."
-        keywords="classement meublé tourisme, location saisonnière, hébergement touristique, certification étoiles, Etoilys, accréditation COFRAC, classement 1 à 5 étoiles, inspection meublé tourisme, certificat hébergement touristique, organisme classement meublé"
-      />
-      <section
-        className="relative min-h-[600px] flex items-center justify-center text-white"
-        style={{
-          backgroundImage:
-            'url(https://images.pexels.com/photos/13139460/pexels-photo-13139460.jpeg?auto=compress&cs=tinysrgb&w=1920)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
+      <section className="relative min-h-[600px] flex items-center justify-center text-white overflow-hidden">
+        <div className="absolute inset-0">
+          <SmartImage
+            assetKey="homeHero"
+            alt="Facade d'un meuble de tourisme"
+            priority
+            sizes="100vw"
+            className="h-full w-full object-cover"
+          />
+        </div>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="container-adaptive relative z-10 py-24 text-center">
           <h1 className="mb-6 text-white">Classement officiel de votre meublé de tourisme</h1>
@@ -164,9 +160,10 @@ export default function Home() {
               </div>
             </div>
             <div className="relative">
-              <img
-                src="https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                alt="Intérieur d'un meublé de tourisme moderne"
+              <SmartImage
+                assetKey="homeProcedure"
+                alt="Interieur d'un meuble de tourisme moderne"
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="rounded-card shadow-card-hover w-full"
               />
             </div>
@@ -189,7 +186,7 @@ export default function Home() {
                 key={article.title}
                 title={article.title}
                 excerpt={article.excerpt}
-                image={article.image}
+                imageKey={article.imageKey}
                 href={article.href}
                 date={article.date}
               />

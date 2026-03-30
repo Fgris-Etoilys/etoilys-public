@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom';
 import Card from './Card';
 import { ArrowRight } from 'lucide-react';
+import SmartImage from './SmartImage';
+import type { ImageAssetKey } from '../../content/imageManifest';
 
 interface ArticleCardProps {
   title: string;
   excerpt: string;
-  image: string;
+  imageKey: ImageAssetKey;
   href: string;
   date?: string;
 }
 
-export default function ArticleCard({ title, excerpt, image, href, date }: ArticleCardProps) {
+export default function ArticleCard({ title, excerpt, imageKey, href, date }: ArticleCardProps) {
   return (
     <Link
       to={href}
@@ -19,9 +21,10 @@ export default function ArticleCard({ title, excerpt, image, href, date }: Artic
     >
       <Card className="overflow-hidden h-full flex flex-col">
         <div className="aspect-[16/9] overflow-hidden">
-          <img
-            src={image}
+          <SmartImage
+            assetKey={imageKey}
             alt={title}
+            sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         </div>

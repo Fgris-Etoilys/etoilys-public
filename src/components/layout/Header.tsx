@@ -85,6 +85,10 @@ export default function Header() {
               <img
                 src="/Logo complet - site web copy.svg"
                 alt="Etoilys"
+                width={1025}
+                height={576}
+                loading="eager"
+                decoding="async"
                 className="h-20 w-auto scale-100 md:h-20"
               />
             </Link>

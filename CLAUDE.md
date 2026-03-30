@@ -44,6 +44,65 @@ Whenever you write code, apply this instruction:
 - Priority scope for this repo: React, React Router, Vite, Tailwind CSS, TypeScript.
 - Prefer official documentation first, then align with project conventions.
 
+## SEO by Default (MANDATORY)
+
+- Canonical domain is fixed to `https://www.etoilys.fr`.
+- Never add page-level SEO injection inside `src/pages/*`: SEO is rendered once in `src/components/layout/Layout.tsx`.
+- Every new route added in `src/App.tsx` must be declared in `src/content/seoRoutes.ts` with at least:
+  - `title`
+  - `description`
+  - `breadcrumbLabel` (except home)
+  - optional `robots` only when needed
+- Unknown routes must keep the fallback `noindex,follow` (`NOT_FOUND_SEO`).
+- Do not reintroduce `meta keywords`.
+- Absolute SEO URLs (canonical, `og:url`, JSON-LD `url`) must stay on `https://www.etoilys.fr`.
+
+### Structured Data Rules (Medium-Term Phase)
+
+- Keep global structured data in one place only: `src/components/ui/StructuredData.tsx`:
+  - `Organization`
+  - `WebSite`
+- Business fields (`legalName`, SIRET `identifier`, contact, address) must match `MentionsLegales`.
+- Do not add `sameAs` until official social profiles are provided and validated.
+- Breadcrumbs are JSON-LD only (no visible breadcrumb UI), generated from `getBreadcrumbItems` in `src/content/seoRoutes.ts`.
+- Home and 404 must not output `BreadcrumbList`.
+- Articles must use `ArticleStructuredData` + `src/content/articleStructuredData.ts`; no manual `useEffect` JSON-LD in article pages.
+
+### Indexation and Static SEO Files (Quick Wins)
+
+- Keep `public/robots.txt` with sitemap reference to `https://www.etoilys.fr/sitemap.xml`.
+- Update `public/sitemap.xml` whenever an indexable route is added/removed.
+- Never include 404 or `noindex` routes in sitemap.
+- Favicon must be served from `public/*` and referenced in `index.html`.
+
+### Structural Rules (Images, Prerender, IndexNow)
+
+- Critical SEO/CWV images must use `SmartImage` (`src/components/ui/SmartImage.tsx`), not free-form `<img>` patterns and not hero `background-image`.
+- Do not use external hosts for critical images on active routes (`images.pexels.com`): use local versioned assets.
+- Mandatory image pipeline:
+  - sources: `src/assets/seo-images/source/*`
+  - variant generation + manifest: `npm run images:build` (`scripts/images-build.mjs`)
+  - typed manifest: `src/content/imageManifest.ts`
+- Sitemap must be generated from route config (no manual edits): `npm run seo:sitemap`.
+- SEO prerender must run through `npm run prerender` (Playwright) and be included via `npm run build:seo`.
+- `SeoRouteConfig` is the technical source of truth; keep and use:
+  - `indexable?: boolean`
+  - `prerender?: boolean`
+  - `lcpImageKey?: ImageAssetKey`
+- IndexNow:
+  - public key file: `public/a4f9bc0d1e4b47b9b0e2b438d9d8f2aa.txt`
+  - local submit script: `npm run indexnow:submit` (use `INDEXNOW_DRY_RUN=1` when needed)
+  - CI automation: `.github/workflows/indexnow.yml` on `main` pushes
+
+### Mandatory SEO Validation Before Delivery
+
+- Verify there is only one SEO injector (`<SEO />`) in layout.
+- Verify no page imports `SEO` directly.
+- Verify all active routes in `src/App.tsx` are covered by `src/content/seoRoutes.ts`.
+- Verify no duplicated JSON-LD scripts after SPA navigation.
+- Run `npx tsc --noEmit` and fix errors until clean.
+- For any new page/article, follow `docs/seo-structurant-workflow.md`.
+
 ## Development Commands
 
 ```bash

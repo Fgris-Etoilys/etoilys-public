@@ -1,14 +1,9 @@
 import { Link } from 'react-router-dom';
-import SEO from '../components/ui/SEO';
 import Button from '../components/ui/Button';
 
 export default function NotFound() {
   return (
     <>
-      <SEO
-        title="Page non trouvée"
-        description="La page demandée n'existe pas ou n'est plus disponible."
-      />
       <section className="py-section bg-white">
         <div className="container-adaptive max-w-3xl text-center">
           <p className="text-sm font-medium text-primary-300 mb-4">Erreur 404</p>

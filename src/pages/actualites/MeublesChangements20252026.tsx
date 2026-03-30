@@ -1,50 +1,9 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import SEO from '../../components/ui/SEO';
 import Button from '../../components/ui/Button';
 
-const ARTICLE_URL =
-  'https://etoilys.fr/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026';
-const COVER_IMAGE =
-  'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg?auto=compress&cs=tinysrgb&w=1200';
-
 export default function ArticleMeubles20252026() {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'article-schema-meubles-2025-2026';
-    script.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: 'Meublés de tourisme : ce qui change vraiment en 2025-2026 pour les propriétaires',
-      author: { '@type': 'Person', name: 'Florian Grisorio' },
-      datePublished: '2026-03-03',
-      dateModified: '2026-03-03',
-      image: COVER_IMAGE,
-      publisher: {
-        '@type': 'Organization',
-        name: 'Etoilys',
-        logo: { '@type': 'ImageObject', url: 'https://etoilys.fr/logo.png' },
-      },
-      mainEntityOfPage: ARTICLE_URL,
-      description:
-        'Fiscalité, 90 jours, DPE, copropriété, enregistrement : voici ce qui change vraiment en 2025-2026 pour les propriétaires de meublés de tourisme.',
-    });
-    document.head.appendChild(script);
-    return () => {
-      const existing = document.getElementById('article-schema-meubles-2025-2026');
-      if (existing) document.head.removeChild(existing);
-    };
-  }, []);
-
   return (
     <>
-      <SEO
-        title="Meublés de tourisme : ce qui change vraiment en 2025-2026"
-        description="Fiscalité, 90 jours, DPE, copropriété, enregistrement : voici ce qui change vraiment en 2025-2026 pour les propriétaires de meublés de tourisme."
-        keywords="meublé de tourisme, réglementation 2025 2026, micro-BIC classé, DPE location saisonnière, enregistrement meublé, 90 jours résidence principale, classement meublé"
-      />
-
       {/* Hero */}
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">

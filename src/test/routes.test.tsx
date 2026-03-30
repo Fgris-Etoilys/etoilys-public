@@ -24,13 +24,9 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { name: /mentions légales/i })).toBeInTheDocument();
   });
 
-  it('renders cgu page', () => {
-    renderAt('/cgu');
-    expect(
-      screen.getByRole('heading', {
-        name: /conditions générales d'utilisation/i,
-      })
-    ).toBeInTheDocument();
+  it('renders contact page', () => {
+    renderAt('/contact');
+    expect(screen.getByRole('heading', { name: /contact/i })).toBeInTheDocument();
   });
 
   it('renders not found page for unknown route', () => {

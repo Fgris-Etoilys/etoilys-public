@@ -28,7 +28,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           <div className="lg:col-span-2 lg:-mt-6">
             <Link to="/" className="flex items-center mb-4">
-              <img src="/Logo complet - site web copy.svg" alt="Etoilys" className="h-16 w-auto" />
+              <img
+                src="/Logo complet - site web copy.svg"
+                alt="Etoilys"
+                width={1025}
+                height={576}
+                loading="lazy"
+                decoding="async"
+                className="h-16 w-auto"
+              />
             </Link>
             <p className="text-textLight mb-6 leading-comfortable">
               Spécialiste du classement des meublés de tourisme. Nous accompagnons les propriétaires

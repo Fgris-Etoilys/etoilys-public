@@ -1,49 +1,9 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import SEO from '../../components/ui/SEO';
 import Button from '../../components/ui/Button';
 
-const ARTICLE_URL = 'https://etoilys.fr/actualites/airbnb-residence-principale-limite-90-jours';
-const COVER_IMAGE =
-  'https://images.pexels.com/photos/4468806/pexels-photo-4468806.jpeg?auto=compress&cs=tinysrgb&w=1200';
-
 export default function ArticleResidencePrincipale90Jours() {
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.id = 'article-schema-residence-principale-90-jours';
-    script.text = JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: 'Airbnb en résidence principale : la limite des 90 jours, qui est concerné ?',
-      author: { '@type': 'Person', name: 'Florian Grisorio' },
-      datePublished: '2026-03-27',
-      dateModified: '2026-03-27',
-      image: COVER_IMAGE,
-      publisher: {
-        '@type': 'Organization',
-        name: 'Etoilys',
-        logo: { '@type': 'ImageObject', url: 'https://etoilys.fr/logo.png' },
-      },
-      mainEntityOfPage: ARTICLE_URL,
-      description:
-        "La limite des 90 jours ne s'applique pas partout automatiquement. Voici qui est concerné, qui décide et ce que cela change pour votre meublé de tourisme.",
-    });
-    document.head.appendChild(script);
-    return () => {
-      const existing = document.getElementById('article-schema-residence-principale-90-jours');
-      if (existing) document.head.removeChild(existing);
-    };
-  }, []);
-
   return (
     <>
-      <SEO
-        title="Airbnb et résidence principale : qui est concerné par la limite des 90 jours ? | Etoilys"
-        description="La limite des 90 jours ne s'applique pas partout automatiquement. Voici qui est concerné, qui décide et ce que cela change pour votre meublé de tourisme."
-        keywords="airbnb résidence principale, limite 90 jours, meublé de tourisme, 120 jours, plafond location, commune, réglementation"
-      />
-
       {/* Hero */}
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">

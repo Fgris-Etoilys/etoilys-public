@@ -24,7 +24,7 @@ export default function Actualites() {
                 key={article.title}
                 title={article.title}
                 excerpt={article.excerpt}
-                image={article.image}
+                imageKey={article.imageKey}
                 href={article.href}
                 date={article.date}
               />

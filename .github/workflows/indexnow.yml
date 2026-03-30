@@ -1,0 +1,32 @@
+name: IndexNow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  submit-indexnow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Wait for deploy propagation
+        run: sleep 120
+
+      - name: Generate sitemap from SEO routes
+        run: npm run seo:sitemap
+
+      - name: Submit URLs to IndexNow
+        run: npm run indexnow:submit
