@@ -1,4 +1,5 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
       "source": "/api/public/forms/contact",
@@ -7,6 +8,10 @@
     {
       "source": "/api/public/forms/classement",
       "destination": "https://wrsqwdtjbglzuajjxtmc.supabase.co/functions/v1/public-forms-classement"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
