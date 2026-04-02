@@ -27,13 +27,13 @@ const mainBenefits = [
     icon: Award,
     title: 'Label officiel reconnu',
     description:
-      "Le loueur reçoit un panonceau officiel du ministère chargé du Tourisme (1 à 5 étoiles), apposable sur le bien et mentionnable dans toutes les annonces. Il atteste du respect de critères de confort et d'équipement du logement.",
+      "Le loueur peut demander un panonceau officiel du ministère chargé du Tourisme (1 à 5 étoiles), apposable sur le bien et mentionnable dans toutes les annonces. Il atteste du respect de critères de confort et d'équipement du logement.",
   },
   {
     icon: Globe,
     title: 'Référencement touristique',
     description:
-      "Les meublés classés sont référencés par les offices de tourisme locaux et éligibles aux bases de données nationales de promotion touristique. Le niveau d'étoiles constitue un repère standardisé pour les voyageurs.",
+      "Les meublés classés peuvent être référencés par les offices de tourisme locaux et éligibles aux bases de données nationales de promotion touristique. Le niveau d'étoiles constitue un repère standardisé pour les voyageurs.",
   },
   {
     icon: Ticket,
