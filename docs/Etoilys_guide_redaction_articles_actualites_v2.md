@@ -1,6 +1,6 @@
 # Guide de rédaction des articles « Actualités » - Etoilys
 
-Version : 2026-03-27  
+Version : 2026-04-17  
 Usage : document de référence pour rédiger, relire et publier les articles de la page **Actualités** du site Etoilys.
 
 ---
@@ -11,7 +11,7 @@ Dans l’arborescence du site, **Actualités** est une rubrique dédiée distinc
 
 1. **Attirer un trafic qualifié** sur des requêtes d’actualité, de réforme, de fiscalité, de réglementation ou de procédure.
 2. **Rassurer** les propriétaires de meublés de tourisme en montrant qu’Etoilys suit les évolutions du secteur et sait les expliquer clairement.
-3. **Faire circuler l’utilisateur** vers les pages business du site :
+3. **Faire circuler l’utilisateur** vers les pages utiles du site, quand c’est pertinent :
    - Pourquoi faire classer son meublé ?
    - La procédure de classement
    - FAQ
@@ -39,9 +39,10 @@ Ce public n’est pas là pour lire un billet d’humeur ou un article universit
 
 - **ce qui change**,
 - **si ça le concerne**,
-- **ce qu’il doit faire**,
+- **ce que dit la règle**,
 - **à quelle date**,
-- **et ce qu’il gagne à être classé**.
+- **les impacts possibles selon sa situation**,
+- **les points à vérifier avant d’agir**.
 
 ---
 
@@ -86,7 +87,7 @@ Etoilys doit apparaître comme :
 
 - `Si vous louez votre résidence principale, la première chose à vérifier est…`
 - `Concrètement, cela change surtout…`
-- `Dans ce cas, vous devez surtout regarder…`
+- `Dans ce cas, les points à vérifier sont…`
 
 À éviter :
 
@@ -110,7 +111,7 @@ Les fondamentaux à garder en tête :
 
 Concrètement :
 
-- on ne traite **que** les sujets liés aux meublés de tourisme et au classement ;
+- on ne traite **que** les sujets liés aux meublés de tourisme ; le classement n’est abordé que s’il est pertinent pour le sujet ;
 - on ne publie pas un article parce qu’un mot-clé est populaire si le sujet n’aide pas vraiment un propriétaire ;
 - on ajoute toujours une **valeur éditoriale propre** : explication, mise en contexte, impact concret, points de vigilance, tableau mental simple, checklist, cas pratique ;
 - on assume clairement **qui parle** et **pourquoi Etoilys est légitime** à parler du sujet.
@@ -158,8 +159,8 @@ Structure type :
 3. règle ;
 4. cas concernés / non concernés ;
 5. erreurs fréquentes ;
-6. lien avec le classement ;
-7. CTA utile.
+6. lien avec le classement (si pertinent) ;
+7. CTA utile et pertinent au sujet.
 
 ### C. Article evergreen mis à jour
 
@@ -236,9 +237,10 @@ Chaque fois que c’est le cas, l’article doit séparer clairement :
 Après chaque règle, répondre explicitement à :
 
 - Qu’est-ce que cela change pour un propriétaire ?
-- Qui doit faire quoi ?
-- Quel est le risque si on ne le fait pas ?
-- Quel rapport avec le classement ?
+- Quels impacts possibles selon les cas ?
+- Quels points de vigilance faut-il vérifier ?
+- Quel est le risque en cas de non-conformité ?
+- Quel rapport avec le classement, **si le sujet est concerné** ?
 
 ### 6.6 Toujours citer les sources officielles quand le sujet touche au droit, à la fiscalité ou aux obligations
 
@@ -270,6 +272,20 @@ Si le texte existe mais que les modalités locales varient : le dire.
 - phrases qui gonflent artificiellement la longueur,
 - jargon non expliqué,
 - article “SEO” qui ne sert à rien.
+
+### 6.9 Toujours qualifier la pertinence du classement
+
+Avant la rédaction, classer le sujet dans l’un de ces 3 niveaux :
+
+1. **Pertinence forte** : le sujet change réellement selon classé / non classé.
+   - inclure une section dédiée (`lien avec le classement`) ;
+   - ajouter des liens internes vers les pages classement pertinentes.
+2. **Pertinence partielle** : le classement peut influer selon les cas.
+   - mentionner brièvement le classement “si applicable” ;
+   - ne pas construire l’article entier autour du classement.
+3. **Pertinence nulle** : le sujet n’est pas modifié par le classement.
+   - ne pas forcer de paragraphe classement ;
+   - rester centré sur l’information utile au propriétaire.
 
 ---
 
@@ -347,7 +363,7 @@ Ordre conseillé :
 3. depuis quand ;
 4. ce que cela change concrètement ;
 5. erreurs fréquentes ;
-6. lien avec le classement Etoilys ;
+6. lien avec le classement Etoilys (**uniquement si pertinent**) ;
 7. sources.
 
 ## Bloc optionnel - Tableau, frise ou visuel utile
@@ -385,9 +401,9 @@ La conclusion doit :
 
 ## Bloc 6 - CTA discret mais clair
 
-Toujours relier l’article à une page stratégique du site :
+Relier l’article à une page utile du site, selon le sujet :
 
-- demander un classement ;
+- demander un classement (si le sujet est lié au classement) ;
 - comprendre la procédure ;
 - lire la FAQ ;
 - contacter Etoilys.
@@ -431,9 +447,9 @@ Toujours relier l’article à une page stratégique du site :
 - [erreur 2]
 - [erreur 3]
 
-## [H2 : quel lien avec le classement du meublé ?]
+## [H2 optionnel : quel lien avec le classement du meublé ?]
 
-[explication orientée Etoilys]
+[à inclure uniquement si la pertinence du classement est forte ou partielle]
 
 ## Sources officielles
 
@@ -443,7 +459,7 @@ Toujours relier l’article à une page stratégique du site :
 
 ## Besoin d’y voir plus clair ?
 
-[CTA vers la procédure, la FAQ ou la demande de classement]
+[CTA vers la page la plus pertinente (procédure, FAQ, demande de classement si pertinent, contact)]
 ```
 
 ---
@@ -557,9 +573,9 @@ Google utilise les liens pour découvrir les pages et comprendre leur pertinence
 Règle Etoilys :
 chaque article doit contenir des liens vers :
 
-- une page pilier (`Pourquoi classer`, `Procédure`, `FAQ`) ;
+- une page pilier pertinente (`Pourquoi classer`, `Procédure`, `FAQ`) ;
 - au moins un autre article connexe ;
-- la page `Demande de classement` quand c’est logique.
+- la page `Demande de classement` uniquement quand le sujet justifie une démarche de classement.
 
 Le texte d’ancre doit être descriptif :
 
@@ -714,8 +730,8 @@ Formule utile :
 - Est-ce que je suis concerné ?
 - Qu’est-ce qui change concrètement pour moi ?
 - Depuis quand ?
-- Qu’est-ce que je dois vérifier ou faire maintenant ?
-- Quel est le lien avec le classement ?
+- Quels points dois-je vérifier selon ma situation ?
+- Quel est le lien avec le classement, si le sujet est concerné ?
 - Où puis-je aller ensuite sur le site Etoilys ?
 
 Si l’article n’aide pas à répondre simplement à ces questions, il est raté, même s’il est “optimisé SEO”.
@@ -757,7 +773,7 @@ Noter pour chaque source :
 Exemple :
 
 - pas juste “la loi change” ;
-- mais “ce que cette loi change concrètement pour un propriétaire de meublé de tourisme, et où le classement reste utile”.
+- mais “ce que cette loi change concrètement pour un propriétaire de meublé de tourisme, et le rôle éventuel du classement si pertinent”.
 
 ### Étape 5 - Bâtir le squelette
 
@@ -783,7 +799,7 @@ Copier-coller ce modèle puis le compléter.
 
 ## Intention de recherche
 
-[ex : comprendre ce qui change pour un meublé classé vs non classé]
+[ex : comprendre ce qui change pour un propriétaire, avec ou sans impact du classement selon le sujet]
 
 ## Type d’article
 
@@ -795,7 +811,11 @@ Copier-coller ce modèle puis le compléter.
 
 ## Angle Etoilys
 
-[ex : expliquer le changement de façon concrète et montrer où le classement garde un intérêt]
+[ex : expliquer le changement de façon concrète, en mentionnant le classement seulement s’il modifie réellement le sujet]
+
+## Pertinence du classement
+
+[forte / partielle / nulle]
 
 ## Sources à utiliser en priorité
 
@@ -805,10 +825,10 @@ Copier-coller ce modèle puis le compléter.
 
 ## Page(s) internes à lier
 
-- /classement-meuble-de-tourisme/pourquoi-faire-classer-son-meuble
-- /classement-meuble-de-tourisme/la-procedure-de-classement
+- /classement-meuble-de-tourisme/pourquoi-faire-classer-son-meuble (si pertinent)
+- /classement-meuble-de-tourisme/la-procedure-de-classement (si pertinent)
 - /classement-meuble-de-tourisme/faq
-- /demande-de-classement
+- /demande-de-classement (si pertinent)
 
 ## Mots / notions à intégrer naturellement
 
@@ -829,7 +849,7 @@ Copier-coller ce modèle puis le compléter.
 
 ## CTA final
 
-[ex : découvrir la procédure de classement / demander un classement]
+[ex : découvrir la procédure / lire la FAQ / demander un classement (si pertinent) / contacter Etoilys]
 ```
 
 ---
@@ -858,6 +878,8 @@ Règles impératives :
 - intégrer naturellement des liens internes vers les pages stratégiques Etoilys ;
 - utiliser un tableau simple, une checklist ou une frise quand cela explique mieux qu’un bloc de texte ;
 - proposer 0 à 2 visuels utiles maximum dans le corps de l’article si cela apporte quelque chose ;
+- ne pas forcer un lien avec le classement si le sujet n’est pas impacté ;
+- rester informatif : expliquer ce que dit la règle, qui est concerné, les impacts possibles et les points à vérifier selon la situation ;
 - conclure par une action utile pour le lecteur.
 
 Rends ta réponse sous cette forme :
@@ -923,7 +945,7 @@ sources:
 
 ### Editorial
 
-- [ ] Le sujet est bien centré sur les meublés de tourisme / le classement / les obligations associées.
+- [ ] Le sujet est bien centré sur les enjeux des propriétaires de location touristique.
 - [ ] L’introduction répond à la question principale.
 - [ ] L’article explique l’impact concret pour le lecteur.
 - [ ] Les règles nationales et locales sont bien séparées.
@@ -931,6 +953,7 @@ sources:
 - [ ] Les termes techniques sont expliqués.
 - [ ] Il y a une vraie valeur ajoutée Etoilys.
 - [ ] Le ton reste proche du lecteur, sans formules froides ou méta.
+- [ ] Le lien avec le classement est traité seulement s’il est pertinent (forte/partielle) et n’est pas forcé si la pertinence est nulle.
 - [ ] La conclusion pousse vers une action utile.
 
 ### SEO
@@ -1009,7 +1032,7 @@ Pour les sujets déjà identifiés comme prioritaires dans la rubrique Actualit�
 ### Priorité basse
 
 - contenus très généralistes ;
-- sujets trop éloignés du classement ;
+- sujets trop éloignés des enjeux concrets des propriétaires de location touristique ;
 - articles purement opinion.
 
 ---
