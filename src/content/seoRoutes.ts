@@ -84,6 +84,12 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Ce que le reglement de copropriete peut prevoir pour la location touristique depuis les evolutions recentes.',
     breadcrumbLabel: 'Copropriete et location',
   },
+  '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne': {
+    title: 'Taxe de sejour 2026: pourquoi le classement change la donne',
+    description:
+      'Meuble classe ou non classe, bareme 2026, taux, plafonds et surtaxes: voici comment le classement change concretement la taxe de sejour.',
+    breadcrumbLabel: 'Taxe de sejour 2026',
+  },
   '/contact': {
     title: 'Contact Etoilys',
     description:

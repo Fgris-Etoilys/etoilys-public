@@ -46,6 +46,15 @@ const articles: ActualiteArticle[] = [
     date: '23 mars 2026',
     publishedAt: '2026-03-23',
   },
+  {
+    title: 'Taxe de séjour 2026 : pourquoi le classement change la donne',
+    excerpt:
+      'Meublé classé ou non classé, barème 2026, taux, plafonds et surtaxes : voici comment le classement change concrètement la taxe de séjour.',
+    imageKey: 'articleTaxeDeSejour2026',
+    href: '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne',
+    date: '17 avril 2026',
+    publishedAt: '2026-04-17',
+  },
 ];
 
 export const actualitesArticlesByRecency = [...articles].sort(

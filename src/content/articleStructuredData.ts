@@ -51,6 +51,16 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     imageKey: 'articleCoproprieteReglement',
     authorName: 'Florian Grisorio',
   },
+  {
+    path: '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne',
+    headline: 'Taxe de sejour 2026: pourquoi le classement change la donne',
+    description:
+      'Meuble classe ou non classe, bareme 2026, taux, plafonds et surtaxes: comment le classement change concretement la taxe de sejour.',
+    datePublished: '2026-04-17',
+    dateModified: '2026-04-17',
+    imageKey: 'articleTaxeDeSejour2026',
+    authorName: 'Florian Grisorio',
+  },
 ];
 
 function normalizePath(pathname: string): string {
