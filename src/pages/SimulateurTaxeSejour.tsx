@@ -289,9 +289,7 @@ export default function SimulateurTaxeSejour() {
             </span>
           ),
           delta:
-            row.category === 'Non classé' ? (
-              <span className="font-semibold text-primary-500">0,00 €</span>
-            ) : (
+            row.category === 'Non classé' ? null : (
               <span className={`font-semibold ${getDeltaClassName(delta)}`}>
                 {formatDeltaWithPercent(delta, nonClassReference)}
               </span>
