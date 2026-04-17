@@ -2,6 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
+import ResponsiveComparisonTable, {
+  type ResponsiveComparisonColumn,
+  type ResponsiveComparisonRow,
+} from '../components/ui/ResponsiveComparisonTable';
 import {
   loadTaxeSejourDataset,
   normalizeTaxeSejourSearchTerm,
@@ -224,6 +228,78 @@ export default function SimulateurTaxeSejour() {
     }
     return result.rows.find((row) => row.category === 'Non classé')?.amount ?? null;
   }, [result]);
+
+  const resultColumns = useMemo<ResponsiveComparisonColumn[]>(
+    () => [
+      {
+        key: 'category',
+        label: 'Catégorie',
+        mobileLabel: 'Catégorie',
+        align: 'center',
+        widthClassName: 'w-1/3',
+      },
+      {
+        key: 'amount',
+        label: `Montant total (${getNightsLabel(resultNights)})`,
+        mobileLabel: 'Montant total',
+        align: 'center',
+        widthClassName: 'w-1/3',
+      },
+      {
+        key: 'delta',
+        label: 'Écart vs non classé',
+        mobileLabel: 'Écart vs non classé',
+        align: 'center',
+        widthClassName: 'w-1/3',
+      },
+    ],
+    [resultNights]
+  );
+
+  const resultRows = useMemo<ResponsiveComparisonRow[]>(() => {
+    if (!result) {
+      return [];
+    }
+
+    const nonClassReference = nonClasseAmount ?? 0;
+
+    return result.rows.map((row, index) => {
+      const delta = row.amount - nonClassReference;
+      return {
+        key: row.category,
+        rowClassName: index % 2 === 0 ? 'bg-white border-b border-gray-100' : 'bg-gray-50',
+        cells: {
+          category: (
+            <div>
+              <span>{row.category}</span>
+              {row.status === 'indicatif' && (
+                <span className="ml-2 text-xs font-semibold text-warning-500">indicatif</span>
+              )}
+            </div>
+          ),
+          amount: (
+            <span
+              className={
+                row.category === 'Non classé'
+                  ? 'font-semibold text-primary-500'
+                  : 'font-semibold text-gray-900'
+              }
+            >
+              {formatEuro(row.amount)}
+            </span>
+          ),
+          delta:
+            row.category === 'Non classé' ? (
+              <span className="font-semibold text-primary-500">0,00 €</span>
+            ) : (
+              <span className={`font-semibold ${getDeltaClassName(delta)}`}>
+                {formatDeltaWithPercent(delta, nonClassReference)}
+              </span>
+            ),
+        },
+      };
+    });
+  }, [result, nonClasseAmount]);
 
   const closeTimerRef = useRef<number | null>(null);
   const listId = 'taxe-sejour-city-listbox';
@@ -647,7 +723,7 @@ export default function SimulateurTaxeSejour() {
       <section className="py-section bg-white">
         <div className="container-adaptive">
           <div className="space-y-10">
-            <Card className="p-8" hover={false}>
+            <Card className="p-4 sm:p-6 lg:p-8" hover={false}>
               <h2 className="text-h4 mb-2">Paramètres de simulation</h2>
               {dataset && (
                 <p className="text-sm text-textLight mb-6">
@@ -871,7 +947,7 @@ export default function SimulateurTaxeSejour() {
             </Card>
 
             {result && (
-              <Card className="p-8" hover={false}>
+              <Card className="p-4 sm:p-6 lg:p-8" hover={false}>
                 <h2 className="text-h4 mb-2">Résultats</h2>
                 <p className="text-sm text-textLight mb-2">
                   Montants estimés pour {getNightsLabel(resultNights)}, avec taxes additionnelles
@@ -900,66 +976,21 @@ export default function SimulateurTaxeSejour() {
                     </span>
                   </div>
 
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
-                      <colgroup>
-                        <col className="w-1/3" />
-                        <col className="w-1/3" />
-                        <col className="w-1/3" />
-                      </colgroup>
-                      <thead>
-                        <tr className="bg-primary-300 text-white">
-                          <th className="p-3 text-center font-semibold">Catégorie</th>
-                          <th className="p-3 text-center font-semibold">
-                            Montant total ({getNightsLabel(resultNights)})
-                          </th>
-                          <th className="p-3 text-center font-semibold">Écart vs non classé</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {result.rows.map((row, index) => (
-                          <tr
-                            key={row.category}
-                            className={
-                              index % 2 === 0 ? 'bg-white border-b border-gray-100' : 'bg-gray-50'
-                            }
-                          >
-                            <td className="p-3 text-center text-gray-700">
-                              <span>{row.category}</span>
-                              {row.status === 'indicatif' && (
-                                <span className="ml-2 text-xs font-semibold text-warning-500">
-                                  indicatif
-                                </span>
-                              )}
-                            </td>
-                            <td
-                              className={`p-3 text-center font-semibold ${
-                                row.category === 'Non classé' ? 'text-primary-500' : 'text-gray-900'
-                              }`}
-                            >
-                              {formatEuro(row.amount)}
-                            </td>
-                            <td className="p-3 text-center">
-                              {row.category === 'Non classé' ? (
-                                <span className="font-semibold text-primary-500">0,00 €</span>
-                              ) : (
-                                <span
-                                  className={`font-semibold ${getDeltaClassName(
-                                    row.amount - (nonClasseAmount ?? 0)
-                                  )}`}
-                                >
-                                  {formatDeltaWithPercent(
-                                    row.amount - (nonClasseAmount ?? 0),
-                                    nonClasseAmount ?? 0
-                                  )}
-                                </span>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                  <ResponsiveComparisonTable
+                    columns={resultColumns}
+                    rows={resultRows}
+                    primaryColumnKey="category"
+                    tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
+                    desktopWrapperClassName="hidden md:block"
+                    headerRowClassName="bg-primary-300 text-white"
+                    headerCellClassName="p-3 font-semibold"
+                    cellClassName="p-3"
+                    mobileContainerClassName="md:hidden space-y-3"
+                    mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
+                    mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
+                    mobileLabelClassName="text-xs font-medium text-gray-600"
+                    mobileValueClassName="text-sm text-gray-900 text-right"
+                  />
 
                   {result.warnings.length > 0 && (
                     <div className="rounded-card border border-warning-200 bg-warning-100 p-4">

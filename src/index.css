@@ -9,7 +9,12 @@
     @apply font-roboto text-gray-900 antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-playfair font-semibold;
   }
 
@@ -29,7 +34,8 @@
     @apply text-h4 leading-snug;
   }
 
-  p, li {
+  p,
+  li {
     @apply leading-comfortable;
   }
 
@@ -40,11 +46,26 @@
 
 @layer utilities {
   .container-adaptive {
-    width: clamp(320px, 90vw, 1400px);
+    width: 100%;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-adaptive {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-adaptive {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
   }
 
   .line-clamp-3 {

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 
 export default function ArticleMicroBic2026() {
   return (
@@ -43,50 +44,101 @@ export default function ArticleMicroBic2026() {
               <h2 className="text-h4 mb-4">À retenir</h2>
 
               {/* Tableau comparatif */}
-              <div className="overflow-x-auto mb-6">
-                <table className="w-full text-sm border-collapse">
-                  <colgroup>
-                    <col className="w-1/5" />
-                    <col className="w-1/5" />
-                    <col className="w-1/5" />
-                    <col className="w-1/5" />
-                    <col className="w-1/5" />
-                  </colgroup>
-                  <thead>
-                    <tr className="bg-primary-300 text-white">
-                      <th className="p-3 text-center font-semibold">Période</th>
-                      <th className="p-3 text-center font-semibold">Non classé — plafond</th>
-                      <th className="p-3 text-center font-semibold">Non classé — abattement</th>
-                      <th className="p-3 text-center font-semibold">Classé — plafond</th>
-                      <th className="p-3 text-center font-semibold">Classé — abattement</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="bg-white border-b border-primary-200">
-                      <td className="p-3 text-center text-gray-700">
-                        Revenus 2025
-                        <br />
-                        (déclarés en 2026)
-                      </td>
-                      <td className="p-3 text-center font-semibold text-gray-900">15 000 €</td>
-                      <td className="p-3 text-center text-gray-700">30 %</td>
-                      <td className="p-3 text-center font-semibold text-primary-400">77 700 €</td>
-                      <td className="p-3 text-center text-gray-700">50 %</td>
-                    </tr>
-                    <tr className="bg-primary-100">
-                      <td className="p-3 text-center text-gray-700">
-                        Revenus 2026
-                        <br />
-                        (déclarés en 2027)
-                      </td>
-                      <td className="p-3 text-center font-semibold text-gray-900">15 000 €</td>
-                      <td className="p-3 text-center text-gray-700">30 %</td>
-                      <td className="p-3 text-center font-semibold text-primary-400">83 600 €</td>
-                      <td className="p-3 text-center text-gray-700">50 %</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <ResponsiveComparisonTable
+                className="mb-6"
+                primaryColumnKey="periode"
+                columns={[
+                  {
+                    key: 'periode',
+                    label: 'Période',
+                    mobileLabel: 'Période',
+                    align: 'center',
+                    widthClassName: 'w-1/5',
+                  },
+                  {
+                    key: 'nonClassePlafond',
+                    label: 'Non classé — plafond',
+                    mobileLabel: 'Non classé — plafond',
+                    align: 'center',
+                    widthClassName: 'w-1/5',
+                  },
+                  {
+                    key: 'nonClasseAbattement',
+                    label: 'Non classé — abattement',
+                    mobileLabel: 'Non classé — abattement',
+                    align: 'center',
+                    widthClassName: 'w-1/5',
+                  },
+                  {
+                    key: 'classePlafond',
+                    label: 'Classé — plafond',
+                    mobileLabel: 'Classé — plafond',
+                    align: 'center',
+                    widthClassName: 'w-1/5',
+                  },
+                  {
+                    key: 'classeAbattement',
+                    label: 'Classé — abattement',
+                    mobileLabel: 'Classé — abattement',
+                    align: 'center',
+                    widthClassName: 'w-1/5',
+                  },
+                ]}
+                rows={[
+                  {
+                    key: '2025',
+                    rowClassName: 'bg-white border-b border-primary-200',
+                    cells: {
+                      periode: (
+                        <>
+                          Revenus 2025
+                          <br />
+                          (déclarés en 2026)
+                        </>
+                      ),
+                      nonClassePlafond: (
+                        <span className="font-semibold text-gray-900">15 000 €</span>
+                      ),
+                      nonClasseAbattement: '30 %',
+                      classePlafond: (
+                        <span className="font-semibold text-primary-400">77 700 €</span>
+                      ),
+                      classeAbattement: '50 %',
+                    },
+                  },
+                  {
+                    key: '2026',
+                    rowClassName: 'bg-primary-100',
+                    cells: {
+                      periode: (
+                        <>
+                          Revenus 2026
+                          <br />
+                          (déclarés en 2027)
+                        </>
+                      ),
+                      nonClassePlafond: (
+                        <span className="font-semibold text-gray-900">15 000 €</span>
+                      ),
+                      nonClasseAbattement: '30 %',
+                      classePlafond: (
+                        <span className="font-semibold text-primary-400">83 600 €</span>
+                      ),
+                      classeAbattement: '50 %',
+                    },
+                  },
+                ]}
+                tableClassName="w-full text-sm border-collapse"
+                desktopWrapperClassName="hidden md:block"
+                headerRowClassName="bg-primary-300 text-white"
+                headerCellClassName="p-3 font-semibold"
+                cellClassName="p-3"
+                mobileContainerClassName="md:hidden space-y-3"
+                mobileCardClassName="rounded-card border border-primary-200 bg-white p-4 shadow-sm"
+                mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
+                mobileLabelClassName="text-xs font-medium text-gray-600"
+                mobileValueClassName="text-sm text-gray-900 text-right"
+              />
 
               <ul className="space-y-3 text-gray-700">
                 <li className="flex gap-3">
@@ -170,66 +222,117 @@ export default function ArticleMicroBic2026() {
               .
             </p>
 
-            <div className="overflow-x-auto mb-8">
-              <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
-                <colgroup>
-                  <col className="w-1/5" />
-                  <col className="w-1/5" />
-                  <col className="w-1/5" />
-                  <col className="w-1/5" />
-                  <col className="w-1/5" />
-                </colgroup>
-                <thead>
-                  <tr className="bg-primary-300 text-white">
-                    <th className="p-3 text-center font-semibold">Période</th>
-                    <th className="p-3 text-center font-semibold">
+            <ResponsiveComparisonTable
+              className="mb-8"
+              primaryColumnKey="periode"
+              columns={[
+                {
+                  key: 'periode',
+                  label: 'Période',
+                  mobileLabel: 'Période',
+                  align: 'center',
+                  widthClassName: 'w-1/5',
+                },
+                {
+                  key: 'nonClassePlafond',
+                  label: (
+                    <>
                       Non classé
                       <br />
                       Plafond micro
-                    </th>
-                    <th className="p-3 text-center font-semibold">
+                    </>
+                  ),
+                  mobileLabel: 'Non classé — Plafond micro',
+                  align: 'center',
+                  widthClassName: 'w-1/5',
+                },
+                {
+                  key: 'nonClasseAbattement',
+                  label: (
+                    <>
                       Non classé
                       <br />
                       Abattement
-                    </th>
-                    <th className="p-3 text-center font-semibold">
+                    </>
+                  ),
+                  mobileLabel: 'Non classé — Abattement',
+                  align: 'center',
+                  widthClassName: 'w-1/5',
+                },
+                {
+                  key: 'classePlafond',
+                  label: (
+                    <>
                       Classé
                       <br />
                       Plafond micro
-                    </th>
-                    <th className="p-3 text-center font-semibold">
+                    </>
+                  ),
+                  mobileLabel: 'Classé — Plafond micro',
+                  align: 'center',
+                  widthClassName: 'w-1/5',
+                },
+                {
+                  key: 'classeAbattement',
+                  label: (
+                    <>
                       Classé
                       <br />
                       Abattement
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="bg-white border-b border-gray-100">
-                    <td className="p-3 text-center text-gray-700 font-medium">
-                      Revenus 2025
-                      <br />
-                      (déclarés en 2026)
-                    </td>
-                    <td className="p-3 text-center font-semibold text-gray-900">15 000 €</td>
-                    <td className="p-3 text-center text-gray-600">30 %</td>
-                    <td className="p-3 text-center font-semibold text-primary-400">77 700 €</td>
-                    <td className="p-3 text-center text-gray-600">50 %</td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="p-3 text-center text-gray-700 font-medium">
-                      Revenus 2026
-                      <br />
-                      (déclarés en 2027)
-                    </td>
-                    <td className="p-3 text-center font-semibold text-gray-900">15 000 €</td>
-                    <td className="p-3 text-center text-gray-600">30 %</td>
-                    <td className="p-3 text-center font-semibold text-primary-400">83 600 €</td>
-                    <td className="p-3 text-center text-gray-600">50 %</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+                    </>
+                  ),
+                  mobileLabel: 'Classé — Abattement',
+                  align: 'center',
+                  widthClassName: 'w-1/5',
+                },
+              ]}
+              rows={[
+                {
+                  key: '2025',
+                  rowClassName: 'bg-white border-b border-gray-100',
+                  cells: {
+                    periode: (
+                      <>
+                        <span className="font-medium">Revenus 2025</span>
+                        <br />
+                        (déclarés en 2026)
+                      </>
+                    ),
+                    nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
+                    nonClasseAbattement: '30 %',
+                    classePlafond: <span className="font-semibold text-primary-400">77 700 €</span>,
+                    classeAbattement: '50 %',
+                  },
+                },
+                {
+                  key: '2026',
+                  rowClassName: 'bg-gray-50',
+                  cells: {
+                    periode: (
+                      <>
+                        <span className="font-medium">Revenus 2026</span>
+                        <br />
+                        (déclarés en 2027)
+                      </>
+                    ),
+                    nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
+                    nonClasseAbattement: '30 %',
+                    classePlafond: <span className="font-semibold text-primary-400">83 600 €</span>,
+                    classeAbattement: '50 %',
+                  },
+                },
+              ]}
+              tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
+              desktopWrapperClassName="hidden md:block"
+              headerRowClassName="bg-primary-300 text-white"
+              headerCellClassName="p-3 font-semibold"
+              cellClassName="p-3"
+              mobileContainerClassName="md:hidden space-y-3"
+              mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
+              mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
+              mobileLabelClassName="text-xs font-medium text-gray-600"
+              mobileValueClassName="text-sm text-gray-900 text-right"
+            />
 
             <p className="text-gray-700 leading-comfortable mb-4">
               L'écart est structurant. Avant la réforme, de nombreux propriétaires raisonnaient

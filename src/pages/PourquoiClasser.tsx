@@ -3,6 +3,7 @@ import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import Card from '../components/ui/Card';
 import SmartImage from '../components/ui/SmartImage';
+import ResponsiveComparisonTable from '../components/ui/ResponsiveComparisonTable';
 
 const mainBenefits = [
   {
@@ -202,42 +203,62 @@ export default function PourquoiClasser() {
                 <p className="text-center text-sm font-medium text-gray-700 mb-3">
                   Tarif forfaitaire par étoile (fourchette nationale 2026)
                 </p>
-                <table className="w-full text-sm">
-                  <colgroup>
-                    <col className="w-1/2" />
-                    <col className="w-1/2" />
-                  </colgroup>
-                  <thead>
-                    <tr className="border-b border-success-200">
-                      <th className="text-center py-1 text-gray-600 font-medium">Classement</th>
-                      <th className="text-center py-1 text-gray-600 font-medium">
-                        Min – Max / pers / nuit
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-gray-700">
-                    <tr className="border-b border-success-200/50">
-                      <td className="py-1 text-center">1 étoile</td>
-                      <td className="text-center">0,20 € – 0,80 €</td>
-                    </tr>
-                    <tr className="border-b border-success-200/50">
-                      <td className="py-1 text-center">2 étoiles</td>
-                      <td className="text-center">0,30 € – 1,00 €</td>
-                    </tr>
-                    <tr className="border-b border-success-200/50">
-                      <td className="py-1 text-center">3 étoiles</td>
-                      <td className="text-center">0,50 € – 1,70 €</td>
-                    </tr>
-                    <tr className="border-b border-success-200/50">
-                      <td className="py-1 text-center">4 étoiles</td>
-                      <td className="text-center">0,70 € – 2,60 €</td>
-                    </tr>
-                    <tr>
-                      <td className="py-1 text-center">5 étoiles</td>
-                      <td className="text-center">0,70 € – 3,60 €</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <ResponsiveComparisonTable
+                  primaryColumnKey="classement"
+                  columns={[
+                    {
+                      key: 'classement',
+                      label: 'Classement',
+                      mobileLabel: 'Classement',
+                      align: 'center',
+                      widthClassName: 'w-1/2',
+                    },
+                    {
+                      key: 'tarif',
+                      label: 'Min – Max / pers / nuit',
+                      mobileLabel: 'Tarif',
+                      align: 'center',
+                      widthClassName: 'w-1/2',
+                    },
+                  ]}
+                  rows={[
+                    {
+                      key: '1',
+                      rowClassName: 'border-b border-success-200/50 text-gray-700',
+                      cells: { classement: '1 étoile', tarif: '0,20 € – 0,80 €' },
+                    },
+                    {
+                      key: '2',
+                      rowClassName: 'border-b border-success-200/50 text-gray-700',
+                      cells: { classement: '2 étoiles', tarif: '0,30 € – 1,00 €' },
+                    },
+                    {
+                      key: '3',
+                      rowClassName: 'border-b border-success-200/50 text-gray-700',
+                      cells: { classement: '3 étoiles', tarif: '0,50 € – 1,70 €' },
+                    },
+                    {
+                      key: '4',
+                      rowClassName: 'border-b border-success-200/50 text-gray-700',
+                      cells: { classement: '4 étoiles', tarif: '0,70 € – 2,60 €' },
+                    },
+                    {
+                      key: '5',
+                      rowClassName: 'text-gray-700',
+                      cells: { classement: '5 étoiles', tarif: '0,70 € – 3,60 €' },
+                    },
+                  ]}
+                  tableClassName="w-full text-sm"
+                  desktopWrapperClassName="hidden md:block"
+                  headerRowClassName="border-b border-success-200"
+                  headerCellClassName="py-1 font-medium text-gray-600"
+                  cellClassName="py-1"
+                  mobileContainerClassName="md:hidden space-y-2"
+                  mobileCardClassName="rounded-card border border-success-200 bg-white/70 p-3"
+                  mobileTitleClassName="text-sm font-semibold text-gray-900 mb-2"
+                  mobileLabelClassName="text-xs font-medium text-gray-600"
+                  mobileValueClassName="text-sm text-gray-900 text-right"
+                />
               </div>
             </div>
 
@@ -249,49 +270,91 @@ export default function PourquoiClasser() {
                 Paris applique une surtaxe départementale (+10 %) et une surtaxe Île-de-France
                 Mobilités (+200 %) sur la base de la taxe de séjour.
               </p>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <colgroup>
-                    <col className="w-1/3" />
-                    <col className="w-1/3" />
-                    <col className="w-1/3" />
-                  </colgroup>
-                  <thead>
-                    <tr className="border-b border-primary-200">
-                      <th className="text-center py-2 text-gray-600 font-medium"></th>
-                      <th className="text-center py-2 text-gray-600 font-medium">Non classé</th>
-                      <th className="text-center py-2 text-success-500 font-medium">Classé 3★</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-gray-700">
-                    <tr className="border-b border-primary-200/50">
-                      <td className="py-2 text-center">Base taxe de séjour</td>
-                      <td className="text-center">5 % × 60 € = 3,00 €</td>
-                      <td className="text-center text-success-600">1,70 €</td>
-                    </tr>
-                    <tr className="border-b border-primary-200/50">
-                      <td className="py-2 text-center">+ Surtaxe dépt. (10 %)</td>
-                      <td className="text-center">0,30 €</td>
-                      <td className="text-center text-success-600">0,17 €</td>
-                    </tr>
-                    <tr className="border-b border-primary-200/50">
-                      <td className="py-2 text-center">+ Surtaxe IDF Mobilités (200 %)</td>
-                      <td className="text-center">6,00 €</td>
-                      <td className="text-center text-success-600">3,40 €</td>
-                    </tr>
-                    <tr className="font-semibold border-t-2 border-primary-300">
-                      <td className="py-2 text-center">Total / pers / nuit</td>
-                      <td className="text-center">9,30 €</td>
-                      <td className="text-center text-success-600">5,27 €</td>
-                    </tr>
-                    <tr className="font-bold">
-                      <td className="py-2 text-center">Total 2 pers / nuit</td>
-                      <td className="text-center">18,60 €</td>
-                      <td className="text-center text-success-600">10,54 €</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <ResponsiveComparisonTable
+                primaryColumnKey="poste"
+                columns={[
+                  {
+                    key: 'poste',
+                    label: '',
+                    mobileLabel: 'Poste',
+                    align: 'center',
+                    widthClassName: 'w-1/3',
+                  },
+                  {
+                    key: 'nonClasse',
+                    label: 'Non classé',
+                    mobileLabel: 'Non classé',
+                    align: 'center',
+                    widthClassName: 'w-1/3',
+                    headerClassName: 'text-gray-600',
+                  },
+                  {
+                    key: 'classe3',
+                    label: 'Classé 3★',
+                    mobileLabel: 'Classé 3★',
+                    align: 'center',
+                    widthClassName: 'w-1/3',
+                    headerClassName: 'text-success-500',
+                  },
+                ]}
+                rows={[
+                  {
+                    key: 'base',
+                    rowClassName: 'border-b border-primary-200/50 text-gray-700',
+                    cells: {
+                      poste: 'Base taxe de séjour',
+                      nonClasse: '5 % × 60 € = 3,00 €',
+                      classe3: <span className="text-success-600">1,70 €</span>,
+                    },
+                  },
+                  {
+                    key: 'dept',
+                    rowClassName: 'border-b border-primary-200/50 text-gray-700',
+                    cells: {
+                      poste: '+ Surtaxe dépt. (10 %)',
+                      nonClasse: '0,30 €',
+                      classe3: <span className="text-success-600">0,17 €</span>,
+                    },
+                  },
+                  {
+                    key: 'idf',
+                    rowClassName: 'border-b border-primary-200/50 text-gray-700',
+                    cells: {
+                      poste: '+ Surtaxe IDF Mobilités (200 %)',
+                      nonClasse: '6,00 €',
+                      classe3: <span className="text-success-600">3,40 €</span>,
+                    },
+                  },
+                  {
+                    key: 'totalPers',
+                    rowClassName: 'border-t-2 border-primary-300 font-semibold text-gray-700',
+                    cells: {
+                      poste: 'Total / pers / nuit',
+                      nonClasse: '9,30 €',
+                      classe3: <span className="text-success-600">5,27 €</span>,
+                    },
+                  },
+                  {
+                    key: 'total2',
+                    rowClassName: 'font-bold text-gray-700',
+                    cells: {
+                      poste: 'Total 2 pers / nuit',
+                      nonClasse: '18,60 €',
+                      classe3: <span className="text-success-600">10,54 €</span>,
+                    },
+                  },
+                ]}
+                tableClassName="w-full text-sm"
+                desktopWrapperClassName="hidden md:block"
+                headerRowClassName="border-b border-primary-200"
+                headerCellClassName="py-2 font-medium"
+                cellClassName="py-2"
+                mobileContainerClassName="md:hidden space-y-2"
+                mobileCardClassName="rounded-card border border-primary-200 bg-white/70 p-3"
+                mobileTitleClassName="text-sm font-semibold text-gray-900 mb-2"
+                mobileLabelClassName="text-xs font-medium text-gray-600"
+                mobileValueClassName="text-sm text-gray-900 text-right"
+              />
               <div className="mt-4 text-center">
                 <span className="text-2xl font-bold text-success-400">8,06 €</span>
                 <span className="text-sm text-gray-600 ml-2">
@@ -325,53 +388,93 @@ export default function PourquoiClasser() {
               travailleurs indépendants, plus complexe et potentiellement plus lourd.
             </p>
 
-            <div className="overflow-x-auto mb-2">
-              <table className="w-full text-sm bg-white rounded-card overflow-hidden shadow-sm">
-                <thead>
-                  <tr className="bg-primary-200 text-gray-800">
-                    <th className="text-left px-4 py-3 font-semibold">Situation</th>
-                    <th className="text-left px-4 py-3 font-semibold">Meublé classé</th>
-                    <th className="text-left px-4 py-3 font-semibold">Meublé non classé</th>
-                    <th className="text-left px-4 py-3 font-semibold">À retenir</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3">Recettes &lt; 15 000 €/an</td>
-                    <td className="px-4 py-3">
-                      Prélèvements sociaux — pas de cotisations professionnelles
-                    </td>
-                    <td className="px-4 py-3">
-                      Prélèvements sociaux — pas de cotisations professionnelles
-                    </td>
-                    <td className="px-4 py-3">Même cadre dans les deux cas</td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3">15 000 € – 23 000 €/an</td>
-                    <td className="px-4 py-3">
-                      Pas de cotisations sociales — micro-BIC accessible
-                    </td>
-                    <td className="px-4 py-3">Pas de cotisations sociales — régime réel fiscal</td>
-                    <td className="px-4 py-3">
-                      Pas encore de cotisations ; divergence fiscale (voir bloc précédent)
-                    </td>
-                  </tr>
-                  <tr className="text-gray-700">
-                    <td className="px-4 py-3">&gt; 23 000 €/an</td>
-                    <td className="px-4 py-3 bg-success-100">
-                      Micro-social possible à{' '}
-                      <span className="font-bold text-success-500">6 %</span>*
-                    </td>
-                    <td className="px-4 py-3 bg-alert-100 font-medium">
-                      Régime des travailleurs indépendants
-                    </td>
-                    <td className="px-4 py-3">
-                      Le classement permet de conserver un cadre social plus simple et favorable
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <ResponsiveComparisonTable
+              className="mb-2"
+              primaryColumnKey="situation"
+              columns={[
+                {
+                  key: 'situation',
+                  label: 'Situation',
+                  mobileLabel: 'Situation',
+                  align: 'center',
+                  widthClassName: 'w-1/4',
+                },
+                {
+                  key: 'classe',
+                  label: 'Meublé classé',
+                  mobileLabel: 'Meublé classé',
+                  align: 'center',
+                  widthClassName: 'w-1/4',
+                },
+                {
+                  key: 'nonClasse',
+                  label: 'Meublé non classé',
+                  mobileLabel: 'Meublé non classé',
+                  align: 'center',
+                  widthClassName: 'w-1/4',
+                },
+                {
+                  key: 'retenir',
+                  label: 'À retenir',
+                  mobileLabel: 'À retenir',
+                  align: 'center',
+                  widthClassName: 'w-1/4',
+                },
+              ]}
+              rows={[
+                {
+                  key: 'lt15',
+                  rowClassName: 'text-gray-700',
+                  cells: {
+                    situation: 'Recettes < 15 000 €/an',
+                    classe: 'Prélèvements sociaux — pas de cotisations professionnelles',
+                    nonClasse: 'Prélèvements sociaux — pas de cotisations professionnelles',
+                    retenir: 'Même cadre dans les deux cas',
+                  },
+                },
+                {
+                  key: '15to23',
+                  rowClassName: 'text-gray-700',
+                  cells: {
+                    situation: '15 000 € – 23 000 €/an',
+                    classe: 'Pas de cotisations sociales — micro-BIC accessible',
+                    nonClasse: 'Pas de cotisations sociales — régime réel fiscal',
+                    retenir: 'Pas encore de cotisations ; divergence fiscale (voir bloc précédent)',
+                  },
+                },
+                {
+                  key: 'gt23',
+                  rowClassName: 'text-gray-700',
+                  cells: {
+                    situation: '> 23 000 €/an',
+                    classe: (
+                      <span className="block bg-success-100 p-2 rounded-card">
+                        Micro-social possible à{' '}
+                        <span className="font-bold text-success-500">6 %</span>*
+                      </span>
+                    ),
+                    nonClasse: (
+                      <span className="block bg-alert-100 p-2 rounded-card font-medium">
+                        Régime des travailleurs indépendants
+                      </span>
+                    ),
+                    retenir:
+                      'Le classement permet de conserver un cadre social plus simple et favorable',
+                  },
+                },
+              ]}
+              tableClassName="w-full text-sm bg-white rounded-card overflow-hidden shadow-sm"
+              desktopWrapperClassName="hidden md:block"
+              headerRowClassName="bg-primary-200 text-gray-800"
+              headerCellClassName="px-4 py-3 font-semibold"
+              bodyClassName="divide-y divide-gray-100"
+              cellClassName="px-4 py-3"
+              mobileContainerClassName="md:hidden space-y-3"
+              mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
+              mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
+              mobileLabelClassName="text-xs font-medium text-gray-600"
+              mobileValueClassName="text-sm text-gray-900 text-left"
+            />
             <p className="text-xs text-gray-500 mb-8 px-1">
               * Applicable entre 23 000 € et 83 600 €, si les recettes 2024 ou 2025 n'excèdent pas
               77 700 €. Au-delà de 83 600 €, le meublé classé bascule également vers le régime des
