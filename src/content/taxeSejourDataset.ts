@@ -7,13 +7,10 @@ export const TAXE_MASK_IDFM_200 = 8;
 
 export type TaxeSejourRegimeCode = 'r' | 'f';
 
-export type TaxeSejourCityTuple = [
-  id: string,
-  label: string,
-  searchKey: string,
-  regime: TaxeSejourRegimeCode,
-  multiPeriodFlag: 0 | 1,
-  taxMask: number,
+export type TaxeSejourPeriodTuple = [
+  key: string,
+  startLabel: string,
+  endLabel: string,
   nonClassRatePct: number,
   nonClassCap: number,
   star1Rate: number,
@@ -23,6 +20,19 @@ export type TaxeSejourCityTuple = [
   star5Rate: number,
 ];
 
+export type TaxeSejourAbatementTuple = [ratePercent: number, nightsMin: number, nightsMax: number];
+
+export type TaxeSejourCityTuple = [
+  id: string,
+  label: string,
+  searchKey: string,
+  classifiedRegime: TaxeSejourRegimeCode,
+  unclassifiedRegime: TaxeSejourRegimeCode,
+  taxMask: number,
+  periods: TaxeSejourPeriodTuple[],
+  abatements: TaxeSejourAbatementTuple[],
+];
+
 interface RawTaxeSejourDataset {
   v: string;
   sd: string;
@@ -30,13 +40,10 @@ interface RawTaxeSejourDataset {
   c: TaxeSejourCityTuple[];
 }
 
-export interface TaxeSejourCity {
-  id: string;
-  label: string;
-  searchKey: string;
-  regime: TaxeSejourRegimeCode;
-  hasMultiplePeriods: boolean;
-  taxMask: number;
+export interface TaxeSejourPeriod {
+  key: string;
+  startLabel: string;
+  endLabel: string;
   rates: {
     nonClassRatePct: number;
     nonClassCap: number;
@@ -48,6 +55,24 @@ export interface TaxeSejourCity {
   };
 }
 
+export interface TaxeSejourAbatement {
+  ratePercent: number;
+  nightsMin: number;
+  nightsMax: number;
+}
+
+export interface TaxeSejourCity {
+  id: string;
+  label: string;
+  searchKey: string;
+  classifiedRegime: TaxeSejourRegimeCode;
+  unclassifiedRegime: TaxeSejourRegimeCode;
+  taxMask: number;
+  periods: TaxeSejourPeriod[];
+  abatements: TaxeSejourAbatement[];
+  hasMultiplePeriods: boolean;
+}
+
 export interface TaxeSejourDataset {
   version: string;
   sourceDate: string;
@@ -55,23 +80,55 @@ export interface TaxeSejourDataset {
   cities: TaxeSejourCity[];
 }
 
-function isTaxeSejourCityTuple(value: unknown): value is TaxeSejourCityTuple {
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
+function isRegimeCode(value: unknown): value is TaxeSejourRegimeCode {
+  return value === 'r' || value === 'f';
+}
+
+function isTaxeSejourPeriodTuple(value: unknown): value is TaxeSejourPeriodTuple {
   return (
     Array.isArray(value) &&
-    value.length === 13 &&
+    value.length === 10 &&
     typeof value[0] === 'string' &&
     typeof value[1] === 'string' &&
     typeof value[2] === 'string' &&
-    (value[3] === 'r' || value[3] === 'f') &&
-    (value[4] === 0 || value[4] === 1) &&
-    typeof value[5] === 'number' &&
-    typeof value[6] === 'number' &&
-    typeof value[7] === 'number' &&
-    typeof value[8] === 'number' &&
-    typeof value[9] === 'number' &&
-    typeof value[10] === 'number' &&
-    typeof value[11] === 'number' &&
-    typeof value[12] === 'number'
+    isFiniteNumber(value[3]) &&
+    isFiniteNumber(value[4]) &&
+    isFiniteNumber(value[5]) &&
+    isFiniteNumber(value[6]) &&
+    isFiniteNumber(value[7]) &&
+    isFiniteNumber(value[8]) &&
+    isFiniteNumber(value[9])
+  );
+}
+
+function isTaxeSejourAbatementTuple(value: unknown): value is TaxeSejourAbatementTuple {
+  return (
+    Array.isArray(value) &&
+    value.length === 3 &&
+    isFiniteNumber(value[0]) &&
+    isFiniteNumber(value[1]) &&
+    isFiniteNumber(value[2])
+  );
+}
+
+function isTaxeSejourCityTuple(value: unknown): value is TaxeSejourCityTuple {
+  return (
+    Array.isArray(value) &&
+    value.length === 8 &&
+    typeof value[0] === 'string' &&
+    typeof value[1] === 'string' &&
+    typeof value[2] === 'string' &&
+    isRegimeCode(value[3]) &&
+    isRegimeCode(value[4]) &&
+    isFiniteNumber(value[5]) &&
+    Array.isArray(value[6]) &&
+    value[6].every(isTaxeSejourPeriodTuple) &&
+    Array.isArray(value[7]) &&
+    value[7].every(isTaxeSejourAbatementTuple)
   );
 }
 
@@ -90,23 +147,43 @@ function isRawDataset(value: unknown): value is RawTaxeSejourDataset {
   );
 }
 
+function decodePeriod(tuple: TaxeSejourPeriodTuple): TaxeSejourPeriod {
+  return {
+    key: tuple[0],
+    startLabel: tuple[1],
+    endLabel: tuple[2],
+    rates: {
+      nonClassRatePct: tuple[3],
+      nonClassCap: tuple[4],
+      star1Rate: tuple[5],
+      star2Rate: tuple[6],
+      star3Rate: tuple[7],
+      star4Rate: tuple[8],
+      star5Rate: tuple[9],
+    },
+  };
+}
+
+function decodeAbatement(tuple: TaxeSejourAbatementTuple): TaxeSejourAbatement {
+  return {
+    ratePercent: tuple[0],
+    nightsMin: tuple[1],
+    nightsMax: tuple[2],
+  };
+}
+
 function decodeCity(tuple: TaxeSejourCityTuple): TaxeSejourCity {
+  const periods = tuple[6].map(decodePeriod);
   return {
     id: tuple[0],
     label: tuple[1],
     searchKey: tuple[2],
-    regime: tuple[3],
-    hasMultiplePeriods: tuple[4] === 1,
+    classifiedRegime: tuple[3],
+    unclassifiedRegime: tuple[4],
     taxMask: tuple[5],
-    rates: {
-      nonClassRatePct: tuple[6],
-      nonClassCap: tuple[7],
-      star1Rate: tuple[8],
-      star2Rate: tuple[9],
-      star3Rate: tuple[10],
-      star4Rate: tuple[11],
-      star5Rate: tuple[12],
-    },
+    periods,
+    abatements: tuple[7].map(decodeAbatement),
+    hasMultiplePeriods: periods.length > 1,
   };
 }
 
@@ -129,12 +206,12 @@ export async function loadTaxeSejourDataset(signal?: AbortSignal): Promise<TaxeS
   });
 
   if (!response.ok) {
-    throw new Error(`Impossible de charger le dataset taxe de sejour (HTTP ${response.status}).`);
+    throw new Error(`Impossible de charger le dataset taxe de séjour (HTTP ${response.status}).`);
   }
 
   const rawData: unknown = await response.json();
   if (!isRawDataset(rawData)) {
-    throw new Error('Format de dataset taxe de sejour invalide.');
+    throw new Error('Format de dataset taxe de séjour invalide.');
   }
 
   return {

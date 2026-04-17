@@ -16,8 +16,18 @@ import {
 interface FormErrors {
   city?: string;
   nightlyPriceHt?: string;
-  capacity?: string;
   nights?: string;
+  capacity?: string;
+  personsStaying?: string;
+  exemptedPersons?: string;
+}
+
+interface ParsedFormValues {
+  nightlyPriceHt: number;
+  nights: number;
+  capacity?: number;
+  personsStaying?: number;
+  exemptedPersons?: number;
 }
 
 interface PreparedCitySearch {
@@ -70,6 +80,14 @@ function getDeltaClassName(delta: number): string {
 
 function getNightsLabel(nights: number): string {
   return `${nights} ${nights > 1 ? 'nuits' : 'nuit'}`;
+}
+
+function isFullYearPeriod(startLabel: string, endLabel: string): boolean {
+  const normalizedStart = startLabel.trim().toLowerCase();
+  const normalizedEnd = endLabel.trim().toLowerCase();
+  const isJanuaryStart = /^(0?1|1er)\s+janvier$/.test(normalizedStart);
+  const isDecemberEnd = /^31\s+d[ée]cembre$/.test(normalizedEnd);
+  return isJanuaryStart && isDecemberEnd;
 }
 
 function extractCityNameWithoutDepartment(label: string): string {
@@ -181,6 +199,8 @@ export default function SimulateurTaxeSejour() {
   const [nightlyPriceHt, setNightlyPriceHt] = useState('');
   const [capacity, setCapacity] = useState('');
   const [nights, setNights] = useState('');
+  const [personsStaying, setPersonsStaying] = useState('');
+  const [exemptedPersons, setExemptedPersons] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
 
   const [result, setResult] = useState<TaxeSejourCalculationOutput | null>(null);
@@ -235,6 +255,11 @@ export default function SimulateurTaxeSejour() {
     return dataset.cities.find((city) => city.id === selectedCityId) ?? null;
   }, [dataset, selectedCityId]);
 
+  const requiresCapacity = selectedCity?.classifiedRegime === 'f';
+  const requiresOccupancy = selectedCity
+    ? selectedCity.classifiedRegime === 'r' || selectedCity.unclassifiedRegime === 'r'
+    : false;
+
   const normalizedQuery = useMemo(() => normalizeTaxeSejourSearchTerm(cityQuery), [cityQuery]);
 
   const preparedCitySearch = useMemo(() => {
@@ -278,22 +303,22 @@ export default function SimulateurTaxeSejour() {
         continue;
       }
 
-      if (normalizedCityName.startsWith(normalizedQuery)) {
+      const tokenExactIndex = normalizedNameTokens.findIndex((token) => token === normalizedQuery);
+      if (tokenExactIndex >= 0) {
         strictMatches.push({
           city,
-          tier: 2,
-          position: 0,
+          tier: 1,
+          position: Math.abs(normalizedCityName.length - normalizedQuery.length),
           length: normalizedCityName.length,
         });
         continue;
       }
 
-      const tokenPrefixIndex = normalizedNameTokens.findIndex((token) => token === normalizedQuery);
-      if (tokenPrefixIndex >= 0) {
+      if (normalizedCityName.startsWith(normalizedQuery)) {
         strictMatches.push({
           city,
-          tier: 1,
-          position: Math.abs(normalizedCityName.length - normalizedQuery.length),
+          tier: 2,
+          position: 0,
           length: normalizedCityName.length,
         });
         continue;
@@ -398,12 +423,19 @@ export default function SimulateurTaxeSejour() {
     setErrors((previous) => ({ ...previous, city: undefined }));
   }
 
+  function clearResultState() {
+    setResult(null);
+    setResultCityLabel('');
+    setResultNights(1);
+  }
+
   function selectCity(city: TaxeSejourCity) {
     setCityQuery(city.label);
     setSelectedCityId(city.id);
     setIsListOpen(false);
     setHighlightedIndex(-1);
     clearCityError();
+    clearResultState();
   }
 
   function handleCityInputChange(nextValue: string) {
@@ -412,6 +444,7 @@ export default function SimulateurTaxeSejour() {
     setIsListOpen(true);
     setHighlightedIndex(-1);
     clearCityError();
+    clearResultState();
   }
 
   function handleCityInputBlur() {
@@ -425,6 +458,10 @@ export default function SimulateurTaxeSejour() {
     if (suggestions.length > 0) {
       setIsListOpen(true);
     }
+  }
+
+  function handleCityInputClick(event: React.MouseEvent<HTMLInputElement>) {
+    event.currentTarget.select();
   }
 
   function handleCityInputKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -463,15 +500,14 @@ export default function SimulateurTaxeSejour() {
     }
   }
 
-  function validateForm(): {
-    parsedNightlyPriceHt: number;
-    parsedCapacity: number;
-    parsedNights: number;
-  } | null {
+  function validateForm(): ParsedFormValues | null {
     const nextErrors: FormErrors = {};
     const parsedNightlyPriceHt = Number(nightlyPriceHt.replace(',', '.'));
-    const parsedCapacity = Number(capacity);
     const parsedNights = Number(nights);
+    const parsedCapacity = Number(capacity);
+    const parsedPersonsStaying = Number(personsStaying);
+    const hasExemptedInput = exemptedPersons.trim() !== '';
+    const parsedExemptedPersons = hasExemptedInput ? Number(exemptedPersons) : 0;
 
     if (!selectedCity) {
       nextErrors.city = 'Sélectionnez une commune dans la liste de suggestions.';
@@ -481,16 +517,56 @@ export default function SimulateurTaxeSejour() {
       nextErrors.nightlyPriceHt = 'Saisissez un prix HT strictement positif.';
     }
 
-    if (
-      !Number.isFinite(parsedCapacity) ||
-      parsedCapacity <= 0 ||
-      !Number.isInteger(parsedCapacity)
-    ) {
-      nextErrors.capacity = 'Saisissez une capacité entière strictement positive.';
-    }
-
     if (!Number.isFinite(parsedNights) || parsedNights <= 0 || !Number.isInteger(parsedNights)) {
       nextErrors.nights = 'Saisissez un nombre de nuits entier strictement positif.';
+    }
+
+    if (requiresCapacity) {
+      if (
+        !Number.isFinite(parsedCapacity) ||
+        parsedCapacity <= 0 ||
+        !Number.isInteger(parsedCapacity)
+      ) {
+        nextErrors.capacity = 'Saisissez une capacité d’accueil entière strictement positive.';
+      }
+    }
+
+    if (requiresOccupancy) {
+      if (
+        !Number.isFinite(parsedPersonsStaying) ||
+        parsedPersonsStaying <= 0 ||
+        !Number.isInteger(parsedPersonsStaying)
+      ) {
+        nextErrors.personsStaying = 'Saisissez un nombre entier strictement positif.';
+      }
+
+      if (
+        hasExemptedInput &&
+        (!Number.isFinite(parsedExemptedPersons) ||
+          parsedExemptedPersons < 0 ||
+          !Number.isInteger(parsedExemptedPersons))
+      ) {
+        nextErrors.exemptedPersons = 'Saisissez un nombre entier positif ou nul.';
+      }
+
+      if (
+        Number.isFinite(parsedPersonsStaying) &&
+        Number.isFinite(parsedExemptedPersons) &&
+        parsedExemptedPersons > parsedPersonsStaying
+      ) {
+        nextErrors.exemptedPersons =
+          'Le nombre de personnes exonérées ne peut pas dépasser les personnes accueillies.';
+      }
+
+      if (
+        requiresCapacity &&
+        Number.isFinite(parsedCapacity) &&
+        Number.isFinite(parsedPersonsStaying) &&
+        parsedPersonsStaying > parsedCapacity
+      ) {
+        nextErrors.personsStaying =
+          "Le nombre de personnes accueillies ne peut pas dépasser la capacité d'accueil.";
+      }
     }
 
     setErrors(nextErrors);
@@ -499,10 +575,26 @@ export default function SimulateurTaxeSejour() {
     }
 
     return {
-      parsedNightlyPriceHt,
-      parsedCapacity,
-      parsedNights,
+      nightlyPriceHt: parsedNightlyPriceHt,
+      nights: parsedNights,
+      capacity: requiresCapacity ? parsedCapacity : undefined,
+      personsStaying: requiresOccupancy ? parsedPersonsStaying : undefined,
+      exemptedPersons: requiresOccupancy ? parsedExemptedPersons : undefined,
     };
+  }
+
+  function computeResult(city: TaxeSejourCity, values: ParsedFormValues) {
+    return calculateTaxeSejour(
+      {
+        cityId: city.id,
+        nightlyPriceHt: values.nightlyPriceHt,
+        nights: values.nights,
+        capacity: values.capacity,
+        personsStaying: values.personsStaying,
+        exemptedPersons: values.exemptedPersons,
+      },
+      city
+    );
   }
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -520,19 +612,11 @@ export default function SimulateurTaxeSejour() {
       return;
     }
 
-    const computed = calculateTaxeSejour(
-      {
-        cityId: selectedCity.id,
-        nightlyPriceHt: parsedValues.parsedNightlyPriceHt,
-        capacity: parsedValues.parsedCapacity,
-        nights: parsedValues.parsedNights,
-      },
-      selectedCity
-    );
+    const computed = computeResult(selectedCity, parsedValues);
 
     setResult(computed);
     setResultCityLabel(selectedCity.label);
-    setResultNights(parsedValues.parsedNights);
+    setResultNights(parsedValues.nights);
   }
 
   return (
@@ -568,20 +652,18 @@ export default function SimulateurTaxeSejour() {
               )}
 
               {!isLoading && !loadingError && (
-                <form
-                  className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4"
-                  onSubmit={handleSubmit}
-                  noValidate
-                >
-                  <div className="relative">
+                <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+                  <div className="relative max-w-2xl">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ville <span className="text-alert-400 ml-1">*</span>
+                      Ville <span className="ml-1 text-alert-400">*</span>
                     </label>
                     <input
                       type="text"
+                      required
                       value={cityQuery}
                       onChange={(event) => handleCityInputChange(event.target.value)}
                       onFocus={handleCityInputFocus}
+                      onClick={handleCityInputClick}
                       onBlur={handleCityInputBlur}
                       onKeyDown={handleCityInputKeyDown}
                       placeholder="Ex: Biarritz"
@@ -627,67 +709,152 @@ export default function SimulateurTaxeSejour() {
                     {errors.city && <p className="mt-2 text-sm text-alert-400">{errors.city}</p>}
                   </div>
 
-                  <Input
-                    label="Capacité d'accueil"
-                    type="number"
-                    min="1"
-                    step="1"
-                    inputMode="numeric"
-                    placeholder="Ex: 4"
-                    value={capacity}
-                    onChange={(event) => {
-                      setCapacity(event.target.value);
-                      if (errors.capacity) {
-                        setErrors((previous) => ({ ...previous, capacity: undefined }));
-                      }
-                    }}
-                    error={errors.capacity}
-                    required
-                  />
+                  {selectedCity && (
+                    <>
+                      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+                        <Input
+                          label="Prix de la nuit HT (EUR)"
+                          required
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          inputMode="decimal"
+                          placeholder="Ex: 120"
+                          value={nightlyPriceHt}
+                          onChange={(event) => {
+                            setNightlyPriceHt(event.target.value);
+                            if (errors.nightlyPriceHt) {
+                              setErrors((previous) => ({ ...previous, nightlyPriceHt: undefined }));
+                            }
+                          }}
+                          error={errors.nightlyPriceHt}
+                        />
 
-                  <Input
-                    label="Prix de la nuit HT (EUR)"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    inputMode="decimal"
-                    placeholder="Ex: 120"
-                    value={nightlyPriceHt}
-                    onChange={(event) => {
-                      setNightlyPriceHt(event.target.value);
-                      if (errors.nightlyPriceHt) {
-                        setErrors((previous) => ({ ...previous, nightlyPriceHt: undefined }));
-                      }
-                    }}
-                    error={errors.nightlyPriceHt}
-                    required
-                  />
+                        <Input
+                          label="Nombre de nuits"
+                          required
+                          type="number"
+                          min="1"
+                          step="1"
+                          inputMode="numeric"
+                          placeholder="Ex: 3"
+                          value={nights}
+                          onChange={(event) => {
+                            setNights(event.target.value);
+                            if (errors.nights) {
+                              setErrors((previous) => ({ ...previous, nights: undefined }));
+                            }
+                          }}
+                          error={errors.nights}
+                        />
 
-                  <Input
-                    label="Nombre de nuits"
-                    type="number"
-                    min="1"
-                    step="1"
-                    inputMode="numeric"
-                    placeholder="Ex: 3"
-                    value={nights}
-                    onChange={(event) => {
-                      setNights(event.target.value);
-                      if (errors.nights) {
-                        setErrors((previous) => ({ ...previous, nights: undefined }));
-                      }
-                    }}
-                    error={errors.nights}
-                    required
-                  />
+                        {requiresCapacity && (
+                          <Input
+                            label="Capacité d'accueil"
+                            type="number"
+                            min="1"
+                            step="1"
+                            inputMode="numeric"
+                            placeholder="Ex: 4"
+                            value={capacity}
+                            onChange={(event) => {
+                              setCapacity(event.target.value);
+                              if (errors.capacity) {
+                                setErrors((previous) => ({ ...previous, capacity: undefined }));
+                              }
+                            }}
+                            error={errors.capacity}
+                          />
+                        )}
 
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-full md:col-span-2 xl:col-span-4"
-                  >
-                    Calculer
-                  </Button>
+                        {requiresOccupancy && (
+                          <>
+                            <Input
+                              label="Personnes accueillies"
+                              required
+                              type="number"
+                              min="1"
+                              step="1"
+                              inputMode="numeric"
+                              placeholder="Ex: 4"
+                              value={personsStaying}
+                              onChange={(event) => {
+                                setPersonsStaying(event.target.value);
+                                if (errors.personsStaying) {
+                                  setErrors((previous) => ({
+                                    ...previous,
+                                    personsStaying: undefined,
+                                  }));
+                                }
+                              }}
+                              error={errors.personsStaying}
+                            />
+
+                            <div className="w-full">
+                              <div className="mb-2 h-5 flex items-center">
+                                <div className="inline-flex items-center gap-2">
+                                  <label
+                                    htmlFor="exempted-persons-input"
+                                    className="text-sm font-medium text-gray-700"
+                                  >
+                                    Personnes exonérées
+                                  </label>
+                                  <div className="group relative">
+                                    <button
+                                      type="button"
+                                      tabIndex={-1}
+                                      className="-translate-y-[2px] inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-gray-400 text-[10px] font-semibold leading-none text-gray-600"
+                                      aria-label="Qui peut être exonéré: mineurs, salariés saisonniers de la commune, personnes hébergées en urgence ou relogées temporairement, et logements sous le seuil de loyer fixé localement."
+                                    >
+                                      i
+                                    </button>
+                                    <div className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-xs leading-relaxed text-gray-700 shadow-card group-hover:block group-focus-within:block">
+                                      En général, sont exonérés: les mineurs, les salariés
+                                      saisonniers employés dans la commune, les personnes hébergées
+                                      en urgence ou relogées temporairement, et les logements dont
+                                      le loyer est sous le seuil fixé localement.
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <input
+                                id="exempted-persons-input"
+                                type="number"
+                                min="0"
+                                step="1"
+                                inputMode="numeric"
+                                placeholder="Ex: 1"
+                                value={exemptedPersons}
+                                onChange={(event) => {
+                                  setExemptedPersons(event.target.value);
+                                  if (errors.exemptedPersons) {
+                                    setErrors((previous) => ({
+                                      ...previous,
+                                      exemptedPersons: undefined,
+                                    }));
+                                  }
+                                }}
+                                className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-transparent transition-all duration-200 ${
+                                  errors.exemptedPersons
+                                    ? 'border-alert-400 focus:ring-alert-400'
+                                    : ''
+                                }`}
+                              />
+                              {errors.exemptedPersons && (
+                                <p className="mt-2 text-sm text-alert-400">
+                                  {errors.exemptedPersons}
+                                </p>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+
+                      <Button type="submit" variant="primary" className="w-full md:w-auto">
+                        Calculer
+                      </Button>
+                    </>
+                  )}
                 </form>
               )}
             </Card>
@@ -695,15 +862,33 @@ export default function SimulateurTaxeSejour() {
             {result && (
               <Card className="p-8" hover={false}>
                 <h2 className="text-h4 mb-2">Résultats</h2>
-                <p className="text-sm text-textLight mb-6">
+                <p className="text-sm text-textLight mb-2">
                   Montants estimés pour {getNightsLabel(resultNights)}, avec taxes additionnelles
                   incluses si applicables.
                 </p>
+                {isFullYearPeriod(
+                  result.selectedPeriod.startLabel,
+                  result.selectedPeriod.endLabel
+                ) ? (
+                  <p className="text-sm text-textLight mb-6">
+                    Tarifs applicables du {result.selectedPeriod.startLabel} au{' '}
+                    {result.selectedPeriod.endLabel}.
+                  </p>
+                ) : (
+                  <p className="text-sm text-textLight mb-6">
+                    Tarifs applicables du {result.selectedPeriod.startLabel} au{' '}
+                    {result.selectedPeriod.endLabel}. En dehors de cette période, la taxe de séjour
+                    n&apos;est pas prélevée.
+                  </p>
+                )}
 
                 <div className="space-y-6">
-                  <p className="text-sm text-gray-700">
-                    Commune sélectionnée: <strong>{resultCityLabel}</strong>
-                  </p>
+                  <div className="text-sm text-gray-700">
+                    <span>
+                      Commune sélectionnée: <strong>{resultCityLabel}</strong>
+                    </span>
+                  </div>
+
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
                       <thead>
@@ -723,7 +908,14 @@ export default function SimulateurTaxeSejour() {
                               index % 2 === 0 ? 'bg-white border-b border-gray-100' : 'bg-gray-50'
                             }
                           >
-                            <td className="p-3 text-gray-700">{row.category}</td>
+                            <td className="p-3 text-gray-700">
+                              <span>{row.category}</span>
+                              {row.status === 'indicatif' && (
+                                <span className="ml-2 text-xs font-semibold text-warning-500">
+                                  indicatif
+                                </span>
+                              )}
+                            </td>
                             <td
                               className={`p-3 text-right font-semibold ${
                                 row.category === 'Non classé' ? 'text-primary-500' : 'text-gray-900'
@@ -733,7 +925,7 @@ export default function SimulateurTaxeSejour() {
                             </td>
                             <td className="p-3 text-right">
                               {row.category === 'Non classé' ? (
-                                <span className="font-semibold text-primary-500">Référence</span>
+                                <span className="font-semibold text-primary-500">0,00 €</span>
                               ) : (
                                 <span
                                   className={`font-semibold ${getDeltaClassName(
@@ -749,6 +941,17 @@ export default function SimulateurTaxeSejour() {
                       </tbody>
                     </table>
                   </div>
+
+                  {result.warnings.length > 0 && (
+                    <div className="rounded-card border border-warning-200 bg-warning-100 p-4">
+                      <h3 className="font-semibold text-gray-900 mb-2">Avertissements de calcul</h3>
+                      <ul className="space-y-2 text-sm text-gray-700">
+                        {result.warnings.map((warning) => (
+                          <li key={warning}>- {warning}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   <div className="rounded-card border border-gray-200 p-4 bg-gray-50">
                     <h3 className="font-semibold text-gray-900 mb-3">Taxes additionnelles</h3>
@@ -780,17 +983,6 @@ export default function SimulateurTaxeSejour() {
                       ))}
                     </ul>
                   </div>
-
-                  {result.warnings.length > 0 && (
-                    <div className="rounded-card border border-warning-200 bg-warning-100 p-4">
-                      <h3 className="font-semibold text-gray-900 mb-2">Avertissements de calcul</h3>
-                      <ul className="space-y-2 text-sm text-gray-700">
-                        {result.warnings.map((warning) => (
-                          <li key={warning}>- {warning}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
 
                   <p className="text-sm text-textLight leading-comfortable">
                     Cette simulation est fournie à titre informatif sur la base des délibérations

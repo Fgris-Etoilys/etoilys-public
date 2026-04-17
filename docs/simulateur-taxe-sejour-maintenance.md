@@ -2,11 +2,12 @@
 
 ## Objectif
 
-Ce document décrit comment maintenir le simulateur disponible sur `/simulateur-taxe-sejour` :
+Ce document décrit comment maintenir le simulateur disponible sur `/simulateur-taxe-sejour`:
 
 - mettre à jour les données sources (XML/PDF),
 - régénérer le dataset consommé par le front,
-- vérifier rapidement que le calcul et l'autocomplete restent cohérents.
+- vérifier la cohérence juridique du calcul (régimes, périodes, abattements),
+- valider rapidement l'autocomplete et l'affichage.
 
 Le simulateur historique `/simulateur` n'est pas concerné.
 
@@ -26,69 +27,84 @@ Le simulateur historique `/simulateur` n'est pas concerné.
 - UI simulateur:
   - `src/pages/SimulateurTaxeSejour.tsx`
 
-## Fonctionnement (rappel)
+## Rappel fonctionnel
 
-Entrées utilisateur:
+Interface guidée par régime:
 
-- Ville (autocomplete: `Ville (Département)`, sans code INSEE affiché),
-- Prix de la nuit HT,
-- Capacité du meublé,
-- Nombre de nuits.
+- au chargement, seul le champ `Ville` est affiché,
+- après sélection, l'UI affiche uniquement les champs utiles au calcul:
+  - toujours `Prix de la nuit HT` et `Nombre de nuits`,
+  - `Capacité d'accueil` uniquement si `classifiedRegime = forfaitaire`,
+  - `Personnes accueillies` et `Personnes exonérées` quand un calcul au réel est nécessaire,
+- `Personnes exonérées` est optionnel (valeur par défaut: `0`) avec info-bulle sur les cas d'exonération.
+
+Périodes:
+
+- le simulateur utilise la première période publiée dans le dataset pour la commune,
+- il n'y a plus de sélecteur de période dans l'interface.
 
 Sorties:
 
-- Tableau des montants par catégorie: `Non classé`, `1*`, `2*`, `3*`, `4*`, `5*`,
-- Montants en euros arrondis à 2 décimales,
-- Taxes additionnelles en binaire `OUI/NON` avec références légales,
-- Avertissements (régime forfaitaire, multi-périodes).
+- tableau `Non classé`, `1*`, `2*`, `3*`, `4*`, `5*`,
+- statut par ligne (`exact` / `indicatif`),
+- bloc taxes additionnelles `OUI/NON`,
+- avertissements explicites (hypothèses, forfait).
+
+## Contrat dataset actuel (v2)
+
+Chaque ville contient notamment:
+
+- `classifiedRegime` (nature `4`),
+- `unclassifiedRegime` (nature `10`),
+- `periods[]` avec `dateDebut`, `dateFin` et tarifs de calcul,
+- `abatements[]` (`taux`, `nuiteMin`, `nuiteMax`) pour les cas forfaitaires.
+
+Le script intègre aussi:
+
+- les communes issues de `collectivites`,
+- les cas "ville seule" via `collectiviteDeliberante.codeInsee` (ex: Paris).
 
 ## Procédure de mise à jour des données
 
 1. Remplacer les fichiers sources:
    - `docs/taxe_sejour_donnees_deliberations.xml`
    - `docs/fiche_technique_taxe_sejour.pdf`
-2. Régénérer le dataset front:
+2. Régénérer le dataset:
 
 ```bash
 npm run taxe-sejour:data
 ```
 
-3. Vérifier que le fichier a bien été produit:
+3. Vérifier la présence du fichier généré:
    - `public/data/taxe-sejour-dataset.v1.json`
-4. Vérifier manuellement le simulateur sur `/simulateur-taxe-sejour`:
-   - `grenoble` doit proposer `GRENOBLE (38)`,
-   - `paris` doit proposer `VILLE DE PARIS (75)`,
-   - faute simple type `pairs` doit proposer des résultats proches.
-5. Vérifier la compilation TypeScript:
+4. Vérifier manuellement le simulateur:
+   - `grenoble` propose `GRENOBLE (38)`,
+   - `paris` propose `VILLE DE PARIS (75)`,
+   - faute simple `pairs` propose des résultats proches.
+5. Lancer les vérifications techniques:
 
 ```bash
+npx vitest run src/utils/taxeSejourCalculator.test.ts scripts/build-taxe-sejour-dataset.test.ts
 npx tsc --noEmit
 ```
 
 ## Points de vigilance
 
-- Le script de build gère les deux cas:
-  - délibérations avec bloc `collectivites`,
-  - délibérations "ville seule" via `collectiviteDeliberante.codeInsee` (cas Paris).
-- Le chargement dataset utilise `cache: 'no-store'` pour éviter de servir un ancien JSON.
-- L'autocomplete trie les suggestions par pertinence (pas uniquement par `includes`) et applique un fallback tolérant aux fautes simples.
+- Le mode forfait reste indicatif: le calcul annuel exact nécessite des données d'exploitation non fournies à l'interface.
+- En mode forfait, la simulation n'applique pas d'abattement local: elle utilise une formule simplifiée séjour type (`tarif × capacité × nuits`) pour comparer les catégories.
+- Le warning forfait doit rappeler explicitement que le calcul légal repose sur la période d'ouverture/de mise en location et la capacité d'accueil, qu'un abattement local peut exister, et qu'il n'est pas intégré ici.
+- Le chargement dataset utilise `cache: 'no-store'` pour éviter un JSON obsolète.
 - Aucun affichage du code INSEE côté interface.
-
-## Si les résultats semblent incohérents
-
-- Vérifier que le JSON a été régénéré après mise à jour du XML.
-- Vérifier que le navigateur n'affiche pas une ancienne build front.
-- Comparer une commune cible dans le JSON généré (label + rates + taxMask).
-- Contrôler le régime:
-  - `r` = réel,
-  - `f` = forfaitaire (résultat affiché comme indicatif).
 
 ## Commandes utiles
 
 ```bash
-# Régénérer le dataset
+# Régénérer le dataset à partir du XML
 npm run taxe-sejour:data
 
-# Vérifier le typage
+# Vérifier les tests ciblés simulateur
+npx vitest run src/utils/taxeSejourCalculator.test.ts scripts/build-taxe-sejour-dataset.test.ts
+
+# Vérifier le typage global
 npx tsc --noEmit
 ```

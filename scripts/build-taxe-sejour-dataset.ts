@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { XMLParser } from 'fast-xml-parser';
 
 const ROOT_DIR = process.cwd();
@@ -7,7 +8,8 @@ const INPUT_XML_PATH = path.join(ROOT_DIR, 'docs', 'taxe_sejour_donnees_delibera
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public', 'data');
 const OUTPUT_JSON_PATH = path.join(OUTPUT_DIR, 'taxe-sejour-dataset.v1.json');
 
-const MEUBLE_NATURE_ID = '4';
+const CLASSIFIED_NATURE_ID = '4';
+const UNCLASSIFIED_NATURE_ID = '10';
 const TAX_MASK_DEPARTMENTAL_10 = 1;
 const TAX_MASK_REGIONAL_15 = 2;
 const TAX_MASK_LGV_34 = 4;
@@ -15,13 +17,10 @@ const TAX_MASK_IDFM_200 = 8;
 
 type RegimeCode = 'r' | 'f';
 
-type CityTuple = [
-  id: string,
-  label: string,
-  searchKey: string,
-  regime: RegimeCode,
-  multiPeriodFlag: 0 | 1,
-  taxMask: number,
+type PeriodTuple = [
+  key: string,
+  startLabel: string,
+  endLabel: string,
   nonClassRatePct: number,
   nonClassCap: number,
   star1Rate: number,
@@ -31,7 +30,20 @@ type CityTuple = [
   star5Rate: number,
 ];
 
-interface CompactDataset {
+type AbatementTuple = [ratePercent: number, nightsMin: number, nightsMax: number];
+
+type CityTuple = [
+  id: string,
+  label: string,
+  searchKey: string,
+  classifiedRegime: RegimeCode,
+  unclassifiedRegime: RegimeCode,
+  taxMask: number,
+  periods: PeriodTuple[],
+  abatements: AbatementTuple[],
+];
+
+export interface CompactDataset {
   v: string;
   sd: string;
   g: string;
@@ -54,9 +66,17 @@ interface RawTarif extends TextNode {
 }
 
 interface RawPeriode {
+  dateDebut?: string;
+  dateFin?: string;
   tarifs?: {
     tarif?: RawTarif | RawTarif[];
   };
+}
+
+interface RawAbattement {
+  taux?: string;
+  nuiteMin?: string;
+  nuiteMax?: string;
 }
 
 interface RawRegime extends TextNode {
@@ -87,6 +107,9 @@ interface RawDeliberation {
   periodes?: {
     periode?: RawPeriode | RawPeriode[];
   };
+  abattements?: {
+    abattement?: RawAbattement | RawAbattement[];
+  };
 }
 
 interface RawDeltaRoot {
@@ -104,16 +127,11 @@ interface CityAccumulator {
   cityName: string;
   departmentCode: string;
   epciName: string;
-  regime: RegimeCode;
-  multiPeriodFlag: 0 | 1;
+  classifiedRegime: RegimeCode;
+  unclassifiedRegime: RegimeCode;
   taxMask: number;
-  nonClassRatePct: number;
-  nonClassCap: number;
-  star1Rate: number;
-  star2Rate: number;
-  star3Rate: number;
-  star4Rate: number;
-  star5Rate: number;
+  periods: PeriodTuple[];
+  abatements: AbatementTuple[];
   deliberationTimestamp: number;
 }
 
@@ -139,6 +157,14 @@ function parseNumber(value: unknown): number {
   const raw = readText(value).replace(',', '.');
   const parsed = Number(raw);
   return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function parseInteger(value: unknown): number {
+  const parsed = Number(readText(value));
+  if (!Number.isFinite(parsed)) {
+    return NaN;
+  }
+  return Math.trunc(parsed);
 }
 
 function parseBoolean(value: unknown): boolean {
@@ -168,6 +194,10 @@ function normalizeForSearch(value: string): string {
     .toLowerCase();
 }
 
+function toRegimeCode(regimeText: string): RegimeCode {
+  return regimeText.toLowerCase() === 'forfaitaire' ? 'f' : 'r';
+}
+
 function buildTaxMask(deliberation: RawDeliberation): number {
   let mask = 0;
   if (parseBoolean(deliberation.taxeAdditionnelleDepartementale)) {
@@ -185,77 +215,100 @@ function buildTaxMask(deliberation: RawDeliberation): number {
   return mask;
 }
 
-function getMeubleRegime(deliberation: RawDeliberation): RegimeCode {
+function getRegimeByNatureId(deliberation: RawDeliberation, natureId: string): RegimeCode {
   const regimes = toArray(deliberation.regimes?.regime);
-  const meubleRegime = regimes.find((regime) => readText(regime.natureId) === MEUBLE_NATURE_ID);
-  const regimeText = readText(meubleRegime);
-  return regimeText.toLowerCase() === 'forfaitaire' ? 'f' : 'r';
+  const matchingRegime = regimes.find((regime) => readText(regime.natureId) === natureId);
+  return toRegimeCode(readText(matchingRegime));
 }
 
-function extractRates(deliberation: RawDeliberation): {
-  multiPeriodFlag: 0 | 1;
-  nonClassRatePct: number;
-  nonClassCap: number;
-  star1Rate: number;
-  star2Rate: number;
-  star3Rate: number;
-  star4Rate: number;
-  star5Rate: number;
-} | null {
+function extractPeriods(deliberation: RawDeliberation): PeriodTuple[] {
   const periodes = toArray(deliberation.periodes?.periode);
-  if (periodes.length === 0) {
-    return null;
-  }
+  const extractedPeriods: PeriodTuple[] = [];
 
-  const firstPeriod = periodes[0];
-  const tarifs = toArray(firstPeriod.tarifs?.tarif);
-  if (tarifs.length === 0) {
-    return null;
-  }
-
-  const byCategory = new Map<string, number>();
-
-  for (const tarif of tarifs) {
-    const categoryId = readText(tarif.categorieId);
-    if (!categoryId) {
+  for (let index = 0; index < periodes.length; index += 1) {
+    const period = periodes[index];
+    const tarifs = toArray(period.tarifs?.tarif);
+    if (tarifs.length === 0) {
       continue;
     }
-    byCategory.set(categoryId, parseNumber(tarif));
+
+    const byCategory = new Map<string, number>();
+    for (const tarif of tarifs) {
+      const categoryId = readText(tarif.categorieId);
+      if (!categoryId) {
+        continue;
+      }
+      byCategory.set(categoryId, parseNumber(tarif));
+    }
+
+    const nonClassRatePct = byCategory.get('9');
+    const star1Rate = byCategory.get('6');
+    const star2Rate = byCategory.get('5');
+    const star3Rate = byCategory.get('4');
+    const star4Rate = byCategory.get('3');
+    const star5Rate = byCategory.get('2');
+
+    if (
+      nonClassRatePct === undefined ||
+      star1Rate === undefined ||
+      star2Rate === undefined ||
+      star3Rate === undefined ||
+      star4Rate === undefined ||
+      star5Rate === undefined
+    ) {
+      continue;
+    }
+
+    const fixedRates = Array.from(byCategory.entries())
+      .filter(([categoryId]) => categoryId !== '9')
+      .map(([, value]) => value);
+    const nonClassCap = fixedRates.length > 0 ? Math.max(...fixedRates) : 0;
+
+    const startLabel = readText(period.dateDebut);
+    const endLabel = readText(period.dateFin);
+    const normalizedKey = normalizeForSearch(`${startLabel} ${endLabel}`) || 'periode';
+
+    extractedPeriods.push([
+      `${normalizedKey}-${index + 1}`,
+      startLabel,
+      endLabel,
+      nonClassRatePct,
+      nonClassCap,
+      star1Rate,
+      star2Rate,
+      star3Rate,
+      star4Rate,
+      star5Rate,
+    ]);
   }
 
-  const nonClassRatePct = byCategory.get('9');
-  const star1Rate = byCategory.get('6');
-  const star2Rate = byCategory.get('5');
-  const star3Rate = byCategory.get('4');
-  const star4Rate = byCategory.get('3');
-  const star5Rate = byCategory.get('2');
+  return extractedPeriods;
+}
 
-  if (
-    nonClassRatePct === undefined ||
-    star1Rate === undefined ||
-    star2Rate === undefined ||
-    star3Rate === undefined ||
-    star4Rate === undefined ||
-    star5Rate === undefined
-  ) {
-    return null;
+function extractAbatements(deliberation: RawDeliberation): AbatementTuple[] {
+  const abattements = toArray(deliberation.abattements?.abattement);
+  const extractedAbatements: AbatementTuple[] = [];
+
+  for (const abattement of abattements) {
+    const ratePercent = parseNumber(abattement.taux);
+    const nightsMin = parseInteger(abattement.nuiteMin);
+    const nightsMax = parseInteger(abattement.nuiteMax);
+
+    if (
+      !Number.isFinite(ratePercent) ||
+      !Number.isFinite(nightsMin) ||
+      !Number.isFinite(nightsMax) ||
+      nightsMin < 0 ||
+      nightsMax < nightsMin
+    ) {
+      continue;
+    }
+
+    extractedAbatements.push([ratePercent, nightsMin, nightsMax]);
   }
 
-  const fixedRates = Array.from(byCategory.entries())
-    .filter(([categoryId]) => categoryId !== '9')
-    .map(([, value]) => value);
-  const nonClassCap = fixedRates.length > 0 ? Math.max(...fixedRates) : 0;
-
-  return {
-    multiPeriodFlag: periodes.length > 1 ? 1 : 0,
-    nonClassRatePct,
-    nonClassCap,
-    star1Rate,
-    star2Rate,
-    star3Rate,
-    star4Rate,
-    star5Rate,
-  };
+  extractedAbatements.sort((left, right) => left[1] - right[1] || left[2] - right[2]);
+  return extractedAbatements;
 }
 
 function toCityTuple(entry: CityAccumulator, displayLabel: string): CityTuple {
@@ -267,21 +320,18 @@ function toCityTuple(entry: CityAccumulator, displayLabel: string): CityTuple {
     entry.id,
     displayLabel,
     searchKey,
-    entry.regime,
-    entry.multiPeriodFlag,
+    entry.classifiedRegime,
+    entry.unclassifiedRegime,
     entry.taxMask,
-    entry.nonClassRatePct,
-    entry.nonClassCap,
-    entry.star1Rate,
-    entry.star2Rate,
-    entry.star3Rate,
-    entry.star4Rate,
-    entry.star5Rate,
+    entry.periods,
+    entry.abatements,
   ];
 }
 
-async function main() {
-  const xml = await readFile(INPUT_XML_PATH, 'utf8');
+export function buildCompactDatasetFromXml(
+  xml: string,
+  generatedAt = new Date().toISOString()
+): CompactDataset {
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: '',
@@ -300,8 +350,8 @@ async function main() {
   const cityById = new Map<string, CityAccumulator>();
 
   for (const deliberation of deliberations) {
-    const rates = extractRates(deliberation);
-    if (!rates) {
+    const periods = extractPeriods(deliberation);
+    if (periods.length === 0) {
       continue;
     }
 
@@ -310,9 +360,10 @@ async function main() {
     );
     const epciName = readText(deliberation.saisie?.collectiviteDeliberante?.nom);
     const deliberationTimestamp = parseFrenchDate(deliberation.date);
-
-    const regime = getMeubleRegime(deliberation);
+    const classifiedRegime = getRegimeByNatureId(deliberation, CLASSIFIED_NATURE_ID);
+    const unclassifiedRegime = getRegimeByNatureId(deliberation, UNCLASSIFIED_NATURE_ID);
     const taxMask = buildTaxMask(deliberation);
+    const abatements = extractAbatements(deliberation);
 
     const collectivites = toArray(deliberation.collectivites?.collectivite);
     const deliberanteCodeInsee = readText(deliberation.saisie?.collectiviteDeliberante?.codeInsee);
@@ -337,16 +388,11 @@ async function main() {
         cityName,
         departmentCode,
         epciName,
-        regime,
-        multiPeriodFlag: rates.multiPeriodFlag,
+        classifiedRegime,
+        unclassifiedRegime,
         taxMask,
-        nonClassRatePct: rates.nonClassRatePct,
-        nonClassCap: rates.nonClassCap,
-        star1Rate: rates.star1Rate,
-        star2Rate: rates.star2Rate,
-        star3Rate: rates.star3Rate,
-        star4Rate: rates.star4Rate,
-        star5Rate: rates.star5Rate,
+        periods,
+        abatements,
         deliberationTimestamp,
       };
 
@@ -375,20 +421,32 @@ async function main() {
     })
     .sort((left, right) => left[1].localeCompare(right[1], 'fr-FR'));
 
-  const dataset: CompactDataset = {
+  return {
     v: readText(delta.version) || 'unknown',
     sd: readText(delta.date),
-    g: new Date().toISOString(),
+    g: generatedAt,
     c: tuples,
   };
+}
+
+async function main() {
+  const xml = await readFile(INPUT_XML_PATH, 'utf8');
+  const dataset = buildCompactDatasetFromXml(xml);
 
   await mkdir(OUTPUT_DIR, { recursive: true });
   await writeFile(OUTPUT_JSON_PATH, JSON.stringify(dataset), 'utf8');
 
-  console.log(`Generated ${tuples.length} cities in ${path.relative(ROOT_DIR, OUTPUT_JSON_PATH)}.`);
+  console.log(
+    `Generated ${dataset.c.length} cities in ${path.relative(ROOT_DIR, OUTPUT_JSON_PATH)}.`
+  );
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+const isDirectExecution =
+  process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectExecution) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}

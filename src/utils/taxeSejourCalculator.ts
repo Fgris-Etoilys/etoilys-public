@@ -9,13 +9,16 @@ import {
 export interface TaxeSejourCalculationInput {
   cityId: string;
   nightlyPriceHt: number;
-  capacity: number;
   nights: number;
+  capacity?: number;
+  personsStaying?: number;
+  exemptedPersons?: number;
 }
 
 export interface TaxeSejourCalculationRow {
   category: 'Non classé' | '1*' | '2*' | '3*' | '4*' | '5*';
   amount: number;
+  status: 'exact' | 'indicatif';
 }
 
 export interface TaxeSejourAdditionalTaxResult {
@@ -32,6 +35,11 @@ export interface TaxeSejourCalculationOutput {
   additionalTaxes: TaxeSejourAdditionalTaxResult[];
   isIndicative: boolean;
   warnings: string[];
+  selectedPeriod: {
+    key: string;
+    startLabel: string;
+    endLabel: string;
+  };
 }
 
 interface AdditionalTaxDefinition {
@@ -41,6 +49,11 @@ interface AdditionalTaxDefinition {
   legalReferenceLabel: string;
   legalReferenceUrl: string;
   ratePercent: number;
+}
+
+interface OccupancyContext {
+  personsStaying: number;
+  taxablePersons: number;
 }
 
 const ADDITIONAL_TAX_DEFINITIONS: AdditionalTaxDefinition[] = [
@@ -106,84 +119,171 @@ function calculateAdditionalTaxes(taxMask: number): {
   return { taxes, multiplier };
 }
 
-function assertValidInput(input: TaxeSejourCalculationInput): void {
-  if (!Number.isFinite(input.nightlyPriceHt) || input.nightlyPriceHt <= 0) {
-    throw new Error('Le prix de la nuit HT doit être strictement positif.');
+function assertPositiveInteger(value: number, label: string): void {
+  if (!Number.isFinite(value) || value <= 0 || !Number.isInteger(value)) {
+    throw new Error(`${label} doit être un entier strictement positif.`);
   }
-  if (
-    !Number.isFinite(input.capacity) ||
-    input.capacity <= 0 ||
-    !Number.isInteger(input.capacity)
-  ) {
-    throw new Error('La capacité doit être un entier strictement positif.');
+}
+
+function assertNonNegativeInteger(value: number, label: string): void {
+  if (!Number.isFinite(value) || value < 0 || !Number.isInteger(value)) {
+    throw new Error(`${label} doit être un entier positif ou nul.`);
   }
-  if (!Number.isFinite(input.nights) || input.nights <= 0 || !Number.isInteger(input.nights)) {
-    throw new Error('Le nombre de nuits doit être un entier strictement positif.');
+}
+
+function resolveDefaultPeriod(city: TaxeSejourCity) {
+  const defaultPeriod = city.periods[0];
+  if (!defaultPeriod) {
+    throw new Error('Aucune période tarifaire disponible pour la commune sélectionnée.');
   }
+  return defaultPeriod;
+}
+
+function resolveOccupancy(input: TaxeSejourCalculationInput): OccupancyContext {
+  const personsStaying = input.personsStaying;
+  if (personsStaying === undefined) {
+    throw new Error('Le nombre de personnes accueillies est requis pour ce calcul.');
+  }
+  assertPositiveInteger(personsStaying, 'Le nombre de personnes accueillies');
+
+  const exemptedPersons = input.exemptedPersons ?? 0;
+  assertNonNegativeInteger(exemptedPersons, 'Le nombre de personnes exonérées');
+
+  if (exemptedPersons > personsStaying) {
+    throw new Error(
+      'Le nombre de personnes exonérées ne peut pas dépasser le nombre de personnes accueillies.'
+    );
+  }
+
+  return {
+    personsStaying,
+    taxablePersons: personsStaying - exemptedPersons,
+  };
+}
+
+function calculateClassifiedReal(
+  ratePerPersonPerNight: number,
+  taxablePersons: number,
+  nights: number
+): number {
+  return ratePerPersonPerNight * taxablePersons * nights;
+}
+
+function calculateClassifiedForfait(
+  ratePerCapacityUnitPerNight: number,
+  capacity: number,
+  nights: number
+): number {
+  return ratePerCapacityUnitPerNight * capacity * nights;
+}
+
+function calculateUnclassifiedProportional(
+  nightlyPriceHt: number,
+  personsStaying: number,
+  taxablePersons: number,
+  nights: number,
+  nonClassRatePct: number,
+  nonClassCap: number
+): number {
+  const costPerPerson = nightlyPriceHt / personsStaying;
+  const perPersonAmount = Math.min(nonClassCap, costPerPerson * (nonClassRatePct / 100));
+  return perPersonAmount * taxablePersons * nights;
 }
 
 export function calculateTaxeSejour(
   input: TaxeSejourCalculationInput,
   city: TaxeSejourCity
 ): TaxeSejourCalculationOutput {
-  assertValidInput(input);
-
   if (input.cityId !== city.id) {
     throw new Error('Le cityId de la requête ne correspond pas à la ville sélectionnée.');
   }
 
-  const warnings: string[] = [];
-  if (city.regime === 'f') {
-    warnings.push(
-      'La collectivité applique un régime forfaitaire pour les meublés de tourisme. Le résultat affiché est une estimation indicative, non contractuelle.'
-    );
+  if (!Number.isFinite(input.nightlyPriceHt) || input.nightlyPriceHt <= 0) {
+    throw new Error('Le prix de la nuit HT doit être strictement positif.');
   }
-  if (city.hasMultiplePeriods) {
-    warnings.push(
-      'La délibération contient plusieurs périodes de taxation. Le calcul utilise la première période disponible.'
-    );
+  assertPositiveInteger(input.nights, 'Le nombre de nuits');
+
+  const warnings: string[] = [];
+  const selectedPeriod = resolveDefaultPeriod(city);
+
+  const needsOccupancy = city.classifiedRegime === 'r' || city.unclassifiedRegime === 'r';
+  const occupancy = needsOccupancy ? resolveOccupancy(input) : null;
+
+  if (city.classifiedRegime === 'f') {
+    if (input.capacity === undefined) {
+      throw new Error('La capacité d’accueil est requise pour le calcul forfaitaire des classés.');
+    }
+    assertPositiveInteger(input.capacity, 'La capacité d’accueil');
   }
 
   const { taxes: additionalTaxes, multiplier } = calculateAdditionalTaxes(city.taxMask);
-  const capacity = input.capacity;
-  const nights = input.nights;
+  const rows: TaxeSejourCalculationRow[] = [];
 
-  const nonClassPerPerson = Math.min(
-    city.rates.nonClassCap,
-    (input.nightlyPriceHt / capacity) * (city.rates.nonClassRatePct / 100)
-  );
-
-  const rows: TaxeSejourCalculationRow[] = [
-    {
+  if (city.unclassifiedRegime === 'r') {
+    const nonClassBase = calculateUnclassifiedProportional(
+      input.nightlyPriceHt,
+      (occupancy as OccupancyContext).personsStaying,
+      (occupancy as OccupancyContext).taxablePersons,
+      input.nights,
+      selectedPeriod.rates.nonClassRatePct,
+      selectedPeriod.rates.nonClassCap
+    );
+    rows.push({
       category: 'Non classé',
-      amount: roundToCents(nonClassPerPerson * capacity * nights * multiplier),
-    },
-    {
-      category: '1*',
-      amount: roundToCents(city.rates.star1Rate * capacity * nights * multiplier),
-    },
-    {
-      category: '2*',
-      amount: roundToCents(city.rates.star2Rate * capacity * nights * multiplier),
-    },
-    {
-      category: '3*',
-      amount: roundToCents(city.rates.star3Rate * capacity * nights * multiplier),
-    },
-    {
-      category: '4*',
-      amount: roundToCents(city.rates.star4Rate * capacity * nights * multiplier),
-    },
-    {
-      category: '5*',
-      amount: roundToCents(city.rates.star5Rate * capacity * nights * multiplier),
-    },
+      amount: roundToCents(nonClassBase * multiplier),
+      status: 'exact',
+    });
+  } else {
+    rows.push({
+      category: 'Non classé',
+      amount: 0,
+      status: 'indicatif',
+    });
+    warnings.push(
+      "Le régime forfaitaire n'est pas pleinement géré pour la ligne Non classé; le montant affiché reste indicatif."
+    );
+  }
+
+  const categoryRates = [
+    { category: '1*' as const, rate: selectedPeriod.rates.star1Rate },
+    { category: '2*' as const, rate: selectedPeriod.rates.star2Rate },
+    { category: '3*' as const, rate: selectedPeriod.rates.star3Rate },
+    { category: '4*' as const, rate: selectedPeriod.rates.star4Rate },
+    { category: '5*' as const, rate: selectedPeriod.rates.star5Rate },
   ];
+
+  if (city.classifiedRegime === 'f') {
+    warnings.push(
+      "Régime forfaitaire (indicatif): le calcul légal repose sur la période d'ouverture / de mise en location et la capacité d'accueil du logement. Un abattement local peut aussi exister. Il n'est pas intégré ici, car le simulateur vise une comparaison simplifiée sur un séjour type et non un calcul fiscal annuel exact."
+    );
+  }
+
+  for (const rowRate of categoryRates) {
+    const baseAmount =
+      city.classifiedRegime === 'r'
+        ? calculateClassifiedReal(
+            rowRate.rate,
+            (occupancy as OccupancyContext).taxablePersons,
+            input.nights
+          )
+        : calculateClassifiedForfait(rowRate.rate, input.capacity as number, input.nights);
+
+    rows.push({
+      category: rowRate.category,
+      amount: roundToCents(baseAmount * multiplier),
+      status: city.classifiedRegime === 'f' ? 'indicatif' : 'exact',
+    });
+  }
 
   return {
     rows,
     additionalTaxes,
-    isIndicative: city.regime === 'f',
+    isIndicative: rows.some((row) => row.status === 'indicatif'),
     warnings,
+    selectedPeriod: {
+      key: selectedPeriod.key,
+      startLabel: selectedPeriod.startLabel,
+      endLabel: selectedPeriod.endLabel,
+    },
   };
 }

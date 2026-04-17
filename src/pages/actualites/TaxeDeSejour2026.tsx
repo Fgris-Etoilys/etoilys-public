@@ -103,8 +103,8 @@ export default function ArticleTaxeDeSejour2026() {
             <div className="bg-accent-1 rounded-card p-6 md:p-8 mb-12">
               <h2 className="text-h4 mb-3">Simulateur taxe de séjour</h2>
               <p className="text-gray-700 leading-comfortable mb-5">
-                Un simulateur est disponible pour estimer le montant de taxe de séjour sur 1 nuit,
-                par commune et par catégorie de classement, avec les taxes additionnelles
+                Un simulateur est disponible pour estimer le montant de taxe de séjour sur un séjour
+                type, par commune et par catégorie de classement, avec les taxes additionnelles
                 applicables.
               </p>
               <Button href="/simulateur-taxe-sejour" variant="primary">
@@ -511,26 +511,31 @@ export default function ArticleTaxeDeSejour2026() {
                   },
                   {
                     num: '2',
+                    title: 'Le régime local applicable (réel ou forfaitaire)',
+                    desc: 'Ce point détermine la logique de calcul retenue pour le territoire.',
+                  },
+                  {
+                    num: '3',
                     title: "Le tarif local voté pour la catégorie du bien s'il est classé",
                     desc: 'Le tarif exact est déterminé par délibération locale dans les bornes du barème national.',
                   },
                   {
-                    num: '3',
+                    num: '4',
                     title: "Le taux appliqué aux hébergements non classés s'il ne l'est pas",
                     desc: 'Ce taux, entre 1 % et 5 %, est également fixé par délibération locale.',
                   },
                   {
-                    num: '4',
+                    num: '5',
                     title: 'Le plafond local applicable aux non classés',
                     desc: 'Le montant résultant du calcul proportionnel est plafonné au tarif le plus élevé adopté par la collectivité.',
                   },
                   {
-                    num: '5',
+                    num: '6',
                     title: 'Les taxes additionnelles éventuelles',
                     desc: "Taxe additionnelle départementale (10 %), majorations d'Île-de-France (15 % et 200 %), ou majoration de 34 % dans certains départements selon le CGCT.",
                   },
                   {
-                    num: '6',
+                    num: '7',
                     title: 'Le prix moyen réel des nuitées HT',
                     desc: 'Pour le non classé, ce prix entre directement dans le calcul. Plus il est élevé, plus la taxe peut être significative.',
                   },
@@ -583,19 +588,17 @@ export default function ArticleTaxeDeSejour2026() {
 
             {/* CTA */}
             <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
-              <h2 className="text-h4 mb-3">
-                Vous souhaitez en savoir plus sur la procédure de classement ?
-              </h2>
+              <h2 className="text-h4 mb-3">Simuler l’impact du classement sur la taxe de séjour</h2>
               <p className="text-gray-700 mb-6">
-                Consultez la page dédiée à la procédure de classement ou déposez une demande
-                directement avec Etoilys.
+                Utilisez le simulateur pour comparer un meublé classé et non classé selon la
+                commune, la durée du séjour et les taxes additionnelles applicables.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button href="/procedure" variant="primary">
-                  Comprendre la procédure
+                <Button href="/simulateur-taxe-sejour" variant="primary">
+                  Ouvrir le simulateur
                 </Button>
-                <Button href="/demande-classement" variant="secondary">
-                  Faire une demande de classement
+                <Button href="/procedure" variant="secondary">
+                  Comprendre la procédure de classement
                 </Button>
               </div>
             </div>
