@@ -891,13 +891,18 @@ export default function SimulateurTaxeSejour() {
 
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+                      <colgroup>
+                        <col className="w-1/3" />
+                        <col className="w-1/3" />
+                        <col className="w-1/3" />
+                      </colgroup>
                       <thead>
                         <tr className="bg-primary-300 text-white">
-                          <th className="p-3 text-left font-semibold">Catégorie</th>
-                          <th className="p-3 text-right font-semibold">
+                          <th className="p-3 text-center font-semibold">Catégorie</th>
+                          <th className="p-3 text-center font-semibold">
                             Montant total ({getNightsLabel(resultNights)})
                           </th>
-                          <th className="p-3 text-right font-semibold">Écart vs non classé</th>
+                          <th className="p-3 text-center font-semibold">Écart vs non classé</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -908,7 +913,7 @@ export default function SimulateurTaxeSejour() {
                               index % 2 === 0 ? 'bg-white border-b border-gray-100' : 'bg-gray-50'
                             }
                           >
-                            <td className="p-3 text-gray-700">
+                            <td className="p-3 text-center text-gray-700">
                               <span>{row.category}</span>
                               {row.status === 'indicatif' && (
                                 <span className="ml-2 text-xs font-semibold text-warning-500">
@@ -917,13 +922,13 @@ export default function SimulateurTaxeSejour() {
                               )}
                             </td>
                             <td
-                              className={`p-3 text-right font-semibold ${
+                              className={`p-3 text-center font-semibold ${
                                 row.category === 'Non classé' ? 'text-primary-500' : 'text-gray-900'
                               }`}
                             >
                               {formatEuro(row.amount)}
                             </td>
-                            <td className="p-3 text-right">
+                            <td className="p-3 text-center">
                               {row.category === 'Non classé' ? (
                                 <span className="font-semibold text-primary-500">0,00 €</span>
                               ) : (

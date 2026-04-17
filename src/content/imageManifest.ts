@@ -80,14 +80,13 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
     srcSetAvif:
       '/images/optimized/article-copropriete-reglement-480.avif 480w, /images/optimized/article-copropriete-reglement-768.avif 768w, /images/optimized/article-copropriete-reglement-1200.avif 1200w, /images/optimized/article-copropriete-reglement-1600.avif 1600w, /images/optimized/article-copropriete-reglement-1920.avif 1920w',
   },
-  // TODO: replace with a dedicated source image (run npm run images:build after adding src/assets/seo-images/source/article-taxe-sejour-2026.*)
   articleTaxeDeSejour2026: {
-    width: 1920,
-    height: 1280,
-    src: '/images/optimized/article-micro-bic-2026-1200.jpg',
+    width: 6881,
+    height: 4587,
+    src: '/images/optimized/article-taxe-sejour-2026-1200.jpg',
     srcSetWebp:
-      '/images/optimized/article-micro-bic-2026-480.webp 480w, /images/optimized/article-micro-bic-2026-768.webp 768w, /images/optimized/article-micro-bic-2026-1200.webp 1200w, /images/optimized/article-micro-bic-2026-1600.webp 1600w, /images/optimized/article-micro-bic-2026-1920.webp 1920w',
+      '/images/optimized/article-taxe-sejour-2026-480.webp 480w, /images/optimized/article-taxe-sejour-2026-768.webp 768w, /images/optimized/article-taxe-sejour-2026-1200.webp 1200w, /images/optimized/article-taxe-sejour-2026-1600.webp 1600w, /images/optimized/article-taxe-sejour-2026-1920.webp 1920w',
     srcSetAvif:
-      '/images/optimized/article-micro-bic-2026-480.avif 480w, /images/optimized/article-micro-bic-2026-768.avif 768w, /images/optimized/article-micro-bic-2026-1200.avif 1200w, /images/optimized/article-micro-bic-2026-1600.avif 1600w, /images/optimized/article-micro-bic-2026-1920.avif 1920w',
+      '/images/optimized/article-taxe-sejour-2026-480.avif 480w, /images/optimized/article-taxe-sejour-2026-768.avif 768w, /images/optimized/article-taxe-sejour-2026-1200.avif 1200w, /images/optimized/article-taxe-sejour-2026-1600.avif 1600w, /images/optimized/article-taxe-sejour-2026-1920.avif 1920w',
   },
 };

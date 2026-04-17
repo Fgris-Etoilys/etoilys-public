@@ -17,6 +17,7 @@ const IMAGE_ASSETS = [
   { key: 'articleMicroBic2026', fileName: 'article-micro-bic-2026.jpg' },
   { key: 'articleResidence90Jours', fileName: 'article-residence-90-jours.jpg' },
   { key: 'articleCoproprieteReglement', fileName: 'article-copropriete-reglement.jpg' },
+  { key: 'articleTaxeDeSejour2026', fileName: 'article-taxe-sejour-2026.jpg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {

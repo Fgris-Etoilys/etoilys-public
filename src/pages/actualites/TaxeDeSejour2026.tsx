@@ -238,9 +238,14 @@ export default function ArticleTaxeDeSejour2026() {
             </p>
             <div className="overflow-x-auto mb-6">
               <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+                <colgroup>
+                  <col className="w-1/3" />
+                  <col className="w-1/3" />
+                  <col className="w-1/3" />
+                </colgroup>
                 <thead>
                   <tr className="bg-primary-300 text-white">
-                    <th className="p-3 text-left font-semibold">Catégorie</th>
+                    <th className="p-3 text-center font-semibold">Catégorie</th>
                     <th className="p-3 text-center font-semibold">Minimum national</th>
                     <th className="p-3 text-center font-semibold">Maximum national</th>
                   </tr>
@@ -259,7 +264,7 @@ export default function ArticleTaxeDeSejour2026() {
                       key={cat}
                       className={i % 2 === 0 ? 'bg-white border-b border-gray-100' : 'bg-gray-50'}
                     >
-                      <td className="p-3 text-gray-700 font-medium">{cat}</td>
+                      <td className="p-3 text-center text-gray-700 font-medium">{cat}</td>
                       <td className="p-3 text-center text-gray-600">{min}</td>
                       <td className="p-3 text-center font-semibold text-primary-400">{max}</td>
                     </tr>

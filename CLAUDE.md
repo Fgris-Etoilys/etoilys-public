@@ -126,6 +126,10 @@ npm run preview
 - Reuse components from `src/components/ui` before creating new ones.
 - Promote repeated UI patterns (3+ uses) into reusable components.
 - Keep clear layering: reusable UI primitives first, domain/page usage second.
+- For HTML tables, keep a clean and balanced layout by default:
+  - define explicit column distribution (`colgroup`) for comparison tables,
+  - keep header/cell alignment consistent per column (avoid mixed left/right drift that makes columns feel unbalanced),
+  - prefer visually centered or clearly structured columns over “one column stuck left, one center, one far right” layouts unless there is a strong readability reason.
 
 ## TypeScript Quality
 

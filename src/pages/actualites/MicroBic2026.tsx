@@ -45,9 +45,16 @@ export default function ArticleMicroBic2026() {
               {/* Tableau comparatif */}
               <div className="overflow-x-auto mb-6">
                 <table className="w-full text-sm border-collapse">
+                  <colgroup>
+                    <col className="w-1/5" />
+                    <col className="w-1/5" />
+                    <col className="w-1/5" />
+                    <col className="w-1/5" />
+                    <col className="w-1/5" />
+                  </colgroup>
                   <thead>
                     <tr className="bg-primary-300 text-white">
-                      <th className="p-3 text-left font-semibold">Période</th>
+                      <th className="p-3 text-center font-semibold">Période</th>
                       <th className="p-3 text-center font-semibold">Non classé — plafond</th>
                       <th className="p-3 text-center font-semibold">Non classé — abattement</th>
                       <th className="p-3 text-center font-semibold">Classé — plafond</th>
@@ -56,7 +63,7 @@ export default function ArticleMicroBic2026() {
                   </thead>
                   <tbody>
                     <tr className="bg-white border-b border-primary-200">
-                      <td className="p-3 text-gray-700">
+                      <td className="p-3 text-center text-gray-700">
                         Revenus 2025
                         <br />
                         (déclarés en 2026)
@@ -67,7 +74,7 @@ export default function ArticleMicroBic2026() {
                       <td className="p-3 text-center text-gray-700">50 %</td>
                     </tr>
                     <tr className="bg-primary-100">
-                      <td className="p-3 text-gray-700">
+                      <td className="p-3 text-center text-gray-700">
                         Revenus 2026
                         <br />
                         (déclarés en 2027)
@@ -165,9 +172,16 @@ export default function ArticleMicroBic2026() {
 
             <div className="overflow-x-auto mb-8">
               <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+                <colgroup>
+                  <col className="w-1/5" />
+                  <col className="w-1/5" />
+                  <col className="w-1/5" />
+                  <col className="w-1/5" />
+                  <col className="w-1/5" />
+                </colgroup>
                 <thead>
                   <tr className="bg-primary-300 text-white">
-                    <th className="p-3 text-left font-semibold">Période</th>
+                    <th className="p-3 text-center font-semibold">Période</th>
                     <th className="p-3 text-center font-semibold">
                       Non classé
                       <br />
@@ -192,7 +206,7 @@ export default function ArticleMicroBic2026() {
                 </thead>
                 <tbody>
                   <tr className="bg-white border-b border-gray-100">
-                    <td className="p-3 text-gray-700 font-medium">
+                    <td className="p-3 text-center text-gray-700 font-medium">
                       Revenus 2025
                       <br />
                       (déclarés en 2026)
@@ -203,7 +217,7 @@ export default function ArticleMicroBic2026() {
                     <td className="p-3 text-center text-gray-600">50 %</td>
                   </tr>
                   <tr className="bg-gray-50">
-                    <td className="p-3 text-gray-700 font-medium">
+                    <td className="p-3 text-center text-gray-700 font-medium">
                       Revenus 2026
                       <br />
                       (déclarés en 2027)

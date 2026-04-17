@@ -203,34 +203,38 @@ export default function PourquoiClasser() {
                   Tarif forfaitaire par étoile (fourchette nationale 2026)
                 </p>
                 <table className="w-full text-sm">
+                  <colgroup>
+                    <col className="w-1/2" />
+                    <col className="w-1/2" />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-success-200">
-                      <th className="text-left py-1 text-gray-600 font-medium">Classement</th>
-                      <th className="text-right py-1 text-gray-600 font-medium">
+                      <th className="text-center py-1 text-gray-600 font-medium">Classement</th>
+                      <th className="text-center py-1 text-gray-600 font-medium">
                         Min – Max / pers / nuit
                       </th>
                     </tr>
                   </thead>
                   <tbody className="text-gray-700">
                     <tr className="border-b border-success-200/50">
-                      <td className="py-1">1 étoile</td>
-                      <td className="text-right">0,20 € – 0,80 €</td>
+                      <td className="py-1 text-center">1 étoile</td>
+                      <td className="text-center">0,20 € – 0,80 €</td>
                     </tr>
                     <tr className="border-b border-success-200/50">
-                      <td className="py-1">2 étoiles</td>
-                      <td className="text-right">0,30 € – 1,00 €</td>
+                      <td className="py-1 text-center">2 étoiles</td>
+                      <td className="text-center">0,30 € – 1,00 €</td>
                     </tr>
                     <tr className="border-b border-success-200/50">
-                      <td className="py-1">3 étoiles</td>
-                      <td className="text-right">0,50 € – 1,70 €</td>
+                      <td className="py-1 text-center">3 étoiles</td>
+                      <td className="text-center">0,50 € – 1,70 €</td>
                     </tr>
                     <tr className="border-b border-success-200/50">
-                      <td className="py-1">4 étoiles</td>
-                      <td className="text-right">0,70 € – 2,60 €</td>
+                      <td className="py-1 text-center">4 étoiles</td>
+                      <td className="text-center">0,70 € – 2,60 €</td>
                     </tr>
                     <tr>
-                      <td className="py-1">5 étoiles</td>
-                      <td className="text-right">0,70 € – 3,60 €</td>
+                      <td className="py-1 text-center">5 étoiles</td>
+                      <td className="text-center">0,70 € – 3,60 €</td>
                     </tr>
                   </tbody>
                 </table>
@@ -247,38 +251,43 @@ export default function PourquoiClasser() {
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
+                  <colgroup>
+                    <col className="w-1/3" />
+                    <col className="w-1/3" />
+                    <col className="w-1/3" />
+                  </colgroup>
                   <thead>
                     <tr className="border-b border-primary-200">
-                      <th className="text-left py-2 text-gray-600 font-medium"></th>
-                      <th className="text-right py-2 text-gray-600 font-medium">Non classé</th>
-                      <th className="text-right py-2 text-success-500 font-medium">Classé 3★</th>
+                      <th className="text-center py-2 text-gray-600 font-medium"></th>
+                      <th className="text-center py-2 text-gray-600 font-medium">Non classé</th>
+                      <th className="text-center py-2 text-success-500 font-medium">Classé 3★</th>
                     </tr>
                   </thead>
                   <tbody className="text-gray-700">
                     <tr className="border-b border-primary-200/50">
-                      <td className="py-2">Base taxe de séjour</td>
-                      <td className="text-right">5 % × 60 € = 3,00 €</td>
-                      <td className="text-right text-success-600">1,70 €</td>
+                      <td className="py-2 text-center">Base taxe de séjour</td>
+                      <td className="text-center">5 % × 60 € = 3,00 €</td>
+                      <td className="text-center text-success-600">1,70 €</td>
                     </tr>
                     <tr className="border-b border-primary-200/50">
-                      <td className="py-2">+ Surtaxe dépt. (10 %)</td>
-                      <td className="text-right">0,30 €</td>
-                      <td className="text-right text-success-600">0,17 €</td>
+                      <td className="py-2 text-center">+ Surtaxe dépt. (10 %)</td>
+                      <td className="text-center">0,30 €</td>
+                      <td className="text-center text-success-600">0,17 €</td>
                     </tr>
                     <tr className="border-b border-primary-200/50">
-                      <td className="py-2">+ Surtaxe IDF Mobilités (200 %)</td>
-                      <td className="text-right">6,00 €</td>
-                      <td className="text-right text-success-600">3,40 €</td>
+                      <td className="py-2 text-center">+ Surtaxe IDF Mobilités (200 %)</td>
+                      <td className="text-center">6,00 €</td>
+                      <td className="text-center text-success-600">3,40 €</td>
                     </tr>
                     <tr className="font-semibold border-t-2 border-primary-300">
-                      <td className="py-2">Total / pers / nuit</td>
-                      <td className="text-right">9,30 €</td>
-                      <td className="text-right text-success-600">5,27 €</td>
+                      <td className="py-2 text-center">Total / pers / nuit</td>
+                      <td className="text-center">9,30 €</td>
+                      <td className="text-center text-success-600">5,27 €</td>
                     </tr>
                     <tr className="font-bold">
-                      <td className="py-2">Total 2 pers / nuit</td>
-                      <td className="text-right">18,60 €</td>
-                      <td className="text-right text-success-600">10,54 €</td>
+                      <td className="py-2 text-center">Total 2 pers / nuit</td>
+                      <td className="text-center">18,60 €</td>
+                      <td className="text-center text-success-600">10,54 €</td>
                     </tr>
                   </tbody>
                 </table>
@@ -291,17 +300,11 @@ export default function PourquoiClasser() {
               </div>
             </div>
 
-            <p className="text-xs text-gray-500 leading-relaxed">
-              Le tarif effectif dépend de la délibération de chaque collectivité.{' '}
-              <a
-                href="https://taxesejour.impots.gouv.fr/FR/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-gray-700"
-              >
-                Consulter les barèmes applicables dans votre commune (impots.gouv.fr).
-              </a>
-            </p>
+            <div className="mt-6 text-center">
+              <Button href="/simulateur-taxe-sejour" variant="primary">
+                Simuler l’impact du classement sur la taxe de séjour
+              </Button>
+            </div>
           </div>
         </div>
       </section>

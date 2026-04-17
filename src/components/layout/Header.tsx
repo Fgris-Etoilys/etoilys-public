@@ -8,14 +8,20 @@ const navigation = [
   {
     name: 'Le classement',
     href: '/classement',
+    showOverviewLink: true,
     submenu: [
       { name: 'Les avantages du classement', href: '/les-avantages-du-classement' },
       { name: 'Prérequis au classement', href: '/prerequis-au-classement' },
       { name: 'Procédure', href: '/procedure' },
-      { name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' },
       // { name: 'Simulateur', href: '/simulateur' }, // TODO: réactiver quand le simulateur sera prêt
       { name: 'FAQ', href: '/faq' },
     ],
+  },
+  {
+    name: 'Outils',
+    href: '/simulateur-taxe-sejour',
+    showOverviewLink: false,
+    submenu: [{ name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' }],
   },
   // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
   { name: 'Actualités', href: '/actualites' },
@@ -143,19 +149,23 @@ export default function Header() {
                           className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50"
                           role="menu"
                         >
-                          <Link
-                            to={item.href}
-                            className={`block px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
-                              location.pathname === item.href
-                                ? 'text-primary-300 bg-primary-100'
-                                : 'text-gray-700 hover:text-primary-300 hover:bg-gray-50'
-                            }`}
-                            role="menuitem"
-                            onClick={() => setOpenDropdown(null)}
-                          >
-                            {item.name}
-                          </Link>
-                          <div className="my-1 border-t border-gray-100"></div>
+                          {item.showOverviewLink !== false && (
+                            <>
+                              <Link
+                                to={item.href}
+                                className={`block px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
+                                  location.pathname === item.href
+                                    ? 'text-primary-300 bg-primary-100'
+                                    : 'text-gray-700 hover:text-primary-300 hover:bg-gray-50'
+                                }`}
+                                role="menuitem"
+                                onClick={() => setOpenDropdown(null)}
+                              >
+                                {item.name}
+                              </Link>
+                              <div className="my-1 border-t border-gray-100"></div>
+                            </>
+                          )}
                           {item.submenu?.map((subItem) => (
                             <Link
                               key={subItem.name}
@@ -237,17 +247,19 @@ export default function Header() {
 
                       {isSubmenuOpen && (
                         <div className="flex flex-col ml-4 mt-2 space-y-2 border-l-2 border-primary-200 pl-4">
-                          <Link
-                            to={item.href}
-                            className={`text-base transition-colors duration-200 py-1.5 ${
-                              location.pathname === item.href
-                                ? 'text-primary-300 font-medium'
-                                : 'text-gray-700 hover:text-primary-300'
-                            }`}
-                            onClick={() => setOpenMobileSubmenu(null)}
-                          >
-                            Vue d'ensemble
-                          </Link>
+                          {item.showOverviewLink !== false && (
+                            <Link
+                              to={item.href}
+                              className={`text-base transition-colors duration-200 py-1.5 ${
+                                location.pathname === item.href
+                                  ? 'text-primary-300 font-medium'
+                                  : 'text-gray-700 hover:text-primary-300'
+                              }`}
+                              onClick={() => setOpenMobileSubmenu(null)}
+                            >
+                              Vue d'ensemble
+                            </Link>
+                          )}
                           {item.submenu?.map((subItem) => (
                             <Link
                               key={subItem.name}

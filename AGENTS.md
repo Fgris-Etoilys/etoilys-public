@@ -103,6 +103,10 @@ Quand tu dois écrire du code, applique cette instruction:
 - Réutiliser d'abord les composants existants de `src/components/ui` avant d'ajouter un nouveau composant.
 - Si un pattern UI est réutilisé 3 fois ou plus, le promouvoir en composant réutilisable.
 - Respecter la hiérarchie actuelle: primitives UI réutilisables, puis composants orientés domaine/page.
+- Pour les tableaux HTML, imposer une présentation propre et équilibrée par défaut:
+  - définir explicitement la répartition des colonnes (`colgroup`) pour les tableaux comparatifs,
+  - garder un alignement cohérent des en-têtes et cellules par colonne (éviter les colonnes désalignées gauche/milieu/droite sans logique claire),
+  - privilégier des colonnes visuellement harmonisées plutôt qu'un rendu avec une colonne collée à gauche et une autre collée à droite.
 
 ## Qualité TypeScript
 
