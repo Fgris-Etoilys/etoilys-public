@@ -127,6 +127,7 @@ Quand tu dois écrire du code, applique cette instruction:
 ## Sécurité encodage
 
 - Tous les fichiers texte (`.md`, `.json`, `.ts`, `.tsx`, `.yml`, `.mjs`) doivent rester en UTF-8 sans BOM.
+- Toujours écrire les textes en français avec leurs accents UTF-8 (é, è, à, ô, etc.) plutôt que des versions non accentuées.
 - Ne jamais écrire des fichiers via redirection PowerShell (`>`, `>>`) ni via `Out-File`, `Set-Content` ou `Add-Content`.
 - Faire les modifications via patch (`apply_patch`) ou un writer explicite UTF-8 sans BOM.
 - Avant de finir, vérifier sur les fichiers modifiés l'absence de BOM et de marqueurs de mojibake (ex: `\u00C3`, `\u00C2`, `\u00E2\u20AC\u2122`, `\u00E2\u20AC\u0153`, `\u00E2\u20AC`, `\uFFFD`).

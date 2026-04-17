@@ -48,6 +48,12 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Etapes, delais et documents de la procedure de classement des meubles de tourisme.',
     breadcrumbLabel: 'Procedure',
   },
+  '/simulateur-taxe-sejour': {
+    title: 'Simulateur taxe de séjour',
+    description:
+      'Simulation informative de taxe de séjour par commune et catégorie de classement, sur 1 nuit.',
+    breadcrumbLabel: 'Simulateur taxe de séjour',
+  },
   '/faq': {
     title: 'FAQ classement meuble de tourisme',
     description:

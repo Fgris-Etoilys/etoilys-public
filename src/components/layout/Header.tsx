@@ -12,6 +12,7 @@ const navigation = [
       { name: 'Les avantages du classement', href: '/les-avantages-du-classement' },
       { name: 'Prérequis au classement', href: '/prerequis-au-classement' },
       { name: 'Procédure', href: '/procedure' },
+      { name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' },
       // { name: 'Simulateur', href: '/simulateur' }, // TODO: réactiver quand le simulateur sera prêt
       { name: 'FAQ', href: '/faq' },
     ],

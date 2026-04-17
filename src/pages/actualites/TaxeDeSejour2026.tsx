@@ -100,6 +100,18 @@ export default function ArticleTaxeDeSejour2026() {
               </ul>
             </div>
 
+            <div className="bg-accent-1 rounded-card p-6 md:p-8 mb-12">
+              <h2 className="text-h4 mb-3">Simulateur taxe de séjour</h2>
+              <p className="text-gray-700 leading-comfortable mb-5">
+                Un simulateur est disponible pour estimer le montant de taxe de séjour sur 1 nuit,
+                par commune et par catégorie de classement, avec les taxes additionnelles
+                applicables.
+              </p>
+              <Button href="/simulateur-taxe-sejour" variant="primary">
+                Ouvrir le simulateur
+              </Button>
+            </div>
+
             {/* Section 1 */}
             <h2 className="mt-12 mb-4">
               La vraie différence : classé = tarif fixe, non classé = taux proportionnel

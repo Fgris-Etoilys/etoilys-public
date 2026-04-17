@@ -7,6 +7,7 @@ const footerLinks = {
     { name: 'Les avantages du classement', href: '/les-avantages-du-classement' },
     { name: 'Prérequis au classement', href: '/prerequis-au-classement' },
     { name: 'La procédure de classement', href: '/procedure' },
+    { name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' },
     // { name: 'Simulateur de classement', href: '/simulateur' }, // TODO: réactiver quand le simulateur sera prêt
   ],
   entreprise: [

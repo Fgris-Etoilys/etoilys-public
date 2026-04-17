@@ -211,6 +211,9 @@ const faqSections: FaqSection[] = [
             meublé non classé ou en attente de classement relève en principe d&apos;un taux
             proportionnel du coût de la nuitée, dans les limites prévues par la collectivité.
             <SourceLink href="https://entreprendre.service-public.fr/vosdroits/F31635" />
+            <Link to="/simulateur-taxe-sejour" className="mt-3 block text-sm font-medium">
+              Outil: simulateur taxe de séjour - 1 nuit
+            </Link>
           </>
         ),
       },
