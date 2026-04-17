@@ -95,6 +95,11 @@ export default function ResponsiveComparisonTable({
               {primaryContent && <h3 className={mobileTitleClassName}>{primaryContent}</h3>}
               <dl className="space-y-2">
                 {mobileDetailColumns.map((column) => {
+                  const value = row.cells[column.key];
+                  if (value === null || value === undefined || value === '') {
+                    return null;
+                  }
+
                   const alignment = ALIGNMENT_CLASSES[column.align ?? 'left'];
                   return (
                     <div
@@ -103,7 +108,7 @@ export default function ResponsiveComparisonTable({
                     >
                       <dt className={mobileLabelClassName}>{column.mobileLabel ?? column.label}</dt>
                       <dd className={`${mobileValueClassName} ${alignment.mobileValue}`}>
-                        {row.cells[column.key]}
+                        {value}
                       </dd>
                     </div>
                   );
