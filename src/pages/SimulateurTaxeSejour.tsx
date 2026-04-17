@@ -68,6 +68,17 @@ function formatDelta(value: number): string {
   });
 }
 
+function formatDeltaWithPercent(delta: number, nonClasseReference: number): string {
+  const formattedDelta = formatDelta(delta);
+  if (nonClasseReference === 0) {
+    return `${formattedDelta} (n/a)`;
+  }
+
+  const percent = Math.round((delta / nonClasseReference) * 100);
+  const sign = percent > 0 ? '+' : '';
+  return `${formattedDelta} (${sign}${percent}%)`;
+}
+
 function getDeltaClassName(delta: number): string {
   if (delta < 0) {
     return 'text-success-500';
@@ -937,7 +948,10 @@ export default function SimulateurTaxeSejour() {
                                     row.amount - (nonClasseAmount ?? 0)
                                   )}`}
                                 >
-                                  {formatDelta(row.amount - (nonClasseAmount ?? 0))}
+                                  {formatDeltaWithPercent(
+                                    row.amount - (nonClasseAmount ?? 0),
+                                    nonClasseAmount ?? 0
+                                  )}
                                 </span>
                               )}
                             </td>
