@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
-import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 
 export default function ArticleTaxeDeSejour2026() {
   return (
@@ -237,70 +236,42 @@ export default function ArticleTaxeDeSejour2026() {
               </a>
               ) :
             </p>
-            <ResponsiveComparisonTable
-              className="mb-6"
-              primaryColumnKey="categorie"
-              columns={[
-                {
-                  key: 'categorie',
-                  label: 'Catégorie',
-                  mobileLabel: 'Catégorie',
-                  align: 'center',
-                  widthClassName: 'w-1/3',
-                },
-                {
-                  key: 'min',
-                  label: 'Minimum national',
-                  mobileLabel: 'Minimum national',
-                  align: 'center',
-                  widthClassName: 'w-1/3',
-                },
-                {
-                  key: 'max',
-                  label: 'Maximum national',
-                  mobileLabel: 'Maximum national',
-                  align: 'center',
-                  widthClassName: 'w-1/3',
-                },
-              ]}
-              rows={[
-                {
-                  key: '1',
-                  rowClassName: 'bg-white border-b border-gray-100',
-                  cells: { categorie: '1 étoile', min: '0,20 €', max: '0,80 €' },
-                },
-                {
-                  key: '2',
-                  rowClassName: 'bg-gray-50',
-                  cells: { categorie: '2 étoiles', min: '0,30 €', max: '1,00 €' },
-                },
-                {
-                  key: '3',
-                  rowClassName: 'bg-white border-b border-gray-100',
-                  cells: { categorie: '3 étoiles', min: '0,50 €', max: '1,70 €' },
-                },
-                {
-                  key: '4',
-                  rowClassName: 'bg-gray-50',
-                  cells: { categorie: '4 étoiles', min: '0,70 €', max: '2,60 €' },
-                },
-                {
-                  key: '5',
-                  rowClassName: 'bg-white border-b border-gray-100',
-                  cells: { categorie: '5 étoiles', min: '0,70 €', max: '3,60 €' },
-                },
-              ]}
-              tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
-              desktopWrapperClassName="hidden md:block"
-              headerRowClassName="bg-primary-300 text-white"
-              headerCellClassName="p-3 font-semibold"
-              cellClassName="p-3"
-              mobileContainerClassName="md:hidden space-y-3"
-              mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
-              mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
-              mobileLabelClassName="text-xs font-medium text-gray-600"
-              mobileValueClassName="text-sm text-gray-900 text-right"
-            />
+            <div className="overflow-x-auto mb-6">
+              <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+                <colgroup>
+                  <col className="w-1/3" />
+                  <col className="w-1/3" />
+                  <col className="w-1/3" />
+                </colgroup>
+                <thead>
+                  <tr className="bg-primary-300 text-white">
+                    <th className="p-3 text-center font-semibold">Catégorie</th>
+                    <th className="p-3 text-center font-semibold">Minimum national</th>
+                    <th className="p-3 text-center font-semibold">Maximum national</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(
+                    [
+                      { cat: '1 étoile', min: '0,20 €', max: '0,80 €' },
+                      { cat: '2 étoiles', min: '0,30 €', max: '1,00 €' },
+                      { cat: '3 étoiles', min: '0,50 €', max: '1,70 €' },
+                      { cat: '4 étoiles', min: '0,70 €', max: '2,60 €' },
+                      { cat: '5 étoiles', min: '0,70 €', max: '3,60 €' },
+                    ] as { cat: string; min: string; max: string }[]
+                  ).map(({ cat, min, max }, i) => (
+                    <tr
+                      key={cat}
+                      className={i % 2 === 0 ? 'bg-white border-b border-gray-100' : 'bg-gray-50'}
+                    >
+                      <td className="p-3 text-center text-gray-700 font-medium">{cat}</td>
+                      <td className="p-3 text-center text-gray-600">{min}</td>
+                      <td className="p-3 text-center font-semibold text-primary-400">{max}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             <p className="text-gray-700 leading-comfortable mb-4">
               Ces fourchettes sont fixées au niveau national. C'est ensuite la{' '}
               <strong>commune</strong> ou l'<strong>EPCI</strong> qui choisit le tarif réellement
@@ -419,149 +390,110 @@ export default function ArticleTaxeDeSejour2026() {
               </a>
               .
             </p>
-            <ResponsiveComparisonTable
-              className="mb-6"
-              primaryColumnKey="situation"
-              columns={[
-                {
-                  key: 'situation',
-                  label: 'Situation',
-                  mobileLabel: 'Situation',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-                {
-                  key: 'hypotheses',
-                  label: 'Hypothèses',
-                  mobileLabel: 'Hypothèses',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-                {
-                  key: 'calcul',
-                  label: 'Calcul',
-                  mobileLabel: 'Calcul',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-                {
-                  key: 'montant',
-                  label: 'Montant',
-                  mobileLabel: 'Montant',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-                {
-                  key: 'message',
-                  label: 'Ce que ça montre',
-                  mobileLabel: 'Ce que ça montre',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-              ]}
-              rows={[
-                {
-                  key: 'classe3-hypo',
-                  rowClassName: 'bg-white border-b border-gray-100 align-top',
-                  cells: {
-                    situation: (
-                      <>
-                        <span className="font-medium">Meublé classé 3★</span>
-                        <br />
-                        <span className="text-gray-500 font-normal text-xs">
-                          (hypothétique, hors taxes additionnelles)
-                        </span>
-                      </>
-                    ),
-                    hypotheses:
-                      'Commune hors Île-de-France, sans taxe additionnelle. Tarif local voté : 1,20 € par adulte et par nuitée. Séjour de 2 adultes pendant 2 nuits.',
-                    calcul: '1,20 € × 2 adultes × 2 nuits',
-                    montant: (
-                      <span className="font-semibold text-primary-400 whitespace-nowrap">
-                        4,80 €
+            <div className="overflow-x-auto mb-6">
+              <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+                <thead>
+                  <tr className="bg-primary-300 text-white">
+                    <th className="p-3 text-left font-semibold">Situation</th>
+                    <th className="p-3 text-left font-semibold">Hypothèses</th>
+                    <th className="p-3 text-left font-semibold">Calcul</th>
+                    <th className="p-3 text-center font-semibold">Montant</th>
+                    <th className="p-3 text-left font-semibold">Ce que ça montre</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="bg-white border-b border-gray-100 align-top">
+                    <td className="p-3 text-gray-700 font-medium">
+                      Meublé classé 3★
+                      <br />
+                      <span className="text-gray-500 font-normal text-xs">
+                        (hypothétique, hors taxes additionnelles)
                       </span>
-                    ),
-                    message: 'Avec un meublé classé, le calcul est direct et prévisible.',
-                  },
-                },
-                {
-                  key: 'nonclasse-hypo',
-                  rowClassName: 'bg-gray-50 border-b border-gray-100 align-top',
-                  cells: {
-                    situation: (
-                      <>
-                        <span className="font-medium">Meublé non classé</span>
-                        <br />
-                        <span className="text-gray-500 font-normal text-xs">
-                          (hypothétique, même commune)
-                        </span>
-                      </>
-                    ),
-                    hypotheses:
-                      'Séjour à 240 € HT pour 2 adultes pendant 2 nuits. Coût par personne et par nuitée : 60 €. Taux voté : 5 %. Plafond local maximal : 2,60 €.',
-                    calcul:
-                      '60 € × 5 % = 3,00 € théoriques, mais plafonné à 2,60 €. Soit 2,60 € × 2 adultes × 2 nuits.',
-                    montant: <span className="font-semibold whitespace-nowrap">10,40 €</span>,
-                    message:
-                      'Le non classé peut coûter nettement plus cher, et le plafond local devient essentiel.',
-                  },
-                },
-                {
-                  key: 'paris-classe3',
-                  rowClassName: 'bg-white border-b border-gray-100 align-top',
-                  cells: {
-                    situation: (
-                      <>
-                        <span className="font-medium">Paris 2026, meublé classé 3★</span>
-                        <br />
-                        <span className="text-gray-500 font-normal text-xs">
-                          (exemple officiel)
-                        </span>
-                      </>
-                    ),
-                    hypotheses:
-                      'Tarif de base : 1,70 €. Taxe additionnelle départementale (10 %) : 0,17 €. Majoration régionale 15 % : 0,26 €. Majoration 200 % : 3,40 €.',
-                    calcul:
-                      'Total officiel : 5,53 € par adulte et par nuitée. Pour 2 adultes pendant 2 nuits : 5,53 € × 2 × 2.',
-                    montant: <span className="font-semibold whitespace-nowrap">22,12 €</span>,
-                    message:
-                      'En Île-de-France, les majorations changent fortement le montant final.',
-                  },
-                },
-                {
-                  key: 'paris-nonclasse',
-                  rowClassName: 'bg-gray-50 align-top',
-                  cells: {
-                    situation: (
-                      <>
-                        <span className="font-medium">Paris 2026, meublé non classé</span>
-                        <br />
-                        <span className="text-gray-500 font-normal text-xs">
-                          (pédagogique, règles officielles Paris)
-                        </span>
-                      </>
-                    ),
-                    hypotheses:
-                      '2 adultes, 1 nuit, 200 € HT au total. Coût par personne/nuit : 100 €. Taux appliqué : 5 %. Base théorique : 5 €/adulte/nuit.',
-                    calcul:
-                      '5,00 € × 3,25 = 16,25 € théoriques par adulte/nuit, mais plafond officiel 2026 à Paris (non classé) : 15,93 €. Soit 15,93 € × 2 adultes.',
-                    montant: <span className="font-semibold whitespace-nowrap">31,86 €</span>,
-                    message:
-                      'Sur un non classé à prix élevé, le calcul proportionnel peut vite atteindre le plafond local.',
-                  },
-                },
-              ]}
-              tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
-              desktopWrapperClassName="hidden md:block"
-              headerRowClassName="bg-primary-300 text-white"
-              headerCellClassName="p-3 font-semibold"
-              cellClassName="p-3"
-              mobileContainerClassName="md:hidden space-y-3"
-              mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
-              mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
-              mobileLabelClassName="text-xs font-medium text-gray-600"
-              mobileValueClassName="text-sm text-gray-900 text-left"
-            />
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      Commune hors Île-de-France, sans taxe additionnelle. Tarif local voté : 1,20 €
+                      par adulte et par nuitée. Séjour de 2 adultes pendant 2 nuits.
+                    </td>
+                    <td className="p-3 text-gray-600">1,20 € × 2 adultes × 2 nuits</td>
+                    <td className="p-3 text-center font-semibold text-primary-400 whitespace-nowrap">
+                      4,80 €
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      Avec un meublé classé, le calcul est direct et prévisible.
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50 border-b border-gray-100 align-top">
+                    <td className="p-3 text-gray-700 font-medium">
+                      Meublé non classé
+                      <br />
+                      <span className="text-gray-500 font-normal text-xs">
+                        (hypothétique, même commune)
+                      </span>
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      Séjour à 240 € HT pour 2 adultes pendant 2 nuits. Coût par personne et par
+                      nuitée : 60 €. Taux voté : 5 %. Plafond local maximal : 2,60 €.
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      60 € × 5 % = 3,00 € théoriques, mais plafonné à 2,60 €. Soit 2,60 € × 2
+                      adultes × 2 nuits.
+                    </td>
+                    <td className="p-3 text-center font-semibold text-gray-900 whitespace-nowrap">
+                      10,40 €
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      Le non classé peut coûter nettement plus cher, et le plafond local devient
+                      essentiel.
+                    </td>
+                  </tr>
+                  <tr className="bg-white border-b border-gray-100 align-top">
+                    <td className="p-3 text-gray-700 font-medium">
+                      Paris 2026, meublé classé 3★
+                      <br />
+                      <span className="text-gray-500 font-normal text-xs">(exemple officiel)</span>
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      Tarif de base : 1,70 €. Taxe additionnelle départementale (10 %) : 0,17 €.
+                      Majoration régionale 15 % : 0,26 €. Majoration 200 % : 3,40 €.
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      Total officiel : 5,53 € par adulte et par nuitée. Pour 2 adultes pendant 2
+                      nuits : 5,53 € × 2 × 2.
+                    </td>
+                    <td className="p-3 text-center font-semibold text-gray-900 whitespace-nowrap">
+                      22,12 €
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      En Île-de-France, les majorations changent fortement le montant final.
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50 align-top">
+                    <td className="p-3 text-gray-700 font-medium">
+                      Paris 2026, meublé non classé
+                      <br />
+                      <span className="text-gray-500 font-normal text-xs">
+                        (pédagogique, règles officielles Paris)
+                      </span>
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      2 adultes, 1 nuit, 200 € HT au total. Coût par personne/nuit : 100 €. Taux
+                      appliqué : 5 %. Base théorique : 5 €/adulte/nuit.
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      5,00 € × 3,25 = 16,25 € théoriques par adulte/nuit, mais plafond officiel 2026
+                      à Paris (non classé) : 15,93 €. Soit 15,93 € × 2 adultes.
+                    </td>
+                    <td className="p-3 text-center font-semibold text-gray-900 whitespace-nowrap">
+                      31,86 €
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      Sur un non classé à prix élevé, le calcul proportionnel peut vite atteindre le
+                      plafond local.
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
               Ces exemples montrent pourquoi il faut éviter les raccourcis. Le classement change la
               logique de calcul, mais le montant final dépend aussi du prix de la nuitée, du taux
