@@ -48,6 +48,151 @@ interface ScoredSuggestion {
 }
 
 const MAX_CITY_SUGGESTIONS = 8;
+const TAXE_SEJOUR_STORAGE_KEY = 'etoilys.simulateurTaxeSejour.v1';
+
+interface PersistedFormState {
+  cityQuery: string;
+  selectedCityId: string | null;
+  nightlyPriceHt: string;
+  capacity: string;
+  nights: string;
+  personsStaying: string;
+  exemptedPersons: string;
+}
+
+interface PersistedCalculationSnapshot {
+  cityId: string;
+  nightlyPriceHt: number;
+  nights: number;
+  capacity?: number;
+  personsStaying?: number;
+  exemptedPersons?: number;
+}
+
+interface PersistedSimulateurState {
+  version: 1;
+  form: PersistedFormState;
+  lastCalculation: PersistedCalculationSnapshot | null;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value);
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+function parsePersistedForm(value: unknown): PersistedFormState | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  const selectedCityIdValue = value.selectedCityId;
+  const hasValidSelectedCityId = selectedCityIdValue === null || isString(selectedCityIdValue);
+  if (!hasValidSelectedCityId) {
+    return null;
+  }
+
+  if (
+    !isString(value.cityQuery) ||
+    !isString(value.nightlyPriceHt) ||
+    !isString(value.capacity) ||
+    !isString(value.nights) ||
+    !isString(value.personsStaying) ||
+    !isString(value.exemptedPersons)
+  ) {
+    return null;
+  }
+
+  return {
+    cityQuery: value.cityQuery,
+    selectedCityId: selectedCityIdValue,
+    nightlyPriceHt: value.nightlyPriceHt,
+    capacity: value.capacity,
+    nights: value.nights,
+    personsStaying: value.personsStaying,
+    exemptedPersons: value.exemptedPersons,
+  };
+}
+
+function parsePersistedCalculationSnapshot(value: unknown): PersistedCalculationSnapshot | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+
+  if (
+    !isString(value.cityId) ||
+    !isFiniteNumber(value.nightlyPriceHt) ||
+    !isFiniteNumber(value.nights)
+  ) {
+    return null;
+  }
+
+  if (value.capacity !== undefined && !isFiniteNumber(value.capacity)) {
+    return null;
+  }
+
+  if (value.personsStaying !== undefined && !isFiniteNumber(value.personsStaying)) {
+    return null;
+  }
+
+  if (value.exemptedPersons !== undefined && !isFiniteNumber(value.exemptedPersons)) {
+    return null;
+  }
+
+  return {
+    cityId: value.cityId,
+    nightlyPriceHt: value.nightlyPriceHt,
+    nights: value.nights,
+    capacity: value.capacity,
+    personsStaying: value.personsStaying,
+    exemptedPersons: value.exemptedPersons,
+  };
+}
+
+function readPersistedSimulateurState(): PersistedSimulateurState | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    const rawValue = window.sessionStorage.getItem(TAXE_SEJOUR_STORAGE_KEY);
+    if (!rawValue) {
+      return null;
+    }
+
+    const parsed: unknown = JSON.parse(rawValue);
+    if (!isRecord(parsed) || parsed.version !== 1) {
+      return null;
+    }
+
+    const form = parsePersistedForm(parsed.form);
+    if (!form) {
+      return null;
+    }
+
+    let lastCalculation: PersistedCalculationSnapshot | null = null;
+    if (parsed.lastCalculation !== null && parsed.lastCalculation !== undefined) {
+      lastCalculation = parsePersistedCalculationSnapshot(parsed.lastCalculation);
+      if (!lastCalculation) {
+        return null;
+      }
+    }
+
+    return {
+      version: 1,
+      form,
+      lastCalculation,
+    };
+  } catch {
+    return null;
+  }
+}
 
 function formatEuro(value: number): string {
   return value.toLocaleString('fr-FR', {
@@ -221,6 +366,11 @@ export default function SimulateurTaxeSejour() {
   const [result, setResult] = useState<TaxeSejourCalculationOutput | null>(null);
   const [resultCityLabel, setResultCityLabel] = useState('');
   const [resultNights, setResultNights] = useState(1);
+  const [lastCalculationSnapshot, setLastCalculationSnapshot] =
+    useState<PersistedCalculationSnapshot | null>(null);
+  const [pendingRestoredCalculation, setPendingRestoredCalculation] =
+    useState<PersistedCalculationSnapshot | null>(null);
+  const [isStorageHydrated, setIsStorageHydrated] = useState(false);
 
   const nonClasseAmount = useMemo(() => {
     if (!result) {
@@ -301,6 +451,23 @@ export default function SimulateurTaxeSejour() {
 
   const closeTimerRef = useRef<number | null>(null);
   const listId = 'taxe-sejour-city-listbox';
+
+  useEffect(() => {
+    const persistedState = readPersistedSimulateurState();
+    if (persistedState) {
+      setCityQuery(persistedState.form.cityQuery);
+      setSelectedCityId(persistedState.form.selectedCityId);
+      setNightlyPriceHt(persistedState.form.nightlyPriceHt);
+      setCapacity(persistedState.form.capacity);
+      setNights(persistedState.form.nights);
+      setPersonsStaying(persistedState.form.personsStaying);
+      setExemptedPersons(persistedState.form.exemptedPersons);
+      setLastCalculationSnapshot(persistedState.lastCalculation);
+      setPendingRestoredCalculation(persistedState.lastCalculation);
+    }
+
+    setIsStorageHydrated(true);
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -501,6 +668,80 @@ export default function SimulateurTaxeSejour() {
     return picked;
   }, [dataset, normalizedQuery, preparedCitySearch]);
 
+  useEffect(() => {
+    if (!dataset || !pendingRestoredCalculation) {
+      return;
+    }
+
+    if (selectedCityId !== pendingRestoredCalculation.cityId) {
+      setPendingRestoredCalculation(null);
+      return;
+    }
+
+    const restoredCity = dataset.cities.find(
+      (city) => city.id === pendingRestoredCalculation.cityId
+    );
+    if (!restoredCity) {
+      setPendingRestoredCalculation(null);
+      return;
+    }
+
+    try {
+      const restoredValues: ParsedFormValues = {
+        nightlyPriceHt: pendingRestoredCalculation.nightlyPriceHt,
+        nights: pendingRestoredCalculation.nights,
+        capacity: pendingRestoredCalculation.capacity,
+        personsStaying: pendingRestoredCalculation.personsStaying,
+        exemptedPersons: pendingRestoredCalculation.exemptedPersons,
+      };
+
+      const restoredResult = computeResult(restoredCity, restoredValues);
+      setResult(restoredResult);
+      setResultCityLabel(restoredCity.label);
+      setResultNights(restoredValues.nights);
+    } catch {
+      // Ignorer silencieusement une restauration invalide.
+    } finally {
+      setPendingRestoredCalculation(null);
+    }
+  }, [dataset, pendingRestoredCalculation, selectedCityId]);
+
+  useEffect(() => {
+    if (!isStorageHydrated || typeof window === 'undefined') {
+      return;
+    }
+
+    const persistedState: PersistedSimulateurState = {
+      version: 1,
+      form: {
+        cityQuery,
+        selectedCityId,
+        nightlyPriceHt,
+        capacity,
+        nights,
+        personsStaying,
+        exemptedPersons,
+      },
+      lastCalculation: lastCalculationSnapshot,
+    };
+
+    try {
+      window.sessionStorage.setItem(TAXE_SEJOUR_STORAGE_KEY, JSON.stringify(persistedState));
+    } catch {
+      // Ignorer silencieusement les erreurs de quota/session.
+    }
+  }, [
+    isStorageHydrated,
+    cityQuery,
+    selectedCityId,
+    nightlyPriceHt,
+    capacity,
+    nights,
+    personsStaying,
+    exemptedPersons,
+    lastCalculationSnapshot,
+  ]);
+
   function clearCityError() {
     if (!errors.city) {
       return;
@@ -512,6 +753,7 @@ export default function SimulateurTaxeSejour() {
     setResult(null);
     setResultCityLabel('');
     setResultNights(1);
+    setLastCalculationSnapshot(null);
   }
 
   function selectCity(city: TaxeSejourCity) {
@@ -595,15 +837,15 @@ export default function SimulateurTaxeSejour() {
     const parsedExemptedPersons = hasExemptedInput ? Number(exemptedPersons) : 0;
 
     if (!selectedCity) {
-      nextErrors.city = 'Sélectionnez une commune dans la liste de suggestions.';
+      nextErrors.city = 'Sélectionnez une commune dans la liste proposée.';
     }
 
     if (!Number.isFinite(parsedNightlyPriceHt) || parsedNightlyPriceHt <= 0) {
-      nextErrors.nightlyPriceHt = 'Saisissez un prix HT strictement positif.';
+      nextErrors.nightlyPriceHt = 'Indiquez un prix HT strictement positif.';
     }
 
     if (!Number.isFinite(parsedNights) || parsedNights <= 0 || !Number.isInteger(parsedNights)) {
-      nextErrors.nights = 'Saisissez un nombre de nuits entier strictement positif.';
+      nextErrors.nights = 'Indiquez un nombre de nuits entier strictement positif.';
     }
 
     if (requiresCapacity) {
@@ -612,7 +854,8 @@ export default function SimulateurTaxeSejour() {
         parsedCapacity <= 0 ||
         !Number.isInteger(parsedCapacity)
       ) {
-        nextErrors.capacity = 'Saisissez une capacité d’accueil entière strictement positive.';
+        nextErrors.capacity =
+          'Indiquez une capacité du logement en nombre entier strictement positif.';
       }
     }
 
@@ -622,7 +865,8 @@ export default function SimulateurTaxeSejour() {
         parsedPersonsStaying <= 0 ||
         !Number.isInteger(parsedPersonsStaying)
       ) {
-        nextErrors.personsStaying = 'Saisissez un nombre entier strictement positif.';
+        nextErrors.personsStaying =
+          'Indiquez un nombre de personnes accueillies entier strictement positif.';
       }
 
       if (
@@ -631,7 +875,8 @@ export default function SimulateurTaxeSejour() {
           parsedExemptedPersons < 0 ||
           !Number.isInteger(parsedExemptedPersons))
       ) {
-        nextErrors.exemptedPersons = 'Saisissez un nombre entier positif ou nul.';
+        nextErrors.exemptedPersons =
+          'Indiquez un nombre de personnes exonérées entier positif ou nul.';
       }
 
       if (
@@ -640,7 +885,7 @@ export default function SimulateurTaxeSejour() {
         parsedExemptedPersons > parsedPersonsStaying
       ) {
         nextErrors.exemptedPersons =
-          'Le nombre de personnes exonérées ne peut pas dépasser les personnes accueillies.';
+          'Le nombre de personnes exonérées ne peut pas dépasser le nombre de personnes accueillies.';
       }
 
       if (
@@ -650,7 +895,7 @@ export default function SimulateurTaxeSejour() {
         parsedPersonsStaying > parsedCapacity
       ) {
         nextErrors.personsStaying =
-          "Le nombre de personnes accueillies ne peut pas dépasser la capacité d'accueil.";
+          'Le nombre de personnes accueillies ne peut pas dépasser la capacité du logement.';
       }
     }
 
@@ -682,12 +927,26 @@ export default function SimulateurTaxeSejour() {
     );
   }
 
+  function buildCalculationSnapshot(
+    cityId: string,
+    values: ParsedFormValues
+  ): PersistedCalculationSnapshot {
+    return {
+      cityId,
+      nightlyPriceHt: values.nightlyPriceHt,
+      nights: values.nights,
+      capacity: values.capacity,
+      personsStaying: values.personsStaying,
+      exemptedPersons: values.exemptedPersons,
+    };
+  }
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!selectedCity) {
       setErrors((previous) => ({
         ...previous,
-        city: 'Sélectionnez une commune dans la liste de suggestions.',
+        city: 'Sélectionnez une commune dans la liste proposée.',
       }));
       return;
     }
@@ -698,10 +957,12 @@ export default function SimulateurTaxeSejour() {
     }
 
     const computed = computeResult(selectedCity, parsedValues);
+    const snapshot = buildCalculationSnapshot(selectedCity.id, parsedValues);
 
     setResult(computed);
     setResultCityLabel(selectedCity.label);
     setResultNights(parsedValues.nights);
+    setLastCalculationSnapshot(snapshot);
   }
 
   return (
@@ -711,8 +972,8 @@ export default function SimulateurTaxeSejour() {
           <div className="max-w-4xl">
             <h1 className="mb-6 text-white">Simulateur taxe de séjour</h1>
             <p className="text-xl text-white/90 leading-comfortable">
-              Simulation informative du montant de taxe de séjour par catégorie de classement, à
-              partir des délibérations locales disponibles.
+              Estimation informative de la taxe de séjour par catégorie de classement, à partir des
+              délibérations locales disponibles.
             </p>
           </div>
         </div>
@@ -722,12 +983,11 @@ export default function SimulateurTaxeSejour() {
         <div className="container-adaptive">
           <div className="space-y-10">
             <Card className="p-4 sm:p-6 lg:p-8" hover={false}>
-              <h2 className="text-h4 mb-2">Paramètres de simulation</h2>
-              {dataset && (
-                <p className="text-sm text-textLight mb-6">
-                  Source DELTA v{dataset.version} (date source: {dataset.sourceDate}).
-                </p>
-              )}
+              <h2 className="text-h4 mb-2">Informations du séjour</h2>
+              <p className="text-sm text-textLight mb-6">
+                Sélectionnez une commune puis renseignez les informations du séjour pour comparer
+                les montants estimatifs.
+              </p>
 
               {isLoading && <p className="text-textLight">Chargement des données en cours...</p>}
               {loadingError && (
@@ -740,7 +1000,7 @@ export default function SimulateurTaxeSejour() {
                 <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                   <div className="relative max-w-2xl">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Ville <span className="ml-1 text-alert-400">*</span>
+                      Commune <span className="ml-1 text-alert-400">*</span>
                     </label>
                     <input
                       type="text"
@@ -751,7 +1011,7 @@ export default function SimulateurTaxeSejour() {
                       onClick={handleCityInputClick}
                       onBlur={handleCityInputBlur}
                       onKeyDown={handleCityInputKeyDown}
-                      placeholder="Ex: Biarritz"
+                      placeholder="Ex. Biarritz"
                       autoComplete="off"
                       role="combobox"
                       aria-autocomplete="list"
@@ -798,13 +1058,13 @@ export default function SimulateurTaxeSejour() {
                     <>
                       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
                         <Input
-                          label="Prix de la nuit HT (EUR)"
+                          label="Prix par nuit (HT, EUR)"
                           required
                           type="number"
                           min="0"
                           step="0.01"
                           inputMode="decimal"
-                          placeholder="Ex: 120"
+                          placeholder="Ex. 120"
                           value={nightlyPriceHt}
                           onChange={(event) => {
                             setNightlyPriceHt(event.target.value);
@@ -816,13 +1076,13 @@ export default function SimulateurTaxeSejour() {
                         />
 
                         <Input
-                          label="Nombre de nuits"
+                          label="Durée du séjour (nuits)"
                           required
                           type="number"
                           min="1"
                           step="1"
                           inputMode="numeric"
-                          placeholder="Ex: 3"
+                          placeholder="Ex. 3"
                           value={nights}
                           onChange={(event) => {
                             setNights(event.target.value);
@@ -835,12 +1095,12 @@ export default function SimulateurTaxeSejour() {
 
                         {requiresCapacity && (
                           <Input
-                            label="Capacité d'accueil"
+                            label="Capacité du logement (personnes)"
                             type="number"
                             min="1"
                             step="1"
                             inputMode="numeric"
-                            placeholder="Ex: 4"
+                            placeholder="Ex. 4"
                             value={capacity}
                             onChange={(event) => {
                               setCapacity(event.target.value);
@@ -861,7 +1121,7 @@ export default function SimulateurTaxeSejour() {
                               min="1"
                               step="1"
                               inputMode="numeric"
-                              placeholder="Ex: 4"
+                              placeholder="Ex. 4"
                               value={personsStaying}
                               onChange={(event) => {
                                 setPersonsStaying(event.target.value);
@@ -882,7 +1142,7 @@ export default function SimulateurTaxeSejour() {
                                     htmlFor="exempted-persons-input"
                                     className="text-sm font-medium text-gray-700"
                                   >
-                                    Personnes exonérées
+                                    Personnes exonérées de taxe
                                   </label>
                                   <div className="group relative">
                                     <button
@@ -894,10 +1154,10 @@ export default function SimulateurTaxeSejour() {
                                       i
                                     </button>
                                     <div className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-xs leading-relaxed text-gray-700 shadow-card group-hover:block group-focus-within:block">
-                                      En général, sont exonérés: les mineurs, les salariés
-                                      saisonniers employés dans la commune, les personnes hébergées
-                                      en urgence ou relogées temporairement, et les logements dont
-                                      le loyer est sous le seuil fixé localement.
+                                      En général, sont exonérées: les personnes mineures, les
+                                      salariés saisonniers employés dans la commune, les personnes
+                                      hébergées en urgence ou relogées temporairement, et les
+                                      logements dont le loyer est sous le seuil fixé localement.
                                     </div>
                                   </div>
                                 </div>
@@ -908,7 +1168,7 @@ export default function SimulateurTaxeSejour() {
                                 min="0"
                                 step="1"
                                 inputMode="numeric"
-                                placeholder="Ex: 1"
+                                placeholder="Ex. 1"
                                 value={exemptedPersons}
                                 onChange={(event) => {
                                   setExemptedPersons(event.target.value);
@@ -945,100 +1205,129 @@ export default function SimulateurTaxeSejour() {
             </Card>
 
             {result && (
-              <Card className="p-4 sm:p-6 lg:p-8" hover={false}>
-                <h2 className="text-h4 mb-2">Résultats</h2>
-                <p className="text-sm text-textLight mb-2">
-                  Montants estimés pour {getNightsLabel(resultNights)}, avec taxes additionnelles
-                  incluses si applicables.
-                </p>
-                {isFullYearPeriod(
-                  result.selectedPeriod.startLabel,
-                  result.selectedPeriod.endLabel
-                ) ? (
-                  <p className="text-sm text-textLight mb-6">
-                    Tarifs applicables du {result.selectedPeriod.startLabel} au{' '}
-                    {result.selectedPeriod.endLabel}.
+              <>
+                <Card className="p-4 sm:p-6 lg:p-8" hover={false}>
+                  <h2 className="text-h4 mb-2">Résultats</h2>
+                  <p className="text-sm text-textLight mb-2">
+                    Montants estimatifs pour {getNightsLabel(resultNights)}. Les taxes
+                    additionnelles sont incluses lorsqu&apos;elles s&apos;appliquent.
                   </p>
-                ) : (
-                  <p className="text-sm text-textLight mb-6">
-                    Tarifs applicables du {result.selectedPeriod.startLabel} au{' '}
-                    {result.selectedPeriod.endLabel}. En dehors de cette période, la taxe de séjour
-                    n&apos;est pas prélevée.
-                  </p>
-                )}
+                  {isFullYearPeriod(
+                    result.selectedPeriod.startLabel,
+                    result.selectedPeriod.endLabel
+                  ) ? (
+                    <p className="text-sm text-textLight mb-6">
+                      Période tarifaire considérée: du {result.selectedPeriod.startLabel} au{' '}
+                      {result.selectedPeriod.endLabel}.
+                    </p>
+                  ) : (
+                    <p className="text-sm text-textLight mb-6">
+                      Période tarifaire considérée: du {result.selectedPeriod.startLabel} au{' '}
+                      {result.selectedPeriod.endLabel}. En dehors de cette période, la taxe de
+                      séjour n&apos;est pas prélevée.
+                    </p>
+                  )}
 
-                <div className="space-y-6">
-                  <div className="text-sm text-gray-700">
-                    <span>
-                      Commune sélectionnée: <strong>{resultCityLabel}</strong>
-                    </span>
-                  </div>
+                  <div className="space-y-6">
+                    <div className="text-sm text-gray-700">
+                      <span>
+                        Commune simulée: <strong>{resultCityLabel}</strong>
+                      </span>
+                    </div>
 
-                  <ResponsiveComparisonTable
-                    columns={resultColumns}
-                    rows={resultRows}
-                    primaryColumnKey="category"
-                    tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
-                    desktopWrapperClassName="hidden md:block"
-                    headerRowClassName="bg-primary-300 text-white"
-                    headerCellClassName="p-3 font-semibold"
-                    cellClassName="p-3"
-                    mobileContainerClassName="md:hidden space-y-3"
-                    mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
-                    mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
-                    mobileLabelClassName="text-xs font-medium text-gray-600"
-                    mobileValueClassName="text-sm text-gray-900 text-right"
-                  />
+                    <ResponsiveComparisonTable
+                      columns={resultColumns}
+                      rows={resultRows}
+                      primaryColumnKey="category"
+                      tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
+                      desktopWrapperClassName="hidden md:block"
+                      headerRowClassName="bg-primary-300 text-white"
+                      headerCellClassName="p-3 font-semibold"
+                      cellClassName="p-3"
+                      mobileContainerClassName="md:hidden space-y-3"
+                      mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
+                      mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
+                      mobileLabelClassName="text-xs font-medium text-gray-600"
+                      mobileValueClassName="text-sm text-gray-900 text-right"
+                    />
 
-                  {result.warnings.length > 0 && (
-                    <div className="rounded-card border border-warning-200 bg-warning-100 p-4">
-                      <h3 className="font-semibold text-gray-900 mb-2">Avertissements de calcul</h3>
-                      <ul className="space-y-2 text-sm text-gray-700">
-                        {result.warnings.map((warning) => (
-                          <li key={warning}>- {warning}</li>
+                    {result.warnings.length > 0 && (
+                      <div className="rounded-card border border-warning-200 bg-warning-100 p-4">
+                        <h3 className="font-semibold text-gray-900 mb-2">
+                          Points d&apos;attention
+                        </h3>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                          {result.warnings.map((warning) => (
+                            <li key={warning}>- {warning}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="rounded-card border border-gray-200 p-4 bg-gray-50">
+                      <h3 className="font-semibold text-gray-900 mb-3">Taxes additionnelles</h3>
+                      <ul className="space-y-3">
+                        {result.additionalTaxes.map((tax) => (
+                          <li
+                            key={tax.key}
+                            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
+                          >
+                            <div className="text-sm text-gray-700">
+                              <span>{tax.label}</span>{' '}
+                              <a
+                                href={tax.legalReferenceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-primary-400 hover:text-primary-500"
+                              >
+                                ({tax.legalReferenceLabel})
+                              </a>
+                            </div>
+                            <span
+                              className={`text-sm font-semibold ${
+                                tax.isApplied ? 'text-success-500' : 'text-gray-600'
+                              }`}
+                            >
+                              {tax.isApplied ? 'OUI' : 'NON'}
+                            </span>
+                          </li>
                         ))}
                       </ul>
                     </div>
-                  )}
 
-                  <div className="rounded-card border border-gray-200 p-4 bg-gray-50">
-                    <h3 className="font-semibold text-gray-900 mb-3">Taxes additionnelles</h3>
-                    <ul className="space-y-3">
-                      {result.additionalTaxes.map((tax) => (
-                        <li
-                          key={tax.key}
-                          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
-                        >
-                          <div className="text-sm text-gray-700">
-                            <span>{tax.label}</span>{' '}
-                            <a
-                              href={tax.legalReferenceUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary-400 hover:text-primary-500"
-                            >
-                              ({tax.legalReferenceLabel})
-                            </a>
-                          </div>
-                          <span
-                            className={`text-sm font-semibold ${
-                              tax.isApplied ? 'text-success-500' : 'text-gray-600'
-                            }`}
-                          >
-                            {tax.isApplied ? 'OUI' : 'NON'}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="text-sm text-textLight leading-comfortable">
+                      Cette simulation est fournie à titre informatif sur la base des délibérations
+                      publiées. Elle ne constitue pas un conseil juridique ou fiscal personnalisé.
+                    </p>
+
+                    {dataset && (
+                      <p className="text-xs text-textLight">
+                        Source de données: DELTA v{dataset.version} (date de référence:{' '}
+                        {dataset.sourceDate}).
+                      </p>
+                    )}
                   </div>
+                </Card>
 
-                  <p className="text-sm text-textLight leading-comfortable">
-                    Cette simulation est fournie à titre informatif sur la base des délibérations
-                    publiées. Elle ne constitue pas une consultation juridique ou fiscale
-                    personnalisée.
+                <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+                  <h2 className="text-h4 mb-3">
+                    Vous voulez savoir si le classement de votre meublé reste pertinent dans votre
+                    situation ?
+                  </h2>
+                  <p className="text-gray-700 mb-6">
+                    Consultez notre page sur la procédure de classement ou faites directement une
+                    demande de classement avec Etoilys.
                   </p>
+                  <div className="flex flex-wrap gap-4">
+                    <Button href="/procedure" variant="primary">
+                      Découvrir la procédure
+                    </Button>
+                    <Button href="/demande-classement" variant="secondary">
+                      Faire une demande de classement
+                    </Button>
+                  </div>
                 </div>
-              </Card>
+              </>
             )}
           </div>
         </div>
