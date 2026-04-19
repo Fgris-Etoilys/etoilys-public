@@ -97,6 +97,9 @@ npx tsc --noEmit
 - Aucun affichage du code INSEE côté interface.
 - La page restaure l'état du formulaire et le dernier calcul validé via `sessionStorage` (portée: onglet en cours) avec la clé `etoilys.simulateurTaxeSejour.v1`.
 - La restauration du résultat se fait par recalcul automatique à partir du dernier calcul validé et du dataset courant; en cas de payload invalide/obsolète, la restauration est ignorée silencieusement.
+- Le lien partageable encode le dernier calcul validé dans l'URL avec les paramètres `city`, `nightly`, `nights`, `capacity`, `persons`, `exempted`.
+- Priorité de restauration au chargement: `query params` > `sessionStorage` > état vide.
+- L'export PDF est généré côté front à partir des données structurées du résultat (paramètres, tableau, taxes additionnelles, avertissements, source DELTA/date de référence), sans capture visuelle de page.
 
 ## Commandes utiles
 

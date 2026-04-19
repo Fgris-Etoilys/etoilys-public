@@ -49,6 +49,7 @@ interface ScoredSuggestion {
 
 const MAX_CITY_SUGGESTIONS = 8;
 const TAXE_SEJOUR_STORAGE_KEY = 'etoilys.simulateurTaxeSejour.v1';
+const SHARE_QUERY_KEYS = ['city', 'nightly', 'nights', 'capacity', 'persons', 'exempted'] as const;
 
 interface PersistedFormState {
   cityQuery: string;
@@ -73,6 +74,20 @@ interface PersistedSimulateurState {
   version: 1;
   form: PersistedFormState;
   lastCalculation: PersistedCalculationSnapshot | null;
+}
+
+interface PdfLogoAsset {
+  dataUrl: string;
+  aspectRatio: number;
+}
+
+interface ShareableCalculationQuery {
+  city: string;
+  nightly: string;
+  nights: string;
+  capacity?: string;
+  persons?: string;
+  exempted?: string;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -189,6 +204,238 @@ function readPersistedSimulateurState(): PersistedSimulateurState | null {
       form,
       lastCalculation,
     };
+  } catch {
+    return null;
+  }
+}
+
+function parsePositiveNumber(value: string): number | null {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return null;
+  }
+  return parsed;
+}
+
+function parsePositiveInteger(value: string): number | null {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed <= 0 || !Number.isInteger(parsed)) {
+    return null;
+  }
+  return parsed;
+}
+
+function parseNonNegativeInteger(value: string): number | null {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0 || !Number.isInteger(parsed)) {
+    return null;
+  }
+  return parsed;
+}
+
+function parseShareableCalculationSnapshot(search: string): PersistedCalculationSnapshot | null {
+  const params = new URLSearchParams(search);
+  const query: ShareableCalculationQuery = {
+    city: params.get('city') ?? '',
+    nightly: params.get('nightly') ?? '',
+    nights: params.get('nights') ?? '',
+    capacity: params.get('capacity') ?? undefined,
+    persons: params.get('persons') ?? undefined,
+    exempted: params.get('exempted') ?? undefined,
+  };
+
+  if (!query.city.trim()) {
+    return null;
+  }
+
+  const nightlyPriceHt = parsePositiveNumber(query.nightly);
+  const nights = parsePositiveInteger(query.nights);
+  if (nightlyPriceHt === null || nights === null) {
+    return null;
+  }
+
+  const capacity =
+    query.capacity === undefined || query.capacity === ''
+      ? undefined
+      : parsePositiveInteger(query.capacity);
+  if (query.capacity !== undefined && query.capacity !== '' && capacity === null) {
+    return null;
+  }
+
+  const personsStaying =
+    query.persons === undefined || query.persons === ''
+      ? undefined
+      : parsePositiveInteger(query.persons);
+  if (query.persons !== undefined && query.persons !== '' && personsStaying === null) {
+    return null;
+  }
+
+  const exemptedPersons =
+    query.exempted === undefined || query.exempted === ''
+      ? undefined
+      : parseNonNegativeInteger(query.exempted);
+  if (query.exempted !== undefined && query.exempted !== '' && exemptedPersons === null) {
+    return null;
+  }
+
+  if (
+    personsStaying !== undefined &&
+    exemptedPersons !== undefined &&
+    exemptedPersons > personsStaying
+  ) {
+    return null;
+  }
+
+  return {
+    cityId: query.city.trim(),
+    nightlyPriceHt,
+    nights,
+    capacity,
+    personsStaying,
+    exemptedPersons,
+  };
+}
+
+function buildShareQueryParams(snapshot: PersistedCalculationSnapshot): URLSearchParams {
+  const params = new URLSearchParams();
+  params.set('city', snapshot.cityId);
+  params.set('nightly', snapshot.nightlyPriceHt.toString());
+  params.set('nights', snapshot.nights.toString());
+
+  if (snapshot.capacity !== undefined) {
+    params.set('capacity', snapshot.capacity.toString());
+  }
+  if (snapshot.personsStaying !== undefined) {
+    params.set('persons', snapshot.personsStaying.toString());
+  }
+  if (snapshot.exemptedPersons !== undefined) {
+    params.set('exempted', snapshot.exemptedPersons.toString());
+  }
+
+  return params;
+}
+
+function replaceShareQueryInUrl(snapshot: PersistedCalculationSnapshot | null): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const url = new URL(window.location.href);
+  for (const key of SHARE_QUERY_KEYS) {
+    url.searchParams.delete(key);
+  }
+
+  if (snapshot) {
+    const shareParams = buildShareQueryParams(snapshot);
+    shareParams.forEach((value, key) => {
+      url.searchParams.set(key, value);
+    });
+  }
+
+  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+}
+
+function buildShareUrl(snapshot: PersistedCalculationSnapshot): string {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+
+  const url = new URL(window.location.href);
+  for (const key of SHARE_QUERY_KEYS) {
+    url.searchParams.delete(key);
+  }
+
+  const shareParams = buildShareQueryParams(snapshot);
+  shareParams.forEach((value, key) => {
+    url.searchParams.set(key, value);
+  });
+
+  return url.toString();
+}
+
+async function copyToClipboard(text: string): Promise<boolean> {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return false;
+  }
+
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fallback below.
+    }
+  }
+
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand('copy');
+    document.body.removeChild(textarea);
+    return copied;
+  } catch {
+    return false;
+  }
+}
+
+function formatFilenameDate(value: Date): string {
+  const year = value.getFullYear();
+  const month = String(value.getMonth() + 1).padStart(2, '0');
+  const day = String(value.getDate()).padStart(2, '0');
+  const hours = String(value.getHours()).padStart(2, '0');
+  const minutes = String(value.getMinutes()).padStart(2, '0');
+  return `${year}${month}${day}-${hours}${minutes}`;
+}
+
+function getAutoTableFinalY(document: { lastAutoTable?: { finalY?: number } }): number | null {
+  const finalY = document.lastAutoTable?.finalY;
+  return typeof finalY === 'number' && Number.isFinite(finalY) ? finalY : null;
+}
+
+async function getEtoilysLogoPngAsset(): Promise<PdfLogoAsset | null> {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return null;
+  }
+
+  try {
+    const response = await fetch('/logo-etoilys.svg', { cache: 'force-cache' });
+    if (!response.ok) {
+      return null;
+    }
+
+    const svgContent = await response.text();
+    const svgBase64 = window.btoa(unescape(encodeURIComponent(svgContent)));
+    const svgDataUrl = `data:image/svg+xml;base64,${svgBase64}`;
+
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error('Logo load failed'));
+      img.src = svgDataUrl;
+    });
+
+    const naturalWidth = Math.max(1, image.naturalWidth || 800);
+    const naturalHeight = Math.max(1, image.naturalHeight || 220);
+    const aspectRatio = naturalWidth / naturalHeight;
+
+    const width = 800;
+    const height = Math.max(120, Math.round(width / aspectRatio));
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+    if (!context) {
+      return null;
+    }
+
+    context.clearRect(0, 0, width, height);
+    context.drawImage(image, 0, 0, width, height);
+    return { dataUrl: canvas.toDataURL('image/png'), aspectRatio };
   } catch {
     return null;
   }
@@ -371,6 +618,8 @@ export default function SimulateurTaxeSejour() {
   const [pendingRestoredCalculation, setPendingRestoredCalculation] =
     useState<PersistedCalculationSnapshot | null>(null);
   const [isStorageHydrated, setIsStorageHydrated] = useState(false);
+  const [isCityLabelSyncPending, setIsCityLabelSyncPending] = useState(false);
+  const [actionFeedback, setActionFeedback] = useState<string | null>(null);
 
   const nonClasseAmount = useMemo(() => {
     if (!result) {
@@ -450,9 +699,31 @@ export default function SimulateurTaxeSejour() {
   }, [result, nonClasseAmount]);
 
   const closeTimerRef = useRef<number | null>(null);
+  const feedbackTimerRef = useRef<number | null>(null);
   const listId = 'taxe-sejour-city-listbox';
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      setIsStorageHydrated(true);
+      return;
+    }
+
+    const querySnapshot = parseShareableCalculationSnapshot(window.location.search);
+    if (querySnapshot) {
+      setCityQuery('');
+      setSelectedCityId(querySnapshot.cityId);
+      setNightlyPriceHt(querySnapshot.nightlyPriceHt.toString());
+      setCapacity(querySnapshot.capacity?.toString() ?? '');
+      setNights(querySnapshot.nights.toString());
+      setPersonsStaying(querySnapshot.personsStaying?.toString() ?? '');
+      setExemptedPersons(querySnapshot.exemptedPersons?.toString() ?? '');
+      setLastCalculationSnapshot(querySnapshot);
+      setPendingRestoredCalculation(querySnapshot);
+      setIsCityLabelSyncPending(true);
+      setIsStorageHydrated(true);
+      return;
+    }
+
     const persistedState = readPersistedSimulateurState();
     if (persistedState) {
       setCityQuery(persistedState.form.cityQuery);
@@ -464,6 +735,9 @@ export default function SimulateurTaxeSejour() {
       setExemptedPersons(persistedState.form.exemptedPersons);
       setLastCalculationSnapshot(persistedState.lastCalculation);
       setPendingRestoredCalculation(persistedState.lastCalculation);
+      if (!persistedState.form.cityQuery.trim() && persistedState.form.selectedCityId) {
+        setIsCityLabelSyncPending(true);
+      }
     }
 
     setIsStorageHydrated(true);
@@ -497,6 +771,9 @@ export default function SimulateurTaxeSejour() {
       if (closeTimerRef.current !== null) {
         window.clearTimeout(closeTimerRef.current);
       }
+      if (feedbackTimerRef.current !== null) {
+        window.clearTimeout(feedbackTimerRef.current);
+      }
     };
   }, []);
 
@@ -506,6 +783,15 @@ export default function SimulateurTaxeSejour() {
     }
     return dataset.cities.find((city) => city.id === selectedCityId) ?? null;
   }, [dataset, selectedCityId]);
+
+  useEffect(() => {
+    if (!isCityLabelSyncPending || !selectedCity) {
+      return;
+    }
+
+    setCityQuery(selectedCity.label);
+    setIsCityLabelSyncPending(false);
+  }, [isCityLabelSyncPending, selectedCity]);
 
   const requiresCapacity = selectedCity?.classifiedRegime === 'f';
   const requiresOccupancy = selectedCity
@@ -754,6 +1040,7 @@ export default function SimulateurTaxeSejour() {
     setResultCityLabel('');
     setResultNights(1);
     setLastCalculationSnapshot(null);
+    replaceShareQueryInUrl(null);
   }
 
   function selectCity(city: TaxeSejourCity) {
@@ -941,6 +1228,225 @@ export default function SimulateurTaxeSejour() {
     };
   }
 
+  function setTransientFeedback(message: string) {
+    setActionFeedback(message);
+    if (feedbackTimerRef.current !== null) {
+      window.clearTimeout(feedbackTimerRef.current);
+    }
+    feedbackTimerRef.current = window.setTimeout(() => {
+      setActionFeedback(null);
+      feedbackTimerRef.current = null;
+    }, 2200);
+  }
+
+  async function handleCopyShareLink() {
+    if (!lastCalculationSnapshot) {
+      setTransientFeedback('Aucun résultat à partager.');
+      return;
+    }
+
+    const shareUrl = buildShareUrl(lastCalculationSnapshot);
+    const isCopied = await copyToClipboard(shareUrl);
+    setTransientFeedback(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.');
+  }
+
+  async function handleExportPdf() {
+    if (!result || !lastCalculationSnapshot) {
+      setTransientFeedback('Aucun résultat à exporter.');
+      return;
+    }
+
+    try {
+      const [{ jsPDF }, { default: autoTable }] = await Promise.all([
+        import('jspdf'),
+        import('jspdf-autotable'),
+      ]);
+      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+      let cursorY = 40;
+      const marginX = 40;
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const logoAsset = await getEtoilysLogoPngAsset();
+      let logoWidth = 0;
+      let logoHeight = 0;
+
+      if (logoAsset) {
+        const maxLogoWidth = 180;
+        const maxLogoHeight = 44;
+        logoWidth = maxLogoWidth;
+        logoHeight = logoWidth / logoAsset.aspectRatio;
+        if (logoHeight > maxLogoHeight) {
+          logoHeight = maxLogoHeight;
+          logoWidth = logoHeight * logoAsset.aspectRatio;
+        }
+
+        const logoY = 24;
+        doc.addImage(logoAsset.dataUrl, 'PNG', marginX, logoY, logoWidth, logoHeight);
+        doc.link(marginX, logoY, logoWidth, logoHeight, {
+          url: 'https://www.etoilys.fr',
+        });
+        cursorY = Math.max(cursorY, logoY + logoHeight + 18);
+      }
+
+      doc.setFontSize(18);
+      doc.setTextColor(49, 107, 255);
+      const title = 'Simulation taxe de séjour';
+      const titleWidth = doc.getTextWidth(title);
+      const centeredTitleX = (pageWidth - titleWidth) / 2;
+      doc.text(title, centeredTitleX, cursorY);
+
+      cursorY += 34;
+      doc.setFontSize(11);
+      doc.setTextColor(25);
+      doc.text('Paramètres de simulation', marginX, cursorY);
+
+      const simulationParametersRows: string[][] = [
+        ['Commune', resultCityLabel],
+        ['Prix par nuit HT', formatEuro(lastCalculationSnapshot.nightlyPriceHt)],
+        ['Durée du séjour', getNightsLabel(lastCalculationSnapshot.nights)],
+      ];
+      if (lastCalculationSnapshot.capacity !== undefined) {
+        simulationParametersRows.push([
+          'Capacité du logement',
+          String(lastCalculationSnapshot.capacity),
+        ]);
+      }
+      if (lastCalculationSnapshot.personsStaying !== undefined) {
+        simulationParametersRows.push([
+          'Personnes accueillies',
+          String(lastCalculationSnapshot.personsStaying),
+        ]);
+      }
+      if (lastCalculationSnapshot.exemptedPersons !== undefined) {
+        simulationParametersRows.push([
+          'Personnes exonérées',
+          String(lastCalculationSnapshot.exemptedPersons),
+        ]);
+      }
+
+      autoTable(doc, {
+        startY: cursorY + 10,
+        head: [['Paramètre', 'Valeur']],
+        body: simulationParametersRows,
+        styles: { fontSize: 10, cellPadding: 7 },
+        headStyles: { fillColor: [49, 107, 255] },
+        alternateRowStyles: { fillColor: [249, 250, 251] },
+      });
+
+      cursorY = (getAutoTableFinalY(doc) ?? cursorY) + 26;
+
+      doc.setFontSize(11);
+      doc.setTextColor(25);
+      doc.text('Résultats', marginX, cursorY);
+
+      cursorY += 8;
+      const resultRowsForPdf = result.rows.map((row) => {
+        const nonClassReference = nonClasseAmount ?? 0;
+        const deltaRaw = row.amount - nonClassReference;
+        return {
+          category: row.category,
+          amount: row.amount,
+          deltaText:
+            row.category === 'Non classé'
+              ? '—'
+              : formatDeltaWithPercent(deltaRaw, nonClassReference),
+          deltaRaw,
+        };
+      });
+
+      autoTable(doc, {
+        startY: cursorY,
+        head: [['Catégorie', 'Montant total', 'Écart vs non classé']],
+        body: resultRowsForPdf.map((row) => [row.category, formatEuro(row.amount), row.deltaText]),
+        styles: { fontSize: 10, cellPadding: 7 },
+        headStyles: { fillColor: [49, 107, 255] },
+        alternateRowStyles: { fillColor: [249, 250, 251] },
+        didParseCell: (hookData) => {
+          if (hookData.section !== 'body') {
+            return;
+          }
+
+          const rowData = resultRowsForPdf[hookData.row.index];
+          if (!rowData) {
+            return;
+          }
+
+          if (hookData.column.index === 1 && rowData.category === 'Non classé') {
+            hookData.cell.styles.textColor = [1, 50, 176];
+            hookData.cell.styles.fontStyle = 'bold';
+          }
+
+          if (hookData.column.index === 2) {
+            if (rowData.category === 'Non classé' || rowData.deltaRaw === 0) {
+              hookData.cell.styles.textColor = [75, 85, 99];
+            } else if (rowData.deltaRaw < 0) {
+              hookData.cell.styles.textColor = [0, 115, 0];
+              hookData.cell.styles.fontStyle = 'bold';
+            } else {
+              hookData.cell.styles.textColor = [140, 0, 0];
+              hookData.cell.styles.fontStyle = 'bold';
+            }
+          }
+        },
+      });
+
+      cursorY = (getAutoTableFinalY(doc) ?? cursorY) + 24;
+
+      doc.setFontSize(11);
+      doc.setTextColor(25);
+      doc.text('Taxes additionnelles', marginX, cursorY);
+      cursorY += 8;
+
+      autoTable(doc, {
+        startY: cursorY,
+        head: [['Taxes additionnelles', 'Appliquée']],
+        body: result.additionalTaxes.map((tax) => [tax.label, tax.isApplied ? 'Oui' : 'Non']),
+        styles: { fontSize: 10, cellPadding: 7 },
+        headStyles: { fillColor: [49, 107, 255] },
+        alternateRowStyles: { fillColor: [249, 250, 251] },
+      });
+
+      cursorY = (getAutoTableFinalY(doc) ?? cursorY) + 24;
+
+      if (result.warnings.length > 0) {
+        doc.setFontSize(11);
+        doc.setTextColor(25);
+        doc.text("Points d'attention", marginX, cursorY);
+
+        autoTable(doc, {
+          startY: cursorY + 8,
+          head: [['Avertissement']],
+          body: result.warnings.map((warning) => [warning]),
+          styles: { fontSize: 10, cellPadding: 7 },
+          headStyles: { fillColor: [145, 109, 0] },
+          alternateRowStyles: { fillColor: [255, 248, 211] },
+        });
+      }
+
+      const sourceLine = dataset
+        ? `Source Etoilys: données DELTA v${dataset.version} (date de référence: ${dataset.sourceDate}).`
+        : 'Source Etoilys: données DELTA indisponibles.';
+      const sourceWrapped = doc.splitTextToSize(sourceLine, 520);
+      doc.setFontSize(9);
+      doc.setTextColor(110);
+      const lastPage = doc.getNumberOfPages();
+      doc.setPage(lastPage);
+      const pageHeight = doc.internal.pageSize.getHeight();
+      doc.text(sourceWrapped, marginX, pageHeight - 30);
+      const etoilysWebsite = 'www.etoilys.fr';
+      doc.setTextColor(1, 50, 176);
+      doc.text(etoilysWebsite, marginX, pageHeight - 12);
+      doc.link(marginX, pageHeight - 20, doc.getTextWidth(etoilysWebsite), 11, {
+        url: 'https://www.etoilys.fr',
+      });
+
+      const safeCityId = lastCalculationSnapshot.cityId.replace(/[^a-zA-Z0-9_-]/g, '-');
+      doc.save(`simulation-taxe-sejour-${safeCityId}-${formatFilenameDate(new Date())}.pdf`);
+      setTransientFeedback('PDF généré.');
+    } catch {
+      setTransientFeedback('Impossible de générer le PDF.');
+    }
+  }
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!selectedCity) {
@@ -963,6 +1469,7 @@ export default function SimulateurTaxeSejour() {
     setResultCityLabel(selectedCity.label);
     setResultNights(parsedValues.nights);
     setLastCalculationSnapshot(snapshot);
+    replaceShareQueryInUrl(snapshot);
   }
 
   return (
@@ -1207,11 +1714,70 @@ export default function SimulateurTaxeSejour() {
             {result && (
               <>
                 <Card className="p-4 sm:p-6 lg:p-8" hover={false}>
-                  <h2 className="text-h4 mb-2">Résultats</h2>
-                  <p className="text-sm text-textLight mb-2">
-                    Montants estimatifs pour {getNightsLabel(resultNights)}. Les taxes
-                    additionnelles sont incluses lorsqu&apos;elles s&apos;appliquent.
-                  </p>
+                  <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <h2 className="text-h4">Résultats</h2>
+                    <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={handleCopyShareLink}
+                      >
+                        Copier le lien
+                      </Button>
+                      <Button type="button" variant="primary" size="sm" onClick={handleExportPdf}>
+                        Exporter PDF
+                      </Button>
+                    </div>
+                  </div>
+
+                  {actionFeedback && (
+                    <p className="mb-4 text-sm text-primary-500 sm:text-right">{actionFeedback}</p>
+                  )}
+
+                  <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+                    <div className="rounded-lg bg-gray-50 px-3 py-2">
+                      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                        Commune
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">{resultCityLabel}</p>
+                    </div>
+                    <div className="rounded-lg bg-gray-50 px-3 py-2">
+                      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                        Prix/nuit HT
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {lastCalculationSnapshot
+                          ? formatEuro(lastCalculationSnapshot.nightlyPriceHt)
+                          : 'n/a'}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-gray-50 px-3 py-2">
+                      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                        Nuits
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {getNightsLabel(resultNights)}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-gray-50 px-3 py-2">
+                      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                        Accueillies
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {lastCalculationSnapshot?.personsStaying ?? 'n/a'}
+                      </p>
+                    </div>
+                    <div className="rounded-lg bg-gray-50 px-3 py-2">
+                      <p className="text-[11px] font-medium uppercase tracking-wide text-gray-500">
+                        Exonérées
+                      </p>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {lastCalculationSnapshot?.exemptedPersons ?? '0'}
+                      </p>
+                    </div>
+                  </div>
+
                   {isFullYearPeriod(
                     result.selectedPeriod.startLabel,
                     result.selectedPeriod.endLabel
@@ -1229,12 +1795,6 @@ export default function SimulateurTaxeSejour() {
                   )}
 
                   <div className="space-y-6">
-                    <div className="text-sm text-gray-700">
-                      <span>
-                        Commune simulée: <strong>{resultCityLabel}</strong>
-                      </span>
-                    </div>
-
                     <ResponsiveComparisonTable
                       columns={resultColumns}
                       rows={resultRows}
@@ -1266,6 +1826,10 @@ export default function SimulateurTaxeSejour() {
 
                     <div className="rounded-card border border-gray-200 p-4 bg-gray-50">
                       <h3 className="font-semibold text-gray-900 mb-3">Taxes additionnelles</h3>
+                      <p className="mb-3 text-sm text-textLight">
+                        Les taxes additionnelles sont incluses dans la simulation lorsqu&apos;elles
+                        s&apos;appliquent.
+                      </p>
                       <ul className="space-y-3">
                         {result.additionalTaxes.map((tax) => (
                           <li
