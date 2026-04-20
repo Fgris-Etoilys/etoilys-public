@@ -254,29 +254,32 @@ function parseShareableCalculationSnapshot(search: string): PersistedCalculation
     return null;
   }
 
-  const capacity =
+  const parsedCapacity =
     query.capacity === undefined || query.capacity === ''
       ? undefined
       : parsePositiveInteger(query.capacity);
-  if (query.capacity !== undefined && query.capacity !== '' && capacity === null) {
+  if (query.capacity !== undefined && query.capacity !== '' && parsedCapacity === null) {
     return null;
   }
+  const capacity = parsedCapacity ?? undefined;
 
-  const personsStaying =
+  const parsedPersonsStaying =
     query.persons === undefined || query.persons === ''
       ? undefined
       : parsePositiveInteger(query.persons);
-  if (query.persons !== undefined && query.persons !== '' && personsStaying === null) {
+  if (query.persons !== undefined && query.persons !== '' && parsedPersonsStaying === null) {
     return null;
   }
+  const personsStaying = parsedPersonsStaying ?? undefined;
 
-  const exemptedPersons =
+  const parsedExemptedPersons =
     query.exempted === undefined || query.exempted === ''
       ? undefined
       : parseNonNegativeInteger(query.exempted);
-  if (query.exempted !== undefined && query.exempted !== '' && exemptedPersons === null) {
+  if (query.exempted !== undefined && query.exempted !== '' && parsedExemptedPersons === null) {
     return null;
   }
+  const exemptedPersons = parsedExemptedPersons ?? undefined;
 
   if (
     personsStaying !== undefined &&
@@ -392,8 +395,17 @@ function formatFilenameDate(value: Date): string {
   return `${year}${month}${day}-${hours}${minutes}`;
 }
 
-function getAutoTableFinalY(document: { lastAutoTable?: { finalY?: number } }): number | null {
-  const finalY = document.lastAutoTable?.finalY;
+function getAutoTableFinalY(document: unknown): number | null {
+  if (!isRecord(document)) {
+    return null;
+  }
+
+  const lastAutoTable = document.lastAutoTable;
+  if (!isRecord(lastAutoTable)) {
+    return null;
+  }
+
+  const finalY = lastAutoTable.finalY;
   return typeof finalY === 'number' && Number.isFinite(finalY) ? finalY : null;
 }
 
