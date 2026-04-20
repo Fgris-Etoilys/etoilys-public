@@ -17,6 +17,7 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
    - `title`
    - `description`
    - `breadcrumbLabel`
+   - `ogImageKey` (recommande pour definir une image de partage Open Graph/Twitter)
    - `indexable` (laisser implicite `true` sauf exception)
    - `prerender` (laisser implicite `true` sauf exception)
 3. Si la page contient une image critique:
@@ -48,12 +49,14 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
 
 - `npm run images:build` -> genere variantes AVIF/WebP/JPG + met a jour `src/content/imageManifest.ts`.
 - `npm run seo:sitemap` -> regenere `public/sitemap.xml` depuis `seoRoutes`.
-- `npm run prerender` -> prerender des routes indexables/prerenderables dans `dist/`.
+- `npm run prerender` -> prerender des routes indexables/prerenderables dans `dist/` + genere `dist/404.html` (meta `noindex,follow`).
 - `npm run build:seo` -> images + sitemap + build vite + prerender.
 - `npm run indexnow:submit` -> soumet les URLs sitemap a IndexNow.
 
 ## Notes CI/CD
 
+- Le deploiement Vercel doit executer `npm run build:seo` et publier `dist` (config versionnee dans `vercel.json`).
+- Ne pas reintroduire de rewrite SPA global `/(.*) -> /index.html` en production, afin de conserver un vrai statut HTTP 404 sur les routes inconnues.
 - Le workflow `.github/workflows/indexnow.yml` soumet IndexNow sur `push main`.
 - La cle IndexNow publique est versionnee dans `public/a4f9bc0d1e4b47b9b0e2b438d9d8f2aa.txt`.
 - Si le domaine canonique change, mettre a jour:

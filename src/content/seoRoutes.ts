@@ -5,6 +5,7 @@ export interface SeoRouteConfig {
   description: string;
   robots?: string;
   breadcrumbLabel?: string;
+  ogImageKey?: ImageAssetKey;
   indexable?: boolean;
   prerender?: boolean;
   lcpImageKey?: ImageAssetKey;
@@ -22,6 +23,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     title: 'Classement meuble de tourisme',
     description:
       'Informations sur les demarches de classement des meubles de tourisme avec Etoilys.',
+    ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
   },
   '/classement': {
@@ -35,6 +37,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     description:
       'Presentation factuelle des effets du classement des meubles de tourisme: fiscalite, taxe de sejour et cadre officiel.',
     breadcrumbLabel: 'Avantages du classement',
+    ogImageKey: 'pourquoiReferencement',
   },
   '/prerequis-au-classement': {
     title: "Prerequis au classement d'un meuble de tourisme",
@@ -71,30 +74,35 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     description:
       'Fiscalite, 90 jours, DPE, copropriete et enregistrement: points cles pour les proprietaires en 2025-2026.',
     breadcrumbLabel: 'Ce qui change en 2025-2026',
+    ogImageKey: 'articleMeubles20252026',
   },
   '/actualites/micro-bic-2026-meuble-classe-vs-non-classe': {
     title: 'Micro-BIC 2026: meuble classe vs non classe',
     description:
       'Seuils, abattements et regime reel: evolutions 2026 entre meuble classe et non classe.',
     breadcrumbLabel: 'Micro-BIC 2026',
+    ogImageKey: 'articleMicroBic2026',
   },
   '/actualites/airbnb-residence-principale-limite-90-jours': {
     title: 'Residence principale: limite des 90 jours',
     description:
       "Comprendre qui est concerne par la limite des 90 jours et dans quels cas elle s'applique.",
     breadcrumbLabel: 'Limite des 90 jours',
+    ogImageKey: 'articleResidence90Jours',
   },
   '/actualites/copropriete-location-touristique-reglement': {
     title: 'Copropriete et location touristique',
     description:
       'Ce que le reglement de copropriete peut prevoir pour la location touristique depuis les evolutions recentes.',
     breadcrumbLabel: 'Copropriete et location',
+    ogImageKey: 'articleCoproprieteReglement',
   },
   '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne': {
     title: 'Taxe de sejour 2026: pourquoi le classement change la donne',
     description:
       'Meuble classe ou non classe, bareme 2026, taux, plafonds et surtaxes: voici comment le classement change concretement la taxe de sejour.',
     breadcrumbLabel: 'Taxe de sejour 2026',
+    ogImageKey: 'articleTaxeDeSejour2026',
   },
   '/contact': {
     title: 'Contact Etoilys',

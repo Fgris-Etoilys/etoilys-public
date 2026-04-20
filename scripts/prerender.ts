@@ -7,6 +7,7 @@ import { getPrerenderPaths } from '../src/content/seoRoutes.ts';
 const HOST = '127.0.0.1';
 const PORT = Number(process.env.PRERENDER_PORT ?? 4173);
 const BASE_URL = `http://${HOST}:${PORT}`;
+const NOT_FOUND_PRERENDER_PATH = '/404';
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -54,6 +55,13 @@ function resolveOutputPath(distDir: string, routePath: string): string {
   return path.join(distDir, trimmed, 'index.html');
 }
 
+function ensureDoctype(html: string): string {
+  if (html.toLowerCase().startsWith('<!doctype html>')) {
+    return html;
+  }
+  return `<!DOCTYPE html>\n${html}`;
+}
+
 async function main() {
   const distDir = path.resolve(process.cwd(), 'dist');
   const routes = getPrerenderPaths();
@@ -70,16 +78,23 @@ async function main() {
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
       await page.waitForTimeout(300);
 
-      let html = await page.content();
-      if (!html.toLowerCase().startsWith('<!doctype html>')) {
-        html = `<!DOCTYPE html>\n${html}`;
-      }
+      const html = ensureDoctype(await page.content());
 
       const outputPath = resolveOutputPath(distDir, routePath);
       await mkdir(path.dirname(outputPath), { recursive: true });
       await writeFile(outputPath, html, 'utf8');
       console.log(`Prerendered: ${routePath} -> ${outputPath}`);
     }
+
+    const notFoundUrl = `${BASE_URL}${NOT_FOUND_PRERENDER_PATH}`;
+    await page.goto(notFoundUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.waitForTimeout(300);
+
+    const notFoundHtml = ensureDoctype(await page.content());
+    const notFoundOutputPath = path.join(distDir, '404.html');
+    await mkdir(path.dirname(notFoundOutputPath), { recursive: true });
+    await writeFile(notFoundOutputPath, notFoundHtml, 'utf8');
+    console.log(`Prerendered: ${NOT_FOUND_PRERENDER_PATH} -> ${notFoundOutputPath}`);
 
     await browser.close();
   } finally {

@@ -17,6 +17,14 @@ export default function Layout() {
   const seoConfig = getSeoRouteConfig(location.pathname);
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
   const articleData = getArticleStructuredData(location.pathname);
+  const defaultOgImageUrl = `${SITE_URL}${IMAGE_MANIFEST.homeHero.src}`;
+  const routeOgImageUrl = seoConfig.ogImageKey
+    ? `${SITE_URL}${IMAGE_MANIFEST[seoConfig.ogImageKey].src}`
+    : defaultOgImageUrl;
+  const articleOgImageUrl = articleData
+    ? `${SITE_URL}${IMAGE_MANIFEST[articleData.imageKey].src}`
+    : null;
+  const ogImageUrl = articleOgImageUrl ?? routeOgImageUrl;
   const lcpPreloadUrl = seoConfig.lcpImageKey
     ? IMAGE_MANIFEST[seoConfig.lcpImageKey].src
     : undefined;
@@ -31,6 +39,7 @@ export default function Layout() {
         title={seoConfig.title}
         description={seoConfig.description}
         robots={seoConfig.robots}
+        ogImage={ogImageUrl}
         preloadImage={lcpPreloadUrl}
       />
       <GlobalStructuredData />
