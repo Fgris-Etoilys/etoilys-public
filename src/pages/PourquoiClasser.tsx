@@ -317,7 +317,7 @@ export default function PourquoiClasser() {
             </h2>
             <p className="text-textLight leading-comfortable mb-10 text-center">
               En dessous de 23 000 € de recettes annuelles, loueurs classés et non classés relèvent
-              des mêmes prélèvements sociaux (17,2 % sur les revenus nets) — sans cotisations
+              des mêmes prélèvements sociaux (18,6 % sur les revenus nets) — sans cotisations
               sociales professionnelles. Au-delà de ce seuil, les situations divergent nettement sur
               le plan social. Le meublé de tourisme classé peut, selon sa situation, continuer à
               relever du micro-social à 6 % sur les recettes brutes. En 2026, la location de courte
