@@ -18,7 +18,7 @@
     "seo:sitemap": "tsx scripts/generate-sitemap.ts",
     "prerender": "tsx scripts/prerender.ts",
     "indexnow:submit": "tsx scripts/indexnow-submit.ts",
-    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "typecheck": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
     "format": "prettier . --write",

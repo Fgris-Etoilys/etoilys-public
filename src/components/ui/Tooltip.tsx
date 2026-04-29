@@ -19,7 +19,7 @@ export default function Tooltip({
 }: TooltipProps) {
   const tooltipId = useId();
   const [isOpen, setIsOpen] = useState(false);
-  const dismissTimerRef = useRef<ReturnType<typeof window.setTimeout> | null>(null);
+  const dismissTimerRef = useRef<number | null>(null);
   const isTriggerHoveredRef = useRef(false);
   const isTooltipHoveredRef = useRef(false);
   const hasFocusWithinRef = useRef(false);
