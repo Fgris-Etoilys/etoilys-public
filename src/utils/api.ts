@@ -63,11 +63,14 @@ export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
 
     if (!response.ok) {
       if (isApiErrorBody(parsed)) {
-        return {
+        const apiError: ApiResponse<T> = {
           success: false,
           error: parsed.error || `Erreur HTTP ${response.status}`,
-          fieldErrors: parsed.fieldErrors,
         };
+        if (parsed.fieldErrors !== undefined) {
+          return { ...apiError, fieldErrors: parsed.fieldErrors };
+        }
+        return apiError;
       }
 
       return {

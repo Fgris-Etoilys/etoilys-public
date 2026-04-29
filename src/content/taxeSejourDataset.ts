@@ -199,11 +199,15 @@ export function normalizeTaxeSejourSearchTerm(value: string): string {
 }
 
 export async function loadTaxeSejourDataset(signal?: AbortSignal): Promise<TaxeSejourDataset> {
-  const response = await fetch(TAXE_SEJOUR_DATASET_URL, {
+  const requestInit: RequestInit = {
     method: 'GET',
     cache: 'no-store',
-    signal,
-  });
+  };
+  if (signal) {
+    requestInit.signal = signal;
+  }
+
+  const response = await fetch(TAXE_SEJOUR_DATASET_URL, requestInit);
 
   if (!response.ok) {
     throw new Error(`Impossible de charger le dataset taxe de séjour (HTTP ${response.status}).`);

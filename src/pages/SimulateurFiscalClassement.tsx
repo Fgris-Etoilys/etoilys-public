@@ -550,6 +550,17 @@ export default function SimulateurFiscalClassement() {
     }, 2200);
   }
 
+  function clearFormError(key: keyof FormErrors) {
+    setErrors((previous) => {
+      if (!previous[key]) {
+        return previous;
+      }
+      const nextErrors = { ...previous };
+      delete nextErrors[key];
+      return nextErrors;
+    });
+  }
+
   async function handleCopyShareLink() {
     if (!result?.canDisplayMicroComparison || !lastCalculationSnapshot) {
       setTransientFeedback('Aucun résultat à partager.');
@@ -814,7 +825,7 @@ export default function SimulateurFiscalClassement() {
                   onChange={(event) => {
                     setAnnualRevenueInput(event.target.value);
                     if (errors.annualRevenue) {
-                      setErrors((previous) => ({ ...previous, annualRevenue: undefined }));
+                      clearFormError('annualRevenue');
                     }
                   }}
                   error={errors.annualRevenue}
@@ -851,7 +862,7 @@ export default function SimulateurFiscalClassement() {
                           onClick={() => {
                             setSelectedTmiRate(rate);
                             if (errors.tmiRate) {
-                              setErrors((previous) => ({ ...previous, tmiRate: undefined }));
+                              clearFormError('tmiRate');
                             }
                           }}
                         >

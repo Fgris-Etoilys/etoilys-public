@@ -2,18 +2,18 @@ import { InputHTMLAttributes, forwardRef } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
-  error?: string;
-  helperText?: string;
+  error?: string | undefined;
+  helperText?: string | undefined;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, helperText, className = '', ...props }, ref) => {
     return (
-      <div className='w-full'>
+      <div className="w-full">
         {label && (
-          <label className='block text-sm font-medium text-gray-700 mb-2'>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {label}
-            {props.required && <span className='text-alert-400 ml-1'>*</span>}
+            {props.required && <span className="text-alert-400 ml-1">*</span>}
           </label>
         )}
         <input
@@ -23,12 +23,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           } ${className}`}
           {...props}
         />
-        {error && (
-          <p className='mt-2 text-sm text-alert-400'>{error}</p>
-        )}
-        {helperText && !error && (
-          <p className='mt-2 text-sm text-textLight'>{helperText}</p>
-        )}
+        {error && <p className="mt-2 text-sm text-alert-400">{error}</p>}
+        {helperText && !error && <p className="mt-2 text-sm text-textLight">{helperText}</p>}
       </div>
     );
   }

@@ -4,9 +4,9 @@ import { useLocation } from 'react-router-dom';
 interface SEOProps {
   title: string;
   description: string;
-  robots?: string;
-  ogImage?: string;
-  preloadImage?: string;
+  robots?: string | undefined;
+  ogImage?: string | undefined;
+  preloadImage?: string | undefined;
 }
 
 export default function SEO({

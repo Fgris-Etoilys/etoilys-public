@@ -26,7 +26,7 @@ declare global {
 
 interface TurnstileFieldProps {
   onTokenChange: (token: string | null) => void;
-  error?: string;
+  error?: string | undefined;
   resetKey: number;
 }
 

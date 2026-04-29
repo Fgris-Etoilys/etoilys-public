@@ -30,6 +30,11 @@ const baseCity: TaxeSejourCity = {
 };
 
 describe('calculateTaxeSejour', () => {
+  const basePeriod = baseCity.periods[0];
+  if (!basePeriod) {
+    throw new Error('La ville de test doit contenir une periode tarifaire.');
+  }
+
   it('uses taxable persons derived from exempted persons for classified real calculations', () => {
     const output = calculateTaxeSejour(
       {
@@ -173,13 +178,13 @@ describe('calculateTaxeSejour', () => {
       ...baseCity,
       hasMultiplePeriods: true,
       periods: [
-        baseCity.periods[0],
+        basePeriod,
         {
           key: 'periode-2',
           startLabel: '01 juin',
           endLabel: '31 août',
           rates: {
-            ...baseCity.periods[0].rates,
+            ...basePeriod.rates,
             star1Rate: 0.9,
           },
         },

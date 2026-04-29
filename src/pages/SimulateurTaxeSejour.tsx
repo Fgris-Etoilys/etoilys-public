@@ -88,9 +88,9 @@ interface ShareableCalculationQuery {
   city: string;
   nightly: string;
   nights: string;
-  capacity?: string;
-  persons?: string;
-  exempted?: string;
+  capacity: string | null;
+  persons: string | null;
+  exempted: string | null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -143,6 +143,10 @@ function parsePersistedCalculationSnapshot(value: unknown): PersistedCalculation
     return null;
   }
 
+  const capacity = value.capacity;
+  const personsStaying = value.personsStaying;
+  const exemptedPersons = value.exemptedPersons;
+
   if (
     !isString(value.cityId) ||
     !isFiniteNumber(value.nightlyPriceHt) ||
@@ -151,26 +155,33 @@ function parsePersistedCalculationSnapshot(value: unknown): PersistedCalculation
     return null;
   }
 
-  if (value.capacity !== undefined && !isFiniteNumber(value.capacity)) {
+  if (capacity !== undefined && !isFiniteNumber(capacity)) {
     return null;
   }
 
-  if (value.personsStaying !== undefined && !isFiniteNumber(value.personsStaying)) {
+  if (personsStaying !== undefined && !isFiniteNumber(personsStaying)) {
     return null;
   }
 
-  if (value.exemptedPersons !== undefined && !isFiniteNumber(value.exemptedPersons)) {
+  if (exemptedPersons !== undefined && !isFiniteNumber(exemptedPersons)) {
     return null;
   }
 
-  return {
+  const snapshot: PersistedCalculationSnapshot = {
     cityId: value.cityId,
     nightlyPriceHt: value.nightlyPriceHt,
     nights: value.nights,
-    capacity: value.capacity,
-    personsStaying: value.personsStaying,
-    exemptedPersons: value.exemptedPersons,
   };
+  if (capacity !== undefined) {
+    snapshot.capacity = capacity;
+  }
+  if (personsStaying !== undefined) {
+    snapshot.personsStaying = personsStaying;
+  }
+  if (exemptedPersons !== undefined) {
+    snapshot.exemptedPersons = exemptedPersons;
+  }
+  return snapshot;
 }
 
 function readPersistedSimulateurState(): PersistedSimulateurState | null {
@@ -238,14 +249,14 @@ function parseNonNegativeInteger(value: string): number | null {
 
 function parseShareableCalculationSnapshot(search: string): PersistedCalculationSnapshot | null {
   const params = new URLSearchParams(search);
-  const query: ShareableCalculationQuery = {
+  const query = {
     city: params.get('city') ?? '',
     nightly: params.get('nightly') ?? '',
     nights: params.get('nights') ?? '',
-    capacity: params.get('capacity') ?? undefined,
-    persons: params.get('persons') ?? undefined,
-    exempted: params.get('exempted') ?? undefined,
-  };
+    capacity: params.get('capacity'),
+    persons: params.get('persons'),
+    exempted: params.get('exempted'),
+  } satisfies ShareableCalculationQuery;
 
   if (!query.city.trim()) {
     return null;
@@ -258,28 +269,28 @@ function parseShareableCalculationSnapshot(search: string): PersistedCalculation
   }
 
   const parsedCapacity =
-    query.capacity === undefined || query.capacity === ''
+    query.capacity === null || query.capacity === ''
       ? undefined
       : parsePositiveInteger(query.capacity);
-  if (query.capacity !== undefined && query.capacity !== '' && parsedCapacity === null) {
+  if (query.capacity !== null && query.capacity !== '' && parsedCapacity === null) {
     return null;
   }
   const capacity = parsedCapacity ?? undefined;
 
   const parsedPersonsStaying =
-    query.persons === undefined || query.persons === ''
+    query.persons === null || query.persons === ''
       ? undefined
       : parsePositiveInteger(query.persons);
-  if (query.persons !== undefined && query.persons !== '' && parsedPersonsStaying === null) {
+  if (query.persons !== null && query.persons !== '' && parsedPersonsStaying === null) {
     return null;
   }
   const personsStaying = parsedPersonsStaying ?? undefined;
 
   const parsedExemptedPersons =
-    query.exempted === undefined || query.exempted === ''
+    query.exempted === null || query.exempted === ''
       ? undefined
       : parseNonNegativeInteger(query.exempted);
-  if (query.exempted !== undefined && query.exempted !== '' && parsedExemptedPersons === null) {
+  if (query.exempted !== null && query.exempted !== '' && parsedExemptedPersons === null) {
     return null;
   }
   const exemptedPersons = parsedExemptedPersons ?? undefined;
@@ -292,14 +303,21 @@ function parseShareableCalculationSnapshot(search: string): PersistedCalculation
     return null;
   }
 
-  return {
+  const snapshot: PersistedCalculationSnapshot = {
     cityId: query.city.trim(),
     nightlyPriceHt,
     nights,
-    capacity,
-    personsStaying,
-    exemptedPersons,
   };
+  if (capacity !== undefined) {
+    snapshot.capacity = capacity;
+  }
+  if (personsStaying !== undefined) {
+    snapshot.personsStaying = personsStaying;
+  }
+  if (exemptedPersons !== undefined) {
+    snapshot.exemptedPersons = exemptedPersons;
+  }
+  return snapshot;
 }
 
 function buildShareQueryParams(snapshot: PersistedCalculationSnapshot): URLSearchParams {
@@ -455,7 +473,11 @@ function isEditDistanceAtMostOneWithSwap(query: string, candidate: string): bool
     }
 
     if (mismatchIndexes.length === 2) {
-      const [firstIndex, secondIndex] = mismatchIndexes;
+      const firstIndex = mismatchIndexes[0];
+      const secondIndex = mismatchIndexes[1];
+      if (firstIndex === undefined || secondIndex === undefined) {
+        return false;
+      }
       return (
         secondIndex === firstIndex + 1 &&
         query[firstIndex] === candidate[secondIndex] &&
@@ -902,10 +924,16 @@ export default function SimulateurTaxeSejour() {
       const restoredValues: ParsedFormValues = {
         nightlyPriceHt: pendingRestoredCalculation.nightlyPriceHt,
         nights: pendingRestoredCalculation.nights,
-        capacity: pendingRestoredCalculation.capacity,
-        personsStaying: pendingRestoredCalculation.personsStaying,
-        exemptedPersons: pendingRestoredCalculation.exemptedPersons,
       };
+      if (pendingRestoredCalculation.capacity !== undefined) {
+        restoredValues.capacity = pendingRestoredCalculation.capacity;
+      }
+      if (pendingRestoredCalculation.personsStaying !== undefined) {
+        restoredValues.personsStaying = pendingRestoredCalculation.personsStaying;
+      }
+      if (pendingRestoredCalculation.exemptedPersons !== undefined) {
+        restoredValues.exemptedPersons = pendingRestoredCalculation.exemptedPersons;
+      }
 
       const restoredResult = computeResult(restoredCity, restoredValues);
       setResult(restoredResult);
@@ -954,19 +982,30 @@ export default function SimulateurTaxeSejour() {
     lastCalculationSnapshot,
   ]);
 
-  function clearCityError() {
-    if (!errors.city) {
-      return;
-    }
-    setErrors((previous) => ({ ...previous, city: undefined }));
-  }
-
   function clearResultState() {
     setResult(null);
     setResultCityLabel('');
     setResultNights(1);
     setLastCalculationSnapshot(null);
     replaceShareQueryInUrl(null);
+  }
+
+  function clearFormError(key: keyof FormErrors) {
+    setErrors((previous) => {
+      if (!previous[key]) {
+        return previous;
+      }
+      const nextErrors = { ...previous };
+      delete nextErrors[key];
+      return nextErrors;
+    });
+  }
+
+  function clearCityError() {
+    if (!errors.city) {
+      return;
+    }
+    clearFormError('city');
   }
 
   function selectCity(city: TaxeSejourCity) {
@@ -1030,7 +1069,10 @@ export default function SimulateurTaxeSejour() {
 
     if (event.key === 'Enter' && highlightedIndex >= 0) {
       event.preventDefault();
-      selectCity(suggestions[highlightedIndex]);
+      const highlightedCity = suggestions[highlightedIndex];
+      if (highlightedCity) {
+        selectCity(highlightedCity);
+      }
       return;
     }
 
@@ -1117,41 +1159,57 @@ export default function SimulateurTaxeSejour() {
       return null;
     }
 
-    return {
+    const parsedValues: ParsedFormValues = {
       nightlyPriceHt: parsedNightlyPriceHt,
       nights: parsedNights,
-      capacity: requiresCapacity ? parsedCapacity : undefined,
-      personsStaying: requiresOccupancy ? parsedPersonsStaying : undefined,
-      exemptedPersons: requiresOccupancy ? parsedExemptedPersons : undefined,
     };
+    if (requiresCapacity) {
+      parsedValues.capacity = parsedCapacity;
+    }
+    if (requiresOccupancy) {
+      parsedValues.personsStaying = parsedPersonsStaying;
+      parsedValues.exemptedPersons = parsedExemptedPersons;
+    }
+    return parsedValues;
   }
 
   function computeResult(city: TaxeSejourCity, values: ParsedFormValues) {
-    return calculateTaxeSejour(
-      {
-        cityId: city.id,
-        nightlyPriceHt: values.nightlyPriceHt,
-        nights: values.nights,
-        capacity: values.capacity,
-        personsStaying: values.personsStaying,
-        exemptedPersons: values.exemptedPersons,
-      },
-      city
-    );
+    const input = {
+      cityId: city.id,
+      nightlyPriceHt: values.nightlyPriceHt,
+      nights: values.nights,
+    };
+    if (values.capacity !== undefined) {
+      Object.assign(input, { capacity: values.capacity });
+    }
+    if (values.personsStaying !== undefined) {
+      Object.assign(input, { personsStaying: values.personsStaying });
+    }
+    if (values.exemptedPersons !== undefined) {
+      Object.assign(input, { exemptedPersons: values.exemptedPersons });
+    }
+    return calculateTaxeSejour(input, city);
   }
 
   function buildCalculationSnapshot(
     cityId: string,
     values: ParsedFormValues
   ): PersistedCalculationSnapshot {
-    return {
+    const snapshot: PersistedCalculationSnapshot = {
       cityId,
       nightlyPriceHt: values.nightlyPriceHt,
       nights: values.nights,
-      capacity: values.capacity,
-      personsStaying: values.personsStaying,
-      exemptedPersons: values.exemptedPersons,
     };
+    if (values.capacity !== undefined) {
+      snapshot.capacity = values.capacity;
+    }
+    if (values.personsStaying !== undefined) {
+      snapshot.personsStaying = values.personsStaying;
+    }
+    if (values.exemptedPersons !== undefined) {
+      snapshot.exemptedPersons = values.exemptedPersons;
+    }
+    return snapshot;
   }
 
   function setTransientFeedback(message: string) {
@@ -1506,7 +1564,7 @@ export default function SimulateurTaxeSejour() {
                           onChange={(event) => {
                             setNightlyPriceHt(event.target.value);
                             if (errors.nightlyPriceHt) {
-                              setErrors((previous) => ({ ...previous, nightlyPriceHt: undefined }));
+                              clearFormError('nightlyPriceHt');
                             }
                           }}
                           error={errors.nightlyPriceHt}
@@ -1524,7 +1582,7 @@ export default function SimulateurTaxeSejour() {
                           onChange={(event) => {
                             setNights(event.target.value);
                             if (errors.nights) {
-                              setErrors((previous) => ({ ...previous, nights: undefined }));
+                              clearFormError('nights');
                             }
                           }}
                           error={errors.nights}
@@ -1542,7 +1600,7 @@ export default function SimulateurTaxeSejour() {
                             onChange={(event) => {
                               setCapacity(event.target.value);
                               if (errors.capacity) {
-                                setErrors((previous) => ({ ...previous, capacity: undefined }));
+                                clearFormError('capacity');
                               }
                             }}
                             error={errors.capacity}
@@ -1563,10 +1621,7 @@ export default function SimulateurTaxeSejour() {
                               onChange={(event) => {
                                 setPersonsStaying(event.target.value);
                                 if (errors.personsStaying) {
-                                  setErrors((previous) => ({
-                                    ...previous,
-                                    personsStaying: undefined,
-                                  }));
+                                  clearFormError('personsStaying');
                                 }
                               }}
                               error={errors.personsStaying}
@@ -1603,10 +1658,7 @@ export default function SimulateurTaxeSejour() {
                                 onChange={(event) => {
                                   setExemptedPersons(event.target.value);
                                   if (errors.exemptedPersons) {
-                                    setErrors((previous) => ({
-                                      ...previous,
-                                      exemptedPersons: undefined,
-                                    }));
+                                    clearFormError('exemptedPersons');
                                   }
                                 }}
                                 className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-transparent transition-all duration-200 ${

@@ -32,6 +32,7 @@ function extractActiveAppPaths(): string[] {
   const matches = [...noBlockComments.matchAll(/<Route\s+path="([^"]+)"/g)];
   const paths = matches
     .map((match) => match[1])
+    .filter((routePath): routePath is string => routePath !== undefined)
     .filter((routePath) => routePath !== '*')
     .map((routePath) => normalizePath(routePath.startsWith('/') ? routePath : `/${routePath}`));
 
