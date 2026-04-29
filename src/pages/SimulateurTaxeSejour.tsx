@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
+import Tooltip from '../components/ui/Tooltip';
 import ResponsiveComparisonTable, {
   type ResponsiveComparisonColumn,
   type ResponsiveComparisonRow,
@@ -16,6 +17,13 @@ import {
   calculateTaxeSejour,
   type TaxeSejourCalculationOutput,
 } from '../utils/taxeSejourCalculator';
+import {
+  copyToClipboard,
+  formatFilenameDate,
+  getAutoTableFinalY,
+  getEtoilysLogoPngAsset,
+  normalizePdfText,
+} from '../utils/simulatorExport';
 
 interface FormErrors {
   city?: string;
@@ -74,11 +82,6 @@ interface PersistedSimulateurState {
   version: 1;
   form: PersistedFormState;
   lastCalculation: PersistedCalculationSnapshot | null;
-}
-
-interface PdfLogoAsset {
-  dataUrl: string;
-  aspectRatio: number;
 }
 
 interface ShareableCalculationQuery {
@@ -356,103 +359,6 @@ function buildShareUrl(snapshot: PersistedCalculationSnapshot): string {
   return url.toString();
 }
 
-async function copyToClipboard(text: string): Promise<boolean> {
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return false;
-  }
-
-  if (navigator.clipboard && window.isSecureContext) {
-    try {
-      await navigator.clipboard.writeText(text);
-      return true;
-    } catch {
-      // Fallback below.
-    }
-  }
-
-  try {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    textarea.setAttribute('readonly', '');
-    textarea.style.position = 'fixed';
-    textarea.style.opacity = '0';
-    document.body.appendChild(textarea);
-    textarea.select();
-    const copied = document.execCommand('copy');
-    document.body.removeChild(textarea);
-    return copied;
-  } catch {
-    return false;
-  }
-}
-
-function formatFilenameDate(value: Date): string {
-  const year = value.getFullYear();
-  const month = String(value.getMonth() + 1).padStart(2, '0');
-  const day = String(value.getDate()).padStart(2, '0');
-  const hours = String(value.getHours()).padStart(2, '0');
-  const minutes = String(value.getMinutes()).padStart(2, '0');
-  return `${year}${month}${day}-${hours}${minutes}`;
-}
-
-function getAutoTableFinalY(document: unknown): number | null {
-  if (!isRecord(document)) {
-    return null;
-  }
-
-  const lastAutoTable = document.lastAutoTable;
-  if (!isRecord(lastAutoTable)) {
-    return null;
-  }
-
-  const finalY = lastAutoTable.finalY;
-  return typeof finalY === 'number' && Number.isFinite(finalY) ? finalY : null;
-}
-
-async function getEtoilysLogoPngAsset(): Promise<PdfLogoAsset | null> {
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    return null;
-  }
-
-  try {
-    const response = await fetch('/logo-etoilys.svg', { cache: 'force-cache' });
-    if (!response.ok) {
-      return null;
-    }
-
-    const svgContent = await response.text();
-    const svgBase64 = window.btoa(unescape(encodeURIComponent(svgContent)));
-    const svgDataUrl = `data:image/svg+xml;base64,${svgBase64}`;
-
-    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error('Logo load failed'));
-      img.src = svgDataUrl;
-    });
-
-    const naturalWidth = Math.max(1, image.naturalWidth || 800);
-    const naturalHeight = Math.max(1, image.naturalHeight || 220);
-    const aspectRatio = naturalWidth / naturalHeight;
-
-    const width = 800;
-    const height = Math.max(120, Math.round(width / aspectRatio));
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
-    const context = canvas.getContext('2d');
-    if (!context) {
-      return null;
-    }
-
-    context.clearRect(0, 0, width, height);
-    context.drawImage(image, 0, 0, width, height);
-    return { dataUrl: canvas.toDataURL('image/png'), aspectRatio };
-  } catch {
-    return null;
-  }
-}
-
 function formatEuro(value: number): string {
   return value.toLocaleString('fr-FR', {
     style: 'currency',
@@ -460,6 +366,10 @@ function formatEuro(value: number): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+}
+
+function formatPdfEuro(value: number): string {
+  return normalizePdfText(formatEuro(value));
 }
 
 function formatDelta(value: number): string {
@@ -485,6 +395,10 @@ function formatDeltaWithPercent(delta: number, nonClasseReference: number): stri
   const percent = Math.round((delta / nonClasseReference) * 100);
   const sign = percent > 0 ? '+' : '';
   return `${formattedDelta} (${sign}${percent}%)`;
+}
+
+function formatPdfDeltaWithPercent(delta: number, nonClasseReference: number): string {
+  return normalizePdfText(formatDeltaWithPercent(delta, nonClasseReference));
 }
 
 function getDeltaClassName(delta: number): string {
@@ -1313,7 +1227,7 @@ export default function SimulateurTaxeSejour() {
 
       const simulationParametersRows: string[][] = [
         ['Commune', resultCityLabel],
-        ['Prix par nuit HT', formatEuro(lastCalculationSnapshot.nightlyPriceHt)],
+        ['Prix par nuit HT', formatPdfEuro(lastCalculationSnapshot.nightlyPriceHt)],
         ['Durée du séjour', getNightsLabel(lastCalculationSnapshot.nights)],
       ];
       if (lastCalculationSnapshot.capacity !== undefined) {
@@ -1360,7 +1274,7 @@ export default function SimulateurTaxeSejour() {
           deltaText:
             row.category === 'Non classé'
               ? '—'
-              : formatDeltaWithPercent(deltaRaw, nonClassReference),
+              : formatPdfDeltaWithPercent(deltaRaw, nonClassReference),
           deltaRaw,
         };
       });
@@ -1368,7 +1282,11 @@ export default function SimulateurTaxeSejour() {
       autoTable(doc, {
         startY: cursorY,
         head: [['Catégorie', 'Montant total', 'Écart vs non classé']],
-        body: resultRowsForPdf.map((row) => [row.category, formatEuro(row.amount), row.deltaText]),
+        body: resultRowsForPdf.map((row) => [
+          row.category,
+          formatPdfEuro(row.amount),
+          row.deltaText,
+        ]),
         styles: { fontSize: 10, cellPadding: 7 },
         headStyles: { fillColor: [49, 107, 255] },
         alternateRowStyles: { fillColor: [249, 250, 251] },
@@ -1663,22 +1581,15 @@ export default function SimulateurTaxeSejour() {
                                   >
                                     Personnes exonérées de taxe
                                   </label>
-                                  <div className="group relative">
-                                    <button
-                                      type="button"
-                                      tabIndex={-1}
-                                      className="-translate-y-[2px] inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-gray-400 text-[10px] font-semibold leading-none text-gray-600"
-                                      aria-label="Qui peut être exonéré: mineurs, salariés saisonniers de la commune, personnes hébergées en urgence ou relogées temporairement, et logements sous le seuil de loyer fixé localement."
-                                    >
-                                      i
-                                    </button>
-                                    <div className="pointer-events-none absolute left-1/2 top-full z-30 mt-2 hidden w-80 -translate-x-1/2 rounded-lg border border-gray-200 bg-white p-3 text-xs leading-relaxed text-gray-700 shadow-card group-hover:block group-focus-within:block">
-                                      En général, sont exonérées: les personnes mineures, les
-                                      salariés saisonniers employés dans la commune, les personnes
-                                      hébergées en urgence ou relogées temporairement, et les
-                                      logements dont le loyer est sous le seuil fixé localement.
-                                    </div>
-                                  </div>
+                                  <Tooltip
+                                    srLabel="Qui peut être exonéré: mineurs, salariés saisonniers de la commune, personnes hébergées en urgence ou relogées temporairement, et logements sous le seuil de loyer fixé localement."
+                                    triggerClassName="-translate-y-[2px] shrink-0 font-semibold leading-none"
+                                  >
+                                    En général, sont exonérées: les personnes mineures, les salariés
+                                    saisonniers employés dans la commune, les personnes hébergées en
+                                    urgence ou relogées temporairement, et les logements dont le
+                                    loyer est sous le seuil fixé localement.
+                                  </Tooltip>
                                 </div>
                               </div>
                               <input
@@ -1886,20 +1797,17 @@ export default function SimulateurTaxeSejour() {
                 </Card>
 
                 <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
-                  <h2 className="text-h4 mb-3">
-                    Vous voulez savoir si le classement de votre meublé reste pertinent dans votre
-                    situation ?
-                  </h2>
+                  <h2 className="text-h4 mb-3">Le classement peut aussi changer votre fiscalité</h2>
                   <p className="text-gray-700 mb-6">
-                    Consultez notre page sur la procédure de classement ou faites directement une
-                    demande de classement avec Etoilys.
+                    Continuez avec notre simulateur fiscal pour estimer l&apos;autre grand effet
+                    concret du classement sur votre meublé.
                   </p>
                   <div className="flex flex-wrap gap-4">
-                    <Button href="/procedure" variant="primary">
-                      Découvrir la procédure
+                    <Button href="/simulateur-fiscal-classement" variant="primary">
+                      Voir l&apos;impact fiscal du classement
                     </Button>
                     <Button href="/demande-classement" variant="secondary">
-                      Faire une demande de classement
+                      Demander mon classement
                     </Button>
                   </div>
                 </div>

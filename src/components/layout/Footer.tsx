@@ -8,6 +8,7 @@ const footerLinks = {
     { name: 'Prérequis au classement', href: '/prerequis-au-classement' },
     { name: 'La procédure de classement', href: '/procedure' },
     { name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' },
+    { name: 'Simulateur fiscal classement 2026', href: '/simulateur-fiscal-classement' },
     // { name: 'Simulateur de classement', href: '/simulateur' }, // TODO: réactiver quand le simulateur sera prêt
   ],
   entreprise: [

@@ -21,7 +21,10 @@ const navigation = [
     name: 'Outils',
     href: '/simulateur-taxe-sejour',
     showOverviewLink: false,
-    submenu: [{ name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' }],
+    submenu: [
+      { name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' },
+      { name: 'Simulateur fiscal classement 2026', href: '/simulateur-fiscal-classement' },
+    ],
   },
   // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
   { name: 'Actualités', href: '/actualites' },

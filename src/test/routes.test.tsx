@@ -29,6 +29,13 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { name: /contact/i })).toBeInTheDocument();
   });
 
+  it('renders fiscal simulator page', () => {
+    renderAt('/simulateur-fiscal-classement');
+    expect(
+      screen.getByRole('heading', { name: /simulateur fiscal classement 2026/i })
+    ).toBeInTheDocument();
+  });
+
   it('renders not found page for unknown route', () => {
     renderAt('/url-inexistante');
     expect(screen.getByRole('heading', { name: /page non trouvée/i })).toBeInTheDocument();

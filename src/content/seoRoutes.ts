@@ -57,6 +57,12 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Simulation informative de taxe de séjour par commune et catégorie de classement, sur 1 nuit.',
     breadcrumbLabel: 'Simulateur taxe de séjour',
   },
+  '/simulateur-fiscal-classement': {
+    title: 'Simulateur fiscal classement 2026',
+    description:
+      'Simulation pédagogique de comparaison fiscale 2026 entre meublé de tourisme classé et non classé.',
+    breadcrumbLabel: 'Simulateur fiscal classement',
+  },
   '/faq': {
     title: 'FAQ classement meuble de tourisme',
     description:
