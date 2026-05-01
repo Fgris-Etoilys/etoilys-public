@@ -1,10 +1,12 @@
+import CookiePreferencesButton from '../components/ui/CookiePreferencesButton';
+
 export default function Confidentialite() {
   return (
     <>
       <section className="py-section bg-white">
         <div className="container-adaptive max-w-4xl">
           <h1 className="mb-3">Politique de confidentialité</h1>
-          <p className="text-sm text-textLight mb-10">Dernière mise à jour : 29 mars 2026</p>
+          <p className="text-sm text-textLight mb-10">Dernière mise à jour : 1 mai 2026</p>
 
           <div className="space-y-10 text-textLight leading-comfortable">
             {/* Intro */}
@@ -102,6 +104,12 @@ export default function Confidentialite() {
                     données issues d&apos;un dispositif anti-spam ou anti-bot
                   </strong>
                   , lorsque ce mécanisme est utilisé pour sécuriser l&apos;envoi des formulaires.
+                </li>
+                <li>
+                  <strong className="text-gray-700">données de mesure d&apos;audience</strong> :
+                  parcours de navigation, pages consultées, interactions avec les boutons,
+                  formulaires et simulateurs, uniquement après acceptation du consentement
+                  analytics.
                 </li>
               </ul>
               <p>
@@ -214,7 +222,16 @@ export default function Confidentialite() {
                   <strong className="text-gray-700">Cloudflare Turnstile</strong> pour la protection
                   anti-bot des formulaires.
                 </li>
+                <li>
+                  <strong className="text-gray-700">PostHog</strong> pour la mesure d&apos;audience
+                  et l&apos;analyse des parcours, uniquement après acceptation du consentement
+                  analytics.
+                </li>
               </ul>
+              <p className="mb-3">
+                ETOILYS ne transmet volontairement à PostHog ni nom, ni adresse e-mail, ni numéro de
+                téléphone, ni adresse postale, ni contenu de message saisi dans les formulaires.
+              </p>
               <p>ETOILYS ne vend pas vos données personnelles à des tiers.</p>
             </div>
 
@@ -352,13 +369,21 @@ export default function Confidentialite() {
                 revanche, les cookies ou traceurs non strictement nécessaires ne peuvent être
                 déposés qu&apos;après recueil de votre consentement.
               </p>
-              <p>
-                Si ETOILYS met en place des outils de mesure d&apos;audience ou d&apos;autres
-                traceurs non exemptés, un mécanisme de gestion de vos choix vous permettra de les
-                accepter, de les refuser ou de modifier vos préférences. La CNIL rappelle par
-                ailleurs que certaines solutions de mesure d&apos;audience peuvent être exemptées de
-                consentement uniquement sous conditions strictes.
+              <p className="mb-3">
+                Le mécanisme de gestion des cookies permet d&apos;accepter, de refuser ou de
+                modifier le choix relatif à la mesure d&apos;audience. Ce choix est conservé pendant
+                6 mois, puis un nouveau choix peut être demandé.
               </p>
+              <p>
+                À ce titre, PostHog n&apos;est utilisé sur le site qu&apos;après acceptation du
+                consentement analytics. Les événements envoyés sont limités à des informations de
+                parcours et à des valeurs regroupées par tranches ; les URL complètes, les
+                paramètres de requête et le contenu libre des formulaires ne sont pas volontairement
+                transmis.
+              </p>
+              <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-primary-300 hover:text-primary-400">
+                Gérer mes cookies
+              </CookiePreferencesButton>
             </div>
 
             {/* 10. Modification */}

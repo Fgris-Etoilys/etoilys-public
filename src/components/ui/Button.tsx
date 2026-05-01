@@ -1,5 +1,6 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { normalizeAnalyticsPath, trackCtaClick } from '../../utils/analytics';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
@@ -39,8 +40,20 @@ export default function Button({
   const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
 
   if (href) {
+    const destinationPath = normalizeAnalyticsPath(href);
+    const ctaId =
+      destinationPath === '/'
+        ? `cta_${variant}_home`
+        : `cta_${variant}_${destinationPath.replace(/^\/+/, '').replace(/[^a-z0-9]+/gi, '_')}`;
+
     return (
-      <Link to={href} className={classes}>
+      <Link
+        to={href}
+        className={classes}
+        onClick={() => {
+          trackCtaClick({ ctaId, destinationPath });
+        }}
+      >
         {children}
       </Link>
     );

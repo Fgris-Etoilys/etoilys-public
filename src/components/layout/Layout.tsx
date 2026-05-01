@@ -1,5 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import AnalyticsRouteTracker from './AnalyticsRouteTracker';
+import CookieConsentManager from './CookieConsentManager';
 import Header from './Header';
 import Footer from './Footer';
 import SEO from '../ui/SEO';
@@ -35,6 +37,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <AnalyticsRouteTracker />
       <SEO
         title={seoConfig.title}
         description={seoConfig.description}
@@ -60,6 +63,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <CookieConsentManager />
     </div>
   );
 }

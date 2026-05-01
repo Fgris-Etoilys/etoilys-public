@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import CookiePreferencesButton from '../ui/CookiePreferencesButton';
 
 const footerLinks = {
   services: [
@@ -112,6 +113,11 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <CookiePreferencesButton className="text-left text-sm text-textLight hover:text-primary-300 transition-colors duration-200">
+                  Gérer mes cookies
+                </CookiePreferencesButton>
+              </li>
             </ul>
           </div>
         </div>

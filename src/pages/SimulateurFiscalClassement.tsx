@@ -22,6 +22,7 @@ import {
   getEtoilysLogoPngAsset,
   normalizePdfText,
 } from '../utils/simulatorExport';
+import { trackSimulatorCalculated, trackSimulatorStarted } from '../utils/analytics';
 
 interface FormErrors {
   annualRevenue?: string;
@@ -261,6 +262,23 @@ function parseAnnualRevenue(value: string): number | null {
   return parsed;
 }
 
+function bucketNumber(value: number, buckets: readonly number[]): string {
+  const firstBucket = buckets[0];
+  if (firstBucket === undefined || value <= firstBucket) {
+    return `0-${firstBucket ?? 0}`;
+  }
+
+  for (let index = 1; index < buckets.length; index += 1) {
+    const previous = buckets[index - 1];
+    const current = buckets[index];
+    if (previous !== undefined && current !== undefined && value <= current) {
+      return `${previous + 1}-${current}`;
+    }
+  }
+
+  return `${buckets[buckets.length - 1]}+`;
+}
+
 function getSavingsClassName(value: number): string {
   if (value > 0) {
     return 'text-success-500';
@@ -368,6 +386,16 @@ export default function SimulateurFiscalClassement() {
   const [isStorageHydrated, setIsStorageHydrated] = useState(false);
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
   const feedbackTimerRef = useRef<number | null>(null);
+  const hasTrackedSimulatorStarted = useRef(false);
+
+  function trackSimulatorStartOnce() {
+    if (hasTrackedSimulatorStarted.current) {
+      return;
+    }
+
+    trackSimulatorStarted('fiscal_classement');
+    hasTrackedSimulatorStarted.current = true;
+  }
 
   useEffect(() => {
     const querySnapshot =
@@ -759,6 +787,7 @@ export default function SimulateurFiscalClassement() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    trackSimulatorStartOnce();
 
     const nextErrors: FormErrors = {};
     const parsedAnnualRevenue = parseAnnualRevenue(annualRevenueInput);
@@ -788,9 +817,22 @@ export default function SimulateurFiscalClassement() {
       annualRevenue: parsedAnnualRevenue,
       tmiRate: selectedTmiRate,
     };
+    const nextResult = simulateClassementFiscal(nextSnapshot);
+
+    trackSimulatorCalculated('fiscal_classement', {
+      revenue_bucket: bucketNumber(parsedAnnualRevenue, [15000, 23000, 50000, 83600]),
+      tmi_rate: selectedTmiRate,
+      scope: nextResult.scope,
+      social_threshold_exceeded: parsedAnnualRevenue > SOCIAL_THRESHOLD_2026,
+      non_classe_threshold_exceeded: nextResult.nonClasse.exceedsMicroBicThreshold,
+      savings_bucket:
+        nextResult.estimatedSavings === null
+          ? 'not_applicable'
+          : bucketNumber(Math.abs(nextResult.estimatedSavings), [250, 500, 1000, 2500, 5000]),
+    });
 
     setLastCalculationSnapshot(nextSnapshot);
-    setResult(simulateClassementFiscal(nextSnapshot));
+    setResult(nextResult);
     replaceFiscalShareQueryInUrl(nextSnapshot);
   };
 
@@ -823,6 +865,7 @@ export default function SimulateurFiscalClassement() {
                   helperText="Indiquez le total des sommes perçues en 2026, loyers et charges locatives incluses."
                   value={annualRevenueInput}
                   onChange={(event) => {
+                    trackSimulatorStartOnce();
                     setAnnualRevenueInput(event.target.value);
                     if (errors.annualRevenue) {
                       clearFormError('annualRevenue');
@@ -860,6 +903,7 @@ export default function SimulateurFiscalClassement() {
                           }`}
                           aria-pressed={isSelected}
                           onClick={() => {
+                            trackSimulatorStartOnce();
                             setSelectedTmiRate(rate);
                             if (errors.tmiRate) {
                               clearFormError('tmiRate');

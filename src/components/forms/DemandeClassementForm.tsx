@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
@@ -11,6 +11,13 @@ import {
   type ValidationError,
 } from '../../utils/formValidation';
 import { submitToApi } from '../../utils/api';
+import {
+  trackFormStarted,
+  trackFormSubmitAttempted,
+  trackFormSubmitFailed,
+  trackFormSubmitSucceeded,
+  trackFormValidationFailed,
+} from '../../utils/analytics';
 
 type DemandeSubmissionResponse =
   | {
@@ -42,8 +49,14 @@ export default function DemandeClassementForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+  const hasTrackedFormStarted = useRef(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (!hasTrackedFormStarted.current) {
+      trackFormStarted('demande_classement');
+      hasTrackedFormStarted.current = true;
+    }
+
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
@@ -75,6 +88,11 @@ export default function DemandeClassementForm() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!hasTrackedFormStarted.current) {
+      trackFormStarted('demande_classement');
+      hasTrackedFormStarted.current = true;
+    }
+
     setIsSuccess(false);
     setSubmitError(null);
 
@@ -84,12 +102,14 @@ export default function DemandeClassementForm() {
     }
 
     if (Object.keys(validationErrors).length > 0) {
+      trackFormValidationFailed('demande_classement', Object.keys(validationErrors).sort());
       setErrors(validationErrors);
       return;
     }
 
     setIsSubmitting(true);
     setErrors({});
+    trackFormSubmitAttempted('demande_classement');
 
     const response = await submitToApi<DemandeSubmissionResponse, Record<string, unknown>>(
       '/public/forms/classement',
@@ -105,15 +125,26 @@ export default function DemandeClassementForm() {
     if (!response.success) {
       setErrors(response.fieldErrors || {});
       setSubmitError(response.error);
+      trackFormSubmitFailed(
+        'demande_classement',
+        'api',
+        Object.keys(response.fieldErrors || {}).sort()
+      );
       return;
     }
 
     if (!response.data.success) {
       setErrors(response.data.fieldErrors || {});
       setSubmitError(response.data.error || 'La soumission a echoue.');
+      trackFormSubmitFailed(
+        'demande_classement',
+        'api',
+        Object.keys(response.data.fieldErrors || {}).sort()
+      );
       return;
     }
 
+    trackFormSubmitSucceeded('demande_classement');
     setIsSuccess(true);
     setFormData({
       nom: '',

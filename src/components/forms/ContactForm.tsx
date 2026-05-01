@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
@@ -11,6 +11,13 @@ import {
   type ValidationError,
 } from '../../utils/formValidation';
 import { submitToApi } from '../../utils/api';
+import {
+  trackFormStarted,
+  trackFormSubmitAttempted,
+  trackFormSubmitFailed,
+  trackFormSubmitSucceeded,
+  trackFormValidationFailed,
+} from '../../utils/analytics';
 
 interface ContactFormProps {
   title?: string;
@@ -49,8 +56,14 @@ export default function ContactForm({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+  const hasTrackedFormStarted = useRef(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (!hasTrackedFormStarted.current) {
+      trackFormStarted('contact');
+      hasTrackedFormStarted.current = true;
+    }
+
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
@@ -82,6 +95,11 @@ export default function ContactForm({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!hasTrackedFormStarted.current) {
+      trackFormStarted('contact');
+      hasTrackedFormStarted.current = true;
+    }
+
     setIsSuccess(false);
     setSubmitError(null);
 
@@ -92,12 +110,14 @@ export default function ContactForm({
     }
 
     if (Object.keys(validationErrors).length > 0) {
+      trackFormValidationFailed('contact', Object.keys(validationErrors).sort());
       setErrors(validationErrors);
       return;
     }
 
     setIsSubmitting(true);
     setErrors({});
+    trackFormSubmitAttempted('contact');
 
     const response = await submitToApi<ContactSubmissionResponse, Record<string, unknown>>(
       '/public/forms/contact',
@@ -113,15 +133,18 @@ export default function ContactForm({
     if (!response.success) {
       setErrors(response.fieldErrors || {});
       setSubmitError(response.error);
+      trackFormSubmitFailed('contact', 'api', Object.keys(response.fieldErrors || {}).sort());
       return;
     }
 
     if (!response.data.success) {
       setErrors(response.data.fieldErrors || {});
       setSubmitError(response.data.error || 'La soumission a echoue.');
+      trackFormSubmitFailed('contact', 'api', Object.keys(response.data.fieldErrors || {}).sort());
       return;
     }
 
+    trackFormSubmitSucceeded('contact');
     setIsSuccess(true);
     setFormData({
       nom: '',

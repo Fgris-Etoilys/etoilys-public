@@ -24,6 +24,7 @@ import {
   getEtoilysLogoPngAsset,
   normalizePdfText,
 } from '../utils/simulatorExport';
+import { trackSimulatorCalculated, trackSimulatorStarted } from '../utils/analytics';
 
 interface FormErrors {
   city?: string;
@@ -445,6 +446,27 @@ function extractCityNameWithoutDepartment(label: string): string {
   return label.replace(/\s*\([0-9A-Z]{2,3}\)\s*$/i, '').trim();
 }
 
+function extractDepartmentBucket(label: string): string {
+  return label.match(/\(([0-9A-Z]{2,3})\)\s*$/i)?.[1] ?? 'unknown';
+}
+
+function bucketNumber(value: number, buckets: readonly number[]): string {
+  const firstBucket = buckets[0];
+  if (firstBucket === undefined || value <= firstBucket) {
+    return `0-${firstBucket ?? 0}`;
+  }
+
+  for (let index = 1; index < buckets.length; index += 1) {
+    const previous = buckets[index - 1];
+    const current = buckets[index];
+    if (previous !== undefined && current !== undefined && value <= current) {
+      return `${previous + 1}-${current}`;
+    }
+  }
+
+  return `${buckets[buckets.length - 1]}+`;
+}
+
 function isEditDistanceAtMostOneWithSwap(query: string, candidate: string): boolean {
   if (query === candidate) {
     return true;
@@ -568,6 +590,7 @@ export default function SimulateurTaxeSejour() {
   const [isStorageHydrated, setIsStorageHydrated] = useState(false);
   const [isCityLabelSyncPending, setIsCityLabelSyncPending] = useState(false);
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
+  const hasTrackedSimulatorStarted = useRef(false);
 
   const nonClasseAmount = useMemo(() => {
     if (!result) {
@@ -1008,7 +1031,15 @@ export default function SimulateurTaxeSejour() {
     clearFormError('city');
   }
 
+  function trackSimulatorStartOnce() {
+    if (!hasTrackedSimulatorStarted.current) {
+      trackSimulatorStarted('taxe_sejour');
+      hasTrackedSimulatorStarted.current = true;
+    }
+  }
+
   function selectCity(city: TaxeSejourCity) {
+    trackSimulatorStartOnce();
     setCityQuery(city.label);
     setSelectedCityId(city.id);
     setIsListOpen(false);
@@ -1018,6 +1049,7 @@ export default function SimulateurTaxeSejour() {
   }
 
   function handleCityInputChange(nextValue: string) {
+    trackSimulatorStartOnce();
     setCityQuery(nextValue);
     setSelectedCityId(null);
     setIsListOpen(true);
@@ -1437,6 +1469,8 @@ export default function SimulateurTaxeSejour() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    trackSimulatorStartOnce();
+
     if (!selectedCity) {
       setErrors((previous) => ({
         ...previous,
@@ -1452,6 +1486,18 @@ export default function SimulateurTaxeSejour() {
 
     const computed = computeResult(selectedCity, parsedValues);
     const snapshot = buildCalculationSnapshot(selectedCity.id, parsedValues);
+
+    trackSimulatorCalculated('taxe_sejour', {
+      city_department: extractDepartmentBucket(selectedCity.label),
+      nights_bucket: bucketNumber(parsedValues.nights, [1, 3, 7, 14]),
+      nightly_price_bucket: bucketNumber(parsedValues.nightlyPriceHt, [50, 100, 150, 250]),
+      occupancy_bucket: bucketNumber(
+        parsedValues.personsStaying ?? parsedValues.capacity ?? 0,
+        [1, 2, 4, 6, 10]
+      ),
+      has_exemptions: (parsedValues.exemptedPersons ?? 0) > 0,
+      is_indicative: computed.isIndicative,
+    });
 
     setResult(computed);
     setResultCityLabel(selectedCity.label);
@@ -1562,6 +1608,7 @@ export default function SimulateurTaxeSejour() {
                           placeholder="Ex. 120"
                           value={nightlyPriceHt}
                           onChange={(event) => {
+                            trackSimulatorStartOnce();
                             setNightlyPriceHt(event.target.value);
                             if (errors.nightlyPriceHt) {
                               clearFormError('nightlyPriceHt');
@@ -1580,6 +1627,7 @@ export default function SimulateurTaxeSejour() {
                           placeholder="Ex. 3"
                           value={nights}
                           onChange={(event) => {
+                            trackSimulatorStartOnce();
                             setNights(event.target.value);
                             if (errors.nights) {
                               clearFormError('nights');
@@ -1598,6 +1646,7 @@ export default function SimulateurTaxeSejour() {
                             placeholder="Ex. 4"
                             value={capacity}
                             onChange={(event) => {
+                              trackSimulatorStartOnce();
                               setCapacity(event.target.value);
                               if (errors.capacity) {
                                 clearFormError('capacity');
@@ -1619,6 +1668,7 @@ export default function SimulateurTaxeSejour() {
                               placeholder="Ex. 4"
                               value={personsStaying}
                               onChange={(event) => {
+                                trackSimulatorStartOnce();
                                 setPersonsStaying(event.target.value);
                                 if (errors.personsStaying) {
                                   clearFormError('personsStaying');
@@ -1656,6 +1706,7 @@ export default function SimulateurTaxeSejour() {
                                 placeholder="Ex. 1"
                                 value={exemptedPersons}
                                 onChange={(event) => {
+                                  trackSimulatorStartOnce();
                                   setExemptedPersons(event.target.value);
                                   if (errors.exemptedPersons) {
                                     clearFormError('exemptedPersons');
