@@ -291,10 +291,15 @@ function getSavingsClassName(value: number): string {
 }
 
 function getSavingsLabel(value: number): string {
-  if (value >= 0) {
-    return 'Économie annuelle estimée';
-  }
-  return 'Écart estimé';
+  if (value > 0) return 'Économie annuelle estimée';
+  if (value < 0) return 'Écart fiscal estimé';
+  return 'Aucun écart fiscal estimé';
+}
+
+function getSavingsCardClassName(value: number): string {
+  if (value > 0) return 'border-success-200 bg-success-100';
+  if (value < 0) return 'border-warning-200 bg-warning-100';
+  return 'border-gray-200 bg-gray-50';
 }
 
 function getClasseAmountClassName(classeAmount: number, nonClasseAmount: number): string {
@@ -973,15 +978,33 @@ export default function SimulateurFiscalClassement() {
                     />
 
                     {result.estimatedSavings !== null && (
-                      <div className="mt-6 rounded-card border border-success-200 bg-success-100 p-4">
-                        <p className="text-sm font-semibold text-gray-900">
-                          {getSavingsLabel(result.estimatedSavings)}
-                        </p>
-                        <p
-                          className={`mt-1 text-2xl font-bold ${getSavingsClassName(result.estimatedSavings)}`}
-                        >
-                          {formatEuro(result.estimatedSavings)}
-                        </p>
+                      <div
+                        className={`mt-6 rounded-card border p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${getSavingsCardClassName(result.estimatedSavings)}`}
+                      >
+                        <div>
+                          <p className="text-sm font-semibold text-gray-900">
+                            {getSavingsLabel(result.estimatedSavings)}
+                          </p>
+                          <p className="mt-0.5 text-xs text-textLight">
+                            Par rapport à un meublé non classé
+                          </p>
+                        </div>
+                        <div className="shrink-0 sm:text-right">
+                          <p
+                            className={`text-2xl font-bold ${getSavingsClassName(result.estimatedSavings)}`}
+                          >
+                            {formatEuro(result.estimatedSavings)}
+                          </p>
+                          {result.estimatedSavings > 0 && (
+                            <p className="mt-0.5 text-xs text-textLight">
+                              Soit environ{' '}
+                              <span className="font-semibold text-success-500">
+                                {formatEuro(result.estimatedSavings * 5)}
+                              </span>{' '}
+                              sur 5 ans
+                            </p>
+                          )}
+                        </div>
                       </div>
                     )}
 
