@@ -10,6 +10,7 @@ import Tooltip from '../components/ui/Tooltip';
 import {
   ALLOWED_TMI_RATES,
   CLASSE_MICRO_BIC_THRESHOLD_2026,
+  SOCIAL_THRESHOLD_2026,
   simulateClassementFiscal,
   type ScenarioSimulationResult,
   type SimulationResult,
