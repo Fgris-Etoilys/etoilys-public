@@ -133,25 +133,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 bg-white border-y border-gray-100">
-        <div className="container-adaptive">
-          <div className="rounded-card bg-accent-1 p-8 md:p-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="max-w-3xl">
-              <h2 className="mb-3">Simulateur taxe de séjour</h2>
-              <p className="text-textLight leading-comfortable">
-                Le simulateur présente un montant estimatif de taxe de séjour pour 1 nuit, selon la
-                commune, la capacité d'accueil et la catégorie de classement.
-              </p>
-            </div>
-            <div className="shrink-0">
-              <Button href="/simulateur-taxe-sejour" variant="primary">
-                Accéder au simulateur
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="py-section bg-white">
         <div className="container-adaptive">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
