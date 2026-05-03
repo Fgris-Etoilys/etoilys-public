@@ -46,7 +46,7 @@ describe('analytics', () => {
     posthogMock.reset.mockReset();
     analyticsInternalsForTests.reset();
     vi.stubEnv('VITE_PUBLIC_POSTHOG_TOKEN', 'phc_test');
-    vi.stubEnv('VITE_PUBLIC_POSTHOG_HOST', 'https://eu.i.posthog.com');
+    vi.stubEnv('VITE_PUBLIC_POSTHOG_HOST', 'https://f.etoilys.fr');
     window.localStorage.clear();
     window.history.pushState({}, 'Test', '/test?secret=value#hash');
   });
@@ -98,6 +98,10 @@ describe('analytics', () => {
     expect(posthogMock.init).toHaveBeenCalledWith(
       'phc_test',
       expect.objectContaining({
+        api_host: 'https://f.etoilys.fr',
+        ui_host: 'https://eu.posthog.com',
+        defaults: '2026-01-30',
+        person_profiles: 'identified_only',
         opt_out_capturing_persistence_type: 'localStorage',
       })
     );

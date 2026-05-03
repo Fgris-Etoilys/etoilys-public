@@ -213,7 +213,7 @@ function getPostHogToken(): string | undefined {
 }
 
 function getPostHogHost(): string {
-  return import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://eu.i.posthog.com';
+  return import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://f.etoilys.fr';
 }
 
 function hasSensitiveString(value: string): boolean {
@@ -300,7 +300,9 @@ function initializePostHog(): boolean {
 
   posthog.init(token, {
     api_host: getPostHogHost(),
+    ui_host: 'https://eu.posthog.com',
     defaults: '2026-01-30',
+    person_profiles: 'identified_only',
     capture_pageview: false,
     capture_pageleave: false,
     autocapture: false,
