@@ -90,6 +90,11 @@ export interface ReponseDto {
   commentaire_modifie?: string;
 }
 
+export interface PublicSimulationResponseRequest {
+  num_critere: number;
+  statut_validation: CriterionValidationStatus;
+}
+
 export interface PublicSimulationGridDto {
   id?: string;
   categorie_demandee?: string;
@@ -310,21 +315,23 @@ export function deletePiece(id: string, pieceId: string): Promise<LogementDto> {
   );
 }
 
-export function submitResponse(id: string, payload: ReponseDto): Promise<PublicSimulationDto> {
-  return requestSimulatorJson<PublicSimulationDto>(
-    `/public/simulations/${encodePathSegment(id)}/reponse`,
-    {
-      method: 'POST',
-      body: payload,
-    }
-  );
+export function submitResponse(
+  id: string,
+  payload: PublicSimulationResponseRequest
+): Promise<ReponseDto> {
+  return requestSimulatorJson<ReponseDto>(`/public/simulations/${encodePathSegment(id)}/reponse`, {
+    method: 'POST',
+    body: {
+      num_critere: payload.num_critere,
+      statut_validation: payload.statut_validation,
+    },
+  });
 }
 
-export function verifySimulation(id: string): Promise<VerificationDto> {
-  return requestSimulatorJson<VerificationDto>(
-    `/public/simulations/${encodePathSegment(id)}/verifier`,
-    { method: 'POST' }
-  );
+export function verifySimulation(id: string): Promise<boolean> {
+  return requestSimulatorJson<boolean>(`/public/simulations/${encodePathSegment(id)}/verifier`, {
+    method: 'POST',
+  });
 }
 
 export function getVerification(id: string): Promise<VerificationDto> {

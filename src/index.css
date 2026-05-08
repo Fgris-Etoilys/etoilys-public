@@ -44,6 +44,40 @@
   }
 }
 
+@layer components {
+  .simulator-ui h1,
+  .simulator-ui h2,
+  .simulator-ui h3,
+  .simulator-ui h4,
+  .simulator-ui h5,
+  .simulator-ui h6 {
+    @apply font-roboto font-semibold leading-snug;
+  }
+
+  .simulator-ui h1 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  .simulator-ui h2 {
+    @apply text-xl md:text-2xl;
+  }
+
+  .simulator-ui h3 {
+    @apply text-lg md:text-xl;
+  }
+
+  .simulator-ui h4,
+  .simulator-ui h5,
+  .simulator-ui h6 {
+    @apply text-base md:text-lg;
+  }
+
+  .simulator-ui p,
+  .simulator-ui li {
+    @apply leading-normal;
+  }
+}
+
 @layer utilities {
   .container-adaptive {
     width: 100%;

@@ -1508,11 +1508,11 @@ export default function SimulateurTaxeSejour() {
 
   return (
     <>
-      <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
+      <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <h1 className="mb-6 text-white">Simulateur taxe de séjour</h1>
-            <p className="text-xl text-white/90 leading-comfortable">
+            <h1 className="mb-4 text-white">Simulateur taxe de séjour</h1>
+            <p className="text-base text-white/90">
               Estimation informative de la taxe de séjour par catégorie de classement, à partir des
               délibérations locales disponibles.
             </p>
@@ -1520,12 +1520,12 @@ export default function SimulateurTaxeSejour() {
         </div>
       </section>
 
-      <section className="py-section bg-white">
+      <section className="simulator-ui bg-white py-10 md:py-12">
         <div className="container-adaptive">
-          <div className="space-y-10">
-            <Card className="p-4 sm:p-6 lg:p-8" hover={false}>
-              <h2 className="text-h4 mb-2">Informations du séjour</h2>
-              <p className="text-sm text-textLight mb-6">
+          <div className="space-y-6">
+            <Card className="p-5 md:p-6" hover={false}>
+              <h2 className="mb-2">Informations du séjour</h2>
+              <p className="mb-5 text-sm text-textLight">
                 Sélectionnez une commune puis renseignez les informations du séjour pour comparer
                 les montants estimatifs.
               </p>
@@ -1739,9 +1739,9 @@ export default function SimulateurTaxeSejour() {
 
             {result && (
               <>
-                <Card className="p-4 sm:p-6 lg:p-8" hover={false}>
+                <Card className="p-5 md:p-6" hover={false}>
                   <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <h2 className="text-h4">Résultats</h2>
+                    <h2>Résultats</h2>
                     <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                       <Button
                         type="button"
@@ -1885,7 +1885,7 @@ export default function SimulateurTaxeSejour() {
                       </ul>
                     </div>
 
-                    <p className="text-sm text-textLight leading-comfortable">
+                    <p className="text-sm text-textLight">
                       Cette simulation est fournie à titre informatif sur la base des délibérations
                       publiées. Elle ne constitue pas un conseil juridique ou fiscal personnalisé.
                     </p>
@@ -1899,18 +1899,18 @@ export default function SimulateurTaxeSejour() {
                   </div>
                 </Card>
 
-                <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
-                  <h2 className="text-h4 mb-3">Le classement peut aussi changer votre fiscalité</h2>
-                  <p className="text-gray-700 mb-6">
-                    Continuez avec notre simulateur fiscal pour estimer l&apos;autre grand effet
-                    concret du classement sur votre meublé.
+                <div className="mb-8 mt-8 rounded-card border border-primary-200 bg-primary-100 p-5 md:p-6">
+                  <h2 className="mb-3">Le classement intervient aussi dans la fiscalité</h2>
+                  <p className="mb-5 text-sm text-gray-700">
+                    Le simulateur fiscal compare le cadre micro-BIC d’un meublé classé et d’un
+                    meublé non classé.
                   </p>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-3">
                     <Button href="/simulateur-fiscal-classement" variant="primary">
-                      Voir l&apos;impact fiscal du classement
+                      Simulateur fiscal
                     </Button>
                     <Button href="/demande-classement" variant="secondary">
-                      Demander mon classement
+                      Demande de classement
                     </Button>
                   </div>
                 </div>

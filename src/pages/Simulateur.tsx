@@ -171,15 +171,15 @@ export default function Simulateur() {
 
   return (
     <>
-      <section className="bg-gradient-to-br from-themePrimary-1 to-primary-300 py-section text-white">
+      <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
         <div className="container-adaptive">
           <div className="max-w-3xl">
-            <h1 className="mb-6 text-white">Simulateur de classement</h1>
-            <p className="text-xl leading-comfortable text-white/90">
+            <h1 className="mb-4 text-white">Simulateur de classement</h1>
+            <p className="text-base text-white/90">
               Ce simulateur permet d’estimer le classement possible d’un meublé de tourisme à partir
               de la grille officielle de classement.
             </p>
-            <p className="mt-4 text-base leading-comfortable text-white/85">
+            <p className="mt-3 text-sm text-white/85">
               Le résultat est une estimation déclarative. Il ne remplace pas une visite officielle
               de classement.
             </p>
@@ -187,18 +187,18 @@ export default function Simulateur() {
         </div>
       </section>
 
-      <section className="bg-white py-section">
+      <section className="simulator-ui bg-white py-10 md:py-12">
         <div className="container-adaptive">
-          <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+          <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
             <div ref={startBlockRef}>
-              <Card hover={false} className="border-primary-200 bg-primary-100 p-6 md:p-8">
+              <Card hover={false} className="border-primary-200 bg-primary-100 p-5 md:p-6">
                 <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary-500">
                   Démarrer une nouvelle simulation
                 </p>
-                <h2 className="mb-4 text-h4">Paramètres de départ</h2>
-                <p className="mb-6 text-base leading-comfortable text-gray-700">
-                  Ces informations préparent la simulation. La saisie complète de la grille sera
-                  ajoutée dans une prochaine étape.
+                <h2 className="mb-3">Paramètres de départ</h2>
+                <p className="mb-5 text-sm text-gray-700">
+                  Ces informations initialisent la simulation avant la description des pièces et la
+                  grille de contrôle.
                 </p>
 
                 <form className="space-y-5" onSubmit={handleStartFormSubmit}>
@@ -251,7 +251,6 @@ export default function Simulateur() {
                   <Button
                     type="submit"
                     variant="primary"
-                    size="lg"
                     className="w-full"
                     disabled={isCreatingSimulation}
                   >
@@ -263,10 +262,10 @@ export default function Simulateur() {
               </Card>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-5">
               <div>
-                <h2 className="mb-3">Mes simulations</h2>
-                <p className="text-base leading-comfortable text-textLight">
+                <h2 className="mb-2">Mes simulations</h2>
+                <p className="text-sm text-textLight">
                   Les simulations affichées sont celles associées à ce navigateur.
                 </p>
               </div>
@@ -282,16 +281,14 @@ export default function Simulateur() {
 
               {simulationsStatus === 'loading' && (
                 <Card hover={false} className="p-6">
-                  <p className="text-base text-gray-700">Chargement de vos simulations...</p>
+                  <p className="text-sm text-gray-700">Chargement de vos simulations...</p>
                 </Card>
               )}
 
               {simulationsStatus === 'error' && (
-                <Card hover={false} className="border-alert-200 bg-alert-100 p-6">
-                  <h3 className="mb-2 text-xl font-playfair font-semibold text-gray-900">
-                    Chargement impossible
-                  </h3>
-                  <p className="mb-5 text-base leading-comfortable text-alert-500">
+                <Card hover={false} className="border-alert-200 bg-alert-100 p-5">
+                  <h3 className="mb-2">Chargement impossible</h3>
+                  <p className="mb-4 text-sm text-alert-500">
                     Impossible de charger vos simulations pour le moment.
                   </p>
                   <Button type="button" variant="secondary" onClick={() => void loadSimulations()}>
@@ -301,11 +298,9 @@ export default function Simulateur() {
               )}
 
               {simulationsStatus === 'success' && simulations.length === 0 && (
-                <Card hover={false} className="p-6 md:p-8">
-                  <h3 className="mb-3 text-xl font-playfair font-semibold text-gray-900">
-                    Aucune simulation enregistrée
-                  </h3>
-                  <p className="mb-6 text-base leading-comfortable text-textLight">
+                <Card hover={false} className="p-5 md:p-6">
+                  <h3 className="mb-2">Aucune simulation enregistrée</h3>
+                  <p className="text-sm text-textLight">
                     Vous n’avez pas encore de simulation enregistrée sur ce navigateur.
                   </p>
                 </Card>
@@ -314,10 +309,10 @@ export default function Simulateur() {
               {simulationsStatus === 'success' && simulations.length > 0 && (
                 <div className="space-y-4">
                   {simulations.map((simulation) => (
-                    <Card key={simulation.id} hover={false} className="p-5 md:p-6">
-                      <div className="mb-5 space-y-3">
+                    <Card key={simulation.id} hover={false} className="p-4 md:p-5">
+                      <div className="mb-4 space-y-3">
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                          <h3 className="text-xl font-playfair font-semibold text-gray-900">
+                          <h3>
                             Classement demandé :{' '}
                             {formatRequestedCategory(simulation.categorie_demandee)}
                           </h3>
@@ -340,7 +335,7 @@ export default function Simulateur() {
                         </dl>
                       </div>
 
-                      <div className="flex flex-col gap-3 border-t border-gray-100 pt-5 sm:flex-row sm:flex-wrap sm:items-center">
+                      <div className="flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center">
                         <Button
                           type="button"
                           variant="primary"

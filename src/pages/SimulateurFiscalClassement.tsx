@@ -844,23 +844,23 @@ export default function SimulateurFiscalClassement() {
 
   return (
     <>
-      <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
+      <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
         <div className="container-adaptive">
           <div className="max-w-3xl">
-            <h1 className="mb-6 text-white">Simulateur fiscal classement 2026</h1>
-            <p className="text-xl text-white/90 leading-comfortable">
-              Découvrez combien le classement peut vous faire économiser chaque année en fonction de
-              votre situation.
+            <h1 className="mb-4 text-white">Simulateur fiscal classement 2026</h1>
+            <p className="text-base text-white/90">
+              Ce simulateur compare le régime micro-BIC d’un meublé classé et d’un meublé non classé
+              à partir du chiffre d’affaires annuel et de la tranche marginale d’imposition.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="py-section bg-white">
+      <section className="simulator-ui bg-white py-10 md:py-12">
         <div className="container-adaptive">
-          <div className="mx-auto max-w-5xl space-y-8">
-            <Card hover={false} className="p-6 md:p-8">
-              <h2 className="mb-6 text-h4">Votre situation 2026</h2>
+          <div className="mx-auto max-w-5xl space-y-6">
+            <Card hover={false} className="p-5 md:p-6">
+              <h2 className="mb-5">Votre situation 2026</h2>
               <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                 <Input
                   label="Chiffre d'affaires annuel 2026 (en €)"
@@ -936,9 +936,9 @@ export default function SimulateurFiscalClassement() {
             {result && (
               <>
                 {result.canDisplayMicroComparison ? (
-                  <Card hover={false} className="p-6 md:p-8">
+                  <Card hover={false} className="p-5 md:p-6">
                     <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <h2 className="text-h4">Comparatif 2026</h2>
+                      <h2>Comparatif 2026</h2>
                       <div className="flex flex-wrap items-center gap-2 sm:justify-end">
                         <Button
                           type="button"
@@ -991,7 +991,7 @@ export default function SimulateurFiscalClassement() {
                         </div>
                         <div className="shrink-0 sm:text-right">
                           <p
-                            className={`text-2xl font-bold ${getSavingsClassName(result.estimatedSavings)}`}
+                            className={`text-lg font-bold ${getSavingsClassName(result.estimatedSavings)}`}
                           >
                             {formatEuro(result.estimatedSavings)}
                           </p>
@@ -1025,20 +1025,20 @@ export default function SimulateurFiscalClassement() {
                       )}
                     </div>
 
-                    <p className="mt-6 text-sm leading-comfortable text-textLight">
+                    <p className="mt-6 text-sm text-textLight">
                       Cette simulation est fournie à titre indicatif. Elle ne remplace pas un avis
                       fiscal ou comptable personnalisé.
                     </p>
                   </Card>
                 ) : (
-                  <Card hover={false} className="border-warning-200 bg-warning-100 p-6 md:p-8">
+                  <Card hover={false} className="border-warning-200 bg-warning-100 p-5 md:p-6">
                     <div className="mb-4">
-                      <h2 className="text-h4 text-gray-900">
+                      <h2 className="text-gray-900">
                         À partir de 83 600 €, vous êtes au régime réel
                       </h2>
                     </div>
 
-                    <div className="space-y-3 text-sm leading-comfortable text-gray-700">
+                    <div className="space-y-3 text-sm text-gray-700">
                       <p>
                         Au-delà de {CLASSE_MICRO_BIC_THRESHOLD_2026.toLocaleString('fr-FR')} € de
                         chiffre d&apos;affaires sur deux années consécutives, votre meublé doit être
@@ -1053,21 +1053,18 @@ export default function SimulateurFiscalClassement() {
                   </Card>
                 )}
 
-                <div className="mt-12 mb-12 rounded-card border border-primary-200 bg-primary-100 p-8">
-                  <h2 className="mb-3 text-h4">
-                    Le classement peut aussi vous faire économiser sur la taxe de séjour
-                  </h2>
-                  <p className="mb-6 text-gray-700">
-                    Au-delà de la fiscalité, le classement peut aussi changer la taxe de séjour de
-                    votre meublé. Vérifiez en quelques clics ce que cela peut changer pour votre
-                    bien.
+                <div className="mb-8 mt-8 rounded-card border border-primary-200 bg-primary-100 p-5 md:p-6">
+                  <h2 className="mb-3">Le classement intervient aussi dans la taxe de séjour</h2>
+                  <p className="mb-5 text-sm text-gray-700">
+                    Au-delà de la fiscalité, le classement peut aussi modifier le mode de calcul de
+                    la taxe de séjour d’un meublé.
                   </p>
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-3">
                     <Button href="/simulateur-taxe-sejour" variant="primary">
-                      Voir l&apos;impact sur la taxe de séjour
+                      Simulateur taxe de séjour
                     </Button>
                     <Button href="/demande-classement" variant="secondary">
-                      Demander mon classement
+                      Demande de classement
                     </Button>
                   </div>
                 </div>

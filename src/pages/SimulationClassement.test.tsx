@@ -285,7 +285,7 @@ describe('SimulationClassement', () => {
     expect(screen.queryByText(/133 critères à compléter/i)).not.toBeInTheDocument();
   });
 
-  it('active la grille placeholder et permet de revenir aux pièces', async () => {
+  it('active la grille de contrôle et permet de revenir aux pièces', async () => {
     mockFetchJsonSequence([{ body: simulationResponse }, { body: logementWithPiecesResponse }]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -293,10 +293,160 @@ describe('SimulationClassement', () => {
     await screen.findByRole('heading', { name: /chambre 1/i });
     fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
 
-    expect(await screen.findByText(/133 critères à compléter/i)).toBeInTheDocument();
-    expect(screen.getByText(/résultat estimatif en fin de simulation/i)).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: /^grille de contrôle$/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/critères renseignés/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/rechercher un critère/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /revenir aux pièces/i }));
+    const surfaceCriterion = screen.getByTestId('criterion-card-1');
+    expect(
+      within(surfaceCriterion).getByText(/ce point est alimenté par les pièces du logement/i)
+    ).toBeInTheDocument();
+    expect(
+      within(surfaceCriterion).queryByRole('button', { name: /^oui/i })
+    ).not.toBeInTheDocument();
+
+    const notApplicableCriterion = screen.getByTestId('criterion-card-23');
+    expect(
+      within(notApplicableCriterion).getByText(/ce critère n’est pas applicable/i)
+    ).toBeInTheDocument();
+    expect(
+      within(notApplicableCriterion).queryByRole('button', { name: /non applicable/i })
+    ).not.toBeInTheDocument();
+
+    const optionalCriterion = screen.getByTestId('criterion-card-5');
+    expect(
+      within(optionalCriterion).getByRole('button', { name: /^non applicable/i })
+    ).toBeInTheDocument();
+
+    const oncCriterion = screen.getByTestId('criterion-card-95');
+    expect(within(oncCriterion).getByText(/obligatoire non compensable/i)).toBeInTheDocument();
+    expect(within(oncCriterion).getByRole('button', { name: /^oui/i })).toBeInTheDocument();
+    expect(within(oncCriterion).getByRole('button', { name: /^non$/i })).toBeInTheDocument();
+    expect(
+      within(oncCriterion).queryByRole('button', { name: /non applicable/i })
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('tab', { name: /pièces du logement/i }));
     expect(screen.getByRole('button', { name: /ajouter une pièce/i })).toBeInTheDocument();
+  });
+
+  it('enregistre une réponse de critère avec un payload public minimal', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: logementWithPiecesResponse },
+      {
+        body: {
+          num_critere: 5,
+          statut_validation: 'VALIDE',
+          statut_critere: 'OPTIONNEL',
+          commentaire: 'non affiché',
+        },
+      },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+
+    const optionalCriterion = await screen.findByTestId('criterion-card-5');
+    fireEvent.click(within(optionalCriterion).getByRole('button', { name: /^oui/i }));
+
+    expect(await screen.findByText(/réponse enregistrée/i)).toBeInTheDocument();
+    expect(
+      within(optionalCriterion).getByRole('button', { name: /oui sélectionné/i })
+    ).toBeInTheDocument();
+
+    const responseCall = fetchMock.mock.calls[2];
+    expect(responseCall?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/reponse`);
+    expect(responseCall?.[1]).toMatchObject({
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        num_critere: 5,
+        statut_validation: 'VALIDE',
+      }),
+    });
+    expect(String(responseCall?.[1]?.body)).not.toContain('commentaire');
+  });
+
+  it('distingue les blocages et les critères optionnels lors de la vérification', async () => {
+    mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: false },
+      {
+        body: {
+          nb_couchages_suffisants: false,
+          criteres_obligatoires_a_cocher: {
+            criteres_non_coches: [95],
+          },
+          criteres_optionnels_a_cocher: {
+            criteres_non_coches: [5],
+          },
+          commentaires_obligatoires_a_fournir: {
+            commentaires_obligatoires_non_fournis: [7],
+          },
+        },
+      },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    fireEvent.click(
+      await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
+    );
+
+    expect(await screen.findByRole('heading', { name: /points bloquants/i })).toBeInTheDocument();
+    expect(
+      screen.getByText(/couchages renseignés ne semblent pas suffisants/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /critère 95/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^critères optionnels$/i })).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /ces critères peuvent améliorer votre score, mais ne sont pas tous obligatoires/i
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/commentaire/i)).not.toBeInTheDocument();
+  });
+
+  it('affiche le rapport sans remplacer la grille', async () => {
+    mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: true },
+      {
+        body: {
+          resultat: true,
+          points_obligatoires_obtenus: 160,
+          points_minimaux_obligatoires: 140,
+          points_obligatoires_atteints: true,
+          points_optionnels_obtenus: 20,
+          points_optionnels_necessaires: 15,
+          points_optionnels_atteints: true,
+          criteres_obligatoires_non_valides: [],
+        },
+      },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    fireEvent.click(
+      await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
+    );
+
+    expect(await screen.findByText(/résultat de la simulation/i)).toBeInTheDocument();
+    expect(screen.getByText(/estimation basée sur vos réponses/i)).toBeInTheDocument();
+    expect(screen.getByText(/160 \/ 140/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/rechercher un critère/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /modifier mes réponses/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /retour aux pièces/i })).toBeInTheDocument();
   });
 });

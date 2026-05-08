@@ -4,10 +4,14 @@ import {
   createPublicSimulation,
   deletePiece,
   getPublicSimulation,
+  getRapport,
   getSimulationLogement,
+  getVerification,
   listPublicSimulations,
+  submitResponse,
   updatePiece,
   updateRequestedCategory,
+  verifySimulation,
 } from './simulatorApi';
 
 const createJsonResponse = (body: unknown, status = 200) =>
@@ -169,6 +173,74 @@ describe('simulatorApi', () => {
       '/api/public/simulations/simulation-id/pieces/piece-id',
       expect.objectContaining({
         method: 'DELETE',
+        credentials: 'include',
+      })
+    );
+  });
+
+  it('enregistre une réponse de critère avec un payload minimal', async () => {
+    const fetchMock = mockFetchJson({
+      num_critere: 23,
+      statut_validation: 'VALIDE',
+      statut_critere: 'OBLIGATOIRE',
+      commentaire: 'ignoré côté UI',
+    });
+
+    await submitResponse('simulation-id', {
+      num_critere: 23,
+      statut_validation: 'VALIDE',
+    });
+
+    const requestInit = fetchMock.mock.calls[0]?.[1];
+    expect(fetchMock.mock.calls[0]?.[0]).toBe('/api/public/simulations/simulation-id/reponse');
+    expect(requestInit).toMatchObject({
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        num_critere: 23,
+        statut_validation: 'VALIDE',
+      }),
+    });
+    expect(String(requestInit?.body)).not.toContain('commentaire');
+  });
+
+  it('lance la vérification et retourne un booléen', async () => {
+    const fetchMock = mockFetchJson(true);
+
+    await expect(verifySimulation('simulation-id')).resolves.toBe(true);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/public/simulations/simulation-id/verifier',
+      expect.objectContaining({
+        method: 'POST',
+        credentials: 'include',
+      })
+    );
+  });
+
+  it('charge les problèmes de vérification', async () => {
+    const fetchMock = mockFetchJson({ nb_couchages_suffisants: false });
+
+    await getVerification('simulation-id');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/public/simulations/simulation-id/verification',
+      expect.objectContaining({
+        method: 'GET',
+        credentials: 'include',
+      })
+    );
+  });
+
+  it('charge le rapport provisoire', async () => {
+    const fetchMock = mockFetchJson({ resultat: true });
+
+    await getRapport('simulation-id');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/public/simulations/simulation-id/rapport',
+      expect.objectContaining({
+        method: 'GET',
         credentials: 'include',
       })
     );

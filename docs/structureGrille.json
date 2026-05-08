@@ -1,0 +1,3949 @@
+{
+  "chapitres": [
+    {
+      "libelle": "Chapitre 1 : Équipements et aménagements",
+      "sous_chapitres": [
+        {
+          "libelle": "1.1 Aménagement général",
+          "rubriques": [
+            {
+              "libelle": "Surfaces de l'habitation",
+              "criteres": [
+                {
+                  "num_critere": 1,
+                  "libelle": "Surface totale minimum (cuisine et coin cuisine compris) du logement meublé hors salle d'eau et toilettes",
+                  "points": 5,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 2,
+                  "libelle": "Surface totale majorée",
+                  "points": 5,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Équipement électrique de l'habitation",
+              "criteres": [
+                {
+                  "num_critere": 3,
+                  "libelle": "Prise de courant libre dans chaque pièce d'habitation",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 4,
+                  "libelle": "Tous les éclairages fonctionnent et sont en bon état",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Téléphonie et communication",
+              "criteres": [
+                {
+                  "num_critere": 5,
+                  "libelle": "Mise à disposition d'un téléphone privatif à l'intérieur du logement",
+                  "points": 1,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 6,
+                  "libelle": "Accès Internet par un réseau local sans fil",
+                  "points": 2,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 7,
+                  "libelle": "Accès internet filaire avec cable fourni",
+                  "points": 2,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Télévision et équipement wifi",
+              "criteres": [
+                {
+                  "num_critere": 8,
+                  "libelle": "Télévision couleur à écran plat avec télécommande",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 9,
+                  "libelle": "Accès à des chaines supplémentaires à l'offre de la TNT",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 10,
+                  "libelle": "Possibilité d'accéder à au moins deux chaines internationales",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 11,
+                  "libelle": "Radio",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 12,
+                  "libelle": "Enceinte connectée",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 13,
+                  "libelle": "Mise à disposition d'un système de lecture de vidéos",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Équipements pour le confort du client",
+              "criteres": [
+                {
+                  "num_critere": 14,
+                  "libelle": "Occultation opaque : extérieure ou intérieure dans chaque pièce comportant un couchage principal",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 15,
+                  "libelle": "Le logement est équipé de double vitrage",
+                  "points": 3,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 16,
+                  "libelle": "Existence d'un système de chauffage en état de fonctionnement",
+                  "points": 5,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 17,
+                  "libelle": "Existence d'un système de climatisation et/ou de rafraichissement d'air en état de fonctionnement",
+                  "points": 3,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 18,
+                  "libelle": "Machine à laver le linge pour les logements de 4 personnes et plus",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 19,
+                  "libelle": "Séche-linge électrique pour les logements de plus de 6 personnes et plus",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 20,
+                  "libelle": "Étendoir ou séchoir à linge à l'intérieur du logement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 21,
+                  "libelle": "Ustensiles de ménage appropriés au logement (minimum : un seau et un balai à brosse avec serpillière ou un balai de lavage à franges avec seau et presse, aspirateur ou équipement équivalent)",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 22,
+                  "libelle": "Fer et table à repasser",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Mobiliers",
+              "criteres": [
+                {
+                  "num_critere": 23,
+                  "libelle": "Placards ou éléments de rangement dans le logement",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "NON_APPLICABLE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "NON_APPLICABLE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "NON_APPLICABLE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 24,
+                  "libelle": "Placards ou éléments de rangement dans chaque pièce d'habitation",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 25,
+                  "libelle": "Présence d'une table et des assises correspondant à la capacité d'accueil du logement",
+                  "points": 4,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 26,
+                  "libelle": "Présence d'un canapé ou fauteuil(s) adapté(s) à la capacité d'accueil",
+                  "points": 3,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 27,
+                  "libelle": "Présence d'une table basse",
+                  "points": 1,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        },
+        {
+          "libelle": "1.2 Aménagement des chambres",
+          "rubriques": [
+            {
+              "libelle": "Literie",
+              "criteres": [
+                {
+                  "num_critere": 28,
+                  "libelle": "Respect des dimensions du ou des lits",
+                  "points": 4,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 29,
+                  "libelle": "Matelas haute densité et/ou avec une épaisseur de qualité",
+                  "points": 2,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 30,
+                  "libelle": "Présence d'oreillers en quantité suffisante",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 31,
+                  "libelle": "Deux couvertures ou une couette par lit",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 32,
+                  "libelle": "Matelas et oreillers protégés par des alèses ou des housses amovibles",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Equipements et mobiliers (dont électriques)",
+              "criteres": [
+                {
+                  "num_critere": 33,
+                  "libelle": "Éclairage en tête de lit avec interrupteur indépendant",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 34,
+                  "libelle": "Interrupteur ou système de commande de l'éclairage central près du lit",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 35,
+                  "libelle": "Présence d'une prise de courant libre située près du lit",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 36,
+                  "libelle": "Présence d'une table ou tablette de chevet ou tabouret tête de lit par personne",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        },
+        {
+          "libelle": "1.3 Équipement et aménagement des sanitaires",
+          "rubriques": [
+            {
+              "libelle": "Niveau d'équipements sanitaires requis pour les logements jusqu'à :",
+              "criteres": [
+                {
+                  "num_critere": 37,
+                  "libelle": "Une salle d'eau privative dans un espace clos et aéré intérieur au logement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 38,
+                  "libelle": "Une salle d'eau privative avec accès indépendant",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 39,
+                  "libelle": "Présence d'une salle d'eau ainsi équipée : un lavabo avec eau chaude, une douche et/ou une baignoire (équipée d'une douchette) avec pare-douche ; une baignoire et une douche",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "NON_APPLICABLE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "NON_APPLICABLE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 40,
+                  "libelle": "Présence d'une salle d'eau ainsi équipée : un lavabo avec eau chaude, une douche aux dimensions supérieures au standard et/ou une baignoire (équipée d'une douchette) aux dimensions supérieures au standard avec pare-douche ; une baignoire et une douche",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 41,
+                  "libelle": "Un WC avec cuvette, abattant, chasse d'eau, dérouleur et poubelle) privatif intérieur au logement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "NON_APPLICABLE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 42,
+                  "libelle": "Un WC avec cuvette, abattant, chasse d'eau, dérouleur et poubelle) privatif intérieur au logement indépendant de la salle d'eau",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Niveau d'équipements sanitaires requis pour les logements de plus de (inclus) :",
+              "criteres": [
+                {
+                  "num_critere": 43,
+                  "libelle": "Une deuxième salle d'eau privative dans un espace clos et aéré intérieur au logement avec accès indépendant",
+                  "points": 5,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 44,
+                  "libelle": "Présence d'une salle d'eau ainsi équipée : un lavabo avec eau chaude, une douche et/ou une baignoire (équipée d'une douchette) avec pare-douche ; une baignoire et une douche",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 45,
+                  "libelle": "Un WC avec cuvette, abattant, chasse d'eau, dérouleur et poubelle) privatif intérieur au logement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Équipements salle(s) d'eau",
+              "criteres": [
+                {
+                  "num_critere": 46,
+                  "libelle": "Deux points lumineux dont un sur le lavabo",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 47,
+                  "libelle": "Présence de produits d'accueil",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 48,
+                  "libelle": "Une prise de courant libre à proximité du miroir",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 49,
+                  "libelle": "Patère(s) ou porte-serviette",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 50,
+                  "libelle": "Sèche-serviettes électrique",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 51,
+                  "libelle": "Miroir de salle de bain",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 52,
+                  "libelle": "Miroir en pied",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 53,
+                  "libelle": "Tablette sous miroir ou plan vasque ou étagère proche du miroir",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 54,
+                  "libelle": "Espaces de rangement supplémentaires",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 55,
+                  "libelle": "Sèche-cheveux électrique en nombre suffisant",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        },
+        {
+          "libelle": "1.4 Équipements et aménagements de la cuisine ou du coin cuisine intérieur au logement",
+          "rubriques": [
+            {
+              "libelle": "Bacs à laver",
+              "criteres": [
+                {
+                  "num_critere": 56,
+                  "libelle": "Évier avec robinet mélangeur ou mitigeur",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Appareils de cuisson",
+              "criteres": [
+                {
+                  "num_critere": 57,
+                  "libelle": "Nombre de foyers respectés",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 58,
+                  "libelle": "Plaque vitrocéramique à induction ou à gaz",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 59,
+                  "libelle": "Four ou mini four",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 60,
+                  "libelle": "Four à micro-ondes",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 61,
+                  "libelle": "Ventilation ou ventilation mécanique contrôlée",
+                  "points": 4,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 62,
+                  "libelle": "Hotte aspirante",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Vaisselle et matériels de cuisson",
+              "criteres": [
+                {
+                  "num_critere": 63,
+                  "libelle": "Quantité de vaisselle de table non dépareillée par personne : 2 verres à eau, 1 verre à vin, 2 assiettes plates, 2 assiettes creuses, 2 assiettes à dessert, 2 grandes cuillères, 2 petites cuillères, 2 couteaux, 2 fourchettes, 2 bols, 2 tasses ou mugs",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 64,
+                  "libelle": "Vaisselle supplémentaire : 1 coupe à champagne, 1 verre à apéritif par personne",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 65,
+                  "libelle": "Quantité de matériel pour la préparation des repas : 1 saladier, 1 plat allant au four,  2 casseroles, 1 poêle, 1 fait-tout, 1 tire-bouchon,1 décapsuleur, 1 paire de ciseaux, 1 planche à découper, 1 couteau à pain, 1 passoire, 1 couvercle, 1 essoreuse à salade, 1 moule à tarte et/ou moule à gâteau, 1 ouvre-boîte, 1 économe, 1 dessous de plat, 1 verre doseur, 1 louche, 1 écumoire, 1 spatule, 1 fouet",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 66,
+                  "libelle": "Au moins 2 équipements de petit électroménager",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 67,
+                  "libelle": "Autocuiseur ou fait-tout ou robot de cuisine multifonctions",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Autres matériels",
+              "criteres": [
+                {
+                  "num_critere": 68,
+                  "libelle": "Cafetière",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 69,
+                  "libelle": "Machine à expresso",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 70,
+                  "libelle": "Bouilloire",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 71,
+                  "libelle": "Grille-pain",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 72,
+                  "libelle": "Lave-vaisselle pour les logements à partir de 2 personnes",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 73,
+                  "libelle": "Lave-vaisselle de 6 couverts pour les logements à partir de 4 personnes",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 74,
+                  "libelle": "Réfrigérateur avec compartiment conservateur",
+                  "points": 4,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 75,
+                  "libelle": "Présence d'un congélateur ou compartiment congélateur",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 76,
+                  "libelle": "Poubelle fermée avec couvercle",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        },
+        {
+          "libelle": "1.5 Environnement et extérieurs",
+          "rubriques": [
+            {
+              "libelle": "Ascenseurs",
+              "criteres": [
+                {
+                  "num_critere": 77,
+                  "libelle": "Pour accéder au 4e étage à partir du RdC",
+                  "points": 4,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "NON_APPLICABLE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "NON_APPLICABLE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "NON_APPLICABLE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 78,
+                  "libelle": "Pour accéder au 3e étage à partir du RdC",
+                  "points": 4,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Parking voiture",
+              "criteres": [
+                {
+                  "num_critere": 79,
+                  "libelle": "Emplacement(s) à proximité",
+                  "points": 4,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 80,
+                  "libelle": "Emplacements privatifs",
+                  "points": 3,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 81,
+                  "libelle": "Garage ou abri couvert privatif",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Balcon, terrasse, loggia, jardin",
+              "criteres": [
+                {
+                  "num_critere": 82,
+                  "libelle": "Logement avec balcon, loggia ou véranda (3m2 minimum)",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 83,
+                  "libelle": "Logement avec terrasse ou jardin privé (8 m2 minimum)",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 84,
+                  "libelle": "Logement avec parc ou jardin (50 m2 minimum)",
+                  "points": 4,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 85,
+                  "libelle": "Présence de mobilier de jardin privatif propre et en bon état",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 86,
+                  "libelle": "Mise à disposition d'une plancha et/ou d'un barbecue extérieur",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Equipements de loisirs, détente, sports, attachés au logement",
+              "criteres": [
+                {
+                  "num_critere": 87,
+                  "libelle": "Un équipement léger de loisirs, détente ou sport, dédié au logement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 88,
+                  "libelle": "Un équipement aménagé de loisirs, détente ou sport, dédié au logement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 89,
+                  "libelle": "Piscine extérieure ou intérieure",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 90,
+                  "libelle": "Piscine extérieure ou intérieure chauffée",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 91,
+                  "libelle": "Existence de rangements pour équipement sportif",
+                  "points": 1,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Environnement",
+              "criteres": [
+                {
+                  "num_critere": 92,
+                  "libelle": "Logement avec vue paysagère (vue mer, montagne, plaine ou zone urbaine)",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 93,
+                  "libelle": "Logement avec accès immédiat à un environnement offrant la possibilité de faire des activités : nature, culture et sport",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 94,
+                  "libelle": "Logement avec accès immédiat aux commerces, services et transports en commun",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        },
+        {
+          "libelle": "1.6 État et propreté des installations et des équipements",
+          "rubriques": [
+            {
+              "libelle": "",
+              "criteres": [
+                {
+                  "num_critere": 95,
+                  "libelle": "Les sanitaires (toilettes et salle(s) d'eau) sont propres et en bon état",
+                  "points": 5,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "ONC"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 96,
+                  "libelle": "Les sols, murs et plafonds sont propres et en bon état",
+                  "points": 5,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "ONC"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 97,
+                  "libelle": "Le mobilier est propre et en bon état",
+                  "points": 5,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "ONC"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 98,
+                  "libelle": "La literie est propre et en bon état",
+                  "points": 5,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "ONC"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 99,
+                  "libelle": "La cuisine ou coin cuisine et les équipements sont propres et en bon état",
+                  "points": 5,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "ONC"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "ONC"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "libelle": "Chapitre 2 : Services aux clients",
+      "sous_chapitres": [
+        {
+          "libelle": "2.1 Qualité et fiabilité de l'information client",
+          "rubriques": [
+            {
+              "libelle": "",
+              "criteres": [
+                {
+                  "num_critere": 100,
+                  "libelle": "Mise à disposition de brochures d'informations locales et touristiques en français et au moins une langue étrangère",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 101,
+                  "libelle": "Mise à disposition d'un livret d'accueil",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        },
+        {
+          "libelle": "2.2 Les services proposés",
+          "rubriques": [
+            {
+              "libelle": "",
+              "criteres": [
+                {
+                  "num_critere": 102,
+                  "libelle": "Accueil sur place par le propriétaire ou son représentant",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 103,
+                  "libelle": "Cadeau de bienvenue à l'arrivée du client",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 104,
+                  "libelle": "Existence d'une boîte à clé ou système équivalent",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 105,
+                  "libelle": "Draps de lit proposés systématiquement par le loueur",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 106,
+                  "libelle": "Linge de toilette proposé systématiquement par le loueur",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 107,
+                  "libelle": "Linge de table",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 108,
+                  "libelle": "Lits faits à l'arrivée proposés systématiquement par le loueur",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 109,
+                  "libelle": "Matériel pour bébé à la demande",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 110,
+                  "libelle": "Service de ménage proposé systématiquement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 111,
+                  "libelle": "Présence de produit d'entretien",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 112,
+                  "libelle": "Adaptateurs électriques",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 113,
+                  "libelle": "Existence d'un site internet ou d'une page internet dédiée au logement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 114,
+                  "libelle": "Existence d'un site internet ou d'une page internet dédiée au logement en une langue étrangère",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 115,
+                  "libelle": "Animaux de compagnie admis",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "libelle": "Chapitre 3 : Accessibilité et développement durable",
+      "sous_chapitres": [
+        {
+          "libelle": "3.1 Accessibilité",
+          "rubriques": [
+            {
+              "libelle": "Information, sensibilisation",
+              "criteres": [
+                {
+                  "num_critere": 116,
+                  "libelle": "Informations concernant l'accessibilité sur la documentation relative au logement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            },
+            {
+              "libelle": "Autres services",
+              "criteres": [
+                {
+                  "num_critere": 117,
+                  "libelle": "Mise à disposition de télécommande de télévision à grosses touches et couleurs contrastées",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 118,
+                  "libelle": "Présence d'un siège de douche avec barre d'appui",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 119,
+                  "libelle": "Présence d'un WC avec barre d'appui",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 120,
+                  "libelle": "Largeur de toutes les portes adaptée",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 121,
+                  "libelle": "Document accessible mis à disposition",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 122,
+                  "libelle": "Obtention du label Tourisme et Handicap",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        },
+        {
+          "libelle": "3.2 Développement durable",
+          "rubriques": [
+            {
+              "libelle": "",
+              "criteres": [
+                {
+                  "num_critere": 123,
+                  "libelle": "Mise en œuvre d'au moins une mesure de réduction de la consommation d'énergie",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 124,
+                  "libelle": "Mise en œuvre d'au moins une mesure de réduction de la consommation d'énergie supplémentaire",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 125,
+                  "libelle": "Borne de recharge pour véhicules électriques",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 126,
+                  "libelle": "Mise en œuvre d'au moins une mesure de réduction de la consommation d'eau",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 127,
+                  "libelle": "Mise en œuvre d'au moins une mesure de réduction de la consommation d'eau supplémentaire",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 128,
+                  "libelle": "Existence d'un système de tri des déchets dédié au logement",
+                  "points": 1,
+                  "peut_etre_non_applicable": true,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 129,
+                  "libelle": "Existence d'un composteur",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 130,
+                  "libelle": "Sensibilisation des clients sur les actions qu'ils peuvent réaliser lors de leur séjour en matière de respect de l'environnement",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 131,
+                  "libelle": "Présence de produits d'accueil écologiques dans les salles de bains",
+                  "points": 2,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 132,
+                  "libelle": "Mise à disposition d'au moins deux produits d'entretien respectueux de l'environnement",
+                  "points": 1,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OBLIGATOIRE"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OBLIGATOIRE"
+                    }
+                  ]
+                },
+                {
+                  "num_critere": 133,
+                  "libelle": "Obtention d'un label environnemental",
+                  "points": 3,
+                  "peut_etre_non_applicable": false,
+                  "categories": [
+                    {
+                      "nom": "1*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "2*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "3*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "4*",
+                      "statut": "OPTIONNEL"
+                    },
+                    {
+                      "nom": "5*",
+                      "statut": "OPTIONNEL"
+                    }
+                  ]
+                }
+              ],
+              "categories": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
