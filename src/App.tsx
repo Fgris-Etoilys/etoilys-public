@@ -7,7 +7,8 @@ import Prerequis from './pages/Prerequis';
 import Procedure from './pages/Procedure';
 import SimulateurTaxeSejour from './pages/SimulateurTaxeSejour';
 import SimulateurFiscalClassement from './pages/SimulateurFiscalClassement';
-// import Simulateur from './pages/Simulateur'; // TODO: réactiver quand le simulateur sera prêt
+import Simulateur from './pages/Simulateur';
+import SimulationClassement from './pages/SimulationClassement';
 import FAQ from './pages/FAQ';
 // import Equipe from './pages/Equipe'; // TODO: réactiver quand la page sera prête
 import Actualites from './pages/Actualites';
@@ -35,8 +36,8 @@ function App() {
           <Route path="procedure" element={<Procedure />} />
           <Route path="simulateur-taxe-sejour" element={<SimulateurTaxeSejour />} />
           <Route path="simulateur-fiscal-classement" element={<SimulateurFiscalClassement />} />
-          {/* <Route path="simulateur" element={<Simulateur />} /> */}
-          {/* TODO: réactiver quand le simulateur sera prêt */}
+          <Route path="simulateur" element={<Simulateur />} />
+          <Route path="simulateur/:simulationId" element={<SimulationClassement />} />
           <Route path="faq" element={<FAQ />} />
           {/* <Route path="equipe" element={<Equipe />} /> */}
           {/* TODO: réactiver quand la page sera prête */}

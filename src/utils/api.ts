@@ -47,12 +47,18 @@ export type ApiResponse<T = unknown> =
       fieldErrors?: Record<string, string>;
     };
 
+export const getApiUrl = (endpoint: string): string => {
+  const normalizedBaseUrl = API_BASE_URL.replace(/\/+$/, '');
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  return `${normalizedBaseUrl}${normalizedEndpoint}`;
+};
+
 export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
   endpoint: string,
   payload: P
 ): Promise<ApiResponse<T>> => {
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(getApiUrl(endpoint), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -82,7 +88,7 @@ export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
     if (!isJsonValue(parsed)) {
       return {
         success: false,
-        error: 'Reponse API invalide',
+        error: 'Réponse API invalide',
       };
     }
 

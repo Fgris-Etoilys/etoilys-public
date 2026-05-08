@@ -1,0 +1,76 @@
+# Intégration backend du simulateur public
+
+## Source du contrat
+
+Le contrat local utilisé pour l’intégration est `docs/swagger.json`, généré pour l’API Starsmanager.
+Le serveur indiqué par le Swagger est `http://api-dev.etoilys.fr`, mais le proxy frontend cible `https://api-dev.etoilys.fr` pour éviter une redirection HTTP vers HTTPS visible par le navigateur.
+
+## Routage frontend
+
+Le frontend appelle toujours des URLs same-origin sous `/api`.
+
+- `/api/public/forms/contact` et `/api/public/forms/classement` restent routés vers Supabase Edge Functions.
+- `/api/public/simulations` et `/api/public/simulations/*` sont routés vers le backend simulateur Etoilys.
+
+En développement, le routage est défini dans `vite.config.ts`.
+Le proxy Vite retire l’en-tête `Origin` sur les routes simulateur, afin que le backend ne traite pas les appels serveur-à-serveur comme une requête CORS venant de `localhost`.
+En production, le routage est défini dans `vercel.json`.
+
+## Client frontend
+
+Toutes les actions du simulateur public doivent passer par `src/utils/simulatorApi.ts`.
+
+Le client simulateur applique systématiquement :
+
+- `credentials: 'include'`
+- `Accept: application/json`
+- `Content-Type: application/json` quand un body JSON est envoyé
+
+Cette règle est importante parce que le backend associe les simulations publiques au navigateur.
+
+Le Swagger ne déclare pas d’enum pour `categorie_demandee`, `type_habitation` ou `etage`.
+Les valeurs confirmées pour la création de simulation sont :
+
+- `categorie_demandee` : chaîne `"1*"`, `"2*"`, `"3*"`, `"4*"` ou `"5*"`
+- `type_habitation` : chaîne `"INDIVIDUEL"` ou `"COLLECTIF"`
+- `etage` : entier, avec `RDC = 0`, `1er = 1`, `2e = 2`, `3e = 3`, `4e ou plus = 4`
+
+La page d’accueil du simulateur est `/simulateur`.
+L’interface principale d’une simulation publique est `/simulateur/:simulationId`.
+Cette route est volontairement `noindex,follow`, car son contenu dépend du navigateur courant.
+
+Pour les pièces, l’interface demande à l’utilisateur le nombre de personnes pouvant dormir dans la pièce.
+Le contrat backend disponible porte actuellement cette valeur dans `PieceDto.nombre_lits`.
+Le frontend n’envoie pas `literie` ni `type_literie` tant que l’écran de détail literie n’est pas défini.
+
+## Endpoints publics simulateur
+
+Endpoints disponibles d’après le Swagger local :
+
+- `GET /public/simulations`
+- `POST /public/simulations`
+- `GET /public/simulations/{id}`
+- `PUT /public/simulations/{id}/typeHabitation/{typeHabitation}`
+- `PUT /public/simulations/{id}/etage/{etage}`
+- `PUT /public/simulations/{id}/classementDemande/{classement}`
+- `PUT /public/simulations/{id}/capaciteAccueil/{capaciteAccueil}`
+- `GET /public/simulations/{id}/logement`
+- `POST /public/simulations/{id}/pieces`
+- `PUT /public/simulations/{id}/pieces/{pieceId}`
+- `DELETE /public/simulations/{id}/pieces/{pieceId}`
+- `POST /public/simulations/{id}/reponse`
+- `POST /public/simulations/{id}/verifier`
+- `GET /public/simulations/{id}/verification`
+- `GET /public/simulations/{id}/rapport`
+
+## Suppression
+
+Le Swagger n’expose pas de `DELETE /public/simulations/{id}`.
+Le frontend ne doit donc pas inventer d’action de suppression de simulation.
+
+Le seul endpoint de suppression visible est `DELETE /public/simulations/{id}/pieces/{pieceId}`.
+
+## Note production
+
+Pour une exposition directe en production, le backend simulateur doit être disponible en HTTPS.
+À défaut, le routage same-origin via Vercel doit rester l’entrée publique utilisée par le frontend.

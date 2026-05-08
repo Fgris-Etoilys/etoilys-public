@@ -13,15 +13,15 @@ const navigation = [
       { name: 'Les avantages du classement', href: '/les-avantages-du-classement' },
       { name: 'Prérequis au classement', href: '/prerequis-au-classement' },
       { name: 'Procédure', href: '/procedure' },
-      // { name: 'Simulateur', href: '/simulateur' }, // TODO: réactiver quand le simulateur sera prêt
       { name: 'FAQ', href: '/faq' },
     ],
   },
   {
     name: 'Outils',
-    href: '/simulateur-taxe-sejour',
+    href: '/simulateur',
     showOverviewLink: false,
     submenu: [
+      { name: 'Simulateur de classement', href: '/simulateur' },
       { name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' },
       { name: 'Simulateur fiscal classement 2026', href: '/simulateur-fiscal-classement' },
     ],
@@ -149,7 +149,7 @@ export default function Header() {
 
                       {openDropdown === item.name && (
                         <div
-                          className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50"
+                          className="absolute top-full left-0 z-50 mt-2 w-56 rounded-lg border border-gray-100 bg-white py-2 shadow-lg"
                           role="menu"
                         >
                           {item.showOverviewLink !== false && (
@@ -158,8 +158,8 @@ export default function Header() {
                                 to={item.href}
                                 className={`block px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
                                   location.pathname === item.href
-                                    ? 'text-primary-300 bg-primary-100'
-                                    : 'text-gray-700 hover:text-primary-300 hover:bg-gray-50'
+                                    ? 'bg-primary-100 text-primary-300'
+                                    : 'text-gray-700 hover:bg-gray-50 hover:text-primary-300'
                                 }`}
                                 role="menuitem"
                                 onClick={() => setOpenDropdown(null)}
@@ -175,8 +175,8 @@ export default function Header() {
                               to={subItem.href}
                               className={`block px-4 py-2.5 text-sm transition-colors duration-200 ${
                                 location.pathname === subItem.href
-                                  ? 'text-primary-300 bg-primary-100'
-                                  : 'text-gray-700 hover:text-primary-300 hover:bg-gray-50'
+                                  ? 'bg-primary-100 text-primary-300'
+                                  : 'text-gray-700 hover:bg-gray-50 hover:text-primary-300'
                               }`}
                               role="menuitem"
                               onClick={() => setOpenDropdown(null)}
@@ -210,7 +210,7 @@ export default function Header() {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`xl:hidden p-2 ${textClasses}`}
-              aria-label="Toggle menu"
+              aria-label="Ouvrir ou fermer le menu"
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -219,7 +219,7 @@ export default function Header() {
       </header>
 
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-white pt-20 xl:hidden overflow-y-auto">
+        <div className="fixed inset-0 z-40 overflow-y-auto bg-white pt-20 xl:hidden">
           <nav className="container-adaptive py-8">
             <div className="flex flex-col gap-4">
               {navigation.map((item) => {
@@ -234,7 +234,7 @@ export default function Header() {
                     <div key={item.name} className="flex flex-col">
                       <button
                         onClick={() => setOpenMobileSubmenu(isSubmenuOpen ? null : item.name)}
-                        className={`flex items-center justify-between text-lg font-medium transition-colors duration-200 py-2 ${
+                        className={`flex items-center justify-between py-2 text-lg font-medium transition-colors duration-200 ${
                           isActive ? 'text-primary-300' : 'text-gray-900 hover:text-primary-300'
                         }`}
                         aria-expanded={isSubmenuOpen}
@@ -249,13 +249,13 @@ export default function Header() {
                       </button>
 
                       {isSubmenuOpen && (
-                        <div className="flex flex-col ml-4 mt-2 space-y-2 border-l-2 border-primary-200 pl-4">
+                        <div className="ml-4 mt-2 flex flex-col space-y-2 border-l-2 border-primary-200 pl-4">
                           {item.showOverviewLink !== false && (
                             <Link
                               to={item.href}
-                              className={`text-base transition-colors duration-200 py-1.5 ${
+                              className={`py-1.5 text-base transition-colors duration-200 ${
                                 location.pathname === item.href
-                                  ? 'text-primary-300 font-medium'
+                                  ? 'font-medium text-primary-300'
                                   : 'text-gray-700 hover:text-primary-300'
                               }`}
                               onClick={() => setOpenMobileSubmenu(null)}
@@ -267,9 +267,9 @@ export default function Header() {
                             <Link
                               key={subItem.name}
                               to={subItem.href}
-                              className={`text-base transition-colors duration-200 py-1.5 ${
+                              className={`py-1.5 text-base transition-colors duration-200 ${
                                 location.pathname === subItem.href
-                                  ? 'text-primary-300 font-medium'
+                                  ? 'font-medium text-primary-300'
                                   : 'text-gray-700 hover:text-primary-300'
                               }`}
                               onClick={() => setOpenMobileSubmenu(null)}
@@ -287,7 +287,7 @@ export default function Header() {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`text-lg font-medium transition-colors duration-200 py-2 ${
+                    className={`py-2 text-lg font-medium transition-colors duration-200 ${
                       isActive ? 'text-primary-300' : 'text-gray-900 hover:text-primary-300'
                     }`}
                   >
@@ -295,7 +295,7 @@ export default function Header() {
                   </Link>
                 );
               })}
-              <Button href="/demande-classement" variant="primary" className="w-full mt-4">
+              <Button href="/demande-classement" variant="primary" className="mt-4 w-full">
                 Demande de classement
               </Button>
             </div>

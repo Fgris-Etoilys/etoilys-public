@@ -216,6 +216,14 @@ function getPostHogHost(): string {
   return import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://f.etoilys.fr';
 }
 
+function isLocalDevelopmentAnalyticsDisabled(): boolean {
+  return (
+    import.meta.env.DEV &&
+    import.meta.env.MODE !== 'test' &&
+    import.meta.env.VITE_ENABLE_ANALYTICS_IN_DEV !== 'true'
+  );
+}
+
 function hasSensitiveString(value: string): boolean {
   return EMAIL_PATTERN.test(value) || PHONE_PATTERN.test(value);
 }
@@ -281,6 +289,10 @@ function beforeSend(event: CaptureResult | null): CaptureResult | null {
 }
 
 function initializePostHog(): boolean {
+  if (isLocalDevelopmentAnalyticsDisabled()) {
+    return false;
+  }
+
   if (!isAnalyticsEnabled()) {
     return false;
   }

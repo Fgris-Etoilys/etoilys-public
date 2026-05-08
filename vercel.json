@@ -10,6 +10,14 @@
     {
       "source": "/api/public/forms/classement",
       "destination": "https://wrsqwdtjbglzuajjxtmc.supabase.co/functions/v1/public-forms-classement"
+    },
+    {
+      "source": "/api/public/simulations",
+      "destination": "https://api-dev.etoilys.fr/public/simulations"
+    },
+    {
+      "source": "/api/public/simulations/:path*",
+      "destination": "https://api-dev.etoilys.fr/public/simulations/:path*"
     }
   ]
 }

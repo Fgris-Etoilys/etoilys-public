@@ -1,8 +1,8 @@
 # Etoilys Public
 
-Application web React + TypeScript + Vite pour la presentation des parcours de classement des meubles de tourisme.
+Application web React + TypeScript + Vite pour la présentation des parcours de classement des meublés de tourisme.
 
-## Prerequis
+## Prérequis
 
 - Node.js 22 LTS (voir `.nvmrc`)
 - npm 10+
@@ -14,35 +14,56 @@ Application web React + TypeScript + Vite pour la presentation des parcours de c
 npm ci
 ```
 
-## Variables d'environnement (frontend)
+## Variables d'environnement
 
-Copier `.env.example` vers `.env.local` puis renseigner:
+Copier `.env.example` vers `.env.local` puis renseigner :
 
 ```bash
 VITE_API_BASE_URL=/api
 VITE_TURNSTILE_SITE_KEY=...
+VITE_ENABLE_ANALYTICS_IN_DEV=false
+ETOILYS_SIMULATOR_API_BASE_URL=https://api-dev.etoilys.fr
 SUPABASE_FUNCTIONS_BASE_URL=https://<project_ref>.supabase.co/functions/v1
 ```
 
-`VITE_API_BASE_URL` reste sur `/api` pour garder un contrat HTTP stable, meme apres migration vers le backend Java.
-`SUPABASE_FUNCTIONS_BASE_URL` est utilise uniquement en developpement local par le proxy Vite.
+`VITE_API_BASE_URL` reste sur `/api` pour garder des URLs frontend same-origin.
+`SUPABASE_FUNCTIONS_BASE_URL` est utilisé uniquement en développement local par le proxy Vite pour les formulaires.
+`ETOILYS_SIMULATOR_API_BASE_URL` est utilisé uniquement en développement local par le proxy Vite pour le simulateur public.
+`VITE_ENABLE_ANALYTICS_IN_DEV=false` évite les appels PostHog en local, même si un ancien consentement analytics est stocké dans le navigateur. Utiliser `true` uniquement pour tester explicitement l’analytics.
+
+## Backends publics
+
+Deux backends coexistent dans ce repo :
+
+- Supabase Edge Functions pour les formulaires publics :
+  - `POST /api/public/forms/contact`
+  - `POST /api/public/forms/classement`
+- Backend Etoilys `api-dev.etoilys.fr` pour le simulateur public :
+  - `/api/public/simulations`
+  - `/api/public/simulations/*`
+
+Les appels frontend restent en `/api/...`. En développement, Vite route ces chemins vers le bon backend. En production, Vercel applique les rewrites équivalents.
+
+Les simulations publiques sont associées au navigateur par le backend. Les appels simulateur doivent passer par `src/utils/simulatorApi.ts`, qui utilise `credentials: 'include'`.
 
 ## Configuration Vercel (prod)
 
-Pour garder `VITE_API_BASE_URL=/api` aussi en production, ce repo inclut un `vercel.json` qui rewrite:
+Pour garder `VITE_API_BASE_URL=/api` aussi en production, ce repo inclut un `vercel.json` qui rewrite :
 
 - `/api/public/forms/contact` -> `public-forms-contact` (Supabase)
 - `/api/public/forms/classement` -> `public-forms-classement` (Supabase)
+- `/api/public/simulations` et sous-routes -> `api-dev.etoilys.fr` (backend simulateur)
 
-Variables a definir dans Vercel:
+Variables à définir dans Vercel :
 
 - `VITE_API_BASE_URL=/api`
 - `VITE_TURNSTILE_SITE_KEY=<site_key_turnstile>`
 
-Verifier aussi:
+Vérifier aussi :
 
-- Les hostnames Turnstile autorises (domaine prod + domaines preview Vercel).
-- `ALLOWED_ORIGINS` cote Supabase Secrets (domaine prod + previews + localhost).
+- Les hostnames Turnstile autorisés (domaine prod + domaines preview Vercel).
+- `ALLOWED_ORIGINS` côté Supabase Secrets (domaine prod + previews + localhost).
+- L’accessibilité du backend simulateur. En production, privilégier HTTPS côté backend, ou conserver le routage same-origin via Vercel.
 
 ## Scripts utiles
 
@@ -57,27 +78,27 @@ npm run preview
 
 ## Setup Supabase (transitoire)
 
-1. Initialiser le dossier Supabase local:
+1. Initialiser le dossier Supabase local :
 
 ```bash
 npx supabase init
 npx supabase link --project-ref <project_ref>
 ```
 
-2. Appliquer les migrations:
+2. Appliquer les migrations :
 
 ```bash
 npx supabase db push
 ```
 
-3. Deployer les functions:
+3. Déployer les functions :
 
 ```bash
 npx supabase functions deploy public-forms-contact --project-ref <project_ref>
 npx supabase functions deploy public-forms-classement --project-ref <project_ref>
 ```
 
-4. Configurer les secrets functions:
+4. Configurer les secrets functions :
 
 ```bash
 npx supabase secrets set TURNSTILE_SECRET_KEY=...
@@ -86,50 +107,50 @@ npx supabase secrets set RESEND_FROM_EMAIL=...
 npx supabase secrets set NOTIFY_TO_EMAIL=...
 ```
 
-Secrets optionnels:
+Secrets optionnels :
 
-- `ALLOWED_ORIGINS` (liste separee par virgules)
-- `FORM_RATE_LIMIT_IP_PER_HOUR` (defaut: 10)
-- `FORM_RATE_LIMIT_EMAIL_PER_HOUR` (defaut: 5)
+- `ALLOWED_ORIGINS` (liste séparée par virgules)
+- `FORM_RATE_LIMIT_IP_PER_HOUR` (défaut : 10)
+- `FORM_RATE_LIMIT_EMAIL_PER_HOUR` (défaut : 5)
 - `BYPASS_TURNSTILE=true` (uniquement pour debug local)
 
 Un exemple local est disponible dans `supabase/functions/.env.example`.
 
-## Contrat API transitoire
+## Contrat API formulaires
 
 - `POST /api/public/forms/contact`
 - `POST /api/public/forms/classement`
 
-Reponse succes:
+Réponse succès :
 
 ```json
 { "success": true, "submissionId": "uuid", "message": "..." }
 ```
 
-Reponse erreur:
+Réponse erreur :
 
 ```json
 { "success": false, "error": "...", "fieldErrors": { "champ": "..." } }
 ```
 
-En developpement, Vite proxy ces routes vers:
+En développement, Vite proxy ces routes vers :
 
 - `public-forms-contact`
 - `public-forms-classement`
 
-## Retention et purge
+## Rétention et purge
 
-La retention cible est 12 mois.
+La rétention cible est 12 mois.
 
-Commande de purge:
+Commande de purge :
 
 ```sql
 select public.purge_form_submissions_older_than(interval '12 months');
 ```
 
-## Regles securite
+## Règles sécurité
 
 - Ne jamais commiter de secrets (`.env*`, `supabase/.env`, `supabase/functions/.env`).
 - Ne jamais exposer `SUPABASE_SERVICE_ROLE_KEY` dans le frontend.
-- La table `form_submissions` est en RLS forcee, sans policy publique.
-- Les ecritures se font uniquement via Edge Functions.
+- La table `form_submissions` est en RLS forcée, sans policy publique.
+- Les écritures se font uniquement via Edge Functions.

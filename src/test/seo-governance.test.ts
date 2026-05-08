@@ -5,6 +5,7 @@ import {
   getAllKnownPaths,
   getIndexablePaths,
   getPrerenderPaths,
+  getSeoRouteConfig,
   SITE_URL,
 } from '../content/seoRoutes';
 
@@ -66,5 +67,13 @@ describe('seo governance', () => {
     prerenderPaths.forEach((pathname) => {
       expect(indexablePaths.has(pathname)).toBe(true);
     });
+  });
+
+  it('keeps dynamic public simulations noindex and out of the sitemap', () => {
+    const dynamicSimulationSeo = getSeoRouteConfig('/simulateur/simulation-id');
+
+    expect(dynamicSimulationSeo.robots).toBe('noindex,follow');
+    expect(dynamicSimulationSeo.indexable).toBe(false);
+    expect(getIndexablePaths()).not.toContain('/simulateur/:simulationId');
   });
 });

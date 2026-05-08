@@ -38,6 +38,7 @@ function triggerLoadedCallback() {
 
 describe('analytics', () => {
   beforeEach(() => {
+    vi.unstubAllEnvs();
     posthogMock.init.mockReset();
     posthogMock.capture.mockReset();
     posthogMock.optIn.mockReset();
@@ -72,6 +73,18 @@ describe('analytics', () => {
       expect.any(String)
     );
     expect(posthogMock.init).not.toHaveBeenCalled();
+  });
+
+  it('does not initialize PostHog in local dev unless explicitly enabled', () => {
+    vi.stubEnv('DEV', true);
+    vi.stubEnv('MODE', 'development');
+    vi.stubEnv('VITE_ENABLE_ANALYTICS_IN_DEV', 'false');
+
+    acceptAnalyticsConsent();
+    trackPageView('/contact');
+
+    expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
   it('disables analytics completely in internal mode', () => {

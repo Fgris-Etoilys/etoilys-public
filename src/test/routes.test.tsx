@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import App from '../App';
 
@@ -7,9 +7,31 @@ const renderAt = (path: string) => {
   return render(<App />);
 };
 
+const mockFetchJson = (body: unknown) => {
+  vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+    new Response(JSON.stringify(body), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  );
+};
+
+const mockFetchJsonSequence = (responses: unknown[]) => {
+  const fetchMock = vi.spyOn(globalThis, 'fetch');
+  responses.forEach((body) => {
+    fetchMock.mockResolvedValueOnce(
+      new Response(JSON.stringify(body), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+  });
+};
+
 describe('routing', () => {
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
   });
 
   it('renders legal privacy page', () => {
@@ -27,6 +49,33 @@ describe('routing', () => {
   it('renders contact page', () => {
     renderAt('/contact');
     expect(screen.getByRole('heading', { name: /contact/i })).toBeInTheDocument();
+  });
+
+  it('renders public classement simulator page', () => {
+    mockFetchJson([]);
+    renderAt('/simulateur');
+    expect(screen.getByRole('heading', { name: /simulateur de classement/i })).toBeInTheDocument();
+  });
+
+  it('renders public classement simulation detail page', async () => {
+    mockFetchJsonSequence([
+      {
+        id: 'simulation-id',
+        grille: {
+          categorie_demandee: '3*',
+          capacite_accueil: 4,
+          type_habitation: 'INDIVIDUEL',
+          etage: 0,
+        },
+      },
+      { id: 'logement-id', pieces: [] },
+    ]);
+
+    renderAt('/simulateur/simulation-id');
+
+    expect(
+      await screen.findByRole('heading', { name: /ma simulation de classement/i })
+    ).toBeInTheDocument();
   });
 
   it('renders fiscal simulator page', () => {
