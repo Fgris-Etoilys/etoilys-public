@@ -1,16 +1,33 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, KeyboardEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ChevronDown } from 'lucide-react';
+import {
+  Bath,
+  BedDouble,
+  ChefHat,
+  ChevronDown,
+  Computer,
+  DoorOpen,
+  Footprints,
+  Pencil,
+  Plus,
+  Ruler,
+  Sofa,
+  Toilet,
+  Trash2,
+  Trees,
+  Tv,
+  Utensils,
+} from 'lucide-react';
 import SimulationGridTab from '../components/simulator/SimulationGridTab';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-import Input from '../components/ui/Input';
 import {
   createPiece,
   deletePiece,
   getPublicSimulation,
   getSimulationLogement,
+  SimulatorApiError,
   updatePiece,
   type LogementDto,
   type PieceDto,
@@ -32,13 +49,14 @@ import {
 type LoadStatus = 'loading' | 'success' | 'error';
 type ActiveTab = 'pieces' | 'grid';
 type PiecePanelMode = 'closed' | 'create' | 'edit';
+type PieceTypeScope = 'interior' | 'exterior';
 type FeedbackType = 'success' | 'error';
 
 interface PieceFormState {
-  name: string;
   type: PieceType;
   surface: string;
   sleepingCapacity: string;
+  hasExteriorOpening: boolean;
 }
 
 interface PieceFormErrors {
@@ -52,10 +70,10 @@ interface FeedbackMessage {
 }
 
 const DEFAULT_PIECE_FORM: PieceFormState = {
-  name: '',
   type: 'CHAMBRE',
   surface: '',
   sleepingCapacity: '',
+  hasExteriorOpening: true,
 };
 
 function isPieceType(value: string): value is PieceType {
@@ -75,12 +93,52 @@ function formatPeopleCount(value: number): string {
 }
 
 function getPieceDisplayName(piece: PieceDto): string {
+  if (piece.type_piece === 'COULOIRS_ET_DEGAGEMENTS') {
+    return formatPieceType(piece.type_piece);
+  }
+
   const name = piece.nom?.trim();
   return name || formatPieceType(piece.type_piece);
 }
 
+const PIECE_TYPE_ICONS: Record<PieceType, typeof BedDouble> = {
+  CUISINE: ChefHat,
+  SEJOUR: Sofa,
+  SALLE_A_MANGER: Utensils,
+  SALON: Tv,
+  CHAMBRE: BedDouble,
+  BUREAU: Computer,
+  CABINE: BedDouble,
+  PIECE_SANS_OUVRANT: DoorOpen,
+  COULOIRS_ET_DEGAGEMENTS: Footprints,
+  SALLE_DE_BAIN: Bath,
+  WC: Toilet,
+  LOGGIA_BALCON_VERANDA: DoorOpen,
+  TERRASSE_OU_JARDIN_PRIVE: Trees,
+  PARC_OU_JARDIN: Trees,
+};
+
+const EXTERIOR_OPENING_PIECE_TYPES: PieceType[] = [
+  'SEJOUR',
+  'SALLE_A_MANGER',
+  'SALON',
+  'CHAMBRE',
+  'BUREAU',
+];
+
 function getTotalSleepingCapacity(pieces: PieceDto[]): number {
-  return pieces.reduce((total, piece) => total + (piece.nombre_lits ?? 0), 0);
+  return pieces.reduce((total, piece) => total + (getValidSleepingCapacity(piece) ?? 0), 0);
+}
+
+function getValidSleepingCapacity(piece: PieceDto): number | undefined {
+  const sleepingCapacity = piece.nombre_lits;
+  return typeof sleepingCapacity === 'number' && Number.isFinite(sleepingCapacity)
+    ? sleepingCapacity
+    : undefined;
+}
+
+function canPieceHaveExteriorOpening(value: PieceType): boolean {
+  return EXTERIOR_OPENING_PIECE_TYPES.includes(value);
 }
 
 function hasPieceWithSurface(pieces: PieceDto[]): boolean {
@@ -90,20 +148,35 @@ function hasPieceWithSurface(pieces: PieceDto[]): boolean {
   );
 }
 
-function buildPiecePayload(form: PieceFormState): PieceDto {
-  const payload: PieceDto = {
-    type_piece: form.type,
-    surface: Number(form.surface),
-  };
+function buildPiecePayload(form: PieceFormState, existingPiece?: PieceDto): PieceDto {
+  const payload: PieceDto = existingPiece
+    ? {
+        type_piece: form.type,
+        surface: Number(form.surface),
+        prise: existingPiece.prise ?? false,
+        ventilation: existingPiece.ventilation ?? false,
+        type_literie: existingPiece.type_literie ?? null,
+        format_lits: existingPiece.format_lits ?? null,
+        literie: existingPiece.literie ?? false,
+      }
+    : {
+        type_piece: form.type,
+        surface: Number(form.surface),
+      };
 
-  const trimmedName = form.name.trim();
-  if (trimmedName) {
-    payload.nom = trimmedName;
+  if (existingPiece?.nom !== undefined) {
+    payload.nom = existingPiece.nom;
   }
 
   if (canPieceHaveSleepingCapacity(form.type) && form.sleepingCapacity.trim()) {
     // Le backend porte actuellement les couchages renseignés dans nombre_lits.
     payload.nombre_lits = Number(form.sleepingCapacity);
+  } else if (existingPiece && canPieceHaveSleepingCapacity(form.type)) {
+    payload.nombre_lits = null;
+  }
+
+  if (canPieceHaveExteriorOpening(form.type)) {
+    payload.ouvrant = form.hasExteriorOpening;
   }
 
   return payload;
@@ -111,18 +184,23 @@ function buildPiecePayload(form: PieceFormState): PieceDto {
 
 function createFormFromPiece(piece: PieceDto): PieceFormState {
   return {
-    name: piece.nom ?? '',
     type: piece.type_piece,
     surface: piece.surface === undefined ? '' : String(piece.surface),
-    sleepingCapacity: piece.nombre_lits === undefined ? '' : String(piece.nombre_lits),
+    sleepingCapacity:
+      getValidSleepingCapacity(piece) === undefined ? '' : String(getValidSleepingCapacity(piece)),
+    hasExteriorOpening: piece.ouvrant ?? true,
   };
 }
 
 function PieceTypeSelect({
   value,
+  options,
+  groupLabel,
   onChange,
 }: {
   value: PieceType;
+  options: PieceType[];
+  groupLabel: string;
   onChange: (value: PieceType) => void;
 }) {
   return (
@@ -142,15 +220,8 @@ function PieceTypeSelect({
           }}
           className="w-full appearance-none rounded-lg border border-gray-300 bg-white py-3 pl-4 pr-12 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-300"
         >
-          <optgroup label="Pièces intérieures">
-            {INTERIOR_PIECE_TYPES.map((pieceType) => (
-              <option key={pieceType} value={pieceType}>
-                {formatPieceType(pieceType)}
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="Espaces extérieurs">
-            {EXTERIOR_PIECE_TYPES.map((pieceType) => (
+          <optgroup label={groupLabel}>
+            {options.map((pieceType) => (
               <option key={pieceType} value={pieceType}>
                 {formatPieceType(pieceType)}
               </option>
@@ -173,6 +244,7 @@ export default function SimulationClassement() {
   const [logement, setLogement] = useState<LogementDto | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('pieces');
   const [piecePanelMode, setPiecePanelMode] = useState<PiecePanelMode>('closed');
+  const [pieceTypeScope, setPieceTypeScope] = useState<PieceTypeScope>('interior');
   const [editingPieceId, setEditingPieceId] = useState<string | null>(null);
   const [pieceForm, setPieceForm] = useState<PieceFormState>(DEFAULT_PIECE_FORM);
   const [pieceFormErrors, setPieceFormErrors] = useState<PieceFormErrors>({});
@@ -223,21 +295,96 @@ export default function SimulationClassement() {
   );
   const totalSleepingCapacity = useMemo(() => getTotalSleepingCapacity(pieces), [pieces]);
   const activePieceSupportsSleepingCapacity = canPieceHaveSleepingCapacity(pieceForm.type);
+  const activePieceCanHaveExteriorOpening = canPieceHaveExteriorOpening(pieceForm.type);
   const grille = simulation?.grille;
+  const editingPiece = useMemo(
+    () => pieces.find((piece) => piece.id === editingPieceId),
+    [editingPieceId, pieces]
+  );
+  const hasCorridorsPiece = useMemo(
+    () => pieces.some((piece) => piece.type_piece === 'COULOIRS_ET_DEGAGEMENTS'),
+    [pieces]
+  );
+  const existingExteriorPieceTypes = useMemo(
+    () => new Set(exteriorPieces.map((piece) => piece.type_piece)),
+    [exteriorPieces]
+  );
+  const selectableInteriorPieceTypes = useMemo(
+    () =>
+      INTERIOR_PIECE_TYPES.filter((pieceType) => {
+        if (pieceType === 'CABINE') {
+          return false;
+        }
+
+        if (pieceType !== 'COULOIRS_ET_DEGAGEMENTS') {
+          return true;
+        }
+
+        return !hasCorridorsPiece || editingPiece?.type_piece === 'COULOIRS_ET_DEGAGEMENTS';
+      }),
+    [editingPiece?.type_piece, hasCorridorsPiece]
+  );
+  const availableExteriorPieceTypesForCreation = useMemo(
+    () => EXTERIOR_PIECE_TYPES.filter((pieceType) => !existingExteriorPieceTypes.has(pieceType)),
+    [existingExteriorPieceTypes]
+  );
+  const selectableExteriorPieceTypes = useMemo(
+    () =>
+      EXTERIOR_PIECE_TYPES.filter(
+        (pieceType) =>
+          !existingExteriorPieceTypes.has(pieceType) || editingPiece?.type_piece === pieceType
+      ),
+    [editingPiece?.type_piece, existingExteriorPieceTypes]
+  );
+  const selectablePieceTypes =
+    pieceTypeScope === 'interior' ? selectableInteriorPieceTypes : selectableExteriorPieceTypes;
+  const selectablePieceTypeGroupLabel =
+    pieceTypeScope === 'interior' ? 'Pièces intérieures' : 'Espaces extérieurs';
+  const exteriorCreateDefaultType = availableExteriorPieceTypesForCreation.includes(
+    'TERRASSE_OU_JARDIN_PRIVE'
+  )
+    ? 'TERRASSE_OU_JARDIN_PRIVE'
+    : (availableExteriorPieceTypesForCreation[0] ?? 'TERRASSE_OU_JARDIN_PRIVE');
+
+  useEffect(() => {
+    if (piecePanelMode === 'closed') {
+      return;
+    }
+
+    function handleEscapeKey(event: globalThis.KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setPiecePanelMode('closed');
+        setPieceTypeScope('interior');
+        setEditingPieceId(null);
+        setPieceForm(DEFAULT_PIECE_FORM);
+        setPieceFormErrors({});
+      }
+    }
+
+    window.addEventListener('keydown', handleEscapeKey);
+    return () => {
+      window.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [piecePanelMode]);
 
   function resetPiecePanel() {
     setPiecePanelMode('closed');
+    setPieceTypeScope('interior');
     setEditingPieceId(null);
     setPieceForm(DEFAULT_PIECE_FORM);
     setPieceFormErrors({});
   }
 
-  function openCreatePanel() {
+  function openCreatePanel(
+    defaultType: PieceType = DEFAULT_PIECE_FORM.type,
+    scope: PieceTypeScope = 'interior'
+  ) {
     setFeedbackMessage(null);
     setConfirmingDeleteId(null);
     setPiecePanelMode('create');
+    setPieceTypeScope(scope);
     setEditingPieceId(null);
-    setPieceForm(DEFAULT_PIECE_FORM);
+    setPieceForm({ ...DEFAULT_PIECE_FORM, type: defaultType });
     setPieceFormErrors({});
   }
 
@@ -253,6 +400,7 @@ export default function SimulationClassement() {
     setFeedbackMessage(null);
     setConfirmingDeleteId(null);
     setPiecePanelMode('edit');
+    setPieceTypeScope(isExteriorPiece(piece.type_piece) ? 'exterior' : 'interior');
     setEditingPieceId(piece.id);
     setPieceForm(createFormFromPiece(piece));
     setPieceFormErrors({});
@@ -290,11 +438,11 @@ export default function SimulationClassement() {
     setFeedbackMessage(null);
 
     try {
-      const payload = buildPiecePayload(pieceForm);
-      const nextLogement =
-        piecePanelMode === 'edit' && editingPieceId
-          ? await updatePiece(simulationId, editingPieceId, payload)
-          : await createPiece(simulationId, payload);
+      const isEditingPiece = piecePanelMode === 'edit' && editingPieceId;
+      const payload = buildPiecePayload(pieceForm, isEditingPiece ? editingPiece : undefined);
+      const nextLogement = isEditingPiece
+        ? await updatePiece(simulationId, editingPieceId, payload)
+        : await createPiece(simulationId, payload);
 
       setLogement(nextLogement);
       resetPiecePanel();
@@ -302,10 +450,13 @@ export default function SimulationClassement() {
         type: 'success',
         text: piecePanelMode === 'edit' ? 'La pièce a été modifiée.' : 'La pièce a été ajoutée.',
       });
-    } catch {
+    } catch (error) {
       setFeedbackMessage({
         type: 'error',
-        text: 'La pièce n’a pas pu être enregistrée. Veuillez réessayer.',
+        text:
+          error instanceof SimulatorApiError && error.status === 409
+            ? 'Une pièce similaire existe déjà ou les informations envoyées sont incomplètes.'
+            : 'La pièce n’a pas pu être enregistrée. Veuillez réessayer.',
       });
     } finally {
       setIsSavingPiece(false);
@@ -423,99 +574,213 @@ export default function SimulationClassement() {
     const supportsSleepingCapacity = canPieceHaveSleepingCapacity(piece.type_piece);
     const isConfirmingDelete = confirmingDeleteId === piece.id;
     const canUpdatePiece = Boolean(piece.id);
+    const pieceDisplayName = getPieceDisplayName(piece);
+    const PieceIcon = PIECE_TYPE_ICONS[piece.type_piece];
+    const sleepingCapacity = getValidSleepingCapacity(piece);
 
     return (
-      <Card
+      <div
         key={piece.id ?? `${piece.type_piece}-${piece.nom ?? piece.surface}`}
-        hover={false}
-        className="p-4"
+        className="flex h-full min-h-52 flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-card"
         data-testid={piece.id ? `piece-card-${piece.id}` : undefined}
       >
-        <div className="space-y-4">
-          <div>
-            <h4>{getPieceDisplayName(piece)}</h4>
-            <p className="mt-1 text-sm text-textLight">{formatPieceType(piece.type_piece)}</p>
-          </div>
+        <div className="min-w-0 space-y-3">
+          <h4 className="flex min-h-[2.75rem] items-start gap-2 text-sm font-semibold leading-snug text-gray-900">
+            <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary-100 text-primary-500">
+              <PieceIcon aria-hidden="true" className="h-4 w-4" />
+            </span>
+            <span className="line-clamp-2 min-w-0">{pieceDisplayName}</span>
+          </h4>
 
-          <dl className="grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-            <div>
-              <dt className="font-medium text-gray-900">Surface</dt>
-              <dd>{formatSurface(piece.surface)}</dd>
+          <dl className="space-y-2 rounded-md bg-gray-50 p-3 text-xs text-gray-700">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-primary-500">
+                <Ruler aria-hidden="true" className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <dt className="font-medium text-gray-900">Surface</dt>
+                <dd>{formatSurface(piece.surface)}</dd>
+              </div>
             </div>
-            {supportsSleepingCapacity && piece.nombre_lits !== undefined && (
-              <div>
-                <dt className="font-medium text-gray-900">Couchages</dt>
-                <dd>{formatPeopleCount(piece.nombre_lits)}</dd>
+            {supportsSleepingCapacity && sleepingCapacity !== undefined && (
+              <div className="flex items-center gap-2">
+                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-primary-500">
+                  <BedDouble aria-hidden="true" className="h-4 w-4" />
+                </span>
+                <div className="min-w-0">
+                  <dt className="font-medium text-gray-900">Couchages</dt>
+                  <dd>{formatPeopleCount(sleepingCapacity)}</dd>
+                </div>
               </div>
             )}
           </dl>
-
-          <div className="flex flex-wrap gap-2">
-            {piece.surface_minimum_atteinte !== undefined && (
-              <span className="rounded-full border border-gray-200 px-3 py-1 text-sm text-gray-700">
-                {piece.surface_minimum_atteinte ? 'Surface suffisante' : 'Surface à vérifier'}
-              </span>
-            )}
-            {supportsSleepingCapacity && piece.capacite_lits_atteinte !== undefined && (
-              <span className="rounded-full border border-gray-200 px-3 py-1 text-sm text-gray-700">
-                {piece.capacite_lits_atteinte ? 'Couchages suffisants' : 'Couchages à vérifier'}
-              </span>
-            )}
-          </div>
-
-          <div className="border-t border-gray-100 pt-4">
-            {isConfirmingDelete ? (
-              <div className="space-y-3 rounded-lg border border-alert-200 bg-alert-100 p-4">
-                <p className="text-sm font-medium text-alert-500">
-                  Confirmer la suppression de cette pièce ?
-                </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    className="w-full sm:w-auto"
-                    onClick={() => setConfirmingDeleteId(null)}
-                  >
-                    Annuler
-                  </Button>
-                  <button
-                    type="button"
-                    className="inline-flex w-full items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors duration-200 hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 sm:w-auto"
-                    disabled={deletingPieceId === piece.id}
-                    onClick={() => void handleDeletePiece(piece)}
-                  >
-                    {deletingPieceId === piece.id ? 'Suppression...' : 'Supprimer la pièce'}
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="w-full sm:w-auto"
-                  disabled={!canUpdatePiece}
-                  onClick={() => openEditPanel(piece)}
-                >
-                  Modifier
-                </Button>
-                <button
-                  type="button"
-                  className="inline-flex w-full items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors duration-200 hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-                  disabled={!canUpdatePiece}
-                  onClick={() => {
-                    setPiecePanelMode('closed');
-                    setEditingPieceId(null);
-                    setConfirmingDeleteId(piece.id ?? null);
-                  }}
-                >
-                  Supprimer
-                </button>
-              </div>
-            )}
-          </div>
         </div>
-      </Card>
+
+        {isConfirmingDelete ? (
+          <div className="mt-3 space-y-2 rounded-md border border-alert-200 bg-alert-100 p-2">
+            <p className="text-xs font-medium text-alert-500">Confirmer la suppression ?</p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
+                onClick={() => setConfirmingDeleteId(null)}
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-md border border-alert-200 bg-white px-2 py-1.5 text-xs font-medium text-alert-500 transition-colors hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2"
+                disabled={deletingPieceId === piece.id}
+                onClick={() => void handleDeletePiece(piece)}
+              >
+                {deletingPieceId === piece.id ? '...' : 'Supprimer'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-3 flex justify-end gap-1">
+            <button
+              type="button"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-primary-100 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label={`Modifier ${pieceDisplayName}`}
+              disabled={!canUpdatePiece}
+              onClick={() => openEditPanel(piece)}
+            >
+              <Pencil aria-hidden="true" className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-alert-100 hover:text-alert-500 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              aria-label={`Supprimer ${pieceDisplayName}`}
+              disabled={!canUpdatePiece}
+              onClick={() => {
+                setPiecePanelMode('closed');
+                setEditingPieceId(null);
+                setConfirmingDeleteId(piece.id ?? null);
+              }}
+            >
+              <Trash2 aria-hidden="true" className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  function renderAddPieceChip(label: string, defaultType: PieceType, scope: PieceTypeScope) {
+    return (
+      <button
+        type="button"
+        className="flex h-full min-h-52 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-primary-200 bg-primary-100 p-4 text-primary-500 transition-colors hover:border-primary-300 hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
+        aria-label={label}
+        onClick={() => openCreatePanel(defaultType, scope)}
+      >
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-200 bg-white">
+          <Plus aria-hidden="true" className="h-5 w-5" />
+        </span>
+        <span className="text-center text-sm font-semibold">Ajouter une pièce</span>
+      </button>
+    );
+  }
+
+  function renderPieceGrid(
+    piecesToRender: PieceDto[],
+    addLabel: string,
+    defaultType: PieceType,
+    scope: PieceTypeScope,
+    showAddPieceChip = true
+  ) {
+    return (
+      <div className="grid grid-cols-2 items-stretch gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {piecesToRender.map(renderPieceCard)}
+        {showAddPieceChip && renderAddPieceChip(addLabel, defaultType, scope)}
+      </div>
+    );
+  }
+
+  function renderModalInputField({
+    label,
+    name,
+    type,
+    inputMode,
+    min,
+    step,
+    value,
+    error,
+    onChange,
+  }: {
+    label: string;
+    name: string;
+    type: 'number';
+    inputMode: 'decimal' | 'numeric';
+    min: string;
+    step?: string;
+    value: string;
+    error?: string;
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  }) {
+    return (
+      <div className="grid min-h-[6.75rem] grid-rows-[auto_auto_1.25rem]">
+        <label htmlFor={name} className="mb-2 block text-sm font-medium text-gray-700">
+          {label}
+        </label>
+        <input
+          id={name}
+          name={name}
+          type={type}
+          inputMode={inputMode}
+          min={min}
+          step={step}
+          value={value}
+          onChange={onChange}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={`${name}-error`}
+          className={`w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-300 ${
+            error ? 'border-alert-400 focus:ring-alert-400' : ''
+          }`}
+        />
+        <p
+          id={`${name}-error`}
+          className="mt-2 min-h-[1.25rem] text-sm leading-tight text-alert-400"
+          data-testid={`${name}-error-slot`}
+        >
+          {error ?? ''}
+        </p>
+      </div>
+    );
+  }
+
+  function renderExteriorOpeningToggle() {
+    return (
+      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-medium text-gray-900">Ouvrant vers l’extérieur</p>
+            <p className="mt-1 text-sm text-textLight">
+              Indique si la pièce dispose d’une ouverture donnant vers l’extérieur.
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={pieceForm.hasExteriorOpening}
+            aria-label="Ouvrant vers l’extérieur"
+            className={`relative inline-flex h-7 w-12 shrink-0 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 ${
+              pieceForm.hasExteriorOpening ? 'bg-primary-300' : 'bg-gray-300'
+            }`}
+            onClick={() =>
+              updatePieceFormField('hasExteriorOpening', !pieceForm.hasExteriorOpening)
+            }
+          >
+            <span
+              aria-hidden="true"
+              className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${
+                pieceForm.hasExteriorOpening ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+      </div>
     );
   }
 
@@ -728,124 +993,118 @@ export default function SimulationClassement() {
                 )}
               </Card>
 
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <h2>Pièces du logement</h2>
-                <Button
-                  type="button"
-                  variant="primary"
-                  className="w-full sm:w-auto"
-                  onClick={openCreatePanel}
-                >
-                  Ajouter une pièce
-                </Button>
-              </div>
+              <h2>Pièces du logement</h2>
 
               {piecePanelMode !== 'closed' && (
-                <Card hover={false} className="border-primary-200 bg-primary-100 p-5 md:p-6">
-                  <div className="mb-5">
-                    <h3>{piecePanelMode === 'edit' ? 'Modifier la pièce' : 'Ajouter une pièce'}</h3>
-                    <p className="mt-2 text-sm text-gray-700">
-                      Renseignez les informations principales de la pièce.
-                    </p>
-                  </div>
+                <div
+                  className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-900/35 px-4 py-6"
+                  onClick={resetPiecePanel}
+                >
+                  <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="piece-modal-title"
+                    className="w-full max-w-lg rounded-card border border-gray-200 bg-white p-5 shadow-card md:p-6"
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <div className="mb-5">
+                      <h3 id="piece-modal-title">
+                        {piecePanelMode === 'edit' ? 'Modifier la pièce' : 'Ajouter une pièce'}
+                      </h3>
+                      <p className="mt-2 text-sm text-gray-700">
+                        Renseignez les informations principales de la pièce.
+                      </p>
+                    </div>
 
-                  <form className="space-y-5" onSubmit={handlePieceFormSubmit}>
-                    <Input
-                      label="Nom de la pièce"
-                      name="pieceName"
-                      value={pieceForm.name}
-                      placeholder="Ex. Chambre 1"
-                      onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                        updatePieceFormField('name', event.target.value)
-                      }
-                    />
-
-                    <PieceTypeSelect
-                      value={pieceForm.type}
-                      onChange={(value) => updatePieceFormField('type', value)}
-                    />
-
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <Input
-                        label="Surface en m²"
-                        name="pieceSurface"
-                        type="number"
-                        inputMode="decimal"
-                        min="0"
-                        step="0.1"
-                        value={pieceForm.surface}
-                        onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                          updatePieceFormField('surface', event.target.value)
-                        }
-                        error={pieceFormErrors.surface}
+                    <form className="space-y-5" onSubmit={handlePieceFormSubmit}>
+                      <PieceTypeSelect
+                        value={pieceForm.type}
+                        options={selectablePieceTypes}
+                        groupLabel={selectablePieceTypeGroupLabel}
+                        onChange={(value) => updatePieceFormField('type', value)}
                       />
 
-                      {activePieceSupportsSleepingCapacity && (
-                        <Input
-                          label="Nombre de personnes pouvant dormir dans cette pièce"
-                          name="pieceSleepingCapacity"
-                          type="number"
-                          inputMode="numeric"
-                          min="1"
-                          value={pieceForm.sleepingCapacity}
-                          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                            updatePieceFormField('sleepingCapacity', event.target.value)
-                          }
-                          error={pieceFormErrors.sleepingCapacity}
-                        />
-                      )}
-                    </div>
+                      <div
+                        className="grid gap-5 sm:grid-cols-2"
+                        data-testid="piece-form-fields-grid"
+                      >
+                        {renderModalInputField({
+                          label: 'Surface en m²',
+                          name: 'pieceSurface',
+                          type: 'number',
+                          inputMode: 'decimal',
+                          min: '0',
+                          step: '0.1',
+                          value: pieceForm.surface,
+                          error: pieceFormErrors.surface,
+                          onChange: (event) => updatePieceFormField('surface', event.target.value),
+                        })}
 
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                      <Button
-                        type="submit"
-                        variant="primary"
-                        className="w-full sm:w-auto"
-                        disabled={isSavingPiece}
-                      >
-                        {isSavingPiece
-                          ? 'Enregistrement...'
-                          : piecePanelMode === 'edit'
-                            ? 'Enregistrer les modifications'
-                            : 'Ajouter cette pièce'}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        className="w-full sm:w-auto"
-                        onClick={resetPiecePanel}
-                      >
-                        Annuler
-                      </Button>
-                    </div>
-                  </form>
-                </Card>
+                        {activePieceSupportsSleepingCapacity &&
+                          renderModalInputField({
+                            label: 'Nombre de personnes pouvant dormir dans cette pièce',
+                            name: 'pieceSleepingCapacity',
+                            type: 'number',
+                            inputMode: 'numeric',
+                            min: '1',
+                            value: pieceForm.sleepingCapacity,
+                            error: pieceFormErrors.sleepingCapacity,
+                            onChange: (event) =>
+                              updatePieceFormField('sleepingCapacity', event.target.value),
+                          })}
+                      </div>
+
+                      {activePieceCanHaveExteriorOpening && renderExteriorOpeningToggle()}
+
+                      <div className="flex flex-col gap-3 sm:flex-row">
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          className="w-full sm:w-auto"
+                          disabled={isSavingPiece}
+                        >
+                          {isSavingPiece
+                            ? 'Enregistrement...'
+                            : piecePanelMode === 'edit'
+                              ? 'Enregistrer les modifications'
+                              : 'Ajouter cette pièce'}
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          className="w-full sm:w-auto"
+                          onClick={resetPiecePanel}
+                        >
+                          Annuler
+                        </Button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
               )}
 
-              <div className="grid gap-6 lg:grid-cols-2">
+              <div className="space-y-8">
                 <section className="space-y-4" aria-labelledby="interior-pieces-title">
                   <h3 id="interior-pieces-title">Pièces intérieures</h3>
-                  {interiorPieces.length > 0 ? (
-                    interiorPieces.map(renderPieceCard)
-                  ) : (
-                    <Card hover={false} className="p-5">
-                      <p className="text-sm text-textLight">
-                        Aucune pièce intérieure n’a encore été ajoutée.
-                      </p>
-                    </Card>
+                  {renderPieceGrid(
+                    interiorPieces,
+                    'Ajouter une pièce intérieure',
+                    'CHAMBRE',
+                    'interior'
                   )}
                 </section>
 
-                <section className="space-y-4" aria-labelledby="exterior-pieces-title">
+                <section
+                  className="space-y-4 border-t border-gray-200 pt-8"
+                  aria-labelledby="exterior-pieces-title"
+                >
                   <h3 id="exterior-pieces-title">Espaces extérieurs</h3>
-                  {exteriorPieces.length > 0 ? (
-                    exteriorPieces.map(renderPieceCard)
-                  ) : (
-                    <Card hover={false} className="p-5">
-                      <p className="text-sm text-textLight">
-                        Aucun espace extérieur n’a encore été ajouté.
-                      </p>
-                    </Card>
+                  {renderPieceGrid(
+                    exteriorPieces,
+                    'Ajouter un espace extérieur',
+                    exteriorCreateDefaultType,
+                    'exterior',
+                    availableExteriorPieceTypesForCreation.length > 0
                   )}
                 </section>
               </div>

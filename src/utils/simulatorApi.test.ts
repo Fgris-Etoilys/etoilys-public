@@ -148,6 +148,9 @@ describe('simulatorApi', () => {
     await updatePiece('simulation-id', 'piece-id', {
       type_piece: 'SALON',
       surface: 18,
+      type_literie: null,
+      nombre_lits: null,
+      format_lits: null,
     });
 
     const requestInit = fetchMock.mock.calls[0]?.[1];
@@ -160,6 +163,9 @@ describe('simulatorApi', () => {
       body: JSON.stringify({
         type_piece: 'SALON',
         surface: 18,
+        type_literie: null,
+        nombre_lits: null,
+        format_lits: null,
       }),
     });
   });

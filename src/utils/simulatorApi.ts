@@ -57,9 +57,9 @@ export interface PieceDto {
   ouvrant?: boolean;
   prise?: boolean;
   ventilation?: boolean;
-  type_literie?: BeddingType;
-  nombre_lits?: number;
-  format_lits?: string;
+  type_literie?: BeddingType | null;
+  nombre_lits?: number | null;
+  format_lits?: string | null;
   rang_type?: number;
   par_defaut?: boolean;
   literie?: boolean;
