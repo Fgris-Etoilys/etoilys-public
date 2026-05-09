@@ -17,6 +17,14 @@ const simulationResponse = {
   },
 };
 
+const simulationWithUnknownRequestedCategory = {
+  ...simulationResponse,
+  grille: {
+    ...simulationResponse.grille,
+    categorie_demandee: 'inconnue',
+  },
+};
+
 const simulationWithValidatedOptionalResponse = {
   ...simulationResponse,
   grille: {
@@ -75,7 +83,7 @@ const logementWithPiecesResponse = {
       format_lits: null,
       literie: false,
       surface_minimum_atteinte: true,
-      capacite_lits_atteinte: true,
+      capacite_lits_atteinte: false,
     },
     {
       id: 'piece-2',
@@ -452,6 +460,7 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('button', { name: /ajouter cette pièce/i }));
 
     expect(await screen.findByText(/la pièce a été ajoutée/i)).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /chambre bleue/i })).toBeInTheDocument();
 
     const createCall = fetchMock.mock.calls[2];
@@ -463,6 +472,7 @@ describe('SimulationClassement', () => {
         type_piece: 'CHAMBRE',
         surface: 12,
         nombre_lits: 2,
+        literie: true,
         ouvrant: true,
       }),
     });
@@ -478,6 +488,178 @@ describe('SimulationClassement', () => {
       'aria-pressed',
       'true'
     );
+  });
+
+  it('affiche immédiatement un avertissement si la surface renseignée est insuffisante', async () => {
+    mockFetchJsonSequence([{ body: simulationResponse }, { body: emptyLogementResponse }]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
+    fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
+    fireEvent.change(screen.getByLabelText(/nombre de personnes pouvant dormir/i), {
+      target: { value: '3' },
+    });
+
+    expect(screen.queryByText(/surface d’au moins 10 m²/i)).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText(/surface en m²/i), { target: { value: '8' } });
+
+    expect(screen.getByText(/surface d’au moins 10 m²/i)).toBeInTheDocument();
+  });
+
+  it('enregistre une pièce avec surface insuffisante et affiche une alerte sur la carte', async () => {
+    mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: emptyLogementResponse },
+      {
+        body: {
+          ...emptyLogementResponse,
+          pieces: [
+            {
+              id: 'piece-created',
+              nom: 'Chambre bleue',
+              type_piece: 'CHAMBRE',
+              surface: 8,
+              nombre_lits: 3,
+            },
+          ],
+        },
+      },
+      { body: simulationResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
+    fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
+    fireEvent.change(screen.getByLabelText(/surface en m²/i), { target: { value: '8' } });
+    fireEvent.change(screen.getByLabelText(/nombre de personnes pouvant dormir/i), {
+      target: { value: '3' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /ajouter cette pièce/i }));
+
+    expect(await screen.findByText(/la pièce a été ajoutée/i)).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+    const createdPieceCard = screen.getByTestId('piece-card-piece-created');
+    const alertButton = within(createdPieceCard).getByRole('button', {
+      name: /alerte sur chambre bleue/i,
+    });
+    fireEvent.mouseEnter(alertButton);
+    expect(
+      await within(createdPieceCard).findByText(
+        'Cette pièce doit avoir une surface d’au moins 10 m² pour 3 couchages. Supprimez des couchages ou bien le critère n°1 sera invalidé.'
+      )
+    ).toBeInTheDocument();
+  });
+
+  it('bloque la création avant appel API si la pièce dépasse la capacité de couchages', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: emptyLogementResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
+    fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
+    fireEvent.change(screen.getByLabelText(/surface en m²/i), { target: { value: '18' } });
+    fireEvent.change(screen.getByLabelText(/nombre de personnes pouvant dormir/i), {
+      target: { value: '5' },
+    });
+    const submitButton = screen.getByRole('button', { name: /ajouter cette pièce/i });
+
+    expect(submitButton).toBeDisabled();
+    fireEvent.click(submitButton);
+
+    expect(screen.getByRole('dialog', { name: /ajouter une pièce/i })).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Le nombre maximal de couchages autorisés dans cette pièce est dépassé. Supprimez des couchages.'
+      )
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/la pièce a été ajoutée/i)).not.toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('enregistre une modification avec surface insuffisante et affiche une alerte sur la carte', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: logementWithPiecesResponse },
+      {
+        body: {
+          ...logementWithPiecesResponse,
+          pieces: [
+            {
+              ...logementWithPiecesResponse.pieces[0],
+              type_piece: 'CHAMBRE',
+              surface: 8,
+              nombre_lits: 3,
+            },
+            logementWithPiecesResponse.pieces[1],
+          ],
+        },
+      },
+      { body: simulationResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(
+      within(screen.getByTestId('piece-card-piece-1')).getByRole('button', {
+        name: /modifier chambre 1/i,
+      })
+    );
+    fireEvent.change(screen.getByLabelText(/surface en m²/i), { target: { value: '8' } });
+    fireEvent.change(screen.getByLabelText(/nombre de personnes pouvant dormir/i), {
+      target: { value: '3' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /enregistrer les modifications/i }));
+
+    expect(await screen.findByText(/la pièce a été modifiée/i)).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(fetchMock.mock.calls[2]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/pieces/piece-1`
+    );
+
+    const updatedPieceCard = screen.getByTestId('piece-card-piece-1');
+    expect(
+      within(updatedPieceCard).getByRole('button', { name: /alerte sur chambre 1/i })
+    ).toBeInTheDocument();
+  });
+
+  it('affiche une alerte de carte depuis les indicateurs backend si la catégorie est inexploitable', async () => {
+    mockFetchJsonSequence([
+      { body: simulationWithUnknownRequestedCategory },
+      {
+        body: {
+          ...logementWithPiecesResponse,
+          pieces: [
+            {
+              ...logementWithPiecesResponse.pieces[0],
+              surface: 8,
+              nombre_lits: 2,
+              surface_minimum: 12,
+              surface_minimum_atteinte: false,
+              capacite_lits_atteinte: false,
+            },
+          ],
+        },
+      },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    const pieceCard = screen.getByTestId('piece-card-piece-1');
+    const alertButton = within(pieceCard).getByRole('button', { name: /alerte sur chambre 1/i });
+
+    fireEvent.mouseEnter(alertButton);
+    expect(
+      await within(pieceCard).findByText(/surface d’au moins 12 m² pour 2 couchages/i)
+    ).toBeInTheDocument();
   });
 
   it('envoie ouvrant à false quand le toggle est désactivé', async () => {
@@ -561,6 +743,7 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('button', { name: /enregistrer les modifications/i }));
 
     expect(await screen.findByText(/la pièce a été modifiée/i)).toBeInTheDocument();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /chambre principale/i })).toBeInTheDocument();
 
     const updateCall = fetchMock.mock.calls[2];
@@ -580,8 +763,45 @@ describe('SimulationClassement', () => {
       type_literie: null,
       nombre_lits: 2,
       format_lits: null,
-      literie: false,
+      literie: true,
     });
+  });
+
+  it('bloque l’édition en 5 étoiles si la pièce dépasse 3 couchages', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      {
+        body: {
+          ...simulationResponse,
+          grille: {
+            ...simulationResponse.grille,
+            categorie_demandee: '5*',
+          },
+        },
+      },
+      { body: logementWithPiecesResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(
+      within(screen.getByTestId('piece-card-piece-1')).getByRole('button', {
+        name: /modifier chambre 1/i,
+      })
+    );
+
+    fireEvent.change(screen.getByLabelText(/nombre de personnes pouvant dormir/i), {
+      target: { value: '4' },
+    });
+    const submitButton = screen.getByRole('button', { name: /enregistrer les modifications/i });
+
+    expect(submitButton).toBeDisabled();
+    fireEvent.click(submitButton);
+
+    expect(await screen.findByRole('dialog', { name: /modifier la pièce/i })).toBeInTheDocument();
+    expect(screen.getByText(/nombre maximal de couchages autorisés/i)).toBeInTheDocument();
+    expect(screen.queryByText(/la pièce a été modifiée/i)).not.toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('reprend la valeur ouvrant existante en édition', async () => {

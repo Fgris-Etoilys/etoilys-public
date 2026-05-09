@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, KeyboardEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import {
+  AlertCircle,
   Bath,
   BedDouble,
   ChefHat,
@@ -22,6 +23,7 @@ import {
 import SimulationGridTab from '../components/simulator/SimulationGridTab';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import Tooltip from '../components/ui/Tooltip';
 import type { GridSummary } from '../content/simulatorGrid';
 import {
   createPiece,
@@ -70,6 +72,11 @@ interface PieceFormErrors {
 interface FeedbackMessage {
   type: FeedbackType;
   text: string;
+}
+
+interface PieceValidationIssue {
+  message: string;
+  blocking: boolean;
 }
 
 const DEFAULT_PIECE_FORM: PieceFormState = {
@@ -128,6 +135,17 @@ const EXTERIOR_OPENING_PIECE_TYPES: PieceType[] = [
   'CHAMBRE',
   'BUREAU',
 ];
+const PIECE_CAPACITY_EXCEEDED_MESSAGE =
+  'Le nombre maximal de couchages autorisés dans cette pièce est dépassé. Supprimez des couchages.';
+const SURFACE_BASE_BY_CATEGORY = {
+  1: 7,
+  2: 7,
+  3: 7,
+  4: 10,
+  5: 12,
+} as const;
+
+type RequestedCategoryNumber = keyof typeof SURFACE_BASE_BY_CATEGORY;
 
 function getTotalSleepingCapacity(pieces: PieceDto[]): number {
   return pieces.reduce((total, piece) => total + (getValidSleepingCapacity(piece) ?? 0), 0);
@@ -138,6 +156,84 @@ function getValidSleepingCapacity(piece: PieceDto): number | undefined {
   return typeof sleepingCapacity === 'number' && Number.isFinite(sleepingCapacity)
     ? sleepingCapacity
     : undefined;
+}
+
+function parseRequestedCategoryNumber(value: string | undefined): RequestedCategoryNumber | null {
+  const normalizedValue = value?.trim().replace(/\*$/, '') ?? '';
+  const numericValue = Number(normalizedValue);
+
+  if (
+    Number.isInteger(numericValue) &&
+    numericValue >= 1 &&
+    numericValue <= 5 &&
+    numericValue in SURFACE_BASE_BY_CATEGORY
+  ) {
+    return numericValue as RequestedCategoryNumber;
+  }
+
+  return null;
+}
+
+function getPieceMinimumSurface(
+  requestedCategory: RequestedCategoryNumber,
+  sleepingCapacity: number
+): number {
+  return SURFACE_BASE_BY_CATEGORY[requestedCategory] + Math.max((sleepingCapacity - 2) * 3, 0);
+}
+
+function formatValidationSurface(value: number): string {
+  return value.toLocaleString('fr-FR', { maximumFractionDigits: 2 });
+}
+
+function getSurfaceValidationMessage(surfaceMinimum: number, sleepingCapacity: number): string {
+  return `Cette pièce doit avoir une surface d’au moins ${formatValidationSurface(surfaceMinimum)} m² pour ${sleepingCapacity} couchages. Supprimez des couchages ou bien le critère n°1 sera invalidé.`;
+}
+
+function getFrontPieceValidationIssue({
+  surface,
+  sleepingCapacity,
+  requestedCategory,
+}: {
+  surface: number | undefined;
+  sleepingCapacity: number | undefined;
+  requestedCategory: string | undefined;
+}): PieceValidationIssue | null {
+  const parsedCategory = parseRequestedCategoryNumber(requestedCategory);
+  if (!parsedCategory || sleepingCapacity === undefined || sleepingCapacity <= 0) {
+    return null;
+  }
+
+  const maximumSleepingCapacity = parsedCategory === 5 ? 3 : 4;
+  if (sleepingCapacity > maximumSleepingCapacity) {
+    return {
+      message: PIECE_CAPACITY_EXCEEDED_MESSAGE,
+      blocking: true,
+    };
+  }
+
+  if (surface === undefined || surface <= 0) {
+    return null;
+  }
+
+  const surfaceMinimum = getPieceMinimumSurface(parsedCategory, sleepingCapacity);
+  if (surface < surfaceMinimum) {
+    return {
+      message: getSurfaceValidationMessage(surfaceMinimum, sleepingCapacity),
+      blocking: false,
+    };
+  }
+
+  return null;
+}
+
+function parsePositiveFiniteNumber(value: string): number | undefined {
+  const parsedValue = Number(value);
+  return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : undefined;
+}
+
+function parsePositiveInteger(value: string): number | undefined {
+  const parsedValue = Number(value);
+  return Number.isInteger(parsedValue) && parsedValue > 0 ? parsedValue : undefined;
 }
 
 function canPieceHaveExteriorOpening(value: PieceType): boolean {
@@ -174,6 +270,7 @@ function buildPiecePayload(form: PieceFormState, existingPiece?: PieceDto): Piec
   if (canPieceHaveSleepingCapacity(form.type) && form.sleepingCapacity.trim()) {
     // Le backend porte actuellement les couchages renseignés dans nombre_lits.
     payload.nombre_lits = Number(form.sleepingCapacity);
+    payload.literie = true;
   } else if (existingPiece && canPieceHaveSleepingCapacity(form.type)) {
     payload.nombre_lits = null;
   }
@@ -193,6 +290,62 @@ function createFormFromPiece(piece: PieceDto): PieceFormState {
       getValidSleepingCapacity(piece) === undefined ? '' : String(getValidSleepingCapacity(piece)),
     hasExteriorOpening: piece.ouvrant ?? true,
   };
+}
+
+function getBackendPieceValidationIssue(piece: PieceDto): PieceValidationIssue | null {
+  if (piece.capacite_lits_atteinte === true) {
+    return {
+      message: PIECE_CAPACITY_EXCEEDED_MESSAGE,
+      blocking: true,
+    };
+  }
+
+  if (piece.surface_minimum_atteinte === false) {
+    const surfaceMinimum = piece.surface_minimum ?? 0;
+    const sleepingCapacity = piece.nombre_lits ?? 0;
+    return {
+      message: getSurfaceValidationMessage(surfaceMinimum, sleepingCapacity),
+      blocking: false,
+    };
+  }
+
+  return null;
+}
+
+function getPieceValidationIssue(
+  piece: PieceDto,
+  requestedCategory: string | undefined
+): PieceValidationIssue | null {
+  const frontIssue = getFrontPieceValidationIssue({
+    surface: piece.surface,
+    sleepingCapacity: getValidSleepingCapacity(piece),
+    requestedCategory,
+  });
+
+  if (frontIssue || parseRequestedCategoryNumber(requestedCategory)) {
+    return frontIssue;
+  }
+
+  return getBackendPieceValidationIssue(piece);
+}
+
+function getPieceFormValidationIssue(
+  form: PieceFormState,
+  requestedCategory: string | undefined
+): PieceValidationIssue | null {
+  if (
+    !canPieceHaveSleepingCapacity(form.type) ||
+    !form.surface.trim() ||
+    !form.sleepingCapacity.trim()
+  ) {
+    return null;
+  }
+
+  return getFrontPieceValidationIssue({
+    surface: parsePositiveFiniteNumber(form.surface),
+    sleepingCapacity: parsePositiveInteger(form.sleepingCapacity),
+    requestedCategory,
+  });
 }
 
 function PieceTypeSelect({
@@ -349,6 +502,10 @@ export default function SimulationClassement() {
   const activePieceSupportsSleepingCapacity = canPieceHaveSleepingCapacity(pieceForm.type);
   const activePieceCanHaveExteriorOpening = canPieceHaveExteriorOpening(pieceForm.type);
   const grille = simulation?.grille;
+  const pieceValidationIssue = useMemo(
+    () => getPieceFormValidationIssue(pieceForm, grille?.categorie_demandee),
+    [grille?.categorie_demandee, pieceForm]
+  );
   const editingPiece = useMemo(
     () => pieces.find((piece) => piece.id === editingPieceId),
     [editingPieceId, pieces]
@@ -503,6 +660,10 @@ export default function SimulationClassement() {
       return;
     }
 
+    if (pieceValidationIssue?.blocking) {
+      return;
+    }
+
     setIsSavingPiece(true);
     setFeedbackMessage(null);
 
@@ -512,7 +673,6 @@ export default function SimulationClassement() {
       const nextLogement = isEditingPiece
         ? await updatePiece(simulationId, editingPieceId, payload)
         : await createPiece(simulationId, payload);
-
       const hasRefreshedSimulation = await applyPieceMutationResult(nextLogement);
       resetPiecePanel();
 
@@ -664,6 +824,7 @@ export default function SimulationClassement() {
     const pieceDisplayName = getPieceDisplayName(piece);
     const PieceIcon = PIECE_TYPE_ICONS[piece.type_piece];
     const sleepingCapacity = getValidSleepingCapacity(piece);
+    const validationIssue = getPieceValidationIssue(piece, grille?.categorie_demandee);
 
     return (
       <div
@@ -677,6 +838,17 @@ export default function SimulationClassement() {
               <PieceIcon aria-hidden="true" className="h-4 w-4" />
             </span>
             <span className="line-clamp-2 min-w-0">{pieceDisplayName}</span>
+            {validationIssue && (
+              <Tooltip
+                srLabel={`Alerte sur ${pieceDisplayName}`}
+                placement="top"
+                className="ml-auto mt-0.5 shrink-0"
+                triggerClassName="h-6 w-6 border-alert-200 bg-alert-100 text-alert-400"
+                trigger={<AlertCircle aria-hidden="true" className="h-4 w-4" />}
+              >
+                {validationIssue.message}
+              </Tooltip>
+            )}
           </h4>
 
           <dl className="space-y-2 rounded-md bg-gray-50 p-3 text-xs text-gray-700">
@@ -1143,12 +1315,26 @@ export default function SimulationClassement() {
 
                       {activePieceCanHaveExteriorOpening && renderExteriorOpeningToggle()}
 
+                      {pieceValidationIssue && (
+                        <div
+                          className="flex items-start gap-2 rounded-lg border border-alert-200 bg-alert-100 p-3 text-sm text-alert-500"
+                          role="alert"
+                          aria-live="assertive"
+                        >
+                          <AlertCircle
+                            aria-hidden="true"
+                            className="mt-0.5 h-5 w-5 shrink-0 text-alert-400"
+                          />
+                          <p>{pieceValidationIssue.message}</p>
+                        </div>
+                      )}
+
                       <div className="flex flex-col gap-3 sm:flex-row">
                         <Button
                           type="submit"
                           variant="primary"
                           className="w-full sm:w-auto"
-                          disabled={isSavingPiece}
+                          disabled={isSavingPiece || pieceValidationIssue?.blocking === true}
                         >
                           {isSavingPiece
                             ? 'Enregistrement...'

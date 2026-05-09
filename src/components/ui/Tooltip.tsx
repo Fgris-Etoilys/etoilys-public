@@ -16,6 +16,7 @@ interface TooltipProps {
   placement?: 'top' | 'bottom';
   className?: string;
   triggerClassName?: string;
+  trigger?: ReactNode;
 }
 
 const DISMISS_DELAY_MS = 400;
@@ -28,6 +29,7 @@ export default function Tooltip({
   placement = 'bottom',
   className = '',
   triggerClassName = '',
+  trigger = 'i',
 }: TooltipProps) {
   const tooltipId = useId();
   const [isOpen, setIsOpen] = useState(false);
@@ -166,7 +168,7 @@ export default function Tooltip({
         onMouseEnter={handleTriggerMouseEnter}
         onMouseLeave={handleTriggerMouseLeave}
       >
-        i
+        {trigger}
       </button>
       <span
         ref={tooltipRef}

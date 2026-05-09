@@ -44,7 +44,14 @@ Cette route est volontairement `noindex,follow`, car son contenu dépend du navi
 
 Pour les pièces, l’interface demande à l’utilisateur le nombre de personnes pouvant dormir dans la pièce.
 Le contrat backend disponible porte actuellement cette valeur dans `PieceDto.nombre_lits`.
-Le frontend n’envoie pas `literie` ni `type_literie` tant que l’écran de détail literie n’est pas défini.
+Quand un nombre de couchages strictement positif est renseigné, le frontend envoie aussi
+`literie: true`. Le frontend n’envoie pas `type_literie` tant que l’écran de détail literie n’est
+pas défini.
+La validation surface/couchages des pièces est calculée côté frontend avant l’enregistrement.
+Le frontend bloque uniquement les dépassements de couchages, puis laisse passer les insuffisances
+de surface avec une alerte non bloquante. Les champs backend `surface_minimum`,
+`surface_minimum_atteinte` et `capacite_lits_atteinte` restent lus comme fallback au chargement
+initial lorsque la catégorie demandée n’est pas exploitable côté frontend.
 
 ## Endpoints publics simulateur
 
