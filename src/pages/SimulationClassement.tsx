@@ -427,6 +427,23 @@ export default function SimulationClassement() {
     return Object.keys(nextErrors).length === 0;
   }
 
+  async function applyPieceMutationResult(nextLogement: LogementDto): Promise<boolean> {
+    setLogement(nextLogement);
+    setHasSimulationResult(false);
+
+    if (!simulationId) {
+      return false;
+    }
+
+    try {
+      const nextSimulation = await getPublicSimulation(simulationId);
+      setSimulation(nextSimulation);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
   async function handlePieceFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -444,8 +461,17 @@ export default function SimulationClassement() {
         ? await updatePiece(simulationId, editingPieceId, payload)
         : await createPiece(simulationId, payload);
 
-      setLogement(nextLogement);
+      const hasRefreshedSimulation = await applyPieceMutationResult(nextLogement);
       resetPiecePanel();
+
+      if (!hasRefreshedSimulation) {
+        setFeedbackMessage({
+          type: 'error',
+          text: 'La pièce a été enregistrée, mais la grille de contrôle n’a pas pu être actualisée. Réessayez avant de consulter le résultat.',
+        });
+        return;
+      }
+
       setFeedbackMessage({
         type: 'success',
         text: piecePanelMode === 'edit' ? 'La pièce a été modifiée.' : 'La pièce a été ajoutée.',
@@ -477,11 +503,20 @@ export default function SimulationClassement() {
 
     try {
       const nextLogement = await deletePiece(simulationId, piece.id);
-      setLogement(nextLogement);
+      const hasRefreshedSimulation = await applyPieceMutationResult(nextLogement);
       setConfirmingDeleteId(null);
       if (editingPieceId === piece.id) {
         resetPiecePanel();
       }
+
+      if (!hasRefreshedSimulation) {
+        setFeedbackMessage({
+          type: 'error',
+          text: 'La pièce a été supprimée, mais la grille de contrôle n’a pas pu être actualisée. Réessayez avant de consulter le résultat.',
+        });
+        return;
+      }
+
       setFeedbackMessage({ type: 'success', text: 'La pièce a été supprimée.' });
     } catch {
       setFeedbackMessage({

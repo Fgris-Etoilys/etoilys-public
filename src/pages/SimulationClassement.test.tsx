@@ -435,6 +435,7 @@ describe('SimulationClassement', () => {
           ],
         },
       },
+      { body: simulationWithAutomaticSurfaceResponses },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -464,6 +465,16 @@ describe('SimulationClassement', () => {
     });
     const createPayload = JSON.parse(String(createCall?.[1]?.body)) as Record<string, unknown>;
     expect(createPayload).not.toHaveProperty('nom');
+
+    expect(fetchMock.mock.calls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}`);
+
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+
+    const surfaceCriterion = await screen.findByTestId('criterion-card-1');
+    expect(within(surfaceCriterion).getByRole('button', { name: /^oui$/i })).toHaveAttribute(
+      'aria-pressed',
+      'true'
+    );
   });
 
   it('envoie ouvrant à false quand le toggle est désactivé', async () => {
@@ -485,6 +496,7 @@ describe('SimulationClassement', () => {
           ],
         },
       },
+      { body: simulationResponse },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -528,6 +540,7 @@ describe('SimulationClassement', () => {
           ],
         },
       },
+      { body: simulationResponse },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -594,6 +607,7 @@ describe('SimulationClassement', () => {
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
       { body: logementWithPiecesResponse },
+      { body: simulationResponse },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -646,6 +660,7 @@ describe('SimulationClassement', () => {
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
       { body: { ...logementWithPiecesResponse, pieces: [] } },
+      { body: simulationResponse },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
