@@ -1,8 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
+import structureGrilleRaw from '../../docs/structureGrille.json?raw';
 
 const SIMULATION_ID = 'simulation-id';
+const gridModelResponse = JSON.parse(structureGrilleRaw) as unknown;
 
 const simulationResponse = {
   id: SIMULATION_ID,
@@ -436,6 +438,7 @@ describe('SimulationClassement', () => {
         },
       },
       { body: simulationWithAutomaticSurfaceResponses },
+      { body: gridModelResponse },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -727,10 +730,35 @@ describe('SimulationClassement', () => {
     expect(screen.queryByText(/133 critères à compléter/i)).not.toBeInTheDocument();
   });
 
+  it('permet de réessayer si le modèle de grille ne charge pas', async () => {
+    mockFetchJsonSequence([
+      { body: simulationWithAutomaticSurfaceResponses },
+      { body: logementWithPiecesResponse },
+      { body: { error: 'Server error' }, status: 500 },
+      { body: gridModelResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+
+    expect(
+      await screen.findByRole('heading', { name: /grille de contrôle indisponible/i })
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /réessayer/i }));
+
+    expect(
+      await screen.findByRole('heading', { name: /^grille de contrôle$/i })
+    ).toBeInTheDocument();
+  });
+
   it('active la grille de contrôle et permet de revenir aux pièces', async () => {
     mockFetchJsonSequence([
       { body: simulationWithAutomaticSurfaceResponses },
       { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -824,6 +852,7 @@ describe('SimulationClassement', () => {
     fetchMock
       .mockResolvedValueOnce(createJsonResponse(simulationResponse))
       .mockResolvedValueOnce(createJsonResponse(logementWithPiecesResponse))
+      .mockResolvedValueOnce(createJsonResponse(gridModelResponse))
       .mockReturnValueOnce(pendingSaveResponse);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -841,7 +870,7 @@ describe('SimulationClassement', () => {
       within(optionalCriterion).queryByRole('button', { name: /oui sélectionné/i })
     ).not.toBeInTheDocument();
 
-    const responseCall = fetchMock.mock.calls[2];
+    const responseCall = fetchMock.mock.calls[3];
     expect(responseCall?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/reponse`);
     expect(responseCall?.[1]).toMatchObject({
       method: 'POST',
@@ -873,6 +902,7 @@ describe('SimulationClassement', () => {
     const fetchMock = mockFetchJsonSequence([
       { body: simulationWithValidatedOptionalResponse },
       { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
       { body: { error: 'Network error' }, status: 500 },
       { body: { error: 'Network error' }, status: 500 },
       { body: { error: 'Network error' }, status: 500 },
@@ -898,7 +928,7 @@ describe('SimulationClassement', () => {
     expect(alert).toHaveTextContent(/vérifiez votre connexion puis réessayez/i);
 
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledTimes(5);
+      expect(fetchMock).toHaveBeenCalledTimes(6);
     });
     expect(within(optionalCriterion).getByRole('button', { name: /^oui$/i })).toHaveAttribute(
       'aria-pressed',
@@ -914,6 +944,7 @@ describe('SimulationClassement', () => {
     mockFetchJsonSequence([
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
       { body: false },
       {
         body: {
@@ -957,6 +988,7 @@ describe('SimulationClassement', () => {
     mockFetchJsonSequence([
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
       { body: true },
       {
         body: {

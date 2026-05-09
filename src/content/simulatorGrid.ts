@@ -1,4 +1,3 @@
-import structureGrilleRaw from '../../docs/structureGrille.json?raw';
 import type { CriterionStatus, RequestedCategory } from '../utils/simulatorApi';
 
 export interface GridCategoryStatus {
@@ -98,19 +97,18 @@ function isGridChapter(value: unknown): value is GridChapter {
   );
 }
 
-function isGridStructure(value: unknown): value is GridStructure {
+export function isGridStructure(value: unknown): value is GridStructure {
   return isRecord(value) && Array.isArray(value.chapitres) && value.chapitres.every(isGridChapter);
 }
 
-function loadGridStructure(): GridStructure {
-  const parsed = JSON.parse(structureGrilleRaw) as unknown;
-  if (!isGridStructure(parsed)) {
+export function parseGridStructure(value: unknown): GridStructure {
+  if (!isGridStructure(value)) {
     throw new Error('Structure de grille simulateur invalide');
   }
-  return parsed;
+  return value;
 }
 
-function buildCriteriaByNumber(chapitres: GridChapter[]): Map<number, GridCriterion> {
+export function buildCriteriaByNumber(chapitres: GridChapter[]): Map<number, GridCriterion> {
   const criteriaByNumber = new Map<number, GridCriterion>();
 
   chapitres.forEach((chapter) => {
@@ -126,17 +124,21 @@ function buildCriteriaByNumber(chapitres: GridChapter[]): Map<number, GridCriter
   return criteriaByNumber;
 }
 
-const structure = loadGridStructure();
-const criteriaByNumber = buildCriteriaByNumber(structure.chapitres);
+export function buildGridSummary(structure: GridStructure): GridSummary {
+  const criteriaByNumber = buildCriteriaByNumber(structure.chapitres);
+  return {
+    chapitres: structure.chapitres,
+    criteriaByNumber,
+    criteriaCount: criteriaByNumber.size,
+  };
+}
 
-export const simulatorGrid: GridSummary = {
-  chapitres: structure.chapitres,
-  criteriaByNumber,
-  criteriaCount: criteriaByNumber.size,
-};
+export function parseGridSummary(value: unknown): GridSummary {
+  return buildGridSummary(parseGridStructure(value));
+}
 
-export function getCriterionByNumber(number: number): GridCriterion | undefined {
-  return criteriaByNumber.get(number);
+export function getCriterionByNumber(grid: GridSummary, number: number): GridCriterion | undefined {
+  return grid.criteriaByNumber.get(number);
 }
 
 export function getCriterionStatusForCategory(

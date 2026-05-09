@@ -1,28 +1,67 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildGridSummary,
   getCriterionByNumber,
   getCriterionStatusForCategory,
   isSurfaceCriterion,
-  simulatorGrid,
+  parseGridStructure,
+  type GridStructure,
 } from './simulatorGrid';
 
+const validGridStructure: GridStructure = {
+  chapitres: [
+    {
+      libelle: 'Chapitre test',
+      sous_chapitres: [
+        {
+          libelle: 'Sous-chapitre test',
+          rubriques: [
+            {
+              libelle: 'Rubrique test',
+              criteres: [
+                {
+                  num_critere: 1,
+                  libelle: 'Surface totale minimum',
+                  points: 5,
+                  peut_etre_non_applicable: false,
+                  categories: [
+                    { nom: '1*', statut: 'OBLIGATOIRE' },
+                    { nom: '3*', statut: 'OBLIGATOIRE' },
+                  ],
+                },
+                {
+                  num_critere: 2,
+                  libelle: 'Équipement optionnel',
+                  points: 1,
+                  peut_etre_non_applicable: true,
+                  categories: [{ nom: '3*', statut: 'OPTIONNEL' }],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+
 describe('simulatorGrid', () => {
-  it('charge la structure officielle de la grille', () => {
-    expect(simulatorGrid.chapitres).toHaveLength(3);
-    expect(simulatorGrid.criteriaCount).toBe(133);
-    expect(simulatorGrid.criteriaByNumber.size).toBe(133);
+  it('valide une structure de grille backend compatible', () => {
+    expect(parseGridStructure(validGridStructure)).toBe(validGridStructure);
   });
 
-  it('conserve la hiérarchie chapitres, sous-chapitres, rubriques et critères', () => {
-    const firstChapter = simulatorGrid.chapitres[0];
+  it('construit un index de critères par numéro', () => {
+    const summary = buildGridSummary(validGridStructure);
 
-    expect(firstChapter?.sous_chapitres.length).toBeGreaterThan(0);
-    expect(firstChapter?.sous_chapitres[0]?.rubriques.length).toBeGreaterThan(0);
-    expect(firstChapter?.sous_chapitres[0]?.rubriques[0]?.criteres[0]?.num_critere).toBe(1);
+    expect(summary.chapitres).toBe(validGridStructure.chapitres);
+    expect(summary.criteriaCount).toBe(2);
+    expect(summary.criteriaByNumber.size).toBe(2);
+    expect(getCriterionByNumber(summary, 1)?.libelle).toBe('Surface totale minimum');
   });
 
   it('retrouve le statut par catégorie demandée', () => {
-    const criterion = getCriterionByNumber(1);
+    const summary = buildGridSummary(validGridStructure);
+    const criterion = getCriterionByNumber(summary, 1);
 
     expect(criterion).toBeDefined();
     if (!criterion) {
@@ -31,5 +70,11 @@ describe('simulatorGrid', () => {
 
     expect(getCriterionStatusForCategory(criterion, '3*')).toBe('OBLIGATOIRE');
     expect(isSurfaceCriterion(criterion)).toBe(true);
+  });
+
+  it('rejette une structure invalide', () => {
+    expect(() => parseGridStructure({ chapitres: [{ libelle: 'Chapitre sans contenu' }] })).toThrow(
+      'Structure de grille simulateur invalide'
+    );
   });
 });

@@ -5,6 +5,7 @@ import {
   deletePiece,
   getPublicSimulation,
   getRapport,
+  getSimulationGridModel,
   getSimulationLogement,
   getVerification,
   listPublicSimulations,
@@ -79,6 +80,48 @@ describe('simulatorApi', () => {
         credentials: 'include',
       })
     );
+  });
+
+  it('charge le modèle de grille via le backend simulateur same-origin', async () => {
+    const fetchMock = mockFetchJson({
+      chapitres: [
+        {
+          libelle: 'Chapitre test',
+          sous_chapitres: [
+            {
+              libelle: 'Sous-chapitre test',
+              rubriques: [
+                {
+                  libelle: 'Rubrique test',
+                  criteres: [
+                    {
+                      num_critere: 1,
+                      libelle: 'Surface totale minimum',
+                      points: 5,
+                      peut_etre_non_applicable: false,
+                      categories: [{ nom: '3*', statut: 'OBLIGATOIRE' }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    await expect(getSimulationGridModel()).resolves.toMatchObject({ criteriaCount: 1 });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/public/simulations/modele',
+      expect.objectContaining({
+        method: 'GET',
+        credentials: 'include',
+      })
+    );
+    const headers = fetchMock.mock.calls[0]?.[1]?.headers;
+    expect(headers).toBeInstanceOf(Headers);
+    expect((headers as Headers).get('Accept')).toBe('application/json');
   });
 
   it('crée une simulation avec un POST JSON', async () => {

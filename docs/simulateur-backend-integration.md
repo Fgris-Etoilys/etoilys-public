@@ -19,6 +19,9 @@ En production, le routage est défini dans `vercel.json`.
 ## Client frontend
 
 Toutes les actions du simulateur public doivent passer par `src/utils/simulatorApi.ts`.
+La grille de contrôle affichée dans `/simulateur/:simulationId` est chargée depuis
+`GET /public/simulations/modele`; le frontend ne doit pas utiliser de copie locale de la grille
+comme fallback runtime.
 
 Le client simulateur applique systématiquement :
 
@@ -48,6 +51,7 @@ Le frontend n’envoie pas `literie` ni `type_literie` tant que l’écran de d�
 Endpoints disponibles d’après le Swagger local :
 
 - `GET /public/simulations`
+- `GET /public/simulations/modele`
 - `POST /public/simulations`
 - `GET /public/simulations/{id}`
 - `PUT /public/simulations/{id}/typeHabitation/{typeHabitation}`

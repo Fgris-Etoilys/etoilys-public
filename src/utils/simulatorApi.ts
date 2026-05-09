@@ -1,4 +1,5 @@
 import { getApiUrl } from './api';
+import { parseGridSummary, type GridSummary } from '../content/simulatorGrid';
 
 type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
@@ -251,6 +252,11 @@ export function createPublicSimulation(
 
 export function getPublicSimulation(id: string): Promise<PublicSimulationDto> {
   return requestSimulatorJson<PublicSimulationDto>(`/public/simulations/${encodePathSegment(id)}`);
+}
+
+export async function getSimulationGridModel(): Promise<GridSummary> {
+  const parsed = await requestSimulatorJson<unknown>('/public/simulations/modele');
+  return parseGridSummary(parsed);
 }
 
 export function updateRequestedCategory(

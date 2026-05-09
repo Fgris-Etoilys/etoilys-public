@@ -22,9 +22,11 @@ import {
 import SimulationGridTab from '../components/simulator/SimulationGridTab';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import type { GridSummary } from '../content/simulatorGrid';
 import {
   createPiece,
   deletePiece,
+  getSimulationGridModel,
   getPublicSimulation,
   getSimulationLogement,
   SimulatorApiError,
@@ -47,6 +49,7 @@ import {
 } from '../utils/simulatorLabels';
 
 type LoadStatus = 'loading' | 'success' | 'error';
+type GridModelStatus = 'idle' | 'loading' | 'success' | 'error';
 type ActiveTab = 'pieces' | 'grid';
 type PiecePanelMode = 'closed' | 'create' | 'edit';
 type PieceTypeScope = 'interior' | 'exterior';
@@ -237,11 +240,41 @@ function PieceTypeSelect({
   );
 }
 
+function SimulationGridModelState({
+  status,
+  onRetry,
+}: {
+  status: GridModelStatus;
+  onRetry: () => void;
+}) {
+  if (status === 'loading' || status === 'idle') {
+    return (
+      <Card hover={false} className="p-5 md:p-6">
+        <p className="text-sm text-gray-700">Chargement de la grille de contrôle...</p>
+      </Card>
+    );
+  }
+
+  return (
+    <Card hover={false} className="border-alert-200 bg-alert-100 p-5 md:p-6">
+      <h2 className="mb-3 text-gray-900">Grille de contrôle indisponible</h2>
+      <p className="mb-5 text-sm text-alert-500">
+        Impossible de charger la grille de contrôle pour le moment.
+      </p>
+      <Button type="button" variant="secondary" onClick={onRetry}>
+        Réessayer
+      </Button>
+    </Card>
+  );
+}
+
 export default function SimulationClassement() {
   const { simulationId } = useParams<{ simulationId: string }>();
   const [loadStatus, setLoadStatus] = useState<LoadStatus>('loading');
   const [simulation, setSimulation] = useState<PublicSimulationDto | null>(null);
   const [logement, setLogement] = useState<LogementDto | null>(null);
+  const [gridModelStatus, setGridModelStatus] = useState<GridModelStatus>('idle');
+  const [gridSummary, setGridSummary] = useState<GridSummary | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('pieces');
   const [piecePanelMode, setPiecePanelMode] = useState<PiecePanelMode>('closed');
   const [pieceTypeScope, setPieceTypeScope] = useState<PieceTypeScope>('interior');
@@ -280,9 +313,28 @@ export default function SimulationClassement() {
     }
   }, [simulationId]);
 
+  const loadGridModel = useCallback(async () => {
+    setGridModelStatus('loading');
+
+    try {
+      const nextGridSummary = await getSimulationGridModel();
+      setGridSummary(nextGridSummary);
+      setGridModelStatus('success');
+    } catch {
+      setGridSummary(null);
+      setGridModelStatus('error');
+    }
+  }, []);
+
   useEffect(() => {
     void loadSimulation();
   }, [loadSimulation]);
+
+  useEffect(() => {
+    if (activeTab === 'grid' && gridModelStatus === 'idle') {
+      void loadGridModel();
+    }
+  }, [activeTab, gridModelStatus, loadGridModel]);
 
   const pieces = useMemo(() => logement?.pieces ?? [], [logement?.pieces]);
   const interiorPieces = useMemo(
@@ -1159,14 +1211,22 @@ export default function SimulationClassement() {
 
           {activeTab === 'grid' && (
             <div id="simulation-panel-grid" role="tabpanel" aria-labelledby="simulation-tab-grid">
-              <SimulationGridTab
-                simulationId={simulationId ?? ''}
-                responses={grille?.reponses ?? []}
-                requestedCategory={grille?.categorie_demandee}
-                onResponseSaved={handleResponseSaved}
-                onReturnToPieces={() => setActiveTab('pieces')}
-                onResultVisibleChange={setHasSimulationResult}
-              />
+              {gridModelStatus === 'success' && gridSummary ? (
+                <SimulationGridTab
+                  grid={gridSummary}
+                  simulationId={simulationId ?? ''}
+                  responses={grille?.reponses ?? []}
+                  requestedCategory={grille?.categorie_demandee}
+                  onResponseSaved={handleResponseSaved}
+                  onReturnToPieces={() => setActiveTab('pieces')}
+                  onResultVisibleChange={setHasSimulationResult}
+                />
+              ) : (
+                <SimulationGridModelState
+                  status={gridModelStatus}
+                  onRetry={() => void loadGridModel()}
+                />
+              )}
             </div>
           )}
         </div>

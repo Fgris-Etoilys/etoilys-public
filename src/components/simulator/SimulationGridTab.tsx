@@ -8,9 +8,9 @@ import {
   getCriterionByNumber,
   getCriterionStatusForCategory,
   isSurfaceCriterion,
-  simulatorGrid,
   type GridChapter,
   type GridCriterion,
+  type GridSummary,
 } from '../../content/simulatorGrid';
 import {
   getRapport,
@@ -25,6 +25,7 @@ import {
 } from '../../utils/simulatorApi';
 
 interface SimulationGridTabProps {
+  grid: GridSummary;
   simulationId: string;
   responses: ReponseDto[];
   requestedCategory?: string;
@@ -204,10 +205,11 @@ function isCriterionToTreat(
 }
 
 function buildProgressSummary(
+  grid: GridSummary,
   responsesByCriterionNumber: Map<number, ReponseDto>,
   requestedCategory: string | undefined
 ): ProgressSummary {
-  const criteria = [...simulatorGrid.criteriaByNumber.values()];
+  const criteria = [...grid.criteriaByNumber.values()];
   const criteriaToTreat = criteria.filter((criterion) =>
     isCriterionToTreat(
       criterion,
@@ -242,8 +244,8 @@ function buildProgressSummary(
   };
 }
 
-function criterionLabelForNumber(number: number): string {
-  const criterion = getCriterionByNumber(number);
+function criterionLabelForNumber(grid: GridSummary, number: number): string {
+  const criterion = getCriterionByNumber(grid, number);
   return criterion ? `Critère ${number} - ${criterion.libelle}` : `Critère ${number}`;
 }
 
@@ -628,10 +630,12 @@ function GridChapterSection({
 }
 
 function CriteriaList({
+  grid,
   title,
   criterionNumbers,
   onGoToCriterion,
 }: {
+  grid: GridSummary;
   title: string;
   criterionNumbers: number[];
   onGoToCriterion: (number: number) => void;
@@ -651,7 +655,7 @@ function CriteriaList({
             className="block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-left text-sm text-gray-700 transition-colors hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-300"
             onClick={() => onGoToCriterion(number)}
           >
-            {criterionLabelForNumber(number)}
+            {criterionLabelForNumber(grid, number)}
           </button>
         ))}
       </div>
@@ -660,9 +664,11 @@ function CriteriaList({
 }
 
 function SimulationVerificationIssues({
+  grid,
   verification,
   onGoToCriterion,
 }: {
+  grid: GridSummary;
   verification: VerificationDto;
   onGoToCriterion: (number: number) => void;
 }) {
@@ -690,6 +696,7 @@ function SimulationVerificationIssues({
               </p>
             )}
             <CriteriaList
+              grid={grid}
               title="Certains critères obligatoires n’ont pas encore été renseignés."
               criterionNumbers={requiredNumbers}
               onGoToCriterion={onGoToCriterion}
@@ -704,6 +711,7 @@ function SimulationVerificationIssues({
               Ces critères peuvent améliorer votre score, mais ne sont pas tous obligatoires.
             </p>
             <CriteriaList
+              grid={grid}
               title="Critères optionnels non renseignés"
               criterionNumbers={optionalNumbers}
               onGoToCriterion={onGoToCriterion}
@@ -716,10 +724,12 @@ function SimulationVerificationIssues({
 }
 
 function SimulationResultPanel({
+  grid,
   rapport,
   onGoToCriterion,
   onReturnToPieces,
 }: {
+  grid: GridSummary;
   rapport: RapportProvisoireDto;
   onGoToCriterion: (number: number) => void;
   onReturnToPieces: () => void;
@@ -767,6 +777,7 @@ function SimulationResultPanel({
       {invalidRequiredCriteria.length > 0 && (
         <div className="mt-6">
           <CriteriaList
+            grid={grid}
             title="Critères obligatoires non validés"
             criterionNumbers={invalidRequiredCriteria}
             onGoToCriterion={onGoToCriterion}
@@ -797,6 +808,7 @@ function SimulationResultPanel({
 }
 
 export default function SimulationGridTab({
+  grid,
   simulationId,
   responses,
   requestedCategory,
@@ -828,14 +840,14 @@ export default function SimulationGridTab({
       ),
     [confirmedResponsesByCriterionNumber, optimisticResponsesByCriterionNumber]
   );
-  const sectionLinkGroups = useMemo(() => buildSectionLinkGroups(simulatorGrid.chapitres), []);
+  const sectionLinkGroups = useMemo(() => buildSectionLinkGroups(grid.chapitres), [grid]);
   const filteredChapters = useMemo(
-    () => filterGridChapters(simulatorGrid.chapitres, searchQuery),
-    [searchQuery]
+    () => filterGridChapters(grid.chapitres, searchQuery),
+    [grid, searchQuery]
   );
   const progress = useMemo(
-    () => buildProgressSummary(responsesByCriterionNumber, requestedCategory),
-    [requestedCategory, responsesByCriterionNumber]
+    () => buildProgressSummary(grid, responsesByCriterionNumber, requestedCategory),
+    [grid, requestedCategory, responsesByCriterionNumber]
   );
 
   function goToCriterion(number: number) {
@@ -970,11 +982,16 @@ export default function SimulationGridTab({
       )}
 
       {verification && (
-        <SimulationVerificationIssues verification={verification} onGoToCriterion={goToCriterion} />
+        <SimulationVerificationIssues
+          grid={grid}
+          verification={verification}
+          onGoToCriterion={goToCriterion}
+        />
       )}
 
       {rapport && (
         <SimulationResultPanel
+          grid={grid}
           rapport={rapport}
           onGoToCriterion={goToCriterion}
           onReturnToPieces={onReturnToPieces}
