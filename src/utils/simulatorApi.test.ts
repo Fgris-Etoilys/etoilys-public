@@ -10,6 +10,9 @@ import {
   getVerification,
   listPublicSimulations,
   submitResponse,
+  updateCapacity,
+  updateFloor,
+  updateHousingType,
   updatePiece,
   updateRequestedCategory,
   verifySimulation,
@@ -156,6 +159,48 @@ describe('simulatorApi', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       '/api/public/simulations/simulation-id/classementDemande/4*',
+      expect.objectContaining({
+        method: 'PUT',
+        credentials: 'include',
+      })
+    );
+  });
+
+  it('met à jour la capacité d’accueil par endpoint dédié', async () => {
+    const fetchMock = mockFetchJson({ id: 'simulation-id' });
+
+    await updateCapacity('simulation-id', 6);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/public/simulations/simulation-id/capaciteAccueil/6',
+      expect.objectContaining({
+        method: 'PUT',
+        credentials: 'include',
+      })
+    );
+  });
+
+  it('met à jour l’étage par endpoint dédié', async () => {
+    const fetchMock = mockFetchJson({ id: 'simulation-id' });
+
+    await updateFloor('simulation-id', 2);
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/public/simulations/simulation-id/etage/2',
+      expect.objectContaining({
+        method: 'PUT',
+        credentials: 'include',
+      })
+    );
+  });
+
+  it('met à jour le type d’habitation par endpoint dédié', async () => {
+    const fetchMock = mockFetchJson({ id: 'simulation-id' });
+
+    await updateHousingType('simulation-id', 'COLLECTIF');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/public/simulations/simulation-id/typeHabitation/COLLECTIF',
       expect.objectContaining({
         method: 'PUT',
         credentials: 'include',

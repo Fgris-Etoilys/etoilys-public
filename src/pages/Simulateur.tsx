@@ -5,6 +5,7 @@ import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
+import { useToast } from '../components/ui/Toast';
 import {
   createPublicSimulation,
   listPublicSimulations,
@@ -12,41 +13,19 @@ import {
   type PublicSimulationSummary,
   type RequestedCategory,
 } from '../utils/simulatorApi';
-import { formatRequestedCategory } from '../utils/simulatorLabels';
+import {
+  FLOOR_OPTIONS,
+  formatRequestedCategory,
+  HOUSING_TYPE_OPTIONS,
+  isHousingType,
+  isRequestedCategory,
+  REQUESTED_CATEGORY_OPTIONS,
+} from '../utils/simulatorLabels';
 
 type SimulationsStatus = 'loading' | 'success' | 'error';
 
 interface FormErrors {
   capacity?: string;
-}
-
-const CLASSEMENT_OPTIONS: Array<{ value: RequestedCategory; label: string }> = [
-  { value: '1*', label: '1 étoile' },
-  { value: '2*', label: '2 étoiles' },
-  { value: '3*', label: '3 étoiles' },
-  { value: '4*', label: '4 étoiles' },
-  { value: '5*', label: '5 étoiles' },
-];
-
-const TYPE_HABITATION_OPTIONS: Array<{ value: HousingType; label: string }> = [
-  { value: 'INDIVIDUEL', label: 'Logement individuel' },
-  { value: 'COLLECTIF', label: 'Logement collectif' },
-];
-
-const FLOOR_OPTIONS = [
-  { value: '0', label: 'RDC' },
-  { value: '1', label: '1er' },
-  { value: '2', label: '2e' },
-  { value: '3', label: '3e' },
-  { value: '4', label: '4e ou plus' },
-];
-
-function isRequestedCategory(value: string): value is RequestedCategory {
-  return CLASSEMENT_OPTIONS.some((option) => option.value === value);
-}
-
-function isHousingType(value: string): value is HousingType {
-  return TYPE_HABITATION_OPTIONS.some((option) => option.value === value);
 }
 
 function formatCapacity(value: number): string {
@@ -65,8 +44,32 @@ function formatModificationDate(value: string): string {
   }).format(date);
 }
 
+function formatSimulationStatus(value: string | undefined): string | null {
+  const normalizedValue = value?.trim().toUpperCase();
+  if (!normalizedValue) {
+    return null;
+  }
+
+  switch (normalizedValue) {
+    case 'BROUILLON':
+      return 'Brouillon';
+    case 'VERIFICATION_EN_ECHEC':
+      return 'À compléter';
+    case 'VERIFICATION_REUSSIE':
+    case 'RAPPORT_DISPONIBLE':
+    case 'RAPPORT_GENERE':
+      return 'Résultat disponible';
+    case 'TERMINE':
+    case 'TERMINEE':
+      return 'Terminée';
+    default:
+      return 'Simulation en cours';
+  }
+}
+
 export default function Simulateur() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [requestedCategory, setRequestedCategory] = useState<RequestedCategory>('3*');
   const [housingType, setHousingType] = useState<HousingType>('INDIVIDUEL');
   const [floor, setFloor] = useState('0');
@@ -75,12 +78,10 @@ export default function Simulateur() {
   const [isCreatingSimulation, setIsCreatingSimulation] = useState(false);
   const [simulationsStatus, setSimulationsStatus] = useState<SimulationsStatus>('loading');
   const [simulations, setSimulations] = useState<PublicSimulationSummary[]>([]);
-  const [actionFeedback, setActionFeedback] = useState<string | null>(null);
   const startBlockRef = useRef<HTMLDivElement>(null);
 
   const loadSimulations = useCallback(async (ignoreResult: () => boolean = () => false) => {
     setSimulationsStatus('loading');
-    setActionFeedback(null);
 
     try {
       const nextSimulations = await listPublicSimulations();
@@ -126,7 +127,6 @@ export default function Simulateur() {
 
   async function handleStartFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setActionFeedback(null);
 
     const parsedCapacity = Number(capacity);
     const parsedFloor = Number(floor);
@@ -157,16 +157,18 @@ export default function Simulateur() {
       setRequestedCategory('3*');
       setHousingType('INDIVIDUEL');
       await loadSimulations();
-      setActionFeedback('La simulation a été créée.');
+      showToast('La simulation a été créée.', { type: 'success' });
     } catch {
-      setActionFeedback('Impossible de créer la simulation pour le moment.');
+      showToast('Impossible de créer la simulation pour le moment.', { type: 'error' });
     } finally {
       setIsCreatingSimulation(false);
     }
   }
 
   function handleUnavailableSimulationAction(actionLabel: string) {
-    setActionFeedback(`${actionLabel} sera disponible avec l’écran complet du simulateur.`);
+    showToast(`${actionLabel} sera disponible avec l’écran complet du simulateur.`, {
+      type: 'info',
+    });
   }
 
   return (
@@ -206,7 +208,7 @@ export default function Simulateur() {
                     id="requestedCategory"
                     name="requestedCategory"
                     label="Classement demandé"
-                    options={CLASSEMENT_OPTIONS}
+                    options={REQUESTED_CATEGORY_OPTIONS}
                     value={requestedCategory}
                     onChange={handleRequestedCategoryChange}
                   />
@@ -215,7 +217,7 @@ export default function Simulateur() {
                     id="housingType"
                     name="housingType"
                     label="Type de logement"
-                    options={TYPE_HABITATION_OPTIONS}
+                    options={HOUSING_TYPE_OPTIONS}
                     value={housingType}
                     onChange={handleHousingTypeChange}
                   />
@@ -270,15 +272,6 @@ export default function Simulateur() {
                 </p>
               </div>
 
-              {actionFeedback && (
-                <div
-                  className="rounded-card border border-primary-200 bg-primary-100 p-4 text-sm text-primary-500"
-                  role="status"
-                >
-                  {actionFeedback}
-                </div>
-              )}
-
               {simulationsStatus === 'loading' && (
                 <Card hover={false} className="p-6">
                   <p className="text-sm text-gray-700">Chargement de vos simulations...</p>
@@ -316,9 +309,9 @@ export default function Simulateur() {
                             Classement demandé :{' '}
                             {formatRequestedCategory(simulation.categorie_demandee)}
                           </h3>
-                          {simulation.statut && (
+                          {formatSimulationStatus(simulation.statut) && (
                             <span className="inline-flex w-fit rounded-full border border-primary-200 bg-primary-100 px-3 py-1 text-sm font-medium text-primary-500">
-                              Statut : {simulation.statut}
+                              Statut : {formatSimulationStatus(simulation.statut)}
                             </span>
                           )}
                         </div>
@@ -342,15 +335,6 @@ export default function Simulateur() {
                           href={`/simulateur/${simulation.id}`}
                         >
                           Reprendre
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          onClick={() =>
-                            handleUnavailableSimulationAction('Modifier les paramètres')
-                          }
-                        >
-                          Modifier les paramètres
                         </Button>
                         <button
                           type="button"

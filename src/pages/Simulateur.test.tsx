@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { ToastProvider } from '../components/ui/Toast';
 import Simulateur from './Simulateur';
 
 const createJsonResponse = (body: unknown, status = 200) =>
@@ -29,7 +30,9 @@ const renderSimulateur = () => {
   window.history.pushState({}, 'Simulateur', '/simulateur');
   return render(
     <BrowserRouter>
-      <Simulateur />
+      <ToastProvider>
+        <Simulateur />
+      </ToastProvider>
     </BrowserRouter>
   );
 };
@@ -146,8 +149,27 @@ describe('Simulateur public de classement', () => {
       'href',
       '/simulateur/c3f43f31-59fd-4b4e-9272-7f1321d8cabc'
     );
-    expect(screen.getByRole('button', { name: /modifier les paramètres/i })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /modifier les paramètres/i })
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: /supprimer/i })).toBeInTheDocument();
+  });
+
+  it('affiche un libellé UX pour les statuts techniques du backend', async () => {
+    mockFetchJson([
+      {
+        id: 'simulation-verification-en-echec',
+        statut: 'VERIFICATION_EN_ECHEC',
+        categorie_demandee: '4*',
+        capacite_accueil: 6,
+        date_modification: '2026-05-07T10:30:00.000Z',
+      },
+    ]);
+
+    renderSimulateur();
+
+    expect(await screen.findByText(/statut : à compléter/i)).toBeInTheDocument();
+    expect(screen.queryByText(/VERIFICATION_EN_ECHEC/i)).not.toBeInTheDocument();
   });
 
   it('ne déclenche aucun appel de suppression', async () => {

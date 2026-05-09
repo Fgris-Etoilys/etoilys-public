@@ -40,14 +40,6 @@ interface SimulationGridTabProps {
   onResultReset: () => void;
 }
 
-interface ProgressSummary {
-  totalToTreat: number;
-  answeredCount: number;
-  requiredUnanswered: GridCriterion[];
-  optionalAnsweredCount: number;
-  unansweredToTreat: GridCriterion[];
-}
-
 interface SectionLink {
   id: string;
   label: string;
@@ -71,14 +63,21 @@ const RESPONSE_SAVE_MAX_ATTEMPTS = 3;
 const RESPONSE_SAVE_RETRY_DELAY_MS = 150;
 const RESPONSE_SAVE_ERROR_MESSAGE =
   'La réponse n’a pas pu être enregistrée. Vérifiez votre connexion puis réessayez.';
-
-function isAnswered(response: ReponseDto | undefined): boolean {
-  return response?.statut_validation !== undefined;
-}
-
-function isRequiredStatus(status: CriterionStatus | undefined): boolean {
-  return status === 'OBLIGATOIRE' || status === 'ONC';
-}
+const ENABLE_MOCK_RESULT_BUTTON = import.meta.env.DEV && true;
+const MOCK_RESULT_RAPPORT: RapportProvisoireDto = {
+  points_totaux_obligatoires: 137,
+  points_minimaux_obligatoires: 131,
+  points_obligatoires_obtenus: 121,
+  points_obligatoires_atteints: false,
+  points_obligatoires_a_compenser: 48,
+  points_optionnels_disponibles: 161,
+  points_optionnels_necessaires: 9,
+  points_optionnels_a_atteindre: 57,
+  points_optionnels_obtenus: 106,
+  points_optionnels_atteints: true,
+  resultat: false,
+  criteres_obligatoires_non_valides: [41, 59, 63, 65, 74, 121],
+};
 
 function getResponsesByCriterionNumber(responses: ReponseDto[]): Map<number, ReponseDto> {
   return new Map(
@@ -101,6 +100,40 @@ function getEffectiveCriterionStatus(
 
 function formatPoints(points: number): string {
   return `${points} ${points > 1 ? 'points' : 'point'}`;
+}
+
+function formatMandatoryPoints(points: number): string {
+  return `${points} ${points > 1 ? 'points obligatoires' : 'point obligatoire'}`;
+}
+
+function formatReportPoints(points: number | undefined): string {
+  const safePoints = points ?? 0;
+  return `${safePoints} ${safePoints > 1 ? 'points' : 'point'}`;
+}
+
+function formatReportScore(obtained: number | undefined, target: number | undefined): string {
+  return `${obtained ?? 0} / ${target ?? 0}`;
+}
+
+function formatRequestedCategoryLabel(requestedCategory: string | undefined): string {
+  const match = requestedCategory?.match(/^([1-5])\*$/);
+  if (!match) {
+    return 'demandé';
+  }
+
+  const starCount = Number(match[1]);
+  return `${starCount} ${starCount > 1 ? 'étoiles' : 'étoile'}`;
+}
+
+function getProgressPercentage(obtained: number | undefined, target: number | undefined): number {
+  const safeObtained = obtained ?? 0;
+  const safeTarget = target ?? 0;
+
+  if (safeTarget <= 0) {
+    return safeObtained > 0 ? 100 : 0;
+  }
+
+  return Math.min(100, Math.max(0, (safeObtained / safeTarget) * 100));
 }
 
 function delay(ms: number): Promise<void> {
@@ -213,58 +246,109 @@ function filterGridChapters(
     .filter((chapter) => chapter.sous_chapitres.length > 0);
 }
 
-function isCriterionToTreat(
-  criterion: GridCriterion,
-  response: ReponseDto | undefined,
-  requestedCategory: string | undefined
-): boolean {
-  const status = getEffectiveCriterionStatus(criterion, response, requestedCategory);
-  return status !== 'NON_APPLICABLE' && !isSurfaceCriterion(criterion);
-}
-
-function buildProgressSummary(
-  grid: GridSummary,
-  responsesByCriterionNumber: Map<number, ReponseDto>,
-  requestedCategory: string | undefined
-): ProgressSummary {
-  const criteria = [...grid.criteriaByNumber.values()];
-  const criteriaToTreat = criteria.filter((criterion) =>
-    isCriterionToTreat(
-      criterion,
-      responsesByCriterionNumber.get(criterion.num_critere),
-      requestedCategory
-    )
-  );
-  const unansweredToTreat = criteriaToTreat.filter(
-    (criterion) => !isAnswered(responsesByCriterionNumber.get(criterion.num_critere))
-  );
-  const requiredUnanswered = unansweredToTreat.filter((criterion) =>
-    isRequiredStatus(
-      getEffectiveCriterionStatus(
-        criterion,
-        responsesByCriterionNumber.get(criterion.num_critere),
-        requestedCategory
-      )
-    )
-  );
-  const optionalAnsweredCount = criteriaToTreat.filter((criterion) => {
-    const response = responsesByCriterionNumber.get(criterion.num_critere);
-    const status = getEffectiveCriterionStatus(criterion, response, requestedCategory);
-    return status === 'OPTIONNEL' && isAnswered(response);
-  }).length;
+function getReportCriterionDetails(grid: GridSummary, number: number) {
+  const criterion = getCriterionByNumber(grid, number);
 
   return {
-    totalToTreat: criteriaToTreat.length,
-    answeredCount: criteriaToTreat.length - unansweredToTreat.length,
-    requiredUnanswered,
-    optionalAnsweredCount,
-    unansweredToTreat,
+    number,
+    label: criterion?.libelle ?? 'Intitulé non disponible dans la grille',
+    points: criterion?.points,
   };
 }
 
-function criterionLabelForNumber(grid: GridSummary, number: number): string {
-  const criterion = getCriterionByNumber(grid, number);
-  return criterion ? `Critère ${number} - ${criterion.libelle}` : `Critère ${number}`;
+function RatioBar({
+  isValid,
+  reached,
+  total,
+  markerValue,
+  markerTitle,
+}: {
+  isValid: boolean | undefined;
+  reached: number | undefined;
+  total: number | undefined;
+  markerValue: number | undefined;
+  markerTitle: string;
+}) {
+  const fillProgress = getProgressPercentage(reached, total);
+  const markerProgress = getProgressPercentage(markerValue, total);
+
+  return (
+    <div
+      className="relative h-3 w-full rounded-full bg-gray-200"
+      aria-label={`${formatReportPoints(reached)} obtenus sur ${formatReportPoints(total)}, ${markerTitle}`}
+      aria-valuemax={total ?? 0}
+      aria-valuemin={0}
+      aria-valuenow={Math.min(reached ?? 0, total ?? 0)}
+      role="progressbar"
+    >
+      <div
+        className={`h-3 rounded-full ${isValid ? 'bg-success-400' : 'bg-alert-400'} transition-[width] duration-700 ease-out`}
+        style={{ width: `${fillProgress}%` }}
+      />
+      <div
+        className="absolute -top-0.5 z-10 h-4 w-1 rounded-full border border-white bg-warning-400 shadow-sm"
+        style={{
+          left: `${markerProgress}%`,
+          transform: 'translateX(-2px)',
+        }}
+        title={markerTitle}
+      />
+    </div>
+  );
+}
+
+function ResultScoreCard({
+  title,
+  obtained,
+  available,
+  markerValue,
+  reached,
+  statusLabel,
+}: {
+  title: string;
+  obtained: number | undefined;
+  available: number | undefined;
+  markerValue: number | undefined;
+  reached: boolean | undefined;
+  statusLabel: string;
+}) {
+  const markerTitle = `${formatReportPoints(markerValue)} à atteindre`;
+
+  return (
+    <div className="rounded-card border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <p className="text-sm font-medium text-textLight">{title}</p>
+          <p className="mt-2 text-3xl font-semibold leading-none text-gray-900">
+            {formatReportScore(obtained, available)}
+          </p>
+          <p className="mt-2 text-sm text-gray-700">
+            {formatReportPoints(obtained)} obtenus sur {formatReportPoints(available)} disponibles
+          </p>
+        </div>
+        <span
+          className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-sm font-semibold ${
+            reached
+              ? 'border-success-200 bg-success-100 text-success-500'
+              : 'border-alert-200 bg-alert-100 text-alert-500'
+          }`}
+        >
+          {statusLabel}
+        </span>
+      </div>
+
+      <div className="mt-5 space-y-2">
+        <RatioBar
+          isValid={reached}
+          reached={obtained}
+          total={available}
+          markerValue={markerValue}
+          markerTitle={markerTitle}
+        />
+        <p className="text-xs font-medium text-warning-500">{markerTitle}</p>
+      </div>
+    </div>
+  );
 }
 
 function GridTableOfContents({ groups }: { groups: SectionLinkGroup[] }) {
@@ -341,51 +425,6 @@ function GridTableOfContents({ groups }: { groups: SectionLinkGroup[] }) {
         </Card>
       </aside>
     </>
-  );
-}
-
-function GridProgressPanel({
-  progress,
-  onShowUnanswered,
-}: {
-  progress: ProgressSummary;
-  onShowUnanswered: () => void;
-}) {
-  return (
-    <Card hover={false} className="p-4 md:p-5">
-      <h3 className="mb-3">Progression</h3>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <p className="text-sm font-medium text-textLight">Critères renseignés</p>
-          <p className="mt-1 text-sm font-semibold text-gray-900">
-            {progress.answeredCount} / {progress.totalToTreat}
-          </p>
-        </div>
-        <div>
-          <p className="text-sm font-medium text-textLight">Obligatoires non renseignés</p>
-          <p className="mt-1 text-sm font-semibold text-gray-900">
-            {progress.requiredUnanswered.length}
-          </p>
-        </div>
-        <div>
-          <p className="text-sm font-medium text-textLight">Optionnels renseignés</p>
-          <p className="mt-1 text-sm font-semibold text-gray-900">
-            {progress.optionalAnsweredCount}
-          </p>
-        </div>
-        <div className="flex items-end">
-          <Button
-            type="button"
-            variant="secondary"
-            className="w-full"
-            onClick={onShowUnanswered}
-            disabled={progress.unansweredToTreat.length === 0}
-          >
-            Voir les critères non renseignés
-          </Button>
-        </div>
-      </div>
-    </Card>
   );
 }
 
@@ -647,40 +686,6 @@ function GridChapterSection({
   );
 }
 
-function CriteriaList({
-  grid,
-  title,
-  criterionNumbers,
-  onGoToCriterion,
-}: {
-  grid: GridSummary;
-  title: string;
-  criterionNumbers: number[];
-  onGoToCriterion: (number: number) => void;
-}) {
-  if (criterionNumbers.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="space-y-3">
-      <h4>{title}</h4>
-      <div className="space-y-2">
-        {criterionNumbers.map((number) => (
-          <button
-            key={number}
-            type="button"
-            className="block w-full rounded-lg border border-gray-200 bg-white px-4 py-3 text-left text-sm text-gray-700 transition-colors hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-300"
-            onClick={() => onGoToCriterion(number)}
-          >
-            {criterionLabelForNumber(grid, number)}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function SimulationVerificationIssues({
   verification,
   sleepingCapacityCount,
@@ -768,64 +773,143 @@ export function SimulationVerificationIssues({
 export function SimulationResultPanel({
   grid,
   rapport,
+  requestedCategory,
   onShowCriteria,
   onReturnToPieces,
   onReturnToGrid,
 }: {
   grid: GridSummary;
   rapport: RapportProvisoireDto;
+  requestedCategory?: string;
   onShowCriteria: (numbers: number[]) => void;
   onReturnToPieces: () => void;
   onReturnToGrid: () => void;
 }) {
   const success = rapport.resultat === true;
+  const requestedCategoryLabel = formatRequestedCategoryLabel(requestedCategory);
   const invalidRequiredCriteria = rapport.criteres_obligatoires_non_valides ?? [];
+  const invalidRequiredCriterionDetails = invalidRequiredCriteria.map((number) =>
+    getReportCriterionDetails(grid, number)
+  );
+  const mandatoryStatusLabel = rapport.points_obligatoires_atteints ? 'Validé' : 'Non validé';
+  const optionalStatusLabel = rapport.points_optionnels_atteints ? 'Validé' : 'Non validé';
+  const missingMandatoryPoints = Math.max(
+    0,
+    (rapport.points_minimaux_obligatoires ?? 0) - (rapport.points_obligatoires_obtenus ?? 0)
+  );
+  const resultToneClassNames = success
+    ? {
+        shell: 'border-success-200 bg-success-100',
+        title: 'text-success-500',
+        badge: 'border-success-200 bg-white text-success-500',
+      }
+    : {
+        shell: 'border-alert-200 bg-alert-100',
+        title: 'text-alert-500',
+        badge: 'border-alert-200 bg-white text-alert-500',
+      };
+  const verdictRole = success ? 'status' : 'alert';
 
   return (
-    <Card
-      hover={false}
-      className={`p-4 md:p-5 ${success ? 'border-success-200 bg-success-100' : 'border-alert-200 bg-alert-100'}`}
-    >
-      <h3 className="mb-3 text-gray-900">Résultat de la simulation</h3>
-      <p className={`text-sm font-semibold ${success ? 'text-success-500' : 'text-alert-500'}`}>
-        {success
-          ? 'Votre logement semble atteindre le classement demandé.'
-          : 'Votre logement ne semble pas encore atteindre le classement demandé.'}
-      </p>
-      <p className="mt-3 text-sm text-gray-700">
-        Ce résultat est une estimation basée sur vos réponses. Seule une visite officielle permet de
-        confirmer le classement.
-      </p>
+    <Card hover={false} className={`p-4 md:p-5 ${resultToneClassNames.shell}`}>
+      <div
+        className="rounded-card border border-white/70 bg-white p-4 shadow-sm md:p-5"
+        role={verdictRole}
+      >
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-textLight">
+              Résultat de la simulation
+            </p>
+            <h3 className={`mt-2 text-xl font-semibold ${resultToneClassNames.title}`}>
+              {success
+                ? `Le classement ${requestedCategoryLabel} semble atteint`
+                : `Le classement ${requestedCategoryLabel} ne semble pas encore atteint`}
+            </h3>
+          </div>
+          <span
+            className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-sm font-semibold ${resultToneClassNames.badge}`}
+          >
+            {success ? 'Classement atteint' : 'Classement non atteint'}
+          </span>
+        </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <div className="rounded-lg bg-white p-4">
-          <p className="text-sm font-medium text-textLight">Points obligatoires</p>
-          <p className="mt-1 text-sm font-semibold text-gray-900">
-            {rapport.points_obligatoires_obtenus ?? 0} / {rapport.points_minimaux_obligatoires ?? 0}
-          </p>
-          <p className="mt-1 text-sm text-gray-700">
-            {rapport.points_obligatoires_atteints ? 'Minimum atteint' : 'Minimum non atteint'}
-          </p>
-        </div>
-        <div className="rounded-lg bg-white p-4">
-          <p className="text-sm font-medium text-textLight">Points optionnels</p>
-          <p className="mt-1 text-sm font-semibold text-gray-900">
-            {rapport.points_optionnels_obtenus ?? 0} / {rapport.points_optionnels_necessaires ?? 0}
-          </p>
-          <p className="mt-1 text-sm text-gray-700">
-            {rapport.points_optionnels_atteints ? 'Objectif atteint' : 'Objectif non atteint'}
-          </p>
-        </div>
+        <p className="mt-3 max-w-3xl text-sm text-gray-700">
+          Ce résultat est une estimation basée sur vos réponses. Seule une visite officielle permet
+          de confirmer le classement.
+        </p>
       </div>
 
-      {invalidRequiredCriteria.length > 0 && (
-        <div className="mt-6">
-          <CriteriaList
-            grid={grid}
-            title="Critères obligatoires non validés"
-            criterionNumbers={invalidRequiredCriteria}
-            onGoToCriterion={(number) => onShowCriteria([number])}
-          />
+      <div className="mt-5 grid gap-4 lg:grid-cols-2">
+        <ResultScoreCard
+          title="Points obligatoires"
+          obtained={rapport.points_obligatoires_obtenus}
+          available={rapport.points_totaux_obligatoires}
+          markerValue={rapport.points_minimaux_obligatoires}
+          reached={rapport.points_obligatoires_atteints}
+          statusLabel={mandatoryStatusLabel}
+        />
+        <ResultScoreCard
+          title="Points optionnels"
+          obtained={rapport.points_optionnels_obtenus}
+          available={rapport.points_optionnels_disponibles}
+          markerValue={rapport.points_optionnels_a_atteindre}
+          reached={rapport.points_optionnels_atteints}
+          statusLabel={optionalStatusLabel}
+        />
+      </div>
+
+      {invalidRequiredCriterionDetails.length > 0 && (
+        <div className="mt-5 rounded-card border border-gray-200 bg-white p-4 shadow-sm md:p-5">
+          <div className="mb-4">
+            <h4 className="text-base font-semibold text-gray-900">
+              Critères obligatoires non validés
+            </h4>
+            <div className="mt-1 space-y-2 text-sm text-gray-700">
+              {missingMandatoryPoints > 0 && (
+                <p>
+                  Il vous manque {formatMandatoryPoints(missingMandatoryPoints)} pour atteindre le
+                  seuil minimum requis en {requestedCategoryLabel}.
+                </p>
+              )}
+              <p>Voici les critères obligatoires non validés pour votre simulation.</p>
+            </div>
+          </div>
+
+          <div className="divide-y divide-gray-200">
+            {invalidRequiredCriterionDetails.map((criterion) => (
+              <div
+                key={criterion.number}
+                className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between"
+              >
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
+                    Critère {criterion.number}
+                  </p>
+                  <p className="mt-1 text-sm font-medium leading-snug text-gray-900">
+                    {criterion.label}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:shrink-0">
+                  <span className="inline-flex w-fit items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-semibold text-gray-700">
+                    {criterion.points === undefined
+                      ? 'Points non disponibles'
+                      : formatPoints(criterion.points)}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="w-full sm:w-auto"
+                    onClick={() => onShowCriteria([criterion.number])}
+                  >
+                    Voir dans la grille
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -897,21 +981,6 @@ export default function SimulationGridTab({
       ),
     [displayedCriterionFilterNumbers, grid, isCriterionFilterActive, searchQuery]
   );
-  const progress = useMemo(
-    () => buildProgressSummary(grid, responsesByCriterionNumber, requestedCategory),
-    [grid, requestedCategory, responsesByCriterionNumber]
-  );
-
-  function goToCriterion(number: number) {
-    scrollToElement(getCriterionAnchorId(number), true);
-  }
-
-  function handleShowUnanswered() {
-    const firstUnanswered = progress.unansweredToTreat[0];
-    if (firstUnanswered) {
-      goToCriterion(firstUnanswered.num_critere);
-    }
-  }
 
   async function handleSaveResponse(
     criterion: GridCriterion,
@@ -1006,6 +1075,12 @@ export default function SimulationGridTab({
     }
   }
 
+  function handleShowMockResult() {
+    setResultError(null);
+    setResponseSaveErrorMessage(null);
+    onResultReady({ kind: 'rapport', rapport: MOCK_RESULT_RAPPORT });
+  }
+
   return (
     <div id="grid-top" className="space-y-6">
       <Card hover={false} className="p-4 md:p-5">
@@ -1014,8 +1089,6 @@ export default function SimulationGridTab({
           Les réponses portent sur les équipements réellement présents dans le logement.
         </p>
       </Card>
-
-      <GridProgressPanel progress={progress} onShowUnanswered={handleShowUnanswered} />
 
       {responseSaveErrorMessage && (
         <div
@@ -1078,7 +1151,18 @@ export default function SimulationGridTab({
             />
           </div>
 
-          <div className="flex justify-end border-t border-gray-100 pt-6">
+          <div className="flex flex-col justify-end gap-3 border-t border-gray-100 pt-6 sm:flex-row">
+            {ENABLE_MOCK_RESULT_BUTTON && (
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full sm:w-auto"
+                disabled={isCheckingResult}
+                onClick={handleShowMockResult}
+              >
+                Simuler le résultat
+              </Button>
+            )}
             <Button
               type="button"
               variant="primary"

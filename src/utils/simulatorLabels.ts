@@ -1,4 +1,4 @@
-import type { HousingType, PieceType } from './simulatorApi';
+import type { HousingType, PieceType, RequestedCategory } from './simulatorApi';
 
 export const INTERIOR_PIECE_TYPES: PieceType[] = [
   'CUISINE',
@@ -26,6 +26,27 @@ export const SLEEPING_CAPACITY_PIECE_TYPES: PieceType[] = [
   'SALON',
   'CHAMBRE',
   'BUREAU',
+];
+
+export const REQUESTED_CATEGORY_OPTIONS: Array<{ value: RequestedCategory; label: string }> = [
+  { value: '1*', label: '1 étoile' },
+  { value: '2*', label: '2 étoiles' },
+  { value: '3*', label: '3 étoiles' },
+  { value: '4*', label: '4 étoiles' },
+  { value: '5*', label: '5 étoiles' },
+];
+
+export const HOUSING_TYPE_OPTIONS: Array<{ value: HousingType; label: string }> = [
+  { value: 'INDIVIDUEL', label: 'Logement individuel' },
+  { value: 'COLLECTIF', label: 'Logement collectif' },
+];
+
+export const FLOOR_OPTIONS = [
+  { value: '0', label: 'RDC' },
+  { value: '1', label: '1er' },
+  { value: '2', label: '2e' },
+  { value: '3', label: '3e' },
+  { value: '4', label: '4e ou plus' },
 ];
 
 export const PIECE_TYPE_LABELS: Record<PieceType, string> = {
@@ -92,6 +113,18 @@ export function formatFloor(value: number | undefined): string {
 
 export function formatPieceType(value: PieceType): string {
   return PIECE_TYPE_LABELS[value];
+}
+
+export function isRequestedCategory(value: string): value is RequestedCategory {
+  return REQUESTED_CATEGORY_OPTIONS.some((option) => option.value === value);
+}
+
+export function isHousingType(value: string): value is HousingType {
+  return HOUSING_TYPE_OPTIONS.some((option) => option.value === value);
+}
+
+export function isSimulationFloor(value: string): boolean {
+  return FLOOR_OPTIONS.some((option) => option.value === value);
 }
 
 export function canPieceHaveSleepingCapacity(value: PieceType): boolean {

@@ -7,6 +7,7 @@ import ResponsiveComparisonTable, {
   type ResponsiveComparisonRow,
 } from '../components/ui/ResponsiveComparisonTable';
 import Tooltip from '../components/ui/Tooltip';
+import { useToast } from '../components/ui/Toast';
 import {
   ALLOWED_TMI_RATES,
   CLASSE_MICRO_BIC_THRESHOLD_2026,
@@ -383,6 +384,7 @@ function getFiscalWarningMessages(result: SimulationResult): string[] {
 }
 
 export default function SimulateurFiscalClassement() {
+  const { showToast } = useToast();
   const [annualRevenueInput, setAnnualRevenueInput] = useState('');
   const [selectedTmiRate, setSelectedTmiRate] = useState<TmiRate | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -390,8 +392,6 @@ export default function SimulateurFiscalClassement() {
   const [lastCalculationSnapshot, setLastCalculationSnapshot] =
     useState<PersistedFiscalCalculationSnapshot | null>(null);
   const [isStorageHydrated, setIsStorageHydrated] = useState(false);
-  const [actionFeedback, setActionFeedback] = useState<string | null>(null);
-  const feedbackTimerRef = useRef<number | null>(null);
   const hasTrackedSimulatorStarted = useRef(false);
 
   function trackSimulatorStartOnce() {
@@ -439,14 +439,6 @@ export default function SimulateurFiscalClassement() {
     }
 
     setIsStorageHydrated(true);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (feedbackTimerRef.current !== null) {
-        window.clearTimeout(feedbackTimerRef.current);
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -573,17 +565,6 @@ export default function SimulateurFiscalClassement() {
     ];
   }, [result]);
 
-  function setTransientFeedback(message: string) {
-    setActionFeedback(message);
-    if (feedbackTimerRef.current !== null) {
-      window.clearTimeout(feedbackTimerRef.current);
-    }
-    feedbackTimerRef.current = window.setTimeout(() => {
-      setActionFeedback(null);
-      feedbackTimerRef.current = null;
-    }, 2200);
-  }
-
   function clearFormError(key: keyof FormErrors) {
     setErrors((previous) => {
       if (!previous[key]) {
@@ -597,18 +578,20 @@ export default function SimulateurFiscalClassement() {
 
   async function handleCopyShareLink() {
     if (!result?.canDisplayMicroComparison || !lastCalculationSnapshot) {
-      setTransientFeedback('Aucun résultat à partager.');
+      showToast('Aucun résultat à partager.', { type: 'info' });
       return;
     }
 
     const shareUrl = buildFiscalShareUrl(lastCalculationSnapshot);
     const isCopied = await copyToClipboard(shareUrl);
-    setTransientFeedback(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.');
+    showToast(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.', {
+      type: isCopied ? 'success' : 'error',
+    });
   }
 
   async function handleExportPdf() {
     if (!result?.canDisplayMicroComparison || !lastCalculationSnapshot) {
-      setTransientFeedback('Aucun résultat à exporter.');
+      showToast('Aucun résultat à exporter.', { type: 'info' });
       return;
     }
 
@@ -785,9 +768,9 @@ export default function SimulateurFiscalClassement() {
       doc.save(
         `simulation-fiscale-classement-${safeRevenue}-${formatFilenameDate(new Date())}.pdf`
       );
-      setTransientFeedback('PDF généré.');
+      showToast('PDF généré.', { type: 'success' });
     } catch {
-      setTransientFeedback('Impossible de générer le PDF.');
+      showToast('Impossible de générer le PDF.', { type: 'error' });
     }
   }
 
@@ -953,12 +936,6 @@ export default function SimulateurFiscalClassement() {
                         </Button>
                       </div>
                     </div>
-
-                    {actionFeedback && (
-                      <p className="mb-4 text-sm text-primary-500 sm:text-right">
-                        {actionFeedback}
-                      </p>
-                    )}
 
                     <ResponsiveComparisonTable
                       columns={tableColumns}

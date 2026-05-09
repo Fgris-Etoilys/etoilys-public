@@ -7,6 +7,7 @@ import ResponsiveComparisonTable, {
   type ResponsiveComparisonColumn,
   type ResponsiveComparisonRow,
 } from '../components/ui/ResponsiveComparisonTable';
+import { useToast } from '../components/ui/Toast';
 import {
   loadTaxeSejourDataset,
   normalizeTaxeSejourSearchTerm,
@@ -564,6 +565,7 @@ function getFuzzyScore(query: string, citySearch: PreparedCitySearch): number | 
 }
 
 export default function SimulateurTaxeSejour() {
+  const { showToast } = useToast();
   const [dataset, setDataset] = useState<TaxeSejourDataset | null>(null);
   const [loadingError, setLoadingError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -589,7 +591,6 @@ export default function SimulateurTaxeSejour() {
     useState<PersistedCalculationSnapshot | null>(null);
   const [isStorageHydrated, setIsStorageHydrated] = useState(false);
   const [isCityLabelSyncPending, setIsCityLabelSyncPending] = useState(false);
-  const [actionFeedback, setActionFeedback] = useState<string | null>(null);
   const hasTrackedSimulatorStarted = useRef(false);
 
   const nonClasseAmount = useMemo(() => {
@@ -670,7 +671,6 @@ export default function SimulateurTaxeSejour() {
   }, [result, nonClasseAmount]);
 
   const closeTimerRef = useRef<number | null>(null);
-  const feedbackTimerRef = useRef<number | null>(null);
   const listId = 'taxe-sejour-city-listbox';
 
   useEffect(() => {
@@ -741,9 +741,6 @@ export default function SimulateurTaxeSejour() {
       controller.abort();
       if (closeTimerRef.current !== null) {
         window.clearTimeout(closeTimerRef.current);
-      }
-      if (feedbackTimerRef.current !== null) {
-        window.clearTimeout(feedbackTimerRef.current);
       }
     };
   }, []);
@@ -1244,31 +1241,22 @@ export default function SimulateurTaxeSejour() {
     return snapshot;
   }
 
-  function setTransientFeedback(message: string) {
-    setActionFeedback(message);
-    if (feedbackTimerRef.current !== null) {
-      window.clearTimeout(feedbackTimerRef.current);
-    }
-    feedbackTimerRef.current = window.setTimeout(() => {
-      setActionFeedback(null);
-      feedbackTimerRef.current = null;
-    }, 2200);
-  }
-
   async function handleCopyShareLink() {
     if (!lastCalculationSnapshot) {
-      setTransientFeedback('Aucun résultat à partager.');
+      showToast('Aucun résultat à partager.', { type: 'info' });
       return;
     }
 
     const shareUrl = buildShareUrl(lastCalculationSnapshot);
     const isCopied = await copyToClipboard(shareUrl);
-    setTransientFeedback(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.');
+    showToast(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.', {
+      type: isCopied ? 'success' : 'error',
+    });
   }
 
   async function handleExportPdf() {
     if (!result || !lastCalculationSnapshot) {
-      setTransientFeedback('Aucun résultat à exporter.');
+      showToast('Aucun résultat à exporter.', { type: 'info' });
       return;
     }
 
@@ -1461,9 +1449,9 @@ export default function SimulateurTaxeSejour() {
 
       const safeCityId = lastCalculationSnapshot.cityId.replace(/[^a-zA-Z0-9_-]/g, '-');
       doc.save(`simulation-taxe-sejour-${safeCityId}-${formatFilenameDate(new Date())}.pdf`);
-      setTransientFeedback('PDF généré.');
+      showToast('PDF généré.', { type: 'success' });
     } catch {
-      setTransientFeedback('Impossible de générer le PDF.');
+      showToast('Impossible de générer le PDF.', { type: 'error' });
     }
   }
 
@@ -1756,10 +1744,6 @@ export default function SimulateurTaxeSejour() {
                       </Button>
                     </div>
                   </div>
-
-                  {actionFeedback && (
-                    <p className="mb-4 text-sm text-primary-500 sm:text-right">{actionFeedback}</p>
-                  )}
 
                   <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
                     <div className="rounded-lg bg-gray-50 px-3 py-2">

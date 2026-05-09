@@ -27,31 +27,46 @@ import SimulationGridTab, {
 } from '../components/simulator/SimulationGridTab';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import Input from '../components/ui/Input';
+import Select from '../components/ui/Select';
 import Tooltip from '../components/ui/Tooltip';
+import { useToast } from '../components/ui/Toast';
 import type { GridSummary } from '../content/simulatorGrid';
 import {
   createPiece,
   deletePiece,
+  getRapport,
   getSimulationGridModel,
   getPublicSimulation,
   getSimulationLogement,
+  getVerification,
   SimulatorApiError,
+  updateCapacity,
+  updateFloor,
+  updateHousingType,
   updatePiece,
+  updateRequestedCategory,
+  verifySimulation,
+  type HousingType,
   type LogementDto,
   type PieceDto,
   type PieceType,
   type PublicSimulationDto,
   type ReponseDto,
+  type RequestedCategory,
 } from '../utils/simulatorApi';
 import {
   canPieceHaveSleepingCapacity,
   EXTERIOR_PIECE_TYPES,
-  formatFloor,
-  formatHousingType,
+  FLOOR_OPTIONS,
   formatPieceType,
-  formatRequestedCategory,
+  HOUSING_TYPE_OPTIONS,
   INTERIOR_PIECE_TYPES,
+  isHousingType,
+  isRequestedCategory,
+  isSimulationFloor,
   isExteriorPiece,
+  REQUESTED_CATEGORY_OPTIONS,
 } from '../utils/simulatorLabels';
 
 type LoadStatus = 'loading' | 'success' | 'error';
@@ -59,7 +74,6 @@ type GridModelStatus = 'idle' | 'loading' | 'success' | 'error';
 type ActiveTab = 'pieces' | 'grid' | 'result';
 type PiecePanelMode = 'closed' | 'create' | 'edit';
 type PieceTypeScope = 'interior' | 'exterior';
-type FeedbackType = 'success' | 'error';
 
 interface PieceFormState {
   type: PieceType;
@@ -73,9 +87,15 @@ interface PieceFormErrors {
   sleepingCapacity?: string;
 }
 
-interface FeedbackMessage {
-  type: FeedbackType;
-  text: string;
+interface SimulationParametersForm {
+  requestedCategory: RequestedCategory;
+  capacity: string;
+  housingType: HousingType;
+  floor: string;
+}
+
+interface SimulationParametersErrors {
+  capacity?: string;
 }
 
 interface PieceValidationIssue {
@@ -90,8 +110,42 @@ const DEFAULT_PIECE_FORM: PieceFormState = {
   hasExteriorOpening: true,
 };
 
+const DEFAULT_SIMULATION_PARAMETERS_FORM: SimulationParametersForm = {
+  requestedCategory: '3*',
+  capacity: '',
+  housingType: 'INDIVIDUEL',
+  floor: '0',
+};
+
+const PARAMETER_REFRESH_ERROR_MESSAGE =
+  'Les paramètres ont été enregistrés, mais certaines données de la simulation n’ont pas pu être actualisées. Réessayez avant de consulter le résultat.';
+
 function isPieceType(value: string): value is PieceType {
   return [...INTERIOR_PIECE_TYPES, ...EXTERIOR_PIECE_TYPES].includes(value as PieceType);
+}
+
+function createSimulationParametersForm(
+  grille: PublicSimulationDto['grille'] | undefined
+): SimulationParametersForm {
+  const requestedCategory = grille?.categorie_demandee;
+  const housingType = grille?.type_habitation;
+  const floor = grille?.etage === undefined ? undefined : String(grille.etage);
+
+  return {
+    requestedCategory:
+      requestedCategory && isRequestedCategory(requestedCategory) ? requestedCategory : '3*',
+    capacity:
+      typeof grille?.capacite_accueil === 'number' && Number.isFinite(grille.capacite_accueil)
+        ? String(grille.capacite_accueil)
+        : '',
+    housingType: housingType && isHousingType(housingType) ? housingType : 'INDIVIDUEL',
+    floor: floor && isSimulationFloor(floor) ? floor : '0',
+  };
+}
+
+function parseCapacity(value: string): number | null {
+  const parsedValue = Number(value);
+  return Number.isInteger(parsedValue) && parsedValue > 0 ? parsedValue : null;
 }
 
 function formatSurface(value: number | undefined): string {
@@ -427,6 +481,7 @@ function SimulationGridModelState({
 
 export default function SimulationClassement() {
   const { simulationId } = useParams<{ simulationId: string }>();
+  const { showToast } = useToast();
   const [loadStatus, setLoadStatus] = useState<LoadStatus>('loading');
   const [simulation, setSimulation] = useState<PublicSimulationDto | null>(null);
   const [logement, setLogement] = useState<LogementDto | null>(null);
@@ -438,14 +493,18 @@ export default function SimulationClassement() {
   const [editingPieceId, setEditingPieceId] = useState<string | null>(null);
   const [pieceForm, setPieceForm] = useState<PieceFormState>(DEFAULT_PIECE_FORM);
   const [pieceFormErrors, setPieceFormErrors] = useState<PieceFormErrors>({});
-  const [feedbackMessage, setFeedbackMessage] = useState<FeedbackMessage | null>(null);
+  const [parameterForm, setParameterForm] = useState<SimulationParametersForm>(
+    DEFAULT_SIMULATION_PARAMETERS_FORM
+  );
+  const [parameterErrors, setParameterErrors] = useState<SimulationParametersErrors>({});
+  const [isSavingParameters, setIsSavingParameters] = useState(false);
   const [isSavingPiece, setIsSavingPiece] = useState(false);
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
   const [deletingPieceId, setDeletingPieceId] = useState<string | null>(null);
   const [resultState, setResultState] = useState<SimulationResultState | null>(null);
   const [criterionFilterNumbers, setCriterionFilterNumbers] = useState<number[]>([]);
-  const resultPanelRef = useRef<HTMLDivElement | null>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const latestParameterSaveRequestIdRef = useRef(0);
 
   const loadSimulation = useCallback(async () => {
     if (!simulationId) {
@@ -454,7 +513,6 @@ export default function SimulationClassement() {
     }
 
     setLoadStatus('loading');
-    setFeedbackMessage(null);
 
     try {
       const [nextSimulation, nextLogement] = await Promise.all([
@@ -495,20 +553,6 @@ export default function SimulationClassement() {
     }
   }, [activeTab, gridModelStatus, loadGridModel]);
 
-  useEffect(() => {
-    if (activeTab !== 'result' || resultState === null) {
-      return;
-    }
-
-    const animationFrameId = window.requestAnimationFrame(() => {
-      resultPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    return () => {
-      window.cancelAnimationFrame(animationFrameId);
-    };
-  }, [activeTab, resultState]);
-
   const pieces = useMemo(() => logement?.pieces ?? [], [logement?.pieces]);
   const interiorPieces = useMemo(
     () => pieces.filter((piece) => !isExteriorPiece(piece.type_piece)),
@@ -523,6 +567,22 @@ export default function SimulationClassement() {
   const activePieceSupportsSleepingCapacity = canPieceHaveSleepingCapacity(pieceForm.type);
   const activePieceCanHaveExteriorOpening = canPieceHaveExteriorOpening(pieceForm.type);
   const grille = simulation?.grille;
+
+  useEffect(() => {
+    if (isSavingParameters) {
+      return;
+    }
+
+    setParameterForm(createSimulationParametersForm(grille));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    grille?.capacite_accueil,
+    grille?.categorie_demandee,
+    grille?.etage,
+    grille?.type_habitation,
+    isSavingParameters,
+  ]);
+
   const pieceValidationIssue = useMemo(
     () => getPieceFormValidationIssue(pieceForm, grille?.categorie_demandee),
     [grille?.categorie_demandee, pieceForm]
@@ -609,7 +669,6 @@ export default function SimulationClassement() {
     defaultType: PieceType = DEFAULT_PIECE_FORM.type,
     scope: PieceTypeScope = 'interior'
   ) {
-    setFeedbackMessage(null);
     setConfirmingDeleteId(null);
     setPiecePanelMode('create');
     setPieceTypeScope(scope);
@@ -620,14 +679,10 @@ export default function SimulationClassement() {
 
   function openEditPanel(piece: PieceDto) {
     if (!piece.id) {
-      setFeedbackMessage({
-        type: 'error',
-        text: 'Cette pièce ne peut pas être modifiée pour le moment.',
-      });
+      showToast('Cette pièce ne peut pas être modifiée pour le moment.', { type: 'error' });
       return;
     }
 
-    setFeedbackMessage(null);
     setConfirmingDeleteId(null);
     setPiecePanelMode('edit');
     setPieceTypeScope(isExteriorPiece(piece.type_piece) ? 'exterior' : 'interior');
@@ -672,6 +727,13 @@ export default function SimulationClassement() {
     setResultState(result);
     setCriterionFilterNumbers([]);
     setActiveTab('result');
+    window.requestAnimationFrame(() => {
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch {
+        // Certains environnements de test ne prennent pas en charge window.scrollTo.
+      }
+    });
   }
 
   function showCriteriaInGrid(numbers: number[]) {
@@ -688,6 +750,162 @@ export default function SimulationClassement() {
   function returnToFullGrid() {
     setCriterionFilterNumbers([]);
     setActiveTab('grid');
+  }
+
+  async function refreshResultAfterParameterMutation(): Promise<SimulationResultState> {
+    if (!simulationId) {
+      throw new Error('Simulation non disponible');
+    }
+
+    const isValid = await verifySimulation(simulationId);
+    if (!isValid) {
+      return {
+        kind: 'verification',
+        verification: await getVerification(simulationId),
+      };
+    }
+
+    return {
+      kind: 'rapport',
+      rapport: await getRapport(simulationId),
+    };
+  }
+
+  async function applyParameterMutation(
+    mutation: () => Promise<PublicSimulationDto>
+  ): Promise<void> {
+    if (!simulationId) {
+      return;
+    }
+
+    const requestId = latestParameterSaveRequestIdRef.current + 1;
+    latestParameterSaveRequestIdRef.current = requestId;
+    const shouldRefreshResult = resultState !== null;
+
+    setIsSavingParameters(true);
+    setParameterErrors({});
+    showToast('Enregistrement des paramètres...', { type: 'info', durationMs: 1500 });
+
+    let hasCommittedParameter = false;
+
+    try {
+      const nextSimulation = await mutation();
+      if (latestParameterSaveRequestIdRef.current !== requestId) {
+        return;
+      }
+
+      hasCommittedParameter = true;
+      setSimulation(nextSimulation);
+      setParameterForm(createSimulationParametersForm(nextSimulation.grille));
+
+      const nextLogement = await getSimulationLogement(simulationId);
+      if (latestParameterSaveRequestIdRef.current !== requestId) {
+        return;
+      }
+
+      setLogement(nextLogement);
+
+      if (shouldRefreshResult) {
+        const nextResult = await refreshResultAfterParameterMutation();
+        if (latestParameterSaveRequestIdRef.current !== requestId) {
+          return;
+        }
+
+        setResultState(nextResult);
+        setCriterionFilterNumbers([]);
+      }
+
+      showToast('Les paramètres ont été enregistrés.', { type: 'success' });
+    } catch {
+      if (latestParameterSaveRequestIdRef.current !== requestId) {
+        return;
+      }
+
+      if (hasCommittedParameter) {
+        resetResultOnly();
+        showToast(PARAMETER_REFRESH_ERROR_MESSAGE, { type: 'error' });
+        return;
+      }
+
+      setParameterForm(createSimulationParametersForm(grille));
+      showToast('Les paramètres n’ont pas pu être enregistrés. Veuillez réessayer.', {
+        type: 'error',
+      });
+    } finally {
+      if (latestParameterSaveRequestIdRef.current === requestId) {
+        setIsSavingParameters(false);
+      }
+    }
+  }
+
+  function handleRequestedCategoryChange(event: ChangeEvent<HTMLSelectElement>) {
+    const nextCategory = event.target.value;
+    if (!isRequestedCategory(nextCategory)) {
+      return;
+    }
+
+    setParameterForm((currentForm) => ({ ...currentForm, requestedCategory: nextCategory }));
+
+    if (nextCategory === grille?.categorie_demandee) {
+      return;
+    }
+
+    void applyParameterMutation(() => updateRequestedCategory(simulationId ?? '', nextCategory));
+  }
+
+  function handleHousingTypeChange(event: ChangeEvent<HTMLSelectElement>) {
+    const nextHousingType = event.target.value;
+    if (!isHousingType(nextHousingType)) {
+      return;
+    }
+
+    setParameterForm((currentForm) => ({ ...currentForm, housingType: nextHousingType }));
+
+    if (nextHousingType === grille?.type_habitation) {
+      return;
+    }
+
+    void applyParameterMutation(() => updateHousingType(simulationId ?? '', nextHousingType));
+  }
+
+  function handleFloorChange(event: ChangeEvent<HTMLSelectElement>) {
+    const nextFloor = event.target.value;
+    if (!isSimulationFloor(nextFloor)) {
+      return;
+    }
+
+    setParameterForm((currentForm) => ({ ...currentForm, floor: nextFloor }));
+
+    const parsedFloor = Number(nextFloor);
+    if (parsedFloor === grille?.etage) {
+      return;
+    }
+
+    void applyParameterMutation(() => updateFloor(simulationId ?? '', parsedFloor));
+  }
+
+  function handleCapacityChange(event: ChangeEvent<HTMLInputElement>) {
+    setParameterForm((currentForm) => ({ ...currentForm, capacity: event.target.value }));
+    setParameterErrors({});
+  }
+
+  function handleCapacityBlur() {
+    const parsedCapacity = parseCapacity(parameterForm.capacity);
+
+    if (parsedCapacity === null) {
+      setParameterErrors({ capacity: 'Indiquez une capacité d’accueil valide.' });
+      showToast('La capacité d’accueil doit être un nombre entier positif.', { type: 'error' });
+      return;
+    }
+
+    setParameterForm((currentForm) => ({ ...currentForm, capacity: String(parsedCapacity) }));
+    setParameterErrors({});
+
+    if (parsedCapacity === grille?.capacite_accueil) {
+      return;
+    }
+
+    void applyParameterMutation(() => updateCapacity(simulationId ?? '', parsedCapacity));
   }
 
   async function applyPieceMutationResult(nextLogement: LogementDto): Promise<boolean> {
@@ -719,7 +937,6 @@ export default function SimulationClassement() {
     }
 
     setIsSavingPiece(true);
-    setFeedbackMessage(null);
 
     try {
       const isEditingPiece = piecePanelMode === 'edit' && editingPieceId;
@@ -731,25 +948,26 @@ export default function SimulationClassement() {
       resetPiecePanel();
 
       if (!hasRefreshedSimulation) {
-        setFeedbackMessage({
-          type: 'error',
-          text: 'La pièce a été enregistrée, mais la grille de contrôle n’a pas pu être actualisée. Réessayez avant de consulter le résultat.',
-        });
+        showToast(
+          'La pièce a été enregistrée, mais la grille de contrôle n’a pas pu être actualisée. Réessayez avant de consulter le résultat.',
+          { type: 'error' }
+        );
         return;
       }
 
-      setFeedbackMessage({
-        type: 'success',
-        text: piecePanelMode === 'edit' ? 'La pièce a été modifiée.' : 'La pièce a été ajoutée.',
-      });
+      showToast(
+        piecePanelMode === 'edit' ? 'La pièce a été modifiée.' : 'La pièce a été ajoutée.',
+        {
+          type: 'success',
+        }
+      );
     } catch (error) {
-      setFeedbackMessage({
-        type: 'error',
-        text:
-          error instanceof SimulatorApiError && error.status === 409
-            ? 'Une pièce similaire existe déjà ou les informations envoyées sont incomplètes.'
-            : 'La pièce n’a pas pu être enregistrée. Veuillez réessayer.',
-      });
+      showToast(
+        error instanceof SimulatorApiError && error.status === 409
+          ? 'Une pièce similaire existe déjà ou les informations envoyées sont incomplètes.'
+          : 'La pièce n’a pas pu être enregistrée. Veuillez réessayer.',
+        { type: 'error' }
+      );
     } finally {
       setIsSavingPiece(false);
     }
@@ -757,15 +975,11 @@ export default function SimulationClassement() {
 
   async function handleDeletePiece(piece: PieceDto) {
     if (!simulationId || !piece.id) {
-      setFeedbackMessage({
-        type: 'error',
-        text: 'Cette pièce ne peut pas être supprimée pour le moment.',
-      });
+      showToast('Cette pièce ne peut pas être supprimée pour le moment.', { type: 'error' });
       return;
     }
 
     setDeletingPieceId(piece.id);
-    setFeedbackMessage(null);
 
     try {
       const nextLogement = await deletePiece(simulationId, piece.id);
@@ -776,19 +990,19 @@ export default function SimulationClassement() {
       }
 
       if (!hasRefreshedSimulation) {
-        setFeedbackMessage({
-          type: 'error',
-          text: 'La pièce a été supprimée, mais la grille de contrôle n’a pas pu être actualisée. Réessayez avant de consulter le résultat.',
-        });
+        showToast(
+          'La pièce a été supprimée, mais la grille de contrôle n’a pas pu être actualisée. Réessayez avant de consulter le résultat.',
+          { type: 'error' }
+        );
         return;
       }
 
-      setFeedbackMessage({ type: 'success', text: 'La pièce a été supprimée.' });
+      showToast('La pièce a été supprimée.', { type: 'success' });
     } catch {
-      setFeedbackMessage({
-        type: 'error',
-        text: 'Cette pièce n’a pas pu être supprimée. Elle est peut-être nécessaire à la simulation.',
-      });
+      showToast(
+        'Cette pièce n’a pas pu être supprimée. Elle est peut-être nécessaire à la simulation.',
+        { type: 'error' }
+      );
     } finally {
       setDeletingPieceId(null);
     }
@@ -827,15 +1041,16 @@ export default function SimulationClassement() {
 
   function handleGoToGrid() {
     if (!hasPieceWithSurface(pieces)) {
-      setFeedbackMessage({
-        type: 'error',
-        text: 'Ajoutez au moins une pièce avec sa surface avant de passer à la grille de contrôle.',
-      });
+      showToast(
+        'Ajoutez au moins une pièce avec sa surface avant de passer à la grille de contrôle.',
+        {
+          type: 'error',
+        }
+      );
       setActiveTab('pieces');
       return;
     }
 
-    setFeedbackMessage(null);
     setActiveTab('grid');
   }
 
@@ -1166,33 +1381,63 @@ export default function SimulationClassement() {
           </div>
 
           <Card hover={false} className="p-5 md:p-6">
+            <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">Paramètres de simulation</h2>
+                <p className="mt-1 text-sm text-textLight">
+                  Ces paramètres peuvent être modifiés pendant la simulation.
+                </p>
+              </div>
+              {isSavingParameters && (
+                <span className="inline-flex w-fit rounded-full border border-primary-200 bg-primary-100 px-3 py-1 text-sm font-medium text-primary-500">
+                  Enregistrement...
+                </span>
+              )}
+            </div>
+
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div>
-                <p className="text-sm font-medium text-textLight">Classement demandé</p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">
-                  {formatRequestedCategory(grille?.categorie_demandee)}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-textLight">Capacité d’accueil</p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">
-                  {grille?.capacite_accueil
-                    ? formatPeopleCount(grille.capacite_accueil)
-                    : 'Non renseigné'}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-textLight">Type d’habitation</p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">
-                  {formatHousingType(grille?.type_habitation)}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-textLight">Étage</p>
-                <p className="mt-1 text-sm font-semibold text-gray-900">
-                  {formatFloor(grille?.etage)}
-                </p>
-              </div>
+              <Select
+                id="simulationRequestedCategory"
+                name="simulationRequestedCategory"
+                label="Classement demandé"
+                options={REQUESTED_CATEGORY_OPTIONS}
+                value={parameterForm.requestedCategory}
+                disabled={isSavingParameters}
+                onChange={handleRequestedCategoryChange}
+              />
+
+              <Input
+                label="Capacité d’accueil"
+                name="simulationCapacity"
+                type="number"
+                inputMode="numeric"
+                min="1"
+                value={parameterForm.capacity}
+                disabled={isSavingParameters}
+                onChange={handleCapacityChange}
+                onBlur={handleCapacityBlur}
+                error={parameterErrors.capacity}
+              />
+
+              <Select
+                id="simulationHousingType"
+                name="simulationHousingType"
+                label="Type d’habitation"
+                options={HOUSING_TYPE_OPTIONS}
+                value={parameterForm.housingType}
+                disabled={isSavingParameters}
+                onChange={handleHousingTypeChange}
+              />
+
+              <Select
+                id="simulationFloor"
+                name="simulationFloor"
+                label="Étage"
+                options={FLOOR_OPTIONS}
+                value={parameterForm.floor}
+                disabled={isSavingParameters}
+                onChange={handleFloorChange}
+              />
             </div>
           </Card>
 
@@ -1261,19 +1506,6 @@ export default function SimulationClassement() {
               ))}
             </div>
           </div>
-
-          {feedbackMessage && (
-            <div
-              className={`rounded-card border p-4 text-sm ${
-                feedbackMessage.type === 'error'
-                  ? 'border-alert-200 bg-alert-100 text-alert-500'
-                  : 'border-primary-200 bg-primary-100 text-primary-500'
-              }`}
-              role="status"
-            >
-              {feedbackMessage.text}
-            </div>
-          )}
 
           {activeTab === 'pieces' && (
             <div
@@ -1487,7 +1719,6 @@ export default function SimulationClassement() {
 
           {activeTab === 'result' && (
             <div
-              ref={resultPanelRef}
               id="simulation-panel-result"
               role="tabpanel"
               aria-labelledby="simulation-tab-result"
@@ -1507,6 +1738,7 @@ export default function SimulationClassement() {
                 <SimulationResultPanel
                   grid={gridSummary}
                   rapport={resultState.rapport}
+                  requestedCategory={grille?.categorie_demandee}
                   onShowCriteria={showCriteriaInGrid}
                   onReturnToPieces={() => setActiveTab('pieces')}
                   onReturnToGrid={returnToFullGrid}

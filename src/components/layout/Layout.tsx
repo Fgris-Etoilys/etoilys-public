@@ -5,6 +5,7 @@ import CookieConsentManager from './CookieConsentManager';
 import Header from './Header';
 import Footer from './Footer';
 import SEO from '../ui/SEO';
+import { ToastProvider } from '../ui/Toast';
 import {
   ArticleStructuredData,
   BreadcrumbStructuredData,
@@ -58,12 +59,14 @@ export default function Layout() {
           authorName={articleData.authorName}
         />
       )}
-      <Header />
-      <main className="flex-grow pt-16">
-        <Outlet />
-      </main>
-      <Footer />
-      <CookieConsentManager />
+      <ToastProvider>
+        <Header />
+        <main className="flex-grow pt-16">
+          <Outlet />
+        </main>
+        <Footer />
+        <CookieConsentManager />
+      </ToastProvider>
     </div>
   );
 }
