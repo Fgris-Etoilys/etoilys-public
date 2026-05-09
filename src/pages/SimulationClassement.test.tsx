@@ -494,7 +494,10 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
 
     const interiorDialog = screen.getByRole('dialog', { name: /ajouter une pièce/i });
+    const modalOverlay = screen.getByTestId('piece-modal-overlay');
     expect(interiorDialog).toBeInTheDocument();
+    expect(modalOverlay).toHaveClass('fixed', 'inset-0', 'z-[80]', 'min-h-dvh');
+    expect(document.body.style.overflow).toBe('hidden');
     expect(screen.queryByLabelText(/nom de la pièce/i)).not.toBeInTheDocument();
     expect(screen.getByLabelText(/nombre de personnes pouvant dormir/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/type de pièce/i)).toHaveValue('CHAMBRE');
@@ -518,6 +521,7 @@ describe('SimulationClassement', () => {
 
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(document.body.style.overflow).toBe('');
     fireEvent.click(screen.getByRole('button', { name: /ajouter un espace extérieur/i }));
 
     expect(screen.getByLabelText(/type de pièce/i)).toHaveValue('TERRASSE_OU_JARDIN_PRIVE');
@@ -528,6 +532,7 @@ describe('SimulationClassement', () => {
     ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /annuler/i }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(document.body.style.overflow).toBe('');
   });
 
   it('masque les types de pièces non proposés en création', async () => {
@@ -585,6 +590,8 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
     fireEvent.click(screen.getByRole('button', { name: /ajouter cette pièce/i }));
 
+    expect(screen.getByLabelText(/surface en m²/i)).toHaveClass('h-12');
+    expect(screen.getByLabelText(/nombre de personnes pouvant dormir/i)).toHaveClass('h-12');
     const surfaceErrorSlot = screen.getByTestId('pieceSurface-error-slot');
     expect(surfaceErrorSlot).toHaveClass('min-h-[1.25rem]');
     expect(await screen.findByText(/indiquez une surface valide/i)).toBe(surfaceErrorSlot);

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useParams } from 'react-router-dom';
 import {
   AlertCircle,
@@ -641,6 +642,9 @@ export default function SimulationClassement() {
       return;
     }
 
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     function handleEscapeKey(event: globalThis.KeyboardEvent) {
       if (event.key === 'Escape') {
         setPiecePanelMode('closed');
@@ -654,6 +658,7 @@ export default function SimulationClassement() {
     window.addEventListener('keydown', handleEscapeKey);
     return () => {
       window.removeEventListener('keydown', handleEscapeKey);
+      document.body.style.overflow = previousBodyOverflow;
     };
   }, [piecePanelMode]);
 
@@ -1258,8 +1263,11 @@ export default function SimulationClassement() {
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   }) {
     return (
-      <div className="grid min-h-[6.75rem] grid-rows-[auto_auto_1.25rem]">
-        <label htmlFor={name} className="mb-2 block text-sm font-medium text-gray-700">
+      <div className="grid min-h-[7.25rem] grid-rows-[2.5rem_3rem_1.25rem] gap-y-2">
+        <label
+          htmlFor={name}
+          className="flex items-end text-sm font-medium leading-tight text-gray-700"
+        >
           {label}
         </label>
         <input
@@ -1273,13 +1281,13 @@ export default function SimulationClassement() {
           onChange={onChange}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={`${name}-error`}
-          className={`w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-300 ${
+          className={`h-12 w-full rounded-lg border border-gray-300 px-4 py-2 transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-300 ${
             error ? 'border-alert-400 focus:ring-alert-400' : ''
           }`}
         />
         <p
           id={`${name}-error`}
-          className="mt-2 min-h-[1.25rem] text-sm leading-tight text-alert-400"
+          className="min-h-[1.25rem] text-sm leading-tight text-alert-400"
           data-testid={`${name}-error-slot`}
         >
           {error ?? ''}
@@ -1322,6 +1330,112 @@ export default function SimulationClassement() {
     );
   }
 
+  function renderPieceModal() {
+    if (piecePanelMode === 'closed' || typeof document === 'undefined') {
+      return null;
+    }
+
+    return createPortal(
+      <div
+        className="fixed inset-0 z-[80] flex min-h-dvh items-center justify-center overflow-y-auto bg-gray-900/35 px-4 py-6"
+        data-testid="piece-modal-overlay"
+        onClick={resetPiecePanel}
+      >
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="piece-modal-title"
+          className="w-full max-w-lg rounded-card border border-gray-200 bg-white p-5 shadow-card md:p-6"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <div className="mb-5">
+            <h3 id="piece-modal-title">
+              {piecePanelMode === 'edit' ? 'Modifier la pièce' : 'Ajouter une pièce'}
+            </h3>
+            <p className="mt-2 text-sm text-gray-700">
+              Renseignez les informations principales de la pièce.
+            </p>
+          </div>
+
+          <form className="space-y-5" onSubmit={handlePieceFormSubmit}>
+            <PieceTypeSelect
+              value={pieceForm.type}
+              options={selectablePieceTypes}
+              groupLabel={selectablePieceTypeGroupLabel}
+              onChange={(value) => updatePieceFormField('type', value)}
+            />
+
+            <div className="grid gap-5 sm:grid-cols-2" data-testid="piece-form-fields-grid">
+              {renderModalInputField({
+                label: 'Surface en m²',
+                name: 'pieceSurface',
+                type: 'number',
+                inputMode: 'decimal',
+                min: '0',
+                step: '0.1',
+                value: pieceForm.surface,
+                error: pieceFormErrors.surface,
+                onChange: (event) => updatePieceFormField('surface', event.target.value),
+              })}
+
+              {activePieceSupportsSleepingCapacity &&
+                renderModalInputField({
+                  label: 'Nombre de personnes pouvant dormir dans cette pièce',
+                  name: 'pieceSleepingCapacity',
+                  type: 'number',
+                  inputMode: 'numeric',
+                  min: '1',
+                  value: pieceForm.sleepingCapacity,
+                  error: pieceFormErrors.sleepingCapacity,
+                  onChange: (event) => updatePieceFormField('sleepingCapacity', event.target.value),
+                })}
+            </div>
+
+            {activePieceCanHaveExteriorOpening && renderExteriorOpeningToggle()}
+
+            {pieceValidationIssue && (
+              <div
+                className="flex items-start gap-2 rounded-lg border border-alert-200 bg-alert-100 p-3 text-sm text-alert-500"
+                role="alert"
+                aria-live="assertive"
+              >
+                <AlertCircle
+                  aria-hidden="true"
+                  className="mt-0.5 h-5 w-5 shrink-0 text-alert-400"
+                />
+                <p>{pieceValidationIssue.message}</p>
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-full sm:w-auto"
+                disabled={isSavingPiece || pieceValidationIssue?.blocking === true}
+              >
+                {isSavingPiece
+                  ? 'Enregistrement...'
+                  : piecePanelMode === 'edit'
+                    ? 'Enregistrer les modifications'
+                    : 'Ajouter cette pièce'}
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                className="w-full sm:w-auto"
+                onClick={resetPiecePanel}
+              >
+                Annuler
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>,
+      document.body
+    );
+  }
+
   if (loadStatus === 'loading') {
     return (
       <section className="simulator-ui bg-white py-10 md:py-12">
@@ -1361,393 +1475,296 @@ export default function SimulationClassement() {
   }
 
   return (
-    <section className="simulator-ui bg-white py-10 md:py-12">
-      <div className="container-adaptive">
-        <div className="mx-auto max-w-6xl space-y-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <Link
-              to="/simulateur"
-              className="text-sm font-medium text-primary-300 transition-colors hover:text-primary-400"
-            >
-              Revenir à la liste des simulations
-            </Link>
-          </div>
-
-          <div>
-            <h1 className="mb-3 text-gray-900">Ma simulation de classement</h1>
-            <p className="max-w-3xl text-sm text-textLight">
-              Cette étape sert à décrire les pièces du logement avant la grille de contrôle.
-            </p>
-          </div>
-
-          <Card hover={false} className="p-5 md:p-6">
-            <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">Paramètres de simulation</h2>
-                <p className="mt-1 text-sm text-textLight">
-                  Ces paramètres peuvent être modifiés pendant la simulation.
-                </p>
-              </div>
-              {isSavingParameters && (
-                <span className="inline-flex w-fit rounded-full border border-primary-200 bg-primary-100 px-3 py-1 text-sm font-medium text-primary-500">
-                  Enregistrement...
-                </span>
-              )}
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Select
-                id="simulationRequestedCategory"
-                name="simulationRequestedCategory"
-                label="Classement demandé"
-                options={REQUESTED_CATEGORY_OPTIONS}
-                value={parameterForm.requestedCategory}
-                disabled={isSavingParameters}
-                onChange={handleRequestedCategoryChange}
-              />
-
-              <Input
-                label="Capacité d’accueil"
-                name="simulationCapacity"
-                type="number"
-                inputMode="numeric"
-                min="1"
-                value={parameterForm.capacity}
-                disabled={isSavingParameters}
-                onChange={handleCapacityChange}
-                onBlur={handleCapacityBlur}
-                error={parameterErrors.capacity}
-              />
-
-              <Select
-                id="simulationHousingType"
-                name="simulationHousingType"
-                label="Type d’habitation"
-                options={HOUSING_TYPE_OPTIONS}
-                value={parameterForm.housingType}
-                disabled={isSavingParameters}
-                onChange={handleHousingTypeChange}
-              />
-
-              <Select
-                id="simulationFloor"
-                name="simulationFloor"
-                label="Étage"
-                options={FLOOR_OPTIONS}
-                value={parameterForm.floor}
-                disabled={isSavingParameters}
-                onChange={handleFloorChange}
-              />
-            </div>
-          </Card>
-
-          <div className="grid gap-3 md:grid-cols-3" aria-label="Parcours de la simulation">
-            {[
-              { step: '1', label: 'Pièces du logement', active: activeTab === 'pieces' },
-              { step: '2', label: 'Grille de contrôle', active: activeTab === 'grid' },
-              {
-                step: '3',
-                label: 'Résultat',
-                active: activeTab === 'result',
-                inactive: !hasSimulationResult,
-              },
-            ].map((item) => (
-              <div
-                key={item.step}
-                className={`rounded-card border p-4 ${
-                  item.active
-                    ? 'border-primary-300 bg-primary-100 text-primary-500'
-                    : 'border-gray-200 bg-white text-gray-700'
-                } ${item.inactive ? 'opacity-60' : ''}`}
-                aria-current={item.active ? 'step' : undefined}
+    <>
+      <section className="simulator-ui bg-white py-10 md:py-12">
+        <div className="container-adaptive">
+          <div className="mx-auto max-w-6xl space-y-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <Link
+                to="/simulateur"
+                className="text-sm font-medium text-primary-300 transition-colors hover:text-primary-400"
               >
-                <span className="text-sm font-semibold uppercase tracking-wide">
-                  Étape {item.step}
-                </span>
-                <p className="mt-1 text-sm font-semibold">{item.label}</p>
-              </div>
-            ))}
-          </div>
+                Revenir à la liste des simulations
+              </Link>
+            </div>
 
-          <div className="border-b border-gray-200">
-            <div role="tablist" aria-label="Étapes de la simulation" className="flex gap-2">
+            <div>
+              <h1 className="mb-3 text-gray-900">Ma simulation de classement</h1>
+              <p className="max-w-3xl text-sm text-textLight">
+                Cette étape sert à décrire les pièces du logement avant la grille de contrôle.
+              </p>
+            </div>
+
+            <Card hover={false} className="p-5 md:p-6">
+              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Paramètres de simulation</h2>
+                  <p className="mt-1 text-sm text-textLight">
+                    Ces paramètres peuvent être modifiés pendant la simulation.
+                  </p>
+                </div>
+                {isSavingParameters && (
+                  <span className="inline-flex w-fit rounded-full border border-primary-200 bg-primary-100 px-3 py-1 text-sm font-medium text-primary-500">
+                    Enregistrement...
+                  </span>
+                )}
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <Select
+                  id="simulationRequestedCategory"
+                  name="simulationRequestedCategory"
+                  label="Classement demandé"
+                  options={REQUESTED_CATEGORY_OPTIONS}
+                  value={parameterForm.requestedCategory}
+                  disabled={isSavingParameters}
+                  onChange={handleRequestedCategoryChange}
+                />
+
+                <Input
+                  label="Capacité d’accueil"
+                  name="simulationCapacity"
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  value={parameterForm.capacity}
+                  disabled={isSavingParameters}
+                  onChange={handleCapacityChange}
+                  onBlur={handleCapacityBlur}
+                  error={parameterErrors.capacity}
+                />
+
+                <Select
+                  id="simulationHousingType"
+                  name="simulationHousingType"
+                  label="Type d’habitation"
+                  options={HOUSING_TYPE_OPTIONS}
+                  value={parameterForm.housingType}
+                  disabled={isSavingParameters}
+                  onChange={handleHousingTypeChange}
+                />
+
+                <Select
+                  id="simulationFloor"
+                  name="simulationFloor"
+                  label="Étage"
+                  options={FLOOR_OPTIONS}
+                  value={parameterForm.floor}
+                  disabled={isSavingParameters}
+                  onChange={handleFloorChange}
+                />
+              </div>
+            </Card>
+
+            <div className="grid gap-3 md:grid-cols-3" aria-label="Parcours de la simulation">
               {[
-                { id: 'pieces' as const, label: 'Pièces du logement', disabled: false },
-                { id: 'grid' as const, label: 'Grille de contrôle', disabled: false },
-                { id: 'result' as const, label: 'Résultat', disabled: !hasSimulationResult },
-              ].map((tab, index) => (
-                <button
-                  key={tab.id}
-                  ref={(element) => {
-                    tabRefs.current[index] = element;
-                  }}
-                  type="button"
-                  role="tab"
-                  id={`simulation-tab-${tab.id}`}
-                  aria-selected={activeTab === tab.id}
-                  aria-disabled={tab.disabled ? 'true' : undefined}
-                  aria-controls={`simulation-panel-${tab.id}`}
-                  tabIndex={activeTab === tab.id && !tab.disabled ? 0 : -1}
-                  disabled={tab.disabled}
-                  className={`rounded-t-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 ${
-                    activeTab === tab.id
-                      ? 'bg-primary-300 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-primary-100'
-                  } disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-gray-100`}
-                  onClick={() => {
-                    if (!tab.disabled) {
-                      setActiveTab(tab.id);
-                    }
-                  }}
-                  onKeyDown={(event) => handleTabKeyDown(event, tab.id)}
+                { step: '1', label: 'Pièces du logement', active: activeTab === 'pieces' },
+                { step: '2', label: 'Grille de contrôle', active: activeTab === 'grid' },
+                {
+                  step: '3',
+                  label: 'Résultat',
+                  active: activeTab === 'result',
+                  inactive: !hasSimulationResult,
+                },
+              ].map((item) => (
+                <div
+                  key={item.step}
+                  className={`rounded-card border p-4 ${
+                    item.active
+                      ? 'border-primary-300 bg-primary-100 text-primary-500'
+                      : 'border-gray-200 bg-white text-gray-700'
+                  } ${item.inactive ? 'opacity-60' : ''}`}
+                  aria-current={item.active ? 'step' : undefined}
                 >
-                  {tab.label}
-                </button>
+                  <span className="text-sm font-semibold uppercase tracking-wide">
+                    Étape {item.step}
+                  </span>
+                  <p className="mt-1 text-sm font-semibold">{item.label}</p>
+                </div>
               ))}
             </div>
-          </div>
 
-          {activeTab === 'pieces' && (
-            <div
-              id="simulation-panel-pieces"
-              role="tabpanel"
-              aria-labelledby="simulation-tab-pieces"
-              className="space-y-6"
-            >
-              <Card hover={false} className="p-5 md:p-6">
-                <h2 className="mb-4">Résumé du logement</h2>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <div>
-                    <p className="text-sm font-medium text-textLight">Surface totale renseignée</p>
-                    <p className="mt-1 text-sm font-semibold text-gray-900">
-                      {formatSurface(logement?.surface_totale)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-textLight">Pièces d’habitation</p>
-                    <p className="mt-1 text-sm font-semibold text-gray-900">
-                      {logement?.nb_pieces_habitation ?? 'Non renseigné'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-textLight">Capacité demandée</p>
-                    <p className="mt-1 text-sm font-semibold text-gray-900">
-                      {grille?.capacite_accueil
-                        ? formatPeopleCount(grille.capacite_accueil)
-                        : 'Non renseigné'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-textLight">Couchages renseignés</p>
-                    <p className="mt-1 text-sm font-semibold text-gray-900">
-                      {formatPeopleCount(totalSleepingCapacity)}
-                    </p>
-                  </div>
-                </div>
-                {pieces.length === 0 && (
-                  <p className="mt-5 rounded-lg bg-primary-100 p-4 text-sm text-primary-500">
-                    Aucune pièce n’a encore été ajoutée à cette simulation.
-                  </p>
-                )}
-              </Card>
-
-              <h2>Pièces du logement</h2>
-
-              {piecePanelMode !== 'closed' && (
-                <div
-                  className="fixed inset-0 z-[70] flex items-center justify-center bg-gray-900/35 px-4 py-6"
-                  onClick={resetPiecePanel}
-                >
-                  <div
-                    role="dialog"
-                    aria-modal="true"
-                    aria-labelledby="piece-modal-title"
-                    className="w-full max-w-lg rounded-card border border-gray-200 bg-white p-5 shadow-card md:p-6"
-                    onClick={(event) => event.stopPropagation()}
+            <div className="border-b border-gray-200">
+              <div role="tablist" aria-label="Étapes de la simulation" className="flex gap-2">
+                {[
+                  { id: 'pieces' as const, label: 'Pièces du logement', disabled: false },
+                  { id: 'grid' as const, label: 'Grille de contrôle', disabled: false },
+                  { id: 'result' as const, label: 'Résultat', disabled: !hasSimulationResult },
+                ].map((tab, index) => (
+                  <button
+                    key={tab.id}
+                    ref={(element) => {
+                      tabRefs.current[index] = element;
+                    }}
+                    type="button"
+                    role="tab"
+                    id={`simulation-tab-${tab.id}`}
+                    aria-selected={activeTab === tab.id}
+                    aria-disabled={tab.disabled ? 'true' : undefined}
+                    aria-controls={`simulation-panel-${tab.id}`}
+                    tabIndex={activeTab === tab.id && !tab.disabled ? 0 : -1}
+                    disabled={tab.disabled}
+                    className={`rounded-t-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 ${
+                      activeTab === tab.id
+                        ? 'bg-primary-300 text-white'
+                        : 'bg-gray-100 text-gray-700 hover:bg-primary-100'
+                    } disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-gray-100`}
+                    onClick={() => {
+                      if (!tab.disabled) {
+                        setActiveTab(tab.id);
+                      }
+                    }}
+                    onKeyDown={(event) => handleTabKeyDown(event, tab.id)}
                   >
-                    <div className="mb-5">
-                      <h3 id="piece-modal-title">
-                        {piecePanelMode === 'edit' ? 'Modifier la pièce' : 'Ajouter une pièce'}
-                      </h3>
-                      <p className="mt-2 text-sm text-gray-700">
-                        Renseignez les informations principales de la pièce.
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {activeTab === 'pieces' && (
+              <div
+                id="simulation-panel-pieces"
+                role="tabpanel"
+                aria-labelledby="simulation-tab-pieces"
+                className="space-y-6"
+              >
+                <Card hover={false} className="p-5 md:p-6">
+                  <h2 className="mb-4">Résumé du logement</h2>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                      <p className="text-sm font-medium text-textLight">
+                        Surface totale renseignée
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-gray-900">
+                        {formatSurface(logement?.surface_totale)}
                       </p>
                     </div>
-
-                    <form className="space-y-5" onSubmit={handlePieceFormSubmit}>
-                      <PieceTypeSelect
-                        value={pieceForm.type}
-                        options={selectablePieceTypes}
-                        groupLabel={selectablePieceTypeGroupLabel}
-                        onChange={(value) => updatePieceFormField('type', value)}
-                      />
-
-                      <div
-                        className="grid gap-5 sm:grid-cols-2"
-                        data-testid="piece-form-fields-grid"
-                      >
-                        {renderModalInputField({
-                          label: 'Surface en m²',
-                          name: 'pieceSurface',
-                          type: 'number',
-                          inputMode: 'decimal',
-                          min: '0',
-                          step: '0.1',
-                          value: pieceForm.surface,
-                          error: pieceFormErrors.surface,
-                          onChange: (event) => updatePieceFormField('surface', event.target.value),
-                        })}
-
-                        {activePieceSupportsSleepingCapacity &&
-                          renderModalInputField({
-                            label: 'Nombre de personnes pouvant dormir dans cette pièce',
-                            name: 'pieceSleepingCapacity',
-                            type: 'number',
-                            inputMode: 'numeric',
-                            min: '1',
-                            value: pieceForm.sleepingCapacity,
-                            error: pieceFormErrors.sleepingCapacity,
-                            onChange: (event) =>
-                              updatePieceFormField('sleepingCapacity', event.target.value),
-                          })}
-                      </div>
-
-                      {activePieceCanHaveExteriorOpening && renderExteriorOpeningToggle()}
-
-                      {pieceValidationIssue && (
-                        <div
-                          className="flex items-start gap-2 rounded-lg border border-alert-200 bg-alert-100 p-3 text-sm text-alert-500"
-                          role="alert"
-                          aria-live="assertive"
-                        >
-                          <AlertCircle
-                            aria-hidden="true"
-                            className="mt-0.5 h-5 w-5 shrink-0 text-alert-400"
-                          />
-                          <p>{pieceValidationIssue.message}</p>
-                        </div>
-                      )}
-
-                      <div className="flex flex-col gap-3 sm:flex-row">
-                        <Button
-                          type="submit"
-                          variant="primary"
-                          className="w-full sm:w-auto"
-                          disabled={isSavingPiece || pieceValidationIssue?.blocking === true}
-                        >
-                          {isSavingPiece
-                            ? 'Enregistrement...'
-                            : piecePanelMode === 'edit'
-                              ? 'Enregistrer les modifications'
-                              : 'Ajouter cette pièce'}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          className="w-full sm:w-auto"
-                          onClick={resetPiecePanel}
-                        >
-                          Annuler
-                        </Button>
-                      </div>
-                    </form>
+                    <div>
+                      <p className="text-sm font-medium text-textLight">Pièces d’habitation</p>
+                      <p className="mt-1 text-sm font-semibold text-gray-900">
+                        {logement?.nb_pieces_habitation ?? 'Non renseigné'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-textLight">Capacité demandée</p>
+                      <p className="mt-1 text-sm font-semibold text-gray-900">
+                        {grille?.capacite_accueil
+                          ? formatPeopleCount(grille.capacite_accueil)
+                          : 'Non renseigné'}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-textLight">Couchages renseignés</p>
+                      <p className="mt-1 text-sm font-semibold text-gray-900">
+                        {formatPeopleCount(totalSleepingCapacity)}
+                      </p>
+                    </div>
                   </div>
+                  {pieces.length === 0 && (
+                    <p className="mt-5 rounded-lg bg-primary-100 p-4 text-sm text-primary-500">
+                      Aucune pièce n’a encore été ajoutée à cette simulation.
+                    </p>
+                  )}
+                </Card>
+
+                <h2>Pièces du logement</h2>
+
+                <div className="space-y-8">
+                  <section className="space-y-4" aria-labelledby="interior-pieces-title">
+                    <h3 id="interior-pieces-title">Pièces intérieures</h3>
+                    {renderPieceGrid(
+                      interiorPieces,
+                      'Ajouter une pièce intérieure',
+                      'CHAMBRE',
+                      'interior'
+                    )}
+                  </section>
+
+                  <section
+                    className="space-y-4 border-t border-gray-200 pt-8"
+                    aria-labelledby="exterior-pieces-title"
+                  >
+                    <h3 id="exterior-pieces-title">Espaces extérieurs</h3>
+                    {renderPieceGrid(
+                      exteriorPieces,
+                      'Ajouter un espace extérieur',
+                      exteriorCreateDefaultType,
+                      'exterior',
+                      availableExteriorPieceTypesForCreation.length > 0
+                    )}
+                  </section>
                 </div>
-              )}
 
-              <div className="space-y-8">
-                <section className="space-y-4" aria-labelledby="interior-pieces-title">
-                  <h3 id="interior-pieces-title">Pièces intérieures</h3>
-                  {renderPieceGrid(
-                    interiorPieces,
-                    'Ajouter une pièce intérieure',
-                    'CHAMBRE',
-                    'interior'
-                  )}
-                </section>
-
-                <section
-                  className="space-y-4 border-t border-gray-200 pt-8"
-                  aria-labelledby="exterior-pieces-title"
-                >
-                  <h3 id="exterior-pieces-title">Espaces extérieurs</h3>
-                  {renderPieceGrid(
-                    exteriorPieces,
-                    'Ajouter un espace extérieur',
-                    exteriorCreateDefaultType,
-                    'exterior',
-                    availableExteriorPieceTypesForCreation.length > 0
-                  )}
-                </section>
+                <div className="flex justify-end border-t border-gray-100 pt-6">
+                  <Button
+                    type="button"
+                    variant="primary"
+                    className="w-full sm:w-auto"
+                    onClick={handleGoToGrid}
+                  >
+                    Passer à la grille de contrôle
+                  </Button>
+                </div>
               </div>
+            )}
 
-              <div className="flex justify-end border-t border-gray-100 pt-6">
-                <Button
-                  type="button"
-                  variant="primary"
-                  className="w-full sm:w-auto"
-                  onClick={handleGoToGrid}
-                >
-                  Passer à la grille de contrôle
-                </Button>
+            {activeTab === 'grid' && (
+              <div id="simulation-panel-grid" role="tabpanel" aria-labelledby="simulation-tab-grid">
+                {gridModelStatus === 'success' && gridSummary ? (
+                  <SimulationGridTab
+                    grid={gridSummary}
+                    simulationId={simulationId ?? ''}
+                    responses={grille?.reponses ?? []}
+                    requestedCategory={grille?.categorie_demandee}
+                    criterionFilterNumbers={criterionFilterNumbers}
+                    onResponseSaved={handleResponseSaved}
+                    onClearCriterionFilter={() => setCriterionFilterNumbers([])}
+                    onResultReady={showSimulationResult}
+                    onResultReset={resetResultOnly}
+                  />
+                ) : (
+                  <SimulationGridModelState
+                    status={gridModelStatus}
+                    onRetry={() => void loadGridModel()}
+                  />
+                )}
               </div>
-            </div>
-          )}
+            )}
 
-          {activeTab === 'grid' && (
-            <div id="simulation-panel-grid" role="tabpanel" aria-labelledby="simulation-tab-grid">
-              {gridModelStatus === 'success' && gridSummary ? (
-                <SimulationGridTab
-                  grid={gridSummary}
-                  simulationId={simulationId ?? ''}
-                  responses={grille?.reponses ?? []}
-                  requestedCategory={grille?.categorie_demandee}
-                  criterionFilterNumbers={criterionFilterNumbers}
-                  onResponseSaved={handleResponseSaved}
-                  onClearCriterionFilter={() => setCriterionFilterNumbers([])}
-                  onResultReady={showSimulationResult}
-                  onResultReset={resetResultOnly}
-                />
-              ) : (
-                <SimulationGridModelState
-                  status={gridModelStatus}
-                  onRetry={() => void loadGridModel()}
-                />
-              )}
-            </div>
-          )}
+            {activeTab === 'result' && (
+              <div
+                id="simulation-panel-result"
+                role="tabpanel"
+                aria-labelledby="simulation-tab-result"
+                className="scroll-mt-28 space-y-6"
+              >
+                {gridSummary && resultState?.kind === 'verification' && (
+                  <SimulationVerificationIssues
+                    verification={resultState.verification}
+                    sleepingCapacityCount={totalSleepingCapacity}
+                    requestedCapacity={grille?.capacite_accueil}
+                    onShowCriteria={showCriteriaInGrid}
+                    onReturnToPieces={() => setActiveTab('pieces')}
+                  />
+                )}
 
-          {activeTab === 'result' && (
-            <div
-              id="simulation-panel-result"
-              role="tabpanel"
-              aria-labelledby="simulation-tab-result"
-              className="scroll-mt-28 space-y-6"
-            >
-              {gridSummary && resultState?.kind === 'verification' && (
-                <SimulationVerificationIssues
-                  verification={resultState.verification}
-                  sleepingCapacityCount={totalSleepingCapacity}
-                  requestedCapacity={grille?.capacite_accueil}
-                  onShowCriteria={showCriteriaInGrid}
-                  onReturnToPieces={() => setActiveTab('pieces')}
-                />
-              )}
-
-              {gridSummary && resultState?.kind === 'rapport' && (
-                <SimulationResultPanel
-                  grid={gridSummary}
-                  rapport={resultState.rapport}
-                  requestedCategory={grille?.categorie_demandee}
-                  onShowCriteria={showCriteriaInGrid}
-                  onReturnToPieces={() => setActiveTab('pieces')}
-                  onReturnToGrid={returnToFullGrid}
-                />
-              )}
-            </div>
-          )}
+                {gridSummary && resultState?.kind === 'rapport' && (
+                  <SimulationResultPanel
+                    grid={gridSummary}
+                    rapport={resultState.rapport}
+                    requestedCategory={grille?.categorie_demandee}
+                    onShowCriteria={showCriteriaInGrid}
+                    onReturnToPieces={() => setActiveTab('pieces')}
+                    onReturnToGrid={returnToFullGrid}
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      {renderPieceModal()}
+    </>
   );
 }
