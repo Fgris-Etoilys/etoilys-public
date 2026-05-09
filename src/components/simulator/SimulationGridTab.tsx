@@ -24,14 +24,20 @@ import {
   type VerificationDto,
 } from '../../utils/simulatorApi';
 
+export type SimulationResultState =
+  | { kind: 'verification'; verification: VerificationDto }
+  | { kind: 'rapport'; rapport: RapportProvisoireDto };
+
 interface SimulationGridTabProps {
   grid: GridSummary;
   simulationId: string;
   responses: ReponseDto[];
   requestedCategory?: string;
+  criterionFilterNumbers: number[];
   onResponseSaved: (response: ReponseDto) => void;
-  onReturnToPieces: () => void;
-  onResultVisibleChange: (visible: boolean) => void;
+  onClearCriterionFilter: () => void;
+  onResultReady: (result: SimulationResultState) => void;
+  onResultReset: () => void;
 }
 
 interface ProgressSummary {
@@ -164,9 +170,16 @@ function buildSectionLinkGroups(chapters: GridChapter[]): SectionLinkGroup[] {
   }));
 }
 
-function filterGridChapters(chapters: GridChapter[], query: string): GridChapter[] {
+function filterGridChapters(
+  chapters: GridChapter[],
+  query: string,
+  criterionFilterNumbers: number[],
+  isCriterionFilterActive: boolean
+): GridChapter[] {
   const normalizedQuery = query.trim().toLocaleLowerCase('fr-FR');
-  if (!normalizedQuery) {
+  const filteredCriterionNumbers = new Set(criterionFilterNumbers);
+
+  if (!normalizedQuery && !isCriterionFilterActive) {
     return chapters;
   }
 
@@ -176,11 +189,16 @@ function filterGridChapters(chapters: GridChapter[], query: string): GridChapter
         .map((subChapter) => {
           const rubriques = subChapter.rubriques
             .map((rubrique) => {
-              const criteres = rubrique.criteres.filter(
-                (criterion) =>
+              const criteres = rubrique.criteres.filter((criterion) => {
+                const matchesCriterionFilter =
+                  !isCriterionFilterActive || filteredCriterionNumbers.has(criterion.num_critere);
+                const matchesSearch =
+                  !normalizedQuery ||
                   String(criterion.num_critere).includes(normalizedQuery) ||
-                  criterion.libelle.toLocaleLowerCase('fr-FR').includes(normalizedQuery)
-              );
+                  criterion.libelle.toLocaleLowerCase('fr-FR').includes(normalizedQuery);
+
+                return matchesCriterionFilter && matchesSearch;
+              });
 
               return { ...rubrique, criteres };
             })
@@ -663,76 +681,102 @@ function CriteriaList({
   );
 }
 
-function SimulationVerificationIssues({
-  grid,
+export function SimulationVerificationIssues({
   verification,
-  onGoToCriterion,
+  sleepingCapacityCount,
+  requestedCapacity,
+  onShowCriteria,
+  onReturnToPieces,
 }: {
-  grid: GridSummary;
   verification: VerificationDto;
-  onGoToCriterion: (number: number) => void;
+  sleepingCapacityCount: number;
+  requestedCapacity: number | undefined;
+  onShowCriteria: (numbers: number[]) => void;
+  onReturnToPieces: () => void;
 }) {
   const requiredNumbers = verification.criteres_obligatoires_a_cocher?.criteres_non_coches ?? [];
   const optionalNumbers = verification.criteres_optionnels_a_cocher?.criteres_non_coches ?? [];
-  const hasBlockers = verification.nb_couchages_suffisants === false || requiredNumbers.length > 0;
+  const criterionNumbers = [...new Set([...requiredNumbers, ...optionalNumbers])];
+  const hasSleepingCapacityIssue = verification.nb_couchages_suffisants === false;
+
+  function formatPeopleCount(value: number): string {
+    return `${value} ${value > 1 ? 'personnes' : 'personne'}`;
+  }
 
   return (
-    <Card hover={false} className="border-alert-200 bg-alert-100 p-4 md:p-5">
-      <h3 className="mb-3 text-gray-900">Il reste des éléments à compléter</h3>
-      <p className="mb-4 text-sm text-alert-500">
-        {hasBlockers
-          ? 'Des points bloquants restent à traiter avant le calcul du résultat.'
-          : 'Aucun point bloquant n’est remonté dans cette vérification.'}
-      </p>
-
-      <div className="space-y-6">
-        {hasBlockers && (
-          <div className="space-y-4">
-            <h4>Points bloquants</h4>
-            {verification.nb_couchages_suffisants === false && (
-              <p className="rounded-lg bg-white p-3 text-sm text-alert-500">
-                Les couchages renseignés ne semblent pas suffisants pour la capacité d’accueil
-                demandée.
-              </p>
-            )}
-            <CriteriaList
-              grid={grid}
-              title="Certains critères obligatoires n’ont pas encore été renseignés."
-              criterionNumbers={requiredNumbers}
-              onGoToCriterion={onGoToCriterion}
-            />
-          </div>
-        )}
-
-        {optionalNumbers.length > 0 && (
-          <div className="space-y-4 rounded-lg border border-warning-200 bg-warning-100 p-4">
-            <h4>Critères optionnels</h4>
-            <p className="text-sm text-gray-700">
-              Ces critères peuvent améliorer votre score, mais ne sont pas tous obligatoires.
-            </p>
-            <CriteriaList
-              grid={grid}
-              title="Critères optionnels non renseignés"
-              criterionNumbers={optionalNumbers}
-              onGoToCriterion={onGoToCriterion}
-            />
-          </div>
-        )}
+    <div className="space-y-4">
+      <div
+        className="rounded-card border border-alert-200 bg-alert-100 p-4 text-sm font-semibold text-alert-500 md:p-5"
+        role="alert"
+      >
+        Un ou plusieurs problèmes ont été détectés et doivent être corrigés avant de pouvoir générer
+        le rapport.
       </div>
-    </Card>
+
+      <Card hover={false} className="p-4 md:p-5">
+        <h3 className="mb-4 text-gray-900">Problèmes à corriger</h3>
+        <div className="divide-y divide-gray-200">
+          {criterionNumbers.length > 0 && (
+            <div className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-gray-700">
+                {criterionNumbers.length}{' '}
+                {criterionNumbers.length > 1
+                  ? 'critères n’ont pas encore été renseignés'
+                  : 'critère n’a pas encore été renseigné'}
+                .
+              </p>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="w-full sm:w-auto"
+                onClick={() => onShowCriteria(criterionNumbers)}
+              >
+                Afficher dans la grille
+              </Button>
+            </div>
+          )}
+
+          {hasSleepingCapacityIssue && (
+            <div className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between">
+              <p className="text-sm text-gray-700">
+                Les pièces que vous avez renseignées permettent actuellement d’accueillir{' '}
+                {formatPeopleCount(sleepingCapacityCount)}, alors que la capacité d’accueil indiquée
+                est de{' '}
+                {requestedCapacity === undefined
+                  ? 'la simulation'
+                  : formatPeopleCount(requestedCapacity)}
+                . Vérifiez les couchages saisis dans les pièces ou corrigez la capacité d’accueil.
+              </p>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="w-full shrink-0 lg:w-auto"
+                onClick={onReturnToPieces}
+              >
+                Retour aux pièces
+              </Button>
+            </div>
+          )}
+        </div>
+      </Card>
+    </div>
   );
 }
 
-function SimulationResultPanel({
+export function SimulationResultPanel({
   grid,
   rapport,
-  onGoToCriterion,
+  onShowCriteria,
   onReturnToPieces,
+  onReturnToGrid,
 }: {
   grid: GridSummary;
   rapport: RapportProvisoireDto;
-  onGoToCriterion: (number: number) => void;
+  onShowCriteria: (numbers: number[]) => void;
   onReturnToPieces: () => void;
+  onReturnToGrid: () => void;
 }) {
   const success = rapport.resultat === true;
   const invalidRequiredCriteria = rapport.criteres_obligatoires_non_valides ?? [];
@@ -780,7 +824,7 @@ function SimulationResultPanel({
             grid={grid}
             title="Critères obligatoires non validés"
             criterionNumbers={invalidRequiredCriteria}
-            onGoToCriterion={onGoToCriterion}
+            onGoToCriterion={(number) => onShowCriteria([number])}
           />
         </div>
       )}
@@ -790,7 +834,7 @@ function SimulationResultPanel({
           type="button"
           variant="secondary"
           className="w-full sm:w-auto"
-          onClick={() => scrollToElement('grid-criteria-start')}
+          onClick={onReturnToGrid}
         >
           Modifier mes réponses
         </Button>
@@ -812,17 +856,17 @@ export default function SimulationGridTab({
   simulationId,
   responses,
   requestedCategory,
+  criterionFilterNumbers,
   onResponseSaved,
-  onReturnToPieces,
-  onResultVisibleChange,
+  onClearCriterionFilter,
+  onResultReady,
+  onResultReset,
 }: SimulationGridTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [optimisticResponsesByCriterionNumber, setOptimisticResponsesByCriterionNumber] = useState(
     () => new Map<number, ReponseDto>()
   );
   const [responseSaveErrorMessage, setResponseSaveErrorMessage] = useState<string | null>(null);
-  const [verification, setVerification] = useState<VerificationDto | null>(null);
-  const [rapport, setRapport] = useState<RapportProvisoireDto | null>(null);
   const [isCheckingResult, setIsCheckingResult] = useState(false);
   const [resultError, setResultError] = useState<string | null>(null);
   const nextSaveRequestIdRef = useRef(0);
@@ -841,9 +885,17 @@ export default function SimulationGridTab({
     [confirmedResponsesByCriterionNumber, optimisticResponsesByCriterionNumber]
   );
   const sectionLinkGroups = useMemo(() => buildSectionLinkGroups(grid.chapitres), [grid]);
+  const displayedCriterionFilterNumbers = criterionFilterNumbers;
+  const isCriterionFilterActive = criterionFilterNumbers.length > 0;
   const filteredChapters = useMemo(
-    () => filterGridChapters(grid.chapitres, searchQuery),
-    [grid, searchQuery]
+    () =>
+      filterGridChapters(
+        grid.chapitres,
+        searchQuery,
+        displayedCriterionFilterNumbers,
+        isCriterionFilterActive
+      ),
+    [displayedCriterionFilterNumbers, grid, isCriterionFilterActive, searchQuery]
   );
   const progress = useMemo(
     () => buildProgressSummary(grid, responsesByCriterionNumber, requestedCategory),
@@ -883,9 +935,7 @@ export default function SimulationGridTab({
       return nextResponses;
     });
     setResponseSaveErrorMessage(null);
-    setVerification(null);
-    setRapport(null);
-    onResultVisibleChange(false);
+    onResultReset();
 
     for (let attempt = 1; attempt <= RESPONSE_SAVE_MAX_ATTEMPTS; attempt += 1) {
       try {
@@ -936,25 +986,21 @@ export default function SimulationGridTab({
     setIsCheckingResult(true);
     setResultError(null);
     setResponseSaveErrorMessage(null);
-    setVerification(null);
+    onResultReset();
 
     try {
       const isValid = await verifySimulation(simulationId);
       if (!isValid) {
         const nextVerification = await getVerification(simulationId);
-        setVerification(nextVerification);
-        setRapport(null);
-        onResultVisibleChange(false);
+        onResultReady({ kind: 'verification', verification: nextVerification });
         return;
       }
 
       const nextRapport = await getRapport(simulationId);
-      setRapport(nextRapport);
-      setVerification(null);
-      onResultVisibleChange(true);
+      onResultReady({ kind: 'rapport', rapport: nextRapport });
     } catch {
       setResultError('Le résultat n’a pas pu être calculé pour le moment. Veuillez réessayer.');
-      onResultVisibleChange(false);
+      onResultReset();
     } finally {
       setIsCheckingResult(false);
     }
@@ -981,23 +1027,6 @@ export default function SimulationGridTab({
         </div>
       )}
 
-      {verification && (
-        <SimulationVerificationIssues
-          grid={grid}
-          verification={verification}
-          onGoToCriterion={goToCriterion}
-        />
-      )}
-
-      {rapport && (
-        <SimulationResultPanel
-          grid={grid}
-          rapport={rapport}
-          onGoToCriterion={goToCriterion}
-          onReturnToPieces={onReturnToPieces}
-        />
-      )}
-
       {resultError && (
         <div className="rounded-card border border-alert-200 bg-alert-100 p-4 text-sm text-alert-500">
           {resultError}
@@ -1015,6 +1044,30 @@ export default function SimulationGridTab({
             placeholder="Ex. Critère 23 ou télévision"
             onChange={(event) => setSearchQuery(event.target.value)}
           />
+
+          {isCriterionFilterActive && (
+            <div
+              className="flex flex-col gap-3 rounded-card border border-primary-200 bg-primary-100 p-4 text-sm text-primary-500 sm:flex-row sm:items-center sm:justify-between"
+              role="status"
+            >
+              <p>
+                La grille affiche uniquement {displayedCriterionFilterNumbers.length}{' '}
+                {displayedCriterionFilterNumbers.length > 1
+                  ? 'critères signalés dans le résultat'
+                  : 'critère signalé dans le résultat'}
+                .
+              </p>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="w-full border-primary-300 bg-white sm:w-auto"
+                onClick={onClearCriterionFilter}
+              >
+                Afficher toute la grille
+              </Button>
+            </div>
+          )}
 
           <div id="grid-criteria-start">
             <GridChapterSection

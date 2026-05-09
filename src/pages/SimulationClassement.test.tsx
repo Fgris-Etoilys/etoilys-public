@@ -193,6 +193,7 @@ describe('SimulationClassement', () => {
     expect(screen.getByText(/3 étoiles/i)).toBeInTheDocument();
     expect(screen.getAllByText(/4 personnes/i)[0]).toBeInTheDocument();
     expect(screen.getByText(/surface totale renseignée/i)).toBeInTheDocument();
+    expect(screen.queryByText(/pièces ajoutées/i)).not.toBeInTheDocument();
     expect(screen.getByText(/32 m²/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /pièces intérieures/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /espaces extérieurs/i })).toBeInTheDocument();
@@ -1161,7 +1162,8 @@ describe('SimulationClassement', () => {
   });
 
   it('distingue les blocages et les critères optionnels lors de la vérification', async () => {
-    mockFetchJsonSequence([
+    const scrollIntoViewMock = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const fetchMock = mockFetchJsonSequence([
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
       { body: gridModelResponse },
@@ -1180,6 +1182,13 @@ describe('SimulationClassement', () => {
           },
         },
       },
+      {
+        body: {
+          num_critere: 5,
+          statut_validation: 'VALIDE',
+          statut_critere: 'OPTIONNEL',
+        },
+      },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -1190,21 +1199,55 @@ describe('SimulationClassement', () => {
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );
 
-    expect(await screen.findByRole('heading', { name: /points bloquants/i })).toBeInTheDocument();
+    expect(await screen.findByRole('tab', { name: /résultat/i })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
+    await waitFor(() => {
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+    });
     expect(
-      screen.getByText(/couchages renseignés ne semblent pas suffisants/i)
+      await screen.findByText(/un ou plusieurs problèmes ont été détectés/i)
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /critère 95/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /^critères optionnels$/i })).toBeInTheDocument();
+    expect(screen.getByText(/2 critères n’ont pas encore été renseignés/i)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /ces critères peuvent améliorer votre score, mais ne sont pas tous obligatoires/i
-      )
+      screen.getByText(/permettent actuellement d’accueillir 2 personnes/i)
     ).toBeInTheDocument();
+    expect(screen.getByText(/indiquée est de 4 personnes/i)).toBeInTheDocument();
     expect(screen.queryByText(/commentaire/i)).not.toBeInTheDocument();
+    expect(fetchMock.mock.calls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/verifier`);
+    expect(fetchMock.mock.calls[4]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/verification`
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /afficher dans la grille/i }));
+
+    expect(await screen.findByLabelText(/rechercher un critère/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/uniquement 2 critères signalés dans le résultat/i)
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('criterion-card-5')).toBeInTheDocument();
+    expect(screen.getByTestId('criterion-card-95')).toBeInTheDocument();
+    expect(screen.queryByTestId('criterion-card-6')).not.toBeInTheDocument();
+
+    fireEvent.click(
+      within(screen.getByTestId('criterion-card-5')).getByRole('button', { name: /^oui$/i })
+    );
+
+    expect(
+      await screen.findByText(/uniquement 2 critères signalés dans le résultat/i)
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('criterion-card-5')).toBeInTheDocument();
+    expect(screen.getByTestId('criterion-card-95')).toBeInTheDocument();
+    expect(screen.queryByTestId('criterion-card-6')).not.toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('button', { name: /afficher toute la grille/i }));
+    expect(await screen.findByTestId('criterion-card-6')).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
   });
 
-  it('affiche le rapport sans remplacer la grille', async () => {
+  it('affiche le rapport dans l’onglet résultat et permet de revenir à la grille', async () => {
     mockFetchJsonSequence([
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
@@ -1222,6 +1265,13 @@ describe('SimulationClassement', () => {
           criteres_obligatoires_non_valides: [],
         },
       },
+      {
+        body: {
+          num_critere: 5,
+          statut_validation: 'VALIDE',
+          statut_critere: 'OPTIONNEL',
+        },
+      },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -1232,11 +1282,29 @@ describe('SimulationClassement', () => {
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );
 
+    expect(await screen.findByRole('tab', { name: /résultat/i })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
     expect(await screen.findByText(/résultat de la simulation/i)).toBeInTheDocument();
     expect(screen.getByText(/estimation basée sur vos réponses/i)).toBeInTheDocument();
     expect(screen.getByText(/160 \/ 140/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/rechercher un critère/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /modifier mes réponses/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /retour aux pièces/i })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /modifier mes réponses/i }));
+
+    expect(await screen.findByLabelText(/rechercher un critère/i)).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /grille de contrôle/i })).toHaveAttribute(
+      'aria-selected',
+      'true'
+    );
+
+    const optionalCriterion = screen.getByTestId('criterion-card-5');
+    fireEvent.click(within(optionalCriterion).getByRole('button', { name: /^oui$/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
+    });
   });
 });

@@ -20,7 +20,11 @@ import {
   Tv,
   Utensils,
 } from 'lucide-react';
-import SimulationGridTab from '../components/simulator/SimulationGridTab';
+import SimulationGridTab, {
+  SimulationResultPanel,
+  SimulationVerificationIssues,
+  type SimulationResultState,
+} from '../components/simulator/SimulationGridTab';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Tooltip from '../components/ui/Tooltip';
@@ -52,7 +56,7 @@ import {
 
 type LoadStatus = 'loading' | 'success' | 'error';
 type GridModelStatus = 'idle' | 'loading' | 'success' | 'error';
-type ActiveTab = 'pieces' | 'grid';
+type ActiveTab = 'pieces' | 'grid' | 'result';
 type PiecePanelMode = 'closed' | 'create' | 'edit';
 type PieceTypeScope = 'interior' | 'exterior';
 type FeedbackType = 'success' | 'error';
@@ -438,7 +442,9 @@ export default function SimulationClassement() {
   const [isSavingPiece, setIsSavingPiece] = useState(false);
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
   const [deletingPieceId, setDeletingPieceId] = useState<string | null>(null);
-  const [hasSimulationResult, setHasSimulationResult] = useState(false);
+  const [resultState, setResultState] = useState<SimulationResultState | null>(null);
+  const [criterionFilterNumbers, setCriterionFilterNumbers] = useState<number[]>([]);
+  const resultPanelRef = useRef<HTMLDivElement | null>(null);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const loadSimulation = useCallback(async () => {
@@ -489,6 +495,20 @@ export default function SimulationClassement() {
     }
   }, [activeTab, gridModelStatus, loadGridModel]);
 
+  useEffect(() => {
+    if (activeTab !== 'result' || resultState === null) {
+      return;
+    }
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      resultPanelRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [activeTab, resultState]);
+
   const pieces = useMemo(() => logement?.pieces ?? [], [logement?.pieces]);
   const interiorPieces = useMemo(
     () => pieces.filter((piece) => !isExteriorPiece(piece.type_piece)),
@@ -499,6 +519,7 @@ export default function SimulationClassement() {
     [pieces]
   );
   const totalSleepingCapacity = useMemo(() => getTotalSleepingCapacity(pieces), [pieces]);
+  const hasSimulationResult = resultState !== null;
   const activePieceSupportsSleepingCapacity = canPieceHaveSleepingCapacity(pieceForm.type);
   const activePieceCanHaveExteriorOpening = canPieceHaveExteriorOpening(pieceForm.type);
   const grille = simulation?.grille;
@@ -636,9 +657,42 @@ export default function SimulationClassement() {
     return Object.keys(nextErrors).length === 0;
   }
 
+  function resetSimulationResult() {
+    setResultState(null);
+    setCriterionFilterNumbers([]);
+    setActiveTab((currentTab) => (currentTab === 'result' ? 'grid' : currentTab));
+  }
+
+  function resetResultOnly() {
+    setResultState(null);
+    setActiveTab((currentTab) => (currentTab === 'result' ? 'grid' : currentTab));
+  }
+
+  function showSimulationResult(result: SimulationResultState) {
+    setResultState(result);
+    setCriterionFilterNumbers([]);
+    setActiveTab('result');
+  }
+
+  function showCriteriaInGrid(numbers: number[]) {
+    setCriterionFilterNumbers([...new Set(numbers)].sort((first, second) => first - second));
+    setActiveTab('grid');
+    window.setTimeout(() => {
+      document.getElementById('grid-criteria-start')?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    }, 0);
+  }
+
+  function returnToFullGrid() {
+    setCriterionFilterNumbers([]);
+    setActiveTab('grid');
+  }
+
   async function applyPieceMutationResult(nextLogement: LogementDto): Promise<boolean> {
     setLogement(nextLogement);
-    setHasSimulationResult(false);
+    resetSimulationResult();
 
     if (!simulationId) {
       return false;
@@ -740,14 +794,22 @@ export default function SimulationClassement() {
     }
   }
 
-  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    const lastIndex = tabRefs.current.length - 1;
-    let nextIndex = index;
+  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, tabId: ActiveTab) {
+    const enabledTabs: ActiveTab[] = hasSimulationResult
+      ? ['pieces', 'grid', 'result']
+      : ['pieces', 'grid'];
+    const currentIndex = enabledTabs.indexOf(tabId);
+    if (currentIndex < 0) {
+      return;
+    }
+
+    const lastIndex = enabledTabs.length - 1;
+    let nextIndex = currentIndex;
 
     if (event.key === 'ArrowRight') {
-      nextIndex = index === lastIndex ? 0 : index + 1;
+      nextIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
     } else if (event.key === 'ArrowLeft') {
-      nextIndex = index === 0 ? lastIndex : index - 1;
+      nextIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
     } else if (event.key === 'Home') {
       nextIndex = 0;
     } else if (event.key === 'End') {
@@ -757,9 +819,10 @@ export default function SimulationClassement() {
     }
 
     event.preventDefault();
-    const nextTab = nextIndex === 0 ? 'pieces' : 'grid';
+    const nextTab = enabledTabs[nextIndex] ?? 'pieces';
+    const nextTabRefIndex = ['pieces', 'grid', 'result'].indexOf(nextTab);
     setActiveTab(nextTab);
-    tabRefs.current[nextIndex]?.focus();
+    tabRefs.current[nextTabRefIndex]?.focus();
   }
 
   function handleGoToGrid() {
@@ -777,6 +840,7 @@ export default function SimulationClassement() {
   }
 
   function handleResponseSaved(savedResponse: ReponseDto) {
+    resetResultOnly();
     setSimulation((currentSimulation) => {
       if (!currentSimulation?.grille || savedResponse.num_critere === undefined) {
         return currentSimulation;
@@ -1139,7 +1203,7 @@ export default function SimulationClassement() {
               {
                 step: '3',
                 label: 'Résultat',
-                active: hasSimulationResult,
+                active: activeTab === 'result',
                 inactive: !hasSimulationResult,
               },
             ].map((item) => (
@@ -1163,8 +1227,9 @@ export default function SimulationClassement() {
           <div className="border-b border-gray-200">
             <div role="tablist" aria-label="Étapes de la simulation" className="flex gap-2">
               {[
-                { id: 'pieces' as const, label: 'Pièces du logement' },
-                { id: 'grid' as const, label: 'Grille de contrôle' },
+                { id: 'pieces' as const, label: 'Pièces du logement', disabled: false },
+                { id: 'grid' as const, label: 'Grille de contrôle', disabled: false },
+                { id: 'result' as const, label: 'Résultat', disabled: !hasSimulationResult },
               ].map((tab, index) => (
                 <button
                   key={tab.id}
@@ -1175,15 +1240,21 @@ export default function SimulationClassement() {
                   role="tab"
                   id={`simulation-tab-${tab.id}`}
                   aria-selected={activeTab === tab.id}
+                  aria-disabled={tab.disabled ? 'true' : undefined}
                   aria-controls={`simulation-panel-${tab.id}`}
-                  tabIndex={activeTab === tab.id ? 0 : -1}
+                  tabIndex={activeTab === tab.id && !tab.disabled ? 0 : -1}
+                  disabled={tab.disabled}
                   className={`rounded-t-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 ${
                     activeTab === tab.id
                       ? 'bg-primary-300 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-primary-100'
-                  }`}
-                  onClick={() => setActiveTab(tab.id)}
-                  onKeyDown={(event) => handleTabKeyDown(event, index)}
+                  } disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-gray-100`}
+                  onClick={() => {
+                    if (!tab.disabled) {
+                      setActiveTab(tab.id);
+                    }
+                  }}
+                  onKeyDown={(event) => handleTabKeyDown(event, tab.id)}
                 >
                   {tab.label}
                 </button>
@@ -1213,16 +1284,12 @@ export default function SimulationClassement() {
             >
               <Card hover={false} className="p-5 md:p-6">
                 <h2 className="mb-4">Résumé du logement</h2>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   <div>
                     <p className="text-sm font-medium text-textLight">Surface totale renseignée</p>
                     <p className="mt-1 text-sm font-semibold text-gray-900">
                       {formatSurface(logement?.surface_totale)}
                     </p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-textLight">Pièces ajoutées</p>
-                    <p className="mt-1 text-sm font-semibold text-gray-900">{pieces.length}</p>
                   </div>
                   <div>
                     <p className="text-sm font-medium text-textLight">Pièces d’habitation</p>
@@ -1403,14 +1470,46 @@ export default function SimulationClassement() {
                   simulationId={simulationId ?? ''}
                   responses={grille?.reponses ?? []}
                   requestedCategory={grille?.categorie_demandee}
+                  criterionFilterNumbers={criterionFilterNumbers}
                   onResponseSaved={handleResponseSaved}
-                  onReturnToPieces={() => setActiveTab('pieces')}
-                  onResultVisibleChange={setHasSimulationResult}
+                  onClearCriterionFilter={() => setCriterionFilterNumbers([])}
+                  onResultReady={showSimulationResult}
+                  onResultReset={resetResultOnly}
                 />
               ) : (
                 <SimulationGridModelState
                   status={gridModelStatus}
                   onRetry={() => void loadGridModel()}
+                />
+              )}
+            </div>
+          )}
+
+          {activeTab === 'result' && (
+            <div
+              ref={resultPanelRef}
+              id="simulation-panel-result"
+              role="tabpanel"
+              aria-labelledby="simulation-tab-result"
+              className="scroll-mt-28 space-y-6"
+            >
+              {gridSummary && resultState?.kind === 'verification' && (
+                <SimulationVerificationIssues
+                  verification={resultState.verification}
+                  sleepingCapacityCount={totalSleepingCapacity}
+                  requestedCapacity={grille?.capacite_accueil}
+                  onShowCriteria={showCriteriaInGrid}
+                  onReturnToPieces={() => setActiveTab('pieces')}
+                />
+              )}
+
+              {gridSummary && resultState?.kind === 'rapport' && (
+                <SimulationResultPanel
+                  grid={gridSummary}
+                  rapport={resultState.rapport}
+                  onShowCriteria={showCriteriaInGrid}
+                  onReturnToPieces={() => setActiveTab('pieces')}
+                  onReturnToGrid={returnToFullGrid}
                 />
               )}
             </div>
