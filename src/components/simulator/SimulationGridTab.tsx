@@ -13,10 +13,7 @@ import {
   type GridSummary,
 } from '../../content/simulatorGrid';
 import {
-  getRapport,
-  getVerification,
   submitResponse,
-  verifySimulation,
   type CriterionStatus,
   type CriterionValidationStatus,
   type RapportProvisoireDto,
@@ -34,10 +31,21 @@ interface SimulationGridTabProps {
   responses: ReponseDto[];
   requestedCategory?: string;
   criterionFilterNumbers: number[];
+  progressSummary: SimulationGridProgressSummary;
+  resultActionLabel: string;
+  isCheckingResult: boolean;
   onResponseSaved: (response: ReponseDto) => void;
   onClearCriterionFilter: () => void;
+  onCheckResult: () => void;
   onResultReady: (result: SimulationResultState) => void;
   onResultReset: () => void;
+}
+
+export interface SimulationGridProgressSummary {
+  answeredCount: number;
+  totalCount: number;
+  remainingCount: number;
+  missingMandatoryCount: number;
 }
 
 interface SectionLink {
@@ -941,8 +949,12 @@ export default function SimulationGridTab({
   responses,
   requestedCategory,
   criterionFilterNumbers,
+  progressSummary,
+  resultActionLabel,
+  isCheckingResult,
   onResponseSaved,
   onClearCriterionFilter,
+  onCheckResult,
   onResultReady,
   onResultReset,
 }: SimulationGridTabProps) {
@@ -951,8 +963,6 @@ export default function SimulationGridTab({
     () => new Map<number, ReponseDto>()
   );
   const [responseSaveErrorMessage, setResponseSaveErrorMessage] = useState<string | null>(null);
-  const [isCheckingResult, setIsCheckingResult] = useState(false);
-  const [resultError, setResultError] = useState<string | null>(null);
   const nextSaveRequestIdRef = useRef(0);
   const latestSaveRequestIdsByCriterionNumberRef = useRef(new Map<number, number>());
 
@@ -1051,32 +1061,7 @@ export default function SimulationGridTab({
     setResponseSaveErrorMessage(RESPONSE_SAVE_ERROR_MESSAGE);
   }
 
-  async function handleCheckResult() {
-    setIsCheckingResult(true);
-    setResultError(null);
-    setResponseSaveErrorMessage(null);
-    onResultReset();
-
-    try {
-      const isValid = await verifySimulation(simulationId);
-      if (!isValid) {
-        const nextVerification = await getVerification(simulationId);
-        onResultReady({ kind: 'verification', verification: nextVerification });
-        return;
-      }
-
-      const nextRapport = await getRapport(simulationId);
-      onResultReady({ kind: 'rapport', rapport: nextRapport });
-    } catch {
-      setResultError('Le résultat n’a pas pu être calculé pour le moment. Veuillez réessayer.');
-      onResultReset();
-    } finally {
-      setIsCheckingResult(false);
-    }
-  }
-
   function handleShowMockResult() {
-    setResultError(null);
     setResponseSaveErrorMessage(null);
     onResultReady({ kind: 'rapport', rapport: MOCK_RESULT_RAPPORT });
   }
@@ -1084,10 +1069,44 @@ export default function SimulationGridTab({
   return (
     <div id="grid-top" className="space-y-6">
       <Card hover={false} className="p-4 md:p-5">
-        <h2 className="mb-3">Grille de contrôle</h2>
-        <p className="max-w-3xl text-sm text-textLight">
-          Les réponses portent sur les équipements réellement présents dans le logement.
-        </p>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h2 className="mb-3">Complétez la grille de contrôle</h2>
+            <p className="max-w-3xl text-sm text-textLight">
+              Répondez aux critères selon les équipements réellement présents dans votre logement.
+              Vous pouvez revenir aux pièces ou modifier vos paramètres à tout moment.
+            </p>
+            <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
+              <div className="rounded-lg bg-gray-50 p-3">
+                <dt className="font-medium text-textLight">Critères renseignés</dt>
+                <dd className="mt-1 font-semibold text-gray-900">
+                  {progressSummary.answeredCount} / {progressSummary.totalCount}
+                </dd>
+              </div>
+              <div className="rounded-lg bg-gray-50 p-3">
+                <dt className="font-medium text-textLight">Critères restants</dt>
+                <dd className="mt-1 font-semibold text-gray-900">
+                  {progressSummary.remainingCount}
+                </dd>
+              </div>
+              <div className="rounded-lg bg-gray-50 p-3">
+                <dt className="font-medium text-textLight">Obligatoires non renseignés</dt>
+                <dd className="mt-1 font-semibold text-gray-900">
+                  {progressSummary.missingMandatoryCount}
+                </dd>
+              </div>
+            </dl>
+          </div>
+          <Button
+            type="button"
+            variant="primary"
+            className="w-full shrink-0 lg:w-auto"
+            disabled={isCheckingResult}
+            onClick={onCheckResult}
+          >
+            {isCheckingResult ? 'Calcul en cours...' : resultActionLabel}
+          </Button>
+        </div>
       </Card>
 
       {responseSaveErrorMessage && (
@@ -1097,12 +1116,6 @@ export default function SimulationGridTab({
           aria-live="assertive"
         >
           {responseSaveErrorMessage}
-        </div>
-      )}
-
-      {resultError && (
-        <div className="rounded-card border border-alert-200 bg-alert-100 p-4 text-sm text-alert-500">
-          {resultError}
         </div>
       )}
 
@@ -1167,10 +1180,11 @@ export default function SimulationGridTab({
               type="button"
               variant="primary"
               className="w-full sm:w-auto"
+              aria-label="Calculer depuis le bas de la grille"
               disabled={isCheckingResult}
-              onClick={() => void handleCheckResult()}
+              onClick={onCheckResult}
             >
-              {isCheckingResult ? 'Calcul du résultat...' : 'Voir le résultat de ma simulation'}
+              {isCheckingResult ? 'Calcul en cours...' : resultActionLabel}
             </Button>
           </div>
         </div>

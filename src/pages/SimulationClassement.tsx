@@ -7,6 +7,7 @@ import {
   Bath,
   BedDouble,
   ChefHat,
+  CheckCircle2,
   ChevronDown,
   Computer,
   DoorOpen,
@@ -24,6 +25,7 @@ import {
 import SimulationGridTab, {
   SimulationResultPanel,
   SimulationVerificationIssues,
+  type SimulationGridProgressSummary,
   type SimulationResultState,
 } from '../components/simulator/SimulationGridTab';
 import Button from '../components/ui/Button';
@@ -32,7 +34,7 @@ import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Tooltip from '../components/ui/Tooltip';
 import { useToast } from '../components/ui/Toast';
-import type { GridSummary } from '../content/simulatorGrid';
+import { getCriterionStatusForCategory, type GridSummary } from '../content/simulatorGrid';
 import {
   createPiece,
   deletePiece,
@@ -60,7 +62,10 @@ import {
   canPieceHaveSleepingCapacity,
   EXTERIOR_PIECE_TYPES,
   FLOOR_OPTIONS,
+  formatFloor,
+  formatHousingType,
   formatPieceType,
+  formatRequestedCategory,
   HOUSING_TYPE_OPTIONS,
   INTERIOR_PIECE_TYPES,
   isHousingType,
@@ -73,6 +78,7 @@ import {
 type LoadStatus = 'loading' | 'success' | 'error';
 type GridModelStatus = 'idle' | 'loading' | 'success' | 'error';
 type ActiveTab = 'pieces' | 'grid' | 'result';
+type ResultStatus = 'none' | 'fresh' | 'stale' | 'checking' | 'error';
 type PiecePanelMode = 'closed' | 'create' | 'edit';
 type PieceTypeScope = 'interior' | 'exterior';
 
@@ -159,6 +165,18 @@ function formatSurface(value: number | undefined): string {
 
 function formatPeopleCount(value: number): string {
   return `${value} ${value > 1 ? 'personnes' : 'personne'}`;
+}
+
+function formatSleepingCount(value: number): string {
+  return `${value} ${value > 1 ? 'couchages' : 'couchage'}`;
+}
+
+function formatSurfaceCompact(value: number | undefined): string {
+  if (value === undefined || !Number.isFinite(value) || value <= 0) {
+    return 'surface non renseignée';
+  }
+
+  return `${value.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} m²`;
 }
 
 function getPieceDisplayName(piece: PieceDto): string {
@@ -304,6 +322,150 @@ function hasPieceWithSurface(pieces: PieceDto[]): boolean {
     (piece) =>
       typeof piece.surface === 'number' && Number.isFinite(piece.surface) && piece.surface > 0
   );
+}
+
+function hasInteriorLivingRoom(pieces: PieceDto[]): boolean {
+  return pieces.some((piece) =>
+    [
+      'SEJOUR',
+      'SALLE_A_MANGER',
+      'SALON',
+      'CHAMBRE',
+      'BUREAU',
+      'CABINE',
+      'PIECE_SANS_OUVRANT',
+    ].includes(piece.type_piece)
+  );
+}
+
+function getPieceCompletionWarnings({
+  pieces,
+  totalSleepingCapacity,
+  requestedCapacity,
+}: {
+  pieces: PieceDto[];
+  totalSleepingCapacity: number;
+  requestedCapacity: number | undefined;
+}): string[] {
+  const warnings: string[] = [];
+
+  if (pieces.length === 0) {
+    warnings.push('Aucune pièce n’a encore été ajoutée.');
+  }
+
+  if (!hasPieceWithSurface(pieces)) {
+    warnings.push('Aucune surface de pièce n’est renseignée.');
+  }
+
+  if (totalSleepingCapacity <= 0) {
+    warnings.push('Aucun couchage n’est renseigné.');
+  }
+
+  if (
+    typeof requestedCapacity === 'number' &&
+    Number.isFinite(requestedCapacity) &&
+    requestedCapacity > 0 &&
+    totalSleepingCapacity > 0 &&
+    totalSleepingCapacity < requestedCapacity
+  ) {
+    warnings.push(
+      `Les couchages renseignés (${totalSleepingCapacity}) sont inférieurs à la capacité d’accueil (${requestedCapacity}).`
+    );
+  }
+
+  if (!pieces.some((piece) => piece.type_piece === 'CUISINE')) {
+    warnings.push('Aucune cuisine n’est renseignée.');
+  }
+
+  if (!pieces.some((piece) => piece.type_piece === 'SALLE_DE_BAIN')) {
+    warnings.push('Aucune salle de bain n’est renseignée.');
+  }
+
+  if (!pieces.some((piece) => piece.type_piece === 'WC')) {
+    warnings.push('Aucun WC n’est renseigné.');
+  }
+
+  if (!hasInteriorLivingRoom(pieces)) {
+    warnings.push('Aucune pièce d’habitation n’est renseignée.');
+  }
+
+  return warnings;
+}
+
+function buildGridProgressSummary(
+  grid: GridSummary | null,
+  responses: ReponseDto[],
+  requestedCategory: string | undefined
+): SimulationGridProgressSummary {
+  if (!grid) {
+    return {
+      answeredCount: 0,
+      totalCount: 0,
+      remainingCount: 0,
+      missingMandatoryCount: 0,
+    };
+  }
+
+  const responsesByCriterionNumber = new Map(
+    responses
+      .filter(
+        (response): response is ReponseDto & { num_critere: number } =>
+          typeof response.num_critere === 'number'
+      )
+      .map((response) => [response.num_critere, response])
+  );
+
+  let totalCount = 0;
+  let answeredCount = 0;
+  let missingMandatoryCount = 0;
+
+  grid.criteriaByNumber.forEach((criterion) => {
+    const response = responsesByCriterionNumber.get(criterion.num_critere);
+    const status =
+      response?.statut_critere ?? getCriterionStatusForCategory(criterion, requestedCategory);
+
+    if (status === 'NON_APPLICABLE') {
+      return;
+    }
+
+    totalCount += 1;
+    const isAnswered = response?.statut_validation !== undefined;
+    if (isAnswered) {
+      answeredCount += 1;
+      return;
+    }
+
+    if (status === 'OBLIGATOIRE' || status === 'ONC') {
+      missingMandatoryCount += 1;
+    }
+  });
+
+  return {
+    answeredCount,
+    totalCount,
+    remainingCount: Math.max(totalCount - answeredCount, 0),
+    missingMandatoryCount,
+  };
+}
+
+function getResultStatusLabel(status: ResultStatus): string {
+  if (status === 'checking') {
+    return 'Calcul en cours';
+  }
+
+  if (status === 'error') {
+    return 'Erreur de calcul';
+  }
+
+  if (status === 'stale') {
+    return 'À recalculer';
+  }
+
+  if (status === 'fresh') {
+    return 'Résultat à jour';
+  }
+
+  return 'Aucun résultat';
 }
 
 function buildPiecePayload(form: PieceFormState, existingPiece?: PieceDto): PieceDto {
@@ -503,6 +665,9 @@ export default function SimulationClassement() {
   const [confirmingDeleteId, setConfirmingDeleteId] = useState<string | null>(null);
   const [deletingPieceId, setDeletingPieceId] = useState<string | null>(null);
   const [resultState, setResultState] = useState<SimulationResultState | null>(null);
+  const [resultStatus, setResultStatus] = useState<ResultStatus>('none');
+  const [resultErrorMessage, setResultErrorMessage] = useState<string | null>(null);
+  const [areParametersExpanded, setAreParametersExpanded] = useState(false);
   const [criterionFilterNumbers, setCriterionFilterNumbers] = useState<number[]>([]);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const latestParameterSaveRequestIdRef = useRef(0);
@@ -549,10 +714,10 @@ export default function SimulationClassement() {
   }, [loadSimulation]);
 
   useEffect(() => {
-    if (activeTab === 'grid' && gridModelStatus === 'idle') {
+    if (loadStatus === 'success' && gridModelStatus === 'idle') {
       void loadGridModel();
     }
-  }, [activeTab, gridModelStatus, loadGridModel]);
+  }, [gridModelStatus, loadGridModel, loadStatus]);
 
   const pieces = useMemo(() => logement?.pieces ?? [], [logement?.pieces]);
   const interiorPieces = useMemo(
@@ -564,10 +729,42 @@ export default function SimulationClassement() {
     [pieces]
   );
   const totalSleepingCapacity = useMemo(() => getTotalSleepingCapacity(pieces), [pieces]);
-  const hasSimulationResult = resultState !== null;
   const activePieceSupportsSleepingCapacity = canPieceHaveSleepingCapacity(pieceForm.type);
   const activePieceCanHaveExteriorOpening = canPieceHaveExteriorOpening(pieceForm.type);
   const grille = simulation?.grille;
+  const hasSimulationResult = resultState !== null;
+  const isCheckingResult = resultStatus === 'checking';
+  const resultActionLabel = hasSimulationResult
+    ? 'Relancer la simulation'
+    : 'Voir le résultat de ma simulation';
+  const resultStatusLabel = getResultStatusLabel(resultStatus);
+  const gridProgressSummary = useMemo(
+    () => buildGridProgressSummary(gridSummary, grille?.reponses ?? [], grille?.categorie_demandee),
+    [gridSummary, grille?.categorie_demandee, grille?.reponses]
+  );
+  const gridStepSummary =
+    gridModelStatus === 'success'
+      ? `${gridProgressSummary.answeredCount} / ${gridProgressSummary.totalCount} critères renseignés`
+      : gridModelStatus === 'error'
+        ? 'Critères indisponibles'
+        : 'Chargement des critères...';
+  const pieceCompletionWarnings = useMemo(
+    () =>
+      getPieceCompletionWarnings({
+        pieces,
+        totalSleepingCapacity,
+        requestedCapacity: grille?.capacite_accueil,
+      }),
+    [grille?.capacite_accueil, pieces, totalSleepingCapacity]
+  );
+  const parametersSummary = [
+    formatRequestedCategory(grille?.categorie_demandee),
+    grille?.capacite_accueil
+      ? formatPeopleCount(grille.capacite_accueil)
+      : 'Capacité non renseignée',
+    formatHousingType(grille?.type_habitation),
+    formatFloor(grille?.etage),
+  ].join(' · ');
 
   useEffect(() => {
     if (isSavingParameters) {
@@ -717,19 +914,26 @@ export default function SimulationClassement() {
     return Object.keys(nextErrors).length === 0;
   }
 
-  function resetSimulationResult() {
-    setResultState(null);
-    setCriterionFilterNumbers([]);
-    setActiveTab((currentTab) => (currentTab === 'result' ? 'grid' : currentTab));
-  }
+  function markResultStale({
+    clearCriterionFilter = true,
+  }: { clearCriterionFilter?: boolean } = {}) {
+    setResultErrorMessage(null);
+    if (clearCriterionFilter) {
+      setCriterionFilterNumbers([]);
+    }
+    setResultStatus((currentStatus) => {
+      if (resultState || currentStatus === 'fresh' || currentStatus === 'stale') {
+        return 'stale';
+      }
 
-  function resetResultOnly() {
-    setResultState(null);
-    setActiveTab((currentTab) => (currentTab === 'result' ? 'grid' : currentTab));
+      return 'none';
+    });
   }
 
   function showSimulationResult(result: SimulationResultState) {
     setResultState(result);
+    setResultStatus('fresh');
+    setResultErrorMessage(null);
     setCriterionFilterNumbers([]);
     setActiveTab('result');
     window.requestAnimationFrame(() => {
@@ -757,23 +961,49 @@ export default function SimulationClassement() {
     setActiveTab('grid');
   }
 
-  async function refreshResultAfterParameterMutation(): Promise<SimulationResultState> {
+  async function runSimulationCheck() {
     if (!simulationId) {
-      throw new Error('Simulation non disponible');
+      return;
     }
 
-    const isValid = await verifySimulation(simulationId);
-    if (!isValid) {
-      return {
-        kind: 'verification',
-        verification: await getVerification(simulationId),
-      };
-    }
+    setResultStatus('checking');
+    setResultErrorMessage(null);
 
-    return {
-      kind: 'rapport',
-      rapport: await getRapport(simulationId),
-    };
+    let didAttemptGridLoad = false;
+
+    try {
+      if (gridModelStatus !== 'success') {
+        didAttemptGridLoad = true;
+        setGridModelStatus('loading');
+        const nextGridSummary = await getSimulationGridModel();
+        setGridSummary(nextGridSummary);
+        setGridModelStatus('success');
+        didAttemptGridLoad = false;
+      }
+
+      const isValid = await verifySimulation(simulationId);
+      if (!isValid) {
+        showSimulationResult({
+          kind: 'verification',
+          verification: await getVerification(simulationId),
+        });
+        return;
+      }
+
+      showSimulationResult({
+        kind: 'rapport',
+        rapport: await getRapport(simulationId),
+      });
+    } catch {
+      setResultStatus('error');
+      if (didAttemptGridLoad) {
+        setGridSummary(null);
+        setGridModelStatus('error');
+      }
+      setResultErrorMessage(
+        'Le résultat n’a pas pu être calculé pour le moment. Vérifiez votre connexion puis réessayez.'
+      );
+    }
   }
 
   async function applyParameterMutation(
@@ -785,7 +1015,6 @@ export default function SimulationClassement() {
 
     const requestId = latestParameterSaveRequestIdRef.current + 1;
     latestParameterSaveRequestIdRef.current = requestId;
-    const shouldRefreshResult = resultState !== null;
 
     setIsSavingParameters(true);
     setParameterErrors({});
@@ -809,16 +1038,7 @@ export default function SimulationClassement() {
       }
 
       setLogement(nextLogement);
-
-      if (shouldRefreshResult) {
-        const nextResult = await refreshResultAfterParameterMutation();
-        if (latestParameterSaveRequestIdRef.current !== requestId) {
-          return;
-        }
-
-        setResultState(nextResult);
-        setCriterionFilterNumbers([]);
-      }
+      markResultStale();
 
       showToast('Les paramètres ont été enregistrés.', { type: 'success' });
     } catch {
@@ -827,7 +1047,7 @@ export default function SimulationClassement() {
       }
 
       if (hasCommittedParameter) {
-        resetResultOnly();
+        markResultStale();
         showToast(PARAMETER_REFRESH_ERROR_MESSAGE, { type: 'error' });
         return;
       }
@@ -915,7 +1135,7 @@ export default function SimulationClassement() {
 
   async function applyPieceMutationResult(nextLogement: LogementDto): Promise<boolean> {
     setLogement(nextLogement);
-    resetSimulationResult();
+    markResultStale();
 
     if (!simulationId) {
       return false;
@@ -1014,9 +1234,7 @@ export default function SimulationClassement() {
   }
 
   function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, tabId: ActiveTab) {
-    const enabledTabs: ActiveTab[] = hasSimulationResult
-      ? ['pieces', 'grid', 'result']
-      : ['pieces', 'grid'];
+    const enabledTabs: ActiveTab[] = ['pieces', 'grid', 'result'];
     const currentIndex = enabledTabs.indexOf(tabId);
     if (currentIndex < 0) {
       return;
@@ -1045,22 +1263,17 @@ export default function SimulationClassement() {
   }
 
   function handleGoToGrid() {
-    if (!hasPieceWithSurface(pieces)) {
-      showToast(
-        'Ajoutez au moins une pièce avec sa surface avant de passer à la grille de contrôle.',
-        {
-          type: 'error',
-        }
-      );
-      setActiveTab('pieces');
-      return;
+    if (pieceCompletionWarnings.length > 0) {
+      showToast('Vous pouvez continuer, mais certaines informations semblent incomplètes.', {
+        type: 'info',
+      });
     }
 
     setActiveTab('grid');
   }
 
   function handleResponseSaved(savedResponse: ReponseDto) {
-    resetResultOnly();
+    markResultStale({ clearCriterionFilter: false });
     setSimulation((currentSimulation) => {
       if (!currentSimulation?.grille || savedResponse.num_critere === undefined) {
         return currentSimulation;
@@ -1491,106 +1704,124 @@ export default function SimulationClassement() {
             <div>
               <h1 className="mb-3 text-gray-900">Ma simulation de classement</h1>
               <p className="max-w-3xl text-sm text-textLight">
-                Cette étape sert à décrire les pièces du logement avant la grille de contrôle.
+                Avancez librement entre les pièces, la grille de contrôle et le résultat de votre
+                simulation.
               </p>
             </div>
 
-            <Card hover={false} className="p-5 md:p-6">
-              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+            <Card hover={false} className="p-4 md:p-5">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Paramètres de simulation</h2>
-                  <p className="mt-1 text-sm text-textLight">
-                    Ces paramètres peuvent être modifiés pendant la simulation.
-                  </p>
+                  <p className="text-sm font-semibold text-gray-900">Paramètres de simulation</p>
+                  <p className="mt-1 text-sm text-textLight">{parametersSummary}</p>
                 </div>
-                {isSavingParameters && (
-                  <span className="inline-flex w-fit rounded-full border border-primary-200 bg-primary-100 px-3 py-1 text-sm font-medium text-primary-500">
-                    Enregistrement...
-                  </span>
-                )}
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                  {isSavingParameters && (
+                    <span className="inline-flex w-fit rounded-full border border-primary-200 bg-primary-100 px-3 py-1 text-sm font-medium text-primary-500">
+                      Enregistrement...
+                    </span>
+                  )}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="bg-white"
+                    aria-expanded={areParametersExpanded}
+                    aria-controls="simulation-parameters-panel"
+                    onClick={() => setAreParametersExpanded((isExpanded) => !isExpanded)}
+                  >
+                    Modifier les paramètres
+                  </Button>
+                </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <Select
-                  id="simulationRequestedCategory"
-                  name="simulationRequestedCategory"
-                  label="Classement demandé"
-                  options={REQUESTED_CATEGORY_OPTIONS}
-                  value={parameterForm.requestedCategory}
-                  disabled={isSavingParameters}
-                  onChange={handleRequestedCategoryChange}
-                />
+              {areParametersExpanded && (
+                <div
+                  id="simulation-parameters-panel"
+                  className="mt-5 grid gap-4 border-t border-gray-100 pt-5 sm:grid-cols-2 lg:grid-cols-4"
+                >
+                  <Select
+                    id="simulationRequestedCategory"
+                    name="simulationRequestedCategory"
+                    label="Classement demandé"
+                    options={REQUESTED_CATEGORY_OPTIONS}
+                    value={parameterForm.requestedCategory}
+                    disabled={isSavingParameters}
+                    onChange={handleRequestedCategoryChange}
+                  />
 
-                <Input
-                  label="Capacité d’accueil"
-                  name="simulationCapacity"
-                  type="number"
-                  inputMode="numeric"
-                  min="1"
-                  value={parameterForm.capacity}
-                  disabled={isSavingParameters}
-                  onChange={handleCapacityChange}
-                  onBlur={handleCapacityBlur}
-                  error={parameterErrors.capacity}
-                />
+                  <Input
+                    label="Capacité d’accueil"
+                    name="simulationCapacity"
+                    type="number"
+                    inputMode="numeric"
+                    min="1"
+                    value={parameterForm.capacity}
+                    disabled={isSavingParameters}
+                    onChange={handleCapacityChange}
+                    onBlur={handleCapacityBlur}
+                    error={parameterErrors.capacity}
+                  />
 
-                <Select
-                  id="simulationHousingType"
-                  name="simulationHousingType"
-                  label="Type d’habitation"
-                  options={HOUSING_TYPE_OPTIONS}
-                  value={parameterForm.housingType}
-                  disabled={isSavingParameters}
-                  onChange={handleHousingTypeChange}
-                />
+                  <Select
+                    id="simulationHousingType"
+                    name="simulationHousingType"
+                    label="Type d’habitation"
+                    options={HOUSING_TYPE_OPTIONS}
+                    value={parameterForm.housingType}
+                    disabled={isSavingParameters}
+                    onChange={handleHousingTypeChange}
+                  />
 
-                <Select
-                  id="simulationFloor"
-                  name="simulationFloor"
-                  label="Étage"
-                  options={FLOOR_OPTIONS}
-                  value={parameterForm.floor}
-                  disabled={isSavingParameters}
-                  onChange={handleFloorChange}
-                />
-              </div>
+                  <Select
+                    id="simulationFloor"
+                    name="simulationFloor"
+                    label="Étage"
+                    options={FLOOR_OPTIONS}
+                    value={parameterForm.floor}
+                    disabled={isSavingParameters}
+                    onChange={handleFloorChange}
+                  />
+                </div>
+              )}
             </Card>
 
-            <div className="grid gap-3 md:grid-cols-3" aria-label="Parcours de la simulation">
+            <div
+              role="tablist"
+              aria-label="Étapes de la simulation"
+              className="grid gap-3 md:grid-cols-3"
+            >
               {[
-                { step: '1', label: 'Pièces du logement', active: activeTab === 'pieces' },
-                { step: '2', label: 'Grille de contrôle', active: activeTab === 'grid' },
                 {
+                  id: 'pieces' as const,
+                  step: '1',
+                  label: 'Pièces du logement',
+                  summary: `${pieces.length} ${pieces.length > 1 ? 'pièces' : 'pièce'} · ${formatSurfaceCompact(
+                    logement?.surface_totale
+                  )} · ${formatSleepingCount(totalSleepingCapacity)}`,
+                },
+                {
+                  id: 'grid' as const,
+                  step: '2',
+                  label: 'Grille de contrôle',
+                  summary: gridStepSummary,
+                },
+                {
+                  id: 'result' as const,
                   step: '3',
                   label: 'Résultat',
-                  active: activeTab === 'result',
-                  inactive: !hasSimulationResult,
+                  summary: resultStatusLabel,
                 },
-              ].map((item) => (
-                <div
-                  key={item.step}
-                  className={`rounded-card border p-4 ${
-                    item.active
-                      ? 'border-primary-300 bg-primary-100 text-primary-500'
-                      : 'border-gray-200 bg-white text-gray-700'
-                  } ${item.inactive ? 'opacity-60' : ''}`}
-                  aria-current={item.active ? 'step' : undefined}
-                >
-                  <span className="text-sm font-semibold uppercase tracking-wide">
-                    Étape {item.step}
-                  </span>
-                  <p className="mt-1 text-sm font-semibold">{item.label}</p>
-                </div>
-              ))}
-            </div>
+              ].map((tab, index) => {
+                const isActive = activeTab === tab.id;
+                const isComplete =
+                  (tab.id === 'pieces' && pieceCompletionWarnings.length === 0) ||
+                  (tab.id === 'grid' &&
+                    gridProgressSummary.totalCount > 0 &&
+                    gridProgressSummary.remainingCount === 0) ||
+                  (tab.id === 'result' && resultStatus === 'fresh');
 
-            <div className="border-b border-gray-200">
-              <div role="tablist" aria-label="Étapes de la simulation" className="flex gap-2">
-                {[
-                  { id: 'pieces' as const, label: 'Pièces du logement', disabled: false },
-                  { id: 'grid' as const, label: 'Grille de contrôle', disabled: false },
-                  { id: 'result' as const, label: 'Résultat', disabled: !hasSimulationResult },
-                ].map((tab, index) => (
+                return (
                   <button
                     key={tab.id}
                     ref={(element) => {
@@ -1599,27 +1830,32 @@ export default function SimulationClassement() {
                     type="button"
                     role="tab"
                     id={`simulation-tab-${tab.id}`}
-                    aria-selected={activeTab === tab.id}
-                    aria-disabled={tab.disabled ? 'true' : undefined}
+                    aria-selected={isActive}
                     aria-controls={`simulation-panel-${tab.id}`}
-                    tabIndex={activeTab === tab.id && !tab.disabled ? 0 : -1}
-                    disabled={tab.disabled}
-                    className={`rounded-t-lg px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 ${
-                      activeTab === tab.id
-                        ? 'bg-primary-300 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-primary-100'
-                    } disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-gray-100`}
-                    onClick={() => {
-                      if (!tab.disabled) {
-                        setActiveTab(tab.id);
-                      }
-                    }}
+                    tabIndex={isActive ? 0 : -1}
+                    className={`min-h-28 rounded-card border p-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 ${
+                      isActive
+                        ? 'border-primary-300 bg-primary-100 shadow-card'
+                        : 'border-gray-200 bg-white hover:border-primary-200 hover:bg-primary-100/40'
+                    }`}
+                    onClick={() => setActiveTab(tab.id)}
                     onKeyDown={(event) => handleTabKeyDown(event, tab.id)}
                   >
-                    {tab.label}
+                    <span className="flex items-center justify-between gap-3">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-textLight">
+                        Étape {tab.step}
+                      </span>
+                      {isComplete && (
+                        <CheckCircle2 aria-hidden="true" className="h-5 w-5 text-success-400" />
+                      )}
+                    </span>
+                    <span className="mt-2 block text-base font-semibold text-gray-900">
+                      {tab.label}
+                    </span>
+                    <span className="mt-2 block text-sm text-textLight">{tab.summary}</span>
                   </button>
-                ))}
-              </div>
+                );
+              })}
             </div>
 
             {activeTab === 'pieces' && (
@@ -1630,7 +1866,46 @@ export default function SimulationClassement() {
                 className="space-y-6"
               >
                 <Card hover={false} className="p-5 md:p-6">
-                  <h2 className="mb-4">Résumé du logement</h2>
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div>
+                      <h2 className="mb-3">Décrivez les pièces de votre logement</h2>
+                      <p className="max-w-3xl text-sm text-textLight">
+                        Ajoutez les pièces principales de votre logement avec leur surface. Vous
+                        pourrez revenir modifier ces informations à tout moment.
+                      </p>
+                      <p className="mt-2 max-w-3xl text-sm text-textLight">
+                        Vous pouvez passer à la grille même si tout n’est pas terminé, mais le
+                        résultat sera plus fiable si les pièces sont complètes.
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
+                      <Button
+                        type="button"
+                        variant="primary"
+                        className="w-full sm:w-auto"
+                        onClick={handleGoToGrid}
+                      >
+                        Passer à la grille de contrôle
+                      </Button>
+                    </div>
+                  </div>
+
+                  {pieceCompletionWarnings.length > 0 && (
+                    <div className="mt-5 rounded-card border border-warning-200 bg-warning-100 p-4 text-sm text-warning-500">
+                      <p className="font-semibold">
+                        Vous pouvez continuer, mais certaines informations semblent incomplètes.
+                      </p>
+                      <ul className="mt-2 list-disc space-y-1 pl-5">
+                        {pieceCompletionWarnings.map((warning) => (
+                          <li key={warning}>{warning}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <h3 className="mb-4 mt-6 text-lg font-semibold text-gray-900">
+                    Résumé du logement
+                  </h3>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div>
                       <p className="text-sm font-medium text-textLight">
@@ -1661,11 +1936,6 @@ export default function SimulationClassement() {
                       </p>
                     </div>
                   </div>
-                  {pieces.length === 0 && (
-                    <p className="mt-5 rounded-lg bg-primary-100 p-4 text-sm text-primary-500">
-                      Aucune pièce n’a encore été ajoutée à cette simulation.
-                    </p>
-                  )}
                 </Card>
 
                 <h2>Pièces du logement</h2>
@@ -1695,17 +1965,6 @@ export default function SimulationClassement() {
                     )}
                   </section>
                 </div>
-
-                <div className="flex justify-end border-t border-gray-100 pt-6">
-                  <Button
-                    type="button"
-                    variant="primary"
-                    className="w-full sm:w-auto"
-                    onClick={handleGoToGrid}
-                  >
-                    Passer à la grille de contrôle
-                  </Button>
-                </div>
               </div>
             )}
 
@@ -1718,10 +1977,14 @@ export default function SimulationClassement() {
                     responses={grille?.reponses ?? []}
                     requestedCategory={grille?.categorie_demandee}
                     criterionFilterNumbers={criterionFilterNumbers}
+                    progressSummary={gridProgressSummary}
+                    resultActionLabel={resultActionLabel}
+                    isCheckingResult={isCheckingResult}
                     onResponseSaved={handleResponseSaved}
                     onClearCriterionFilter={() => setCriterionFilterNumbers([])}
+                    onCheckResult={() => void runSimulationCheck()}
                     onResultReady={showSimulationResult}
-                    onResultReset={resetResultOnly}
+                    onResultReset={() => markResultStale({ clearCriterionFilter: false })}
                   />
                 ) : (
                   <SimulationGridModelState
@@ -1739,17 +2002,85 @@ export default function SimulationClassement() {
                 aria-labelledby="simulation-tab-result"
                 className="scroll-mt-28 space-y-6"
               >
-                {gridSummary && resultState?.kind === 'verification' && (
-                  <SimulationVerificationIssues
-                    verification={resultState.verification}
-                    sleepingCapacityCount={totalSleepingCapacity}
-                    requestedCapacity={grille?.capacite_accueil}
-                    onShowCriteria={showCriteriaInGrid}
-                    onReturnToPieces={() => setActiveTab('pieces')}
-                  />
+                {resultStatus === 'none' && (
+                  <Card hover={false} className="p-5 md:p-6">
+                    <h2 className="mb-3">Aucun résultat pour le moment</h2>
+                    <p className="max-w-3xl text-sm text-textLight">
+                      Complétez les pièces et la grille, puis lancez la simulation pour voir si le
+                      classement demandé semble atteint.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="primary"
+                      className="mt-5 w-full sm:w-auto"
+                      disabled={isCheckingResult}
+                      onClick={() => void runSimulationCheck()}
+                    >
+                      Voir le résultat de ma simulation
+                    </Button>
+                  </Card>
                 )}
 
-                {gridSummary && resultState?.kind === 'rapport' && (
+                {resultStatus === 'stale' && (
+                  <Card hover={false} className="border-warning-200 bg-warning-100 p-5 md:p-6">
+                    <h2 className="mb-3 text-gray-900">Résultat à recalculer</h2>
+                    <p className="max-w-3xl text-sm text-warning-500">
+                      Votre simulation a été modifiée depuis le dernier calcul. Relancez la
+                      simulation pour obtenir un résultat à jour.
+                    </p>
+                    <Button
+                      type="button"
+                      variant="primary"
+                      className="mt-5 w-full sm:w-auto"
+                      disabled={isCheckingResult}
+                      onClick={() => void runSimulationCheck()}
+                    >
+                      Relancer la simulation
+                    </Button>
+                  </Card>
+                )}
+
+                {resultStatus === 'checking' && (
+                  <Card hover={false} className="p-5 md:p-6">
+                    <h2 className="mb-3">Calcul en cours</h2>
+                    <p className="max-w-3xl text-sm text-textLight">
+                      Le résultat de votre simulation est en cours de calcul.
+                    </p>
+                  </Card>
+                )}
+
+                {resultStatus === 'error' && (
+                  <Card hover={false} className="border-alert-200 bg-alert-100 p-5 md:p-6">
+                    <h2 className="mb-3 text-gray-900">Erreur de calcul</h2>
+                    <p className="max-w-3xl text-sm text-alert-500">
+                      {resultErrorMessage ??
+                        'Le résultat n’a pas pu être calculé pour le moment. Veuillez réessayer.'}
+                    </p>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="mt-5 w-full bg-white sm:w-auto"
+                      disabled={isCheckingResult}
+                      onClick={() => void runSimulationCheck()}
+                    >
+                      {resultActionLabel}
+                    </Button>
+                  </Card>
+                )}
+
+                {resultStatus === 'fresh' &&
+                  gridSummary &&
+                  resultState?.kind === 'verification' && (
+                    <SimulationVerificationIssues
+                      verification={resultState.verification}
+                      sleepingCapacityCount={totalSleepingCapacity}
+                      requestedCapacity={grille?.capacite_accueil}
+                      onShowCriteria={showCriteriaInGrid}
+                      onReturnToPieces={() => setActiveTab('pieces')}
+                    />
+                  )}
+
+                {resultStatus === 'fresh' && gridSummary && resultState?.kind === 'rapport' && (
                   <SimulationResultPanel
                     grid={gridSummary}
                     rapport={resultState.rapport}

@@ -201,15 +201,59 @@ const createJsonResponse = (body: unknown, status = 200) =>
 
 const mockFetchJsonSequence = (responses: Array<{ body: unknown; status?: number }>) => {
   const fetchMock = vi.spyOn(globalThis, 'fetch');
-  responses.forEach((response) => {
-    fetchMock.mockResolvedValueOnce(createJsonResponse(response.body, response.status ?? 200));
+  const queuedResponses = [...responses];
+
+  fetchMock.mockImplementation((input) => {
+    const url = String(input);
+
+    if (url.includes('/public/simulations/modele')) {
+      const nextResponse = queuedResponses[0];
+      if (
+        nextResponse &&
+        (nextResponse.status ?? 200) >= 400 &&
+        typeof nextResponse.body === 'object' &&
+        nextResponse.body !== null &&
+        'error' in nextResponse.body
+      ) {
+        queuedResponses.shift();
+        return Promise.resolve(createJsonResponse(nextResponse.body, nextResponse.status ?? 500));
+      }
+
+      if (
+        nextResponse &&
+        typeof nextResponse.body === 'object' &&
+        nextResponse.body !== null &&
+        'chapitres' in nextResponse.body
+      ) {
+        queuedResponses.shift();
+        return Promise.resolve(createJsonResponse(nextResponse.body, nextResponse.status ?? 200));
+      }
+
+      return Promise.resolve(createJsonResponse(gridModelResponse));
+    }
+
+    const response = queuedResponses.shift();
+    if (!response) {
+      return Promise.reject(new Error(`Unexpected fetch call: ${url}`));
+    }
+
+    return Promise.resolve(createJsonResponse(response.body, response.status ?? 200));
   });
+
   return fetchMock;
 };
+
+const getNonModelFetchCalls = (fetchMock: ReturnType<typeof mockFetchJsonSequence>) =>
+  fetchMock.mock.calls.filter(([url]) => !String(url).includes('/public/simulations/modele'));
 
 const renderAt = (path: string) => {
   window.history.pushState({}, 'Test page', path);
   return render(<App />);
+};
+
+const expandSimulationParameters = async () => {
+  const toggle = await screen.findByRole('button', { name: /modifier les paramètres/i });
+  fireEvent.click(toggle);
 };
 
 describe('SimulationClassement', () => {
@@ -229,17 +273,18 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /ma simulation de classement/i })
     ).toBeInTheDocument();
+    await expandSimulationParameters();
     await waitFor(() => {
       expect(screen.getByLabelText(/classement demandé/i)).toHaveValue('3*');
       expect(screen.getByLabelText(/capacité d’accueil/i)).toHaveValue(4);
       expect(screen.getByLabelText(/type d’habitation/i)).toHaveValue('INDIVIDUEL');
       expect(screen.getByLabelText(/étage/i)).toHaveValue('1');
     });
-    expect(screen.getByText(/3 étoiles/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/3 étoiles/i)[0]).toBeInTheDocument();
     expect(screen.getAllByText(/4 personnes/i)[0]).toBeInTheDocument();
     expect(screen.getByText(/surface totale renseignée/i)).toBeInTheDocument();
     expect(screen.queryByText(/pièces ajoutées/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/32 m²/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/32 m²/i)[0]).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /pièces intérieures/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /espaces extérieurs/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /chambre 1/i })).toBeInTheDocument();
@@ -293,23 +338,25 @@ describe('SimulationClassement', () => {
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
+    await expandSimulationParameters();
     const requestedCategorySelect = await screen.findByLabelText(/classement demandé/i);
     fireEvent.change(requestedCategorySelect, { target: { value: '4*' } });
 
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledTimes(4);
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(4);
     });
-    expect(fetchMock.mock.calls[2]?.[0]).toBe(
+    const nonModelCalls = getNonModelFetchCalls(fetchMock);
+    expect(nonModelCalls[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/classementDemande/4*`
     );
-    expect(fetchMock.mock.calls[2]?.[1]).toMatchObject({
+    expect(nonModelCalls[2]?.[1]).toMatchObject({
       method: 'PUT',
       credentials: 'include',
     });
-    expect(fetchMock.mock.calls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
+    expect(nonModelCalls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
     expect(requestedCategorySelect).toHaveValue('4*');
-    expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
+    expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
 
     fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
 
@@ -330,31 +377,33 @@ describe('SimulationClassement', () => {
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
+    await expandSimulationParameters();
     const capacityInput = await screen.findByLabelText(/capacité d’accueil/i);
     fireEvent.change(capacityInput, { target: { value: '6' } });
 
     await waitFor(() => {
       expect(capacityInput).toHaveValue(6);
     });
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
 
     fireEvent.blur(capacityInput);
 
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledTimes(4);
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(4);
     });
-    expect(fetchMock.mock.calls[2]?.[0]).toBe(
+    const nonModelCalls = getNonModelFetchCalls(fetchMock);
+    expect(nonModelCalls[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/capaciteAccueil/6`
     );
-    expect(fetchMock.mock.calls[2]?.[1]).toMatchObject({
+    expect(nonModelCalls[2]?.[1]).toMatchObject({
       method: 'PUT',
       credentials: 'include',
     });
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
-    expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
+    expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
   });
 
-  it('recalcule le résultat existant après modification d’un paramètre', async () => {
+  it('marque le résultat existant à recalculer après modification d’un paramètre', async () => {
     const scrollToMock = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
     const fetchMock = mockFetchJsonSequence([
       { body: simulationResponse },
@@ -377,18 +426,6 @@ describe('SimulationClassement', () => {
       },
       { body: simulationWithUpdatedFloor },
       { body: logementWithPiecesResponse },
-      { body: false },
-      {
-        body: {
-          nb_couchages_suffisants: true,
-          criteres_obligatoires_a_cocher: {
-            criteres_non_coches: [95],
-          },
-          criteres_optionnels_a_cocher: {
-            criteres_non_coches: [],
-          },
-        },
-      },
     ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
@@ -405,23 +442,25 @@ describe('SimulationClassement', () => {
     });
     scrollToMock.mockClear();
 
+    await expandSimulationParameters();
     fireEvent.change(screen.getByLabelText(/étage/i), { target: { value: '2' } });
 
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledTimes(9);
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(6);
     });
-    expect(fetchMock.mock.calls[5]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/etage/2`);
-    expect(fetchMock.mock.calls[6]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
-    expect(fetchMock.mock.calls[7]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/verifier`);
-    expect(fetchMock.mock.calls[8]?.[0]).toBe(
-      `/api/public/simulations/${SIMULATION_ID}/verification`
-    );
-    expect(await screen.findByText(/problèmes à corriger/i)).toBeInTheDocument();
+    const nonModelCalls = getNonModelFetchCalls(fetchMock);
+    expect(nonModelCalls[4]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/etage/2`);
+    expect(nonModelCalls[5]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
+    expect(nonModelCalls.slice(4).some(([url]) => String(url).includes('/verifier'))).toBe(false);
+    fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
+    expect(
+      await screen.findByRole('heading', { name: /résultat à recalculer/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
     expect(scrollToMock).not.toHaveBeenCalled();
   });
 
-  it('conserve le paramètre et désactive le résultat si un refetch secondaire échoue', async () => {
+  it('conserve le paramètre et garde le résultat accessible si un refetch secondaire échoue', async () => {
     const fetchMock = mockFetchJsonSequence([
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
@@ -455,18 +494,20 @@ describe('SimulationClassement', () => {
 
     expect(await screen.findByText(/classement 3 étoiles semble atteint/i)).toBeInTheDocument();
 
+    await expandSimulationParameters();
     const housingTypeSelect = screen.getByLabelText(/type d’habitation/i);
     fireEvent.change(housingTypeSelect, { target: { value: 'COLLECTIF' } });
 
     expect(await screen.findByRole('alert')).toHaveTextContent(
       /certaines données de la simulation n’ont pas pu être actualisées/i
     );
-    expect(fetchMock.mock.calls[5]?.[0]).toBe(
+    const nonModelCalls = getNonModelFetchCalls(fetchMock);
+    expect(nonModelCalls[4]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/typeHabitation/COLLECTIF`
     );
-    expect(fetchMock.mock.calls[6]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
+    expect(nonModelCalls[5]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
     expect(housingTypeSelect).toHaveValue('COLLECTIF');
-    expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
+    expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
   });
 
   it('affiche une erreur claire si le chargement échoue', async () => {
@@ -703,7 +744,7 @@ describe('SimulationClassement', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /chambre bleue/i })).toBeInTheDocument();
 
-    const createCall = fetchMock.mock.calls[2];
+    const createCall = getNonModelFetchCalls(fetchMock)[2];
     expect(createCall?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/pieces`);
     expect(createCall?.[1]).toMatchObject({
       method: 'POST',
@@ -719,7 +760,9 @@ describe('SimulationClassement', () => {
     const createPayload = JSON.parse(String(createCall?.[1]?.body)) as Record<string, unknown>;
     expect(createPayload).not.toHaveProperty('nom');
 
-    expect(fetchMock.mock.calls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}`);
+    expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}`
+    );
 
     fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
 
@@ -820,7 +863,7 @@ describe('SimulationClassement', () => {
       )
     ).toBeInTheDocument();
     expect(screen.queryByText(/la pièce a été ajoutée/i)).not.toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
   });
 
   it('enregistre une modification avec surface insuffisante et affiche une alerte sur la carte', async () => {
@@ -860,7 +903,7 @@ describe('SimulationClassement', () => {
 
     expect(await screen.findByText(/la pièce a été modifiée/i)).toBeInTheDocument();
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(fetchMock.mock.calls[2]?.[0]).toBe(
+    expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/pieces/piece-1`
     );
 
@@ -934,7 +977,7 @@ describe('SimulationClassement', () => {
 
     expect(await screen.findByText(/la pièce a été ajoutée/i)).toBeInTheDocument();
 
-    const createCall = fetchMock.mock.calls[2];
+    const createCall = getNonModelFetchCalls(fetchMock)[2];
     expect(createCall?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/pieces`);
     expect(createCall?.[1]).toMatchObject({
       method: 'POST',
@@ -986,7 +1029,7 @@ describe('SimulationClassement', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /chambre principale/i })).toBeInTheDocument();
 
-    const updateCall = fetchMock.mock.calls[2];
+    const updateCall = getNonModelFetchCalls(fetchMock)[2];
     expect(updateCall?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/pieces/piece-1`);
     expect(updateCall?.[1]).toMatchObject({
       method: 'PUT',
@@ -1041,7 +1084,7 @@ describe('SimulationClassement', () => {
     expect(await screen.findByRole('dialog', { name: /modifier la pièce/i })).toBeInTheDocument();
     expect(screen.getByText(/nombre maximal de couchages autorisés/i)).toBeInTheDocument();
     expect(screen.queryByText(/la pièce a été modifiée/i)).not.toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
   });
 
   it('reprend la valeur ouvrant existante en édition', async () => {
@@ -1089,7 +1132,7 @@ describe('SimulationClassement', () => {
 
     expect(await screen.findByText(/la pièce a été modifiée/i)).toBeInTheDocument();
 
-    const updateCall = fetchMock.mock.calls[2];
+    const updateCall = getNonModelFetchCalls(fetchMock)[2];
     const updatePayload = JSON.parse(String(updateCall?.[1]?.body)) as Record<string, unknown>;
     expect(updatePayload).toMatchObject({ nombre_lits: null });
   });
@@ -1142,7 +1185,7 @@ describe('SimulationClassement', () => {
 
     expect(await screen.findByText(/la pièce a été supprimée/i)).toBeInTheDocument();
 
-    const deleteCall = fetchMock.mock.calls[2];
+    const deleteCall = getNonModelFetchCalls(fetchMock)[2];
     expect(deleteCall?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/pieces/piece-1`);
     expect(deleteCall?.[1]).toMatchObject({
       method: 'DELETE',
@@ -1176,8 +1219,12 @@ describe('SimulationClassement', () => {
     ).toBeInTheDocument();
   });
 
-  it('bloque le passage à la grille sans pièce avec surface', async () => {
-    mockFetchJsonSequence([{ body: simulationResponse }, { body: emptyLogementResponse }]);
+  it('permet le passage à la grille sans pièce complète avec un warning doux', async () => {
+    mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: emptyLogementResponse },
+      { body: gridModelResponse },
+    ]);
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
@@ -1185,9 +1232,9 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
 
     expect(
-      await screen.findByText(/ajoutez au moins une pièce avec sa surface/i)
+      await screen.findByText(/certaines informations semblent incomplètes/i)
     ).toBeInTheDocument();
-    expect(screen.queryByText(/133 critères à compléter/i)).not.toBeInTheDocument();
+    expect(await screen.findByLabelText(/rechercher un critère/i)).toBeInTheDocument();
   });
 
   it('permet de réessayer si le modèle de grille ne charge pas', async () => {
@@ -1210,7 +1257,7 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('button', { name: /réessayer/i }));
 
     expect(
-      await screen.findByRole('heading', { name: /^grille de contrôle$/i })
+      await screen.findByRole('heading', { name: /complétez la grille de contrôle/i })
     ).toBeInTheDocument();
   });
 
@@ -1227,7 +1274,7 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
 
     expect(
-      await screen.findByRole('heading', { name: /^grille de contrôle$/i })
+      await screen.findByRole('heading', { name: /complétez la grille de contrôle/i })
     ).toBeInTheDocument();
     expect(screen.getByLabelText(/rechercher un critère/i)).toBeInTheDocument();
     expect(screen.queryByText(/réponse actuelle/i)).not.toBeInTheDocument();
@@ -1299,7 +1346,7 @@ describe('SimulationClassement', () => {
     ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('tab', { name: /pièces du logement/i }));
-    expect(screen.getByRole('button', { name: /ajouter une pièce/i })).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /ajouter une pièce/i })[0]).toBeInTheDocument();
   });
 
   it('enregistre une réponse de critère avec un payload public minimal', async () => {
@@ -1329,7 +1376,7 @@ describe('SimulationClassement', () => {
       within(optionalCriterion).queryByRole('button', { name: /oui sélectionné/i })
     ).not.toBeInTheDocument();
 
-    const responseCall = fetchMock.mock.calls[3];
+    const responseCall = getNonModelFetchCalls(fetchMock)[2];
     expect(responseCall?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/reponse`);
     expect(responseCall?.[1]).toMatchObject({
       method: 'POST',
@@ -1387,7 +1434,7 @@ describe('SimulationClassement', () => {
     expect(alert).toHaveTextContent(/vérifiez votre connexion puis réessayez/i);
 
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledTimes(6);
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(5);
     });
     expect(within(optionalCriterion).getByRole('button', { name: /^oui$/i })).toHaveAttribute(
       'aria-pressed',
@@ -1454,8 +1501,10 @@ describe('SimulationClassement', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/indiquée est de 4 personnes/i)).toBeInTheDocument();
     expect(screen.queryByText(/commentaire/i)).not.toBeInTheDocument();
-    expect(fetchMock.mock.calls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/verifier`);
-    expect(fetchMock.mock.calls[4]?.[0]).toBe(
+    expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/verifier`
+    );
+    expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verification`
     );
 
@@ -1482,11 +1531,14 @@ describe('SimulationClassement', () => {
     expect(screen.getByTestId('criterion-card-5')).toBeInTheDocument();
     expect(screen.getByTestId('criterion-card-95')).toBeInTheDocument();
     expect(screen.queryByTestId('criterion-card-6')).not.toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
+    expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
 
     fireEvent.click(screen.getByRole('button', { name: /afficher toute la grille/i }));
     expect(await screen.findByTestId('criterion-card-6')).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
+    fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
+    expect(
+      await screen.findByRole('heading', { name: /résultat à recalculer/i })
+    ).toBeInTheDocument();
   });
 
   it('affiche le rapport mocké sans appeler les endpoints de résultat', async () => {
@@ -1504,7 +1556,7 @@ describe('SimulationClassement', () => {
     const mockResultButton = await screen.findByRole('button', { name: /simuler le résultat/i });
     expect(mockResultButton).toBeInTheDocument();
     await waitFor(() => {
-      expect(fetchMock).toHaveBeenCalledTimes(3);
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
     });
 
     fireEvent.click(mockResultButton);
@@ -1522,7 +1574,7 @@ describe('SimulationClassement', () => {
     expect(screen.queryByText(/48 points/i)).not.toBeInTheDocument();
     expect(screen.getByText(/critère 41/i)).toBeInTheDocument();
     expect(screen.getByText(/un wc avec cuvette/i)).toBeInTheDocument();
-    expect(fetchMock.mock.calls).toHaveLength(3);
+    expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/rapport'))).toBe(false);
   });
@@ -1585,8 +1637,12 @@ describe('SimulationClassement', () => {
     expect(screen.queryByText(/^Points disponibles$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Objectif à atteindre$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/critères obligatoires non validés/i)).not.toBeInTheDocument();
-    expect(fetchMock.mock.calls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/verifier`);
-    expect(fetchMock.mock.calls[4]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/rapport`);
+    expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/verifier`
+    );
+    expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/rapport`
+    );
     expect(screen.getByRole('button', { name: /modifier mes réponses/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /retour aux pièces/i })).toBeInTheDocument();
 
@@ -1602,8 +1658,12 @@ describe('SimulationClassement', () => {
     fireEvent.click(within(optionalCriterion).getByRole('button', { name: /^oui$/i }));
 
     await waitFor(() => {
-      expect(screen.getByRole('tab', { name: /résultat/i })).toBeDisabled();
+      expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
     });
+    fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
+    expect(
+      await screen.findByRole('heading', { name: /résultat à recalculer/i })
+    ).toBeInTheDocument();
   });
 
   it('affiche le rapport d’échec avec les critères obligatoires non validés', async () => {
@@ -1665,8 +1725,12 @@ describe('SimulationClassement', () => {
     expect(screen.getByText(/critère 95/i)).toBeInTheDocument();
     expect(screen.getByText(/les sanitaires .* sont propres et en bon état/i)).toBeInTheDocument();
     expect(screen.getByText('5 points')).toBeInTheDocument();
-    expect(fetchMock.mock.calls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/verifier`);
-    expect(fetchMock.mock.calls[4]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/rapport`);
+    expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/verifier`
+    );
+    expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/rapport`
+    );
 
     fireEvent.click(screen.getByRole('button', { name: /voir dans la grille/i }));
 
