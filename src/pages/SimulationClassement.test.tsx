@@ -6,6 +6,35 @@ import structureGrilleRaw from '../../docs/structureGrille.json?raw';
 const SIMULATION_ID = 'simulation-id';
 const gridModelResponse = JSON.parse(structureGrilleRaw) as unknown;
 
+const gridCriteria = (() => {
+  const structure = gridModelResponse as {
+    chapitres?: Array<{
+      sous_chapitres?: Array<{
+        rubriques?: Array<{
+          criteres?: Array<{
+            num_critere: number;
+            categories?: Array<{ nom: string; statut: string }>;
+          }>;
+        }>;
+      }>;
+    }>;
+  };
+
+  return (
+    structure.chapitres?.flatMap(
+      (chapter) =>
+        chapter.sous_chapitres?.flatMap(
+          (subChapter) => subChapter.rubriques?.flatMap((rubrique) => rubrique.criteres ?? []) ?? []
+        ) ?? []
+    ) ?? []
+  );
+})();
+
+const applicableCriteriaFor3Stars = gridCriteria.filter(
+  (criterion) =>
+    criterion.categories?.find((category) => category.nom === '3*')?.statut !== 'NON_APPLICABLE'
+);
+
 const simulationResponse = {
   id: SIMULATION_ID,
   statut: 'brouillon',
@@ -91,6 +120,53 @@ const simulationWithAutomaticSurfaceResponses = {
       {
         num_critere: 2,
         statut_validation: 'NON_VALIDE',
+        statut_critere: 'OPTIONNEL',
+      },
+    ],
+  },
+};
+
+const simulationWithBackendPrefilledUnansweredResponses = {
+  ...simulationResponse,
+  grille: {
+    ...simulationResponse.grille,
+    reponses: applicableCriteriaFor3Stars.map((criterion) => ({
+      num_critere: criterion.num_critere,
+      points_obtenus: 0,
+      statut_validation:
+        criterion.num_critere === 1 ? 'VALIDE' : criterion.num_critere === 2 ? 'NON_VALIDE' : null,
+      statut_critere: criterion.categories?.find((category) => category.nom === '3*')?.statut,
+    })),
+  },
+};
+
+const simulationWithInvalidBackendResponseAndValidNoResponse = {
+  ...simulationResponse,
+  grille: {
+    ...simulationResponse.grille,
+    reponses: [
+      {
+        num_critere: 1,
+        points_obtenus: 0,
+        statut_validation: 'VALIDE',
+        statut_critere: 'OBLIGATOIRE',
+      },
+      {
+        num_critere: 2,
+        points_obtenus: 0,
+        statut_validation: 'NON_VALIDE',
+        statut_critere: 'OPTIONNEL',
+      },
+      {
+        num_critere: 5,
+        points_obtenus: 0,
+        statut_validation: 'NON_VALIDE',
+        statut_critere: 'OPTIONNEL',
+      },
+      {
+        num_critere: 6,
+        points_obtenus: 0,
+        statut_validation: '',
         statut_critere: 'OPTIONNEL',
       },
     ],
@@ -378,6 +454,55 @@ describe('SimulationClassement', () => {
       'aria-pressed',
       'true'
     );
+  });
+
+  it('compte seulement les critères réellement renseignés quand le backend préremplit la grille', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationWithBackendPrefilledUnansweredResponses },
+      { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+
+    const totalApplicableCriteria = applicableCriteriaFor3Stars.length;
+    expect(
+      await screen.findByText(new RegExp(`2 / ${totalApplicableCriteria} critères renseignés`, 'i'))
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(new RegExp(`^2 / ${totalApplicableCriteria}$`, 'i'))
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        new RegExp(`^${totalApplicableCriteria} / ${totalApplicableCriteria}$`, 'i')
+      )
+    ).not.toBeInTheDocument();
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
+  });
+
+  it('compte NON_VALIDE comme renseigné mais ignore les validations backend non exploitables', async () => {
+    mockFetchJsonSequence([
+      { body: simulationWithInvalidBackendResponseAndValidNoResponse },
+      { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+
+    const totalApplicableCriteria = applicableCriteriaFor3Stars.length;
+    expect(
+      await screen.findByText(new RegExp(`3 / ${totalApplicableCriteria} critères renseignés`, 'i'))
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(new RegExp(`^3 / ${totalApplicableCriteria}$`, 'i'))
+    ).toBeInTheDocument();
+    expect(screen.getByText(String(totalApplicableCriteria - 3))).toBeInTheDocument();
   });
 
   it('met à jour la capacité seulement au blur', async () => {

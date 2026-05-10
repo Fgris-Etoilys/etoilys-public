@@ -859,14 +859,15 @@ export function SimulationResultPanel({
 
       {shouldShowDiagnostic && (
         <div className="mt-5 rounded-card border border-warning-200 bg-white p-4 shadow-sm md:p-5">
-          <h4 className="text-base font-semibold text-gray-900">
-            Critères obligatoires non validés
-          </h4>
+          <h4 className="text-base font-semibold text-gray-900">Critères à corriger en priorité</h4>
           <div className="mt-3 space-y-2 text-sm text-gray-700">
+            <p>
+              Voici les critères obligatoires qui ne sont pas encore validés dans votre simulation.
+            </p>
             {rapport.points_obligatoires_atteints === false && missingMandatoryPoints > 0 && (
               <p>
-                Il vous manque <strong>{formatMandatoryPoints(missingMandatoryPoints)}</strong> pour
-                atteindre {requestedClassificationLabel}.
+                Il vous manque {formatMandatoryPoints(missingMandatoryPoints)} pour atteindre{' '}
+                {requestedClassificationLabel}.
               </p>
             )}
             {!hasDiagnosticMissingPoints && (

@@ -430,8 +430,7 @@ function buildGridProgressSummary(
     }
 
     totalCount += 1;
-    const isAnswered = response?.statut_validation !== undefined;
-    if (isAnswered) {
+    if (isAnsweredResponse(response)) {
       answeredCount += 1;
       return;
     }
@@ -447,6 +446,14 @@ function buildGridProgressSummary(
     remainingCount: Math.max(totalCount - answeredCount, 0),
     missingMandatoryCount,
   };
+}
+
+function isAnsweredResponse(response: ReponseDto | undefined): boolean {
+  return (
+    response?.statut_validation === 'VALIDE' ||
+    response?.statut_validation === 'NON_VALIDE' ||
+    response?.statut_validation === 'NON_APPLICABLE'
+  );
 }
 
 function getResultStatusLabel(
