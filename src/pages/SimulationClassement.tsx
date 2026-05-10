@@ -12,6 +12,7 @@ import {
   Computer,
   DoorOpen,
   Footprints,
+  Loader2,
   Pencil,
   Plus,
   Ruler,
@@ -448,7 +449,10 @@ function buildGridProgressSummary(
   };
 }
 
-function getResultStatusLabel(status: ResultStatus): string {
+function getResultStatusLabel(
+  status: ResultStatus,
+  resultState: SimulationResultState | null
+): string {
   if (status === 'checking') {
     return 'Calcul en cours';
   }
@@ -462,7 +466,11 @@ function getResultStatusLabel(status: ResultStatus): string {
   }
 
   if (status === 'fresh') {
-    return 'Résultat à jour';
+    if (resultState?.kind === 'rapport' && resultState.rapport.resultat === true) {
+      return 'Classement atteint';
+    }
+
+    return 'Calcul à jour';
   }
 
   return 'Aucun résultat';
@@ -667,6 +675,7 @@ export default function SimulationClassement() {
   const [resultState, setResultState] = useState<SimulationResultState | null>(null);
   const [resultStatus, setResultStatus] = useState<ResultStatus>('none');
   const [resultErrorMessage, setResultErrorMessage] = useState<string | null>(null);
+  const [isAutoRecalculatingResult, setIsAutoRecalculatingResult] = useState(false);
   const [areParametersExpanded, setAreParametersExpanded] = useState(false);
   const [criterionFilterNumbers, setCriterionFilterNumbers] = useState<number[]>([]);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -737,7 +746,14 @@ export default function SimulationClassement() {
   const resultActionLabel = hasSimulationResult
     ? 'Relancer la simulation'
     : 'Voir le résultat de ma simulation';
-  const resultStatusLabel = getResultStatusLabel(resultStatus);
+  const resultStatusLabel = getResultStatusLabel(resultStatus, resultState);
+  const isResultBusinessSuccess =
+    resultStatus === 'fresh' &&
+    resultState?.kind === 'rapport' &&
+    resultState.rapport.resultat === true;
+  const isResultCalculatedWithoutSuccess =
+    resultStatus === 'fresh' &&
+    !(resultState?.kind === 'rapport' && resultState.rapport.resultat === true);
   const gridProgressSummary = useMemo(
     () => buildGridProgressSummary(gridSummary, grille?.reponses ?? [], grille?.categorie_demandee),
     [gridSummary, grille?.categorie_demandee, grille?.reponses]
@@ -918,6 +934,7 @@ export default function SimulationClassement() {
     clearCriterionFilter = true,
   }: { clearCriterionFilter?: boolean } = {}) {
     setResultErrorMessage(null);
+    setIsAutoRecalculatingResult(false);
     if (clearCriterionFilter) {
       setCriterionFilterNumbers([]);
     }
@@ -934,6 +951,7 @@ export default function SimulationClassement() {
     setResultState(result);
     setResultStatus('fresh');
     setResultErrorMessage(null);
+    setIsAutoRecalculatingResult(false);
     setCriterionFilterNumbers([]);
     setActiveTab('result');
     window.requestAnimationFrame(() => {
@@ -961,11 +979,18 @@ export default function SimulationClassement() {
     setActiveTab('grid');
   }
 
-  async function runSimulationCheck() {
+  async function runSimulationCheck({ parameterRequestId }: { parameterRequestId?: number } = {}) {
     if (!simulationId) {
       return;
     }
 
+    const isCurrentParameterRequest = () =>
+      parameterRequestId === undefined ||
+      latestParameterSaveRequestIdRef.current === parameterRequestId;
+
+    if (parameterRequestId === undefined) {
+      setIsAutoRecalculatingResult(false);
+    }
     setResultStatus('checking');
     setResultErrorMessage(null);
 
@@ -976,26 +1001,44 @@ export default function SimulationClassement() {
         didAttemptGridLoad = true;
         setGridModelStatus('loading');
         const nextGridSummary = await getSimulationGridModel();
+        if (!isCurrentParameterRequest()) {
+          return;
+        }
         setGridSummary(nextGridSummary);
         setGridModelStatus('success');
         didAttemptGridLoad = false;
       }
 
       const isValid = await verifySimulation(simulationId);
+      if (!isCurrentParameterRequest()) {
+        return;
+      }
       if (!isValid) {
+        const verification = await getVerification(simulationId);
+        if (!isCurrentParameterRequest()) {
+          return;
+        }
         showSimulationResult({
           kind: 'verification',
-          verification: await getVerification(simulationId),
+          verification,
         });
         return;
       }
 
+      const rapport = await getRapport(simulationId);
+      if (!isCurrentParameterRequest()) {
+        return;
+      }
       showSimulationResult({
         kind: 'rapport',
-        rapport: await getRapport(simulationId),
+        rapport,
       });
     } catch {
+      if (!isCurrentParameterRequest()) {
+        return;
+      }
       setResultStatus('error');
+      setIsAutoRecalculatingResult(false);
       if (didAttemptGridLoad) {
         setGridSummary(null);
         setGridModelStatus('error');
@@ -1007,7 +1050,12 @@ export default function SimulationClassement() {
   }
 
   async function applyParameterMutation(
-    mutation: () => Promise<PublicSimulationDto>
+    mutation: () => Promise<PublicSimulationDto>,
+    {
+      autoRecalculateResult = false,
+    }: {
+      autoRecalculateResult?: boolean;
+    } = {}
   ): Promise<void> {
     if (!simulationId) {
       return;
@@ -1015,9 +1063,15 @@ export default function SimulationClassement() {
 
     const requestId = latestParameterSaveRequestIdRef.current + 1;
     latestParameterSaveRequestIdRef.current = requestId;
+    const previousResultStatus = resultStatus;
 
     setIsSavingParameters(true);
     setParameterErrors({});
+    if (autoRecalculateResult) {
+      setIsAutoRecalculatingResult(true);
+      setResultStatus('checking');
+      setResultErrorMessage(null);
+    }
     showToast('Enregistrement des paramètres...', { type: 'info', durationMs: 1500 });
 
     let hasCommittedParameter = false;
@@ -1038,8 +1092,13 @@ export default function SimulationClassement() {
       }
 
       setLogement(nextLogement);
-      markResultStale();
+      if (autoRecalculateResult) {
+        showToast('Les paramètres ont été enregistrés.', { type: 'success' });
+        await runSimulationCheck({ parameterRequestId: requestId });
+        return;
+      }
 
+      markResultStale();
       showToast('Les paramètres ont été enregistrés.', { type: 'success' });
     } catch {
       if (latestParameterSaveRequestIdRef.current !== requestId) {
@@ -1052,6 +1111,10 @@ export default function SimulationClassement() {
         return;
       }
 
+      if (autoRecalculateResult) {
+        setIsAutoRecalculatingResult(false);
+        setResultStatus(previousResultStatus);
+      }
       setParameterForm(createSimulationParametersForm(grille));
       showToast('Les paramètres n’ont pas pu être enregistrés. Veuillez réessayer.', {
         type: 'error',
@@ -1075,7 +1138,9 @@ export default function SimulationClassement() {
       return;
     }
 
-    void applyParameterMutation(() => updateRequestedCategory(simulationId ?? '', nextCategory));
+    void applyParameterMutation(() => updateRequestedCategory(simulationId ?? '', nextCategory), {
+      autoRecalculateResult: activeTab === 'result',
+    });
   }
 
   function handleHousingTypeChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -1090,7 +1155,9 @@ export default function SimulationClassement() {
       return;
     }
 
-    void applyParameterMutation(() => updateHousingType(simulationId ?? '', nextHousingType));
+    void applyParameterMutation(() => updateHousingType(simulationId ?? '', nextHousingType), {
+      autoRecalculateResult: activeTab === 'result',
+    });
   }
 
   function handleFloorChange(event: ChangeEvent<HTMLSelectElement>) {
@@ -1106,7 +1173,9 @@ export default function SimulationClassement() {
       return;
     }
 
-    void applyParameterMutation(() => updateFloor(simulationId ?? '', parsedFloor));
+    void applyParameterMutation(() => updateFloor(simulationId ?? '', parsedFloor), {
+      autoRecalculateResult: activeTab === 'result',
+    });
   }
 
   function handleCapacityChange(event: ChangeEvent<HTMLInputElement>) {
@@ -1130,7 +1199,9 @@ export default function SimulationClassement() {
       return;
     }
 
-    void applyParameterMutation(() => updateCapacity(simulationId ?? '', parsedCapacity));
+    void applyParameterMutation(() => updateCapacity(simulationId ?? '', parsedCapacity), {
+      autoRecalculateResult: activeTab === 'result',
+    });
   }
 
   async function applyPieceMutationResult(nextLogement: LogementDto): Promise<boolean> {
@@ -1709,7 +1780,7 @@ export default function SimulationClassement() {
               </p>
             </div>
 
-            <Card hover={false} className="p-4 md:p-5">
+            <Card hover={false} className="relative z-10 p-4 md:p-5">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-gray-900">Paramètres de simulation</p>
@@ -1725,12 +1796,18 @@ export default function SimulationClassement() {
                     type="button"
                     variant="secondary"
                     size="sm"
-                    className="bg-white"
+                    className="gap-2 bg-white"
                     aria-expanded={areParametersExpanded}
                     aria-controls="simulation-parameters-panel"
                     onClick={() => setAreParametersExpanded((isExpanded) => !isExpanded)}
                   >
-                    Modifier les paramètres
+                    {areParametersExpanded ? 'Masquer les paramètres' : 'Modifier les paramètres'}
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={`h-4 w-4 transition-transform duration-300 ${
+                        areParametersExpanded ? 'rotate-180' : ''
+                      }`}
+                    />
                   </Button>
                 </div>
               </div>
@@ -1738,50 +1815,56 @@ export default function SimulationClassement() {
               {areParametersExpanded && (
                 <div
                   id="simulation-parameters-panel"
-                  className="mt-5 grid gap-4 border-t border-gray-100 pt-5 sm:grid-cols-2 lg:grid-cols-4"
+                  className="mt-5 border-t border-gray-100 pb-5 pt-5 transition-all duration-300 ease-in-out md:pb-6"
                 >
-                  <Select
-                    id="simulationRequestedCategory"
-                    name="simulationRequestedCategory"
-                    label="Classement demandé"
-                    options={REQUESTED_CATEGORY_OPTIONS}
-                    value={parameterForm.requestedCategory}
-                    disabled={isSavingParameters}
-                    onChange={handleRequestedCategoryChange}
-                  />
+                  <p className="mb-4 rounded-lg border border-primary-200 bg-primary-100 px-4 py-3 text-sm text-primary-500">
+                    Ces paramètres peuvent modifier les critères applicables et le résultat de la
+                    simulation.
+                  </p>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <Select
+                      id="simulationRequestedCategory"
+                      name="simulationRequestedCategory"
+                      label="Classement demandé"
+                      options={REQUESTED_CATEGORY_OPTIONS}
+                      value={parameterForm.requestedCategory}
+                      disabled={isSavingParameters}
+                      onChange={handleRequestedCategoryChange}
+                    />
 
-                  <Input
-                    label="Capacité d’accueil"
-                    name="simulationCapacity"
-                    type="number"
-                    inputMode="numeric"
-                    min="1"
-                    value={parameterForm.capacity}
-                    disabled={isSavingParameters}
-                    onChange={handleCapacityChange}
-                    onBlur={handleCapacityBlur}
-                    error={parameterErrors.capacity}
-                  />
+                    <Input
+                      label="Capacité d’accueil"
+                      name="simulationCapacity"
+                      type="number"
+                      inputMode="numeric"
+                      min="1"
+                      value={parameterForm.capacity}
+                      disabled={isSavingParameters}
+                      onChange={handleCapacityChange}
+                      onBlur={handleCapacityBlur}
+                      error={parameterErrors.capacity}
+                    />
 
-                  <Select
-                    id="simulationHousingType"
-                    name="simulationHousingType"
-                    label="Type d’habitation"
-                    options={HOUSING_TYPE_OPTIONS}
-                    value={parameterForm.housingType}
-                    disabled={isSavingParameters}
-                    onChange={handleHousingTypeChange}
-                  />
+                    <Select
+                      id="simulationHousingType"
+                      name="simulationHousingType"
+                      label="Type d’habitation"
+                      options={HOUSING_TYPE_OPTIONS}
+                      value={parameterForm.housingType}
+                      disabled={isSavingParameters}
+                      onChange={handleHousingTypeChange}
+                    />
 
-                  <Select
-                    id="simulationFloor"
-                    name="simulationFloor"
-                    label="Étage"
-                    options={FLOOR_OPTIONS}
-                    value={parameterForm.floor}
-                    disabled={isSavingParameters}
-                    onChange={handleFloorChange}
-                  />
+                    <Select
+                      id="simulationFloor"
+                      name="simulationFloor"
+                      label="Étage"
+                      options={FLOOR_OPTIONS}
+                      value={parameterForm.floor}
+                      disabled={isSavingParameters}
+                      onChange={handleFloorChange}
+                    />
+                  </div>
                 </div>
               )}
             </Card>
@@ -1819,7 +1902,9 @@ export default function SimulationClassement() {
                   (tab.id === 'grid' &&
                     gridProgressSummary.totalCount > 0 &&
                     gridProgressSummary.remainingCount === 0) ||
-                  (tab.id === 'result' && resultStatus === 'fresh');
+                  (tab.id === 'result' && isResultBusinessSuccess);
+                const showNeutralResultStatus =
+                  tab.id === 'result' && isResultCalculatedWithoutSuccess;
 
                 return (
                   <button
@@ -1847,6 +1932,11 @@ export default function SimulationClassement() {
                       </span>
                       {isComplete && (
                         <CheckCircle2 aria-hidden="true" className="h-5 w-5 text-success-400" />
+                      )}
+                      {showNeutralResultStatus && (
+                        <span className="inline-flex rounded-full border border-primary-200 bg-white px-2 py-0.5 text-xs font-semibold text-primary-500">
+                          À jour
+                        </span>
                       )}
                     </span>
                     <span className="mt-2 block text-base font-semibold text-gray-900">
@@ -2041,11 +2131,22 @@ export default function SimulationClassement() {
                 )}
 
                 {resultStatus === 'checking' && (
-                  <Card hover={false} className="p-5 md:p-6">
-                    <h2 className="mb-3">Calcul en cours</h2>
-                    <p className="max-w-3xl text-sm text-textLight">
-                      Le résultat de votre simulation est en cours de calcul.
-                    </p>
+                  <Card hover={false} className="border-primary-200 bg-primary-100 p-5 md:p-6">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-primary-200 bg-white text-primary-300">
+                        <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
+                      </span>
+                      <div>
+                        <h2 className="mb-3 text-gray-900">
+                          {isAutoRecalculatingResult ? 'Recalcul en cours' : 'Calcul en cours'}
+                        </h2>
+                        <p className="max-w-3xl text-sm text-primary-500">
+                          {isAutoRecalculatingResult
+                            ? 'Les paramètres modifiés sont pris en compte. Le résultat se met à jour automatiquement.'
+                            : 'Le résultat de votre simulation est en cours de calcul. Cette étape peut prendre quelques secondes.'}
+                        </p>
+                      </div>
+                    </div>
                   </Card>
                 )}
 

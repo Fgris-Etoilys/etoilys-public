@@ -273,7 +273,20 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /ma simulation de classement/i })
     ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /modifier les paramètres/i })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    );
     await expandSimulationParameters();
+    expect(screen.getByRole('button', { name: /masquer les paramètres/i })).toHaveAttribute(
+      'aria-expanded',
+      'true'
+    );
+    expect(
+      screen.getByText(
+        /ces paramètres peuvent modifier les critères applicables et le résultat de la simulation/i
+      )
+    ).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByLabelText(/classement demandé/i)).toHaveValue('3*');
       expect(screen.getByLabelText(/capacité d’accueil/i)).toHaveValue(4);
@@ -403,8 +416,87 @@ describe('SimulationClassement', () => {
     expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
   });
 
-  it('marque le résultat existant à recalculer après modification d’un paramètre', async () => {
+  it('recalcule automatiquement le résultat après modification d’un paramètre depuis l’onglet résultat', async () => {
     const scrollToMock = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
+      { body: true },
+      {
+        body: {
+          resultat: true,
+          points_totaux_obligatoires: 180,
+          points_obligatoires_obtenus: 160,
+          points_minimaux_obligatoires: 140,
+          points_obligatoires_atteints: true,
+          points_optionnels_disponibles: 45,
+          points_optionnels_obtenus: 20,
+          points_optionnels_a_atteindre: 155,
+          points_optionnels_atteints: true,
+          criteres_obligatoires_non_valides: [],
+        },
+      },
+      { body: simulationWithUpdatedFloor },
+      { body: logementWithPiecesResponse },
+      { body: true },
+      {
+        body: {
+          resultat: false,
+          points_totaux_obligatoires: 194,
+          points_minimaux_obligatoires: 185,
+          points_obligatoires_obtenus: 120,
+          points_obligatoires_atteints: false,
+          points_obligatoires_a_compenser: 65,
+          points_optionnels_disponibles: 113,
+          points_optionnels_necessaires: 23,
+          points_optionnels_a_atteindre: 208,
+          points_optionnels_obtenus: 10,
+          points_optionnels_atteints: false,
+          criteres_obligatoires_non_valides: [95],
+        },
+      },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    fireEvent.click(
+      await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
+    );
+
+    expect(await screen.findByText(/classement 3 étoiles semble atteint/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(scrollToMock).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    });
+    scrollToMock.mockClear();
+
+    await expandSimulationParameters();
+    fireEvent.change(screen.getByLabelText(/étage/i), { target: { value: '2' } });
+
+    expect(screen.getByRole('heading', { name: /recalcul en cours/i })).toBeInTheDocument();
+    expect(screen.getByText(/les paramètres modifiés sont pris en compte/i)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(8);
+    });
+    const nonModelCalls = getNonModelFetchCalls(fetchMock);
+    expect(nonModelCalls[4]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/etage/2`);
+    expect(nonModelCalls[5]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
+    expect(nonModelCalls[6]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/verifier`);
+    expect(nonModelCalls[7]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/rapport`);
+    expect(
+      await screen.findByText(/classement 3 étoiles ne semble pas encore atteint/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /résultat à recalculer/i })
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
+    expect(scrollToMock).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+  });
+
+  it('marque le résultat existant à recalculer après modification d’un paramètre hors onglet résultat', async () => {
     const fetchMock = mockFetchJsonSequence([
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
@@ -437,10 +529,7 @@ describe('SimulationClassement', () => {
     );
 
     expect(await screen.findByText(/classement 3 étoiles semble atteint/i)).toBeInTheDocument();
-    await waitFor(() => {
-      expect(scrollToMock).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
-    });
-    scrollToMock.mockClear();
+    fireEvent.click(screen.getByRole('tab', { name: /grille de contrôle/i }));
 
     await expandSimulationParameters();
     fireEvent.change(screen.getByLabelText(/étage/i), { target: { value: '2' } });
@@ -452,12 +541,12 @@ describe('SimulationClassement', () => {
     expect(nonModelCalls[4]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/etage/2`);
     expect(nonModelCalls[5]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
     expect(nonModelCalls.slice(4).some(([url]) => String(url).includes('/verifier'))).toBe(false);
+    expect(nonModelCalls.slice(4).some(([url]) => String(url).includes('/rapport'))).toBe(false);
+
     fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
     expect(
       await screen.findByRole('heading', { name: /résultat à recalculer/i })
     ).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
-    expect(scrollToMock).not.toHaveBeenCalled();
   });
 
   it('conserve le paramètre et garde le résultat accessible si un refetch secondaire échoue', async () => {
@@ -1568,10 +1657,25 @@ describe('SimulationClassement', () => {
     expect(
       screen.getByText(/classement 3 étoiles ne semble pas encore atteint/i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/121 \/ 137/i)).toBeInTheDocument();
-    expect(screen.getByText(/106 \/ 161/i)).toBeInTheDocument();
-    expect(screen.getByText(/57 points à atteindre/i)).toBeInTheDocument();
+    expect(screen.getByText(/vous pouvez améliorer le résultat/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /critères à corriger en priorité/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /voir les critères prioritaires/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /il vous manque 10 points obligatoires pour atteindre le classement 3 étoiles/i
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText(/^121 \/ 131$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^106 \/ 57$/i)).toBeInTheDocument();
+    expect(screen.queryByText(/points requis/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/il manque 10 points/i)).toBeInTheDocument();
+    expect(screen.getByText(/objectif atteint/i)).toBeInTheDocument();
     expect(screen.queryByText(/48 points/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/-\d+ points/i)).not.toBeInTheDocument();
     expect(screen.getByText(/critère 41/i)).toBeInTheDocument();
     expect(screen.getByText(/un wc avec cuvette/i)).toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
@@ -1592,8 +1696,8 @@ describe('SimulationClassement', () => {
           points_obligatoires_obtenus: 160,
           points_minimaux_obligatoires: 140,
           points_obligatoires_atteints: true,
-          points_optionnels_disponibles: 45,
-          points_optionnels_obtenus: 20,
+          points_optionnels_disponibles: 175,
+          points_optionnels_obtenus: 160,
           points_optionnels_necessaires: 15,
           points_optionnels_a_atteindre: 155,
           points_optionnels_atteints: true,
@@ -1624,19 +1728,23 @@ describe('SimulationClassement', () => {
     expect(await screen.findByText(/résultat de la simulation/i)).toBeInTheDocument();
     expect(screen.getByText(/classement 3 étoiles semble atteint/i)).toBeInTheDocument();
     expect(screen.getByText(/estimation basée sur vos réponses/i)).toBeInTheDocument();
-    expect(screen.getByText(/160 \/ 180/i)).toBeInTheDocument();
-    expect(screen.getByText(/140 points à atteindre/i)).toBeInTheDocument();
-    expect(screen.getByText(/20 \/ 45/i)).toBeInTheDocument();
-    expect(screen.getByText(/155 points à atteindre/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/^validé$/i)).toHaveLength(2);
+    const resultTab = screen.getByRole('tab', { name: /résultat/i });
+    expect(within(resultTab).getByText(/classement atteint/i)).toBeInTheDocument();
+    expect(resultTab.querySelector('.text-success-400')).not.toBeNull();
+    expect(screen.getByText(/^160 \/ 140$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^160 \/ 155$/i)).toBeInTheDocument();
+    expect(screen.queryByText(/points requis/i)).not.toBeInTheDocument();
+    expect(screen.getAllByText(/^objectif atteint$/i)).toHaveLength(2);
     expect(screen.queryByText(/seuil obligatoire atteint/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/objectif optionnel atteint/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/20 points obtenus sur 45 points disponibles/i)).toBeInTheDocument();
+    expect(screen.getByText(/175 points disponibles au total/i)).toBeInTheDocument();
+    expect(screen.queryByText(/points obtenus sur .* points disponibles/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Seuil minimal$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Points obtenus$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Points nécessaires$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Points disponibles$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Objectif à atteindre$/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/critères obligatoires non validés/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/critères à corriger en priorité/i)).not.toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verifier`
     );
@@ -1705,26 +1813,50 @@ describe('SimulationClassement', () => {
     expect(
       screen.getByText(/classement 3 étoiles ne semble pas encore atteint/i)
     ).toBeInTheDocument();
-    expect(screen.getByText(/120 \/ 194/i)).toBeInTheDocument();
-    expect(screen.getByText(/10 \/ 113/i)).toBeInTheDocument();
-    expect(screen.getByText(/208 points à atteindre/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/^non validé$/i)).toHaveLength(2);
+    const resultTab = screen.getByRole('tab', { name: /résultat/i });
+    expect(within(resultTab).getByText(/calcul à jour/i)).toBeInTheDocument();
+    expect(resultTab.querySelector('.text-success-400')).toBeNull();
+    expect(screen.getByText(/vous pouvez améliorer le résultat/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /critères à corriger en priorité/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/^120 \/ 185$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^10 \/ 208$/i)).toBeInTheDocument();
+    expect(screen.queryByText(/points requis/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/113 points disponibles au total/i)).toBeInTheDocument();
+    expect(screen.getByText(/^il manque 65 points$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^il manque 198 points$/i)).toBeInTheDocument();
+    expect(
+      screen
+        .getByText(/^120 \/ 185$/i)
+        .compareDocumentPosition(
+          screen.getByRole('heading', { name: /critères à corriger en priorité/i })
+        ) & Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    expect(screen.queryByText(/^non validé$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/seuil obligatoire non atteint/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/objectif optionnel non atteint/i)).not.toBeInTheDocument();
     expect(
       screen.getByText(
-        /il vous manque 65 points obligatoires pour atteindre le seuil minimum requis en 3 étoiles/i
+        /il vous manque 65 points obligatoires pour atteindre le classement 3 étoiles/i
       )
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: /critères obligatoires non validés/i })
+      screen.queryByText(/il vous manque 198 points optionnels pour atteindre l’objectif requis/i)
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /voici les critères obligatoires qui ne sont pas encore validés dans votre simulation/i
+      )
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/voici les critères obligatoires non validés pour votre simulation/i)
-    ).toBeInTheDocument();
+      screen.queryByText(/ces critères peuvent empêcher l’obtention du classement demandé/i)
+    ).not.toBeInTheDocument();
     expect(screen.getByText(/critère 95/i)).toBeInTheDocument();
     expect(screen.getByText(/les sanitaires .* sont propres et en bon état/i)).toBeInTheDocument();
-    expect(screen.getByText('5 points')).toBeInTheDocument();
+    expect(screen.getByText(/^5 points$/i)).toBeInTheDocument();
+    expect(screen.queryByText(/peut rapporter/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/-\d+ points/i)).not.toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verifier`
     );
@@ -1738,5 +1870,46 @@ describe('SimulationClassement', () => {
     expect(screen.getByText(/uniquement 1 critère signalé dans le résultat/i)).toBeInTheDocument();
     expect(screen.getByTestId('criterion-card-95')).toBeInTheDocument();
     expect(screen.queryByTestId('criterion-card-5')).not.toBeInTheDocument();
+  });
+
+  it('affiche un diagnostic fallback sans nombre négatif quand aucun point ne manque', async () => {
+    mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
+      { body: true },
+      {
+        body: {
+          resultat: false,
+          points_totaux_obligatoires: 194,
+          points_minimaux_obligatoires: 185,
+          points_obligatoires_obtenus: 190,
+          points_obligatoires_atteints: false,
+          points_optionnels_disponibles: 220,
+          points_optionnels_a_atteindre: 208,
+          points_optionnels_obtenus: 215,
+          points_optionnels_atteints: false,
+          criteres_obligatoires_non_valides: [],
+        },
+      },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    fireEvent.click(
+      await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
+    );
+
+    expect(
+      await screen.findByRole('heading', { name: /critères à corriger en priorité/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/certains critères doivent encore être vérifiés pour confirmer le résultat/i)
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/^objectif atteint$/i)).toHaveLength(2);
+    expect(screen.queryByText(/-\d+ points/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/il vous manque/i)).not.toBeInTheDocument();
   });
 });

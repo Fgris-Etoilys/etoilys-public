@@ -123,6 +123,10 @@ function formatReportScore(obtained: number | undefined, target: number | undefi
   return `${obtained ?? 0} / ${target ?? 0}`;
 }
 
+function getMissingPoints(target: number | undefined, obtained: number | undefined): number {
+  return Math.max(0, (target ?? 0) - (obtained ?? 0));
+}
+
 function formatRequestedCategoryLabel(requestedCategory: string | undefined): string {
   const match = requestedCategory?.match(/^([1-5])\*$/);
   if (!match) {
@@ -268,22 +272,17 @@ function RatioBar({
   isValid,
   reached,
   total,
-  markerValue,
-  markerTitle,
 }: {
   isValid: boolean | undefined;
   reached: number | undefined;
   total: number | undefined;
-  markerValue: number | undefined;
-  markerTitle: string;
 }) {
   const fillProgress = getProgressPercentage(reached, total);
-  const markerProgress = getProgressPercentage(markerValue, total);
 
   return (
     <div
-      className="relative h-3 w-full rounded-full bg-gray-200"
-      aria-label={`${formatReportPoints(reached)} obtenus sur ${formatReportPoints(total)}, ${markerTitle}`}
+      className="h-3 w-full rounded-full bg-gray-200"
+      aria-label={`${formatReportPoints(reached)} obtenus sur ${formatReportPoints(total)}`}
       aria-valuemax={total ?? 0}
       aria-valuemin={0}
       aria-valuenow={Math.min(reached ?? 0, total ?? 0)}
@@ -293,14 +292,6 @@ function RatioBar({
         className={`h-3 rounded-full ${isValid ? 'bg-success-400' : 'bg-alert-400'} transition-[width] duration-700 ease-out`}
         style={{ width: `${fillProgress}%` }}
       />
-      <div
-        className="absolute -top-0.5 z-10 h-4 w-1 rounded-full border border-white bg-warning-400 shadow-sm"
-        style={{
-          left: `${markerProgress}%`,
-          transform: 'translateX(-2px)',
-        }}
-        title={markerTitle}
-      />
     </div>
   );
 }
@@ -309,18 +300,17 @@ function ResultScoreCard({
   title,
   obtained,
   available,
-  markerValue,
+  target,
   reached,
-  statusLabel,
 }: {
   title: string;
   obtained: number | undefined;
   available: number | undefined;
-  markerValue: number | undefined;
+  target: number | undefined;
   reached: boolean | undefined;
-  statusLabel: string;
 }) {
-  const markerTitle = `${formatReportPoints(markerValue)} à atteindre`;
+  const missingPoints = getMissingPoints(target, obtained);
+  const hasReachedGoal = missingPoints === 0;
 
   return (
     <div className="rounded-card border border-gray-200 bg-white p-5 shadow-sm">
@@ -328,32 +318,27 @@ function ResultScoreCard({
         <div>
           <p className="text-sm font-medium text-textLight">{title}</p>
           <p className="mt-2 text-3xl font-semibold leading-none text-gray-900">
-            {formatReportScore(obtained, available)}
+            {formatReportScore(obtained, target)}
           </p>
-          <p className="mt-2 text-sm text-gray-700">
-            {formatReportPoints(obtained)} obtenus sur {formatReportPoints(available)} disponibles
-          </p>
+          {available !== undefined && (
+            <p className="mt-2 text-sm text-textLight">
+              {formatReportPoints(available)} disponibles au total
+            </p>
+          )}
         </div>
         <span
           className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-sm font-semibold ${
-            reached
+            hasReachedGoal
               ? 'border-success-200 bg-success-100 text-success-500'
               : 'border-alert-200 bg-alert-100 text-alert-500'
           }`}
         >
-          {statusLabel}
+          {hasReachedGoal ? 'Objectif atteint' : `Il manque ${formatReportPoints(missingPoints)}`}
         </span>
       </div>
 
       <div className="mt-5 space-y-2">
-        <RatioBar
-          isValid={reached}
-          reached={obtained}
-          total={available}
-          markerValue={markerValue}
-          markerTitle={markerTitle}
-        />
-        <p className="text-xs font-medium text-warning-500">{markerTitle}</p>
+        <RatioBar isValid={hasReachedGoal || reached} reached={obtained} total={target} />
       </div>
     </div>
   );
@@ -799,12 +784,14 @@ export function SimulationResultPanel({
   const invalidRequiredCriterionDetails = invalidRequiredCriteria.map((number) =>
     getReportCriterionDetails(grid, number)
   );
-  const mandatoryStatusLabel = rapport.points_obligatoires_atteints ? 'Validé' : 'Non validé';
-  const optionalStatusLabel = rapport.points_optionnels_atteints ? 'Validé' : 'Non validé';
-  const missingMandatoryPoints = Math.max(
-    0,
-    (rapport.points_minimaux_obligatoires ?? 0) - (rapport.points_obligatoires_obtenus ?? 0)
+  const missingMandatoryPoints = getMissingPoints(
+    rapport.points_minimaux_obligatoires,
+    rapport.points_obligatoires_obtenus
   );
+  const shouldShowDiagnostic = !success;
+  const hasDiagnosticMissingPoints =
+    rapport.points_obligatoires_atteints === false && missingMandatoryPoints > 0;
+  const requestedClassificationLabel = `le classement ${requestedCategoryLabel}`;
   const resultToneClassNames = success
     ? {
         shell: 'border-success-200 bg-success-100',
@@ -846,6 +833,11 @@ export function SimulationResultPanel({
           Ce résultat est une estimation basée sur vos réponses. Seule une visite officielle permet
           de confirmer le classement.
         </p>
+        {!success && (
+          <p className="mt-3 max-w-3xl text-sm font-medium text-gray-800">
+            Vous pouvez améliorer le résultat en vérifiant les critères prioritaires ci-dessous.
+          </p>
+        )}
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-2">
@@ -853,71 +845,77 @@ export function SimulationResultPanel({
           title="Points obligatoires"
           obtained={rapport.points_obligatoires_obtenus}
           available={rapport.points_totaux_obligatoires}
-          markerValue={rapport.points_minimaux_obligatoires}
+          target={rapport.points_minimaux_obligatoires}
           reached={rapport.points_obligatoires_atteints}
-          statusLabel={mandatoryStatusLabel}
         />
         <ResultScoreCard
           title="Points optionnels"
           obtained={rapport.points_optionnels_obtenus}
           available={rapport.points_optionnels_disponibles}
-          markerValue={rapport.points_optionnels_a_atteindre}
+          target={rapport.points_optionnels_a_atteindre}
           reached={rapport.points_optionnels_atteints}
-          statusLabel={optionalStatusLabel}
         />
       </div>
 
-      {invalidRequiredCriterionDetails.length > 0 && (
-        <div className="mt-5 rounded-card border border-gray-200 bg-white p-4 shadow-sm md:p-5">
-          <div className="mb-4">
-            <h4 className="text-base font-semibold text-gray-900">
-              Critères obligatoires non validés
-            </h4>
-            <div className="mt-1 space-y-2 text-sm text-gray-700">
-              {missingMandatoryPoints > 0 && (
-                <p>
-                  Il vous manque {formatMandatoryPoints(missingMandatoryPoints)} pour atteindre le
-                  seuil minimum requis en {requestedCategoryLabel}.
-                </p>
-              )}
-              <p>Voici les critères obligatoires non validés pour votre simulation.</p>
+      {shouldShowDiagnostic && (
+        <div className="mt-5 rounded-card border border-warning-200 bg-white p-4 shadow-sm md:p-5">
+          <h4 className="text-base font-semibold text-gray-900">
+            Critères obligatoires non validés
+          </h4>
+          <div className="mt-3 space-y-2 text-sm text-gray-700">
+            {rapport.points_obligatoires_atteints === false && missingMandatoryPoints > 0 && (
+              <p>
+                Il vous manque <strong>{formatMandatoryPoints(missingMandatoryPoints)}</strong> pour
+                atteindre {requestedClassificationLabel}.
+              </p>
+            )}
+            {!hasDiagnosticMissingPoints && (
+              <p>Certains critères doivent encore être vérifiés pour confirmer le résultat.</p>
+            )}
+            {invalidRequiredCriterionDetails.length > 0 && (
+              <p>
+                Les points manquants peuvent être obtenus en validant certains critères listés
+                ci-dessous.
+              </p>
+            )}
+          </div>
+
+          {invalidRequiredCriterionDetails.length > 0 && (
+            <div className="mt-4 divide-y divide-gray-200">
+              {invalidRequiredCriterionDetails.map((criterion) => (
+                <div
+                  key={criterion.number}
+                  className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
+                      Critère {criterion.number}
+                    </p>
+                    <p className="mt-1 text-sm font-medium leading-snug text-gray-900">
+                      {criterion.label}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-[7rem_minmax(9rem,1fr)] items-center gap-3 lg:w-[16rem] lg:shrink-0">
+                    <span className="inline-flex w-fit items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-semibold text-gray-700">
+                      {criterion.points === undefined
+                        ? 'Points non disponibles'
+                        : formatPoints(criterion.points)}
+                    </span>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      className="whitespace-nowrap"
+                      onClick={() => onShowCriteria([criterion.number])}
+                    >
+                      Voir dans la grille
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
-
-          <div className="divide-y divide-gray-200">
-            {invalidRequiredCriterionDetails.map((criterion) => (
-              <div
-                key={criterion.number}
-                className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
-                    Critère {criterion.number}
-                  </p>
-                  <p className="mt-1 text-sm font-medium leading-snug text-gray-900">
-                    {criterion.label}
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:shrink-0">
-                  <span className="inline-flex w-fit items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-semibold text-gray-700">
-                    {criterion.points === undefined
-                      ? 'Points non disponibles'
-                      : formatPoints(criterion.points)}
-                  </span>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    className="w-full sm:w-auto"
-                    onClick={() => onShowCriteria([criterion.number])}
-                  >
-                    Voir dans la grille
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
+          )}
         </div>
       )}
 
