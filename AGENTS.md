@@ -3,7 +3,7 @@
 ## Directive non négociable
 
 Quand tu dois écrire du code, applique cette instruction:
-"Sois précis, robuste et exhaustif. Lis la doc et les conventions afin de rester cohérent avec le repo. Mets à jour la doc si nécessaire et run npx tsc --noEmit à la fin. Corrige les erreurs s'il y en a."
+"Sois précis, robuste et exhaustif. Lis la doc et les conventions afin de rester cohérent avec le repo. Mets à jour la doc si nécessaire et run npm run typecheck à la fin. Corrige les erreurs s'il y en a."
 
 ## Principes coeur
 
@@ -94,7 +94,7 @@ Quand tu dois écrire du code, applique cette instruction:
 - Verifier qu'aucune page n'importe `SEO` directement.
 - Verifier que toutes les routes actives de `src/App.tsx` sont couvertes par `src/content/seoRoutes.ts`.
 - Verifier qu'il n'y a pas de scripts JSON-LD dupliques apres navigation SPA.
-- Executer `npx tsc --noEmit` et corriger jusqu'a 0 erreur.
+- Exécuter `npm run typecheck` et corriger jusqu'à 0 erreur.
 - Pour toute creation de page/article, suivre `docs/seo-structurant-workflow.md`.
 
 ## Règles UI (web)
@@ -126,7 +126,7 @@ Quand tu dois écrire du code, applique cette instruction:
 - Ne pas exécuter d'opérations git (commit/push/merge/changement de branche) sans demande explicite.
 - Ne pas lancer/arrêter de serveurs de dev ou de processus longs sans demande explicite.
 - Les commandes de validation sont autorisées.
-- Finir tout changement de code significatif par `npx tsc --noEmit`; corriger les erreurs jusqu'à obtenir un résultat propre.
+- Finir tout changement de code significatif par `npm run typecheck`; corriger les erreurs jusqu'à obtenir un résultat propre.
 
 ## Sécurité encodage
 

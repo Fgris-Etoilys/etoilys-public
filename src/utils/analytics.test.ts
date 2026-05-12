@@ -204,6 +204,7 @@ describe('analytics', () => {
   it('sanitizes URL and sensitive properties before sending', () => {
     const sanitized = analyticsInternalsForTests.beforeSend({
       event: 'form_submit_failed',
+      uuid: 'test-form-submit-failed',
       properties: {
         source_path: '/contact?email=test@example.com#form',
         $current_url: 'https://www.etoilys.fr/contact?x=1',
@@ -228,6 +229,7 @@ describe('analytics', () => {
     expect(
       analyticsInternalsForTests.beforeSend({
         event: '$autocapture',
+        uuid: 'test-autocapture',
         properties: {},
       })
     ).toBeNull();

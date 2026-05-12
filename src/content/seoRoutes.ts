@@ -18,6 +18,15 @@ export interface BreadcrumbItem {
 
 export const SITE_URL = 'https://www.etoilys.fr';
 
+const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
+  title: 'Ma simulation de classement',
+  description: "Interface de simulation publique de classement d'un meublé de tourisme.",
+  breadcrumbLabel: 'Ma simulation',
+  robots: 'noindex,follow',
+  indexable: false,
+  prerender: false,
+};
+
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/': {
     title: 'Classement meublé de tourisme',
@@ -57,14 +66,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Accueil du simulateur public de classement des meublés de tourisme, avec les simulations enregistrées sur le navigateur.',
     breadcrumbLabel: 'Simulateur de classement',
   },
-  '/simulateur/:simulationId': {
-    title: 'Ma simulation de classement',
-    description: "Interface de simulation publique de classement d'un meublé de tourisme.",
-    breadcrumbLabel: 'Ma simulation',
-    robots: 'noindex,follow',
-    indexable: false,
-    prerender: false,
-  },
+  '/simulateur/:simulationId': SIMULATION_DETAIL_SEO,
   '/simulateur-taxe-sejour': {
     title: 'Simulateur taxe de séjour',
     description:
@@ -160,7 +162,7 @@ export const NOT_FOUND_SEO: SeoRouteConfig = {
 const DYNAMIC_SEO_ROUTES: Array<{ pattern: RegExp; config: SeoRouteConfig }> = [
   {
     pattern: /^\/simulateur\/[^/]+$/,
-    config: SEO_ROUTES['/simulateur/:simulationId'],
+    config: SIMULATION_DETAIL_SEO,
   },
 ];
 

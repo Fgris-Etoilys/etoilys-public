@@ -1509,7 +1509,7 @@ export default function SimulationClassement() {
     min: string;
     step?: string;
     value: string;
-    error?: string;
+    error: string | undefined;
     onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   }) {
     return (

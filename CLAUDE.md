@@ -9,7 +9,7 @@ Etoilys is a React + TypeScript + Vite website for French short-term rental star
 ## Non-Negotiable Directive
 
 Whenever you write code, apply this instruction:
-"Sois précis, robuste et exhaustif. Lis la doc et les conventions afin de rester cohérent avec le repo. Mets à jour la doc si nécessaire et run npx tsc --noEmit à la fin. Corrige les erreurs s'il y en a."
+"Sois précis, robuste et exhaustif. Lis la doc et les conventions afin de rester cohérent avec le repo. Mets à jour la doc si nécessaire et run npm run typecheck à la fin. Corrige les erreurs s'il y en a."
 
 ## Core Principles
 
@@ -100,7 +100,7 @@ Whenever you write code, apply this instruction:
 - Verify no page imports `SEO` directly.
 - Verify all active routes in `src/App.tsx` are covered by `src/content/seoRoutes.ts`.
 - Verify no duplicated JSON-LD scripts after SPA navigation.
-- Run `npx tsc --noEmit` and fix errors until clean.
+- Run `npm run typecheck` and fix errors until clean.
 - For any new page/article, follow `docs/seo-structurant-workflow.md`.
 
 ## Development Commands
@@ -151,7 +151,7 @@ npm run preview
 - Do not perform git operations (commit/push/merge/branch switch) unless explicitly requested.
 - Do not start/stop dev servers or long-running processes unless explicitly requested.
 - Validation commands are allowed when needed.
-- End meaningful code changes with `npx tsc --noEmit` and fix errors until clean.
+- End meaningful code changes with `npm run typecheck` and fix errors until clean.
 
 ## Encoding Safety
 

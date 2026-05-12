@@ -20,7 +20,10 @@ function extractSitemapUrls(xml: string): string[] {
   const urls: string[] = [];
   let match = regex.exec(xml);
   while (match) {
-    urls.push(match[1]);
+    const url = match[1];
+    if (url) {
+      urls.push(url);
+    }
     match = regex.exec(xml);
   }
   return urls;

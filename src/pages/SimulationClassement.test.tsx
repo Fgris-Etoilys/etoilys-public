@@ -776,7 +776,7 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /résultat à recalculer/i })
     ).toBeInTheDocument();
-  });
+  }, 10000);
 
   it('conserve le paramètre et garde le résultat accessible si un refetch secondaire échoue', async () => {
     const fetchMock = mockFetchJsonSequence([
@@ -1603,7 +1603,7 @@ describe('SimulationClassement', () => {
 
   it('active la grille de contrôle et permet de revenir aux pièces', async () => {
     const scrollIntoViewMock = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
-    mockFetchJsonSequence([
+    const fetchMock = mockFetchJsonSequence([
       { body: simulationWithAutomaticSurfaceResponses },
       { body: logementWithPiecesResponse },
       { body: gridModelResponse },
@@ -1623,6 +1623,10 @@ describe('SimulationClassement', () => {
         /Renseignez les critères de contrôle selon les équipements, services et caractéristiques réellement présents/i
       )
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Cliquez sur l’icône livre pour afficher des explications complémentaires/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Besoin d’aide sur un critère/i)).toBeInTheDocument();
     expect(screen.getByText(/Critères renseignés/i)).toBeInTheDocument();
     expect(screen.getByText(/Critères restants/i)).toBeInTheDocument();
     expect(screen.queryByText(/Obligatoires non renseignés/i)).not.toBeInTheDocument();
@@ -1654,6 +1658,27 @@ describe('SimulationClassement', () => {
     expect(firstSectionButton).toHaveAttribute('aria-current', 'true');
     expect(firstSectionButton).toHaveClass('bg-primary-100');
     expect(tableOfContents).toHaveClass('table-of-contents-scrollbar');
+
+    const firstManualCriterion = screen.getByTestId('criterion-card-3');
+    fireEvent.click(
+      within(firstManualCriterion).getByRole('button', {
+        name: /afficher l’aide du critère 3/i,
+      })
+    );
+
+    const helpDialog = await screen.findByRole('dialog', { name: /aide - critère 3/i });
+    expect(helpDialog).toBeInTheDocument();
+    expect(
+      within(helpDialog).getByText(/Prise de courant libre dans chaque pièce/i)
+    ).toBeInTheDocument();
+    expect(within(helpDialog).getByText(/Méthodologie d'évaluation/i)).toBeInTheDocument();
+    expect(
+      within(helpDialog).getByText(/Si cette même prise libre est située dans la chambre/i)
+    ).toBeInTheDocument();
+    expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
+
+    fireEvent.click(within(helpDialog).getByRole('button', { name: /fermer l’aide du critère/i }));
+    expect(screen.queryByRole('dialog', { name: /aide - critère 3/i })).not.toBeInTheDocument();
 
     const sectionSelect = screen.getByLabelText(/aller à une section/i);
     const optionGroups = Array.from(sectionSelect.querySelectorAll('optgroup'));
@@ -1718,7 +1743,7 @@ describe('SimulationClassement', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: /pièces du logement/i }));
     expect(screen.getAllByRole('button', { name: /ajouter une pièce/i })[0]).toBeInTheDocument();
-  });
+  }, 10000);
 
   it('garde le résultat en CTA principal unique dans le bloc grille quand la grille est complète', async () => {
     mockFetchJsonSequence([

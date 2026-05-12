@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
+import { BookOpen } from 'lucide-react';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
+import CriterionHelpDialog from './CriterionHelpDialog';
 import {
   getCriterionAnchorId,
   getCriterionByNumber,
@@ -12,6 +14,7 @@ import {
   type GridCriterion,
   type GridSummary,
 } from '../../content/simulatorGrid';
+import type { CritereAide } from '../../content/criteresAide';
 import {
   submitResponse,
   type CriterionStatus,
@@ -29,7 +32,7 @@ interface SimulationGridTabProps {
   grid: GridSummary;
   simulationId: string;
   responses: ReponseDto[];
-  requestedCategory?: string;
+  requestedCategory: string | undefined;
   criterionFilterNumbers: number[];
   progressSummary: SimulationGridProgressSummary;
   resultActionLabel: string;
@@ -38,6 +41,11 @@ interface SimulationGridTabProps {
   onClearCriterionFilter: () => void;
   onCheckResult: () => void;
   onResultReset: () => void;
+}
+
+interface SelectedHelpCriterion {
+  criterion: GridCriterion;
+  aide: CritereAide | null;
 }
 
 export interface SimulationGridProgressSummary {
@@ -580,11 +588,13 @@ function GridCriterionCard({
   response,
   requestedCategory,
   onSave,
+  onOpenHelp,
 }: {
   criterion: GridCriterion;
   response: ReponseDto | undefined;
   requestedCategory: string | undefined;
   onSave: (criterion: GridCriterion, validation: CriterionValidationStatus) => void;
+  onOpenHelp: (criterion: GridCriterion) => void;
 }) {
   const status = getEffectiveCriterionStatus(criterion, response, requestedCategory);
   const isBusinessNotApplicable = status === 'NON_APPLICABLE';
@@ -603,9 +613,19 @@ function GridCriterionCard({
       <div className="space-y-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
-              Critère {criterion.num_critere}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
+                Critère {criterion.num_critere}
+              </p>
+              <button
+                type="button"
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-primary-200 bg-white text-primary-300 transition-colors duration-200 hover:border-primary-300 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 motion-reduce:transition-none"
+                aria-label={`Afficher l’aide du critère ${criterion.num_critere}`}
+                onClick={() => onOpenHelp(criterion)}
+              >
+                <BookOpen className="h-4 w-4" aria-hidden="true" />
+              </button>
+            </div>
             <h6 className="mt-2 text-base font-semibold leading-snug text-gray-900 md:text-[17px]">
               {criterion.libelle}
             </h6>
@@ -655,11 +675,13 @@ function GridChapterSection({
   responsesByCriterionNumber,
   requestedCategory,
   onSave,
+  onOpenHelp,
 }: {
   chapters: GridChapter[];
   responsesByCriterionNumber: Map<number, ReponseDto>;
   requestedCategory: string | undefined;
   onSave: (criterion: GridCriterion, validation: CriterionValidationStatus) => void;
+  onOpenHelp: (criterion: GridCriterion) => void;
 }) {
   if (chapters.length === 0) {
     return (
@@ -717,6 +739,7 @@ function GridChapterSection({
                         response={responsesByCriterionNumber.get(criterion.num_critere)}
                         requestedCategory={requestedCategory}
                         onSave={onSave}
+                        onOpenHelp={onOpenHelp}
                       />
                     ))}
                   </div>
@@ -842,7 +865,7 @@ export function SimulationResultPanel({
 }: {
   grid: GridSummary;
   rapport: RapportProvisoireDto;
-  requestedCategory?: string;
+  requestedCategory: string | undefined;
   onShowCriteria: (numbers: number[]) => void;
   onReturnToPieces: () => void;
   onReturnToGrid: () => void;
@@ -1030,6 +1053,9 @@ export default function SimulationGridTab({
     () => new Map<number, ReponseDto>()
   );
   const [responseSaveErrorMessage, setResponseSaveErrorMessage] = useState<string | null>(null);
+  const [selectedHelpCriterion, setSelectedHelpCriterion] = useState<SelectedHelpCriterion | null>(
+    null
+  );
   const nextSaveRequestIdRef = useRef(0);
   const latestSaveRequestIdsByCriterionNumberRef = useRef(new Map<number, number>());
 
@@ -1077,8 +1103,14 @@ export default function SimulationGridTab({
       return;
     }
 
+    const firstSectionId = sectionIds[0];
+    if (!firstSectionId) {
+      setActiveSectionId(null);
+      return;
+    }
+
     setActiveSectionId((currentSectionId) =>
-      currentSectionId && sectionIds.includes(currentSectionId) ? currentSectionId : sectionIds[0]
+      currentSectionId && sectionIds.includes(currentSectionId) ? currentSectionId : firstSectionId
     );
   }, [sectionIds]);
 
@@ -1133,6 +1165,19 @@ export default function SimulationGridTab({
     }
 
     window.setTimeout(() => scrollToElement(targetId, true), 0);
+  }
+
+  function handleOpenCriterionHelp(criterion: GridCriterion) {
+    void import('../../content/criteresAide')
+      .then(({ criteresAides }) => {
+        setSelectedHelpCriterion({
+          criterion,
+          aide: criteresAides[String(criterion.num_critere)] ?? null,
+        });
+      })
+      .catch(() => {
+        setSelectedHelpCriterion({ criterion, aide: null });
+      });
   }
 
   async function handleSaveResponse(
@@ -1217,6 +1262,19 @@ export default function SimulationGridTab({
               Renseignez les critères de contrôle selon les équipements, services et
               caractéristiques réellement présents dans votre logement.
             </p>
+            <div className="mt-4 rounded-lg border border-primary-200 bg-[#f6fbff] p-3 text-primary-500">
+              <div className="flex items-start gap-3">
+                <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-primary-300" aria-hidden="true" />
+                <div>
+                  <p className="text-sm font-semibold text-primary-500">
+                    Besoin d’aide sur un critère ?
+                  </p>
+                  <p className="mt-1 text-sm leading-comfortable text-primary-500">
+                    Cliquez sur l’icône livre pour afficher des explications complémentaires.
+                  </p>
+                </div>
+              </div>
+            </div>
             <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
               <div className="rounded-lg border border-primary-200 bg-white p-3">
                 <dt className="font-medium text-primary-500">Critères renseignés</dt>
@@ -1312,6 +1370,7 @@ export default function SimulationGridTab({
               responsesByCriterionNumber={responsesByCriterionNumber}
               requestedCategory={requestedCategory}
               onSave={(criterion, validation) => void handleSaveResponse(criterion, validation)}
+              onOpenHelp={handleOpenCriterionHelp}
             />
           </div>
 
@@ -1329,6 +1388,12 @@ export default function SimulationGridTab({
           </div>
         </div>
       </div>
+
+      <CriterionHelpDialog
+        criterion={selectedHelpCriterion?.criterion ?? null}
+        aide={selectedHelpCriterion?.aide ?? null}
+        onClose={() => setSelectedHelpCriterion(null)}
+      />
     </div>
   );
 }
