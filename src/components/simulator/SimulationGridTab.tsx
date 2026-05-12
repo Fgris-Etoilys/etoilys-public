@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
@@ -37,7 +37,6 @@ interface SimulationGridTabProps {
   onResponseSaved: (response: ReponseDto) => void;
   onClearCriterionFilter: () => void;
   onCheckResult: () => void;
-  onResultReady: (result: SimulationResultState) => void;
   onResultReset: () => void;
 }
 
@@ -66,26 +65,11 @@ const STATUS_LABELS: Record<CriterionStatus, string> = {
 };
 
 const SURFACE_CRITERION_MESSAGE =
-  'Ce critère est validé automatiquement à partir des surfaces renseignées dans les pièces du logement.';
+  'Ce critère est calculé automatiquement à partir des surfaces renseignées dans les pièces du logement.';
 const RESPONSE_SAVE_MAX_ATTEMPTS = 3;
 const RESPONSE_SAVE_RETRY_DELAY_MS = 150;
 const RESPONSE_SAVE_ERROR_MESSAGE =
   'La réponse n’a pas pu être enregistrée. Vérifiez votre connexion puis réessayez.';
-const ENABLE_MOCK_RESULT_BUTTON = import.meta.env.DEV && true;
-const MOCK_RESULT_RAPPORT: RapportProvisoireDto = {
-  points_totaux_obligatoires: 137,
-  points_minimaux_obligatoires: 131,
-  points_obligatoires_obtenus: 121,
-  points_obligatoires_atteints: false,
-  points_obligatoires_a_compenser: 48,
-  points_optionnels_disponibles: 161,
-  points_optionnels_necessaires: 9,
-  points_optionnels_a_atteindre: 57,
-  points_optionnels_obtenus: 106,
-  points_optionnels_atteints: true,
-  resultat: false,
-  criteres_obligatoires_non_valides: [41, 59, 63, 65, 74, 121],
-};
 
 function getResponsesByCriterionNumber(responses: ReponseDto[]): Map<number, ReponseDto> {
   return new Map(
@@ -104,6 +88,45 @@ function getEffectiveCriterionStatus(
   requestedCategory: string | undefined
 ): CriterionStatus | undefined {
   return response?.statut_critere ?? getCriterionStatusForCategory(criterion, requestedCategory);
+}
+
+function isAnsweredResponse(response: ReponseDto | undefined): boolean {
+  return (
+    response?.statut_validation === 'VALIDE' ||
+    response?.statut_validation === 'NON_VALIDE' ||
+    response?.statut_validation === 'NON_APPLICABLE'
+  );
+}
+
+function getFirstAnswerableRemainingCriterionNumber({
+  chapters,
+  responsesByCriterionNumber,
+  requestedCategory,
+}: {
+  chapters: GridChapter[];
+  responsesByCriterionNumber: Map<number, ReponseDto>;
+  requestedCategory: string | undefined;
+}): number | null {
+  for (const chapter of chapters) {
+    for (const subChapter of chapter.sous_chapitres) {
+      for (const rubrique of subChapter.rubriques) {
+        for (const criterion of rubrique.criteres) {
+          const response = responsesByCriterionNumber.get(criterion.num_critere);
+          const status = getEffectiveCriterionStatus(criterion, response, requestedCategory);
+
+          if (
+            status !== 'NON_APPLICABLE' &&
+            !isSurfaceCriterion(criterion) &&
+            !isAnsweredResponse(response)
+          ) {
+            return criterion.num_critere;
+          }
+        }
+      }
+    }
+  }
+
+  return null;
 }
 
 function formatPoints(points: number): string {
@@ -213,6 +236,10 @@ function buildSectionLinkGroups(chapters: GridChapter[]): SectionLinkGroup[] {
       label: subChapter.libelle,
     })),
   }));
+}
+
+function getSectionIds(groups: SectionLinkGroup[]): string[] {
+  return groups.flatMap((group) => group.links.map((link) => link.id));
 }
 
 function filterGridChapters(
@@ -344,7 +371,15 @@ function ResultScoreCard({
   );
 }
 
-function GridTableOfContents({ groups }: { groups: SectionLinkGroup[] }) {
+function GridTableOfContents({
+  groups,
+  activeSectionId,
+  onSectionSelect,
+}: {
+  groups: SectionLinkGroup[];
+  activeSectionId: string | null;
+  onSectionSelect: (id: string) => void;
+}) {
   return (
     <>
       <div className="lg:hidden">
@@ -357,11 +392,10 @@ function GridTableOfContents({ groups }: { groups: SectionLinkGroup[] }) {
         <select
           id="grid-section-select"
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
-          defaultValue=""
+          value={activeSectionId ?? ''}
           onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             if (event.target.value) {
-              scrollToElement(event.target.value);
-              event.target.value = '';
+              onSectionSelect(event.target.value);
             }
           }}
         >
@@ -393,16 +427,25 @@ function GridTableOfContents({ groups }: { groups: SectionLinkGroup[] }) {
                   {group.chapterLabel}
                 </p>
                 <div className="ml-2 space-y-1 border-l border-primary-200 pl-3">
-                  {group.links.map((link) => (
-                    <button
-                      key={link.id}
-                      type="button"
-                      className="block w-full rounded-lg px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-primary-100 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-300"
-                      onClick={() => scrollToElement(link.id)}
-                    >
-                      {link.label}
-                    </button>
-                  ))}
+                  {group.links.map((link) => {
+                    const isActive = activeSectionId === link.id;
+
+                    return (
+                      <button
+                        key={link.id}
+                        type="button"
+                        aria-current={isActive ? 'true' : undefined}
+                        className={`block w-full rounded-lg px-2 py-1.5 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 ${
+                          isActive
+                            ? 'bg-primary-100 font-semibold text-primary-500'
+                            : 'text-gray-700 hover:bg-primary-100 hover:text-primary-500'
+                        }`}
+                        onClick={() => onSectionSelect(link.id)}
+                      >
+                        {link.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -515,6 +558,23 @@ function CriterionResponseButtons({
   );
 }
 
+function AutomaticCriterionStatus({ response }: { response: ReponseDto | undefined }) {
+  const isValid = response?.statut_validation === 'VALIDE';
+
+  return (
+    <div
+      className={`rounded-lg border p-3 text-sm ${
+        isValid ? 'border-success-200 bg-success-100' : 'border-alert-200 bg-alert-100'
+      }`}
+    >
+      <span className="font-medium text-gray-900">Statut actuel : </span>
+      <span className={`font-semibold ${isValid ? 'text-success-500' : 'text-alert-500'}`}>
+        {isValid ? 'Validé' : 'Non validé'}
+      </span>
+    </div>
+  );
+}
+
 function GridCriterionCard({
   criterion,
   response,
@@ -564,16 +624,10 @@ function GridCriterionCard({
 
         {isSurfaceReadOnly && (
           <>
+            <AutomaticCriterionStatus response={response} />
             <p className="rounded-lg border border-primary-200 bg-primary-100 p-3 text-sm text-primary-500">
               {SURFACE_CRITERION_MESSAGE}
             </p>
-            <CriterionResponseButtons
-              criterion={criterion}
-              response={response}
-              canAnswerNotApplicable={canAnswerNotApplicable}
-              readOnly
-              onSave={onSave}
-            />
           </>
         )}
 
@@ -624,12 +678,9 @@ function GridChapterSection({
           aria-labelledby={`chapter-${chapterIndex + 1}-title`}
         >
           <div className="border-b border-gray-200 pb-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
-              Chapitre
-            </p>
             <h3
               id={`chapter-${chapterIndex + 1}-title`}
-              className="mt-1 text-xl font-semibold leading-snug text-gray-950"
+              className="text-xl font-semibold leading-snug text-gray-950"
             >
               {chapter.libelle}
             </h3>
@@ -972,7 +1023,6 @@ export default function SimulationGridTab({
   onResponseSaved,
   onClearCriterionFilter,
   onCheckResult,
-  onResultReady,
   onResultReset,
 }: SimulationGridTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -996,6 +1046,8 @@ export default function SimulationGridTab({
     [confirmedResponsesByCriterionNumber, optimisticResponsesByCriterionNumber]
   );
   const sectionLinkGroups = useMemo(() => buildSectionLinkGroups(grid.chapitres), [grid]);
+  const sectionIds = useMemo(() => getSectionIds(sectionLinkGroups), [sectionLinkGroups]);
+  const [activeSectionId, setActiveSectionId] = useState<string | null>(sectionIds[0] ?? null);
   const displayedCriterionFilterNumbers = criterionFilterNumbers;
   const isCriterionFilterActive = criterionFilterNumbers.length > 0;
   const filteredChapters = useMemo(
@@ -1008,6 +1060,80 @@ export default function SimulationGridTab({
       ),
     [displayedCriterionFilterNumbers, grid, isCriterionFilterActive, searchQuery]
   );
+  const firstRemainingCriterionNumber = useMemo(
+    () =>
+      getFirstAnswerableRemainingCriterionNumber({
+        chapters: grid.chapitres,
+        responsesByCriterionNumber,
+        requestedCategory,
+      }),
+    [grid.chapitres, requestedCategory, responsesByCriterionNumber]
+  );
+  const isGridComplete = progressSummary.remainingCount === 0;
+
+  useEffect(() => {
+    if (sectionIds.length === 0) {
+      setActiveSectionId(null);
+      return;
+    }
+
+    setActiveSectionId((currentSectionId) =>
+      currentSectionId && sectionIds.includes(currentSectionId) ? currentSectionId : sectionIds[0]
+    );
+  }, [sectionIds]);
+
+  useEffect(() => {
+    if (sectionIds.length === 0 || typeof IntersectionObserver === 'undefined') {
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const activeEntry = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (firstEntry, secondEntry) =>
+              secondEntry.intersectionRatio - firstEntry.intersectionRatio
+          )[0];
+
+        if (activeEntry?.target.id) {
+          setActiveSectionId(activeEntry.target.id);
+        }
+      },
+      { rootMargin: '-25% 0px -60% 0px', threshold: [0, 0.1, 0.25, 0.5] }
+    );
+
+    sectionIds.forEach((sectionId) => {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        observer.observe(section);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [sectionIds]);
+
+  function handleSectionSelect(sectionId: string) {
+    setActiveSectionId(sectionId);
+    scrollToElement(sectionId);
+  }
+
+  function handleContinueGrid() {
+    const targetId =
+      firstRemainingCriterionNumber === null
+        ? 'grid-criteria-start'
+        : getCriterionAnchorId(firstRemainingCriterionNumber);
+
+    if (searchQuery.trim()) {
+      setSearchQuery('');
+    }
+
+    if (isCriterionFilterActive) {
+      onClearCriterionFilter();
+    }
+
+    window.setTimeout(() => scrollToElement(targetId, true), 0);
+  }
 
   async function handleSaveResponse(
     criterion: GridCriterion,
@@ -1078,51 +1204,55 @@ export default function SimulationGridTab({
     setResponseSaveErrorMessage(RESPONSE_SAVE_ERROR_MESSAGE);
   }
 
-  function handleShowMockResult() {
-    setResponseSaveErrorMessage(null);
-    onResultReady({ kind: 'rapport', rapport: MOCK_RESULT_RAPPORT });
-  }
-
   return (
     <div id="grid-top" className="space-y-6">
-      <Card hover={false} className="p-4 md:p-5">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <h2 className="mb-3">Complétez la grille de contrôle</h2>
-            <p className="max-w-3xl text-sm text-textLight">
-              Répondez aux critères selon les équipements réellement présents dans votre logement.
-              Vous pouvez revenir aux pièces ou modifier vos paramètres à tout moment.
+      <Card hover={false} className="border-primary-300 bg-primary-100 p-5 md:p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-3xl">
+            <span className="inline-flex rounded-full border border-primary-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-500">
+              ÉTAPE 2 — GRILLE DE CONTRÔLE
+            </span>
+            <h2 className="mb-3 mt-4 text-gray-900">Complétez la grille de contrôle</h2>
+            <p className="text-sm leading-comfortable text-primary-500">
+              Renseignez les critères de contrôle selon les équipements, services et
+              caractéristiques réellement présents dans votre logement.
             </p>
-            <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-3">
-              <div className="rounded-lg bg-gray-50 p-3">
-                <dt className="font-medium text-textLight">Critères renseignés</dt>
+            <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
+              <div className="rounded-lg border border-primary-200 bg-white p-3">
+                <dt className="font-medium text-primary-500">Critères renseignés</dt>
                 <dd className="mt-1 font-semibold text-gray-900">
                   {progressSummary.answeredCount} / {progressSummary.totalCount}
                 </dd>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <dt className="font-medium text-textLight">Critères restants</dt>
+              <div className="rounded-lg border border-primary-200 bg-white p-3">
+                <dt className="font-medium text-primary-500">Critères restants</dt>
                 <dd className="mt-1 font-semibold text-gray-900">
                   {progressSummary.remainingCount}
                 </dd>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <dt className="font-medium text-textLight">Obligatoires non renseignés</dt>
-                <dd className="mt-1 font-semibold text-gray-900">
-                  {progressSummary.missingMandatoryCount}
-                </dd>
-              </div>
             </dl>
           </div>
-          <Button
-            type="button"
-            variant="primary"
-            className="w-full shrink-0 lg:w-auto"
-            disabled={isCheckingResult}
-            onClick={onCheckResult}
-          >
-            {isCheckingResult ? 'Calcul en cours...' : resultActionLabel}
-          </Button>
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:flex-col">
+            {!isGridComplete && (
+              <Button
+                type="button"
+                variant="primary"
+                className="w-full shrink-0 lg:w-auto"
+                onClick={handleContinueGrid}
+              >
+                Continuer la grille
+              </Button>
+            )}
+            <Button
+              type="button"
+              variant={isGridComplete ? 'primary' : 'secondary'}
+              className={`w-full shrink-0 lg:w-auto ${isGridComplete ? '' : 'bg-white'}`}
+              disabled={isCheckingResult}
+              onClick={onCheckResult}
+            >
+              {isCheckingResult ? 'Calcul en cours...' : resultActionLabel}
+            </Button>
+          </div>
         </div>
       </Card>
 
@@ -1137,7 +1267,11 @@ export default function SimulationGridTab({
       )}
 
       <div className="grid gap-6 lg:grid-cols-[260px_minmax(0,1fr)]">
-        <GridTableOfContents groups={sectionLinkGroups} />
+        <GridTableOfContents
+          groups={sectionLinkGroups}
+          activeSectionId={activeSectionId}
+          onSectionSelect={handleSectionSelect}
+        />
 
         <div className="space-y-6">
           <Input
@@ -1182,17 +1316,6 @@ export default function SimulationGridTab({
           </div>
 
           <div className="flex flex-col justify-end gap-3 border-t border-gray-100 pt-6 sm:flex-row">
-            {ENABLE_MOCK_RESULT_BUTTON && (
-              <Button
-                type="button"
-                variant="secondary"
-                className="w-full sm:w-auto"
-                disabled={isCheckingResult}
-                onClick={handleShowMockResult}
-              >
-                Simuler le résultat
-              </Button>
-            )}
             <Button
               type="button"
               variant="primary"

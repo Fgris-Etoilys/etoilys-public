@@ -140,6 +140,19 @@ const simulationWithBackendPrefilledUnansweredResponses = {
   },
 };
 
+const simulationWithCompleteGridResponses = {
+  ...simulationResponse,
+  grille: {
+    ...simulationResponse.grille,
+    reponses: applicableCriteriaFor3Stars.map((criterion) => ({
+      num_critere: criterion.num_critere,
+      points_obtenus: criterion.num_critere,
+      statut_validation: 'VALIDE',
+      statut_critere: criterion.categories?.find((category) => category.nom === '3*')?.statut,
+    })),
+  },
+};
+
 const simulationWithInvalidBackendResponseAndValidNoResponse = {
   ...simulationResponse,
   grille: {
@@ -399,6 +412,22 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /ma simulation de classement/i })
     ).toBeInTheDocument();
+    expect(screen.getByText(/ÉTAPE 1.*PIÈCES DU LOGEMENT/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /renseignez les pièces de votre logement/i })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Ajoutez les pièces de votre logement avec leur surface et les couchages éventuels/i
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Vous pourrez modifier ces informations à tout moment/i)
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^ajouter une pièce$/i })).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('button', { name: /passer à la grille de contrôle/i }).length
+    ).toBeGreaterThan(0);
     expect(screen.getByRole('button', { name: /modifier les paramètres/i })).toHaveAttribute(
       'aria-expanded',
       'false'
@@ -455,7 +484,9 @@ describe('SimulationClassement', () => {
     expect(
       screen.getByRole('button', { name: /ajouter une pièce intérieure/i }).className
     ).not.toContain('aspect-square');
-    expect(screen.queryByRole('button', { name: /^ajouter une pièce$/i })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /^ajouter une pièce$/i }));
+    expect(screen.getByRole('dialog', { name: /ajouter une pièce/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/type de pièce/i)).toHaveValue('CHAMBRE');
 
     expect(fetchMock).toHaveBeenCalledWith(
       `/api/public/simulations/${SIMULATION_ID}`,
@@ -539,7 +570,9 @@ describe('SimulationClassement', () => {
 
     const totalApplicableCriteria = applicableCriteriaFor3Stars.length;
     expect(
-      await screen.findByText(new RegExp(`2 / ${totalApplicableCriteria} critères renseignés`, 'i'))
+      await screen.findByText(
+        new RegExp(`2 critères sur ${totalApplicableCriteria} renseignés`, 'i')
+      )
     ).toBeInTheDocument();
     expect(
       screen.getByText(new RegExp(`^2 / ${totalApplicableCriteria}$`, 'i'))
@@ -566,7 +599,9 @@ describe('SimulationClassement', () => {
 
     const totalApplicableCriteria = applicableCriteriaFor3Stars.length;
     expect(
-      await screen.findByText(new RegExp(`3 / ${totalApplicableCriteria} critères renseignés`, 'i'))
+      await screen.findByText(
+        new RegExp(`3 critères sur ${totalApplicableCriteria} renseignés`, 'i')
+      )
     ).toBeInTheDocument();
     expect(
       screen.getByText(new RegExp(`^3 / ${totalApplicableCriteria}$`, 'i'))
@@ -813,7 +848,7 @@ describe('SimulationClassement', () => {
 
     await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
     expect(screen.queryByLabelText(/nom de la pièce/i)).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /^ajouter une pièce$/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^ajouter une pièce$/i })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
 
@@ -1050,10 +1085,10 @@ describe('SimulationClassement', () => {
     clickGoToGrid();
 
     const surfaceCriterion = await screen.findByTestId('criterion-card-1');
-    expect(within(surfaceCriterion).getByRole('button', { name: /^oui$/i })).toHaveAttribute(
-      'aria-pressed',
-      'true'
-    );
+    expect(within(surfaceCriterion).getByText(/^validé$/i)).toHaveClass('text-success-500');
+    expect(
+      within(surfaceCriterion).queryByRole('button', { name: /^oui$/i })
+    ).not.toBeInTheDocument();
   });
 
   it('affiche immédiatement un avertissement si la surface renseignée est insuffisante', async () => {
@@ -1537,8 +1572,8 @@ describe('SimulationClassement', () => {
     clickGoToGrid();
 
     expect(
-      await screen.findByText(/certaines informations semblent incomplètes/i)
-    ).toBeInTheDocument();
+      screen.queryByText(/certaines informations semblent incomplètes/i)
+    ).not.toBeInTheDocument();
     expect(await screen.findByLabelText(/rechercher un critère/i)).toBeInTheDocument();
   });
 
@@ -1567,6 +1602,7 @@ describe('SimulationClassement', () => {
   });
 
   it('active la grille de contrôle et permet de revenir aux pièces', async () => {
+    const scrollIntoViewMock = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
     mockFetchJsonSequence([
       { body: simulationWithAutomaticSurfaceResponses },
       { body: logementWithPiecesResponse },
@@ -1581,16 +1617,42 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /complétez la grille de contrôle/i })
     ).toBeInTheDocument();
+    expect(screen.getByText(/ÉTAPE 2.*GRILLE DE CONTRÔLE/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Renseignez les critères de contrôle selon les équipements, services et caractéristiques réellement présents/i
+      )
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Critères renseignés/i)).toBeInTheDocument();
+    expect(screen.getByText(/Critères restants/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Obligatoires non renseignés/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /continuer la grille/i })).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('button', { name: /voir le résultat de ma simulation/i })[0]
+    ).toHaveClass('bg-transparent');
     expect(screen.getByLabelText(/rechercher un critère/i)).toBeInTheDocument();
     expect(screen.queryByText(/réponse actuelle/i)).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /continuer la grille/i }));
+    await waitFor(() => {
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+    });
+    expect(
+      scrollIntoViewMock.mock.contexts.some(
+        (element) => element instanceof HTMLElement && element.dataset.testid === 'criterion-card-3'
+      )
+    ).toBe(true);
 
     const tableOfContents = screen.getByRole('navigation', { name: /sommaire de la grille/i });
     expect(
       within(tableOfContents).getAllByText(/chapitre 1 : équipements et aménagements/i)
     ).toHaveLength(1);
-    expect(
-      within(tableOfContents).getByRole('button', { name: /1\.1 aménagement général/i })
-    ).toBeInTheDocument();
+    const firstSectionButton = within(tableOfContents).getByRole('button', {
+      name: /1\.1 aménagement général/i,
+    });
+    expect(firstSectionButton).toBeInTheDocument();
+    expect(firstSectionButton).toHaveAttribute('aria-current', 'true');
+    expect(firstSectionButton).toHaveClass('bg-primary-100');
     expect(tableOfContents).toHaveClass('table-of-contents-scrollbar');
 
     const sectionSelect = screen.getByLabelText(/aller à une section/i);
@@ -1603,23 +1665,27 @@ describe('SimulationClassement', () => {
     );
 
     const surfaceCriterion = screen.getByTestId('criterion-card-1');
-    expect(within(surfaceCriterion).getByText(/validé automatiquement/i)).toBeInTheDocument();
+    expect(within(surfaceCriterion).getByText(/calculé automatiquement/i)).toBeInTheDocument();
     expect(
       within(surfaceCriterion).getByRole('heading', { name: /surface totale minimum/i })
     ).toHaveClass('text-base');
-    const surfaceYesButton = within(surfaceCriterion).getByRole('button', { name: /^oui$/i });
-    const surfaceNoButton = within(surfaceCriterion).getByRole('button', { name: /^non$/i });
-    expect(surfaceYesButton).toBeDisabled();
-    expect(surfaceNoButton).toBeDisabled();
-    expect(surfaceYesButton).toHaveAttribute('aria-pressed', 'true');
-    expect(surfaceNoButton).toHaveAttribute('aria-pressed', 'false');
+    expect(within(surfaceCriterion).getByText(/statut actuel/i)).toBeInTheDocument();
+    expect(within(surfaceCriterion).getByText(/^validé$/i)).toHaveClass('text-success-500');
+    expect(
+      within(surfaceCriterion).queryByRole('button', { name: /^oui$/i })
+    ).not.toBeInTheDocument();
+    expect(
+      within(surfaceCriterion).queryByRole('button', { name: /^non$/i })
+    ).not.toBeInTheDocument();
 
     const optionalSurfaceCriterion = screen.getByTestId('criterion-card-2');
-    const optionalSurfaceNoButton = within(optionalSurfaceCriterion).getByRole('button', {
-      name: /^non$/i,
-    });
-    expect(optionalSurfaceNoButton).toBeDisabled();
-    expect(optionalSurfaceNoButton).toHaveAttribute('aria-pressed', 'true');
+    expect(within(optionalSurfaceCriterion).getByText(/statut actuel/i)).toBeInTheDocument();
+    expect(within(optionalSurfaceCriterion).getByText(/^non validé$/i)).toHaveClass(
+      'text-alert-500'
+    );
+    expect(
+      within(optionalSurfaceCriterion).queryByRole('button', { name: /^non$/i })
+    ).not.toBeInTheDocument();
 
     const notApplicableCriterion = screen.getByTestId('criterion-card-23');
     expect(
@@ -1652,6 +1718,28 @@ describe('SimulationClassement', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: /pièces du logement/i }));
     expect(screen.getAllByRole('button', { name: /ajouter une pièce/i })[0]).toBeInTheDocument();
+  });
+
+  it('garde le résultat en CTA principal unique dans le bloc grille quand la grille est complète', async () => {
+    mockFetchJsonSequence([
+      { body: simulationWithCompleteGridResponses },
+      { body: completeLogementResponse },
+      { body: gridModelResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    clickGoToGrid();
+
+    expect(
+      await screen.findByRole('heading', { name: /complétez la grille de contrôle/i })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /continuer la grille/i })).not.toBeInTheDocument();
+    expect(
+      screen.getAllByRole('button', { name: /voir le résultat de ma simulation/i })[0]
+    ).toHaveClass('bg-primary-300');
+    expect(screen.getByText(/^0$/i)).toBeInTheDocument();
   });
 
   it('enregistre une réponse de critère avec un payload public minimal', async () => {
@@ -1850,7 +1938,7 @@ describe('SimulationClassement', () => {
     ).toBeInTheDocument();
   });
 
-  it('affiche le rapport mocké sans appeler les endpoints de résultat', async () => {
+  it('ne propose pas de simulation de résultat mockée dans la grille', async () => {
     const fetchMock = mockFetchJsonSequence([
       { body: simulationResponse },
       { body: logementWithPiecesResponse },
@@ -1862,42 +1950,13 @@ describe('SimulationClassement', () => {
     await screen.findByRole('heading', { name: /chambre 1/i });
     clickGoToGrid();
 
-    const mockResultButton = await screen.findByRole('button', { name: /simuler le résultat/i });
-    expect(mockResultButton).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /simuler le résultat/i })).not.toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
+    ).toBeInTheDocument();
     await waitFor(() => {
       expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
     });
-
-    fireEvent.click(mockResultButton);
-
-    expect(await screen.findByRole('tab', { name: /résultat/i })).toHaveAttribute(
-      'aria-selected',
-      'true'
-    );
-    expect(
-      screen.getByText(/classement 3 étoiles ne semble pas encore atteint/i)
-    ).toBeInTheDocument();
-    expect(screen.getByText(/vous pouvez améliorer le résultat/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: /critères à corriger en priorité/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: /voir les critères prioritaires/i })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /il vous manque 10 points obligatoires pour atteindre le classement 3 étoiles/i
-      )
-    ).toBeInTheDocument();
-    expect(screen.getByText(/^121 \/ 131$/i)).toBeInTheDocument();
-    expect(screen.getByText(/^106 \/ 57$/i)).toBeInTheDocument();
-    expect(screen.queryByText(/points requis/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/il manque 10 points/i)).toBeInTheDocument();
-    expect(screen.getByText(/objectif atteint/i)).toBeInTheDocument();
-    expect(screen.queryByText(/48 points/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/-\d+ points/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/critère 41/i)).toBeInTheDocument();
-    expect(screen.getByText(/un wc avec cuvette/i)).toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/rapport'))).toBe(false);

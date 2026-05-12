@@ -1304,12 +1304,6 @@ export default function SimulationClassement() {
   }
 
   function handleGoToGrid() {
-    if (pieceCompletionWarnings.length > 0) {
-      showToast('Vous pouvez continuer, mais certaines informations semblent incomplètes.', {
-        type: 'info',
-      });
-    }
-
     setActiveTab('grid');
   }
 
@@ -1465,11 +1459,13 @@ export default function SimulationClassement() {
   }
 
   function renderAddPieceChip(label: string, defaultType: PieceType, scope: PieceTypeScope) {
+    const ariaLabel = scope === 'interior' ? `${label} intérieure` : label;
+
     return (
       <button
         type="button"
         className="flex h-full min-h-52 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-primary-200 bg-primary-100 p-4 text-primary-500 transition-colors hover:border-primary-300 hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
-        aria-label={label}
+        aria-label={ariaLabel}
         onClick={() => openCreatePanel(defaultType, scope)}
       >
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-200 bg-white">
@@ -1888,9 +1884,9 @@ export default function SimulationClassement() {
                     aria-selected={isActive}
                     aria-controls={`simulation-panel-${tab.id}`}
                     tabIndex={isActive ? 0 : -1}
-                    className={`min-h-28 rounded-card border p-4 text-left transition-all focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 ${
+                    className={`min-h-20 rounded-card border p-3 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 md:p-4 ${
                       isActive
-                        ? 'border-primary-300 bg-primary-100 shadow-card'
+                        ? 'border-primary-300 bg-primary-100/70'
                         : 'border-gray-200 bg-white hover:border-primary-200 hover:bg-primary-100/40'
                     }`}
                     onClick={() => setActiveTab(tab.id)}
@@ -1909,10 +1905,12 @@ export default function SimulationClassement() {
                         </span>
                       )}
                     </span>
-                    <span className="mt-2 block text-base font-semibold text-gray-900">
+                    <span className="mt-1.5 block text-sm font-semibold text-gray-900">
                       {tab.label}
                     </span>
-                    <span className="mt-2 block text-sm text-textLight">{tab.summary}</span>
+                    <span className="mt-1.5 block text-xs leading-5 text-textLight">
+                      {tab.summary}
+                    </span>
                   </button>
                 );
               })}
@@ -1925,30 +1923,48 @@ export default function SimulationClassement() {
                 aria-labelledby="simulation-tab-pieces"
                 className="space-y-6"
               >
-                <Card hover={false} className="p-5 md:p-6">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                    <div>
-                      <h2 className="mb-3">Renseignez les pièces de votre logement</h2>
-                      <p className="max-w-3xl text-sm text-textLight">
+                <Card hover={false} className="border-primary-300 bg-primary-100 p-5 md:p-6">
+                  <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-3xl">
+                      <span className="inline-flex rounded-full border border-primary-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-500">
+                        ÉTAPE 1 — PIÈCES DU LOGEMENT
+                      </span>
+                      <h2 className="mb-3 mt-4 text-gray-900">
+                        Renseignez les pièces de votre logement
+                      </h2>
+                      <p className="text-sm leading-comfortable text-primary-500">
                         Ajoutez les pièces de votre logement avec leur surface et les couchages
-                        éventuels. Vous pourrez modifier ces informations à tout moment.
+                        éventuels.
+                      </p>
+                      <p className="mt-3 flex items-start gap-2 text-sm font-medium text-primary-500">
+                        <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
+                        <span>Vous pourrez modifier ces informations à tout moment.</span>
                       </p>
                     </div>
-                    <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
+                    <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row lg:flex-col">
                       <Button
                         type="button"
                         variant="primary"
-                        className="w-full sm:w-auto"
+                        className="w-full gap-2 sm:w-auto"
+                        onClick={() => openCreatePanel('CHAMBRE', 'interior')}
+                      >
+                        <Plus aria-hidden="true" className="h-5 w-5" />
+                        Ajouter une pièce
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        className="w-full bg-white sm:w-auto"
                         onClick={handleGoToGrid}
                       >
                         Passer à la grille de contrôle
                       </Button>
                     </div>
                   </div>
+                </Card>
 
-                  <h3 className="mb-4 mt-6 text-lg font-semibold text-gray-900">
-                    Résumé du logement
-                  </h3>
+                <Card hover={false} className="p-5 md:p-6">
+                  <h3 className="mb-4 text-lg font-semibold text-gray-900">Résumé du logement</h3>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div>
                       <p className="text-sm font-medium text-textLight">
@@ -2017,11 +2033,11 @@ export default function SimulationClassement() {
                     </div>
                   ) : (
                     <div className="rounded-card border border-success-200 bg-success-100 p-4 text-sm text-success-500">
-                      <p className="font-semibold">Vous pouvez poursuivre la simulation.</p>
+                      <p className="font-semibold">Vous pouvez passer à la grille de contrôle.</p>
                       <p className="mt-2">
-                        Lorsque vous avez terminé de renseigner les pièces du logement, passez à la
-                        grille de contrôle. Vous pourrez revenir ajuster ces informations à tout
-                        moment.
+                        Lorsque vous avez terminé de renseigner les pièces de votre logement, vous
+                        pouvez commencer à compléter la grille. Vous pourrez revenir modifier les
+                        pièces à tout moment.
                       </p>
                     </div>
                   )}
@@ -2029,8 +2045,8 @@ export default function SimulationClassement() {
                   <div className="flex justify-end">
                     <Button
                       type="button"
-                      variant="primary"
-                      className="w-full sm:w-auto"
+                      variant="secondary"
+                      className="w-full bg-white sm:w-auto"
                       onClick={handleGoToGrid}
                     >
                       Passer à la grille de contrôle
@@ -2055,7 +2071,6 @@ export default function SimulationClassement() {
                     onResponseSaved={handleResponseSaved}
                     onClearCriterionFilter={() => setCriterionFilterNumbers([])}
                     onCheckResult={() => void runSimulationCheck()}
-                    onResultReady={showSimulationResult}
                     onResultReset={() => markResultStale({ clearCriterionFilter: false })}
                   />
                 ) : (
