@@ -133,7 +133,7 @@ describe('Simulateur public de classement', () => {
     mockFetchJson([
       {
         id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
-        statut: 'brouillon',
+        statut: 'BROUILLON',
         categorie_demandee: '3*',
         capacite_accueil: 4,
         date_modification: '2026-05-07T10:30:00.000Z',
@@ -144,7 +144,7 @@ describe('Simulateur public de classement', () => {
 
     expect(await screen.findByText(/classement demandé : 3 étoiles/i)).toBeInTheDocument();
     expect(screen.getByText(/4 personnes/i)).toBeInTheDocument();
-    expect(screen.getByText(/statut : brouillon/i)).toBeInTheDocument();
+    expect(screen.getByText(/^brouillon$/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /reprendre/i })).toHaveAttribute(
       'href',
       '/simulateur/c3f43f31-59fd-4b4e-9272-7f1321d8cabc'
@@ -155,7 +155,7 @@ describe('Simulateur public de classement', () => {
     expect(screen.getByRole('button', { name: /supprimer/i })).toBeInTheDocument();
   });
 
-  it('affiche un libellé UX pour les statuts techniques du backend', async () => {
+  it('affiche un libellé UX pour un résultat défavorable', async () => {
     mockFetchJson([
       {
         id: 'simulation-verification-en-echec',
@@ -168,15 +168,32 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    expect(await screen.findByText(/statut : à compléter/i)).toBeInTheDocument();
+    expect(await screen.findByText(/^résultat défavorable$/i)).toBeInTheDocument();
     expect(screen.queryByText(/VERIFICATION_EN_ECHEC/i)).not.toBeInTheDocument();
+  });
+
+  it('affiche un libellé UX pour un résultat favorable', async () => {
+    mockFetchJson([
+      {
+        id: 'simulation-verifiee-conforme',
+        statut: 'VERIFIEE_CONFORME',
+        categorie_demandee: '4*',
+        capacite_accueil: 6,
+        date_modification: '2026-05-07T10:30:00.000Z',
+      },
+    ]);
+
+    renderSimulateur();
+
+    expect(await screen.findByText(/^résultat favorable$/i)).toBeInTheDocument();
+    expect(screen.queryByText(/VERIFIEE_CONFORME/i)).not.toBeInTheDocument();
   });
 
   it('ne déclenche aucun appel de suppression', async () => {
     const fetchMock = mockFetchJson([
       {
         id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
-        statut: 'brouillon',
+        statut: 'BROUILLON',
         categorie_demandee: '2*',
         capacite_accueil: 2,
         date_modification: '2026-05-07T10:30:00.000Z',

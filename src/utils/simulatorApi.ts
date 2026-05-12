@@ -7,16 +7,17 @@ export interface JsonObject {
   [key: string]: JsonValue;
 }
 
+export type RequestedCategory = '1*' | '2*' | '3*' | '4*' | '5*';
+export type HousingType = 'INDIVIDUEL' | 'COLLECTIF';
+export type SimulationStatus = 'BROUILLON' | 'VERIFICATION_EN_ECHEC' | 'VERIFIEE_CONFORME';
+
 export interface PublicSimulationSummary {
   id: string;
-  statut?: string;
+  statut?: SimulationStatus;
   categorie_demandee: string;
   capacite_accueil: number;
   date_modification: string;
 }
-
-export type RequestedCategory = '1*' | '2*' | '3*' | '4*' | '5*';
-export type HousingType = 'INDIVIDUEL' | 'COLLECTIF';
 
 export interface PublicSimulationCreateRequest {
   categorie_demandee: RequestedCategory;
@@ -108,7 +109,7 @@ export interface PublicSimulationGridDto {
 
 export interface PublicSimulationDto {
   id?: string;
-  statut?: string;
+  statut?: SimulationStatus;
   date_creation?: string;
   date_modification?: string;
   grille?: PublicSimulationGridDto;
@@ -128,6 +129,7 @@ export interface RequiredCommentsDto {
 
 export interface VerificationDto {
   nb_couchages_suffisants?: boolean;
+  salle_de_bain_presente?: boolean;
   criteres_obligatoires_a_cocher?: CriteriaChecklistDto;
   criteres_optionnels_a_cocher?: CriteriaChecklistDto;
   commentaires_obligatoires_a_fournir?: RequiredCommentsDto;
@@ -162,12 +164,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
+function isSimulationStatus(value: unknown): value is SimulationStatus {
+  return (
+    value === 'BROUILLON' || value === 'VERIFICATION_EN_ECHEC' || value === 'VERIFIEE_CONFORME'
+  );
+}
+
 function isPublicSimulationSummary(value: unknown): value is PublicSimulationSummary {
   if (!isRecord(value)) {
     return false;
   }
 
-  const hasValidStatus = value.statut === undefined || typeof value.statut === 'string';
+  const hasValidStatus = value.statut === undefined || isSimulationStatus(value.statut);
 
   return (
     typeof value.id === 'string' &&

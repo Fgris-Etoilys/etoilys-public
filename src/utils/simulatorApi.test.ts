@@ -36,7 +36,7 @@ describe('simulatorApi', () => {
     const fetchMock = mockFetchJson([
       {
         id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
-        statut: 'brouillon',
+        statut: 'BROUILLON',
         categorie_demandee: '3*',
         capacite_accueil: 4,
         date_modification: '2026-05-07T10:30:00.000Z',
@@ -55,6 +55,20 @@ describe('simulatorApi', () => {
     const headers = fetchMock.mock.calls[0]?.[1]?.headers;
     expect(headers).toBeInstanceOf(Headers);
     expect((headers as Headers).get('Accept')).toBe('application/json');
+  });
+
+  it('rejette une liste de simulations avec un statut inconnu du swagger', async () => {
+    mockFetchJson([
+      {
+        id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
+        statut: 'RAPPORT_GENERE',
+        categorie_demandee: '3*',
+        capacite_accueil: 4,
+        date_modification: '2026-05-07T10:30:00.000Z',
+      },
+    ]);
+
+    await expect(listPublicSimulations()).rejects.toThrow('Réponse API simulateur invalide');
   });
 
   it('charge une simulation publique complète', async () => {

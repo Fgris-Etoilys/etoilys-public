@@ -209,6 +209,44 @@ const logementWithPiecesResponse = {
   ],
 };
 
+const completeLogementResponse = {
+  id: 'logement-id',
+  nb_pieces_habitation: 2,
+  surface_totale: 42,
+  pieces: [
+    {
+      id: 'piece-complete-bedroom',
+      nom: 'Chambre 1',
+      type_piece: 'CHAMBRE',
+      surface: 24,
+      ouvrant: true,
+      prise: true,
+      ventilation: true,
+      type_literie: null,
+      nombre_lits: 4,
+      format_lits: null,
+      literie: true,
+      surface_minimum_atteinte: true,
+      capacite_lits_atteinte: true,
+    },
+    {
+      id: 'piece-complete-bathroom',
+      nom: 'Salle de bain 1',
+      type_piece: 'SALLE_DE_BAIN',
+      surface: 6,
+      ouvrant: true,
+      prise: true,
+      ventilation: true,
+      type_literie: null,
+      nombre_lits: null,
+      format_lits: null,
+      literie: false,
+      surface_minimum_atteinte: true,
+      capacite_lits_atteinte: true,
+    },
+  ],
+};
+
 const logementWithCorridorsResponse = {
   ...logementWithPiecesResponse,
   pieces: [
@@ -327,6 +365,18 @@ const renderAt = (path: string) => {
   return render(<App />);
 };
 
+const clickGoToGrid = () => {
+  const [primaryGoToGridButton] = screen.getAllByRole('button', {
+    name: /passer à la grille de contrôle/i,
+  });
+
+  if (!primaryGoToGridButton) {
+    throw new Error('Bouton de passage à la grille introuvable.');
+  }
+
+  fireEvent.click(primaryGoToGridButton);
+};
+
 const expandSimulationParameters = async () => {
   const toggle = await screen.findByRole('button', { name: /modifier les paramètres/i });
   fireEvent.click(toggle);
@@ -398,6 +448,7 @@ describe('SimulationClassement', () => {
     expect(
       screen.getByRole('button', { name: /ajouter un espace extérieur/i })
     ).toBeInTheDocument();
+    expect(screen.getByText(/^Ajouter un espace extérieur$/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /ajouter une pièce intérieure/i })).toHaveClass(
       'min-h-52'
     );
@@ -414,6 +465,24 @@ describe('SimulationClassement', () => {
       `/api/public/simulations/${SIMULATION_ID}/logement`,
       expect.objectContaining({ method: 'GET', credentials: 'include' })
     );
+  });
+
+  it('affiche un bloc de passage à la grille quand aucun warning de pièce n’est présent', async () => {
+    mockFetchJsonSequence([{ body: simulationResponse }, { body: completeLogementResponse }]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    expect(
+      await screen.findByText(/^Vous pouvez passer à la grille de contrôle\.$/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /Lorsque vous avez terminé de renseigner les pièces de votre logement, vous pouvez commencer à compléter la grille\. Vous pourrez revenir modifier les pièces à tout moment\./i
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/certaines informations du logement restent à compléter/i)
+    ).not.toBeInTheDocument();
   });
 
   it('met à jour le classement immédiatement et hydrate la grille sans recalculer le résultat absent', async () => {
@@ -447,7 +516,7 @@ describe('SimulationClassement', () => {
     expect(requestedCategorySelect).toHaveValue('4*');
     expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
 
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     const optionalCriterion = await screen.findByTestId('criterion-card-5');
     expect(within(optionalCriterion).getByRole('button', { name: /^oui$/i })).toHaveAttribute(
@@ -466,7 +535,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     const totalApplicableCriteria = applicableCriteriaFor3Stars.length;
     expect(
@@ -493,7 +562,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     const totalApplicableCriteria = applicableCriteriaFor3Stars.length;
     expect(
@@ -586,7 +655,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
     fireEvent.click(
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );
@@ -648,7 +717,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
     fireEvent.click(
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );
@@ -701,7 +770,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
     fireEvent.click(
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );
@@ -978,7 +1047,7 @@ describe('SimulationClassement', () => {
       `/api/public/simulations/${SIMULATION_ID}`
     );
 
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     const surfaceCriterion = await screen.findByTestId('criterion-card-1');
     expect(within(surfaceCriterion).getByRole('button', { name: /^oui$/i })).toHaveAttribute(
@@ -1442,8 +1511,30 @@ describe('SimulationClassement', () => {
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
-    await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    const emptyPiecesWarning = await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
+    const piecesHeading = screen.getByRole('heading', { name: /pièces du logement/i });
+    const goToGridButtons = screen.getAllByRole('button', {
+      name: /passer à la grille de contrôle/i,
+    });
+
+    expect(goToGridButtons).toHaveLength(2);
+    expect(
+      Boolean(
+        piecesHeading.compareDocumentPosition(emptyPiecesWarning) & Node.DOCUMENT_POSITION_FOLLOWING
+      )
+    ).toBe(true);
+    expect(
+      Boolean(
+        emptyPiecesWarning.compareDocumentPosition(goToGridButtons[1]!) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+      )
+    ).toBe(true);
+    expect(screen.queryByText(/aucune surface de pièce/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/aucune cuisine/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/aucun WC/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/aucune pièce d’habitation/i)).not.toBeInTheDocument();
+
+    clickGoToGrid();
 
     expect(
       await screen.findByText(/certaines informations semblent incomplètes/i)
@@ -1462,7 +1553,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     expect(
       await screen.findByRole('heading', { name: /grille de contrôle indisponible/i })
@@ -1485,7 +1576,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     expect(
       await screen.findByRole('heading', { name: /complétez la grille de contrôle/i })
@@ -1578,7 +1669,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     const optionalCriterion = await screen.findByTestId('criterion-card-5');
     fireEvent.click(within(optionalCriterion).getByRole('button', { name: /^oui/i }));
@@ -1631,7 +1722,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     const optionalCriterion = await screen.findByTestId('criterion-card-5');
     const yesButton = within(optionalCriterion).getByRole('button', { name: /^oui$/i });
@@ -1671,6 +1762,7 @@ describe('SimulationClassement', () => {
       {
         body: {
           nb_couchages_suffisants: false,
+          salle_de_bain_presente: false,
           criteres_obligatoires_a_cocher: {
             criteres_non_coches: [95],
           },
@@ -1694,7 +1786,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
     fireEvent.click(
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );
@@ -1714,6 +1806,9 @@ describe('SimulationClassement', () => {
       screen.getByText(/permettent actuellement d’accueillir 2 personnes/i)
     ).toBeInTheDocument();
     expect(screen.getByText(/indiquée est de 4 personnes/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/aucune salle de bain n’est renseignée dans les pièces du logement/i)
+    ).toBeInTheDocument();
     expect(screen.queryByText(/commentaire/i)).not.toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verifier`
@@ -1765,7 +1860,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
 
     const mockResultButton = await screen.findByRole('button', { name: /simuler le résultat/i });
     expect(mockResultButton).toBeInTheDocument();
@@ -1841,7 +1936,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
     fireEvent.click(
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );
@@ -1926,7 +2021,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
     fireEvent.click(
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );
@@ -2022,7 +2117,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await screen.findByRole('heading', { name: /chambre 1/i });
-    fireEvent.click(screen.getByRole('button', { name: /passer à la grille de contrôle/i }));
+    clickGoToGrid();
     fireEvent.click(
       await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
     );

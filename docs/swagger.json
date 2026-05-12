@@ -5830,6 +5830,83 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": ["simulation-publique-ws"],
+        "operationId": "supprimerSimulation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ApiErrorResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/public/simulations/{id}/verification": {
@@ -7554,16 +7631,10 @@
               "OAUTH_IDENTITY_ALREADY_LINKED",
               "LOGEMENT_NOT_MODIFIABLE",
               "PIECE_TYPE_NOT_ALLOWED",
-              "TOO_MANY_BATHROOMS",
-              "TOO_MANY_WC",
-              "TOO_MANY_KITCHENS",
               "TOO_MANY_CORRIDORS",
               "TOO_MANY_LOGGIAS",
               "TOO_MANY_PRIVATE_GARDENS",
               "TOO_MANY_PARKS",
-              "DEFAULT_PIECE_DELETION_FORBIDDEN",
-              "MAIN_BATHROOM_DELETION_FORBIDDEN",
-              "MAIN_WC_DELETION_FORBIDDEN",
               "TOO_MANY_PUBLIC_SIMULATIONS",
               "INVALID_REQUEST",
               "INVALID_STATE",
@@ -7590,16 +7661,10 @@
               "OAUTH_IDENTITY_ALREADY_LINKED",
               "LOGEMENT_NOT_MODIFIABLE",
               "PIECE_TYPE_NOT_ALLOWED",
-              "TOO_MANY_BATHROOMS",
-              "TOO_MANY_WC",
-              "TOO_MANY_KITCHENS",
               "TOO_MANY_CORRIDORS",
               "TOO_MANY_LOGGIAS",
               "TOO_MANY_PRIVATE_GARDENS",
               "TOO_MANY_PARKS",
-              "DEFAULT_PIECE_DELETION_FORBIDDEN",
-              "MAIN_BATHROOM_DELETION_FORBIDDEN",
-              "MAIN_WC_DELETION_FORBIDDEN",
               "TOO_MANY_PUBLIC_SIMULATIONS",
               "INVALID_REQUEST",
               "INVALID_STATE",
@@ -7781,9 +7846,6 @@
             "type": "integer",
             "format": "int32"
           },
-          "par_defaut": {
-            "type": "boolean"
-          },
           "literie": {
             "type": "boolean"
           },
@@ -7837,7 +7899,8 @@
             "format": "uuid"
           },
           "statut": {
-            "type": "string"
+            "type": "string",
+            "enum": ["BROUILLON", "VERIFICATION_EN_ECHEC", "VERIFIEE_CONFORME"]
           },
           "date_creation": {
             "type": "string",
@@ -8461,7 +8524,8 @@
             "format": "uuid"
           },
           "statut": {
-            "type": "string"
+            "type": "string",
+            "enum": ["BROUILLON", "VERIFICATION_EN_ECHEC", "VERIFIEE_CONFORME"]
           },
           "categorie_demandee": {
             "type": "string"
@@ -8515,6 +8579,9 @@
       "VerificationDto": {
         "properties": {
           "nb_couchages_suffisants": {
+            "type": "boolean"
+          },
+          "salle_de_bain_presente": {
             "type": "boolean"
           },
           "criteres_obligatoires_a_cocher": {

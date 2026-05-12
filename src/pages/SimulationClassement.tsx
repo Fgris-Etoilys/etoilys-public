@@ -318,27 +318,6 @@ function canPieceHaveExteriorOpening(value: PieceType): boolean {
   return EXTERIOR_OPENING_PIECE_TYPES.includes(value);
 }
 
-function hasPieceWithSurface(pieces: PieceDto[]): boolean {
-  return pieces.some(
-    (piece) =>
-      typeof piece.surface === 'number' && Number.isFinite(piece.surface) && piece.surface > 0
-  );
-}
-
-function hasInteriorLivingRoom(pieces: PieceDto[]): boolean {
-  return pieces.some((piece) =>
-    [
-      'SEJOUR',
-      'SALLE_A_MANGER',
-      'SALON',
-      'CHAMBRE',
-      'BUREAU',
-      'CABINE',
-      'PIECE_SANS_OUVRANT',
-    ].includes(piece.type_piece)
-  );
-}
-
 function getPieceCompletionWarnings({
   pieces,
   totalSleepingCapacity,
@@ -352,10 +331,6 @@ function getPieceCompletionWarnings({
 
   if (pieces.length === 0) {
     warnings.push('Aucune pièce n’a encore été ajoutée.');
-  }
-
-  if (!hasPieceWithSurface(pieces)) {
-    warnings.push('Aucune surface de pièce n’est renseignée.');
   }
 
   if (totalSleepingCapacity <= 0) {
@@ -374,20 +349,8 @@ function getPieceCompletionWarnings({
     );
   }
 
-  if (!pieces.some((piece) => piece.type_piece === 'CUISINE')) {
-    warnings.push('Aucune cuisine n’est renseignée.');
-  }
-
   if (!pieces.some((piece) => piece.type_piece === 'SALLE_DE_BAIN')) {
     warnings.push('Aucune salle de bain n’est renseignée.');
-  }
-
-  if (!pieces.some((piece) => piece.type_piece === 'WC')) {
-    warnings.push('Aucun WC n’est renseigné.');
-  }
-
-  if (!hasInteriorLivingRoom(pieces)) {
-    warnings.push('Aucune pièce d’habitation n’est renseignée.');
   }
 
   return warnings;
@@ -767,7 +730,7 @@ export default function SimulationClassement() {
   );
   const gridStepSummary =
     gridModelStatus === 'success'
-      ? `${gridProgressSummary.answeredCount} / ${gridProgressSummary.totalCount} critères renseignés`
+      ? `${gridProgressSummary.answeredCount} critères sur ${gridProgressSummary.totalCount} renseignés`
       : gridModelStatus === 'error'
         ? 'Critères indisponibles'
         : 'Chargement des critères...';
@@ -1512,7 +1475,7 @@ export default function SimulationClassement() {
         <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-200 bg-white">
           <Plus aria-hidden="true" className="h-5 w-5" />
         </span>
-        <span className="text-center text-sm font-semibold">Ajouter une pièce</span>
+        <span className="text-center text-sm font-semibold">{label}</span>
       </button>
     );
   }
@@ -1775,15 +1738,15 @@ export default function SimulationClassement() {
                 to="/simulateur"
                 className="text-sm font-medium text-primary-300 transition-colors hover:text-primary-400"
               >
-                Revenir à la liste des simulations
+                Retour aux simulations
               </Link>
             </div>
 
             <div>
               <h1 className="mb-3 text-gray-900">Ma simulation de classement</h1>
               <p className="max-w-3xl text-sm text-textLight">
-                Avancez librement entre les pièces, la grille de contrôle et le résultat de votre
-                simulation.
+                Complétez les pièces du logement, renseignez la grille de contrôle, puis consultez
+                le résultat de votre simulation.
               </p>
             </div>
 
@@ -1965,14 +1928,10 @@ export default function SimulationClassement() {
                 <Card hover={false} className="p-5 md:p-6">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                      <h2 className="mb-3">Décrivez les pièces de votre logement</h2>
+                      <h2 className="mb-3">Renseignez les pièces de votre logement</h2>
                       <p className="max-w-3xl text-sm text-textLight">
-                        Ajoutez les pièces principales de votre logement avec leur surface. Vous
-                        pourrez revenir modifier ces informations à tout moment.
-                      </p>
-                      <p className="mt-2 max-w-3xl text-sm text-textLight">
-                        Vous pouvez passer à la grille même si tout n’est pas terminé, mais le
-                        résultat sera plus fiable si les pièces sont complètes.
+                        Ajoutez les pièces de votre logement avec leur surface et les couchages
+                        éventuels. Vous pourrez modifier ces informations à tout moment.
                       </p>
                     </div>
                     <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
@@ -1986,19 +1945,6 @@ export default function SimulationClassement() {
                       </Button>
                     </div>
                   </div>
-
-                  {pieceCompletionWarnings.length > 0 && (
-                    <div className="mt-5 rounded-card border border-warning-200 bg-warning-100 p-4 text-sm text-warning-500">
-                      <p className="font-semibold">
-                        Vous pouvez continuer, mais certaines informations semblent incomplètes.
-                      </p>
-                      <ul className="mt-2 list-disc space-y-1 pl-5">
-                        {pieceCompletionWarnings.map((warning) => (
-                          <li key={warning}>{warning}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
 
                   <h3 className="mb-4 mt-6 text-lg font-semibold text-gray-900">
                     Résumé du logement
@@ -2019,7 +1965,7 @@ export default function SimulationClassement() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-textLight">Capacité demandée</p>
+                      <p className="text-sm font-medium text-textLight">Capacité indiquée</p>
                       <p className="mt-1 text-sm font-semibold text-gray-900">
                         {grille?.capacite_accueil
                           ? formatPeopleCount(grille.capacite_accueil)
@@ -2040,12 +1986,7 @@ export default function SimulationClassement() {
                 <div className="space-y-8">
                   <section className="space-y-4" aria-labelledby="interior-pieces-title">
                     <h3 id="interior-pieces-title">Pièces intérieures</h3>
-                    {renderPieceGrid(
-                      interiorPieces,
-                      'Ajouter une pièce intérieure',
-                      'CHAMBRE',
-                      'interior'
-                    )}
+                    {renderPieceGrid(interiorPieces, 'Ajouter une pièce', 'CHAMBRE', 'interior')}
                   </section>
 
                   <section
@@ -2061,6 +2002,40 @@ export default function SimulationClassement() {
                       availableExteriorPieceTypesForCreation.length > 0
                     )}
                   </section>
+
+                  {pieceCompletionWarnings.length > 0 ? (
+                    <div className="rounded-card border border-warning-200 bg-warning-100 p-4 text-sm text-warning-500">
+                      <p className="font-semibold">
+                        Vous pouvez passer à la grille de contrôle, mais certaines informations du
+                        logement restent à compléter.
+                      </p>
+                      <ul className="mt-2 list-disc space-y-1 pl-5">
+                        {pieceCompletionWarnings.map((warning) => (
+                          <li key={warning}>{warning}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="rounded-card border border-success-200 bg-success-100 p-4 text-sm text-success-500">
+                      <p className="font-semibold">Vous pouvez poursuivre la simulation.</p>
+                      <p className="mt-2">
+                        Lorsque vous avez terminé de renseigner les pièces du logement, passez à la
+                        grille de contrôle. Vous pourrez revenir ajuster ces informations à tout
+                        moment.
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="flex justify-end">
+                    <Button
+                      type="button"
+                      variant="primary"
+                      className="w-full sm:w-auto"
+                      onClick={handleGoToGrid}
+                    >
+                      Passer à la grille de contrôle
+                    </Button>
+                  </div>
                 </div>
               </div>
             )}

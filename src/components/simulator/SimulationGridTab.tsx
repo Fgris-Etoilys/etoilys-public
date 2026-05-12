@@ -696,6 +696,7 @@ export function SimulationVerificationIssues({
   const optionalNumbers = verification.criteres_optionnels_a_cocher?.criteres_non_coches ?? [];
   const criterionNumbers = [...new Set([...requiredNumbers, ...optionalNumbers])];
   const hasSleepingCapacityIssue = verification.nb_couchages_suffisants === false;
+  const hasBathroomIssue = verification.salle_de_bain_presente === false;
 
   function formatPeopleCount(value: number): string {
     return `${value} ${value > 1 ? 'personnes' : 'personne'}`;
@@ -745,6 +746,23 @@ export function SimulationVerificationIssues({
                   ? 'la simulation'
                   : formatPeopleCount(requestedCapacity)}
                 . Vérifiez les couchages saisis dans les pièces ou corrigez la capacité d’accueil.
+              </p>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="w-full shrink-0 lg:w-auto"
+                onClick={onReturnToPieces}
+              >
+                Retour aux pièces
+              </Button>
+            </div>
+          )}
+
+          {hasBathroomIssue && (
+            <div className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between">
+              <p className="text-sm text-gray-700">
+                Aucune salle de bain n’est renseignée dans les pièces du logement.
               </p>
               <Button
                 type="button"

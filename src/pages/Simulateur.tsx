@@ -12,6 +12,7 @@ import {
   type HousingType,
   type PublicSimulationSummary,
   type RequestedCategory,
+  type SimulationStatus,
 } from '../utils/simulatorApi';
 import {
   FLOOR_OPTIONS,
@@ -27,6 +28,26 @@ type SimulationsStatus = 'loading' | 'success' | 'error';
 interface FormErrors {
   capacity?: string;
 }
+
+interface SimulationStatusBadge {
+  label: string;
+  className: string;
+}
+
+const SIMULATION_STATUS_BADGES: Record<SimulationStatus, SimulationStatusBadge> = {
+  BROUILLON: {
+    label: 'Brouillon',
+    className: 'border-primary-200 bg-primary-100 text-primary-500',
+  },
+  VERIFICATION_EN_ECHEC: {
+    label: 'Résultat défavorable',
+    className: 'border-alert-200 bg-alert-100 text-alert-500',
+  },
+  VERIFIEE_CONFORME: {
+    label: 'Résultat favorable',
+    className: 'border-success-200 bg-success-100 text-success-500',
+  },
+};
 
 function formatCapacity(value: number): string {
   return `${value} ${value > 1 ? 'personnes' : 'personne'}`;
@@ -44,27 +65,10 @@ function formatModificationDate(value: string): string {
   }).format(date);
 }
 
-function formatSimulationStatus(value: string | undefined): string | null {
-  const normalizedValue = value?.trim().toUpperCase();
-  if (!normalizedValue) {
-    return null;
-  }
-
-  switch (normalizedValue) {
-    case 'BROUILLON':
-      return 'Brouillon';
-    case 'VERIFICATION_EN_ECHEC':
-      return 'À compléter';
-    case 'VERIFICATION_REUSSIE':
-    case 'RAPPORT_DISPONIBLE':
-    case 'RAPPORT_GENERE':
-      return 'Résultat disponible';
-    case 'TERMINE':
-    case 'TERMINEE':
-      return 'Terminée';
-    default:
-      return 'Simulation en cours';
-  }
+function getSimulationStatusBadge(
+  value: SimulationStatus | undefined
+): SimulationStatusBadge | null {
+  return value ? SIMULATION_STATUS_BADGES[value] : null;
 }
 
 export default function Simulateur() {
@@ -195,12 +199,12 @@ export default function Simulateur() {
             <div ref={startBlockRef}>
               <Card hover={false} className="border-primary-200 bg-primary-100 p-5 md:p-6">
                 <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary-500">
-                  Démarrer une nouvelle simulation
+                  Nouvelle simulation
                 </p>
-                <h2 className="mb-3">Paramètres de départ</h2>
+                <h2 className="mb-3">Configurer votre simulation</h2>
                 <p className="mb-5 text-sm text-gray-700">
-                  Ces informations initialisent la simulation avant la description des pièces et la
-                  grille de contrôle.
+                  Commencez par renseigner les informations principales du logement. <br></br>
+                  Vous pourrez les ajuster en cours de simulation.
                 </p>
 
                 <form className="space-y-5" onSubmit={handleStartFormSubmit}>
@@ -256,9 +260,7 @@ export default function Simulateur() {
                     className="w-full"
                     disabled={isCreatingSimulation}
                   >
-                    {isCreatingSimulation
-                      ? 'Création en cours...'
-                      : 'Créer une nouvelle simulation'}
+                    {isCreatingSimulation ? 'Création en cours...' : 'Démarrer la simulation'}
                   </Button>
                 </form>
               </Card>
@@ -268,7 +270,7 @@ export default function Simulateur() {
               <div>
                 <h2 className="mb-2">Mes simulations</h2>
                 <p className="text-sm text-textLight">
-                  Les simulations affichées sont celles associées à ce navigateur.
+                  Vos simulations sont enregistrées sur ce navigateur.
                 </p>
               </div>
 
@@ -301,51 +303,57 @@ export default function Simulateur() {
 
               {simulationsStatus === 'success' && simulations.length > 0 && (
                 <div className="space-y-4">
-                  {simulations.map((simulation) => (
-                    <Card key={simulation.id} hover={false} className="p-4 md:p-5">
-                      <div className="mb-4 space-y-3">
-                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                          <h3>
-                            Classement demandé :{' '}
-                            {formatRequestedCategory(simulation.categorie_demandee)}
-                          </h3>
-                          {formatSimulationStatus(simulation.statut) && (
-                            <span className="inline-flex w-fit rounded-full border border-primary-200 bg-primary-100 px-3 py-1 text-sm font-medium text-primary-500">
-                              Statut : {formatSimulationStatus(simulation.statut)}
-                            </span>
-                          )}
+                  {simulations.map((simulation) => {
+                    const statusBadge = getSimulationStatusBadge(simulation.statut);
+
+                    return (
+                      <Card key={simulation.id} hover={false} className="p-4 md:p-5">
+                        <div className="mb-4 space-y-3">
+                          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <h3>
+                              Classement demandé :{' '}
+                              {formatRequestedCategory(simulation.categorie_demandee)}
+                            </h3>
+                            {statusBadge && (
+                              <span
+                                className={`inline-flex w-fit rounded-full border px-3 py-1 text-sm font-medium ${statusBadge.className}`}
+                              >
+                                {statusBadge.label}
+                              </span>
+                            )}
+                          </div>
+
+                          <dl className="grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
+                            <div>
+                              <dt className="font-medium text-gray-900">Capacité d’accueil</dt>
+                              <dd>{formatCapacity(simulation.capacite_accueil)}</dd>
+                            </div>
+                            <div>
+                              <dt className="font-medium text-gray-900">Dernière modification</dt>
+                              <dd>{formatModificationDate(simulation.date_modification)}</dd>
+                            </div>
+                          </dl>
                         </div>
 
-                        <dl className="grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                          <div>
-                            <dt className="font-medium text-gray-900">Capacité d’accueil</dt>
-                            <dd>{formatCapacity(simulation.capacite_accueil)}</dd>
-                          </div>
-                          <div>
-                            <dt className="font-medium text-gray-900">Dernière modification</dt>
-                            <dd>{formatModificationDate(simulation.date_modification)}</dd>
-                          </div>
-                        </dl>
-                      </div>
-
-                      <div className="flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center">
-                        <Button
-                          type="button"
-                          variant="primary"
-                          href={`/simulateur/${simulation.id}`}
-                        >
-                          Reprendre
-                        </Button>
-                        <button
-                          type="button"
-                          className="mt-2 inline-flex items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors duration-200 hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 sm:ml-auto sm:mt-0"
-                          onClick={() => handleUnavailableSimulationAction('Supprimer')}
-                        >
-                          Supprimer
-                        </button>
-                      </div>
-                    </Card>
-                  ))}
+                        <div className="flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center">
+                          <Button
+                            type="button"
+                            variant="primary"
+                            href={`/simulateur/${simulation.id}`}
+                          >
+                            Reprendre
+                          </Button>
+                          <button
+                            type="button"
+                            className="mt-2 inline-flex items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors duration-200 hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 sm:ml-auto sm:mt-0"
+                            onClick={() => handleUnavailableSimulationAction('Supprimer')}
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </Card>
+                    );
+                  })}
                 </div>
               )}
             </div>
