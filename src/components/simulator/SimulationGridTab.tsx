@@ -14,7 +14,7 @@ import {
   type GridCriterion,
   type GridSummary,
 } from '../../content/simulatorGrid';
-import type { CritereAide } from '../../content/criteresAide';
+import type { CritereAide, CriteresAides } from '../../content/criteresAide';
 import {
   submitResponse,
   type CriterionStatus,
@@ -46,6 +46,7 @@ interface SimulationGridTabProps {
 interface SelectedHelpCriterion {
   criterion: GridCriterion;
   aide: CritereAide | null;
+  isLoading: boolean;
 }
 
 export interface SimulationGridProgressSummary {
@@ -78,6 +79,43 @@ const RESPONSE_SAVE_MAX_ATTEMPTS = 3;
 const RESPONSE_SAVE_RETRY_DELAY_MS = 150;
 const RESPONSE_SAVE_ERROR_MESSAGE =
   'La réponse n’a pas pu être enregistrée. Vérifiez votre connexion puis réessayez.';
+
+let criterionHelpCache: CriteresAides | null = null;
+let criterionHelpPromise: Promise<CriteresAides> | null = null;
+let hasPreloadedCriterionHelpImages = false;
+
+function preloadCriterionHelpImages(criteresAides: CriteresAides) {
+  if (hasPreloadedCriterionHelpImages || typeof Image === 'undefined') {
+    return;
+  }
+
+  hasPreloadedCriterionHelpImages = true;
+  const imageSources = new Set(
+    Object.values(criteresAides)
+      .map((aide) => aide.illustration)
+      .filter((illustration): illustration is string => typeof illustration === 'string')
+  );
+
+  imageSources.forEach((source) => {
+    const image = new Image();
+    image.decoding = 'async';
+    image.src = source;
+  });
+}
+
+function loadCriterionHelp(): Promise<CriteresAides> {
+  if (criterionHelpCache) {
+    return Promise.resolve(criterionHelpCache);
+  }
+
+  criterionHelpPromise ??= import('../../content/criteresAide').then(({ criteresAides }) => {
+    criterionHelpCache = criteresAides;
+    preloadCriterionHelpImages(criteresAides);
+    return criteresAides;
+  });
+
+  return criterionHelpPromise;
+}
 
 function getResponsesByCriterionNumber(responses: ReponseDto[]): Map<number, ReponseDto> {
   return new Map(
@@ -1098,6 +1136,10 @@ export default function SimulationGridTab({
   const isGridComplete = progressSummary.remainingCount === 0;
 
   useEffect(() => {
+    void loadCriterionHelp();
+  }, []);
+
+  useEffect(() => {
     if (sectionIds.length === 0) {
       setActiveSectionId(null);
       return;
@@ -1168,15 +1210,41 @@ export default function SimulationGridTab({
   }
 
   function handleOpenCriterionHelp(criterion: GridCriterion) {
-    void import('../../content/criteresAide')
-      .then(({ criteresAides }) => {
-        setSelectedHelpCriterion({
-          criterion,
-          aide: criteresAides[String(criterion.num_critere)] ?? null,
+    const criterionHelpKey = String(criterion.num_critere);
+    const cachedAide = criterionHelpCache?.[criterionHelpKey] ?? null;
+
+    setSelectedHelpCriterion({
+      criterion,
+      aide: cachedAide,
+      isLoading: criterionHelpCache === null,
+    });
+
+    if (criterionHelpCache) {
+      return;
+    }
+
+    void loadCriterionHelp()
+      .then((criteresAides) => {
+        setSelectedHelpCriterion((currentSelection) => {
+          if (currentSelection?.criterion.num_critere !== criterion.num_critere) {
+            return currentSelection;
+          }
+
+          return {
+            criterion,
+            aide: criteresAides[criterionHelpKey] ?? null,
+            isLoading: false,
+          };
         });
       })
       .catch(() => {
-        setSelectedHelpCriterion({ criterion, aide: null });
+        setSelectedHelpCriterion((currentSelection) => {
+          if (currentSelection?.criterion.num_critere !== criterion.num_critere) {
+            return currentSelection;
+          }
+
+          return { criterion, aide: null, isLoading: false };
+        });
       });
   }
 
@@ -1392,6 +1460,7 @@ export default function SimulationGridTab({
       <CriterionHelpDialog
         criterion={selectedHelpCriterion?.criterion ?? null}
         aide={selectedHelpCriterion?.aide ?? null}
+        isLoading={selectedHelpCriterion?.isLoading ?? false}
         onClose={() => setSelectedHelpCriterion(null)}
       />
     </div>

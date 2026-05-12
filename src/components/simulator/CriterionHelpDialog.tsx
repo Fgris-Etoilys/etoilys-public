@@ -7,6 +7,7 @@ import type { CritereAide } from '../../content/criteresAide';
 interface CriterionHelpDialogProps {
   criterion: GridCriterion | null;
   aide: CritereAide | null;
+  isLoading: boolean;
   onClose: () => void;
 }
 
@@ -55,6 +56,7 @@ function CriterionIllustration({ aide }: { aide: CritereAide }) {
 export default function CriterionHelpDialog({
   criterion,
   aide,
+  isLoading,
   onClose,
 }: CriterionHelpDialogProps) {
   const titleId = useId();
@@ -128,32 +130,43 @@ export default function CriterionHelpDialog({
             </p>
           </div>
 
-          {dialogContent.illustration && dialogContent.numero === 28 && (
+          {isLoading && !aide && (
+            <div
+              className="rounded-card border border-primary-200 bg-primary-100 p-4 text-sm font-medium text-primary-500"
+              role="status"
+            >
+              Chargement de l’aide contextuelle...
+            </div>
+          )}
+
+          {!isLoading && dialogContent.illustration && dialogContent.numero === 28 && (
             <CriterionIllustration aide={dialogContent} />
           )}
 
-          <div>
-            <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
-              Description
-            </h4>
-            <div className="space-y-3 text-sm leading-relaxed text-gray-700">
-              {renderTextBlocks(dialogContent.description)}
+          {!isLoading && (
+            <div>
+              <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
+                Description
+              </h4>
+              <div className="space-y-3 text-sm leading-relaxed text-gray-700">
+                {renderTextBlocks(dialogContent.description)}
+              </div>
+
+              {dialogContent.illustration && dialogContent.numero === 57 && (
+                <div className="mt-4">
+                  <CriterionIllustration aide={dialogContent} />
+                </div>
+              )}
+
+              {dialogContent.numero === 57 && dialogContent.description_suite && (
+                <div className="mt-4 space-y-3 text-sm leading-relaxed text-gray-700">
+                  {renderTextBlocks(dialogContent.description_suite)}
+                </div>
+              )}
             </div>
+          )}
 
-            {dialogContent.illustration && dialogContent.numero === 57 && (
-              <div className="mt-4">
-                <CriterionIllustration aide={dialogContent} />
-              </div>
-            )}
-
-            {dialogContent.numero === 57 && dialogContent.description_suite && (
-              <div className="mt-4 space-y-3 text-sm leading-relaxed text-gray-700">
-                {renderTextBlocks(dialogContent.description_suite)}
-              </div>
-            )}
-          </div>
-
-          {dialogContent.non_applicabilite && (
+          {!isLoading && dialogContent.non_applicabilite && (
             <div>
               <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
                 Non-applicabilité
@@ -172,7 +185,7 @@ export default function CriterionHelpDialog({
             </div>
           )}
 
-          {dialogContent.notes && (
+          {!isLoading && dialogContent.notes && (
             <div>
               <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
                 Notes
@@ -188,7 +201,8 @@ export default function CriterionHelpDialog({
             </div>
           )}
 
-          {dialogContent.illustration &&
+          {!isLoading &&
+            dialogContent.illustration &&
             (dialogContent.numero === 123 || dialogContent.numero === 124) && (
               <CriterionIllustration aide={dialogContent} />
             )}
