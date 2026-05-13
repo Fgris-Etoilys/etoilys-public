@@ -46,6 +46,21 @@ const simulationResponse = {
   },
 };
 
+const draftSimulationResponse = {
+  ...simulationResponse,
+  statut: 'BROUILLON',
+};
+
+const verifiedConformSimulationResponse = {
+  ...simulationResponse,
+  statut: 'VERIFIEE_CONFORME',
+};
+
+const failedVerificationSimulationResponse = {
+  ...simulationResponse,
+  statut: 'VERIFICATION_EN_ECHEC',
+};
+
 const simulationWithUnknownRequestedCategory = {
   ...simulationResponse,
   grille: {
@@ -318,6 +333,34 @@ const logementWithClosedOpeningResponse = {
     },
     logementWithPiecesResponse.pieces[1],
   ],
+};
+
+const successfulRapportResponse = {
+  resultat: true,
+  points_totaux_obligatoires: 180,
+  points_obligatoires_obtenus: 160,
+  points_minimaux_obligatoires: 140,
+  points_obligatoires_atteints: true,
+  points_optionnels_disponibles: 175,
+  points_optionnels_obtenus: 160,
+  points_optionnels_necessaires: 15,
+  points_optionnels_a_atteindre: 155,
+  points_optionnels_atteints: true,
+  criteres_obligatoires_non_valides: [],
+};
+
+const failedVerificationResponse = {
+  nb_couchages_suffisants: false,
+  salle_de_bain_presente: false,
+  criteres_obligatoires_a_cocher: {
+    criteres_non_coches: [95],
+  },
+  criteres_optionnels_a_cocher: {
+    criteres_non_coches: [5],
+  },
+  commentaires_obligatoires_a_fournir: {
+    commentaires_obligatoires_non_fournis: [7],
+  },
 };
 
 const createJsonResponse = (body: unknown, status = 200) =>
@@ -1914,6 +1957,9 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByText(/un ou plusieurs problèmes ont été détectés/i)
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /prêt pour une visite officielle/i })
+    ).not.toBeInTheDocument();
     expect(screen.getByText(/2 critères n’ont pas encore été renseignés/i)).toBeInTheDocument();
     expect(
       screen.getByText(/permettent actuellement d’accueillir 2 personnes/i)
@@ -2035,13 +2081,12 @@ describe('SimulationClassement', () => {
     const resultTab = screen.getByRole('tab', { name: /résultat/i });
     expect(within(resultTab).getByText(/classement atteint/i)).toBeInTheDocument();
     expect(resultTab.querySelector('.text-success-400')).not.toBeNull();
-    expect(screen.getByText(/^160 \/ 140$/i)).toBeInTheDocument();
-    expect(screen.getByText(/^160 \/ 155$/i)).toBeInTheDocument();
-    expect(screen.queryByText(/points requis/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/^160 \/ 140 requis$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^160 \/ 155 requis$/i)).toBeInTheDocument();
     expect(screen.getAllByText(/^objectif atteint$/i)).toHaveLength(2);
     expect(screen.queryByText(/seuil obligatoire atteint/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/objectif optionnel atteint/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/175 points disponibles au total/i)).toBeInTheDocument();
+    expect(screen.getByText(/175 points maximum disponibles/i)).toBeInTheDocument();
     expect(screen.queryByText(/points obtenus sur .* points disponibles/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Seuil minimal$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Points obtenus$/i)).not.toBeInTheDocument();
@@ -2049,6 +2094,14 @@ describe('SimulationClassement', () => {
     expect(screen.queryByText(/^Points disponibles$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Objectif à atteindre$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/critères à corriger en priorité/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /prêt pour une visite officielle/i })
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getAllByRole('link', { name: /demande de classement/i })
+        .some((link) => link.getAttribute('href') === '/demande-classement')
+    ).toBe(true);
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verifier`
     );
@@ -2120,21 +2173,27 @@ describe('SimulationClassement', () => {
     const resultTab = screen.getByRole('tab', { name: /résultat/i });
     expect(within(resultTab).getByText(/calcul à jour/i)).toBeInTheDocument();
     expect(resultTab.querySelector('.text-success-400')).toBeNull();
-    expect(screen.getByText(/vous pouvez améliorer le résultat/i)).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: /critères à corriger en priorité/i })
+      screen.getByRole('heading', { name: /critères obligatoires non validés/i })
     ).toBeInTheDocument();
-    expect(screen.getByText(/^120 \/ 185$/i)).toBeInTheDocument();
-    expect(screen.getByText(/^10 \/ 208$/i)).toBeInTheDocument();
-    expect(screen.queryByText(/points requis/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/113 points disponibles au total/i)).toBeInTheDocument();
+    expect(screen.getByText(/^120 \/ 185 requis$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^10 \/ 208 requis$/i)).toBeInTheDocument();
+    expect(screen.getByText(/113 points maximum disponibles/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /prêt pour une visite officielle/i })
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getAllByRole('link', { name: /demande de classement/i })
+        .some((link) => link.getAttribute('href') === '/demande-classement')
+    ).toBe(true);
     expect(screen.getByText(/^il manque 65 points$/i)).toBeInTheDocument();
     expect(screen.getByText(/^il manque 198 points$/i)).toBeInTheDocument();
     expect(
       screen
-        .getByText(/^120 \/ 185$/i)
+        .getByText(/^120 \/ 185 requis$/i)
         .compareDocumentPosition(
-          screen.getByRole('heading', { name: /critères à corriger en priorité/i })
+          screen.getByRole('heading', { name: /critères obligatoires non validés/i })
         ) & Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
     expect(screen.queryByText(/^non validé$/i)).not.toBeInTheDocument();
@@ -2149,9 +2208,7 @@ describe('SimulationClassement', () => {
       screen.queryByText(/il vous manque 198 points optionnels pour atteindre l’objectif requis/i)
     ).not.toBeInTheDocument();
     expect(
-      screen.getByText(
-        /voici les critères obligatoires qui ne sont pas encore validés dans votre simulation/i
-      )
+      screen.getByText(/les points manquants peuvent être obtenus en validant certains critères/i)
     ).toBeInTheDocument();
     expect(
       screen.queryByText(/ces critères peuvent empêcher l’obtention du classement demandé/i)
@@ -2207,7 +2264,7 @@ describe('SimulationClassement', () => {
     );
 
     expect(
-      await screen.findByRole('heading', { name: /critères à corriger en priorité/i })
+      await screen.findByRole('heading', { name: /critères obligatoires non validés/i })
     ).toBeInTheDocument();
     expect(
       screen.getByText(/certains critères doivent encore être vérifiés pour confirmer le résultat/i)
@@ -2215,5 +2272,81 @@ describe('SimulationClassement', () => {
     expect(screen.getAllByText(/^objectif atteint$/i)).toHaveLength(2);
     expect(screen.queryByText(/-\d+ points/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/il vous manque/i)).not.toBeInTheDocument();
+  });
+
+  it('hydrate automatiquement le rapport existant d’une simulation conforme', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: verifiedConformSimulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: successfulRapportResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    expect(
+      await screen.findByRole('heading', { name: /ma simulation de classement/i })
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(3);
+    });
+
+    fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
+
+    expect(await screen.findByText(/résultat de la simulation/i)).toBeInTheDocument();
+    expect(screen.getByText(/classement 3 étoiles semble atteint/i)).toBeInTheDocument();
+    expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/rapport`
+    );
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
+  });
+
+  it('n’hydrate aucun résultat automatiquement pour une simulation en brouillon', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: draftSimulationResponse },
+      { body: logementWithPiecesResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    expect(
+      await screen.findByRole('heading', { name: /ma simulation de classement/i })
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
+
+    expect(await screen.findByRole('heading', { name: /aucun résultat pour le moment/i }));
+    await waitFor(() => {
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
+    });
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/rapport'))).toBe(false);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verification'))).toBe(false);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
+  });
+
+  it('hydrate automatiquement la vérification existante d’une simulation en échec', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: failedVerificationSimulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: failedVerificationResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    expect(
+      await screen.findByRole('heading', { name: /ma simulation de classement/i })
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(3);
+    });
+
+    fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
+
+    expect(
+      await screen.findByText(/un ou plusieurs problèmes ont été détectés/i)
+    ).toBeInTheDocument();
+    expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/verification`
+    );
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/rapport'))).toBe(false);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
   });
 });

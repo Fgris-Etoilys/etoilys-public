@@ -658,20 +658,50 @@ export default function SimulationClassement() {
     }
 
     setLoadStatus('loading');
+    setResultState(null);
+    setResultStatus('none');
+    setResultErrorMessage(null);
+    setIsAutoRecalculatingResult(false);
 
+    let nextSimulation: PublicSimulationDto;
+    let nextLogement: LogementDto;
     try {
-      const [nextSimulation, nextLogement] = await Promise.all([
+      [nextSimulation, nextLogement] = await Promise.all([
         getPublicSimulation(simulationId),
         getSimulationLogement(simulationId),
       ]);
-
-      setSimulation(nextSimulation);
-      setLogement(nextLogement);
-      setLoadStatus('success');
     } catch {
       setSimulation(null);
       setLogement(null);
       setLoadStatus('error');
+      return;
+    }
+
+    setSimulation(nextSimulation);
+    setLogement(nextLogement);
+
+    try {
+      if (nextSimulation.statut === 'VERIFIEE_CONFORME') {
+        const rapport = await getRapport(simulationId);
+        setResultState({ kind: 'rapport', rapport });
+        setResultStatus('fresh');
+      } else if (nextSimulation.statut === 'VERIFICATION_EN_ECHEC') {
+        try {
+          const verification = await getVerification(simulationId);
+          setResultState({ kind: 'verification', verification });
+        } catch {
+          const rapport = await getRapport(simulationId);
+          setResultState({ kind: 'rapport', rapport });
+        }
+        setResultStatus('fresh');
+      }
+    } catch {
+      setResultStatus('error');
+      setResultErrorMessage(
+        'Le résultat enregistré n’a pas pu être chargé pour le moment. Veuillez réessayer.'
+      );
+    } finally {
+      setLoadStatus('success');
     }
   }, [simulationId]);
 

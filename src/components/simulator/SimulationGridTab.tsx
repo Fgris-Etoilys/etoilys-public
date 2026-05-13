@@ -189,7 +189,11 @@ function formatReportPoints(points: number | undefined): string {
 }
 
 function formatReportScore(obtained: number | undefined, target: number | undefined): string {
-  return `${obtained ?? 0} / ${target ?? 0}`;
+  return `${obtained ?? 0} / ${target ?? 0} requis`;
+}
+
+function formatMaximumAvailablePoints(points: number): string {
+  return `${formatReportPoints(points)} maximum ${points > 1 ? 'disponibles' : 'disponible'}`;
 }
 
 function getMissingPoints(target: number | undefined, obtained: number | undefined): number {
@@ -394,9 +398,7 @@ function ResultScoreCard({
             {formatReportScore(obtained, target)}
           </p>
           {available !== undefined && (
-            <p className="mt-2 text-sm text-textLight">
-              {formatReportPoints(available)} disponibles au total
-            </p>
+            <p className="mt-2 text-sm text-textLight">{formatMaximumAvailablePoints(available)}</p>
           )}
         </div>
         <span
@@ -936,139 +938,146 @@ export function SimulationResultPanel({
   const verdictRole = success ? 'status' : 'alert';
 
   return (
-    <Card hover={false} className={`p-4 md:p-5 ${resultToneClassNames.shell}`}>
-      <div
-        className="rounded-card border border-white/70 bg-white p-4 shadow-sm md:p-5"
-        role={verdictRole}
-      >
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-textLight">
-              Résultat de la simulation
-            </p>
-            <h3 className={`mt-2 text-xl font-semibold ${resultToneClassNames.title}`}>
-              {success
-                ? `Le classement ${requestedCategoryLabel} semble atteint`
-                : `Le classement ${requestedCategoryLabel} ne semble pas encore atteint`}
-            </h3>
-          </div>
-          <span
-            className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-sm font-semibold ${resultToneClassNames.badge}`}
-          >
-            {success ? 'Classement atteint' : 'Classement non atteint'}
-          </span>
-        </div>
-
-        <p className="mt-3 max-w-3xl text-sm text-gray-700">
-          Ce résultat est une estimation basée sur vos réponses. Seule une visite officielle permet
-          de confirmer le classement.
-        </p>
-        {!success && (
-          <p className="mt-3 max-w-3xl text-sm font-medium text-gray-800">
-            Vous pouvez améliorer le résultat en vérifiant les critères prioritaires ci-dessous.
-          </p>
-        )}
-      </div>
-
-      <div className="mt-5 grid gap-4 lg:grid-cols-2">
-        <ResultScoreCard
-          title="Points obligatoires"
-          obtained={rapport.points_obligatoires_obtenus}
-          available={rapport.points_totaux_obligatoires}
-          target={rapport.points_minimaux_obligatoires}
-          reached={rapport.points_obligatoires_atteints}
-        />
-        <ResultScoreCard
-          title="Points optionnels"
-          obtained={rapport.points_optionnels_obtenus}
-          available={rapport.points_optionnels_disponibles}
-          target={rapport.points_optionnels_a_atteindre}
-          reached={rapport.points_optionnels_atteints}
-        />
-      </div>
-
-      {shouldShowDiagnostic && (
-        <div className="mt-5 rounded-card border border-warning-200 bg-white p-4 shadow-sm md:p-5">
-          <h4 className="text-base font-semibold text-gray-900">Critères à corriger en priorité</h4>
-          <div className="mt-3 space-y-2 text-sm text-gray-700">
-            <p>
-              Voici les critères obligatoires qui ne sont pas encore validés dans votre simulation.
-            </p>
-            {rapport.points_obligatoires_atteints === false && missingMandatoryPoints > 0 && (
-              <p>
-                Il vous manque {formatMandatoryPoints(missingMandatoryPoints)} pour atteindre{' '}
-                {requestedClassificationLabel}.
+    <>
+      <Card hover={false} className={`p-4 md:p-5 ${resultToneClassNames.shell}`}>
+        <div
+          className="rounded-card border border-white/70 bg-white p-4 shadow-sm md:p-5"
+          role={verdictRole}
+        >
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-textLight">
+                Résultat de la simulation
               </p>
-            )}
-            {!hasDiagnosticMissingPoints && (
-              <p>Certains critères doivent encore être vérifiés pour confirmer le résultat.</p>
-            )}
-            {invalidRequiredCriterionDetails.length > 0 && (
-              <p>
-                Les points manquants peuvent être obtenus en validant certains critères listés
-                ci-dessous.
-              </p>
-            )}
-          </div>
-
-          {invalidRequiredCriterionDetails.length > 0 && (
-            <div className="mt-4 divide-y divide-gray-200">
-              {invalidRequiredCriterionDetails.map((criterion) => (
-                <div
-                  key={criterion.number}
-                  className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
-                      Critère {criterion.number}
-                    </p>
-                    <p className="mt-1 text-sm font-medium leading-snug text-gray-900">
-                      {criterion.label}
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-[7rem_minmax(9rem,1fr)] items-center gap-3 lg:w-[16rem] lg:shrink-0">
-                    <span className="inline-flex w-fit items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-semibold text-gray-700">
-                      {criterion.points === undefined
-                        ? 'Points non disponibles'
-                        : formatPoints(criterion.points)}
-                    </span>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      className="whitespace-nowrap"
-                      onClick={() => onShowCriteria([criterion.number])}
-                    >
-                      Voir dans la grille
-                    </Button>
-                  </div>
-                </div>
-              ))}
+              <h3 className={`mt-2 text-xl font-semibold ${resultToneClassNames.title}`}>
+                {success
+                  ? `Le classement ${requestedCategoryLabel} semble atteint`
+                  : `Le classement ${requestedCategoryLabel} ne semble pas encore atteint`}
+              </h3>
             </div>
-          )}
-        </div>
-      )}
+            <span
+              className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-sm font-semibold ${resultToneClassNames.badge}`}
+            >
+              {success ? 'Classement atteint' : 'Classement non atteint'}
+            </span>
+          </div>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-        <Button
-          type="button"
-          variant="secondary"
-          className="w-full sm:w-auto"
-          onClick={onReturnToGrid}
-        >
-          Modifier mes réponses
-        </Button>
-        <Button
-          type="button"
-          variant="secondary"
-          className="w-full sm:w-auto"
-          onClick={onReturnToPieces}
-        >
-          Retour aux pièces
+          <p className="mt-3 max-w-3xl text-sm text-gray-700">
+            Ce résultat est une estimation basée sur vos réponses. Seule une visite officielle
+            permet de confirmer le classement.
+          </p>
+        </div>
+
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          <ResultScoreCard
+            title="Points obligatoires"
+            obtained={rapport.points_obligatoires_obtenus}
+            available={rapport.points_totaux_obligatoires}
+            target={rapport.points_minimaux_obligatoires}
+            reached={rapport.points_obligatoires_atteints}
+          />
+          <ResultScoreCard
+            title="Points optionnels"
+            obtained={rapport.points_optionnels_obtenus}
+            available={rapport.points_optionnels_disponibles}
+            target={rapport.points_optionnels_a_atteindre}
+            reached={rapport.points_optionnels_atteints}
+          />
+        </div>
+
+        {shouldShowDiagnostic && (
+          <div className="mt-5 rounded-card border border-warning-200 bg-white p-4 shadow-sm md:p-5">
+            <h4 className="text-base font-semibold text-gray-900">
+              Critères obligatoires non validés
+            </h4>
+            <div className="mt-3 space-y-2 text-sm text-gray-700">
+              {rapport.points_obligatoires_atteints === false && missingMandatoryPoints > 0 && (
+                <p>
+                  Il vous manque {formatMandatoryPoints(missingMandatoryPoints)} pour atteindre{' '}
+                  {requestedClassificationLabel}.
+                </p>
+              )}
+              {!hasDiagnosticMissingPoints && (
+                <p>Certains critères doivent encore être vérifiés pour confirmer le résultat.</p>
+              )}
+              {invalidRequiredCriterionDetails.length > 0 && (
+                <p>
+                  Les points manquants peuvent être obtenus en validant certains critères listés
+                  ci-dessous.
+                </p>
+              )}
+            </div>
+
+            {invalidRequiredCriterionDetails.length > 0 && (
+              <div className="mt-4 divide-y divide-gray-200">
+                {invalidRequiredCriterionDetails.map((criterion) => (
+                  <div
+                    key={criterion.number}
+                    className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
+                        Critère {criterion.number}
+                      </p>
+                      <p className="mt-1 text-sm font-medium leading-snug text-gray-900">
+                        {criterion.label}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-[7rem_minmax(9rem,1fr)] items-center gap-3 lg:w-[16rem] lg:shrink-0">
+                      <span className="inline-flex w-fit items-center rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-sm font-semibold text-gray-700">
+                        {criterion.points === undefined
+                          ? 'Points non disponibles'
+                          : formatPoints(criterion.points)}
+                      </span>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        className="whitespace-nowrap"
+                        onClick={() => onShowCriteria([criterion.number])}
+                      >
+                        Voir dans la grille
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full sm:w-auto"
+            onClick={onReturnToGrid}
+          >
+            Modifier mes réponses
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full sm:w-auto"
+            onClick={onReturnToPieces}
+          >
+            Retour aux pièces
+          </Button>
+        </div>
+      </Card>
+
+      <div className="rounded-card border border-primary-200 bg-primary-100 p-5 md:p-6">
+        <h2 className="mb-3">Prêt pour une visite officielle ?</h2>
+        <p className="mb-5 text-sm text-gray-700">
+          Faites votre demande en ligne et bénéficiez des avantages du classement officiel dès
+          maintenant.
+        </p>
+        <Button href="/demande-classement" variant="primary">
+          Demande de classement
         </Button>
       </div>
-    </Card>
+    </>
   );
 }
 
