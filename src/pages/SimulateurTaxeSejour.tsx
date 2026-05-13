@@ -1511,6 +1511,28 @@ export default function SimulateurTaxeSejour() {
       <section className="simulator-ui bg-white py-10 md:py-12">
         <div className="container-adaptive">
           <div className="space-y-6">
+            <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
+              <h2 className="mb-3 text-gray-900">Sources et méthode taxe de séjour</h2>
+              <div className="space-y-3 text-sm">
+                <p>
+                  La taxe de séjour peut être très différente entre un meublé non classé et un
+                  meublé classé. Pour un logement classé, le tarif dépend du nombre d'étoiles. Pour
+                  un logement non classé, il est généralement calculé en pourcentage du prix de la
+                  nuitée.
+                </p>
+                <p>
+                  Ce simulateur permet de comparer les deux situations, commune par commune. Il
+                  affiche l'écart entre un logement non classé et les niveaux de classement de 1 à 5
+                  étoiles, afin de visualiser concrètement l'impact du classement sur la taxe de
+                  séjour.
+                </p>
+                <p>
+                  Le calcul prend en compte la période de location, le nombre de personnes, le prix
+                  de la nuitée et les taxes additionnelles prévues localement.
+                </p>
+              </div>
+            </div>
+
             <Card className="p-5 md:p-6" hover={false}>
               <h2 className="mb-2">Informations du séjour</h2>
               <p className="mb-5 text-sm text-textLight">
@@ -1724,28 +1746,6 @@ export default function SimulateurTaxeSejour() {
                 </form>
               )}
             </Card>
-
-            <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
-              <h2 className="mb-3 text-gray-900">Sources et méthode taxe de séjour</h2>
-              <div className="space-y-3 text-sm">
-                <p>
-                  La taxe de séjour peut être très différente entre un meublé non classé et un
-                  meublé classé. Pour un logement classé, le tarif dépend du nombre d’étoiles. Pour
-                  un logement non classé, il est généralement calculé en pourcentage du prix de la
-                  nuitée.
-                </p>
-                <p>
-                  Ce simulateur permet de comparer les deux situations, commune par commune. Il
-                  affiche l’écart entre un logement non classé et les niveaux de classement de 1 à 5
-                  étoiles, afin de visualiser concrètement l’impact du classement sur la taxe de
-                  séjour.
-                </p>
-                <p>
-                  Le calcul prend en compte la période de location, le nombre de personnes, le prix
-                  de la nuitée et les taxes additionnelles prévues localement.
-                </p>
-              </div>
-            </div>
 
             {result && (
               <>
