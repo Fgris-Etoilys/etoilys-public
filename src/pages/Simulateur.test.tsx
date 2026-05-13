@@ -158,8 +158,8 @@ describe('Simulateur public de classement', () => {
   it('affiche un libellé UX pour un résultat défavorable', async () => {
     mockFetchJson([
       {
-        id: 'simulation-verification-en-echec',
-        statut: 'VERIFICATION_EN_ECHEC',
+        id: 'simulation-defavorable',
+        statut: 'DEFAVORABLE',
         categorie_demandee: '4*',
         capacite_accueil: 6,
         date_modification: '2026-05-07T10:30:00.000Z',
@@ -169,14 +169,14 @@ describe('Simulateur public de classement', () => {
     renderSimulateur();
 
     expect(await screen.findByText(/^résultat défavorable$/i)).toBeInTheDocument();
-    expect(screen.queryByText(/VERIFICATION_EN_ECHEC/i)).not.toBeInTheDocument();
+    expect(screen.queryByText('DEFAVORABLE')).not.toBeInTheDocument();
   });
 
   it('affiche un libellé UX pour un résultat favorable', async () => {
     mockFetchJson([
       {
-        id: 'simulation-verifiee-conforme',
-        statut: 'VERIFIEE_CONFORME',
+        id: 'simulation-favorable',
+        statut: 'FAVORABLE',
         categorie_demandee: '4*',
         capacite_accueil: 6,
         date_modification: '2026-05-07T10:30:00.000Z',
@@ -186,7 +186,41 @@ describe('Simulateur public de classement', () => {
     renderSimulateur();
 
     expect(await screen.findByText(/^résultat favorable$/i)).toBeInTheDocument();
-    expect(screen.queryByText(/VERIFIEE_CONFORME/i)).not.toBeInTheDocument();
+    expect(screen.queryByText('FAVORABLE')).not.toBeInTheDocument();
+  });
+
+  it('affiche un libellé UX pour une simulation à compléter', async () => {
+    mockFetchJson([
+      {
+        id: 'simulation-a-completer',
+        statut: 'A_COMPLETER',
+        categorie_demandee: '4*',
+        capacite_accueil: 6,
+        date_modification: '2026-05-07T10:30:00.000Z',
+      },
+    ]);
+
+    renderSimulateur();
+
+    expect(await screen.findByText(/^à compléter$/i)).toBeInTheDocument();
+    expect(screen.queryByText('A_COMPLETER')).not.toBeInTheDocument();
+  });
+
+  it('affiche un libellé UX pour une simulation à recalculer', async () => {
+    mockFetchJson([
+      {
+        id: 'simulation-a-recalculer',
+        statut: 'A_RECALCULER',
+        categorie_demandee: '4*',
+        capacite_accueil: 6,
+        date_modification: '2026-05-07T10:30:00.000Z',
+      },
+    ]);
+
+    renderSimulateur();
+
+    expect(await screen.findByText(/^à recalculer$/i)).toBeInTheDocument();
+    expect(screen.queryByText('A_RECALCULER')).not.toBeInTheDocument();
   });
 
   it('ne déclenche aucun appel de suppression', async () => {

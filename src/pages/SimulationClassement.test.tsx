@@ -37,7 +37,7 @@ const applicableCriteriaFor3Stars = gridCriteria.filter(
 
 const simulationResponse = {
   id: SIMULATION_ID,
-  statut: 'brouillon',
+  statut: 'BROUILLON',
   grille: {
     categorie_demandee: '3*',
     capacite_accueil: 4,
@@ -51,14 +51,24 @@ const draftSimulationResponse = {
   statut: 'BROUILLON',
 };
 
-const verifiedConformSimulationResponse = {
+const favorableSimulationResponse = {
   ...simulationResponse,
-  statut: 'VERIFIEE_CONFORME',
+  statut: 'FAVORABLE',
 };
 
-const failedVerificationSimulationResponse = {
+const defavorableSimulationResponse = {
   ...simulationResponse,
-  statut: 'VERIFICATION_EN_ECHEC',
+  statut: 'DEFAVORABLE',
+};
+
+const completionRequiredSimulationResponse = {
+  ...simulationResponse,
+  statut: 'A_COMPLETER',
+};
+
+const recalculationRequiredSimulationResponse = {
+  ...simulationResponse,
+  statut: 'A_RECALCULER',
 };
 
 const simulationWithUnknownRequestedCategory = {
@@ -2274,9 +2284,9 @@ describe('SimulationClassement', () => {
     expect(screen.queryByText(/il vous manque/i)).not.toBeInTheDocument();
   });
 
-  it('hydrate automatiquement le rapport existant d’une simulation conforme', async () => {
+  it('hydrate automatiquement le rapport existant d’une simulation favorable', async () => {
     const fetchMock = mockFetchJsonSequence([
-      { body: verifiedConformSimulationResponse },
+      { body: favorableSimulationResponse },
       { body: logementWithPiecesResponse },
       { body: successfulRapportResponse },
     ]);
@@ -2297,6 +2307,43 @@ describe('SimulationClassement', () => {
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/rapport`
     );
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
+  });
+
+  it('hydrate automatiquement le rapport existant d’une simulation défavorable', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: defavorableSimulationResponse },
+      { body: logementWithPiecesResponse },
+      {
+        body: {
+          ...successfulRapportResponse,
+          resultat: false,
+          points_obligatoires_atteints: false,
+          points_optionnels_atteints: false,
+          criteres_obligatoires_non_valides: [95],
+        },
+      },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    expect(
+      await screen.findByRole('heading', { name: /ma simulation de classement/i })
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(3);
+    });
+
+    fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
+
+    expect(await screen.findByText(/résultat de la simulation/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/classement 3 étoiles ne semble pas encore atteint/i)
+    ).toBeInTheDocument();
+    expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
+      `/api/public/simulations/${SIMULATION_ID}/rapport`
+    );
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verification'))).toBe(false);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
   });
 
@@ -2322,9 +2369,31 @@ describe('SimulationClassement', () => {
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
   });
 
-  it('hydrate automatiquement la vérification existante d’une simulation en échec', async () => {
+  it('n’hydrate aucun résultat automatiquement pour une simulation à recalculer', async () => {
     const fetchMock = mockFetchJsonSequence([
-      { body: failedVerificationSimulationResponse },
+      { body: recalculationRequiredSimulationResponse },
+      { body: logementWithPiecesResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    expect(
+      await screen.findByRole('heading', { name: /ma simulation de classement/i })
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
+
+    expect(await screen.findByRole('heading', { name: /résultat à recalculer/i }));
+    await waitFor(() => {
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
+    });
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/rapport'))).toBe(false);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verification'))).toBe(false);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
+  });
+
+  it('hydrate automatiquement la vérification existante d’une simulation à compléter', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: completionRequiredSimulationResponse },
       { body: logementWithPiecesResponse },
       { body: failedVerificationResponse },
     ]);

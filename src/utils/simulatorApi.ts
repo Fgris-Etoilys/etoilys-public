@@ -9,7 +9,12 @@ export interface JsonObject {
 
 export type RequestedCategory = '1*' | '2*' | '3*' | '4*' | '5*';
 export type HousingType = 'INDIVIDUEL' | 'COLLECTIF';
-export type SimulationStatus = 'BROUILLON' | 'VERIFICATION_EN_ECHEC' | 'VERIFIEE_CONFORME';
+export type SimulationStatus =
+  | 'BROUILLON'
+  | 'FAVORABLE'
+  | 'DEFAVORABLE'
+  | 'A_COMPLETER'
+  | 'A_RECALCULER';
 
 export interface PublicSimulationSummary {
   id: string;
@@ -166,7 +171,11 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isSimulationStatus(value: unknown): value is SimulationStatus {
   return (
-    value === 'BROUILLON' || value === 'VERIFICATION_EN_ECHEC' || value === 'VERIFIEE_CONFORME'
+    value === 'BROUILLON' ||
+    value === 'FAVORABLE' ||
+    value === 'DEFAVORABLE' ||
+    value === 'A_COMPLETER' ||
+    value === 'A_RECALCULER'
   );
 }
 
@@ -189,6 +198,28 @@ function isPublicSimulationSummary(value: unknown): value is PublicSimulationSum
 
 function parsePublicSimulations(value: unknown): PublicSimulationSummary[] {
   if (!Array.isArray(value) || !value.every(isPublicSimulationSummary)) {
+    throw new Error('Réponse API simulateur invalide');
+  }
+
+  return value;
+}
+
+function isPublicSimulationDto(value: unknown): value is PublicSimulationDto {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    (value.id === undefined || typeof value.id === 'string') &&
+    (value.statut === undefined || isSimulationStatus(value.statut)) &&
+    (value.date_creation === undefined || typeof value.date_creation === 'string') &&
+    (value.date_modification === undefined || typeof value.date_modification === 'string') &&
+    (value.grille === undefined || isRecord(value.grille))
+  );
+}
+
+function parsePublicSimulation(value: unknown): PublicSimulationDto {
+  if (!isPublicSimulationDto(value)) {
     throw new Error('Réponse API simulateur invalide');
   }
 
@@ -247,7 +278,7 @@ export async function listPublicSimulations(): Promise<PublicSimulationSummary[]
 export function createPublicSimulation(
   payload: PublicSimulationCreateRequest
 ): Promise<PublicSimulationDto> {
-  return requestSimulatorJson<PublicSimulationDto>('/public/simulations', {
+  return requestSimulatorJson<unknown>('/public/simulations', {
     method: 'POST',
     body: {
       categorie_demandee: payload.categorie_demandee,
@@ -255,11 +286,13 @@ export function createPublicSimulation(
       etage: payload.etage,
       type_habitation: payload.type_habitation,
     },
-  });
+  }).then(parsePublicSimulation);
 }
 
 export function getPublicSimulation(id: string): Promise<PublicSimulationDto> {
-  return requestSimulatorJson<PublicSimulationDto>(`/public/simulations/${encodePathSegment(id)}`);
+  return requestSimulatorJson<unknown>(`/public/simulations/${encodePathSegment(id)}`).then(
+    parsePublicSimulation
+  );
 }
 
 export async function getSimulationGridModel(): Promise<GridSummary> {
@@ -271,34 +304,34 @@ export function updateRequestedCategory(
   id: string,
   category: RequestedCategory
 ): Promise<PublicSimulationDto> {
-  return requestSimulatorJson<PublicSimulationDto>(
+  return requestSimulatorJson<unknown>(
     `/public/simulations/${encodePathSegment(id)}/classementDemande/${encodePathSegment(category)}`,
     { method: 'PUT' }
-  );
+  ).then(parsePublicSimulation);
 }
 
 export function updateCapacity(id: string, capacity: number): Promise<PublicSimulationDto> {
-  return requestSimulatorJson<PublicSimulationDto>(
+  return requestSimulatorJson<unknown>(
     `/public/simulations/${encodePathSegment(id)}/capaciteAccueil/${encodePathSegment(capacity)}`,
     { method: 'PUT' }
-  );
+  ).then(parsePublicSimulation);
 }
 
 export function updateFloor(id: string, floor: number): Promise<PublicSimulationDto> {
-  return requestSimulatorJson<PublicSimulationDto>(
+  return requestSimulatorJson<unknown>(
     `/public/simulations/${encodePathSegment(id)}/etage/${encodePathSegment(floor)}`,
     { method: 'PUT' }
-  );
+  ).then(parsePublicSimulation);
 }
 
 export function updateHousingType(
   id: string,
   housingType: HousingType
 ): Promise<PublicSimulationDto> {
-  return requestSimulatorJson<PublicSimulationDto>(
+  return requestSimulatorJson<unknown>(
     `/public/simulations/${encodePathSegment(id)}/typeHabitation/${encodePathSegment(housingType)}`,
     { method: 'PUT' }
-  );
+  ).then(parsePublicSimulation);
 }
 
 export function getSimulationLogement(id: string): Promise<LogementDto> {

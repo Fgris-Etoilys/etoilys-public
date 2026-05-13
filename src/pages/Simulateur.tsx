@@ -39,13 +39,21 @@ const SIMULATION_STATUS_BADGES: Record<SimulationStatus, SimulationStatusBadge> 
     label: 'Brouillon',
     className: 'border-primary-200 bg-primary-100 text-primary-500',
   },
-  VERIFICATION_EN_ECHEC: {
+  FAVORABLE: {
+    label: 'Résultat favorable',
+    className: 'border-success-200 bg-success-100 text-success-500',
+  },
+  DEFAVORABLE: {
     label: 'Résultat défavorable',
     className: 'border-alert-200 bg-alert-100 text-alert-500',
   },
-  VERIFIEE_CONFORME: {
-    label: 'Résultat favorable',
-    className: 'border-success-200 bg-success-100 text-success-500',
+  A_COMPLETER: {
+    label: 'À compléter',
+    className: 'border-warning-200 bg-warning-100 text-warning-500',
+  },
+  A_RECALCULER: {
+    label: 'À recalculer',
+    className: 'border-warning-200 bg-white text-warning-500',
   },
 };
 

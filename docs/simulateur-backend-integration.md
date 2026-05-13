@@ -42,6 +42,31 @@ La page d’accueil du simulateur est `/simulateur`.
 L’interface principale d’une simulation publique est `/simulateur/:simulationId`.
 Cette route est volontairement `noindex,follow`, car son contenu dépend du navigateur courant.
 
+## Statuts de simulation
+
+Le frontend attend les statuts publics suivants dans `SimulationPubliqueDto.statut` et
+`SimulationPubliqueSummaryDto.statut` :
+
+| Statut         | Sens                                                                                           | Comportement frontend                                                                   |
+| -------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `BROUILLON`    | Aucun calcul final valide n’a encore été exécuté.                                              | Aucun résultat n’est hydraté automatiquement.                                           |
+| `FAVORABLE`    | Le dernier calcul final exploitable est positif.                                               | Le détail charge `GET /public/simulations/{id}/rapport`.                                |
+| `DEFAVORABLE`  | Le dernier calcul final exploitable est négatif.                                               | Le détail charge `GET /public/simulations/{id}/rapport`.                                |
+| `A_COMPLETER`  | Le résultat n’est pas exploitable à cause d’informations manquantes ou d’une erreur bloquante. | Le détail charge `GET /public/simulations/{id}/verification`.                           |
+| `A_RECALCULER` | Un calcul a déjà été fait, puis la simulation a été modifiée.                                  | Le détail affiche un résultat à recalculer sans hydrater de rapport ni de vérification. |
+
+Les anciens statuts `VERIFIEE_CONFORME` et `VERIFICATION_EN_ECHEC` ne sont plus acceptés par le
+client frontend. Un statut inconnu rend la réponse simulateur invalide.
+
+Après un calcul lancé depuis le frontend, le mapping attendu est :
+
+- `POST /public/simulations/{id}/verifier` retourne `false` : statut métier `A_COMPLETER`,
+  avec lecture de `/verification`.
+- `POST /public/simulations/{id}/verifier` retourne `true`, puis `/rapport.resultat === true` :
+  statut métier `FAVORABLE`.
+- `POST /public/simulations/{id}/verifier` retourne `true`, puis `/rapport.resultat !== true` :
+  statut métier `DEFAVORABLE`.
+
 Pour les pièces, l’interface demande à l’utilisateur le nombre de personnes pouvant dormir dans la pièce.
 Le contrat backend disponible porte actuellement cette valeur dans `PieceDto.nombre_lits`.
 Quand un nombre de couchages strictement positif est renseigné, le frontend envoie aussi

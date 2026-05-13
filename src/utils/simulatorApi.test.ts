@@ -57,11 +57,27 @@ describe('simulatorApi', () => {
     expect((headers as Headers).get('Accept')).toBe('application/json');
   });
 
-  it('rejette une liste de simulations avec un statut inconnu du swagger', async () => {
+  it('accepte les statuts publics de simulation connus', async () => {
+    mockFetchJson(
+      ['BROUILLON', 'FAVORABLE', 'DEFAVORABLE', 'A_COMPLETER', 'A_RECALCULER'].map(
+        (statut, index) => ({
+          id: `simulation-${index}`,
+          statut,
+          categorie_demandee: '3*',
+          capacite_accueil: 4,
+          date_modification: '2026-05-07T10:30:00.000Z',
+        })
+      )
+    );
+
+    await expect(listPublicSimulations()).resolves.toHaveLength(5);
+  });
+
+  it('rejette une liste de simulations avec un statut inconnu du contrat', async () => {
     mockFetchJson([
       {
         id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
-        statut: 'RAPPORT_GENERE',
+        statut: 'VERIFIEE_CONFORME',
         categorie_demandee: '3*',
         capacite_accueil: 4,
         date_modification: '2026-05-07T10:30:00.000Z',
@@ -82,6 +98,14 @@ describe('simulatorApi', () => {
         method: 'GET',
         credentials: 'include',
       })
+    );
+  });
+
+  it('rejette une simulation détaillée avec un ancien statut', async () => {
+    mockFetchJson({ id: 'simulation-id', statut: 'VERIFICATION_EN_ECHEC', grille: {} });
+
+    await expect(getPublicSimulation('simulation-id')).rejects.toThrow(
+      'Réponse API simulateur invalide'
     );
   });
 

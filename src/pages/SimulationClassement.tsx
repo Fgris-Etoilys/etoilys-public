@@ -59,6 +59,7 @@ import {
   type PublicSimulationDto,
   type ReponseDto,
   type RequestedCategory,
+  type SimulationStatus,
 } from '../utils/simulatorApi';
 import {
   canPieceHaveSleepingCapacity,
@@ -447,6 +448,14 @@ function getResultStatusLabel(
   return 'Aucun résultat';
 }
 
+function getSimulationStatusFromResult(result: SimulationResultState): SimulationStatus {
+  if (result.kind === 'verification') {
+    return 'A_COMPLETER';
+  }
+
+  return result.rapport.resultat === true ? 'FAVORABLE' : 'DEFAVORABLE';
+}
+
 function buildPiecePayload(form: PieceFormState, existingPiece?: PieceDto): PieceDto {
   const payload: PieceDto = existingPiece
     ? {
@@ -682,19 +691,16 @@ export default function SimulationClassement() {
     setLogement(nextLogement);
 
     try {
-      if (nextSimulation.statut === 'VERIFIEE_CONFORME') {
+      if (nextSimulation.statut === 'FAVORABLE' || nextSimulation.statut === 'DEFAVORABLE') {
         const rapport = await getRapport(simulationId);
         setResultState({ kind: 'rapport', rapport });
         setResultStatus('fresh');
-      } else if (nextSimulation.statut === 'VERIFICATION_EN_ECHEC') {
-        try {
-          const verification = await getVerification(simulationId);
-          setResultState({ kind: 'verification', verification });
-        } catch {
-          const rapport = await getRapport(simulationId);
-          setResultState({ kind: 'rapport', rapport });
-        }
+      } else if (nextSimulation.statut === 'A_COMPLETER') {
+        const verification = await getVerification(simulationId);
+        setResultState({ kind: 'verification', verification });
         setResultStatus('fresh');
+      } else if (nextSimulation.statut === 'A_RECALCULER') {
+        setResultStatus('stale');
       }
     } catch {
       setResultStatus('error');
@@ -742,7 +748,7 @@ export default function SimulationClassement() {
   const activePieceSupportsSleepingCapacity = canPieceHaveSleepingCapacity(pieceForm.type);
   const activePieceCanHaveExteriorOpening = canPieceHaveExteriorOpening(pieceForm.type);
   const grille = simulation?.grille;
-  const hasSimulationResult = resultState !== null;
+  const hasSimulationResult = resultState !== null || resultStatus === 'stale';
   const isCheckingResult = resultStatus === 'checking';
   const resultActionLabel = hasSimulationResult
     ? 'Relancer la simulation'
@@ -966,6 +972,11 @@ export default function SimulationClassement() {
     if (clearCriterionFilter) {
       setCriterionFilterNumbers([]);
     }
+    if (resultState || resultStatus === 'fresh' || resultStatus === 'stale') {
+      setSimulation((currentSimulation) =>
+        currentSimulation ? { ...currentSimulation, statut: 'A_RECALCULER' } : currentSimulation
+      );
+    }
     setResultStatus((currentStatus) => {
       if (resultState || currentStatus === 'fresh' || currentStatus === 'stale') {
         return 'stale';
@@ -981,6 +992,11 @@ export default function SimulationClassement() {
     setResultErrorMessage(null);
     setIsAutoRecalculatingResult(false);
     setCriterionFilterNumbers([]);
+    setSimulation((currentSimulation) =>
+      currentSimulation
+        ? { ...currentSimulation, statut: getSimulationStatusFromResult(result) }
+        : currentSimulation
+    );
     setActiveTab('result');
     window.requestAnimationFrame(() => {
       try {

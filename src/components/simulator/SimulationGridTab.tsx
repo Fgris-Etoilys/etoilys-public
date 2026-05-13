@@ -946,8 +946,8 @@ export function SimulationResultPanel({
           className="rounded-card border border-white/70 bg-white p-4 shadow-sm md:p-5"
           role={verdictRole}
         >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+            <div className="flex min-w-0 flex-col">
               <p className="text-sm font-semibold uppercase tracking-wide text-textLight">
                 Résultat de la simulation
               </p>
@@ -956,6 +956,10 @@ export function SimulationResultPanel({
                   ? `Le classement ${requestedCategoryLabel} semble atteint`
                   : `Le classement ${requestedCategoryLabel} ne semble pas encore atteint`}
               </h3>
+              <p className="mt-8 max-w-3xl text-sm text-gray-700">
+                Ce résultat est une estimation basée sur vos réponses. Seule une visite officielle
+                permet de confirmer le classement.
+              </p>
             </div>
             <div className="flex flex-col gap-2 sm:items-end">
               <span
@@ -967,19 +971,14 @@ export function SimulationResultPanel({
                 type="button"
                 variant="primary"
                 size="sm"
-                className="w-full gap-2 sm:w-auto"
+                className="mt-6 w-full gap-2 sm:w-auto"
                 onClick={onExportPdf}
               >
                 <FileDown aria-hidden="true" className="h-4 w-4" />
-                Exporter PDF
+                Télécharger le résultat
               </Button>
             </div>
           </div>
-
-          <p className="mt-3 max-w-3xl text-sm text-gray-700">
-            Ce résultat est une estimation basée sur vos réponses. Seule une visite officielle
-            permet de confirmer le classement.
-          </p>
         </div>
 
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
@@ -1087,9 +1086,14 @@ export function SimulationResultPanel({
           Faites votre demande en ligne et bénéficiez des avantages du classement officiel dès
           maintenant.
         </p>
-        <Button href="/demande-classement" variant="primary">
-          Demande de classement
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Button href="/demande-classement" variant="primary" className="w-full sm:w-auto">
+            Demande de classement
+          </Button>
+          <Button href="/faq" variant="secondary" className="w-full bg-white sm:w-auto">
+            Consulter la FAQ
+          </Button>
+        </div>
       </div>
     </>
   );
