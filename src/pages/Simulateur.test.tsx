@@ -108,7 +108,7 @@ describe('Simulateur public de classement', () => {
     fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
       target: { value: '6' },
     });
-    fireEvent.click(screen.getByRole('button', { name: /créer une nouvelle simulation/i }));
+    fireEvent.click(screen.getByRole('button', { name: /démarrer la simulation/i }));
 
     await waitFor(() => {
       expect(window.location.pathname).toBe('/simulateur/created-simulation-id');
