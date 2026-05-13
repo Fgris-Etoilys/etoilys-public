@@ -203,8 +203,27 @@ export default function Simulateur() {
 
       <section className="simulator-ui bg-white py-10 md:py-12">
         <div className="container-adaptive">
+          <div className="mx-auto mb-6 max-w-6xl">
+            <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
+              <h2 className="mb-3 text-gray-900">Méthode du simulateur de classement</h2>
+              <div className="space-y-3 text-sm">
+                <p>
+                  Ce simulateur vous donne une première estimation du classement possible de votre
+                  meublé de tourisme. Il s’appuie sur la grille officielle de classement, utilisée
+                  pour attribuer de 1 à 5 étoiles selon des critères liés au logement, aux
+                  équipements, aux services proposés et au développement durable.
+                </p>
+                <p>
+                  L’objectif est simple : vous aider à situer votre logement avant d’engager une
+                  démarche officielle. Vous renseignez les caractéristiques du bien, puis le
+                  simulateur compare vos réponses aux exigences du référentiel.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-            <div ref={startBlockRef}>
+            <div ref={startBlockRef} className="space-y-5">
               <Card hover={false} className="border-primary-200 bg-primary-100 p-5 md:p-6">
                 <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary-500">
                   Nouvelle simulation
@@ -272,6 +291,26 @@ export default function Simulateur() {
                   </Button>
                 </form>
               </Card>
+
+              <div className="rounded-card border border-warning-200 bg-warning-100 p-5 leading-comfortable text-gray-700 md:p-6">
+                <h2 className="mb-3 text-gray-900">Limites du simulateur de classement</h2>
+                <div className="space-y-3 text-sm">
+                  <p>
+                    Ce simulateur ne délivre pas un classement officiel. Il vous donne une
+                    estimation à partir de vos réponses, mais seul un contrôle sur place permet de
+                    confirmer les critères réellement validés.
+                  </p>
+                  <p>
+                    Lors de la visite, Etoilys vérifie concrètement les équipements, les surfaces,
+                    l’état du logement et les points prévus par la grille de classement. Un détail
+                    mal renseigné ou un équipement absent peut modifier le résultat final.
+                  </p>
+                  <p>
+                    Le score affiché doit donc être lu comme une aide à la préparation, pas comme
+                    une garantie d’obtention d’une catégorie d’étoiles.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-5">

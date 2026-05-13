@@ -2,6 +2,9 @@ export type ImageAssetKey =
   | 'homeHero'
   | 'homeProcedure'
   | 'pourquoiReferencement'
+  | 'simulateurClassement'
+  | 'simulateurTaxeSejour'
+  | 'simulateurFiscalClassement'
   | 'articleMeubles20252026'
   | 'articleMicroBic2026'
   | 'articleResidence90Jours'
@@ -43,6 +46,33 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pourquoi-referencement-480.webp 480w, /images/optimized/pourquoi-referencement-768.webp 768w, /images/optimized/pourquoi-referencement-1200.webp 1200w, /images/optimized/pourquoi-referencement-1600.webp 1600w, /images/optimized/pourquoi-referencement-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/pourquoi-referencement-480.avif 480w, /images/optimized/pourquoi-referencement-768.avif 768w, /images/optimized/pourquoi-referencement-1200.avif 1200w, /images/optimized/pourquoi-referencement-1600.avif 1600w, /images/optimized/pourquoi-referencement-1920.avif 1920w',
+  },
+  simulateurClassement: {
+    width: 1200,
+    height: 630,
+    src: '/images/optimized/simulateur-classement-og-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/simulateur-classement-og-480.webp 480w, /images/optimized/simulateur-classement-og-768.webp 768w, /images/optimized/simulateur-classement-og-1200.webp 1200w, /images/optimized/simulateur-classement-og-1600.webp 1600w, /images/optimized/simulateur-classement-og-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/simulateur-classement-og-480.avif 480w, /images/optimized/simulateur-classement-og-768.avif 768w, /images/optimized/simulateur-classement-og-1200.avif 1200w, /images/optimized/simulateur-classement-og-1600.avif 1600w, /images/optimized/simulateur-classement-og-1920.avif 1920w',
+  },
+  simulateurTaxeSejour: {
+    width: 1200,
+    height: 630,
+    src: '/images/optimized/simulateur-taxe-sejour-og-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/simulateur-taxe-sejour-og-480.webp 480w, /images/optimized/simulateur-taxe-sejour-og-768.webp 768w, /images/optimized/simulateur-taxe-sejour-og-1200.webp 1200w, /images/optimized/simulateur-taxe-sejour-og-1600.webp 1600w, /images/optimized/simulateur-taxe-sejour-og-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/simulateur-taxe-sejour-og-480.avif 480w, /images/optimized/simulateur-taxe-sejour-og-768.avif 768w, /images/optimized/simulateur-taxe-sejour-og-1200.avif 1200w, /images/optimized/simulateur-taxe-sejour-og-1600.avif 1600w, /images/optimized/simulateur-taxe-sejour-og-1920.avif 1920w',
+  },
+  simulateurFiscalClassement: {
+    width: 1200,
+    height: 630,
+    src: '/images/optimized/simulateur-fiscal-classement-og-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/simulateur-fiscal-classement-og-480.webp 480w, /images/optimized/simulateur-fiscal-classement-og-768.webp 768w, /images/optimized/simulateur-fiscal-classement-og-1200.webp 1200w, /images/optimized/simulateur-fiscal-classement-og-1600.webp 1600w, /images/optimized/simulateur-fiscal-classement-og-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/simulateur-fiscal-classement-og-480.avif 480w, /images/optimized/simulateur-fiscal-classement-og-768.avif 768w, /images/optimized/simulateur-fiscal-classement-og-1200.avif 1200w, /images/optimized/simulateur-fiscal-classement-og-1600.avif 1600w, /images/optimized/simulateur-fiscal-classement-og-1920.avif 1920w',
   },
   articleMeubles20252026: {
     width: 1920,

@@ -916,6 +916,30 @@ export default function SimulateurFiscalClassement() {
               </form>
             </Card>
 
+            <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
+              <h2 className="mb-3 text-gray-900">Hypothèses du simulateur fiscal</h2>
+              <div className="space-y-3 text-sm">
+                <p>
+                  Ce simulateur compare la fiscalité d’un meublé de tourisme classé et non classé
+                  selon les règles du micro-BIC applicables en 2026. Il prend en compte les recettes
+                  annuelles indiquées, le statut classé envisagé et votre tranche marginale
+                  d’imposition.
+                </p>
+                <p>
+                  La comparaison repose sur les principaux paramètres officiels : plafond de
+                  recettes, abattement forfaitaire et différence de traitement entre meublé classé
+                  et non classé. En 2026, l’écart est important : un meublé non classé relève du
+                  micro-BIC jusqu’à 15 000 € de recettes, avec un abattement de 30 %, tandis qu’un
+                  meublé classé bénéficie d’un plafond plus élevé et d’un abattement de 50 %.
+                </p>
+                <p>
+                  Le résultat donne une estimation fiscale simplifiée. Il sert à visualiser l’impact
+                  du classement dans le cadre du micro-BIC, sans remplacer une analyse comptable ou
+                  fiscale complète.
+                </p>
+              </div>
+            </div>
+
             {result && (
               <>
                 {result.canDisplayMicroComparison ? (

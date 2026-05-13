@@ -61,23 +61,26 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Procédure',
   },
   '/simulateur': {
-    title: 'Simulateur de classement',
+    title: 'Simulateur de classement meublé de tourisme',
     description:
-      'Accueil du simulateur public de classement des meublés de tourisme, avec les simulations enregistrées sur le navigateur.',
+      'Estimez gratuitement le classement possible de votre meublé de tourisme à partir de la grille officielle, avant une visite de classement.',
     breadcrumbLabel: 'Simulateur de classement',
+    ogImageKey: 'simulateurClassement',
   },
   '/simulateur/:simulationId': SIMULATION_DETAIL_SEO,
   '/simulateur-taxe-sejour': {
-    title: 'Simulateur taxe de séjour',
+    title: 'Simulateur de taxe de séjour meublé de tourisme',
     description:
-      'Simulation informative de taxe de séjour par commune et catégorie de classement, sur 1 nuit.',
+      'Calculez gratuitement l’écart de taxe de séjour entre un meublé non classé et un meublé classé, selon la commune et le nombre d’étoiles.',
     breadcrumbLabel: 'Simulateur taxe de séjour',
+    ogImageKey: 'simulateurTaxeSejour',
   },
   '/simulateur-fiscal-classement': {
-    title: 'Simulateur fiscal classement 2026',
+    title: 'Simulateur fiscal meublé classé 2026',
     description:
-      'Simulation pédagogique de comparaison fiscale 2026 entre meublé de tourisme classé et non classé.',
+      'Comparez gratuitement la fiscalité d’un meublé classé et non classé avec les seuils et abattements micro-BIC 2026.',
     breadcrumbLabel: 'Simulateur fiscal classement',
+    ogImageKey: 'simulateurFiscalClassement',
   },
   '/faq': {
     title: 'FAQ classement meublé de tourisme',
