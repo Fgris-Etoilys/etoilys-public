@@ -36,6 +36,7 @@ import Select from '../components/ui/Select';
 import Tooltip from '../components/ui/Tooltip';
 import { useToast } from '../components/ui/Toast';
 import { getCriterionStatusForCategory, type GridSummary } from '../content/simulatorGrid';
+import { exportSimulationClassementPdf } from '../utils/simulatorExport';
 import {
   createPiece,
   deletePiece,
@@ -796,6 +797,33 @@ export default function SimulationClassement() {
     grille?.type_habitation,
     isSavingParameters,
   ]);
+
+  async function handleExportPdf() {
+    if (
+      !simulationId ||
+      resultStatus !== 'fresh' ||
+      !gridSummary ||
+      resultState?.kind !== 'rapport'
+    ) {
+      showToast('Aucun résultat à exporter.', { type: 'info' });
+      return;
+    }
+
+    try {
+      await exportSimulationClassementPdf({
+        grid: gridSummary,
+        rapport: resultState.rapport,
+        grille,
+        logement,
+        totalSleepingCapacity,
+        generatedAt: new Date(),
+        simulationId,
+      });
+      showToast('PDF généré.', { type: 'success' });
+    } catch {
+      showToast('Impossible de générer le PDF.', { type: 'error' });
+    }
+  }
 
   const pieceValidationIssue = useMemo(
     () => getPieceFormValidationIssue(pieceForm, grille?.categorie_demandee),
@@ -2213,6 +2241,7 @@ export default function SimulationClassement() {
                     grid={gridSummary}
                     rapport={resultState.rapport}
                     requestedCategory={grille?.categorie_demandee}
+                    onExportPdf={() => void handleExportPdf()}
                     onShowCriteria={showCriteriaInGrid}
                     onReturnToPieces={() => setActiveTab('pieces')}
                     onReturnToGrid={returnToFullGrid}

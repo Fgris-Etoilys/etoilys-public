@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent } from 'react';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, FileDown } from 'lucide-react';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 import Input from '../ui/Input';
@@ -899,6 +899,7 @@ export function SimulationResultPanel({
   grid,
   rapport,
   requestedCategory,
+  onExportPdf,
   onShowCriteria,
   onReturnToPieces,
   onReturnToGrid,
@@ -906,6 +907,7 @@ export function SimulationResultPanel({
   grid: GridSummary;
   rapport: RapportProvisoireDto;
   requestedCategory: string | undefined;
+  onExportPdf: () => void;
   onShowCriteria: (numbers: number[]) => void;
   onReturnToPieces: () => void;
   onReturnToGrid: () => void;
@@ -955,11 +957,23 @@ export function SimulationResultPanel({
                   : `Le classement ${requestedCategoryLabel} ne semble pas encore atteint`}
               </h3>
             </div>
-            <span
-              className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-sm font-semibold ${resultToneClassNames.badge}`}
-            >
-              {success ? 'Classement atteint' : 'Classement non atteint'}
-            </span>
+            <div className="flex flex-col gap-2 sm:items-end">
+              <span
+                className={`inline-flex w-fit items-center rounded-full border px-3 py-1 text-sm font-semibold ${resultToneClassNames.badge}`}
+              >
+                {success ? 'Classement atteint' : 'Classement non atteint'}
+              </span>
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                className="w-full gap-2 sm:w-auto"
+                onClick={onExportPdf}
+              >
+                <FileDown aria-hidden="true" className="h-4 w-4" />
+                Exporter PDF
+              </Button>
+            </div>
           </div>
 
           <p className="mt-3 max-w-3xl text-sm text-gray-700">
