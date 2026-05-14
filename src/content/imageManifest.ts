@@ -11,7 +11,8 @@ export type ImageAssetKey =
   | 'articleCoproprieteReglement'
   | 'articleTaxeDeSejour2026'
   | 'articleMeubleClasseNonClasse'
-  | 'articleFacturationElectronique2026';
+  | 'articleFacturationElectronique2026'
+  | 'articleDpeMeublesTourisme';
 
 export interface ImageManifestEntry {
   width: number;
@@ -138,5 +139,14 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/sumup-ru18KXzFA4E-unsplash-480.webp 480w, /images/optimized/sumup-ru18KXzFA4E-unsplash-768.webp 768w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1200.webp 1200w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1600.webp 1600w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/sumup-ru18KXzFA4E-unsplash-480.avif 480w, /images/optimized/sumup-ru18KXzFA4E-unsplash-768.avif 768w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1200.avif 1200w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1600.avif 1600w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1920.avif 1920w',
+  },
+  articleDpeMeublesTourisme: {
+    width: 1789,
+    height: 2482,
+    src: '/images/optimized/pexels-rachel-claire-4846106-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/pexels-rachel-claire-4846106-480.webp 480w, /images/optimized/pexels-rachel-claire-4846106-768.webp 768w, /images/optimized/pexels-rachel-claire-4846106-1200.webp 1200w, /images/optimized/pexels-rachel-claire-4846106-1600.webp 1600w',
+    srcSetAvif:
+      '/images/optimized/pexels-rachel-claire-4846106-480.avif 480w, /images/optimized/pexels-rachel-claire-4846106-768.avif 768w, /images/optimized/pexels-rachel-claire-4846106-1200.avif 1200w, /images/optimized/pexels-rachel-claire-4846106-1600.avif 1600w',
   },
 };

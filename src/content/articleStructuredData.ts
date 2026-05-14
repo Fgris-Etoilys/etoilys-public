@@ -81,6 +81,16 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     imageKey: 'articleFacturationElectronique2026',
     authorName: 'Florian Grisorio',
   },
+  {
+    path: '/actualites/dpe-meubles-de-tourisme-ce-qui-sapplique-deja-et-plus-tard',
+    headline: "DPE et meubles de tourisme: ce qui s'applique deja, et ce qui viendra plus tard",
+    description:
+      "DPE, changement d'usage, regle 2034: ce qui s'applique deja aux meubles de tourisme et ce qui viendra plus tard selon votre situation.",
+    datePublished: '2026-05-14',
+    dateModified: '2026-05-14',
+    imageKey: 'articleDpeMeublesTourisme',
+    authorName: 'Florian Grisorio',
+  },
 ];
 
 function normalizePath(pathname: string): string {

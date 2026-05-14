@@ -19,6 +19,7 @@ import ArticleCoproprieteLocationTouristique from './pages/actualites/Copropriet
 import ArticleTaxeDeSejour2026 from './pages/actualites/TaxeDeSejour2026';
 import ArticleMeubleClasseNonClasseSeuils from './pages/actualites/MeubleClasseNonClasseSeuils';
 import ArticleFacturationElectronique2026 from './pages/actualites/FacturationElectronique2026';
+import ArticleDpeMeublesTourisme from './pages/actualites/DpeMeublesTourisme';
 // import Recrutement from './pages/Recrutement'; // TODO: réactiver quand la page sera prête
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -71,6 +72,10 @@ function App() {
           <Route
             path="actualites/facturation-electronique-2026-proprietaires-meubles"
             element={<ArticleFacturationElectronique2026 />}
+          />
+          <Route
+            path="actualites/dpe-meubles-de-tourisme-ce-qui-sapplique-deja-et-plus-tard"
+            element={<ArticleDpeMeublesTourisme />}
           />
           {/* <Route path="recrutement" element={<Recrutement />} /> */}
           {/* TODO: réactiver quand la page sera prête */}
