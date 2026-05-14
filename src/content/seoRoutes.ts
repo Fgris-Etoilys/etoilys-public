@@ -22,9 +22,6 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
   title: 'Ma simulation de classement',
   description: "Interface de simulation publique de classement d'un meublé de tourisme.",
   breadcrumbLabel: 'Ma simulation',
-  robots: 'noindex,follow',
-  indexable: false,
-  prerender: false,
 };
 
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
@@ -128,6 +125,13 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Meublé classé ou non classé, barème 2026, taux, plafonds et surtaxes : voici comment le classement change concrètement la taxe de séjour.',
     breadcrumbLabel: 'Taxe de séjour 2026',
     ogImageKey: 'articleTaxeDeSejour2026',
+  },
+  '/actualites/meuble-classe-non-classe-seuils-micro-bic': {
+    title: "Meublé classé + non classé : comment s'appliquent les seuils micro-BIC ? | Etoilys",
+    description:
+      'Vous avez un meublé classé et un non classé ? Voici comment lire les seuils micro-BIC, les abattements et le passage au réel sans tout mélanger.',
+    breadcrumbLabel: 'Seuils micro-BIC classé et non classé',
+    ogImageKey: 'articleMeubleClasseNonClasse',
   },
   '/contact': {
     title: 'Contact Etoilys',

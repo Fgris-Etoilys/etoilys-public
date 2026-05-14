@@ -17,6 +17,7 @@ import ArticleMicroBic2026 from './pages/actualites/MicroBic2026';
 import ArticleResidencePrincipale90Jours from './pages/actualites/ResidencePrincipale90Jours';
 import ArticleCoproprieteLocationTouristique from './pages/actualites/CoproprieteLocationTouristique';
 import ArticleTaxeDeSejour2026 from './pages/actualites/TaxeDeSejour2026';
+import ArticleMeubleClasseNonClasseSeuils from './pages/actualites/MeubleClasseNonClasseSeuils';
 // import Recrutement from './pages/Recrutement'; // TODO: réactiver quand la page sera prête
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -61,6 +62,10 @@ function App() {
           <Route
             path="actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne"
             element={<ArticleTaxeDeSejour2026 />}
+          />
+          <Route
+            path="actualites/meuble-classe-non-classe-seuils-micro-bic"
+            element={<ArticleMeubleClasseNonClasseSeuils />}
           />
           {/* <Route path="recrutement" element={<Recrutement />} /> */}
           {/* TODO: réactiver quand la page sera prête */}

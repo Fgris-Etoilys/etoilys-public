@@ -9,7 +9,8 @@ export type ImageAssetKey =
   | 'articleMicroBic2026'
   | 'articleResidence90Jours'
   | 'articleCoproprieteReglement'
-  | 'articleTaxeDeSejour2026';
+  | 'articleTaxeDeSejour2026'
+  | 'articleMeubleClasseNonClasse';
 
 export interface ImageManifestEntry {
   width: number;
@@ -118,5 +119,14 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/article-taxe-sejour-2026-480.webp 480w, /images/optimized/article-taxe-sejour-2026-768.webp 768w, /images/optimized/article-taxe-sejour-2026-1200.webp 1200w, /images/optimized/article-taxe-sejour-2026-1600.webp 1600w, /images/optimized/article-taxe-sejour-2026-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/article-taxe-sejour-2026-480.avif 480w, /images/optimized/article-taxe-sejour-2026-768.avif 768w, /images/optimized/article-taxe-sejour-2026-1200.avif 1200w, /images/optimized/article-taxe-sejour-2026-1600.avif 1600w, /images/optimized/article-taxe-sejour-2026-1920.avif 1920w',
+  },
+  articleMeubleClasseNonClasse: {
+    width: 1728,
+    height: 2592,
+    src: '/images/optimized/pexels-rachel-claire-5490384-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/pexels-rachel-claire-5490384-480.webp 480w, /images/optimized/pexels-rachel-claire-5490384-768.webp 768w, /images/optimized/pexels-rachel-claire-5490384-1200.webp 1200w, /images/optimized/pexels-rachel-claire-5490384-1600.webp 1600w',
+    srcSetAvif:
+      '/images/optimized/pexels-rachel-claire-5490384-480.avif 480w, /images/optimized/pexels-rachel-claire-5490384-768.avif 768w, /images/optimized/pexels-rachel-claire-5490384-1200.avif 1200w, /images/optimized/pexels-rachel-claire-5490384-1600.avif 1600w',
   },
 };

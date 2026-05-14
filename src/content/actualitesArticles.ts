@@ -55,6 +55,15 @@ const articles: ActualiteArticle[] = [
     date: '17 avril 2026',
     publishedAt: '2026-04-17',
   },
+  {
+    title: "Meublé classé et non classé : comment s'appliquent les seuils micro-BIC ?",
+    excerpt:
+      'Vous avez un meublé classé et un non classé ? Voici comment lire les seuils micro-BIC, les abattements et le passage au réel sans tout mélanger.',
+    imageKey: 'articleMeubleClasseNonClasse',
+    href: '/actualites/meuble-classe-non-classe-seuils-micro-bic',
+    date: '8 avril 2026',
+    publishedAt: '2026-04-08',
+  },
 ];
 
 export const actualitesArticlesByRecency = [...articles].sort(

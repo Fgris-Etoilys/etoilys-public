@@ -46,6 +46,7 @@ const IMAGE_ASSETS = [
   { key: 'articleResidence90Jours', fileName: 'article-residence-90-jours.jpg' },
   { key: 'articleCoproprieteReglement', fileName: 'article-copropriete-reglement.jpg' },
   { key: 'articleTaxeDeSejour2026', fileName: 'article-taxe-sejour-2026.jpg' },
+  { key: 'articleMeubleClasseNonClasse', fileName: 'pexels-rachel-claire-5490384.jpg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {

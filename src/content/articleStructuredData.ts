@@ -61,6 +61,16 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     imageKey: 'articleTaxeDeSejour2026',
     authorName: 'Florian Grisorio',
   },
+  {
+    path: '/actualites/meuble-classe-non-classe-seuils-micro-bic',
+    headline: "Meuble classe et non classe: comment s'appliquent les seuils micro-BIC?",
+    description:
+      'Vous avez un meuble classe et un non classe? Voici comment lire les seuils micro-BIC, les abattements et le passage au reel sans tout melanger.',
+    datePublished: '2026-04-08',
+    dateModified: '2026-04-08',
+    imageKey: 'articleMeubleClasseNonClasse',
+    authorName: 'Florian Grisorio',
+  },
 ];
 
 function normalizePath(pathname: string): string {
