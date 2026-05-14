@@ -44,19 +44,25 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
    - `npm run seo:sitemap`
 6. Valider build prerendu:
    - `npm run build:seo`
+   - vérifier que les fichiers `dist/**/index.html` des routes indexables contiennent un
+     contenu HTML réel dans `#root` (le script de prerender échoue si une page reste vide).
 
 ## Commandes de reference
 
 - `npm run images:build` -> genere variantes AVIF/WebP/JPG + met a jour `src/content/imageManifest.ts`.
 - `npm run seo:sitemap` -> regenere `public/sitemap.xml` depuis `seoRoutes`.
-- `npm run prerender` -> prerender des routes indexables/prerenderables dans `dist/` + genere `dist/404.html` (meta `noindex,follow`).
+- `npm run prerender` -> prerender React statique des routes indexables/prerenderables dans
+  `dist/`, génère `dist/404.html` et un shell `noindex,follow` pour les URLs dynamiques de
+  simulation, puis valide que chaque page indexable contient un body HTML non vide, un `h1`,
+  une canonical et les balises SEO attendues.
 - `npm run build:seo` -> images + sitemap + build vite + prerender.
 - `npm run indexnow:submit` -> soumet les URLs sitemap a IndexNow.
 
 ## Notes CI/CD
 
 - Le deploiement Vercel doit executer `npm run build:seo` et publier `dist` (config versionnee dans `vercel.json`).
-- Le prerender tente Playwright puis bascule automatiquement sur un prerender SEO statique si le navigateur headless est indisponible en CI (ex: bibliotheques systeme manquantes).
+- Le prerender ne doit pas avoir de fallback qui injecte seulement le `<head>` SEO. Un échec de
+  rendu React, de sitemap ou de validation HTML doit faire échouer le build.
 - Ne pas reintroduire de rewrite SPA global `/(.*) -> /index.html` en production, afin de conserver un vrai statut HTTP 404 sur les routes inconnues.
 - Le workflow `.github/workflows/indexnow.yml` soumet IndexNow sur `push main`.
 - La cle IndexNow publique est versionnee dans `public/a4f9bc0d1e4b47b9b0e2b438d9d8f2aa.txt`.

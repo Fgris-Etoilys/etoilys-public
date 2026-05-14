@@ -31,7 +31,7 @@ interface TurnstileFieldProps {
 }
 
 export default function TurnstileField({ onTokenChange, error, resetKey }: TurnstileFieldProps) {
-  const siteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+  const siteKey = import.meta.env?.VITE_TURNSTILE_SITE_KEY;
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);

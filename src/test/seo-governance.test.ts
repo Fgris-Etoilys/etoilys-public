@@ -30,7 +30,7 @@ function extractSitemapUrls(xml: string): string[] {
 }
 
 function extractActiveAppPaths(): string[] {
-  const appSource = readFileSync(path.resolve(process.cwd(), 'src', 'App.tsx'), 'utf8');
+  const appSource = readFileSync(path.resolve(process.cwd(), 'src', 'AppRoutes.tsx'), 'utf8');
   const noLineComments = appSource.replace(/\/\/.*$/gm, '');
   const noBlockComments = noLineComments.replace(/\{\/\*[\s\S]*?\*\/\}/g, '');
   const matches = [...noBlockComments.matchAll(/<Route\s+path="([^"]+)"/g)];

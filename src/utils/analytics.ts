@@ -209,18 +209,18 @@ function isAnalyticsEnabled(): boolean {
 }
 
 function getPostHogToken(): string | undefined {
-  return import.meta.env.VITE_PUBLIC_POSTHOG_TOKEN;
+  return import.meta.env?.VITE_PUBLIC_POSTHOG_TOKEN;
 }
 
 function getPostHogHost(): string {
-  return import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://f.etoilys.fr';
+  return import.meta.env?.VITE_PUBLIC_POSTHOG_HOST || 'https://f.etoilys.fr';
 }
 
 function isLocalDevelopmentAnalyticsDisabled(): boolean {
   return (
-    import.meta.env.DEV &&
-    import.meta.env.MODE !== 'test' &&
-    import.meta.env.VITE_ENABLE_ANALYTICS_IN_DEV !== 'true'
+    import.meta.env?.DEV === true &&
+    import.meta.env?.MODE !== 'test' &&
+    import.meta.env?.VITE_ENABLE_ANALYTICS_IN_DEV !== 'true'
   );
 }
 

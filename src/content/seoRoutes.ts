@@ -22,6 +22,9 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
   title: 'Ma simulation de classement',
   description: "Interface de simulation publique de classement d'un meublé de tourisme.",
   breadcrumbLabel: 'Ma simulation',
+  robots: 'noindex,follow',
+  indexable: false,
+  prerender: false,
 };
 
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {

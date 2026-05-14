@@ -54,7 +54,9 @@ describe('routing', () => {
   it('renders public classement simulator page', () => {
     mockFetchJson([]);
     renderAt('/simulateur');
-    expect(screen.getByRole('heading', { name: /simulateur de classement/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: /simulateur de classement/i })
+    ).toBeInTheDocument();
   });
 
   it('renders public classement simulation detail page', async () => {

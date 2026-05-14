@@ -1,58 +1,32 @@
-import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import React from 'react';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { chromium } from 'playwright';
+import { renderToString } from 'react-dom/server';
+import { StaticRouter } from 'react-router-dom';
+import AppRoutes from '../src/AppRoutes.tsx';
 import {
   SITE_URL,
   getBreadcrumbItems,
+  getIndexablePaths,
   getPrerenderPaths,
   getSeoRouteConfig,
 } from '../src/content/seoRoutes.ts';
 import { getArticleStructuredData } from '../src/content/articleStructuredData.ts';
 import { IMAGE_MANIFEST } from '../src/content/imageManifest.ts';
 
-const HOST = '127.0.0.1';
-const PORT = Number(process.env.PRERENDER_PORT ?? 4173);
-const BASE_URL = `http://${HOST}:${PORT}`;
 const NOT_FOUND_PRERENDER_PATH = '/404';
+const DYNAMIC_SIMULATION_RENDER_PATH = '/simulateur/seo-shell';
+const DYNAMIC_SIMULATION_SHELL_OUTPUT = 'simulation-noindex.html';
 const TITLE_SUFFIX = ' | Etoilys - Classement Meubles de Tourisme';
 const OG_IMAGE_ALT = 'Etoilys - Classement des meublés de tourisme';
+const ROOT_PLACEHOLDER_PATTERN = /<div id="root"><\/div>/i;
+const ROOT_CONTAINER_PATTERN = /<div id="root">[\s\S]*<\/div>\s*<\/body>/i;
+const ROOT_CONTENT_PATTERN = /<div id="root">([\s\S]*)<\/div>\s*<\/body>/i;
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function waitForServerReady(timeoutMs = 30000): Promise<void> {
-  const start = Date.now();
-  while (Date.now() - start < timeoutMs) {
-    try {
-      const response = await fetch(BASE_URL);
-      if (response.ok) {
-        return;
-      }
-    } catch {
-      // Keep waiting for server startup.
-    }
-    await delay(500);
-  }
-  throw new Error(`Timed out waiting for Vite preview on ${BASE_URL}`);
-}
-
-function startPreviewServer(): ChildProcessWithoutNullStreams {
-  const viteBin = path.resolve(process.cwd(), 'node_modules', 'vite', 'bin', 'vite.js');
-  const child = spawn(
-    process.execPath,
-    [viteBin, 'preview', '--host', HOST, '--port', String(PORT), '--strictPort'],
-    {
-      cwd: process.cwd(),
-      stdio: 'pipe',
-    }
-  );
-
-  child.stdout.on('data', (data) => process.stdout.write(data));
-  child.stderr.on('data', (data) => process.stderr.write(data));
-
-  return child;
+function normalizePath(pathname: string): string {
+  if (!pathname) return '/';
+  if (pathname === '/') return pathname;
+  return pathname.replace(/\/+$/, '') || '/';
 }
 
 function resolveOutputPath(distDir: string, routePath: string): string {
@@ -72,12 +46,6 @@ function ensureDoctype(html: string): string {
     return html;
   }
   return `<!DOCTYPE html>\n${html}`;
-}
-
-function normalizePath(pathname: string): string {
-  if (!pathname) return '/';
-  if (pathname === '/') return pathname;
-  return pathname.replace(/\/+$/, '') || '/';
 }
 
 function escapeHtml(value: string): string {
@@ -287,72 +255,148 @@ function injectSeoHead(templateHtml: string, pathname: string): string {
   return cleaned.replace(/<\/head>/i, `${seoHead}\n  </head>`);
 }
 
-async function prerenderStatic(distDir: string, routes: string[]): Promise<void> {
-  const templatePath = path.join(distDir, 'index.html');
-  const templateHtml = await readFile(templatePath, 'utf8');
+function renderAppHtml(pathname: string): string {
+  return renderToString(
+    React.createElement(StaticRouter, { location: pathname }, React.createElement(AppRoutes))
+  );
+}
 
-  for (const routePath of routes) {
-    const normalizedPath = normalizePath(routePath);
-    const outputPath = resolveOutputPath(distDir, normalizedPath);
-    const html = injectSeoHead(templateHtml, normalizedPath);
-    await mkdir(path.dirname(outputPath), { recursive: true });
-    await writeFile(outputPath, html, 'utf8');
-    console.log(`Prerendered (static): ${normalizedPath} -> ${outputPath}`);
+function injectRootHtml(templateHtml: string, rootHtml: string): string {
+  if (ROOT_PLACEHOLDER_PATTERN.test(templateHtml)) {
+    return templateHtml.replace(ROOT_PLACEHOLDER_PATTERN, `<div id="root">${rootHtml}</div>`);
+  }
+
+  if (ROOT_CONTAINER_PATTERN.test(templateHtml)) {
+    return templateHtml.replace(
+      ROOT_CONTAINER_PATTERN,
+      `<div id="root">${rootHtml}</div>\n  </body>`
+    );
+  }
+
+  throw new Error('Cannot find #root container in dist/index.html.');
+}
+
+function countOccurrences(html: string, pattern: RegExp): number {
+  return [...html.matchAll(pattern)].length;
+}
+
+function extractSitemapUrls(xml: string): string[] {
+  return [...xml.matchAll(/<loc>(.*?)<\/loc>/g)]
+    .map((match) => match[1])
+    .filter((url): url is string => Boolean(url));
+}
+
+function getRootContent(html: string): string {
+  return ROOT_CONTENT_PATTERN.exec(html)?.[1] ?? '';
+}
+
+function assertUniqueJsonLdIds(html: string, pathname: string): void {
+  const ids = ['structured-data-global', 'structured-data-breadcrumbs', 'structured-data-article'];
+
+  for (const id of ids) {
+    const count = countOccurrences(html, new RegExp(`id=["']${id}["']`, 'g'));
+    if (count > 1) {
+      throw new Error(`${pathname} contains duplicated JSON-LD script id: ${id}.`);
+    }
   }
 }
 
-async function prerenderWithPlaywright(distDir: string, routes: string[]): Promise<void> {
-  const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+function assertPrerenderedHtml(pathname: string, html: string): void {
+  const rootContent = getRootContent(html);
+  const rootText = rootContent
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const expectedCanonical = pathname === '/' ? `${SITE_URL}/` : `${SITE_URL}${pathname}`;
 
-  try {
-    for (const routePath of routes) {
-      const normalizedPath = normalizePath(routePath);
-      const url = `${BASE_URL}${normalizedPath}`;
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-      await page.waitForTimeout(300);
-
-      const html = ensureDoctype(await page.content());
-
-      const outputPath = resolveOutputPath(distDir, normalizedPath);
-      await mkdir(path.dirname(outputPath), { recursive: true });
-      await writeFile(outputPath, html, 'utf8');
-      console.log(`Prerendered: ${normalizedPath} -> ${outputPath}`);
-    }
-
-    const notFoundUrl = `${BASE_URL}${NOT_FOUND_PRERENDER_PATH}`;
-    await page.goto(notFoundUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForTimeout(300);
-
-    const notFoundHtml = ensureDoctype(await page.content());
-    const notFoundOutputPath = resolveOutputPath(distDir, NOT_FOUND_PRERENDER_PATH);
-    await mkdir(path.dirname(notFoundOutputPath), { recursive: true });
-    await writeFile(notFoundOutputPath, notFoundHtml, 'utf8');
-    console.log(`Prerendered: ${NOT_FOUND_PRERENDER_PATH} -> ${notFoundOutputPath}`);
-  } finally {
-    await browser.close();
+  if (!rootContent || /<div id="root"><\/div>/i.test(html)) {
+    throw new Error(`${pathname} was prerendered with an empty #root.`);
   }
+  if (rootText.length < 300) {
+    throw new Error(`${pathname} prerendered body is too small (${rootText.length} chars).`);
+  }
+  if (!/<h1[\s>]/i.test(rootContent)) {
+    throw new Error(`${pathname} prerendered body does not contain an h1.`);
+  }
+  if (!/<title>[\s\S]+<\/title>/i.test(html)) {
+    throw new Error(`${pathname} is missing a title tag.`);
+  }
+  if (!/<meta\s+name=["']description["']\s+content=["'][^"']+["']/i.test(html)) {
+    throw new Error(`${pathname} is missing a meta description.`);
+  }
+  if (!/<meta\s+name=["']robots["']\s+content=["']index,follow["']/i.test(html)) {
+    throw new Error(`${pathname} is missing index,follow robots metadata.`);
+  }
+  if (!html.includes(`<link rel="canonical" href="${expectedCanonical}">`)) {
+    throw new Error(`${pathname} has an invalid canonical URL.`);
+  }
+
+  assertUniqueJsonLdIds(html, pathname);
+}
+
+async function assertSitemapMatchesIndexableRoutes(): Promise<void> {
+  const sitemapPath = path.resolve(process.cwd(), 'public', 'sitemap.xml');
+  const sitemapXml = await readFile(sitemapPath, 'utf8');
+  const sitemapUrls = extractSitemapUrls(sitemapXml).sort();
+  const expectedUrls = getIndexablePaths()
+    .map((pathname) => (pathname === '/' ? `${SITE_URL}/` : `${SITE_URL}${pathname}`))
+    .sort();
+
+  if (JSON.stringify(sitemapUrls) !== JSON.stringify(expectedUrls)) {
+    throw new Error('public/sitemap.xml is not aligned with indexable SEO routes.');
+  }
+}
+
+async function prerenderRoute(
+  distDir: string,
+  templateHtml: string,
+  routePath: string,
+  outputPathOverride?: string
+) {
+  const normalizedPath = normalizePath(routePath);
+  const outputPath = outputPathOverride ?? resolveOutputPath(distDir, normalizedPath);
+  const rootHtml = renderAppHtml(normalizedPath);
+  const htmlWithRoot = injectRootHtml(templateHtml, rootHtml);
+  const html = injectSeoHead(htmlWithRoot, normalizedPath);
+
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, html, 'utf8');
+
+  return { html, outputPath, pathname: normalizedPath };
 }
 
 async function main() {
   const distDir = path.resolve(process.cwd(), 'dist');
+  const templatePath = path.join(distDir, 'index.html');
+  const templateHtml = await readFile(templatePath, 'utf8');
   const routes = getPrerenderPaths();
-  const previewProcess = startPreviewServer();
 
-  try {
-    await waitForServerReady();
-    try {
-      await prerenderWithPlaywright(distDir, routes);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.warn(
-        `Playwright prerender unavailable (${message}). Falling back to static SEO prerender.`
-      );
-      await prerenderStatic(distDir, [...routes, NOT_FOUND_PRERENDER_PATH]);
-    }
-  } finally {
-    previewProcess.kill('SIGTERM');
+  await assertSitemapMatchesIndexableRoutes();
+
+  for (const routePath of routes) {
+    const result = await prerenderRoute(distDir, templateHtml, routePath);
+    assertPrerenderedHtml(result.pathname, result.html);
+    console.log(`Prerendered: ${result.pathname} -> ${result.outputPath}`);
   }
+
+  const notFound = await prerenderRoute(distDir, templateHtml, NOT_FOUND_PRERENDER_PATH);
+  if (!/<meta\s+name=["']robots["']\s+content=["']noindex,follow["']/i.test(notFound.html)) {
+    throw new Error('404 prerender is missing noindex,follow robots metadata.');
+  }
+  assertUniqueJsonLdIds(notFound.html, NOT_FOUND_PRERENDER_PATH);
+  console.log(`Prerendered: ${NOT_FOUND_PRERENDER_PATH} -> ${notFound.outputPath}`);
+
+  const simulationShellOutputPath = path.join(distDir, DYNAMIC_SIMULATION_SHELL_OUTPUT);
+  const simulationShell = await prerenderRoute(
+    distDir,
+    templateHtml,
+    DYNAMIC_SIMULATION_RENDER_PATH,
+    simulationShellOutputPath
+  );
+  if (!/<meta\s+name=["']robots["']\s+content=["']noindex,follow["']/i.test(simulationShell.html)) {
+    throw new Error('Dynamic simulation shell is missing noindex,follow robots metadata.');
+  }
+  console.log(`Prerendered: ${DYNAMIC_SIMULATION_RENDER_PATH} -> ${simulationShellOutputPath}`);
 }
 
 main().catch((error) => {
