@@ -72,14 +72,19 @@ Etoilys doit apparaître comme :
 ### Ton recommandé
 
 - français clair, simple, structuré ;
-- ton professionnel, pédagogique et proche du lecteur ;
-- s’adresser directement au propriétaire avec **vous** quand cela rend le texte plus naturel ;
-- phrases plutôt courtes ;
+- ton **expert accessible** : compétent, compréhensible et utile dès les premières lignes ;
+- ton professionnel, humain et rassurant, avec un peu de personnalité sans tomber dans l’effet “copie scolaire” ou “robot poli” ;
+- s’adresser directement au propriétaire avec **vous** ;
+- phrases plutôt courtes, mais pas mécaniques : alterner phrases simples, relances courtes et formulations un peu plus incarnées quand cela apporte du rythme ;
+- aller droit au point ; si le sujet est simple, l’article peut être court ;
+- éviter de répéter trois fois la même idée sous trois formulations différentes ;
 - explication immédiate de chaque terme technique ;
-- formulations concrètes du type `Concrètement`, `En pratique`, `Si vous louez…`, plutôt que des formulations froides ou méta ;
+- formulations concrètes du type `Concrètement`, `En pratique`, `Le point important`, `Si vous louez…`, `La première chose à vérifier est…` ;
+- une légère chaleur éditoriale est bienvenue ; en revanche, éviter le ton condescendant, arrogant, moqueur ou sarcastique ;
 - pas de jargon administratif non expliqué ;
 - pas de style journalistique dramatique ;
-- pas de clickbait.
+- pas de clickbait ;
+- éviter le ton robotique, scolaire ou pédant.
 
 ### Formulations à privilégier / à éviter
 
@@ -88,13 +93,24 @@ Etoilys doit apparaître comme :
 - `Si vous louez votre résidence principale, la première chose à vérifier est…`
 - `Concrètement, cela change surtout…`
 - `Dans ce cas, les points à vérifier sont…`
+- `Le point important est simple : …`
+- `La vraie question est la suivante : …`
+- `Que faut-il vérifier ?`
+- `Êtes-vous concerné ?`
+- `Ce qui change pour vous`
 
 À éviter :
 
+- `Oui.`
+- `Non.`
+- les ouvertures trop sèches qui commencent l’article par une réponse monosyllabique ;
 - `Le lecteur doit ressortir en ayant compris que…`
 - `Il convient de noter que…`
 - `Nous allons voir dans cet article que…`
-- les phrases qui commentent l’article au lieu d’aider directement la personne qui lit.
+- `Il est possible que…` quand la règle est connue et qu’une formulation affirmative est justifiée ;
+- l’usage excessif de `pouvoir`, `pourrait`, `peut-être`, `selon certains cas` quand le texte applicable permet d’écrire plus clairement `doit`, `est`, `s’applique`, `concerne` ;
+- les phrases qui commentent l’article au lieu d’aider directement la personne qui lit ;
+- les formulations qui donnent l’impression que tous les autres se trompent et qu’Etoilys vient “corriger les ignorants”.
 
 ---
 
@@ -208,6 +224,18 @@ Exemples d’intentions :
 Le lecteur ne doit pas attendre 700 mots pour comprendre le sujet.  
 Les 5 à 10 premières lignes doivent déjà donner la réponse principale.
 
+Une courte problématique en ouverture est bienvenue si elle aide à poser le sujet rapidement, par exemple avec 1 ou 2 questions directes :
+
+- `Êtes-vous concerné ?`
+- `Quelle règle s’applique à votre logement ?`
+- `Faut-il un DPE dans votre cas ?`
+
+Règle importante :
+
+- poser les questions **pour lancer l’article**, pas pour repousser la réponse ;
+- répondre juste après ;
+- éviter de commencer par `Oui.` ou `Non.` tout seuls.
+
 ### 6.3 Toujours dater les règles
 
 Sujet ultra important pour Etoilys.
@@ -261,6 +289,30 @@ Les sources secondaires (presse, cabinets, blogs) peuvent aider à détecter un 
 Si une mise en œuvre est prévue mais pas encore totalement déployée : le dire.  
 Si un décret est attendu : le dire.  
 Si le texte existe mais que les modalités locales varient : le dire.
+
+### 6.7 bis Être affirmatif dès que la source permet de l’être
+
+Quand une règle est claire, applicable et correctement sourcée, l’article doit l’écrire de façon nette.
+
+À privilégier :
+
+- `vous devez…`
+- `la règle s’applique…`
+- `le plafond est fixé à…`
+- `la commune décide…`
+- `ce régime concerne…`
+
+À éviter, sauf si l’incertitude est réelle :
+
+- `il est possible que…`
+- `cela pourrait…`
+- `vous pourriez être concerné…`
+- `ce régime peut s’appliquer…`
+
+Autrement dit :
+
+- **nuancer quand il existe un vrai flou juridique ou un vrai dépendant local** ;
+- **affirmer quand la règle est connue**.
 
 ### 6.8 Ne jamais écrire un faux article d’expert
 
@@ -341,6 +393,18 @@ Le chapô doit contenir :
 - l’impact principal ;
 - éventuellement la date clé.
 
+Il peut commencer par une mini problématique si cela rend l’ouverture plus vivante, par exemple :
+
+- `Êtes-vous concerné ?`
+- `Que devez-vous vérifier ?`
+- `Quelle règle s’applique vraiment dans votre cas ?`
+
+Règles :
+
+- ne pas commencer par `Oui.` ou `Non.` ;
+- ne pas empiler des questions sans répondre ;
+- utiliser les questions pour donner du relief, puis apporter la réponse immédiatement.
+
 ## Bloc 3 - Encadré “À retenir”
 
 Très recommandé pour Etoilys.
@@ -415,7 +479,7 @@ Relier l’article à une page utile du site, selon le sujet :
 ```md
 # [H1]
 
-[Chapô de 2 à 4 phrases qui répond directement à la question principale]
+[Chapô de 2 à 4 phrases qui répond directement à la question principale ; une ou deux questions d’ouverture sont possibles si la réponse arrive immédiatement après]
 
 ## À retenir
 
@@ -947,6 +1011,8 @@ sources:
 
 - [ ] Le sujet est bien centré sur les enjeux des propriétaires de location touristique.
 - [ ] L’introduction répond à la question principale.
+- [ ] Si l’article commence par une ou deux questions, la réponse arrive immédiatement après.
+- [ ] L’article n’ouvre pas par `Oui.` ou `Non.`.
 - [ ] L’article explique l’impact concret pour le lecteur.
 - [ ] Les règles nationales et locales sont bien séparées.
 - [ ] Les dates importantes sont clairement indiquées.
@@ -1098,11 +1164,11 @@ Pour les sujets déjà identifiés comme prioritaires dans la rubrique Actualit�
 Si on devait réduire ce guide à 10 règles :
 
 1. Écrire pour les propriétaires, pas pour les moteurs.
-2. Répondre à la question principale dès l’intro.
+2. Répondre à la question principale dès l’intro, éventuellement après une courte question d’ouverture.
 3. S’appuyer d’abord sur des sources officielles.
 4. Dater les règles et les changements.
 5. Séparer national, local, copropriété et cas particuliers.
-6. Montrer l’impact concret pour le lecteur.
+6. Écrire de façon directe et assez affirmée quand les sources le permettent.
 7. Faire un vrai H1 et un vrai title tag.
 8. Afficher date, auteur, liens internes et sources.
 9. Utiliser une image utile, pas un décor générique.
