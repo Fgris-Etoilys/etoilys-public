@@ -47,6 +47,7 @@ const IMAGE_ASSETS = [
   { key: 'articleCoproprieteReglement', fileName: 'article-copropriete-reglement.jpg' },
   { key: 'articleTaxeDeSejour2026', fileName: 'article-taxe-sejour-2026.jpg' },
   { key: 'articleMeubleClasseNonClasse', fileName: 'pexels-rachel-claire-5490384.jpg' },
+  { key: 'articleFacturationElectronique2026', fileName: 'sumup-ru18KXzFA4E-unsplash.jpg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {

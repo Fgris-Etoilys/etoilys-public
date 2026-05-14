@@ -18,6 +18,7 @@ import ArticleResidencePrincipale90Jours from './pages/actualites/ResidencePrinc
 import ArticleCoproprieteLocationTouristique from './pages/actualites/CoproprieteLocationTouristique';
 import ArticleTaxeDeSejour2026 from './pages/actualites/TaxeDeSejour2026';
 import ArticleMeubleClasseNonClasseSeuils from './pages/actualites/MeubleClasseNonClasseSeuils';
+import ArticleFacturationElectronique2026 from './pages/actualites/FacturationElectronique2026';
 // import Recrutement from './pages/Recrutement'; // TODO: réactiver quand la page sera prête
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -66,6 +67,10 @@ function App() {
           <Route
             path="actualites/meuble-classe-non-classe-seuils-micro-bic"
             element={<ArticleMeubleClasseNonClasseSeuils />}
+          />
+          <Route
+            path="actualites/facturation-electronique-2026-proprietaires-meubles"
+            element={<ArticleFacturationElectronique2026 />}
           />
           {/* <Route path="recrutement" element={<Recrutement />} /> */}
           {/* TODO: réactiver quand la page sera prête */}

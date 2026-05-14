@@ -71,6 +71,16 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     imageKey: 'articleMeubleClasseNonClasse',
     authorName: 'Florian Grisorio',
   },
+  {
+    path: '/actualites/facturation-electronique-2026-proprietaires-meubles',
+    headline: 'Facturation electronique 2026: oui, les proprietaires de meubles sont concernes',
+    description:
+      'Reception, emission, e-reporting, calendrier, sanctions: voici ce qui s\u2019applique vraiment aux proprietaires de meubles de tourisme.',
+    datePublished: '2026-05-04',
+    dateModified: '2026-05-04',
+    imageKey: 'articleFacturationElectronique2026',
+    authorName: 'Florian Grisorio',
+  },
 ];
 
 function normalizePath(pathname: string): string {

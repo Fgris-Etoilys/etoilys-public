@@ -64,6 +64,15 @@ const articles: ActualiteArticle[] = [
     date: '8 avril 2026',
     publishedAt: '2026-04-08',
   },
+  {
+    title: 'Facturation électronique 2026 : oui, les propriétaires de meublés sont concernés',
+    excerpt:
+      "Réception, émission, e-reporting, calendrier, sanctions : voici ce qui s'applique vraiment aux propriétaires de meublés de tourisme.",
+    imageKey: 'articleFacturationElectronique2026',
+    href: '/actualites/facturation-electronique-2026-proprietaires-meubles',
+    date: '4 mai 2026',
+    publishedAt: '2026-05-04',
+  },
 ];
 
 export const actualitesArticlesByRecency = [...articles].sort(

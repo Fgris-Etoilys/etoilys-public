@@ -10,7 +10,8 @@ export type ImageAssetKey =
   | 'articleResidence90Jours'
   | 'articleCoproprieteReglement'
   | 'articleTaxeDeSejour2026'
-  | 'articleMeubleClasseNonClasse';
+  | 'articleMeubleClasseNonClasse'
+  | 'articleFacturationElectronique2026';
 
 export interface ImageManifestEntry {
   width: number;
@@ -128,5 +129,14 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pexels-rachel-claire-5490384-480.webp 480w, /images/optimized/pexels-rachel-claire-5490384-768.webp 768w, /images/optimized/pexels-rachel-claire-5490384-1200.webp 1200w, /images/optimized/pexels-rachel-claire-5490384-1600.webp 1600w',
     srcSetAvif:
       '/images/optimized/pexels-rachel-claire-5490384-480.avif 480w, /images/optimized/pexels-rachel-claire-5490384-768.avif 768w, /images/optimized/pexels-rachel-claire-5490384-1200.avif 1200w, /images/optimized/pexels-rachel-claire-5490384-1600.avif 1600w',
+  },
+  articleFacturationElectronique2026: {
+    width: 6192,
+    height: 4128,
+    src: '/images/optimized/sumup-ru18KXzFA4E-unsplash-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/sumup-ru18KXzFA4E-unsplash-480.webp 480w, /images/optimized/sumup-ru18KXzFA4E-unsplash-768.webp 768w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1200.webp 1200w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1600.webp 1600w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/sumup-ru18KXzFA4E-unsplash-480.avif 480w, /images/optimized/sumup-ru18KXzFA4E-unsplash-768.avif 768w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1200.avif 1200w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1600.avif 1600w, /images/optimized/sumup-ru18KXzFA4E-unsplash-1920.avif 1920w',
   },
 };

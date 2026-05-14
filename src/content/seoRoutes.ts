@@ -133,6 +133,14 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Seuils micro-BIC classé et non classé',
     ogImageKey: 'articleMeubleClasseNonClasse',
   },
+  '/actualites/facturation-electronique-2026-proprietaires-meubles': {
+    title:
+      'Facturation électronique 2026 : les propriétaires de meublés sont-ils concernés ? | Etoilys',
+    description:
+      "Réception, émission, e-reporting, calendrier, sanctions : voici ce qui s'applique vraiment aux propriétaires de meublés de tourisme.",
+    breadcrumbLabel: 'Facturation électronique 2026',
+    ogImageKey: 'articleFacturationElectronique2026',
+  },
   '/contact': {
     title: 'Contact Etoilys',
     description:
