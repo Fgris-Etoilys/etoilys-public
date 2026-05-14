@@ -48,10 +48,13 @@ const IMAGE_ASSETS = [
   { key: 'articleTaxeDeSejour2026', fileName: 'article-taxe-sejour-2026.jpg' },
   { key: 'articleMeubleClasseNonClasse', fileName: 'pexels-rachel-claire-5490384.jpg' },
   { key: 'articleFacturationElectronique2026', fileName: 'sumup-ru18KXzFA4E-unsplash.jpg' },
+  { key: 'articleDpeMeublesTourisme', fileName: 'pexels-rachel-claire-4846106.jpg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {
-  return widths.map((width) => `/images/optimized/${baseName}-${width}.${format} ${width}w`).join(', ');
+  return widths
+    .map((width) => `/images/optimized/${baseName}-${width}.${format} ${width}w`)
+    .join(', ');
 }
 
 function escapeXml(value) {
@@ -121,7 +124,13 @@ async function buildAsset(asset) {
 
     const buildPipeline = () => {
       const resizeOptions = asset.ogComposition
-        ? { width, height: resizedHeight, fit: 'cover', position: 'center', withoutEnlargement: true }
+        ? {
+            width,
+            height: resizedHeight,
+            fit: 'cover',
+            position: 'center',
+            withoutEnlargement: true,
+          }
         : { width, withoutEnlargement: true };
       const pipeline = sharp(sourceBuffer).resize(resizeOptions);
       if (!asset.ogComposition) {
