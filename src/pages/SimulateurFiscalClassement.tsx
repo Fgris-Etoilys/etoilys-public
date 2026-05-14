@@ -393,6 +393,8 @@ export default function SimulateurFiscalClassement() {
     useState<PersistedFiscalCalculationSnapshot | null>(null);
   const [isStorageHydrated, setIsStorageHydrated] = useState(false);
   const hasTrackedSimulatorStarted = useRef(false);
+  const resultBlockRef = useRef<HTMLDivElement>(null);
+  const shouldScrollToResultRef = useRef(false);
 
   function trackSimulatorStartOnce() {
     if (hasTrackedSimulatorStarted.current) {
@@ -461,6 +463,15 @@ export default function SimulateurFiscalClassement() {
       // Ignorer silencieusement les erreurs de quota/session.
     }
   }, [annualRevenueInput, isStorageHydrated, lastCalculationSnapshot, selectedTmiRate]);
+
+  useEffect(() => {
+    if (!result || !shouldScrollToResultRef.current) {
+      return;
+    }
+
+    shouldScrollToResultRef.current = false;
+    resultBlockRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [result]);
 
   const tableColumns = useMemo<ResponsiveComparisonColumn[]>(
     () => [
@@ -823,6 +834,7 @@ export default function SimulateurFiscalClassement() {
     setLastCalculationSnapshot(nextSnapshot);
     setResult(nextResult);
     replaceFiscalShareQueryInUrl(nextSnapshot);
+    shouldScrollToResultRef.current = true;
   };
 
   return (
@@ -943,7 +955,7 @@ export default function SimulateurFiscalClassement() {
             {result && (
               <>
                 {result.canDisplayMicroComparison ? (
-                  <Card hover={false} className="p-5 md:p-6">
+                  <Card ref={resultBlockRef} hover={false} className="p-5 md:p-6">
                     <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <h2>Comparatif 2026</h2>
                       <div className="flex flex-wrap items-center gap-2 sm:justify-end">
@@ -1032,7 +1044,11 @@ export default function SimulateurFiscalClassement() {
                     </p>
                   </Card>
                 ) : (
-                  <Card hover={false} className="border-warning-200 bg-warning-100 p-5 md:p-6">
+                  <Card
+                    ref={resultBlockRef}
+                    hover={false}
+                    className="border-warning-200 bg-warning-100 p-5 md:p-6"
+                  >
                     <div className="mb-4">
                       <h2 className="text-gray-900">
                         À partir de 83 600 €, vous êtes au régime réel

@@ -592,6 +592,8 @@ export default function SimulateurTaxeSejour() {
   const [isStorageHydrated, setIsStorageHydrated] = useState(false);
   const [isCityLabelSyncPending, setIsCityLabelSyncPending] = useState(false);
   const hasTrackedSimulatorStarted = useRef(false);
+  const resultBlockRef = useRef<HTMLDivElement>(null);
+  const shouldScrollToResultRef = useRef(false);
 
   const nonClasseAmount = useMemo(() => {
     if (!result) {
@@ -1001,6 +1003,15 @@ export default function SimulateurTaxeSejour() {
     exemptedPersons,
     lastCalculationSnapshot,
   ]);
+
+  useEffect(() => {
+    if (!result || !shouldScrollToResultRef.current) {
+      return;
+    }
+
+    shouldScrollToResultRef.current = false;
+    resultBlockRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [result]);
 
   function clearResultState() {
     setResult(null);
@@ -1492,6 +1503,7 @@ export default function SimulateurTaxeSejour() {
     setResultNights(parsedValues.nights);
     setLastCalculationSnapshot(snapshot);
     replaceShareQueryInUrl(snapshot);
+    shouldScrollToResultRef.current = true;
   }
 
   return (
@@ -1749,7 +1761,7 @@ export default function SimulateurTaxeSejour() {
 
             {result && (
               <>
-                <Card className="p-5 md:p-6" hover={false}>
+                <Card ref={resultBlockRef} className="p-5 md:p-6" hover={false}>
                   <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <h2>Résultats</h2>
                     <div className="flex flex-wrap items-center gap-2 sm:justify-end">
