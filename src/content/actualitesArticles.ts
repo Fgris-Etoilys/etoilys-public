@@ -74,11 +74,11 @@ const articles: ActualiteArticle[] = [
     publishedAt: '2026-05-04',
   },
   {
-    title: "DPE et meublés de tourisme : ce qui s'applique déjà, et ce qui viendra plus tard",
+    title: 'DPE des meublés de tourisme : ce qui s\u2019applique en 2026 et ce qui attend 2034',
     excerpt:
-      "DPE, changement d'usage, règle 2034 : voici ce qui s'applique déjà aux meublés de tourisme et ce qui viendra plus tard selon votre situation.",
+      'Faut-il déjà un DPE pour louer un meublé de tourisme ? Changement d\u2019usage, résidence principale, règle 2034 : voici ce qu\u2019il faut vérifier.',
     imageKey: 'articleDpeMeublesTourisme',
-    href: '/actualites/dpe-meubles-de-tourisme-ce-qui-sapplique-deja-et-plus-tard',
+    href: '/actualites/dpe-meubles-tourisme-2026-2034',
     date: '14 mai 2026',
     publishedAt: '2026-05-14',
   },

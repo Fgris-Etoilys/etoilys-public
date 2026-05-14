@@ -141,12 +141,11 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Facturation électronique 2026',
     ogImageKey: 'articleFacturationElectronique2026',
   },
-  '/actualites/dpe-meubles-de-tourisme-ce-qui-sapplique-deja-et-plus-tard': {
-    title:
-      "DPE et meublés de tourisme : ce qui s'applique déjà, et ce qui viendra plus tard | Etoilys",
+  '/actualites/dpe-meubles-tourisme-2026-2034': {
+    title: 'DPE des meublés de tourisme : règles 2026 et échéance 2034 | Etoilys',
     description:
-      "DPE, changement d'usage, règle 2034 : voici ce qui s'applique déjà aux meublés de tourisme et ce qui viendra plus tard selon votre situation.",
-    breadcrumbLabel: 'DPE et meublés de tourisme',
+      'Faut-il déjà un DPE pour louer un meublé de tourisme ? Changement d\u2019usage, résidence principale, règle 2034 : voici ce qu\u2019il faut vérifier.',
+    breadcrumbLabel: 'DPE des meublés de tourisme',
     ogImageKey: 'articleDpeMeublesTourisme',
   },
   '/contact': {

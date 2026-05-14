@@ -164,6 +164,12 @@ npm run preview
 
 **Etoilys must not provide consulting/advisory wording to property owners.**
 
+### Scope
+
+These compliance rules do not apply to blog articles or `Actualites` editorial content. Blog
+articles may use practical, reader-facing wording when it serves the article's editorial intent.
+They still apply to service pages, forms, commercial CTAs, simulators, and non-blog business copy.
+
 ### Forbidden
 
 - Imperative action language ("Valorisez", "Optimisez", "Améliorez", "Profitez").

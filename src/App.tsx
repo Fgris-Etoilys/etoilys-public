@@ -74,7 +74,7 @@ function App() {
             element={<ArticleFacturationElectronique2026 />}
           />
           <Route
-            path="actualites/dpe-meubles-de-tourisme-ce-qui-sapplique-deja-et-plus-tard"
+            path="actualites/dpe-meubles-tourisme-2026-2034"
             element={<ArticleDpeMeublesTourisme />}
           />
           {/* <Route path="recrutement" element={<Recrutement />} /> */}

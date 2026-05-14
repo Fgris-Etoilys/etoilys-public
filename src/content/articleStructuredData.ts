@@ -82,10 +82,10 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     authorName: 'Florian Grisorio',
   },
   {
-    path: '/actualites/dpe-meubles-de-tourisme-ce-qui-sapplique-deja-et-plus-tard',
-    headline: "DPE et meubles de tourisme: ce qui s'applique deja, et ce qui viendra plus tard",
+    path: '/actualites/dpe-meubles-tourisme-2026-2034',
+    headline: 'DPE des meubles de tourisme: ce qui s\u2019applique en 2026 et ce qui attend 2034',
     description:
-      "DPE, changement d'usage, regle 2034: ce qui s'applique deja aux meubles de tourisme et ce qui viendra plus tard selon votre situation.",
+      'Faut-il deja un DPE pour louer un meuble de tourisme? Changement d\u2019usage, residence principale, regle 2034: voici ce qu\u2019il faut verifier.',
     datePublished: '2026-05-14',
     dateModified: '2026-05-14',
     imageKey: 'articleDpeMeublesTourisme',

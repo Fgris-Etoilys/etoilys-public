@@ -140,6 +140,13 @@ Quand tu dois écrire du code, applique cette instruction:
 
 **Etoilys ne peut pas fournir de conseil personnalisé aux propriétaires.**
 
+### Périmètre
+
+Ces règles de conformité éditoriale ne s'appliquent pas aux articles de blog ni aux contenus
+éditoriaux `Actualités`. Les articles peuvent utiliser une formulation pratique orientée lecteur
+lorsqu'elle sert l'intention éditoriale de l'article. Elles restent applicables aux pages de
+service, formulaires, CTA commerciaux, simulateurs et contenus métier hors blog.
+
 ### Interdit
 
 - Verbes impératifs orientés action/conseil (ex: "Valorisez", "Optimisez", "Améliorez", "Profitez").
