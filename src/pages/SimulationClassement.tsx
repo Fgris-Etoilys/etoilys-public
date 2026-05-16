@@ -44,8 +44,8 @@ import {
   getSimulationGridModel,
   getPublicSimulation,
   getSimulationLogement,
+  getSimulatorApiErrorMessage,
   getVerification,
-  SimulatorApiError,
   updateCapacity,
   updateFloor,
   updateHousingType,
@@ -702,10 +702,14 @@ export default function SimulationClassement() {
       } else if (nextSimulation.statut === 'A_RECALCULER') {
         setResultStatus('stale');
       }
-    } catch {
+    } catch (error) {
       setResultStatus('error');
       setResultErrorMessage(
-        'Le résultat enregistré n’a pas pu être chargé pour le moment. Veuillez réessayer.'
+        getSimulatorApiErrorMessage(
+          error,
+          'Le résultat enregistré n’a pas pu être chargé pour le moment. Veuillez réessayer.',
+          'loadResult'
+        )
       );
     } finally {
       setLoadStatus('success');
@@ -1077,7 +1081,7 @@ export default function SimulationClassement() {
         kind: 'rapport',
         rapport,
       });
-    } catch {
+    } catch (error) {
       if (!isCurrentParameterRequest()) {
         return;
       }
@@ -1088,7 +1092,11 @@ export default function SimulationClassement() {
         setGridModelStatus('error');
       }
       setResultErrorMessage(
-        'Le résultat n’a pas pu être calculé pour le moment. Vérifiez votre connexion puis réessayez.'
+        getSimulatorApiErrorMessage(
+          error,
+          'Le résultat n’a pas pu être calculé pour le moment. Vérifiez votre connexion puis réessayez.',
+          'calculateResult'
+        )
       );
     }
   }
@@ -1144,7 +1152,7 @@ export default function SimulationClassement() {
 
       markResultStale();
       showToast('Les paramètres ont été enregistrés.', { type: 'success' });
-    } catch {
+    } catch (error) {
       if (latestParameterSaveRequestIdRef.current !== requestId) {
         return;
       }
@@ -1160,9 +1168,14 @@ export default function SimulationClassement() {
         setResultStatus(previousResultStatus);
       }
       setParameterForm(createSimulationParametersForm(grille));
-      showToast('Les paramètres n’ont pas pu être enregistrés. Veuillez réessayer.', {
-        type: 'error',
-      });
+      showToast(
+        getSimulatorApiErrorMessage(
+          error,
+          'Les paramètres n’ont pas pu être enregistrés. Veuillez réessayer.',
+          'saveParameters'
+        ),
+        { type: 'error' }
+      );
     } finally {
       if (latestParameterSaveRequestIdRef.current === requestId) {
         setIsSavingParameters(false);
@@ -1303,9 +1316,11 @@ export default function SimulationClassement() {
       );
     } catch (error) {
       showToast(
-        error instanceof SimulatorApiError && error.status === 409
-          ? 'Une pièce similaire existe déjà ou les informations envoyées sont incomplètes.'
-          : 'La pièce n’a pas pu être enregistrée. Veuillez réessayer.',
+        getSimulatorApiErrorMessage(
+          error,
+          'La pièce n’a pas pu être enregistrée. Veuillez réessayer.',
+          'savePiece'
+        ),
         { type: 'error' }
       );
     } finally {
@@ -1338,9 +1353,13 @@ export default function SimulationClassement() {
       }
 
       showToast('La pièce a été supprimée.', { type: 'success' });
-    } catch {
+    } catch (error) {
       showToast(
-        'Cette pièce n’a pas pu être supprimée. Elle est peut-être nécessaire à la simulation.',
+        getSimulatorApiErrorMessage(
+          error,
+          'Cette pièce n’a pas pu être supprimée. Elle est peut-être nécessaire à la simulation.',
+          'deletePiece'
+        ),
         { type: 'error' }
       );
     } finally {

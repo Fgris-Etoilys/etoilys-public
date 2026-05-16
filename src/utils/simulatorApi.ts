@@ -155,18 +155,70 @@ export interface RapportProvisoireDto {
   criteres_obligatoires_non_valides?: number[];
 }
 
+export type SimulatorApiErrorCode =
+  | 'LOGEMENT_NOT_MODIFIABLE'
+  | 'PIECE_TYPE_NOT_ALLOWED'
+  | 'TOO_MANY_CORRIDORS'
+  | 'TOO_MANY_LOGGIAS'
+  | 'TOO_MANY_PRIVATE_GARDENS'
+  | 'TOO_MANY_PARKS'
+  | 'TOO_MANY_PUBLIC_SIMULATIONS'
+  | 'INVALID_REQUEST'
+  | 'INVALID_STATE'
+  | 'NOT_FOUND'
+  | 'UNAUTHORIZED'
+  | 'FORBIDDEN'
+  | 'CONFLICT';
+
+type SimulatorErrorContext =
+  | 'createSimulation'
+  | 'deleteSimulation'
+  | 'saveParameters'
+  | 'calculateResult'
+  | 'loadResult'
+  | 'savePiece'
+  | 'deletePiece';
+
+interface SimulatorApiErrorDetails {
+  code?: string | undefined;
+  apiMessage?: string | undefined;
+  fieldErrors?: Record<string, string> | undefined;
+}
+
 export class SimulatorApiError extends Error {
   readonly status: number;
+  readonly code: string | undefined;
+  readonly apiMessage: string | undefined;
+  readonly fieldErrors: Record<string, string> | undefined;
 
-  constructor(status: number) {
+  constructor(status: number, details: SimulatorApiErrorDetails = {}) {
     super(`Erreur HTTP ${status}`);
     this.name = 'SimulatorApiError';
     this.status = status;
+    this.code = details.code;
+    this.apiMessage = details.apiMessage;
+    this.fieldErrors = details.fieldErrors;
   }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+function isFieldErrors(value: unknown): value is Record<string, string> {
+  return isRecord(value) && Object.values(value).every((entry) => typeof entry === 'string');
+}
+
+function parseSimulatorApiErrorDetails(value: unknown): SimulatorApiErrorDetails {
+  if (!isRecord(value)) {
+    return {};
+  }
+
+  return {
+    code: typeof value.code === 'string' ? value.code : undefined,
+    apiMessage: typeof value.message === 'string' ? value.message : undefined,
+    fieldErrors: isFieldErrors(value.fieldErrors) ? value.fieldErrors : undefined,
+  };
 }
 
 function isSimulationStatus(value: unknown): value is SimulationStatus {
@@ -243,6 +295,79 @@ async function readJsonResponse(response: Response): Promise<unknown> {
   return JSON.parse(rawText) as unknown;
 }
 
+async function readJsonResponseSafe(response: Response): Promise<unknown> {
+  try {
+    return await readJsonResponse(response);
+  } catch {
+    return null;
+  }
+}
+
+function getGenericSimulatorErrorMessage(
+  code: string | undefined,
+  context: SimulatorErrorContext | undefined,
+  fallbackMessage: string
+): string {
+  switch (code) {
+    case 'INVALID_REQUEST':
+      return 'Les informations envoyées sont incomplètes ou invalides.';
+    case 'INVALID_STATE':
+      return 'L’état actuel de la simulation ne permet pas cette action.';
+    case 'NOT_FOUND':
+      return context === 'deleteSimulation'
+        ? 'Cette simulation n’est plus disponible.'
+        : 'La simulation demandée n’est plus disponible.';
+    case 'UNAUTHORIZED':
+    case 'FORBIDDEN':
+      return 'Cette action n’est pas autorisée pour cette simulation.';
+    case 'CONFLICT':
+      if (context === 'savePiece') {
+        return 'Une pièce similaire existe déjà ou les informations envoyées sont incomplètes.';
+      }
+      if (context === 'deletePiece') {
+        return 'Cette pièce n’a pas pu être supprimée. Elle est peut-être nécessaire à la simulation.';
+      }
+      return 'Cette action entre en conflit avec l’état actuel de la simulation.';
+    default:
+      return fallbackMessage;
+  }
+}
+
+export function getSimulatorApiErrorMessage(
+  error: unknown,
+  fallbackMessage: string,
+  context?: SimulatorErrorContext
+): string {
+  if (!(error instanceof SimulatorApiError)) {
+    return fallbackMessage;
+  }
+
+  switch (error.code) {
+    case 'TOO_MANY_PUBLIC_SIMULATIONS':
+      return 'Le nombre maximal de simulations enregistrées sur ce navigateur est atteint. Supprimez une simulation existante avant d’en créer une nouvelle.';
+    case 'LOGEMENT_NOT_MODIFIABLE':
+      if (context === 'deleteSimulation') {
+        return 'Cette simulation ne peut pas être supprimée pour le moment.';
+      }
+      if (context === 'savePiece' || context === 'deletePiece') {
+        return 'Le logement de cette simulation ne peut pas être modifié pour le moment.';
+      }
+      return 'Cette simulation ne peut pas être modifiée pour le moment.';
+    case 'PIECE_TYPE_NOT_ALLOWED':
+      return 'Ce type de pièce n’est pas autorisé pour cette simulation.';
+    case 'TOO_MANY_CORRIDORS':
+      return 'La limite de couloirs et dégagements est déjà atteinte pour cette simulation.';
+    case 'TOO_MANY_LOGGIAS':
+      return 'La limite de loggias, balcons ou vérandas est déjà atteinte pour cette simulation.';
+    case 'TOO_MANY_PRIVATE_GARDENS':
+      return 'La limite de terrasses ou jardins privatifs est déjà atteinte pour cette simulation.';
+    case 'TOO_MANY_PARKS':
+      return 'La limite de parcs ou jardins est déjà atteinte pour cette simulation.';
+    default:
+      return getGenericSimulatorErrorMessage(error.code, context, fallbackMessage);
+  }
+}
+
 async function requestSimulatorJson<T>(
   endpoint: string,
   options: {
@@ -264,7 +389,8 @@ async function requestSimulatorJson<T>(
 
   const response = await fetch(buildSimulatorUrl(endpoint), requestInit);
   if (!response.ok) {
-    throw new SimulatorApiError(response.status);
+    const parsedErrorBody = await readJsonResponseSafe(response);
+    throw new SimulatorApiError(response.status, parseSimulatorApiErrorDetails(parsedErrorBody));
   }
 
   return (await readJsonResponse(response)) as T;
@@ -293,6 +419,12 @@ export function getPublicSimulation(id: string): Promise<PublicSimulationDto> {
   return requestSimulatorJson<unknown>(`/public/simulations/${encodePathSegment(id)}`).then(
     parsePublicSimulation
   );
+}
+
+export function deletePublicSimulation(id: string): Promise<void> {
+  return requestSimulatorJson<unknown>(`/public/simulations/${encodePathSegment(id)}`, {
+    method: 'DELETE',
+  }).then(() => undefined);
 }
 
 export async function getSimulationGridModel(): Promise<GridSummary> {

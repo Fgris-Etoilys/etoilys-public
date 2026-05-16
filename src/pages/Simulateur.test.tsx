@@ -129,6 +129,33 @@ describe('Simulateur public de classement', () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
+  it('affiche un message dédié quand la limite de simulations publiques est atteinte', async () => {
+    mockFetchJsonSequence([
+      { body: [] },
+      {
+        body: {
+          code: 'TOO_MANY_PUBLIC_SIMULATIONS',
+          message: 'Limite atteinte',
+        },
+        status: 409,
+      },
+    ]);
+
+    renderSimulateur();
+
+    await screen.findByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i);
+
+    fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
+      target: { value: '4' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /démarrer la simulation/i }));
+
+    expect(
+      await screen.findByText(/le nombre maximal de simulations enregistrées sur ce navigateur/i)
+    ).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/simulateur');
+  });
+
   it('affiche les simulations existantes sous forme de cartes', async () => {
     mockFetchJson([
       {
@@ -223,7 +250,49 @@ describe('Simulateur public de classement', () => {
     expect(screen.queryByText('A_RECALCULER')).not.toBeInTheDocument();
   });
 
-  it('ne déclenche aucun appel de suppression', async () => {
+  it('supprime une simulation après confirmation', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      {
+        body: [
+          {
+            id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
+            statut: 'BROUILLON',
+            categorie_demandee: '2*',
+            capacite_accueil: 2,
+            date_modification: '2026-05-07T10:30:00.000Z',
+          },
+        ],
+      },
+      { body: null },
+    ]);
+
+    renderSimulateur();
+
+    const deleteButton = await screen.findByRole('button', { name: /supprimer/i });
+    fireEvent.click(deleteButton);
+
+    expect(screen.getByText(/confirmer la suppression de cette simulation/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /^supprimer$/i }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('link', { name: /reprendre/i })).not.toBeInTheDocument();
+    });
+    expect(screen.getByText(/la simulation a été supprimée/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i)
+    ).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[1]?.[0]).toBe(
+      '/api/public/simulations/c3f43f31-59fd-4b4e-9272-7f1321d8cabc'
+    );
+    expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({
+      method: 'DELETE',
+      credentials: 'include',
+    });
+  });
+
+  it('annule la confirmation de suppression sans appel DELETE', async () => {
     const fetchMock = mockFetchJson([
       {
         id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
@@ -239,12 +308,49 @@ describe('Simulateur public de classement', () => {
     const deleteButton = await screen.findByRole('button', { name: /supprimer/i });
     fireEvent.click(deleteButton);
 
-    await waitFor(() => {
-      expect(screen.getByText(/supprimer sera disponible/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/confirmer la suppression de cette simulation/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /annuler/i }));
+
+    expect(
+      screen.queryByText(/confirmer la suppression de cette simulation/i)
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /reprendre/i })).toBeInTheDocument();
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const requestInit = fetchMock.mock.calls[0]?.[1];
     expect(requestInit).toMatchObject({ method: 'GET' });
+  });
+
+  it('conserve la simulation et affiche une erreur contextualisée si la suppression échoue', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      {
+        body: [
+          {
+            id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
+            statut: 'BROUILLON',
+            categorie_demandee: '2*',
+            capacite_accueil: 2,
+            date_modification: '2026-05-07T10:30:00.000Z',
+          },
+        ],
+      },
+      { body: { code: 'NOT_FOUND', message: 'Simulation absente' }, status: 404 },
+    ]);
+
+    renderSimulateur();
+
+    const deleteButton = await screen.findByRole('button', { name: /supprimer/i });
+    fireEvent.click(deleteButton);
+    fireEvent.click(screen.getByRole('button', { name: /^supprimer$/i }));
+
+    expect(await screen.findByText(/cette simulation n’est plus disponible/i)).toBeInTheDocument();
+    expect(screen.getByText(/classement demandé : 2 étoiles/i)).toBeInTheDocument();
+    expect(screen.getByText(/confirmer la suppression de cette simulation/i)).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({
+      method: 'DELETE',
+      credentials: 'include',
+    });
   });
 });

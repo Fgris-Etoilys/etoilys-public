@@ -86,6 +86,7 @@ Endpoints disponibles d’après le Swagger local :
 - `GET /public/simulations/modele`
 - `POST /public/simulations`
 - `GET /public/simulations/{id}`
+- `DELETE /public/simulations/{id}`
 - `PUT /public/simulations/{id}/typeHabitation/{typeHabitation}`
 - `PUT /public/simulations/{id}/etage/{etage}`
 - `PUT /public/simulations/{id}/classementDemande/{classement}`
@@ -101,10 +102,42 @@ Endpoints disponibles d’après le Swagger local :
 
 ## Suppression
 
-Le Swagger n’expose pas de `DELETE /public/simulations/{id}`.
-Le frontend ne doit donc pas inventer d’action de suppression de simulation.
+Le Swagger expose deux suppressions publiques :
 
-Le seul endpoint de suppression visible est `DELETE /public/simulations/{id}/pieces/{pieceId}`.
+- `DELETE /public/simulations/{id}` pour supprimer une simulation complète associée au navigateur.
+- `DELETE /public/simulations/{id}/pieces/{pieceId}` pour supprimer une pièce d'une simulation.
+
+## Erreurs
+
+Les erreurs publiques du simulateur utilisent les schémas Swagger `ApiErrorResponse` ou
+`ValidationErrorResponse` :
+
+```json
+{
+  "code": "TOO_MANY_PUBLIC_SIMULATIONS",
+  "message": "Message backend optionnel",
+  "fieldErrors": {
+    "champ": "Message de validation optionnel"
+  }
+}
+```
+
+Le frontend lit `code`, `message` et `fieldErrors`, mais affiche des messages stables définis côté
+frontend. Les codes métier simulateur explicitement gérés sont :
+
+- `TOO_MANY_PUBLIC_SIMULATIONS`
+- `LOGEMENT_NOT_MODIFIABLE`
+- `PIECE_TYPE_NOT_ALLOWED`
+- `TOO_MANY_CORRIDORS`
+- `TOO_MANY_LOGGIAS`
+- `TOO_MANY_PRIVATE_GARDENS`
+- `TOO_MANY_PARKS`
+- `INVALID_REQUEST`
+- `INVALID_STATE`
+- `NOT_FOUND`
+- `UNAUTHORIZED`
+- `FORBIDDEN`
+- `CONFLICT`
 
 ## Note production
 

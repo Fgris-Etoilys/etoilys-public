@@ -1532,6 +1532,47 @@ describe('SimulationClassement', () => {
     ).toBeInTheDocument();
   });
 
+  it('affiche un message spécifique si le type de pièce est refusé par le backend', async () => {
+    mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: { code: 'PIECE_TYPE_NOT_ALLOWED', message: 'Type refusé' }, status: 400 },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    fireEvent.click(
+      within(screen.getByTestId('piece-card-piece-1')).getByRole('button', {
+        name: /modifier chambre 1/i,
+      })
+    );
+    fireEvent.click(screen.getByRole('button', { name: /enregistrer les modifications/i }));
+
+    expect(
+      await screen.findByText(/ce type de pièce n’est pas autorisé pour cette simulation/i)
+    ).toBeInTheDocument();
+  });
+
+  it('affiche un message spécifique si une limite de type de pièce est atteinte', async () => {
+    mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: emptyLogementResponse },
+      { body: { code: 'TOO_MANY_CORRIDORS', message: 'Limite atteinte' }, status: 409 },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
+    fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
+    fireEvent.change(screen.getByLabelText(/surface en m²/i), { target: { value: '12' } });
+    fireEvent.click(screen.getByRole('button', { name: /ajouter cette pièce/i }));
+
+    expect(
+      await screen.findByText(/la limite de couloirs et dégagements est déjà atteinte/i)
+    ).toBeInTheDocument();
+  });
+
   it('confirme puis supprime une pièce', async () => {
     const fetchMock = mockFetchJsonSequence([
       { body: simulationResponse },

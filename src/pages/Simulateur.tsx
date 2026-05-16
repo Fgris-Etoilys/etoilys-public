@@ -8,6 +8,8 @@ import Select from '../components/ui/Select';
 import { useToast } from '../components/ui/Toast';
 import {
   createPublicSimulation,
+  deletePublicSimulation,
+  getSimulatorApiErrorMessage,
   listPublicSimulations,
   type HousingType,
   type PublicSimulationSummary,
@@ -90,6 +92,10 @@ export default function Simulateur() {
   const [isCreatingSimulation, setIsCreatingSimulation] = useState(false);
   const [simulationsStatus, setSimulationsStatus] = useState<SimulationsStatus>('loading');
   const [simulations, setSimulations] = useState<PublicSimulationSummary[]>([]);
+  const [confirmingDeleteSimulationId, setConfirmingDeleteSimulationId] = useState<string | null>(
+    null
+  );
+  const [deletingSimulationId, setDeletingSimulationId] = useState<string | null>(null);
   const startBlockRef = useRef<HTMLDivElement>(null);
 
   const loadSimulations = useCallback(async (ignoreResult: () => boolean = () => false) => {
@@ -170,17 +176,42 @@ export default function Simulateur() {
       setHousingType('INDIVIDUEL');
       await loadSimulations();
       showToast('La simulation a été créée.', { type: 'success' });
-    } catch {
-      showToast('Impossible de créer la simulation pour le moment.', { type: 'error' });
+    } catch (error) {
+      showToast(
+        getSimulatorApiErrorMessage(
+          error,
+          'Impossible de créer la simulation pour le moment.',
+          'createSimulation'
+        ),
+        { type: 'error' }
+      );
     } finally {
       setIsCreatingSimulation(false);
     }
   }
 
-  function handleUnavailableSimulationAction(actionLabel: string) {
-    showToast(`${actionLabel} sera disponible avec l’écran complet du simulateur.`, {
-      type: 'info',
-    });
+  async function handleDeleteSimulation(simulationId: string) {
+    setDeletingSimulationId(simulationId);
+
+    try {
+      await deletePublicSimulation(simulationId);
+      setSimulations((currentSimulations) =>
+        currentSimulations.filter((simulation) => simulation.id !== simulationId)
+      );
+      setConfirmingDeleteSimulationId(null);
+      showToast('La simulation a été supprimée.', { type: 'success' });
+    } catch (error) {
+      showToast(
+        getSimulatorApiErrorMessage(
+          error,
+          'La simulation n’a pas pu être supprimée. Veuillez réessayer.',
+          'deleteSimulation'
+        ),
+        { type: 'error' }
+      );
+    } finally {
+      setDeletingSimulationId(null);
+    }
   }
 
   return (
@@ -352,6 +383,8 @@ export default function Simulateur() {
                 <div className="space-y-4">
                   {simulations.map((simulation) => {
                     const statusBadge = getSimulationStatusBadge(simulation.statut);
+                    const isConfirmingDelete = confirmingDeleteSimulationId === simulation.id;
+                    const isDeleting = deletingSimulationId === simulation.id;
 
                     return (
                       <Card key={simulation.id} hover={false} className="p-4 md:p-5">
@@ -382,22 +415,48 @@ export default function Simulateur() {
                           </dl>
                         </div>
 
-                        <div className="flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center">
-                          <Button
-                            type="button"
-                            variant="primary"
-                            href={`/simulateur/${simulation.id}`}
-                          >
-                            Reprendre
-                          </Button>
-                          <button
-                            type="button"
-                            className="mt-2 inline-flex items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors duration-200 hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 sm:ml-auto sm:mt-0"
-                            onClick={() => handleUnavailableSimulationAction('Supprimer')}
-                          >
-                            Supprimer
-                          </button>
-                        </div>
+                        {isConfirmingDelete ? (
+                          <div className="flex flex-col gap-3 border-t border-alert-200 pt-4 sm:flex-row sm:items-center">
+                            <p className="text-sm font-medium text-alert-500 sm:flex-1">
+                              Confirmer la suppression de cette simulation ?
+                            </p>
+                            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                              <button
+                                type="button"
+                                className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled={isDeleting}
+                                onClick={() => setConfirmingDeleteSimulationId(null)}
+                              >
+                                Annuler
+                              </button>
+                              <button
+                                type="button"
+                                className="inline-flex items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                disabled={isDeleting}
+                                onClick={() => void handleDeleteSimulation(simulation.id)}
+                              >
+                                {isDeleting ? 'Suppression...' : 'Supprimer'}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center">
+                            <Button
+                              type="button"
+                              variant="primary"
+                              href={`/simulateur/${simulation.id}`}
+                            >
+                              Reprendre
+                            </Button>
+                            <button
+                              type="button"
+                              className="mt-2 inline-flex items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors duration-200 hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 sm:ml-auto sm:mt-0"
+                              onClick={() => setConfirmingDeleteSimulationId(simulation.id)}
+                            >
+                              Supprimer
+                            </button>
+                          </div>
+                        )}
                       </Card>
                     );
                   })}

@@ -3,12 +3,15 @@ import {
   createPiece,
   createPublicSimulation,
   deletePiece,
+  deletePublicSimulation,
   getPublicSimulation,
   getRapport,
   getSimulationGridModel,
   getSimulationLogement,
+  getSimulatorApiErrorMessage,
   getVerification,
   listPublicSimulations,
+  SimulatorApiError,
   submitResponse,
   updateCapacity,
   updateFloor,
@@ -26,6 +29,9 @@ const createJsonResponse = (body: unknown, status = 200) =>
 
 const mockFetchJson = (body: unknown, status = 200) =>
   vi.spyOn(globalThis, 'fetch').mockResolvedValue(createJsonResponse(body, status));
+
+const mockFetchText = (body: string, status = 200) =>
+  vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(body, { status }));
 
 describe('simulatorApi', () => {
   afterEach(() => {
@@ -190,6 +196,53 @@ describe('simulatorApi', () => {
     expect((requestInit?.headers as Headers).get('Content-Type')).toBe('application/json');
   });
 
+  it('expose le code, le message et les erreurs de champ des erreurs Swagger', async () => {
+    mockFetchJson(
+      {
+        code: 'INVALID_REQUEST',
+        message: 'Payload invalide',
+        fieldErrors: { capacite_accueil: 'Minimum 1' },
+      },
+      400
+    );
+
+    await expect(
+      createPublicSimulation({
+        categorie_demandee: '3*',
+        capacite_accueil: 0,
+        etage: 1,
+        type_habitation: 'INDIVIDUEL',
+      })
+    ).rejects.toMatchObject({
+      status: 400,
+      code: 'INVALID_REQUEST',
+      apiMessage: 'Payload invalide',
+      fieldErrors: { capacite_accueil: 'Minimum 1' },
+    });
+  });
+
+  it('conserve une erreur HTTP exploitable quand le body d’erreur est vide ou invalide', async () => {
+    mockFetchText('not json', 500);
+
+    await expect(listPublicSimulations()).rejects.toMatchObject({
+      status: 500,
+      code: undefined,
+      apiMessage: undefined,
+    });
+  });
+
+  it('traduit TOO_MANY_PUBLIC_SIMULATIONS en message front stable', () => {
+    const message = getSimulatorApiErrorMessage(
+      new SimulatorApiError(409, { code: 'TOO_MANY_PUBLIC_SIMULATIONS' }),
+      'Fallback',
+      'createSimulation'
+    );
+
+    expect(message).toBe(
+      'Le nombre maximal de simulations enregistrées sur ce navigateur est atteint. Supprimez une simulation existante avant d’en créer une nouvelle.'
+    );
+  });
+
   it('met à jour les paramètres par endpoint dédié', async () => {
     const fetchMock = mockFetchJson({ id: 'simulation-id' });
 
@@ -296,7 +349,21 @@ describe('simulatorApi', () => {
     });
   });
 
-  it('ne définit une suppression que pour les pièces', async () => {
+  it('supprime une simulation publique', async () => {
+    const fetchMock = mockFetchJson(null);
+
+    await deletePublicSimulation('simulation-id');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/public/simulations/simulation-id',
+      expect.objectContaining({
+        method: 'DELETE',
+        credentials: 'include',
+      })
+    );
+  });
+
+  it('supprime une pièce', async () => {
     const fetchMock = mockFetchJson({ id: 'logement-id', pieces: [] });
 
     await deletePiece('simulation-id', 'piece-id');
