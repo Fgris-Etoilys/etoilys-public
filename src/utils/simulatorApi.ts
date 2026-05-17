@@ -1,4 +1,4 @@
-import { getApiUrl } from './api';
+import { getApiUrl, RATE_LIMIT_ERROR_MESSAGE } from './api';
 import { parseGridSummary, type GridSummary } from '../content/simulatorGrid';
 
 type JsonPrimitive = string | number | boolean | null;
@@ -340,6 +340,10 @@ export function getSimulatorApiErrorMessage(
 ): string {
   if (!(error instanceof SimulatorApiError)) {
     return fallbackMessage;
+  }
+
+  if (error.status === 429) {
+    return RATE_LIMIT_ERROR_MESSAGE;
   }
 
   switch (error.code) {

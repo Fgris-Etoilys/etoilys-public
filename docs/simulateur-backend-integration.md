@@ -139,6 +139,10 @@ frontend. Les codes métier simulateur explicitement gérés sont :
 - `FORBIDDEN`
 - `CONFLICT`
 
+Les réponses HTTP `429 Too Many Requests` peuvent être émises par Cloudflare avant le backend
+applicatif. Le frontend les traite donc par statut HTTP, même si le body n'est pas au format JSON,
+et affiche un message demandant de patienter avant de réessayer.
+
 ## Note production
 
 Pour une exposition directe en production, le backend simulateur doit être disponible en HTTPS.

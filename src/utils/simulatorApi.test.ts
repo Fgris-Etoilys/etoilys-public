@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { RATE_LIMIT_ERROR_MESSAGE } from './api';
 import {
   createPiece,
   createPublicSimulation,
@@ -241,6 +242,16 @@ describe('simulatorApi', () => {
     expect(message).toBe(
       'Le nombre maximal de simulations enregistrées sur ce navigateur est atteint. Supprimez une simulation existante avant d’en créer une nouvelle.'
     );
+  });
+
+  it('traduit une réponse HTTP 429 en message explicite de temporisation', () => {
+    const message = getSimulatorApiErrorMessage(
+      new SimulatorApiError(429),
+      'Impossible de créer la simulation pour le moment.',
+      'createSimulation'
+    );
+
+    expect(message).toBe(RATE_LIMIT_ERROR_MESSAGE);
   });
 
   it('met à jour les paramètres par endpoint dédié', async () => {

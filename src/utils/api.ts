@@ -1,5 +1,8 @@
 const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || '/api';
 
+export const RATE_LIMIT_ERROR_MESSAGE =
+  'Trop de requêtes envoyées en peu de temps. Réessayez dans quelques minutes.';
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
 
@@ -53,6 +56,9 @@ export const getApiUrl = (endpoint: string): string => {
   return `${normalizedBaseUrl}${normalizedEndpoint}`;
 };
 
+export const getHttpErrorMessage = (status: number): string =>
+  status === 429 ? RATE_LIMIT_ERROR_MESSAGE : `Erreur HTTP ${status}`;
+
 export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
   endpoint: string,
   payload: P
@@ -68,10 +74,17 @@ export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
     const parsed = parseJsonSafe(rawText);
 
     if (!response.ok) {
+      if (response.status === 429) {
+        return {
+          success: false,
+          error: RATE_LIMIT_ERROR_MESSAGE,
+        };
+      }
+
       if (isApiErrorBody(parsed)) {
         const apiError: ApiResponse<T> = {
           success: false,
-          error: parsed.error || `Erreur HTTP ${response.status}`,
+          error: parsed.error || getHttpErrorMessage(response.status),
         };
         if (parsed.fieldErrors !== undefined) {
           return { ...apiError, fieldErrors: parsed.fieldErrors };
@@ -81,7 +94,7 @@ export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
 
       return {
         success: false,
-        error: `Erreur HTTP ${response.status}`,
+        error: getHttpErrorMessage(response.status),
       };
     }
 

@@ -156,6 +156,24 @@ describe('Simulateur public de classement', () => {
     expect(window.location.pathname).toBe('/simulateur');
   });
 
+  it('affiche un message dédié quand Cloudflare limite les tentatives', async () => {
+    mockFetchJsonSequence([{ body: [] }, { body: '<html>Too many requests</html>', status: 429 }]);
+
+    renderSimulateur();
+
+    await screen.findByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i);
+
+    fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
+      target: { value: '4' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /démarrer la simulation/i }));
+
+    expect(
+      await screen.findByText(/trop de requêtes envoyées en peu de temps/i)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/réessayez dans quelques minutes/i)).toBeInTheDocument();
+  });
+
   it('affiche les simulations existantes sous forme de cartes', async () => {
     mockFetchJson([
       {
