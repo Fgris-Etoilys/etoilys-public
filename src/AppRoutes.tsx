@@ -20,6 +20,7 @@ import ArticleTaxeDeSejour2026 from './pages/actualites/TaxeDeSejour2026';
 import ArticleMeubleClasseNonClasseSeuils from './pages/actualites/MeubleClasseNonClasseSeuils';
 import ArticleFacturationElectronique2026 from './pages/actualites/FacturationElectronique2026';
 import ArticleDpeMeublesTourisme from './pages/actualites/DpeMeublesTourisme';
+import ArticleApiMeubles from './pages/actualites/ApiMeublesDeclarationMeubleTourisme';
 // import Recrutement from './pages/Recrutement'; // TODO: réactiver quand la page sera prête
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -75,6 +76,10 @@ export default function AppRoutes() {
         <Route
           path="actualites/dpe-meubles-tourisme-2026-2034"
           element={<ArticleDpeMeublesTourisme />}
+        />
+        <Route
+          path="actualites/api-meubles-declaration-meuble-tourisme"
+          element={<ArticleApiMeubles />}
         />
         {/* <Route path="recrutement" element={<Recrutement />} /> */}
         {/* TODO: réactiver quand la page sera prête */}

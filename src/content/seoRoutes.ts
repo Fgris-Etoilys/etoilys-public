@@ -151,6 +151,13 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'DPE des meublés de tourisme',
     ogImageKey: 'articleDpeMeublesTourisme',
   },
+  '/actualites/api-meubles-declaration-meuble-tourisme': {
+    title: 'API Meublés : déclaration obligatoire des meublés de tourisme | Etoilys',
+    description:
+      'Tous les propriétaires de meublés de tourisme devront demander un numéro d\u2019enregistrement national via API Meublés. Voici ce qui change à partir du 20 mai 2026.',
+    breadcrumbLabel: 'API Meublés : déclaration obligatoire',
+    ogImageKey: 'articleApiMeubles',
+  },
   '/contact': {
     title: 'Contact Etoilys',
     description:

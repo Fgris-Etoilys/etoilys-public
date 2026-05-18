@@ -49,6 +49,7 @@ const IMAGE_ASSETS = [
   { key: 'articleMeubleClasseNonClasse', fileName: 'pexels-rachel-claire-5490384.jpg' },
   { key: 'articleFacturationElectronique2026', fileName: 'sumup-ru18KXzFA4E-unsplash.jpg' },
   { key: 'articleDpeMeublesTourisme', fileName: 'pexels-rachel-claire-4846106.jpg' },
+  { key: 'articleApiMeubles', fileName: 'pexels-orneiseppi-32486469.jpg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {

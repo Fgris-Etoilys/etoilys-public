@@ -82,6 +82,15 @@ const articles: ActualiteArticle[] = [
     date: '14 mai 2026',
     publishedAt: '2026-05-14',
   },
+  {
+    title: 'API Meublés : tous les propriétaires devront déclarer leur meublé de tourisme',
+    excerpt:
+      'Tous les loueurs devront obtenir un numéro d\u2019enregistrement national via API Meublés. Voici ce qui change à partir du 20 mai 2026 et comment se préparer.',
+    imageKey: 'articleApiMeubles',
+    href: '/actualites/api-meubles-declaration-meuble-tourisme',
+    date: '18 mai 2026',
+    publishedAt: '2026-05-18',
+  },
 ];
 
 export const actualitesArticlesByRecency = [...articles].sort(

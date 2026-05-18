@@ -13,9 +13,9 @@ export interface ArticleStructuredDataConfig {
 const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   {
     path: '/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
-    headline: 'Meubles de tourisme: ce qui change vraiment en 2025-2026 pour les proprietaires',
+    headline: 'Meublés de tourisme : ce qui change vraiment en 2025-2026 pour les propriétaires',
     description:
-      'Fiscalite, 90 jours, DPE, copropriete et enregistrement: points cles des evolutions 2025-2026.',
+      'Fiscalité, 90 jours, DPE, copropriété et enregistrement : points clés des évolutions 2025-2026.',
     datePublished: '2026-03-03',
     dateModified: '2026-03-03',
     imageKey: 'articleMeubles20252026',
@@ -23,9 +23,9 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   },
   {
     path: '/actualites/micro-bic-2026-meuble-classe-vs-non-classe',
-    headline: "Micro-BIC 2026: meuble classe vs non classe, l'ecart se creuse",
+    headline: "Micro-BIC 2026 : meublé classé vs non classé, l'écart se creuse",
     description:
-      'Seuils, abattements et regime reel: evolutions 2026 entre meuble de tourisme classe et non classe.',
+      'Seuils, abattements et régime réel : évolutions 2026 entre meublé de tourisme classé et non classé.',
     datePublished: '2026-03-12',
     dateModified: '2026-03-12',
     imageKey: 'articleMicroBic2026',
@@ -33,7 +33,7 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   },
   {
     path: '/actualites/airbnb-residence-principale-limite-90-jours',
-    headline: 'Airbnb en residence principale: qui est concerne par la limite des 90 jours',
+    headline: 'Airbnb en résidence principale : qui est concerné par la limite des 90 jours',
     description:
       "La limite des 90 jours ne s'applique pas partout automatiquement. Points de contexte et conditions locales.",
     datePublished: '2026-03-27',
@@ -43,9 +43,9 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   },
   {
     path: '/actualites/copropriete-location-touristique-reglement',
-    headline: 'Copropriete et location touristique: ce que le reglement peut desormais prevoir',
+    headline: 'Copropriété et location touristique : ce que le règlement peut désormais prévoir',
     description:
-      'Depuis fin 2024, les regles ont evolue en copropriete pour les meubles de tourisme.',
+      'Depuis fin 2024, les règles ont évolué en copropriété pour les meublés de tourisme.',
     datePublished: '2026-03-23',
     dateModified: '2026-03-23',
     imageKey: 'articleCoproprieteReglement',
@@ -53,9 +53,9 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   },
   {
     path: '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne',
-    headline: 'Taxe de sejour 2026: pourquoi le classement change la donne',
+    headline: 'Taxe de séjour 2026 : pourquoi le classement change la donne',
     description:
-      'Meuble classe ou non classe, bareme 2026, taux, plafonds et surtaxes: comment le classement change concretement la taxe de sejour.',
+      'Meublé classé ou non classé, barème 2026, taux, plafonds et surtaxes : comment le classement change concrètement la taxe de séjour.',
     datePublished: '2026-04-17',
     dateModified: '2026-04-17',
     imageKey: 'articleTaxeDeSejour2026',
@@ -63,9 +63,9 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   },
   {
     path: '/actualites/meuble-classe-non-classe-seuils-micro-bic',
-    headline: "Meuble classe et non classe: comment s'appliquent les seuils micro-BIC?",
+    headline: "Meublé classé et non classé : comment s'appliquent les seuils micro-BIC ?",
     description:
-      'Vous avez un meuble classe et un non classe? Voici comment lire les seuils micro-BIC, les abattements et le passage au reel sans tout melanger.',
+      'Vous avez un meublé classé et un non classé ? Voici comment lire les seuils micro-BIC, les abattements et le passage au réel sans tout mélanger.',
     datePublished: '2026-04-08',
     dateModified: '2026-04-08',
     imageKey: 'articleMeubleClasseNonClasse',
@@ -73,9 +73,9 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   },
   {
     path: '/actualites/facturation-electronique-2026-proprietaires-meubles',
-    headline: 'Facturation electronique 2026: oui, les proprietaires de meubles sont concernes',
+    headline: 'Facturation électronique 2026 : oui, les propriétaires de meublés sont concernés',
     description:
-      'Reception, emission, e-reporting, calendrier, sanctions: voici ce qui s\u2019applique vraiment aux proprietaires de meubles de tourisme.',
+      'Réception, émission, e-reporting, calendrier, sanctions : voici ce qui s\u2019applique vraiment aux propriétaires de meublés de tourisme.',
     datePublished: '2026-05-04',
     dateModified: '2026-05-04',
     imageKey: 'articleFacturationElectronique2026',
@@ -83,12 +83,22 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   },
   {
     path: '/actualites/dpe-meubles-tourisme-2026-2034',
-    headline: 'DPE des meubles de tourisme: ce qui s\u2019applique en 2026 et ce qui attend 2034',
+    headline: 'DPE des meublés de tourisme : ce qui s\u2019applique en 2026 et ce qui attend 2034',
     description:
-      'Faut-il deja un DPE pour louer un meuble de tourisme? Changement d\u2019usage, residence principale, regle 2034: voici ce qu\u2019il faut verifier.',
+      'Faut-il déjà un DPE pour louer un meublé de tourisme ? Changement d\u2019usage, résidence principale, règle 2034 : voici ce qu\u2019il faut vérifier.',
     datePublished: '2026-05-14',
     dateModified: '2026-05-14',
     imageKey: 'articleDpeMeublesTourisme',
+    authorName: 'Florian Grisorio',
+  },
+  {
+    path: '/actualites/api-meubles-declaration-meuble-tourisme',
+    headline: 'API Meublés : tous les propriétaires devront déclarer leur meublé de tourisme',
+    description:
+      'Tous les loueurs devront obtenir un numéro d\u2019enregistrement national via API Meublés. Voici ce qui change à partir du 20 mai 2026.',
+    datePublished: '2026-05-18',
+    dateModified: '2026-05-18',
+    imageKey: 'articleApiMeubles',
     authorName: 'Florian Grisorio',
   },
 ];

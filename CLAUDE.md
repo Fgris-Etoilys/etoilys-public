@@ -67,11 +67,13 @@ Whenever you write code, apply this instruction:
 - Breadcrumbs are JSON-LD only (no visible breadcrumb UI), generated from `getBreadcrumbItems` in `src/content/seoRoutes.ts`.
 - Home and 404 must not output `BreadcrumbList`.
 - Articles must use `ArticleStructuredData` + `src/content/articleStructuredData.ts`; no manual `useEffect` JSON-LD in article pages.
+- Article JSON-LD (`headline`, `description`) must stay coherent with the rendered H1/meta wording and keep proper French UTF-8 accents; do not replace accents with ASCII approximations.
 
 ### Indexation and Static SEO Files (Quick Wins)
 
 - Keep `public/robots.txt` with sitemap reference to `https://www.etoilys.fr/sitemap.xml`.
 - Update `public/sitemap.xml` whenever an indexable route is added/removed.
+- After adding or removing any indexable route, run `npm run seo:sitemap` and verify the route appears in `public/sitemap.xml`; do not rely on manual sitemap edits.
 - Never include 404 or `noindex` routes in sitemap.
 - Favicon must be served from `public/*` and referenced in `index.html`.
 

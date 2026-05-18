@@ -12,7 +12,8 @@ export type ImageAssetKey =
   | 'articleTaxeDeSejour2026'
   | 'articleMeubleClasseNonClasse'
   | 'articleFacturationElectronique2026'
-  | 'articleDpeMeublesTourisme';
+  | 'articleDpeMeublesTourisme'
+  | 'articleApiMeubles';
 
 export interface ImageManifestEntry {
   width: number;
@@ -148,5 +149,14 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pexels-rachel-claire-4846106-480.webp 480w, /images/optimized/pexels-rachel-claire-4846106-768.webp 768w, /images/optimized/pexels-rachel-claire-4846106-1200.webp 1200w, /images/optimized/pexels-rachel-claire-4846106-1600.webp 1600w',
     srcSetAvif:
       '/images/optimized/pexels-rachel-claire-4846106-480.avif 480w, /images/optimized/pexels-rachel-claire-4846106-768.avif 768w, /images/optimized/pexels-rachel-claire-4846106-1200.avif 1200w, /images/optimized/pexels-rachel-claire-4846106-1600.avif 1600w',
+  },
+  articleApiMeubles: {
+    width: 4284,
+    height: 5712,
+    src: '/images/optimized/pexels-orneiseppi-32486469-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/pexels-orneiseppi-32486469-480.webp 480w, /images/optimized/pexels-orneiseppi-32486469-768.webp 768w, /images/optimized/pexels-orneiseppi-32486469-1200.webp 1200w, /images/optimized/pexels-orneiseppi-32486469-1600.webp 1600w, /images/optimized/pexels-orneiseppi-32486469-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/pexels-orneiseppi-32486469-480.avif 480w, /images/optimized/pexels-orneiseppi-32486469-768.avif 768w, /images/optimized/pexels-orneiseppi-32486469-1200.avif 1200w, /images/optimized/pexels-orneiseppi-32486469-1600.avif 1600w, /images/optimized/pexels-orneiseppi-32486469-1920.avif 1920w',
   },
 };
