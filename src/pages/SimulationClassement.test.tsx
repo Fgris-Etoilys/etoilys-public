@@ -3,6 +3,51 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import App from '../App';
 import structureGrilleRaw from '../../docs/structureGrille.json?raw';
 
+const analyticsMock = vi.hoisted(() => ({
+  acceptAnalyticsConsent: vi.fn(),
+  getAnalyticsConsentStatus: vi.fn(() => null),
+  rejectAnalyticsConsent: vi.fn(),
+  trackClassementSimulatorCalculated: vi.fn(),
+  trackClassementSimulatorGridProgressReached: vi.fn(),
+  trackClassementSimulatorGridResponseSaved: vi.fn(),
+  trackClassementSimulatorHelpOpened: vi.fn(),
+  trackClassementSimulatorPdfExported: vi.fn(),
+  trackClassementSimulatorPieceDeleted: vi.fn(),
+  trackClassementSimulatorPieceSaved: vi.fn(),
+  trackClassementSimulatorResumed: vi.fn(),
+  trackClassementSimulatorResultBlocked: vi.fn(),
+  trackClassementSimulatorResultRequested: vi.fn(),
+  trackClassementSimulatorStepViewed: vi.fn(),
+  trackCtaClick: vi.fn(),
+  trackPageView: vi.fn(),
+}));
+
+vi.mock('../utils/analytics', () => ({
+  acceptAnalyticsConsent: analyticsMock.acceptAnalyticsConsent,
+  getAnalyticsConsentStatus: analyticsMock.getAnalyticsConsentStatus,
+  rejectAnalyticsConsent: analyticsMock.rejectAnalyticsConsent,
+  normalizeAnalyticsPath: (value: string | null | undefined) => {
+    if (!value) return '/';
+    const pathname = new URL(value, 'https://www.etoilys.fr').pathname;
+    return /^\/simulateur\/[^/]+\/?$/.test(pathname) ? '/simulateur/:simulationId' : pathname;
+  },
+  trackClassementSimulatorCalculated: analyticsMock.trackClassementSimulatorCalculated,
+  trackClassementSimulatorGridProgressReached:
+    analyticsMock.trackClassementSimulatorGridProgressReached,
+  trackClassementSimulatorGridResponseSaved:
+    analyticsMock.trackClassementSimulatorGridResponseSaved,
+  trackClassementSimulatorHelpOpened: analyticsMock.trackClassementSimulatorHelpOpened,
+  trackClassementSimulatorPdfExported: analyticsMock.trackClassementSimulatorPdfExported,
+  trackClassementSimulatorPieceDeleted: analyticsMock.trackClassementSimulatorPieceDeleted,
+  trackClassementSimulatorPieceSaved: analyticsMock.trackClassementSimulatorPieceSaved,
+  trackClassementSimulatorResumed: analyticsMock.trackClassementSimulatorResumed,
+  trackClassementSimulatorResultBlocked: analyticsMock.trackClassementSimulatorResultBlocked,
+  trackClassementSimulatorResultRequested: analyticsMock.trackClassementSimulatorResultRequested,
+  trackClassementSimulatorStepViewed: analyticsMock.trackClassementSimulatorStepViewed,
+  trackCtaClick: analyticsMock.trackCtaClick,
+  trackPageView: analyticsMock.trackPageView,
+}));
+
 const SIMULATION_ID = 'simulation-id';
 const gridModelResponse = JSON.parse(structureGrilleRaw) as unknown;
 
@@ -426,8 +471,8 @@ const mockFetchJsonSequence = (responses: Array<{ body: unknown; status?: number
 const getNonModelFetchCalls = (fetchMock: ReturnType<typeof mockFetchJsonSequence>) =>
   fetchMock.mock.calls.filter(([url]) => !String(url).includes('/public/simulations/modele'));
 
-const renderAt = (path: string) => {
-  window.history.pushState({}, 'Test page', path);
+const renderAt = (path: string, state?: unknown) => {
+  window.history.pushState(state === undefined ? {} : { usr: state }, 'Test page', path);
   return render(<App />);
 };
 
@@ -452,6 +497,7 @@ describe('SimulationClassement', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    Object.values(analyticsMock).forEach((mock) => mock.mockClear());
   });
 
   it('charge la simulation et le logement', async () => {
@@ -549,6 +595,24 @@ describe('SimulationClassement', () => {
       `/api/public/simulations/${SIMULATION_ID}/logement`,
       expect.objectContaining({ method: 'GET', credentials: 'include' })
     );
+    expect(analyticsMock.trackClassementSimulatorResumed).toHaveBeenCalledWith({
+      entryPoint: 'direct',
+      requestedCategory: '3*',
+      capacity: 4,
+    });
+  });
+
+  it('ne retracke pas une reprise déjà trackée depuis une carte', async () => {
+    mockFetchJsonSequence([{ body: simulationResponse }, { body: logementWithPiecesResponse }]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`, {
+      classementSimulatorEntryPoint: 'resume_card',
+    });
+
+    expect(
+      await screen.findByRole('heading', { name: /ma simulation de classement/i })
+    ).toBeInTheDocument();
+    expect(analyticsMock.trackClassementSimulatorResumed).not.toHaveBeenCalled();
   });
 
   it('affiche un bloc de passage à la grille quand aucun warning de pièce n’est présent', async () => {
@@ -1914,6 +1978,14 @@ describe('SimulationClassement', () => {
     await waitFor(() => {
       expect(screen.queryByText(/réponse enregistrée/i)).not.toBeInTheDocument();
     });
+    expect(analyticsMock.trackClassementSimulatorGridResponseSaved).toHaveBeenCalledTimes(1);
+    expect(analyticsMock.trackClassementSimulatorGridResponseSaved).toHaveBeenCalledWith(
+      expect.objectContaining({
+        criterionNumber: 5,
+        criterionStatus: 'OPTIONNEL',
+        validationStatus: 'VALIDE',
+      })
+    );
   });
 
   it('rollback la réponse optimiste après 3 échecs d’enregistrement', async () => {
@@ -2026,6 +2098,14 @@ describe('SimulationClassement', () => {
     expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verification`
     );
+    expect(analyticsMock.trackClassementSimulatorResultBlocked).toHaveBeenCalledWith(
+      expect.objectContaining({
+        hasSleepingCapacityIssue: true,
+        hasBathroomIssue: true,
+        hasMissingCriteria: true,
+      })
+    );
+    expect(analyticsMock.trackClassementSimulatorCalculated).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole('button', { name: /afficher dans la grille/i }));
 
@@ -2159,6 +2239,11 @@ describe('SimulationClassement', () => {
     expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/rapport`
     );
+    expect(analyticsMock.trackClassementSimulatorResultRequested).toHaveBeenCalledTimes(1);
+    expect(analyticsMock.trackClassementSimulatorCalculated).toHaveBeenCalledWith(
+      expect.objectContaining({ resultOutcome: 'favorable' })
+    );
+    expect(analyticsMock.trackClassementSimulatorResultBlocked).not.toHaveBeenCalled();
     expect(screen.getByRole('button', { name: /modifier mes réponses/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /retour aux pièces/i })).toBeInTheDocument();
 
@@ -2275,6 +2360,10 @@ describe('SimulationClassement', () => {
     expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/rapport`
     );
+    expect(analyticsMock.trackClassementSimulatorCalculated).toHaveBeenCalledWith(
+      expect.objectContaining({ resultOutcome: 'defavorable' })
+    );
+    expect(analyticsMock.trackClassementSimulatorResultBlocked).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole('button', { name: /voir dans la grille/i }));
 
@@ -2349,6 +2438,7 @@ describe('SimulationClassement', () => {
       `/api/public/simulations/${SIMULATION_ID}/rapport`
     );
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
+    expect(analyticsMock.trackClassementSimulatorCalculated).not.toHaveBeenCalled();
   });
 
   it('hydrate automatiquement le rapport existant d’une simulation défavorable', async () => {

@@ -23,6 +23,7 @@ import {
   type ReponseDto,
   type VerificationDto,
 } from '../../utils/simulatorApi';
+import { trackClassementSimulatorHelpOpened } from '../../utils/analytics';
 
 export type SimulationResultState =
   | { kind: 'verification'; verification: VerificationDto }
@@ -37,7 +38,11 @@ interface SimulationGridTabProps {
   progressSummary: SimulationGridProgressSummary;
   resultActionLabel: string;
   isCheckingResult: boolean;
-  onResponseSaved: (response: ReponseDto) => void;
+  onResponseSaved: (
+    response: ReponseDto,
+    criterion: GridCriterion,
+    validation: CriterionValidationStatus
+  ) => void;
   onClearCriterionFilter: () => void;
   onCheckResult: () => void;
   onResultReset: () => void;
@@ -1239,6 +1244,16 @@ export default function SimulationGridTab({
   function handleOpenCriterionHelp(criterion: GridCriterion) {
     const criterionHelpKey = String(criterion.num_critere);
     const cachedAide = criterionHelpCache?.[criterionHelpKey] ?? null;
+    const criterionStatus = getEffectiveCriterionStatus(
+      criterion,
+      responsesByCriterionNumber.get(criterion.num_critere),
+      requestedCategory
+    );
+
+    trackClassementSimulatorHelpOpened({
+      criterionNumber: criterion.num_critere,
+      criterionStatus,
+    });
 
     setSelectedHelpCriterion({
       criterion,
@@ -1310,11 +1325,15 @@ export default function SimulationGridTab({
           return;
         }
 
-        onResponseSaved({
-          ...savedResponse,
-          num_critere: savedResponse.num_critere ?? criterionNumber,
-          statut_validation: savedResponse.statut_validation ?? validation,
-        });
+        onResponseSaved(
+          {
+            ...savedResponse,
+            num_critere: savedResponse.num_critere ?? criterionNumber,
+            statut_validation: savedResponse.statut_validation ?? validation,
+          },
+          criterion,
+          validation
+        );
         setOptimisticResponsesByCriterionNumber((currentResponses) => {
           const nextResponses = new Map(currentResponses);
           nextResponses.delete(criterionNumber);

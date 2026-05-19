@@ -9,8 +9,13 @@ const ANALYTICS_CONSENT_MAX_AGE_MS = 183 * 24 * 60 * 60 * 1000;
 
 export type AnalyticsConsent = 'accepted' | 'refused';
 type FormName = 'contact' | 'demande_classement';
-type SimulatorName = 'taxe_sejour' | 'fiscal_classement';
+type SimulatorName = 'taxe_sejour' | 'fiscal_classement' | 'classement';
 type FormFailureType = 'validation' | 'api' | 'network' | 'turnstile';
+type ClassementSimulatorEntryPoint = 'new' | 'resume_card' | 'direct';
+type ClassementSimulatorStep = 'pieces' | 'grid' | 'result';
+type ClassementSimulatorPieceAction = 'created' | 'updated';
+type ClassementSimulatorPieceScope = 'interior' | 'exterior';
+type ClassementSimulatorResultOutcome = 'favorable' | 'defavorable' | 'needs_completion';
 
 type AnalyticsValue = string | number | boolean | string[];
 type AnalyticsProperties = Record<string, AnalyticsValue>;
@@ -23,7 +28,18 @@ export type AnalyticsEventName =
   | 'form_submit_succeeded'
   | 'form_submit_failed'
   | 'simulator_started'
-  | 'simulator_calculated';
+  | 'simulator_calculated'
+  | 'simulator_resumed'
+  | 'simulator_deleted'
+  | 'simulator_step_viewed'
+  | 'simulator_piece_saved'
+  | 'simulator_piece_deleted'
+  | 'simulator_grid_response_saved'
+  | 'simulator_grid_progress_reached'
+  | 'simulator_result_requested'
+  | 'simulator_result_blocked'
+  | 'simulator_pdf_exported'
+  | 'simulator_help_opened';
 
 const ALLOWED_EVENT_NAMES = new Set<string>([
   '$pageview',
@@ -35,6 +51,17 @@ const ALLOWED_EVENT_NAMES = new Set<string>([
   'form_submit_failed',
   'simulator_started',
   'simulator_calculated',
+  'simulator_resumed',
+  'simulator_deleted',
+  'simulator_step_viewed',
+  'simulator_piece_saved',
+  'simulator_piece_deleted',
+  'simulator_grid_response_saved',
+  'simulator_grid_progress_reached',
+  'simulator_result_requested',
+  'simulator_result_blocked',
+  'simulator_pdf_exported',
+  'simulator_help_opened',
 ]);
 
 const ALLOWED_CUSTOM_PROPERTIES = new Set<string>([
@@ -65,6 +92,26 @@ const ALLOWED_CUSTOM_PROPERTIES = new Set<string>([
   'social_threshold_exceeded',
   'non_classe_threshold_exceeded',
   'savings_bucket',
+  'requested_category',
+  'housing_type',
+  'floor_bucket',
+  'capacity_bucket',
+  'entry_point',
+  'step',
+  'piece_action',
+  'piece_type',
+  'piece_scope',
+  'piece_count_bucket',
+  'criterion_number',
+  'criterion_status',
+  'validation_status',
+  'progress_bucket',
+  'remaining_criteria_bucket',
+  'missing_mandatory_bucket',
+  'result_outcome',
+  'has_sleeping_capacity_issue',
+  'has_bathroom_issue',
+  'has_missing_criteria',
 ]);
 
 const ALLOWED_POSTHOG_PROPERTIES = new Set<string>([
@@ -168,13 +215,22 @@ export function normalizeAnalyticsPath(value: string | null | undefined): string
     return '/';
   }
 
+  const normalizeDynamicPathname = (pathname: string): string => {
+    const normalizedPathname = pathname || '/';
+    if (/^\/simulateur\/[^/]+\/?$/.test(normalizedPathname)) {
+      return '/simulateur/:simulationId';
+    }
+
+    return normalizedPathname;
+  };
+
   try {
     const url = new URL(value, 'https://www.etoilys.fr');
-    return url.pathname || '/';
+    return normalizeDynamicPathname(url.pathname);
   } catch {
     const withoutHash = value.split('#')[0] ?? '';
     const withoutQuery = withoutHash.split('?')[0] ?? '';
-    return withoutQuery.startsWith('/') ? withoutQuery || '/' : '/';
+    return normalizeDynamicPathname(withoutQuery.startsWith('/') ? withoutQuery || '/' : '/');
   }
 }
 
@@ -478,6 +534,276 @@ export function trackSimulatorCalculated(
     simulator,
     ...properties,
   });
+}
+
+function getNumberBucket(
+  value: number | null | undefined,
+  buckets: Array<{ max: number; label: string }>,
+  fallback = 'unknown'
+): string {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+    return fallback;
+  }
+
+  return buckets.find((bucket) => value <= bucket.max)?.label ?? `${buckets.length}+`;
+}
+
+function getCapacityBucket(value: number | null | undefined): string {
+  return getNumberBucket(value, [
+    { max: 1, label: '1' },
+    { max: 2, label: '2' },
+    { max: 4, label: '3-4' },
+    { max: 6, label: '5-6' },
+    { max: 10, label: '7-10' },
+    { max: Number.POSITIVE_INFINITY, label: '11+' },
+  ]);
+}
+
+function getFloorBucket(value: number | null | undefined): string {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return 'unknown';
+  }
+
+  if (value <= 0) return '0';
+  if (value === 1) return '1';
+  if (value === 2) return '2';
+  return '3+';
+}
+
+function getPieceCountBucket(value: number | null | undefined): string {
+  return getNumberBucket(value, [
+    { max: 0, label: '0' },
+    { max: 1, label: '1' },
+    { max: 3, label: '2-3' },
+    { max: 5, label: '4-5' },
+    { max: 8, label: '6-8' },
+    { max: Number.POSITIVE_INFINITY, label: '9+' },
+  ]);
+}
+
+function getCriteriaCountBucket(value: number | null | undefined): string {
+  return getNumberBucket(value, [
+    { max: 0, label: '0' },
+    { max: 5, label: '1-5' },
+    { max: 20, label: '6-20' },
+    { max: 50, label: '21-50' },
+    { max: Number.POSITIVE_INFINITY, label: '51+' },
+  ]);
+}
+
+function getClassementSimulatorContext(input: {
+  requestedCategory?: string | undefined;
+  housingType?: string | undefined;
+  floor?: number | null | undefined;
+  capacity?: number | null | undefined;
+}): AnalyticsProperties {
+  const properties: AnalyticsProperties = {};
+
+  if (input.requestedCategory) {
+    properties.requested_category = input.requestedCategory;
+  }
+
+  if (input.housingType) {
+    properties.housing_type = input.housingType;
+  }
+
+  properties.floor_bucket = getFloorBucket(input.floor);
+  properties.capacity_bucket = getCapacityBucket(input.capacity);
+
+  return properties;
+}
+
+export function trackClassementSimulatorStarted(input: {
+  requestedCategory: string;
+  housingType: string;
+  floor: number;
+  capacity: number;
+}): void {
+  trackEvent('simulator_started', {
+    simulator: 'classement',
+    entry_point: 'new',
+    ...getClassementSimulatorContext(input),
+  });
+}
+
+export function trackClassementSimulatorResumed(input: {
+  entryPoint: ClassementSimulatorEntryPoint;
+  requestedCategory?: string | undefined;
+  capacity?: number | null | undefined;
+}): void {
+  trackEvent('simulator_resumed', {
+    simulator: 'classement',
+    entry_point: input.entryPoint,
+    ...getClassementSimulatorContext({
+      requestedCategory: input.requestedCategory,
+      capacity: input.capacity,
+    }),
+  });
+}
+
+export function trackClassementSimulatorDeleted(input: {
+  requestedCategory?: string | undefined;
+  capacity?: number | null | undefined;
+}): void {
+  trackEvent('simulator_deleted', {
+    simulator: 'classement',
+    ...getClassementSimulatorContext(input),
+  });
+}
+
+export function trackClassementSimulatorStepViewed(input: {
+  step: ClassementSimulatorStep;
+  requestedCategory?: string | undefined;
+  capacity?: number | null | undefined;
+}): void {
+  trackEvent('simulator_step_viewed', {
+    simulator: 'classement',
+    step: input.step,
+    ...getClassementSimulatorContext(input),
+  });
+}
+
+export function trackClassementSimulatorPieceSaved(input: {
+  pieceAction: ClassementSimulatorPieceAction;
+  pieceType: string;
+  pieceScope: ClassementSimulatorPieceScope;
+  pieceCount: number;
+}): void {
+  trackEvent('simulator_piece_saved', {
+    simulator: 'classement',
+    piece_action: input.pieceAction,
+    piece_type: input.pieceType,
+    piece_scope: input.pieceScope,
+    piece_count_bucket: getPieceCountBucket(input.pieceCount),
+  });
+}
+
+export function trackClassementSimulatorPieceDeleted(input: {
+  pieceType?: string | undefined;
+  pieceScope?: ClassementSimulatorPieceScope | undefined;
+  pieceCount: number;
+}): void {
+  const properties: AnalyticsProperties = {
+    simulator: 'classement',
+    piece_count_bucket: getPieceCountBucket(input.pieceCount),
+  };
+
+  if (input.pieceType) {
+    properties.piece_type = input.pieceType;
+  }
+
+  if (input.pieceScope) {
+    properties.piece_scope = input.pieceScope;
+  }
+
+  trackEvent('simulator_piece_deleted', properties);
+}
+
+export function trackClassementSimulatorGridResponseSaved(input: {
+  criterionNumber: number;
+  criterionStatus?: string | undefined;
+  validationStatus: string;
+  progressBucket: number;
+  remainingCriteriaCount: number;
+  missingMandatoryCount: number;
+}): void {
+  const properties: AnalyticsProperties = {
+    simulator: 'classement',
+    criterion_number: input.criterionNumber,
+    validation_status: input.validationStatus,
+    progress_bucket: input.progressBucket,
+    remaining_criteria_bucket: getCriteriaCountBucket(input.remainingCriteriaCount),
+    missing_mandatory_bucket: getCriteriaCountBucket(input.missingMandatoryCount),
+  };
+
+  if (input.criterionStatus) {
+    properties.criterion_status = input.criterionStatus;
+  }
+
+  trackEvent('simulator_grid_response_saved', properties);
+}
+
+export function trackClassementSimulatorGridProgressReached(input: {
+  progressBucket: number;
+  remainingCriteriaCount: number;
+  missingMandatoryCount: number;
+}): void {
+  trackEvent('simulator_grid_progress_reached', {
+    simulator: 'classement',
+    progress_bucket: input.progressBucket,
+    remaining_criteria_bucket: getCriteriaCountBucket(input.remainingCriteriaCount),
+    missing_mandatory_bucket: getCriteriaCountBucket(input.missingMandatoryCount),
+  });
+}
+
+export function trackClassementSimulatorResultRequested(input: {
+  progressBucket: number;
+  remainingCriteriaCount: number;
+  missingMandatoryCount: number;
+}): void {
+  trackEvent('simulator_result_requested', {
+    simulator: 'classement',
+    progress_bucket: input.progressBucket,
+    remaining_criteria_bucket: getCriteriaCountBucket(input.remainingCriteriaCount),
+    missing_mandatory_bucket: getCriteriaCountBucket(input.missingMandatoryCount),
+  });
+}
+
+export function trackClassementSimulatorResultBlocked(input: {
+  hasSleepingCapacityIssue: boolean;
+  hasBathroomIssue: boolean;
+  hasMissingCriteria: boolean;
+  missingMandatoryCount: number;
+  remainingCriteriaCount: number;
+}): void {
+  trackEvent('simulator_result_blocked', {
+    simulator: 'classement',
+    result_outcome: 'needs_completion',
+    has_sleeping_capacity_issue: input.hasSleepingCapacityIssue,
+    has_bathroom_issue: input.hasBathroomIssue,
+    has_missing_criteria: input.hasMissingCriteria,
+    missing_mandatory_bucket: getCriteriaCountBucket(input.missingMandatoryCount),
+    remaining_criteria_bucket: getCriteriaCountBucket(input.remainingCriteriaCount),
+  });
+}
+
+export function trackClassementSimulatorCalculated(input: {
+  resultOutcome: Exclude<ClassementSimulatorResultOutcome, 'needs_completion'>;
+  progressBucket: number;
+  remainingCriteriaCount: number;
+  missingMandatoryCount: number;
+}): void {
+  trackSimulatorCalculated('classement', {
+    result_outcome: input.resultOutcome,
+    progress_bucket: input.progressBucket,
+    remaining_criteria_bucket: getCriteriaCountBucket(input.remainingCriteriaCount),
+    missing_mandatory_bucket: getCriteriaCountBucket(input.missingMandatoryCount),
+  });
+}
+
+export function trackClassementSimulatorPdfExported(input: {
+  resultOutcome: Exclude<ClassementSimulatorResultOutcome, 'needs_completion'>;
+}): void {
+  trackEvent('simulator_pdf_exported', {
+    simulator: 'classement',
+    result_outcome: input.resultOutcome,
+  });
+}
+
+export function trackClassementSimulatorHelpOpened(input: {
+  criterionNumber: number;
+  criterionStatus?: string | undefined;
+}): void {
+  const properties: AnalyticsProperties = {
+    simulator: 'classement',
+    criterion_number: input.criterionNumber,
+  };
+
+  if (input.criterionStatus) {
+    properties.criterion_status = input.criterionStatus;
+  }
+
+  trackEvent('simulator_help_opened', properties);
 }
 
 export const analyticsInternalsForTests = {

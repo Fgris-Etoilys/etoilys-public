@@ -17,6 +17,11 @@ import {
   type SimulationStatus,
 } from '../utils/simulatorApi';
 import {
+  trackClassementSimulatorDeleted,
+  trackClassementSimulatorResumed,
+  trackClassementSimulatorStarted,
+} from '../utils/analytics';
+import {
   FLOOR_OPTIONS,
   formatRequestedCategory,
   HOUSING_TYPE_OPTIONS,
@@ -166,6 +171,12 @@ export default function Simulateur() {
       });
 
       if (createdSimulation.id) {
+        trackClassementSimulatorStarted({
+          requestedCategory,
+          housingType,
+          floor: parsedFloor,
+          capacity: parsedCapacity,
+        });
         navigate(`/simulateur/${createdSimulation.id}`);
         return;
       }
@@ -194,11 +205,16 @@ export default function Simulateur() {
     setDeletingSimulationId(simulationId);
 
     try {
+      const deletedSimulation = simulations.find((simulation) => simulation.id === simulationId);
       await deletePublicSimulation(simulationId);
       setSimulations((currentSimulations) =>
         currentSimulations.filter((simulation) => simulation.id !== simulationId)
       );
       setConfirmingDeleteSimulationId(null);
+      trackClassementSimulatorDeleted({
+        requestedCategory: deletedSimulation?.categorie_demandee,
+        capacity: deletedSimulation?.capacite_accueil,
+      });
       showToast('La simulation a été supprimée.', { type: 'success' });
     } catch (error) {
       showToast(
@@ -445,6 +461,14 @@ export default function Simulateur() {
                               type="button"
                               variant="primary"
                               href={`/simulateur/${simulation.id}`}
+                              state={{ classementSimulatorEntryPoint: 'resume_card' }}
+                              onClick={() =>
+                                trackClassementSimulatorResumed({
+                                  entryPoint: 'resume_card',
+                                  requestedCategory: simulation.categorie_demandee,
+                                  capacity: simulation.capacite_accueil,
+                                })
+                              }
                             >
                               Reprendre
                             </Button>

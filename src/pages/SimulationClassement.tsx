@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent, KeyboardEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import {
   AlertCircle,
   Bath,
@@ -35,7 +35,23 @@ import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import Tooltip from '../components/ui/Tooltip';
 import { useToast } from '../components/ui/Toast';
-import { getCriterionStatusForCategory, type GridSummary } from '../content/simulatorGrid';
+import {
+  getCriterionStatusForCategory,
+  type GridCriterion,
+  type GridSummary,
+} from '../content/simulatorGrid';
+import {
+  trackClassementSimulatorCalculated,
+  trackClassementSimulatorGridProgressReached,
+  trackClassementSimulatorGridResponseSaved,
+  trackClassementSimulatorPdfExported,
+  trackClassementSimulatorPieceDeleted,
+  trackClassementSimulatorPieceSaved,
+  trackClassementSimulatorResumed,
+  trackClassementSimulatorResultBlocked,
+  trackClassementSimulatorResultRequested,
+  trackClassementSimulatorStepViewed,
+} from '../utils/analytics';
 import { exportSimulationClassementPdf } from '../utils/simulatorExport';
 import {
   createPiece,
@@ -52,6 +68,7 @@ import {
   updatePiece,
   updateRequestedCategory,
   verifySimulation,
+  type CriterionValidationStatus,
   type HousingType,
   type LogementDto,
   type PieceDto,
@@ -60,6 +77,7 @@ import {
   type ReponseDto,
   type RequestedCategory,
   type SimulationStatus,
+  type VerificationDto,
 } from '../utils/simulatorApi';
 import {
   canPieceHaveSleepingCapacity,
@@ -84,6 +102,9 @@ type ActiveTab = 'pieces' | 'grid' | 'result';
 type ResultStatus = 'none' | 'fresh' | 'stale' | 'checking' | 'error';
 type PiecePanelMode = 'closed' | 'create' | 'edit';
 type PieceTypeScope = 'interior' | 'exterior';
+type SimulationClassementNavigationState = {
+  classementSimulatorEntryPoint?: 'resume_card';
+};
 
 interface PieceFormState {
   type: PieceType;
@@ -413,6 +434,50 @@ function buildGridProgressSummary(
   };
 }
 
+function getGridProgressBucket(summary: SimulationGridProgressSummary): number {
+  if (summary.totalCount <= 0) {
+    return 0;
+  }
+
+  const progressPercentage = (summary.answeredCount / summary.totalCount) * 100;
+  if (progressPercentage >= 100) return 100;
+  if (progressPercentage >= 75) return 75;
+  if (progressPercentage >= 50) return 50;
+  if (progressPercentage >= 25) return 25;
+  return 0;
+}
+
+function getReachedGridProgressBuckets(summary: SimulationGridProgressSummary): number[] {
+  const progressBucket = getGridProgressBucket(summary);
+  return [25, 50, 75, 100].filter((bucket) => bucket <= progressBucket);
+}
+
+function getPieceScope(pieceType: PieceType): 'interior' | 'exterior' {
+  return isExteriorPiece(pieceType) ? 'exterior' : 'interior';
+}
+
+function getResultOutcome(
+  result: SimulationResultState
+): 'favorable' | 'defavorable' | 'needs_completion' {
+  if (result.kind === 'verification') {
+    return 'needs_completion';
+  }
+
+  return result.rapport.resultat === true ? 'favorable' : 'defavorable';
+}
+
+function getVerificationMissingCriteriaCount(verification: VerificationDto): number {
+  const requiredNumbers = verification.criteres_obligatoires_a_cocher?.criteres_non_coches ?? [];
+  const optionalNumbers = verification.criteres_optionnels_a_cocher?.criteres_non_coches ?? [];
+  return new Set([...requiredNumbers, ...optionalNumbers]).size;
+}
+
+function isSimulationClassementNavigationState(
+  value: unknown
+): value is SimulationClassementNavigationState {
+  return typeof value === 'object' && value !== null;
+}
+
 function isAnsweredResponse(response: ReponseDto | undefined): boolean {
   return (
     response?.statut_validation === 'VALIDE' ||
@@ -632,6 +697,7 @@ function SimulationGridModelState({
 
 export default function SimulationClassement() {
   const { simulationId } = useParams<{ simulationId: string }>();
+  const location = useLocation();
   const { showToast } = useToast();
   const [loadStatus, setLoadStatus] = useState<LoadStatus>('loading');
   const [simulation, setSimulation] = useState<PublicSimulationDto | null>(null);
@@ -660,6 +726,14 @@ export default function SimulationClassement() {
   const [criterionFilterNumbers, setCriterionFilterNumbers] = useState<number[]>([]);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const latestParameterSaveRequestIdRef = useRef(0);
+  const hasTrackedWorkspaceResumeRef = useRef(false);
+  const viewedTabsRef = useRef(new Set<ActiveTab>());
+  const hasInitializedProgressTrackingRef = useRef(false);
+  const reachedProgressBucketsRef = useRef(new Set<number>());
+  const wasOpenedFromResumeCardRef = useRef(
+    isSimulationClassementNavigationState(location.state) &&
+      location.state.classementSimulatorEntryPoint === 'resume_card'
+  );
 
   const loadSimulation = useCallback(async () => {
     if (!simulationId) {
@@ -689,6 +763,17 @@ export default function SimulationClassement() {
 
     setSimulation(nextSimulation);
     setLogement(nextLogement);
+
+    if (!hasTrackedWorkspaceResumeRef.current) {
+      hasTrackedWorkspaceResumeRef.current = true;
+      if (!wasOpenedFromResumeCardRef.current) {
+        trackClassementSimulatorResumed({
+          entryPoint: 'direct',
+          requestedCategory: nextSimulation.grille?.categorie_demandee,
+          capacity: nextSimulation.grille?.capacite_accueil,
+        });
+      }
+    }
 
     try {
       if (nextSimulation.statut === 'FAVORABLE' || nextSimulation.statut === 'DEFAVORABLE') {
@@ -808,6 +893,51 @@ export default function SimulationClassement() {
     isSavingParameters,
   ]);
 
+  useEffect(() => {
+    if (loadStatus !== 'success' || viewedTabsRef.current.has(activeTab)) {
+      return;
+    }
+
+    viewedTabsRef.current.add(activeTab);
+    trackClassementSimulatorStepViewed({
+      step: activeTab,
+      requestedCategory: grille?.categorie_demandee,
+      capacity: grille?.capacite_accueil,
+    });
+  }, [activeTab, grille?.capacite_accueil, grille?.categorie_demandee, loadStatus]);
+
+  useEffect(() => {
+    if (gridModelStatus !== 'success' || gridProgressSummary.totalCount <= 0) {
+      return;
+    }
+
+    const reachedBuckets = getReachedGridProgressBuckets(gridProgressSummary);
+    if (!hasInitializedProgressTrackingRef.current) {
+      reachedBuckets.forEach((bucket) => reachedProgressBucketsRef.current.add(bucket));
+      hasInitializedProgressTrackingRef.current = true;
+      return;
+    }
+
+    reachedBuckets.forEach((bucket) => {
+      if (reachedProgressBucketsRef.current.has(bucket)) {
+        return;
+      }
+
+      reachedProgressBucketsRef.current.add(bucket);
+      trackClassementSimulatorGridProgressReached({
+        progressBucket: bucket,
+        remainingCriteriaCount: gridProgressSummary.remainingCount,
+        missingMandatoryCount: gridProgressSummary.missingMandatoryCount,
+      });
+    });
+  }, [
+    gridModelStatus,
+    gridProgressSummary.answeredCount,
+    gridProgressSummary.missingMandatoryCount,
+    gridProgressSummary.remainingCount,
+    gridProgressSummary.totalCount,
+  ]);
+
   async function handleExportPdf() {
     if (
       !simulationId ||
@@ -828,6 +958,9 @@ export default function SimulationClassement() {
         totalSleepingCapacity,
         generatedAt: new Date(),
         simulationId,
+      });
+      trackClassementSimulatorPdfExported({
+        resultOutcome: resultState.rapport.resultat === true ? 'favorable' : 'defavorable',
       });
       showToast('PDF généré.', { type: 'success' });
     } catch {
@@ -991,6 +1124,26 @@ export default function SimulationClassement() {
   }
 
   function showSimulationResult(result: SimulationResultState) {
+    const resultOutcome = getResultOutcome(result);
+
+    if (resultOutcome === 'needs_completion' && result.kind === 'verification') {
+      trackClassementSimulatorResultBlocked({
+        hasSleepingCapacityIssue: result.verification.nb_couchages_suffisants === false,
+        hasBathroomIssue: result.verification.salle_de_bain_presente === false,
+        hasMissingCriteria: getVerificationMissingCriteriaCount(result.verification) > 0,
+        missingMandatoryCount:
+          result.verification.criteres_obligatoires_a_cocher?.criteres_non_coches?.length ?? 0,
+        remainingCriteriaCount: gridProgressSummary.remainingCount,
+      });
+    } else if (resultOutcome === 'favorable' || resultOutcome === 'defavorable') {
+      trackClassementSimulatorCalculated({
+        resultOutcome,
+        progressBucket: getGridProgressBucket(gridProgressSummary),
+        remainingCriteriaCount: gridProgressSummary.remainingCount,
+        missingMandatoryCount: gridProgressSummary.missingMandatoryCount,
+      });
+    }
+
     setResultState(result);
     setResultStatus('fresh');
     setResultErrorMessage(null);
@@ -1025,6 +1178,15 @@ export default function SimulationClassement() {
   function returnToFullGrid() {
     setCriterionFilterNumbers([]);
     setActiveTab('grid');
+  }
+
+  function handleManualSimulationCheck() {
+    trackClassementSimulatorResultRequested({
+      progressBucket: getGridProgressBucket(gridProgressSummary),
+      remainingCriteriaCount: gridProgressSummary.remainingCount,
+      missingMandatoryCount: gridProgressSummary.missingMandatoryCount,
+    });
+    void runSimulationCheck();
   }
 
   async function runSimulationCheck({ parameterRequestId }: { parameterRequestId?: number } = {}) {
@@ -1298,6 +1460,12 @@ export default function SimulationClassement() {
         ? await updatePiece(simulationId, editingPieceId, payload)
         : await createPiece(simulationId, payload);
       const hasRefreshedSimulation = await applyPieceMutationResult(nextLogement);
+      trackClassementSimulatorPieceSaved({
+        pieceAction: isEditingPiece ? 'updated' : 'created',
+        pieceType: pieceForm.type,
+        pieceScope: getPieceScope(pieceForm.type),
+        pieceCount: nextLogement.pieces?.length ?? 0,
+      });
       resetPiecePanel();
 
       if (!hasRefreshedSimulation) {
@@ -1340,6 +1508,11 @@ export default function SimulationClassement() {
       const nextLogement = await deletePiece(simulationId, piece.id);
       const hasRefreshedSimulation = await applyPieceMutationResult(nextLogement);
       setConfirmingDeleteId(null);
+      trackClassementSimulatorPieceDeleted({
+        pieceType: piece.type_piece,
+        pieceScope: getPieceScope(piece.type_piece),
+        pieceCount: nextLogement.pieces?.length ?? 0,
+      });
       if (editingPieceId === piece.id) {
         resetPiecePanel();
       }
@@ -1400,8 +1573,46 @@ export default function SimulationClassement() {
     setActiveTab('grid');
   }
 
-  function handleResponseSaved(savedResponse: ReponseDto) {
+  function handleResponseSaved(
+    savedResponse: ReponseDto,
+    criterion: GridCriterion,
+    validation: CriterionValidationStatus
+  ) {
     markResultStale({ clearCriterionFilter: false });
+
+    const currentGrille = simulation?.grille;
+    const responseAnalyticsPayload =
+      currentGrille && savedResponse.num_critere !== undefined
+        ? (() => {
+            const currentResponses = currentGrille.reponses ?? [];
+            const responseIndex = currentResponses.findIndex(
+              (response) => response.num_critere === savedResponse.num_critere
+            );
+            const nextResponses =
+              responseIndex >= 0
+                ? currentResponses.map((response, index) =>
+                    index === responseIndex ? savedResponse : response
+                  )
+                : [...currentResponses, savedResponse];
+            const nextProgressSummary = buildGridProgressSummary(
+              gridSummary,
+              nextResponses,
+              currentGrille.categorie_demandee
+            );
+
+            return {
+              criterionNumber: savedResponse.num_critere,
+              criterionStatus:
+                savedResponse.statut_critere ??
+                getCriterionStatusForCategory(criterion, currentGrille.categorie_demandee),
+              validationStatus: savedResponse.statut_validation ?? validation,
+              progressBucket: getGridProgressBucket(nextProgressSummary),
+              remainingCriteriaCount: nextProgressSummary.remainingCount,
+              missingMandatoryCount: nextProgressSummary.missingMandatoryCount,
+            };
+          })()
+        : null;
+
     setSimulation((currentSimulation) => {
       if (!currentSimulation?.grille || savedResponse.num_critere === undefined) {
         return currentSimulation;
@@ -1426,6 +1637,10 @@ export default function SimulationClassement() {
         },
       };
     });
+
+    if (responseAnalyticsPayload) {
+      trackClassementSimulatorGridResponseSaved(responseAnalyticsPayload);
+    }
   }
 
   function updatePieceFormField<K extends keyof PieceFormState>(
@@ -2163,7 +2378,7 @@ export default function SimulationClassement() {
                     isCheckingResult={isCheckingResult}
                     onResponseSaved={handleResponseSaved}
                     onClearCriterionFilter={() => setCriterionFilterNumbers([])}
-                    onCheckResult={() => void runSimulationCheck()}
+                    onCheckResult={handleManualSimulationCheck}
                     onResultReset={() => markResultStale({ clearCriterionFilter: false })}
                   />
                 ) : (
@@ -2194,7 +2409,7 @@ export default function SimulationClassement() {
                       variant="primary"
                       className="mt-5 w-full sm:w-auto"
                       disabled={isCheckingResult}
-                      onClick={() => void runSimulationCheck()}
+                      onClick={handleManualSimulationCheck}
                     >
                       Voir le résultat de ma simulation
                     </Button>
@@ -2213,7 +2428,7 @@ export default function SimulationClassement() {
                       variant="primary"
                       className="mt-5 w-full sm:w-auto"
                       disabled={isCheckingResult}
-                      onClick={() => void runSimulationCheck()}
+                      onClick={handleManualSimulationCheck}
                     >
                       Relancer la simulation
                     </Button>
@@ -2252,7 +2467,7 @@ export default function SimulationClassement() {
                       variant="secondary"
                       className="mt-5 w-full bg-white sm:w-auto"
                       disabled={isCheckingResult}
-                      onClick={() => void runSimulationCheck()}
+                      onClick={handleManualSimulationCheck}
                     >
                       {resultActionLabel}
                     </Button>

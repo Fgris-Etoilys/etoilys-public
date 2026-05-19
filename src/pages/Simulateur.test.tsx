@@ -4,6 +4,27 @@ import { BrowserRouter } from 'react-router-dom';
 import { ToastProvider } from '../components/ui/Toast';
 import Simulateur from './Simulateur';
 
+const analyticsMock = vi.hoisted(() => ({
+  trackClassementSimulatorStarted: vi.fn(),
+  trackClassementSimulatorDeleted: vi.fn(),
+  trackClassementSimulatorResumed: vi.fn(),
+  trackClassementSimulatorStepViewed: vi.fn(),
+  trackCtaClick: vi.fn(),
+}));
+
+vi.mock('../utils/analytics', () => ({
+  normalizeAnalyticsPath: (value: string | null | undefined) => {
+    if (!value) return '/';
+    const pathname = new URL(value, 'https://www.etoilys.fr').pathname;
+    return /^\/simulateur\/[^/]+\/?$/.test(pathname) ? '/simulateur/:simulationId' : pathname;
+  },
+  trackClassementSimulatorStarted: analyticsMock.trackClassementSimulatorStarted,
+  trackClassementSimulatorDeleted: analyticsMock.trackClassementSimulatorDeleted,
+  trackClassementSimulatorResumed: analyticsMock.trackClassementSimulatorResumed,
+  trackClassementSimulatorStepViewed: analyticsMock.trackClassementSimulatorStepViewed,
+  trackCtaClick: analyticsMock.trackCtaClick,
+}));
+
 const createJsonResponse = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -41,6 +62,11 @@ describe('Simulateur public de classement', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    analyticsMock.trackClassementSimulatorStarted.mockClear();
+    analyticsMock.trackClassementSimulatorDeleted.mockClear();
+    analyticsMock.trackClassementSimulatorResumed.mockClear();
+    analyticsMock.trackClassementSimulatorStepViewed.mockClear();
+    analyticsMock.trackCtaClick.mockClear();
   });
 
   it('affiche l’état de chargement des simulations', () => {
@@ -127,6 +153,12 @@ describe('Simulateur public de classement', () => {
       }),
     });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(analyticsMock.trackClassementSimulatorStarted).toHaveBeenCalledWith({
+      requestedCategory: '4*',
+      housingType: 'COLLECTIF',
+      floor: 2,
+      capacity: 6,
+    });
   });
 
   it('affiche un message dédié quand la limite de simulations publiques est atteinte', async () => {
@@ -154,6 +186,7 @@ describe('Simulateur public de classement', () => {
       await screen.findByText(/le nombre maximal de simulations enregistrées sur ce navigateur/i)
     ).toBeInTheDocument();
     expect(window.location.pathname).toBe('/simulateur');
+    expect(analyticsMock.trackClassementSimulatorStarted).not.toHaveBeenCalled();
   });
 
   it('affiche un message dédié quand Cloudflare limite les tentatives', async () => {

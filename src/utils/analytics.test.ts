@@ -8,6 +8,7 @@ import {
   initializeAnalytics,
   normalizeAnalyticsPath,
   rejectAnalyticsConsent,
+  trackClassementSimulatorStarted,
   trackEvent,
   trackPageView,
 } from './analytics';
@@ -199,6 +200,14 @@ describe('analytics', () => {
   it('normalizes paths without query strings or hashes', () => {
     expect(normalizeAnalyticsPath('https://www.etoilys.fr/contact?x=1#section')).toBe('/contact');
     expect(normalizeAnalyticsPath('/demande-classement?utm=test')).toBe('/demande-classement');
+    expect(normalizeAnalyticsPath('/simulateur/c3f43f31-59fd-4b4e-9272-7f1321d8cabc')).toBe(
+      '/simulateur/:simulationId'
+    );
+    expect(
+      normalizeAnalyticsPath(
+        'https://www.etoilys.fr/simulateur/c3f43f31-59fd-4b4e-9272-7f1321d8cabc?utm=test#grid'
+      )
+    ).toBe('/simulateur/:simulationId');
   });
 
   it('sanitizes URL and sensitive properties before sending', () => {
@@ -233,5 +242,29 @@ describe('analytics', () => {
         properties: {},
       })
     ).toBeNull();
+  });
+
+  it('captures classement simulator events with bucketed non-identifying properties', () => {
+    acceptAnalyticsConsent();
+    posthogMock.capture.mockClear();
+
+    trackClassementSimulatorStarted({
+      requestedCategory: '4*',
+      housingType: 'COLLECTIF',
+      floor: 4,
+      capacity: 7,
+    });
+
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      'simulator_started',
+      expect.objectContaining({
+        simulator: 'classement',
+        entry_point: 'new',
+        requested_category: '4*',
+        housing_type: 'COLLECTIF',
+        floor_bucket: '3+',
+        capacity_bucket: '7-10',
+      })
+    );
   });
 });

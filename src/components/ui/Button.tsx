@@ -1,13 +1,15 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, type LinkProps } from 'react-router-dom';
 import { normalizeAnalyticsPath, trackCtaClick } from '../../utils/analytics';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'> {
   children: ReactNode;
   variant?: 'primary' | 'secondary' | 'white' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
+  state?: LinkProps['state'];
   className?: string;
+  onClick?: () => void;
 }
 
 export default function Button({
@@ -15,7 +17,9 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   href,
+  state,
   className = '',
+  onClick,
   ...props
 }: ButtonProps) {
   const baseClasses =
@@ -49,9 +53,11 @@ export default function Button({
     return (
       <Link
         to={href}
+        state={state}
         className={classes}
         onClick={() => {
           trackCtaClick({ ctaId, destinationPath });
+          onClick?.();
         }}
       >
         {children}
@@ -60,7 +66,7 @@ export default function Button({
   }
 
   return (
-    <button className={classes} {...props}>
+    <button className={classes} onClick={onClick} {...props}>
       {children}
     </button>
   );
