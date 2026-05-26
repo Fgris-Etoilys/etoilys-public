@@ -158,10 +158,10 @@ describe('simulatorApi', () => {
       ],
     });
 
-    await expect(getSimulationGridModel()).resolves.toMatchObject({ criteriaCount: 1 });
+    await expect(getSimulationGridModel('3*')).resolves.toMatchObject({ criteriaCount: 1 });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      '/api/public/simulations/modele',
+      '/api/public/simulations/modele?classementDemande=3*',
       expect.objectContaining({
         method: 'GET',
         credentials: 'include',

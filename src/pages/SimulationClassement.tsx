@@ -174,6 +174,10 @@ function createSimulationParametersForm(
   };
 }
 
+function getRequestedGridCategory(value: string | undefined): RequestedCategory | null {
+  return value && isRequestedCategory(value) ? value : null;
+}
+
 function parseCapacity(value: string): number | null {
   const parsedValue = Number(value);
   return Number.isInteger(parsedValue) && parsedValue > 0 ? parsedValue : null;
@@ -672,7 +676,7 @@ function SimulationGridModelState({
   onRetry,
 }: {
   status: GridModelStatus;
-  onRetry: () => void;
+  onRetry: (() => void) | undefined;
 }) {
   if (status === 'loading' || status === 'idle') {
     return (
@@ -688,9 +692,11 @@ function SimulationGridModelState({
       <p className="mb-5 text-sm text-alert-500">
         Impossible de charger la grille de contrôle pour le moment.
       </p>
-      <Button type="button" variant="secondary" onClick={onRetry}>
-        Réessayer
-      </Button>
+      {onRetry ? (
+        <Button type="button" variant="secondary" onClick={onRetry}>
+          Réessayer
+        </Button>
+      ) : null}
     </Card>
   );
 }
@@ -703,6 +709,7 @@ export default function SimulationClassement() {
   const [simulation, setSimulation] = useState<PublicSimulationDto | null>(null);
   const [logement, setLogement] = useState<LogementDto | null>(null);
   const [gridModelStatus, setGridModelStatus] = useState<GridModelStatus>('idle');
+  const [gridModelCategory, setGridModelCategory] = useState<RequestedCategory | null>(null);
   const [gridSummary, setGridSummary] = useState<GridSummary | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('pieces');
   const [piecePanelMode, setPiecePanelMode] = useState<PiecePanelMode>('closed');
@@ -726,6 +733,7 @@ export default function SimulationClassement() {
   const [criterionFilterNumbers, setCriterionFilterNumbers] = useState<number[]>([]);
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const latestParameterSaveRequestIdRef = useRef(0);
+  const latestGridModelRequestIdRef = useRef(0);
   const hasTrackedWorkspaceResumeRef = useRef(false);
   const viewedTabsRef = useRef(new Set<ActiveTab>());
   const hasInitializedProgressTrackingRef = useRef(false);
@@ -734,6 +742,8 @@ export default function SimulationClassement() {
     isSimulationClassementNavigationState(location.state) &&
       location.state.classementSimulatorEntryPoint === 'resume_card'
   );
+  const grille = simulation?.grille;
+  const requestedGridCategory = getRequestedGridCategory(grille?.categorie_demandee);
 
   const loadSimulation = useCallback(async () => {
     if (!simulationId) {
@@ -801,14 +811,23 @@ export default function SimulationClassement() {
     }
   }, [simulationId]);
 
-  const loadGridModel = useCallback(async () => {
+  const loadGridModel = useCallback(async (category: RequestedCategory) => {
+    const requestId = latestGridModelRequestIdRef.current + 1;
+    latestGridModelRequestIdRef.current = requestId;
     setGridModelStatus('loading');
+    setGridModelCategory(category);
 
     try {
-      const nextGridSummary = await getSimulationGridModel();
+      const nextGridSummary = await getSimulationGridModel(category);
+      if (latestGridModelRequestIdRef.current !== requestId) {
+        return;
+      }
       setGridSummary(nextGridSummary);
       setGridModelStatus('success');
     } catch {
+      if (latestGridModelRequestIdRef.current !== requestId) {
+        return;
+      }
       setGridSummary(null);
       setGridModelStatus('error');
     }
@@ -819,10 +838,29 @@ export default function SimulationClassement() {
   }, [loadSimulation]);
 
   useEffect(() => {
-    if (loadStatus === 'success' && gridModelStatus === 'idle') {
-      void loadGridModel();
+    if (loadStatus !== 'success') {
+      return;
     }
-  }, [gridModelStatus, loadGridModel, loadStatus]);
+
+    if (!requestedGridCategory) {
+      setGridSummary(null);
+      setGridModelCategory(null);
+      setGridModelStatus('error');
+      return;
+    }
+
+    const isCurrentCategory = gridModelCategory === requestedGridCategory;
+    if (
+      isCurrentCategory &&
+      (gridModelStatus === 'loading' ||
+        gridModelStatus === 'success' ||
+        gridModelStatus === 'error')
+    ) {
+      return;
+    }
+
+    void loadGridModel(requestedGridCategory);
+  }, [gridModelCategory, gridModelStatus, loadGridModel, loadStatus, requestedGridCategory]);
 
   const pieces = useMemo(() => logement?.pieces ?? [], [logement?.pieces]);
   const interiorPieces = useMemo(
@@ -836,7 +874,6 @@ export default function SimulationClassement() {
   const totalSleepingCapacity = useMemo(() => getTotalSleepingCapacity(pieces), [pieces]);
   const activePieceSupportsSleepingCapacity = canPieceHaveSleepingCapacity(pieceForm.type);
   const activePieceCanHaveExteriorOpening = canPieceHaveExteriorOpening(pieceForm.type);
-  const grille = simulation?.grille;
   const hasSimulationResult = resultState !== null || resultStatus === 'stale';
   const isCheckingResult = resultStatus === 'checking';
   const resultActionLabel = hasSimulationResult
@@ -1189,8 +1226,26 @@ export default function SimulationClassement() {
     void runSimulationCheck();
   }
 
-  async function runSimulationCheck({ parameterRequestId }: { parameterRequestId?: number } = {}) {
+  async function runSimulationCheck({
+    parameterRequestId,
+    requestedCategory,
+  }: {
+    parameterRequestId?: number;
+    requestedCategory?: RequestedCategory;
+  } = {}) {
     if (!simulationId) {
+      return;
+    }
+
+    const activeGridCategory = requestedCategory ?? requestedGridCategory;
+    if (!activeGridCategory) {
+      setGridSummary(null);
+      setGridModelCategory(null);
+      setGridModelStatus('error');
+      setResultStatus('error');
+      setResultErrorMessage(
+        'Le modèle de grille ne peut pas être chargé sans classement demandé valide.'
+      );
       return;
     }
 
@@ -1207,11 +1262,14 @@ export default function SimulationClassement() {
     let didAttemptGridLoad = false;
 
     try {
-      if (gridModelStatus !== 'success') {
+      if (gridModelStatus !== 'success' || gridModelCategory !== activeGridCategory) {
         didAttemptGridLoad = true;
+        const gridRequestId = latestGridModelRequestIdRef.current + 1;
+        latestGridModelRequestIdRef.current = gridRequestId;
         setGridModelStatus('loading');
-        const nextGridSummary = await getSimulationGridModel();
-        if (!isCurrentParameterRequest()) {
+        setGridModelCategory(activeGridCategory);
+        const nextGridSummary = await getSimulationGridModel(activeGridCategory);
+        if (!isCurrentParameterRequest() || latestGridModelRequestIdRef.current !== gridRequestId) {
           return;
         }
         setGridSummary(nextGridSummary);
@@ -1251,6 +1309,7 @@ export default function SimulationClassement() {
       setIsAutoRecalculatingResult(false);
       if (didAttemptGridLoad) {
         setGridSummary(null);
+        setGridModelCategory(activeGridCategory);
         setGridModelStatus('error');
       }
       setResultErrorMessage(
@@ -1307,8 +1366,18 @@ export default function SimulationClassement() {
 
       setLogement(nextLogement);
       if (autoRecalculateResult) {
+        const nextRequestedGridCategory = getRequestedGridCategory(
+          nextSimulation.grille?.categorie_demandee
+        );
+        const simulationCheckOptions: {
+          parameterRequestId: number;
+          requestedCategory?: RequestedCategory;
+        } = { parameterRequestId: requestId };
+        if (nextRequestedGridCategory) {
+          simulationCheckOptions.requestedCategory = nextRequestedGridCategory;
+        }
         showToast('Les paramètres ont été enregistrés.', { type: 'success' });
-        await runSimulationCheck({ parameterRequestId: requestId });
+        await runSimulationCheck(simulationCheckOptions);
         return;
       }
 
@@ -2384,7 +2453,11 @@ export default function SimulationClassement() {
                 ) : (
                   <SimulationGridModelState
                     status={gridModelStatus}
-                    onRetry={() => void loadGridModel()}
+                    onRetry={
+                      requestedGridCategory
+                        ? () => void loadGridModel(requestedGridCategory)
+                        : undefined
+                    }
                   />
                 )}
               </div>

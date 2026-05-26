@@ -431,8 +431,9 @@ export function deletePublicSimulation(id: string): Promise<void> {
   }).then(() => undefined);
 }
 
-export async function getSimulationGridModel(): Promise<GridSummary> {
-  const parsed = await requestSimulatorJson<unknown>('/public/simulations/modele');
+export async function getSimulationGridModel(category: RequestedCategory): Promise<GridSummary> {
+  const query = new URLSearchParams({ classementDemande: category });
+  const parsed = await requestSimulatorJson<unknown>(`/public/simulations/modele?${query}`);
   return parseGridSummary(parsed);
 }
 

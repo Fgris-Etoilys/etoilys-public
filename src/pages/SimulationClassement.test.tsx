@@ -471,6 +471,9 @@ const mockFetchJsonSequence = (responses: Array<{ body: unknown; status?: number
 const getNonModelFetchCalls = (fetchMock: ReturnType<typeof mockFetchJsonSequence>) =>
   fetchMock.mock.calls.filter(([url]) => !String(url).includes('/public/simulations/modele'));
 
+const getModelFetchCalls = (fetchMock: ReturnType<typeof mockFetchJsonSequence>) =>
+  fetchMock.mock.calls.filter(([url]) => String(url).includes('/public/simulations/modele'));
+
 const renderAt = (path: string, state?: unknown) => {
   window.history.pushState(state === undefined ? {} : { usr: state }, 'Test page', path);
   return render(<App />);
@@ -511,6 +514,11 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /ma simulation de classement/i })
     ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(getModelFetchCalls(fetchMock).map(([url]) => String(url))).toContain(
+        '/api/public/simulations/modele?classementDemande=3*'
+      );
+    });
     expect(screen.getByText(/ÉTAPE 1.*PIÈCES DU LOGEMENT/i)).toBeInTheDocument();
     expect(
       screen.getByRole('heading', { name: /renseignez les pièces de votre logement/i })
@@ -662,6 +670,11 @@ describe('SimulationClassement', () => {
     expect(nonModelCalls[3]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
     expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
     expect(requestedCategorySelect).toHaveValue('4*');
+    await waitFor(() => {
+      const modelUrls = getModelFetchCalls(fetchMock).map(([url]) => String(url));
+      expect(modelUrls).toContain('/api/public/simulations/modele?classementDemande=3*');
+      expect(modelUrls).toContain('/api/public/simulations/modele?classementDemande=4*');
+    });
     expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
 
     clickGoToGrid();
@@ -840,6 +853,76 @@ describe('SimulationClassement', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
     expect(scrollToMock).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+  });
+
+  it('recharge le modèle de grille du nouveau classement avant un recalcul automatique', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
+      { body: true },
+      {
+        body: {
+          resultat: true,
+          points_totaux_obligatoires: 180,
+          points_obligatoires_obtenus: 160,
+          points_minimaux_obligatoires: 140,
+          points_obligatoires_atteints: true,
+          points_optionnels_disponibles: 45,
+          points_optionnels_obtenus: 20,
+          points_optionnels_a_atteindre: 155,
+          points_optionnels_atteints: true,
+          criteres_obligatoires_non_valides: [],
+        },
+      },
+      { body: simulationWithUpdatedRequestedCategory },
+      { body: logementWithPiecesResponse },
+      { body: gridModelResponse },
+      { body: true },
+      {
+        body: {
+          resultat: false,
+          points_totaux_obligatoires: 194,
+          points_minimaux_obligatoires: 185,
+          points_obligatoires_obtenus: 120,
+          points_obligatoires_atteints: false,
+          points_obligatoires_a_compenser: 65,
+          points_optionnels_disponibles: 113,
+          points_optionnels_necessaires: 23,
+          points_optionnels_a_atteindre: 208,
+          points_optionnels_obtenus: 10,
+          points_optionnels_atteints: false,
+          criteres_obligatoires_non_valides: [95],
+        },
+      },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    clickGoToGrid();
+    fireEvent.click(
+      await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
+    );
+
+    expect(await screen.findByText(/classement 3 étoiles semble atteint/i)).toBeInTheDocument();
+
+    await expandSimulationParameters();
+    fireEvent.change(screen.getByLabelText(/classement demandé/i), { target: { value: '4*' } });
+
+    await waitFor(() => {
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(8);
+    });
+
+    const allUrls = fetchMock.mock.calls.map(([url]) => String(url));
+    expect(allUrls).toContain('/api/public/simulations/modele?classementDemande=3*');
+    expect(allUrls).toContain('/api/public/simulations/modele?classementDemande=4*');
+    expect(allUrls.lastIndexOf('/api/public/simulations/modele?classementDemande=4*')).toBeLessThan(
+      allUrls.lastIndexOf(`/api/public/simulations/${SIMULATION_ID}/verifier`)
+    );
+    expect(
+      await screen.findByText(/classement 4 étoiles ne semble pas encore atteint/i)
+    ).toBeInTheDocument();
   });
 
   it('marque le résultat existant à recalculer après modification d’un paramètre hors onglet résultat', async () => {
@@ -1736,7 +1819,7 @@ describe('SimulationClassement', () => {
   });
 
   it('permet de réessayer si le modèle de grille ne charge pas', async () => {
-    mockFetchJsonSequence([
+    const fetchMock = mockFetchJsonSequence([
       { body: simulationWithAutomaticSurfaceResponses },
       { body: logementWithPiecesResponse },
       { body: { error: 'Server error' }, status: 500 },
@@ -1757,6 +1840,30 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /complétez la grille de contrôle/i })
     ).toBeInTheDocument();
+    expect(
+      getModelFetchCalls(fetchMock).filter(
+        ([url]) => String(url) === '/api/public/simulations/modele?classementDemande=3*'
+      )
+    ).toHaveLength(2);
+  });
+
+  it('affiche une erreur sans retry si la catégorie demandée est invalide', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationWithUnknownRequestedCategory },
+      { body: logementWithPiecesResponse },
+    ]);
+
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    clickGoToGrid();
+
+    expect(
+      await screen.findByRole('heading', { name: /grille de contrôle indisponible/i })
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/chargement de la grille de contrôle/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /réessayer/i })).not.toBeInTheDocument();
+    expect(getModelFetchCalls(fetchMock)).toHaveLength(0);
   });
 
   it('active la grille de contrôle et permet de revenir aux pièces', async () => {
