@@ -12,6 +12,10 @@ const footerLinks = {
     { name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' },
     { name: 'Simulateur fiscal classement 2026', href: '/simulateur-fiscal-classement' },
   ],
+  zones: [
+    { name: 'Zones d’intervention', href: '/zones-intervention' },
+    { name: 'Classement en Dordogne', href: '/classement-meuble-tourisme-dordogne' },
+  ],
   entreprise: [
     // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
     { name: 'Actualités', href: '/actualites' },
@@ -28,7 +32,7 @@ export default function Footer() {
   return (
     <footer className="border-t border-gray-200 bg-gray-50">
       <div className="container-adaptive pb-16 pt-section">
-        <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-5">
+        <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2 lg:-mt-6">
             <Link to="/" className="mb-4 flex items-center">
               <img
@@ -69,6 +73,24 @@ export default function Footer() {
             <h3 className="mb-4 text-lg font-playfair font-semibold text-gray-900">Services</h3>
             <ul className="space-y-3">
               {footerLinks.services.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    to={link.href}
+                    className="text-sm text-textLight transition-colors duration-200 hover:text-primary-300"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="mb-4 text-lg font-playfair font-semibold text-gray-900">
+              Zones d’intervention
+            </h3>
+            <ul className="space-y-3">
+              {footerLinks.zones.map((link) => (
                 <li key={link.name}>
                   <Link
                     to={link.href}

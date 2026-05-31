@@ -13,6 +13,7 @@ const navigation = [
       { name: 'Les avantages du classement', href: '/les-avantages-du-classement' },
       { name: 'Prérequis au classement', href: '/prerequis-au-classement' },
       { name: 'Procédure', href: '/procedure' },
+      { name: 'Zones d’intervention', href: '/zones-intervention' },
       { name: 'FAQ', href: '/faq' },
     ],
   },

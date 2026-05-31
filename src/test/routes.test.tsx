@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import App from '../App';
 
 const renderAt = (path: string) => {
@@ -85,6 +85,44 @@ describe('routing', () => {
     expect(
       screen.getByRole('heading', { name: /simulateur fiscal classement 2026/i })
     ).toBeInTheDocument();
+  });
+
+  it('renders local service areas hub page', () => {
+    renderAt('/zones-intervention');
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: /où etoilys intervient pour classer votre meublé de tourisme/i,
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('renders Dordogne local landing page', () => {
+    renderAt('/classement-meuble-tourisme-dordogne');
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: /classement de meublé de tourisme en dordogne/i,
+      })
+    ).toBeInTheDocument();
+  });
+
+  it('exposes service areas in classement navigation and footer', () => {
+    renderAt('/');
+
+    fireEvent.click(screen.getByLabelText(/ouvrir ou fermer le menu/i));
+    fireEvent.click(screen.getByRole('button', { name: /le classement menu/i }));
+
+    expect(
+      screen
+        .getAllByRole('link', { name: /zones d’intervention/i })
+        .some((link) => link.getAttribute('href') === '/zones-intervention')
+    ).toBe(true);
+
+    expect(screen.getByRole('link', { name: /classement en dordogne/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-dordogne'
+    );
   });
 
   it('renders not found page for unknown route', () => {

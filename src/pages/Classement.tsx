@@ -186,6 +186,21 @@ export default function Classement() {
         </div>
       </section>
 
+      <section className="py-section bg-primary-100">
+        <div className="container-adaptive">
+          <div className="mx-auto max-w-4xl rounded-card border border-primary-200 bg-white p-8 text-center shadow-card">
+            <h2 className="mb-4 text-h3">Etoilys intervient aussi localement</h2>
+            <p className="mx-auto mb-6 max-w-2xl text-textLight leading-comfortable">
+              Etoilys intervient auprès des propriétaires de meublés de tourisme dans plusieurs
+              secteurs du Sud-Ouest, notamment en Dordogne.
+            </p>
+            <Button href="/zones-intervention" variant="primary">
+              Voir les zones d’intervention
+            </Button>
+          </div>
+        </div>
+      </section>
+
       <section className="py-section bg-gradient-to-br from-primary-300 to-themePrimary-2 text-white">
         <div className="container-adaptive text-center">
           <h2 className="mb-6 text-white">Prêt à faire classer votre meublé ?</h2>

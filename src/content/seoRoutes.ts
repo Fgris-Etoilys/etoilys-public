@@ -60,6 +60,20 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Étapes, délais et documents de la procédure de classement des meublés de tourisme.',
     breadcrumbLabel: 'Procédure',
   },
+  '/zones-intervention': {
+    title: 'Zones d’intervention pour le classement des meublés de tourisme',
+    description:
+      'Découvrez les zones où Etoilys intervient pour le classement des meublés de tourisme, notamment en Dordogne, Gironde, Lot-et-Garonne et secteurs proches.',
+    breadcrumbLabel: 'Zones d’intervention',
+  },
+  '/classement-meuble-tourisme-dordogne': {
+    title: 'Classement meublé de tourisme Dordogne',
+    description:
+      'Etoilys accompagne les propriétaires de gîtes et locations saisonnières en Dordogne pour le classement officiel de leur meublé de tourisme.',
+    breadcrumbLabel: 'Classement en Dordogne',
+    ogImageKey: 'dordogneHero',
+    lcpImageKey: 'dordogneHero',
+  },
   '/simulateur': {
     title: 'Simulateur de classement meublé de tourisme',
     description:
@@ -130,36 +144,35 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'articleTaxeDeSejour2026',
   },
   '/actualites/meuble-classe-non-classe-seuils-micro-bic': {
-    title: "Meublé classé + non classé : comment s'appliquent les seuils micro-BIC ? | Etoilys",
+    title: "Meublé classé + non classé : comment s'appliquent les seuils micro-BIC ?",
     description:
       'Vous avez un meublé classé et un non classé ? Voici comment lire les seuils micro-BIC, les abattements et le passage au réel sans tout mélanger.',
     breadcrumbLabel: 'Seuils micro-BIC classé et non classé',
     ogImageKey: 'articleMeubleClasseNonClasse',
   },
   '/actualites/facturation-electronique-2026-proprietaires-meubles': {
-    title:
-      'Facturation électronique 2026 : les propriétaires de meublés sont-ils concernés ? | Etoilys',
+    title: 'Facturation électronique 2026 : les propriétaires de meublés sont-ils concernés ?',
     description:
       "Réception, émission, e-reporting, calendrier, sanctions : voici ce qui s'applique vraiment aux propriétaires de meublés de tourisme.",
     breadcrumbLabel: 'Facturation électronique 2026',
     ogImageKey: 'articleFacturationElectronique2026',
   },
   '/actualites/dpe-meubles-tourisme-2026-2034': {
-    title: 'DPE des meublés de tourisme : règles 2026 et échéance 2034 | Etoilys',
+    title: 'DPE des meublés de tourisme : règles 2026 et échéance 2034',
     description:
       'Faut-il déjà un DPE pour louer un meublé de tourisme ? Changement d\u2019usage, résidence principale, règle 2034 : voici ce qu\u2019il faut vérifier.',
     breadcrumbLabel: 'DPE des meublés de tourisme',
     ogImageKey: 'articleDpeMeublesTourisme',
   },
   '/actualites/api-meubles-declaration-meuble-tourisme': {
-    title: 'API Meublés : déclaration obligatoire des meublés de tourisme | Etoilys',
+    title: 'API Meublés : déclaration obligatoire des meublés de tourisme',
     description:
       'Tous les propriétaires de meublés de tourisme devront demander un numéro d\u2019enregistrement national via API Meublés. Voici ce qui change à partir du 20 mai 2026.',
     breadcrumbLabel: 'API Meublés : déclaration obligatoire',
     ogImageKey: 'articleApiMeubles',
   },
   '/contact': {
-    title: 'Contact Etoilys',
+    title: 'Contact',
     description:
       'Coordonnées et formulaire de contact pour échanger avec Etoilys sur le classement des meublés de tourisme.',
     breadcrumbLabel: 'Contact',

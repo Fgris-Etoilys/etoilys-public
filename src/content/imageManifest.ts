@@ -13,7 +13,10 @@ export type ImageAssetKey =
   | 'articleMeubleClasseNonClasse'
   | 'articleFacturationElectronique2026'
   | 'articleDpeMeublesTourisme'
-  | 'articleApiMeubles';
+  | 'articleApiMeubles'
+  | 'dordogneHero'
+  | 'dordogneInterior'
+  | 'dordogneLandscape';
 
 export interface ImageManifestEntry {
   width: number;
@@ -158,5 +161,32 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pexels-orneiseppi-32486469-480.webp 480w, /images/optimized/pexels-orneiseppi-32486469-768.webp 768w, /images/optimized/pexels-orneiseppi-32486469-1200.webp 1200w, /images/optimized/pexels-orneiseppi-32486469-1600.webp 1600w, /images/optimized/pexels-orneiseppi-32486469-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/pexels-orneiseppi-32486469-480.avif 480w, /images/optimized/pexels-orneiseppi-32486469-768.avif 768w, /images/optimized/pexels-orneiseppi-32486469-1200.avif 1200w, /images/optimized/pexels-orneiseppi-32486469-1600.avif 1600w, /images/optimized/pexels-orneiseppi-32486469-1920.avif 1920w',
+  },
+  dordogneHero: {
+    width: 5120,
+    height: 2880,
+    src: '/images/optimized/pexels-slimmars-13-197677686-14298615-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/pexels-slimmars-13-197677686-14298615-480.webp 480w, /images/optimized/pexels-slimmars-13-197677686-14298615-768.webp 768w, /images/optimized/pexels-slimmars-13-197677686-14298615-1200.webp 1200w, /images/optimized/pexels-slimmars-13-197677686-14298615-1600.webp 1600w, /images/optimized/pexels-slimmars-13-197677686-14298615-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/pexels-slimmars-13-197677686-14298615-480.avif 480w, /images/optimized/pexels-slimmars-13-197677686-14298615-768.avif 768w, /images/optimized/pexels-slimmars-13-197677686-14298615-1200.avif 1200w, /images/optimized/pexels-slimmars-13-197677686-14298615-1600.avif 1600w, /images/optimized/pexels-slimmars-13-197677686-14298615-1920.avif 1920w',
+  },
+  dordogneInterior: {
+    width: 3158,
+    height: 2228,
+    src: '/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-480.webp 480w, /images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-768.webp 768w, /images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1200.webp 1200w, /images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1600.webp 1600w, /images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-480.avif 480w, /images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-768.avif 768w, /images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1200.avif 1200w, /images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1600.avif 1600w, /images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1920.avif 1920w',
+  },
+  dordogneLandscape: {
+    width: 4000,
+    height: 6000,
+    src: '/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-480.webp 480w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-768.webp 768w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1200.webp 1200w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1600.webp 1600w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-480.avif 480w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-768.avif 768w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1200.avif 1200w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1600.avif 1600w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1920.avif 1920w',
   },
 };
