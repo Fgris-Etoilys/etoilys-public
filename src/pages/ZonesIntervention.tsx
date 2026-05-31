@@ -1,7 +1,8 @@
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
-import carteFranceExpansion from '../assets/seo-images/source/carte-france-expansion-card.webp';
 import { LOCAL_AREAS } from '../content/localServiceAreas';
+
+const carteFranceExpansion = '/images/carte-france-expansion-card.webp';
 
 export default function ZonesIntervention() {
   return (
