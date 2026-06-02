@@ -16,7 +16,10 @@ export type ImageAssetKey =
   | 'articleApiMeubles'
   | 'dordogneHero'
   | 'dordogneInterior'
-  | 'dordogneLandscape';
+  | 'dordogneLandscape'
+  | 'girondeHero'
+  | 'girondeTerritory'
+  | 'girondeCoast';
 
 export interface ImageManifestEntry {
   width: number;
@@ -188,5 +191,32 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-480.webp 480w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-768.webp 768w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1200.webp 1200w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1600.webp 1600w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-480.avif 480w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-768.avif 768w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1200.avif 1200w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1600.avif 1600w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1920.avif 1920w',
+  },
+  girondeHero: {
+    width: 7440,
+    height: 3926,
+    src: '/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-480.webp 480w, /images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-768.webp 768w, /images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1200.webp 1200w, /images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1600.webp 1600w, /images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-480.avif 480w, /images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-768.avif 768w, /images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1200.avif 1200w, /images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1600.avif 1600w, /images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1920.avif 1920w',
+  },
+  girondeTerritory: {
+    width: 3000,
+    height: 4000,
+    src: '/images/optimized/arpad-czapp-J181eozqAd8-unsplash-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/arpad-czapp-J181eozqAd8-unsplash-480.webp 480w, /images/optimized/arpad-czapp-J181eozqAd8-unsplash-768.webp 768w, /images/optimized/arpad-czapp-J181eozqAd8-unsplash-1200.webp 1200w, /images/optimized/arpad-czapp-J181eozqAd8-unsplash-1600.webp 1600w, /images/optimized/arpad-czapp-J181eozqAd8-unsplash-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/arpad-czapp-J181eozqAd8-unsplash-480.avif 480w, /images/optimized/arpad-czapp-J181eozqAd8-unsplash-768.avif 768w, /images/optimized/arpad-czapp-J181eozqAd8-unsplash-1200.avif 1200w, /images/optimized/arpad-czapp-J181eozqAd8-unsplash-1600.avif 1600w, /images/optimized/arpad-czapp-J181eozqAd8-unsplash-1920.avif 1920w',
+  },
+  girondeCoast: {
+    width: 6000,
+    height: 3830,
+    src: '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.webp 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.webp 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.webp 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.webp 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.avif 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.avif 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.avif 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.avif 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.avif 1920w',
   },
 };

@@ -74,6 +74,14 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'dordogneHero',
     lcpImageKey: 'dordogneHero',
   },
+  '/classement-meuble-tourisme-gironde': {
+    title: 'Classement meublé tourisme Gironde',
+    description:
+      'Etoilys accompagne les propriétaires de meublés de tourisme en Gironde : classement officiel, zones d’intervention, procédure, fiscalité, taxe de séjour et demande en ligne.',
+    breadcrumbLabel: 'Classement en Gironde',
+    ogImageKey: 'girondeHero',
+    lcpImageKey: 'girondeHero',
+  },
   '/simulateur': {
     title: 'Simulateur de classement meublé de tourisme',
     description:

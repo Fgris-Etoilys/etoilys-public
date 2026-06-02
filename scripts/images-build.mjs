@@ -9,6 +9,7 @@ const MANIFEST_PATH = path.join(ROOT_DIR, 'src', 'content', 'imageManifest.ts');
 const TARGET_WIDTHS = [480, 768, 1200, 1600, 1920];
 const DEFAULT_WIDTH = 1200;
 const OG_ASPECT_RATIO = 1200 / 630;
+const FORCE_REBUILD = process.argv.includes('--force');
 
 const IMAGE_ASSETS = [
   { key: 'homeHero', fileName: 'home-hero.jpg' },
@@ -53,6 +54,9 @@ const IMAGE_ASSETS = [
   { key: 'dordogneHero', fileName: 'pexels-slimmars-13-197677686-14298615.jpg' },
   { key: 'dordogneInterior', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
   { key: 'dordogneLandscape', fileName: 'le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg' },
+  { key: 'girondeHero', fileName: 'axel-delansorne-fSpupJ0C95E-unsplash.jpg' },
+  { key: 'girondeTerritory', fileName: 'arpad-czapp-J181eozqAd8-unsplash.jpg' },
+  { key: 'girondeCoast', fileName: 'benjamin-esteves-A_JaVydOsRk-unsplash.jpg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {
@@ -104,11 +108,39 @@ async function ensureDirs() {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
 }
 
-async function buildAsset(asset) {
+function getOutputPaths(baseName, widths) {
+  return widths.flatMap((width) =>
+    ['jpg', 'webp', 'avif'].map((format) => path.join(OUTPUT_DIR, `${baseName}-${width}.${format}`))
+  );
+}
+
+async function shouldBuildAsset(outputPaths, sourceMtimeMs) {
+  if (FORCE_REBUILD) {
+    return true;
+  }
+
+  for (const outputPath of outputPaths) {
+    try {
+      const outputStats = await fs.stat(outputPath);
+      if (outputStats.mtimeMs < sourceMtimeMs) {
+        return true;
+      }
+    } catch (error) {
+      if (error?.code === 'ENOENT') {
+        return true;
+      }
+      throw error;
+    }
+  }
+
+  return false;
+}
+
+async function createAssetPlan(asset) {
   const sourcePath = path.join(SOURCE_DIR, asset.fileName);
   const baseName = asset.outputName ?? asset.fileName.replace(/\.[a-zA-Z0-9]+$/, '');
-  const sourceBuffer = await fs.readFile(sourcePath);
-  const metadata = await sharp(sourceBuffer).metadata();
+  const sourceStats = await fs.stat(sourcePath);
+  const metadata = await sharp(sourcePath).metadata();
 
   if (!metadata.width || !metadata.height) {
     throw new Error(`Unable to read dimensions for ${asset.fileName}`);
@@ -120,6 +152,24 @@ async function buildAsset(asset) {
   const outputHeight = asset.ogComposition
     ? Math.round(defaultWidth / OG_ASPECT_RATIO)
     : metadata.height;
+  const outputPaths = getOutputPaths(baseName, widths);
+  const shouldBuild = await shouldBuildAsset(outputPaths, sourceStats.mtimeMs);
+
+  return {
+    asset,
+    baseName,
+    defaultWidth,
+    metadata,
+    outputHeight,
+    shouldBuild,
+    sourcePath,
+    widths,
+  };
+}
+
+async function buildAsset(plan) {
+  const { asset, baseName, metadata, sourcePath, widths } = plan;
+  const sourceBuffer = await fs.readFile(sourcePath);
 
   for (const width of widths) {
     const resizedHeight = asset.ogComposition
@@ -162,6 +212,10 @@ async function buildAsset(asset) {
       .avif({ quality: 65 })
       .toFile(path.join(OUTPUT_DIR, `${baseName}-${width}.avif`));
   }
+}
+
+function buildManifestEntry(plan) {
+  const { asset, baseName, defaultWidth, metadata, outputHeight, widths } = plan;
 
   return {
     key: asset.key,
@@ -206,16 +260,26 @@ ${recordEntries}
 async function main() {
   await ensureDirs();
   const entries = [];
+  let builtCount = 0;
+  let skippedCount = 0;
 
   for (const asset of IMAGE_ASSETS) {
-    const entry = await buildAsset(asset);
-    entries.push(entry);
+    const plan = await createAssetPlan(asset);
+    if (plan.shouldBuild) {
+      await buildAsset(plan);
+      builtCount += 1;
+    } else {
+      skippedCount += 1;
+    }
+    entries.push(buildManifestEntry(plan));
   }
 
   const manifest = buildManifest(entries);
   await fs.writeFile(MANIFEST_PATH, manifest, 'utf8');
 
-  console.log(`Built ${entries.length} SEO image assets.`);
+  console.log(
+    `Built ${builtCount} SEO image assets. Skipped ${skippedCount} unchanged assets.`
+  );
 }
 
 main().catch((error) => {

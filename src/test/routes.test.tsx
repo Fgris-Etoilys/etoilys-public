@@ -107,6 +107,16 @@ describe('routing', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders Gironde local landing page', () => {
+    renderAt('/classement-meuble-tourisme-gironde');
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: /classement de meublé de tourisme en gironde/i,
+      })
+    ).toBeInTheDocument();
+  });
+
   it('exposes service areas in classement navigation and footer', () => {
     renderAt('/');
 
@@ -122,6 +132,11 @@ describe('routing', () => {
     expect(screen.getByRole('link', { name: /classement en dordogne/i })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-dordogne'
+    );
+
+    expect(screen.getByRole('link', { name: /classement en gironde/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-gironde'
     );
   });
 

@@ -62,7 +62,7 @@ export default function ZonesIntervention() {
                   <div className="mt-auto">
                     {area.href ? (
                       <Button href={area.href} variant="primary">
-                        Consulter la page Dordogne
+                        Consulter la page {area.name}
                       </Button>
                     ) : (
                       <Button href="/demande-classement" variant="secondary">

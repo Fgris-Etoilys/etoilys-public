@@ -15,6 +15,7 @@ const footerLinks = {
   zones: [
     { name: 'Zones d’intervention', href: '/zones-intervention' },
     { name: 'Classement en Dordogne', href: '/classement-meuble-tourisme-dordogne' },
+    { name: 'Classement en Gironde', href: '/classement-meuble-tourisme-gironde' },
   ],
   entreprise: [
     // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
