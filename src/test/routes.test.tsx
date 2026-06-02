@@ -117,6 +117,16 @@ describe('routing', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders Lot-et-Garonne local landing page', () => {
+    renderAt('/classement-meuble-tourisme-lot-et-garonne');
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: /classement de meublé de tourisme dans le lot-et-garonne/i,
+      })
+    ).toBeInTheDocument();
+  });
+
   it('exposes service areas in classement navigation and footer', () => {
     renderAt('/');
 
@@ -137,6 +147,11 @@ describe('routing', () => {
     expect(screen.getByRole('link', { name: /classement en gironde/i })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-gironde'
+    );
+
+    expect(screen.getByRole('link', { name: /classement en lot-et-garonne/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-lot-et-garonne'
     );
   });
 

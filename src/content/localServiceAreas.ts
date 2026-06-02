@@ -51,9 +51,10 @@ export const LOCAL_AREAS: LocalArea[] = [
   },
   {
     name: 'Lot-et-Garonne',
-    status: 'comingSoon',
+    href: '/classement-meuble-tourisme-lot-et-garonne',
+    status: 'available',
     description:
-      'Etoilys peut étudier les demandes de classement en Lot-et-Garonne selon la localisation du logement et l’organisation des tournées.',
+      'Classement de meublés de tourisme autour d’Agen, Villeneuve-sur-Lot, Marmande et des secteurs proches.',
   },
 ];
 
@@ -275,6 +276,143 @@ export const GIRONDE_SOURCES: LocalSource[] = [
   {
     label: 'Grand Saint-Émilionnais — Taxe de séjour',
     href: 'https://grandsaintemilionnais.taxesejour.fr/',
+  },
+];
+
+export const LOT_ET_GARONNE_TOURISM_ROWS: LocalTableRow[] = [
+  { key: 'meubles', label: 'Meublés dans le Lot-et-Garonne en 2025', value: '1 210' },
+  { key: 'lits-meubles', label: 'Lits en meublés en 2025', value: '7 325' },
+  {
+    key: 'meubles-classes',
+    label: 'Part des meublés classés',
+    value: '51,9 %',
+  },
+  {
+    key: 'nuits-reservees',
+    label: 'Évolution des nuits réservées en 2024',
+    value: '+10,2 %',
+  },
+  { key: 'sejour-moyen', label: 'Durée moyenne de séjour', value: '3,62 jours' },
+];
+
+export const LOT_ET_GARONNE_PRIORITY_SECTORS = [
+  'Agen',
+  'Villeneuve-sur-Lot',
+  'Marmande',
+  'Casteljaloux',
+  'Fumel',
+  'Tonneins',
+  'Sainte-Livrade-sur-Lot',
+  'Le Passage',
+  'Aiguillon',
+  'Lauzun',
+  'Castillonès',
+  'Villeréal',
+  'Cancon',
+  'Damazan',
+  'Monflanquin',
+  'Penne-d’Agenais',
+  'Pujols',
+  'Clairac',
+  'Duras',
+];
+
+export const LOT_ET_GARONNE_PROCEDURE_STEPS: LocalProcedureStep[] = [
+  {
+    number: 1,
+    title: 'Vous déposez une demande en ligne',
+    description:
+      'Vous indiquez les informations principales : logement, adresse, capacité, situation, coordonnées.',
+  },
+  {
+    number: 2,
+    title: 'Un inspecteur reprend contact avec vous',
+    description:
+      'L’objectif est de vérifier le périmètre, la catégorie visée, les délais et les modalités d’intervention.',
+  },
+  {
+    number: 3,
+    title: 'Votre logement est évalué selon la grille officielle',
+    description:
+      'L’inspecteur se déplace dans votre logement et effectue la visite de contrôle avec vous.',
+  },
+  {
+    number: 4,
+    title: 'Vous ajustez votre demande si nécessaire',
+    description:
+      'À l’issue de la visite, Etoilys vous indique si la catégorie demandée semble atteignable et, si besoin, les points à corriger ou à ajuster.',
+  },
+  {
+    number: 5,
+    title: 'Vous recevez les documents de classement',
+    description:
+      'Après la visite, vous recevez le rapport de contrôle, la grille complétée et la proposition de décision de classement.',
+  },
+  {
+    number: 6,
+    title: 'Le classement est valable 5 ans',
+    description:
+      'Une fois acquis, le classement est valable 5 ans. Vous pouvez ensuite l’utiliser dans vos démarches, vos annonces et vos échanges avec la collectivité.',
+  },
+];
+
+export const LOT_ET_GARONNE_FAQ: LocalFaqItem[] = [
+  {
+    question: 'Etoilys intervient-il à Agen, Villeneuve-sur-Lot ou Marmande ?',
+    answer:
+      'Oui, Etoilys peut étudier les demandes de classement dans le Lot-et-Garonne, notamment autour d’Agen, Villeneuve-sur-Lot, Marmande, Casteljaloux, Lauzun, Castillonès, Villeréal, Cancon, Damazan et des secteurs proches. Les modalités exactes d’intervention sont confirmées après réception de votre demande.',
+  },
+  {
+    question:
+      'Le classement est-il obligatoire pour louer un meublé de tourisme dans le Lot-et-Garonne ?',
+    answer:
+      'Non, le classement officiel reste une démarche volontaire. En revanche, d’autres obligations peuvent s’appliquer, comme la déclaration en mairie, la taxe de séjour ou certaines règles locales.',
+  },
+  {
+    question: 'Combien de temps le classement est-il valable ?',
+    answer: 'Le classement d’un meublé de tourisme est valable 5 ans.',
+  },
+  {
+    question: 'Le classement remplace-t-il la déclaration en mairie ?',
+    answer:
+      'Non. Le classement et la déclaration en mairie sont deux démarches différentes. Un meublé classé peut toujours devoir être déclaré selon les règles applicables dans la commune.',
+  },
+  {
+    question: 'Le classement peut-il avoir un intérêt fiscal ?',
+    answer:
+      'Oui, pour les propriétaires relevant du micro-BIC, le classement peut créer une différence importante entre meublé classé et non classé. La situation fiscale doit toutefois être vérifiée selon le cas du propriétaire.',
+  },
+  {
+    question: 'Combien coûte une visite de classement dans le Lot-et-Garonne ?',
+    answer:
+      'Etoilys confirme les modalités d’intervention et le tarif applicable après réception de la demande. Aucun tarif fixe n’est affiché publiquement sur cette page.',
+  },
+];
+
+export const LOT_ET_GARONNE_SOURCES: LocalSource[] = [
+  {
+    label: 'Tourisme Lot-et-Garonne — Mémento du Tourisme en Lot-et-Garonne 2025',
+    href: 'https://pro.tourisme-lotetgaronne.com/wp-content/uploads/2025/06/TourismeLotetGaronne_ChiffresCles2025.pdf',
+  },
+  {
+    label: 'ADRT Lot-et-Garonne — Classement des meublés de tourisme',
+    href: 'https://pro.tourisme-lotetgaronne.com/accompagnement/classement-2/classement-des-meubles-de-tourisme/',
+  },
+  {
+    label: 'Atout France — Classement des meublés de tourisme',
+    href: 'https://www.atout-france.fr/fr/classement/meuble-de-tourisme',
+  },
+  {
+    label: 'Direction générale des Entreprises — Les meublés de tourisme',
+    href: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme',
+  },
+  {
+    label: 'Service-Public — Déclaration en mairie des meublés de tourisme',
+    href: 'https://www.service-public.fr/particuliers/vosdroits/R14321',
+  },
+  {
+    label: 'Service-Public Entreprendre — Taxe de séjour touristique',
+    href: 'https://entreprendre.service-public.gouv.fr/vosdroits/F31635',
   },
 ];
 

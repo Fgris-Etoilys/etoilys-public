@@ -82,6 +82,14 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'girondeHero',
     lcpImageKey: 'girondeHero',
   },
+  '/classement-meuble-tourisme-lot-et-garonne': {
+    title: 'Classement meublé de tourisme Lot-et-Garonne',
+    description:
+      'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot-et-Garonne pour leur classement officiel.',
+    breadcrumbLabel: 'Classement en Lot-et-Garonne',
+    ogImageKey: 'lotEtGaronneHero',
+    lcpImageKey: 'lotEtGaronneHero',
+  },
   '/simulateur': {
     title: 'Simulateur de classement meublé de tourisme',
     description:

@@ -8,6 +8,7 @@ import Procedure from './pages/Procedure';
 import ZonesIntervention from './pages/ZonesIntervention';
 import ClassementDordogne from './pages/locales/ClassementDordogne';
 import ClassementGironde from './pages/locales/ClassementGironde';
+import ClassementLotEtGaronne from './pages/locales/ClassementLotEtGaronne';
 import SimulateurTaxeSejour from './pages/SimulateurTaxeSejour';
 import SimulateurFiscalClassement from './pages/SimulateurFiscalClassement';
 import Simulateur from './pages/Simulateur';
@@ -43,6 +44,10 @@ export default function AppRoutes() {
         <Route path="zones-intervention" element={<ZonesIntervention />} />
         <Route path="classement-meuble-tourisme-dordogne" element={<ClassementDordogne />} />
         <Route path="classement-meuble-tourisme-gironde" element={<ClassementGironde />} />
+        <Route
+          path="classement-meuble-tourisme-lot-et-garonne"
+          element={<ClassementLotEtGaronne />}
+        />
         <Route path="simulateur-taxe-sejour" element={<SimulateurTaxeSejour />} />
         <Route path="simulateur-fiscal-classement" element={<SimulateurFiscalClassement />} />
         <Route path="simulateur" element={<Simulateur />} />

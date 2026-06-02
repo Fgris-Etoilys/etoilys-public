@@ -57,6 +57,9 @@ const IMAGE_ASSETS = [
   { key: 'girondeHero', fileName: 'axel-delansorne-fSpupJ0C95E-unsplash.jpg' },
   { key: 'girondeTerritory', fileName: 'arpad-czapp-J181eozqAd8-unsplash.jpg' },
   { key: 'girondeCoast', fileName: 'benjamin-esteves-A_JaVydOsRk-unsplash.jpg' },
+  { key: 'lotEtGaronneHero', fileName: 'pexels-tyvalloire-35860040.jpg' },
+  { key: 'lotEtGaronneTerritory', fileName: 'pexels-d-goth-37724280.jpg' },
+  { key: 'lotEtGaronneCanal', fileName: 'Agen_-_Pont-canal_-_01.jpg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {
