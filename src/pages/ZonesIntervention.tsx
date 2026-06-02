@@ -25,9 +25,6 @@ export default function ZonesIntervention() {
               <Button href="/demande-classement" variant="white" size="lg">
                 Faire une demande de classement
               </Button>
-              <Button href="/classement-meuble-tourisme-dordogne" variant="ghost" size="lg">
-                Consulter la page Dordogne
-              </Button>
             </div>
           </div>
         </div>

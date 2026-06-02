@@ -67,7 +67,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Zones d’intervention',
   },
   '/classement-meuble-tourisme-dordogne': {
-    title: 'Classement meublé de tourisme Dordogne',
+    title: 'Classement gîte, Airbnb et meublé de tourisme en Dordogne',
     description:
       'Etoilys accompagne les propriétaires de gîtes et locations saisonnières en Dordogne pour le classement officiel de leur meublé de tourisme.',
     breadcrumbLabel: 'Classement en Dordogne',
@@ -75,7 +75,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     lcpImageKey: 'dordogneHero',
   },
   '/classement-meuble-tourisme-gironde': {
-    title: 'Classement meublé tourisme Gironde',
+    title: 'Classement gîte, Airbnb et meublé de tourisme en Gironde',
     description:
       'Etoilys accompagne les propriétaires de meublés de tourisme en Gironde : classement officiel, zones d’intervention, procédure, fiscalité, taxe de séjour et demande en ligne.',
     breadcrumbLabel: 'Classement en Gironde',
@@ -83,7 +83,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     lcpImageKey: 'girondeHero',
   },
   '/classement-meuble-tourisme-lot-et-garonne': {
-    title: 'Classement meublé de tourisme Lot-et-Garonne',
+    title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot-et-Garonne',
     description:
       'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot-et-Garonne pour leur classement officiel.',
     breadcrumbLabel: 'Classement en Lot-et-Garonne',

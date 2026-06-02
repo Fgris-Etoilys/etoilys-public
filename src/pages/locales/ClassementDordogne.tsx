@@ -59,7 +59,9 @@ export default function ClassementDordogne() {
             <p className="mb-4 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">
               Dordogne
             </p>
-            <h1 className="mb-6 text-white">Classement de meublé de tourisme en Dordogne</h1>
+            <h1 className="mb-6 text-white">
+              Classement de gîte et meublé de tourisme en Dordogne
+            </h1>
             <div className="max-w-3xl space-y-5 text-xl leading-comfortable text-white/90">
               <p>
                 Vous louez un gîte, une maison de vacances, un appartement ou une location

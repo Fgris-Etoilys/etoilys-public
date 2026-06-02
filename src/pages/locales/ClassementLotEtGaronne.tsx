@@ -60,7 +60,7 @@ export default function ClassementLotEtGaronne() {
               Lot-et-Garonne
             </p>
             <h1 className="mb-6 text-white">
-              Classement de meublé de tourisme dans le Lot-et-Garonne
+              Classement de gîte et meublé de tourisme dans le Lot-et-Garonne
             </h1>
             <div className="max-w-3xl space-y-5 text-xl leading-comfortable text-white/90">
               <p>

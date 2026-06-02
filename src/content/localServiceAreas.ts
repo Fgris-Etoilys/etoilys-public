@@ -189,6 +189,26 @@ export const GIRONDE_PROCEDURE_STEPS: LocalProcedureStep[] = [
 
 export const GIRONDE_FAQ: LocalFaqItem[] = [
   {
+    question: 'Quels logements peuvent être concernés ?',
+    answer:
+      'En Gironde, le classement peut concerner un appartement à Bordeaux, une maison de vacances sur le bassin d’Arcachon, un gîte viticole autour de Saint-Émilion, un studio, une résidence secondaire ou une location saisonnière proche du littoral. Le classement porte sur le logement, sous la catégorie officielle de meublé de tourisme.',
+  },
+  {
+    question: 'Peut-on faire classer un gîte en Gironde ?',
+    answer:
+      'Oui. Un gîte en Gironde peut faire l’objet d’une demande de classement, par exemple dans un secteur viticole, dans l’Entre-deux-Mers, autour de Saint-Émilion ou dans un territoire rural du département. Le mot « gîte » décrit l’usage courant du logement ; la procédure officielle reste celle du meublé de tourisme.',
+  },
+  {
+    question: 'Peut-on faire classer un logement Airbnb en Gironde ?',
+    answer:
+      'Oui. Un logement proposé sur Airbnb peut être classé si le bien lui-même entre dans le champ des meublés de tourisme. Pour les logements diffusés aussi sur Booking ou Abritel, le principe est le même : le classement s’applique au logement visité, pas à la plateforme.',
+  },
+  {
+    question: 'Un appartement ou un studio en Gironde peut-il être classé ?',
+    answer:
+      'Oui. Un appartement bordelais, un studio, un logement de vacances sur le littoral ou une résidence secondaire près du bassin d’Arcachon peuvent être classés si les critères de la grille nationale sont respectés. La localisation ne remplace pas l’évaluation du logement lui-même.',
+  },
+  {
     question: 'Le classement d’un meublé de tourisme est-il obligatoire en Gironde ?',
     answer:
       'Non. Le classement est une démarche facultative. Un logement peut être un meublé de tourisme même s’il n’est pas classé. En revanche, le classement peut présenter un intérêt pour la lisibilité du logement, la taxe de séjour et la fiscalité micro-BIC selon la situation du propriétaire.',
@@ -358,6 +378,26 @@ export const LOT_ET_GARONNE_PROCEDURE_STEPS: LocalProcedureStep[] = [
 
 export const LOT_ET_GARONNE_FAQ: LocalFaqItem[] = [
   {
+    question: 'Quels logements peuvent être concernés ?',
+    answer:
+      'Dans le Lot-et-Garonne, le classement peut concerner un gîte près d’une bastide, une maison familiale dans une vallée, un appartement à Agen, une location saisonnière à Marmande, un logement autour de Villeneuve-sur-Lot ou une résidence secondaire louée à la saison. Le terme officiel reste meublé de tourisme.',
+  },
+  {
+    question: 'Peut-on faire classer un gîte dans le Lot-et-Garonne ?',
+    answer:
+      'Oui. Un gîte situé dans le Lot-et-Garonne peut faire l’objet d’une demande de classement s’il est meublé et proposé à une clientèle de passage. Cette situation peut concerner des hébergements proches des bastides, des vallées, de Nérac ou des principaux secteurs touristiques du département.',
+  },
+  {
+    question: 'Peut-on faire classer un logement Airbnb dans le Lot-et-Garonne ?',
+    answer:
+      'Oui. Un logement loué sur Airbnb peut être classé si le logement répond au cadre du meublé de tourisme. Une diffusion sur Booking ou Abritel n’empêche pas non plus la démarche : l’évaluation concerne le bien, ses équipements, sa capacité et son niveau de confort.',
+  },
+  {
+    question: 'Un appartement ou un studio dans le Lot-et-Garonne peut-il être classé ?',
+    answer:
+      'Oui. Un appartement à Agen, un studio à Marmande, un logement à Villeneuve-sur-Lot ou une petite location saisonnière dans une commune rurale peuvent être classés si les critères applicables sont réunis. La grille nationale s’adapte à la typologie du logement évalué.',
+  },
+  {
     question: 'Etoilys intervient-il à Agen, Villeneuve-sur-Lot ou Marmande ?',
     answer:
       'Oui, Etoilys peut étudier les demandes de classement dans le Lot-et-Garonne, notamment autour d’Agen, Villeneuve-sur-Lot, Marmande, Casteljaloux, Lauzun, Castillonès, Villeréal, Cancon, Damazan et des secteurs proches. Les modalités exactes d’intervention sont confirmées après réception de votre demande.',
@@ -514,6 +554,26 @@ export const DORDOGNE_PROCEDURE_STEPS: LocalProcedureStep[] = [
 ];
 
 export const DORDOGNE_FAQ: LocalFaqItem[] = [
+  {
+    question: 'Quels logements peuvent être concernés ?',
+    answer:
+      'En Dordogne, le classement peut concerner des logements très variés : gîte rural, maison de vacances en Périgord, appartement à Bergerac, logement familial près de Sarlat ou résidence secondaire louée à la saison. Le nom utilisé dans l’annonce n’est pas déterminant : la procédure officielle porte sur le logement en tant que meublé de tourisme.',
+  },
+  {
+    question: 'Peut-on faire classer un gîte en Dordogne ?',
+    answer:
+      'Oui. Un gîte situé en Dordogne peut faire l’objet d’une demande de classement s’il correspond à un logement meublé proposé à une clientèle de passage. Le terme « gîte » est très courant en Périgord, mais le classement officiel reste celui des meublés de tourisme.',
+  },
+  {
+    question: 'Peut-on faire classer un logement Airbnb en Dordogne ?',
+    answer:
+      'Oui. Un logement diffusé sur Airbnb peut être classé si le logement lui-même répond au cadre du meublé de tourisme. La même logique vaut pour une annonce publiée sur Booking ou Abritel : la plateforme ne change pas la nature de la visite de classement.',
+  },
+  {
+    question: 'Un appartement ou un studio en Dordogne peut-il être classé ?',
+    answer:
+      'Oui. Un appartement à Bergerac, un studio, une petite maison de vacances ou un logement proche de Sarlat peuvent être classés si les critères applicables sont réunis. La visite tient compte de la configuration réelle du logement, de ses équipements et de sa capacité.',
+  },
   {
     question: 'Le classement d’un meublé de tourisme est-il obligatoire en Dordogne ?',
     answer:
