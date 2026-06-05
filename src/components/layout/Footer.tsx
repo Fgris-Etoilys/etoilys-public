@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, Phone, MapPin, Star } from 'lucide-react';
 import CookiePreferencesButton from '../ui/CookiePreferencesButton';
+import footerBrandBg from '../../assets/brand/footer-brand-bg.png';
 
 const footerLinks = {
   services: [
@@ -36,21 +37,42 @@ export default function Footer() {
       <div className="container-adaptive pb-16 pt-section">
         <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-6">
           <div className="lg:col-span-2 lg:-mt-6">
-            <Link to="/" className="mb-4 flex items-center">
+            <div className="relative mb-6 overflow-hidden rounded-card bg-primary-100/15 px-5 py-6 sm:px-6">
               <img
-                src="/Logo complet - site web copy.svg"
-                alt="Etoilys"
-                width={1025}
-                height={576}
+                src={footerBrandBg}
+                alt=""
+                aria-hidden="true"
                 loading="lazy"
                 decoding="async"
-                className="h-16 w-auto"
+                className="absolute inset-0 h-full w-full object-cover object-left-bottom opacity-85"
               />
-            </Link>
-            <p className="mb-6 leading-comfortable text-textLight">
-              Spécialiste du classement des meublés de tourisme. Etoilys intervient dans le cadre de
-              la procédure officielle de classement.
-            </p>
+              <div
+                className="absolute inset-0 bg-gradient-to-r from-primary-100/20 via-gray-50/55 to-primary-100/25"
+                aria-hidden="true"
+              />
+              <div className="relative mx-auto flex max-w-[20rem] flex-col items-center text-center">
+                <Link to="/" className="mb-1.5 flex items-center">
+                  <img
+                    src="/Logo complet - site web copy.svg"
+                    alt="Etoilys"
+                    width={1025}
+                    height={576}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-16 w-auto"
+                  />
+                </Link>
+                <p className="mb-2 font-playfair text-2xl font-semibold leading-snug text-themePrimary-1">
+                  <span className="block">Classement de meublés</span>
+                  <span className="block">de tourisme</span>
+                </p>
+                <div className="flex items-center gap-1.5 text-primary-300/70" aria-hidden="true">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <Star key={index} className="h-3.5 w-3.5 stroke-[1.5]" />
+                  ))}
+                </div>
+              </div>
+            </div>
             <div className="space-y-3 text-sm text-textLight">
               <div className="flex items-center gap-2">
                 <Phone className="h-5 w-5 flex-shrink-0 text-primary-300" />
