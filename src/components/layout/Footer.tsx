@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Star } from 'lucide-react';
 import CookiePreferencesButton from '../ui/CookiePreferencesButton';
-import footerBrandBg from '../../assets/brand/footer-brand-bg.png';
+
+const footerBrandBg = '/images/brand/footer-brand-bg.png';
 
 const footerLinks = {
   services: [
