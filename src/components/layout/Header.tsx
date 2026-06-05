@@ -151,7 +151,7 @@ export default function Header() {
                 height={576}
                 loading="eager"
                 decoding="async"
-                className="h-14 w-auto origin-left scale-[1.06] md:h-14 xl:h-16"
+                className="h-14 w-auto origin-left scale-110 md:h-14 xl:h-16"
               />
             </Link>
 

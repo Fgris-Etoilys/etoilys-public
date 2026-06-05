@@ -34,8 +34,8 @@ export interface ImageManifestEntry {
 
 export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
   homeHero: {
-    width: 1920,
-    height: 1080,
+    width: 8806,
+    height: 3257,
     src: '/images/optimized/home-hero-1200.jpg',
     srcSetWebp:
       '/images/optimized/home-hero-480.webp 480w, /images/optimized/home-hero-768.webp 768w, /images/optimized/home-hero-1200.webp 1200w, /images/optimized/home-hero-1600.webp 1600w, /images/optimized/home-hero-1920.webp 1920w',
@@ -223,13 +223,13 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.avif 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.avif 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.avif 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.avif 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.avif 1920w',
   },
   lotEtGaronneHero: {
-    width: 5472,
-    height: 3648,
-    src: '/images/optimized/pexels-tyvalloire-35860040-1200.jpg',
+    width: 3888,
+    height: 2593,
+    src: '/images/optimized/AdobeStock_1364523535-1200.jpg',
     srcSetWebp:
-      '/images/optimized/pexels-tyvalloire-35860040-480.webp 480w, /images/optimized/pexels-tyvalloire-35860040-768.webp 768w, /images/optimized/pexels-tyvalloire-35860040-1200.webp 1200w, /images/optimized/pexels-tyvalloire-35860040-1600.webp 1600w, /images/optimized/pexels-tyvalloire-35860040-1920.webp 1920w',
+      '/images/optimized/AdobeStock_1364523535-480.webp 480w, /images/optimized/AdobeStock_1364523535-768.webp 768w, /images/optimized/AdobeStock_1364523535-1200.webp 1200w, /images/optimized/AdobeStock_1364523535-1600.webp 1600w, /images/optimized/AdobeStock_1364523535-1920.webp 1920w',
     srcSetAvif:
-      '/images/optimized/pexels-tyvalloire-35860040-480.avif 480w, /images/optimized/pexels-tyvalloire-35860040-768.avif 768w, /images/optimized/pexels-tyvalloire-35860040-1200.avif 1200w, /images/optimized/pexels-tyvalloire-35860040-1600.avif 1600w, /images/optimized/pexels-tyvalloire-35860040-1920.avif 1920w',
+      '/images/optimized/AdobeStock_1364523535-480.avif 480w, /images/optimized/AdobeStock_1364523535-768.avif 768w, /images/optimized/AdobeStock_1364523535-1200.avif 1200w, /images/optimized/AdobeStock_1364523535-1600.avif 1600w, /images/optimized/AdobeStock_1364523535-1920.avif 1920w',
   },
   lotEtGaronneTerritory: {
     width: 3456,
@@ -241,12 +241,12 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pexels-d-goth-37724280-480.avif 480w, /images/optimized/pexels-d-goth-37724280-768.avif 768w, /images/optimized/pexels-d-goth-37724280-1200.avif 1200w, /images/optimized/pexels-d-goth-37724280-1600.avif 1600w, /images/optimized/pexels-d-goth-37724280-1920.avif 1920w',
   },
   lotEtGaronneCanal: {
-    width: 3840,
-    height: 2075,
-    src: '/images/optimized/Agen_-_Pont-canal_-_01-1200.jpg',
+    width: 4000,
+    height: 2250,
+    src: '/images/optimized/AdobeStock_919223785-1200.jpg',
     srcSetWebp:
-      '/images/optimized/Agen_-_Pont-canal_-_01-480.webp 480w, /images/optimized/Agen_-_Pont-canal_-_01-768.webp 768w, /images/optimized/Agen_-_Pont-canal_-_01-1200.webp 1200w, /images/optimized/Agen_-_Pont-canal_-_01-1600.webp 1600w, /images/optimized/Agen_-_Pont-canal_-_01-1920.webp 1920w',
+      '/images/optimized/AdobeStock_919223785-480.webp 480w, /images/optimized/AdobeStock_919223785-768.webp 768w, /images/optimized/AdobeStock_919223785-1200.webp 1200w, /images/optimized/AdobeStock_919223785-1600.webp 1600w, /images/optimized/AdobeStock_919223785-1920.webp 1920w',
     srcSetAvif:
-      '/images/optimized/Agen_-_Pont-canal_-_01-480.avif 480w, /images/optimized/Agen_-_Pont-canal_-_01-768.avif 768w, /images/optimized/Agen_-_Pont-canal_-_01-1200.avif 1200w, /images/optimized/Agen_-_Pont-canal_-_01-1600.avif 1600w, /images/optimized/Agen_-_Pont-canal_-_01-1920.avif 1920w',
+      '/images/optimized/AdobeStock_919223785-480.avif 480w, /images/optimized/AdobeStock_919223785-768.avif 768w, /images/optimized/AdobeStock_919223785-1200.avif 1200w, /images/optimized/AdobeStock_919223785-1600.avif 1600w, /images/optimized/AdobeStock_919223785-1920.avif 1920w',
   },
 };

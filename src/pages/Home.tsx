@@ -54,7 +54,7 @@ export default function Home() {
         <div className="absolute inset-0">
           <SmartImage
             assetKey="homeHero"
-            alt="Facade d'un meuble de tourisme"
+            alt="Terrasse avec piscine d'un meublé de tourisme"
             priority
             sizes="100vw"
             className="h-full w-full object-cover"

@@ -12,7 +12,7 @@ const OG_ASPECT_RATIO = 1200 / 630;
 const FORCE_REBUILD = process.argv.includes('--force');
 
 const IMAGE_ASSETS = [
-  { key: 'homeHero', fileName: 'home-hero.jpg' },
+  { key: 'homeHero', fileName: 'AdobeStock_70255363.jpeg', outputName: 'home-hero' },
   { key: 'homeProcedure', fileName: 'home-procedure.jpg' },
   { key: 'pourquoiReferencement', fileName: 'pourquoi-referencement.jpg' },
   {
@@ -57,9 +57,9 @@ const IMAGE_ASSETS = [
   { key: 'girondeHero', fileName: 'axel-delansorne-fSpupJ0C95E-unsplash.jpg' },
   { key: 'girondeTerritory', fileName: 'arpad-czapp-J181eozqAd8-unsplash.jpg' },
   { key: 'girondeCoast', fileName: 'benjamin-esteves-A_JaVydOsRk-unsplash.jpg' },
-  { key: 'lotEtGaronneHero', fileName: 'pexels-tyvalloire-35860040.jpg' },
+  { key: 'lotEtGaronneHero', fileName: 'AdobeStock_1364523535.jpeg' },
   { key: 'lotEtGaronneTerritory', fileName: 'pexels-d-goth-37724280.jpg' },
-  { key: 'lotEtGaronneCanal', fileName: 'Agen_-_Pont-canal_-_01.jpg' },
+  { key: 'lotEtGaronneCanal', fileName: 'AdobeStock_919223785.jpeg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {

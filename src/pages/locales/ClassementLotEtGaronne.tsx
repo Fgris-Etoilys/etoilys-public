@@ -47,12 +47,12 @@ export default function ClassementLotEtGaronne() {
         <div className="absolute inset-0">
           <SmartImage
             assetKey="lotEtGaronneHero"
-            alt="Paysage du Lot-et-Garonne autour d’un secteur touristique"
+            alt="Village du Lot-et-Garonne au bord de l’eau"
             priority
             sizes="100vw"
             className="h-full w-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-black/60" />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
         <div className="container-adaptive relative flex min-h-[560px] items-center">
           <div className="max-w-4xl">
@@ -224,7 +224,7 @@ export default function ClassementLotEtGaronne() {
                 Intervention locale
               </div>
               <h2 className="mb-5">
-                Etoilys intervient dans le Lot-et-Garonne et les secteurs proches
+                Classement de meublés en Lot-et-Garonne : les secteurs couverts
               </h2>
               <p className="text-textLight leading-comfortable">
                 Etoilys intervient dans le Lot-et-Garonne sur une zone couvrant notamment l’Agenais,
@@ -275,7 +275,7 @@ export default function ClassementLotEtGaronne() {
             </p>
             <SmartImage
               assetKey="lotEtGaronneCanal"
-              alt="Pont-canal d’Agen dans le Lot-et-Garonne"
+              alt="Château et paysage rural dans le Lot-et-Garonne"
               sizes="(min-width: 1024px) 960px, 100vw"
               className="mb-10 aspect-[16/7] w-full rounded-card object-cover shadow-card-hover"
             />
