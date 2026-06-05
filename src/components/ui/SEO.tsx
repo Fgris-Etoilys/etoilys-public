@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getSeoTitle, SITE_NAME, SITE_URL } from '../../content/seoRoutes';
 
 interface SEOProps {
   title: string;
@@ -17,9 +18,8 @@ export default function SEO({
   preloadImage,
 }: SEOProps) {
   const location = useLocation();
-  const fullTitle = `${title} | Etoilys - Classement Meubles de Tourisme`;
-  const siteUrl = 'https://www.etoilys.fr';
-  const currentUrl = `${siteUrl}${location.pathname}`;
+  const fullTitle = getSeoTitle(title);
+  const currentUrl = `${SITE_URL}${location.pathname}`;
   const image = ogImage?.trim();
 
   useEffect(() => {
@@ -32,6 +32,7 @@ export default function SEO({
       { property: 'og:description', content: description },
       { property: 'og:url', content: currentUrl },
       { property: 'og:type', content: 'website' },
+      { property: 'og:site_name', content: SITE_NAME },
       { name: 'twitter:card', content: image ? 'summary_large_image' : 'summary' },
       { name: 'twitter:title', content: fullTitle },
       { name: 'twitter:description', content: description },

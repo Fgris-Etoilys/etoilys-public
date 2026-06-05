@@ -7,8 +7,8 @@ import FeatureCard from '../../components/ui/FeatureCard';
 import SmartImage from '../../components/ui/SmartImage';
 import {
   GIRONDE_FAQ,
-  GIRONDE_PRIORITY_SECTORS,
   GIRONDE_PROCEDURE_STEPS,
+  GIRONDE_SERVICE_SECTORS,
   GIRONDE_SOURCES,
   GIRONDE_TOURISM_ROWS,
 } from '../../content/localServiceAreas';
@@ -217,49 +217,47 @@ export default function ClassementGironde() {
 
       <section className="bg-white py-section">
         <div className="container-adaptive">
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center">
-            <div>
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-4xl">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-400">
                 <MapPin className="h-4 w-4" aria-hidden="true" />
                 Intervention locale
               </div>
               <h2 className="mb-5">Classement de meublés en Gironde : les secteurs couverts</h2>
-              <div className="space-y-5 text-textLight leading-comfortable">
-                <p>
-                  Etoilys accompagne les propriétaires de meublés de tourisme en Gironde, selon la
-                  localisation du logement et l’organisation des tournées.
-                </p>
-                <p>
-                  Après réception de votre demande, nous vous confirmons les possibilités
-                  d’intervention, les délais et les conditions applicables avant toute validation.
-                </p>
-              </div>
-              <div className="mt-7">
-                <Button href="/demande-classement" variant="primary">
-                  Faire une demande de classement
-                </Button>
-              </div>
+              <p className="text-textLight leading-comfortable">
+                Etoilys intervient en Gironde sur une zone concentrée autour du Libournais, de la
+                Haute-Gironde, de Bordeaux Métropole, de l’Entre-deux-Mers, de Montesquieu, de la
+                vallée de la Garonne et du nord du Sud-Gironde.
+              </p>
             </div>
 
-            <Card hover={false} className="p-6 md:p-8">
-              <h3 className="mb-6 text-2xl font-playfair font-semibold text-gray-900">
-                Secteurs couverts
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {GIRONDE_PRIORITY_SECTORS.map((sector) => (
-                  <span
-                    key={sector}
-                    className="rounded-full border border-primary-200 bg-primary-50 px-4 py-2 text-sm text-gray-800"
-                  >
-                    {sector}
-                  </span>
-                ))}
-              </div>
-              <p className="mt-6 text-sm text-textLight leading-comfortable">
-                Votre commune n’est pas listée ? Indiquez-la dans votre demande : nous vous
-                confirmerons les modalités d’intervention avant toute validation.
-              </p>
-            </Card>
+            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+              {GIRONDE_SERVICE_SECTORS.map((sector) => (
+                <Card key={sector.name} hover={false} className="p-6 md:last:col-span-2">
+                  <h3 className="mb-3 text-xl font-playfair font-semibold text-gray-900">
+                    {sector.name}
+                  </h3>
+                  <p className="text-sm text-textLight leading-comfortable">
+                    {sector.communes.join(', ')}.
+                  </p>
+                </Card>
+              ))}
+            </div>
+
+            <p className="mt-8 max-w-4xl text-sm text-textLight leading-comfortable">
+              Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, vous pouvez tout de
+              même déposer une demande : Etoilys vous confirmera les possibilités d’intervention
+              selon la localisation du logement et l’organisation des tournées.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row">
+              <Button href="/demande-classement" variant="primary">
+                Faire une demande de classement
+              </Button>
+              <Button href="/zones-intervention" variant="secondary">
+                Consulter toutes les zones d’intervention
+              </Button>
+            </div>
           </div>
         </div>
       </section>

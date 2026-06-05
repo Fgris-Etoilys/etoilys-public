@@ -7,8 +7,8 @@ import FeatureCard from '../../components/ui/FeatureCard';
 import SmartImage from '../../components/ui/SmartImage';
 import {
   LOT_ET_GARONNE_FAQ,
-  LOT_ET_GARONNE_PRIORITY_SECTORS,
   LOT_ET_GARONNE_PROCEDURE_STEPS,
+  LOT_ET_GARONNE_SERVICE_SECTORS,
   LOT_ET_GARONNE_SOURCES,
   LOT_ET_GARONNE_TOURISM_ROWS,
 } from '../../content/localServiceAreas';
@@ -217,8 +217,8 @@ export default function ClassementLotEtGaronne() {
 
       <section className="bg-white py-section">
         <div className="container-adaptive">
-          <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-center">
-            <div>
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-4xl">
               <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-400">
                 <MapPin className="h-4 w-4" aria-hidden="true" />
                 Intervention locale
@@ -226,50 +226,41 @@ export default function ClassementLotEtGaronne() {
               <h2 className="mb-5">
                 Etoilys intervient dans le Lot-et-Garonne et les secteurs proches
               </h2>
-              <div className="space-y-5 text-textLight leading-comfortable">
-                <p>
-                  Etoilys intervient dans le Lot-et-Garonne, notamment autour d’Agen,
-                  Villeneuve-sur-Lot, Marmande, Casteljaloux, Lauzun, Castillonès, Villeréal,
-                  Cancon, Damazan et des secteurs proches.
-                </p>
-                <p>
-                  Vous pouvez déposer une demande même si votre commune n’apparaît pas dans cette
-                  liste : Etoilys vous confirmera les modalités d’intervention après réception de
-                  votre demande.
-                </p>
-                <Link
-                  to="/zones-intervention"
-                  className="inline-flex text-sm font-medium text-primary-300 underline hover:text-primary-400"
-                >
-                  Consulter toutes les zones d’intervention
-                </Link>
-              </div>
-              <div className="mt-7">
-                <Button href="/demande-classement" variant="primary">
-                  Faire une demande de classement
-                </Button>
-              </div>
+              <p className="text-textLight leading-comfortable">
+                Etoilys intervient dans le Lot-et-Garonne sur une zone couvrant notamment l’Agenais,
+                la vallée de la Garonne, le Val de Garonne, le Villeneuvois, la vallée du Lot, le
+                Fumélois, les bastides du Haut-Agenais, le Pays de Lauzun, le Pays de Duras et le
+                secteur de Casteljaloux.
+              </p>
             </div>
 
-            <Card hover={false} className="p-6 md:p-8">
-              <h3 className="mb-6 text-2xl font-playfair font-semibold text-gray-900">
-                Secteurs couverts
-              </h3>
-              <div className="flex flex-wrap gap-3">
-                {LOT_ET_GARONNE_PRIORITY_SECTORS.map((sector) => (
-                  <span
-                    key={sector}
-                    className="rounded-full border border-primary-200 bg-primary-50 px-4 py-2 text-sm text-gray-800"
-                  >
-                    {sector}
-                  </span>
-                ))}
-              </div>
-              <p className="mt-6 text-sm text-textLight leading-comfortable">
-                Votre commune n’est pas listée ? Indiquez-la dans votre demande : nous vous
-                confirmerons les modalités d’intervention avant toute validation.
-              </p>
-            </Card>
+            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+              {LOT_ET_GARONNE_SERVICE_SECTORS.map((sector) => (
+                <Card key={sector.name} hover={false} className="p-6 md:last:col-span-2">
+                  <h3 className="mb-3 text-xl font-playfair font-semibold text-gray-900">
+                    {sector.name}
+                  </h3>
+                  <p className="text-sm text-textLight leading-comfortable">
+                    {sector.communes.join(', ')}.
+                  </p>
+                </Card>
+              ))}
+            </div>
+
+            <p className="mt-8 max-w-4xl text-sm text-textLight leading-comfortable">
+              Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, vous pouvez tout de
+              même déposer une demande : Etoilys vous confirmera les possibilités d’intervention
+              selon la localisation du logement et l’organisation des tournées.
+            </p>
+
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row">
+              <Button href="/demande-classement" variant="primary">
+                Faire une demande de classement
+              </Button>
+              <Button href="/zones-intervention" variant="secondary">
+                Consulter toutes les zones d’intervention
+              </Button>
+            </div>
           </div>
         </div>
       </section>

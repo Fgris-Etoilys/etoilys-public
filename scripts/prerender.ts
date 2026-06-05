@@ -5,11 +5,13 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import AppRoutes from '../src/AppRoutes.tsx';
 import {
+  SITE_NAME,
   SITE_URL,
   getBreadcrumbItems,
   getIndexablePaths,
   getPrerenderPaths,
   getSeoRouteConfig,
+  getSeoTitle,
 } from '../src/content/seoRoutes.ts';
 import { getArticleStructuredData } from '../src/content/articleStructuredData.ts';
 import { IMAGE_MANIFEST } from '../src/content/imageManifest.ts';
@@ -17,7 +19,6 @@ import { IMAGE_MANIFEST } from '../src/content/imageManifest.ts';
 const NOT_FOUND_PRERENDER_PATH = '/404';
 const DYNAMIC_SIMULATION_RENDER_PATH = '/simulateur/seo-shell';
 const DYNAMIC_SIMULATION_SHELL_OUTPUT = 'simulation-noindex.html';
-const TITLE_SUFFIX = ' | Etoilys - Classement Meubles de Tourisme';
 const OG_IMAGE_ALT = 'Etoilys - Classement des meublés de tourisme';
 const ROOT_PLACEHOLDER_PATTERN = /<div id="root"><\/div>/i;
 const ROOT_CONTAINER_PATTERN = /<div id="root">[\s\S]*<\/div>\s*<\/body>/i;
@@ -173,6 +174,7 @@ function stripSeoTags(html: string): string {
     /<meta[^>]+property=['"]og:description['"][^>]*>\s*/gi,
     /<meta[^>]+property=['"]og:url['"][^>]*>\s*/gi,
     /<meta[^>]+property=['"]og:type['"][^>]*>\s*/gi,
+    /<meta[^>]+property=['"]og:site_name['"][^>]*>\s*/gi,
     /<meta[^>]+property=['"]og:image['"][^>]*>\s*/gi,
     /<meta[^>]+property=['"]og:image:alt['"][^>]*>\s*/gi,
     /<meta[^>]+name=['"]twitter:card['"][^>]*>\s*/gi,
@@ -196,7 +198,7 @@ function stripSeoTags(html: string): string {
 
 function buildSeoHead(pathname: string): string {
   const seoConfig = getSeoRouteConfig(pathname);
-  const title = `${seoConfig.title}${TITLE_SUFFIX}`;
+  const title = getSeoTitle(seoConfig.title);
   const description = seoConfig.description;
   const robots = seoConfig.robots ?? 'index,follow';
   const currentUrl = `${SITE_URL}${pathname}`;
@@ -211,6 +213,7 @@ function buildSeoHead(pathname: string): string {
     `    <meta property="og:description" content="${escapeHtml(description)}">`,
     `    <meta property="og:url" content="${escapeHtml(currentUrl)}">`,
     '    <meta property="og:type" content="website">',
+    `    <meta property="og:site_name" content="${escapeHtml(SITE_NAME)}">`,
     `    <meta property="og:image" content="${escapeHtml(ogImage)}">`,
     `    <meta property="og:image:alt" content="${escapeHtml(OG_IMAGE_ALT)}">`,
     '    <meta name="twitter:card" content="summary_large_image">',

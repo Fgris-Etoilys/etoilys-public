@@ -17,6 +17,11 @@ export interface BreadcrumbItem {
 }
 
 export const SITE_URL = 'https://www.etoilys.fr';
+export const SITE_NAME = 'Etoilys';
+
+export function getSeoTitle(title: string): string {
+  return `${title} | ${SITE_NAME}`;
+}
 
 const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
   title: 'Ma simulation de classement',
