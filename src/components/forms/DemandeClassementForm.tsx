@@ -98,7 +98,7 @@ export default function DemandeClassementForm() {
 
     const validationErrors = validateDemandeClassementForm(formData);
     if (!turnstileToken) {
-      validationErrors.turnstileToken = 'Merci de valider la verification anti-spam.';
+      validationErrors.turnstileToken = 'Merci de valider la vérification anti-spam.';
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -135,7 +135,7 @@ export default function DemandeClassementForm() {
 
     if (!response.data.success) {
       setErrors(response.data.fieldErrors || {});
-      setSubmitError(response.data.error || 'La soumission a echoue.');
+      setSubmitError(response.data.error || 'La soumission a échoué.');
       trackFormSubmitFailed(
         'demande_classement',
         'api',
@@ -166,15 +166,16 @@ export default function DemandeClassementForm() {
   return (
     <div className="bg-white rounded-card border border-gray-200 p-8">
       <h2 className="text-2xl font-playfair font-semibold text-gray-900 mb-2">
-        Formulaire de demande
+        Votre demande de classement
       </h2>
       <p className="text-textLight mb-8 leading-comfortable">
-        Renseignez les informations ci-dessous pour demarrer votre demarche de classement.
+        Indiquez vos coordonnées et l'adresse du logement à classer. Nous vous recontacterons
+        rapidement pour organiser la suite.
       </p>
 
       {isSuccess && (
         <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
-          Votre demande a ete envoyee avec succes. Notre equipe reviendra vers vous sous 24 heures.
+          Votre demande a été envoyée avec succès. Notre équipe reviendra vers vous sous 24 heures.
         </div>
       )}
 
@@ -197,7 +198,7 @@ export default function DemandeClassementForm() {
           />
 
           <Input
-            label="Prenom"
+            label="Prénom"
             name="prenom"
             type="text"
             value={formData.prenom}
@@ -219,7 +220,7 @@ export default function DemandeClassementForm() {
           />
 
           <Input
-            label="Telephone"
+            label="Téléphone"
             name="telephone"
             type="tel"
             value={formData.telephone}
@@ -237,7 +238,7 @@ export default function DemandeClassementForm() {
           value={formData.adresse}
           onChange={handleChange}
           error={errors.adresse}
-          placeholder="Adresse complete de votre meuble de tourisme"
+          placeholder="Adresse complète de votre meublé de tourisme"
           required
         />
 
@@ -248,7 +249,7 @@ export default function DemandeClassementForm() {
           value={formData.message}
           onChange={handleChange}
           error={errors.message}
-          placeholder="Parlez-nous de votre hebergement et de vos attentes (optionnel)"
+          placeholder="Parlez-nous de votre hébergement et de vos attentes (optionnel)"
         />
 
         <Checkbox
@@ -258,9 +259,9 @@ export default function DemandeClassementForm() {
           error={errors.consent}
           label={
             <>
-              J'accepte que mes donnees soient traitees conformement a la{' '}
+              J'accepte que mes données soient traitées conformément à la{' '}
               <Link to="/confidentialite" className="text-primary-300 hover:text-primary-400">
-                politique de confidentialite
+                politique de confidentialité
               </Link>
             </>
           }

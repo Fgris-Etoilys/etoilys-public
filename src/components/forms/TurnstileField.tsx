@@ -63,12 +63,12 @@ export default function TurnstileField({ onTokenChange, error, resetKey }: Turns
         'expired-callback': () => {
           if (!isMounted) return;
           onTokenChange(null);
-          setLocalError('La verification anti-spam a expire. Merci de reessayer.');
+          setLocalError('La vérification anti-spam a expiré. Merci de réessayer.');
         },
         'error-callback': () => {
           if (!isMounted) return;
           onTokenChange(null);
-          setLocalError('Erreur de verification anti-spam. Merci de reessayer.');
+          setLocalError('Erreur de vérification anti-spam. Merci de réessayer.');
         },
         theme: 'light',
       });

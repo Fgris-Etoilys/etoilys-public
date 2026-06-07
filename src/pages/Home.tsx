@@ -28,9 +28,9 @@ const features = [
   },
   {
     icon: Zap,
-    title: 'Technologie de pointe',
+    title: 'Un parcours simplifié',
     description:
-      'Des outils digitaux développés sur-mesure pour un suivi en temps réel, des contrôles précis et une transparence maximale.',
+      "Nos outils internes simplifient la démarche : pas de dossier complexe à constituer, un suivi clair et un accompagnement fluide jusqu'à la décision de classement.",
   },
   {
     icon: Clock,
@@ -79,8 +79,8 @@ export default function Home() {
         <div className="container-adaptive relative z-10 py-24 text-center">
           <h1 className="mb-6 text-white">Classement officiel de votre meublé de tourisme</h1>
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-comfortable">
-            Etoilys vous accompagne dans votre démarche de classement pour obtenir votre
-            certification officielle en étoiles.
+            Etoilys vous accompagne pour obtenir le classement officiel en étoiles de votre meublé
+            de tourisme.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button href="/demande-classement" variant="primary" size="lg">
@@ -155,9 +155,9 @@ export default function Home() {
               <h2 className="mb-6">Une procédure simple et rapide</h2>
               <div className="space-y-4 text-textLight leading-comfortable">
                 <p>
-                  La démarche de classement est simple : dès réception de votre demande, un
-                  inspecteur situé près de chez vous vous contacte sous 24 heures pour planifier la
-                  visite selon vos disponibilités et répondre à vos questions.
+                  La démarche est simple : vous déposez votre demande, puis un inspecteur vous
+                  contacte sous 24 heures pour vérifier les informations utiles et organiser la
+                  visite selon vos disponibilités.
                 </p>
                 <p>
                   La visite se déroule à votre logement, sur rendez-vous, à une date qui vous

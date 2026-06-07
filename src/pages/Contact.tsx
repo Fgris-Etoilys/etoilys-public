@@ -7,10 +7,10 @@ export default function Contact() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-3xl">
-            <h1 className="mb-6 text-white">Nous contacter</h1>
+            <h1 className="mb-6 text-white">Contacter Etoilys</h1>
             <p className="text-xl text-white/90 leading-comfortable">
-              Une question sur le classement de votre meublé de tourisme ? Notre équipe est à votre
-              écoute pour vous répondre et vous accompagner.
+              Vous avez une question avant de demander le classement de votre meublé ? Etoilys vous
+              répond et vous aide à comprendre les prochaines étapes.
             </p>
           </div>
         </div>

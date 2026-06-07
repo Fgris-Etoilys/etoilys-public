@@ -40,9 +40,9 @@ type ContactSubmissionResponse =
 const CONSENT_VERSION = 'privacy-v1';
 
 export default function ContactForm({
-  title = 'Envoyez-nous un message',
-  submitButtonText = 'Envoyer',
-  successMessage = 'Votre message a ete envoye avec succes. Notre equipe reviendra vers vous rapidement.',
+  title = 'Posez-nous votre question',
+  submitButtonText = 'Envoyer mon message',
+  successMessage = 'Votre message a été envoyé avec succès. Notre équipe reviendra vers vous rapidement.',
 }: ContactFormProps) {
   const [formData, setFormData] = useState<ContactFormData>({
     nom: '',
@@ -106,7 +106,7 @@ export default function ContactForm({
     const validationErrors = validateContactForm(formData);
 
     if (!turnstileToken) {
-      validationErrors.turnstileToken = 'Merci de valider la verification anti-spam.';
+      validationErrors.turnstileToken = 'Merci de valider la vérification anti-spam.';
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -139,7 +139,7 @@ export default function ContactForm({
 
     if (!response.data.success) {
       setErrors(response.data.fieldErrors || {});
-      setSubmitError(response.data.error || 'La soumission a echoue.');
+      setSubmitError(response.data.error || 'La soumission a échoué.');
       trackFormSubmitFailed('contact', 'api', Object.keys(response.data.fieldErrors || {}).sort());
       return;
     }
@@ -214,9 +214,9 @@ export default function ContactForm({
           error={errors.consent}
           label={
             <>
-              J'accepte que mes donnees soient traitees conformement a la{' '}
+              J'accepte que mes données soient traitées conformément à la{' '}
               <Link to="/confidentialite" className="text-primary-300 hover:text-primary-400">
-                politique de confidentialite
+                politique de confidentialité
               </Link>
             </>
           }

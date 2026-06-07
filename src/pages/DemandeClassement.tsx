@@ -9,8 +9,9 @@ export default function DemandeClassement() {
           <div className="max-w-3xl">
             <h1 className="mb-6 text-white">Demande de classement</h1>
             <p className="text-xl text-white/90 leading-comfortable">
-              Remplissez le formulaire ci-dessous pour démarrer votre démarche de classement. Notre
-              équipe reviendra vers vous sous 24 heures pour vous accompagner.
+              Déposez votre demande en quelques minutes. Etoilys vous recontacte sous 24 heures
+              ouvrées pour confirmer les modalités de visite, le tarif applicable et les prochaines
+              disponibilités avant toute validation.
             </p>
             <p className="mt-4 text-white/80">Vous pouvez également contacter le 06 49 55 15 40</p>
           </div>
@@ -28,7 +29,7 @@ export default function DemandeClassement() {
               <div className="sticky top-24">
                 <div className="bg-primary-100 rounded-card p-8 mb-6">
                   <h3 className="text-xl font-playfair font-semibold text-gray-900 mb-6">
-                    Pourquoi Etoilys ?
+                    Pourquoi confier votre classement à Etoilys ?
                   </h3>
                   <ul className="space-y-4 text-textLight leading-comfortable">
                     <li className="flex gap-3">
@@ -41,7 +42,7 @@ export default function DemandeClassement() {
                     </li>
                     <li className="flex gap-3">
                       <span className="text-primary-300 font-bold flex-shrink-0">✓</span>
-                      <span>Outils technologiques de pointe</span>
+                      <span>Procédure simple, sans dossier à constituer</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="text-primary-300 font-bold flex-shrink-0">✓</span>
@@ -49,7 +50,7 @@ export default function DemandeClassement() {
                     </li>
                     <li className="flex gap-3">
                       <span className="text-primary-300 font-bold flex-shrink-0">✓</span>
-                      <span>Plateforme numérique dédiée</span>
+                      <span>Visite planifiée rapidement</span>
                     </li>
                   </ul>
                 </div>
