@@ -19,8 +19,29 @@ export interface BreadcrumbItem {
 export const SITE_URL = 'https://www.etoilys.fr';
 export const SITE_NAME = 'Etoilys';
 
+function normalizeSeoTitleBase(title: string): string {
+  const suffixPatterns = [
+    /\s*\|\s*Etoilys\s*$/i,
+    /\s*-\s*Etoilys\s*$/i,
+    /\s*-\s*Classement Meubles de Tourisme\s*$/i,
+  ];
+
+  let baseTitle = title.trim();
+  let previousTitle = '';
+
+  while (baseTitle && baseTitle !== previousTitle) {
+    previousTitle = baseTitle;
+    baseTitle = suffixPatterns.reduce(
+      (currentTitle, suffixPattern) => currentTitle.replace(suffixPattern, '').trim(),
+      baseTitle
+    );
+  }
+
+  return baseTitle || SITE_NAME;
+}
+
 export function getSeoTitle(title: string): string {
-  return `${title} | ${SITE_NAME}`;
+  return `${normalizeSeoTitleBase(title)} | ${SITE_NAME}`;
 }
 
 const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
@@ -34,35 +55,35 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
 
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/': {
-    title: 'Classement meublé de tourisme',
+    title: 'Classement meublé de tourisme en Dordogne, Gironde et Lot-et-Garonne',
     description:
-      'Informations sur les démarches de classement des meublés de tourisme avec Etoilys.',
+      'Etoilys accompagne les propriétaires de meublés de tourisme pour obtenir leur classement officiel en Dordogne, Gironde et Lot-et-Garonne.',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
   },
   '/classement': {
-    title: 'Le classement des meublés de tourisme',
+    title: 'Classement des meublés de tourisme : principe, avantages et procédure',
     description:
-      'Informations sur le classement officiel des meublés de tourisme : catégories, critères et cadre réglementaire.',
+      'Comprendre le classement officiel des meublés de tourisme : étoiles, durée de validité, organisme accrédité, visite et critères à vérifier.',
     breadcrumbLabel: 'Classement',
   },
   '/les-avantages-du-classement': {
-    title: 'Pourquoi faire classer un meublé de tourisme',
+    title: 'Pourquoi faire classer son meublé de tourisme ?',
     description:
-      'Présentation factuelle des effets du classement des meublés de tourisme : fiscalité, taxe de séjour et cadre officiel.',
+      'Fiscalité, taxe de séjour, visibilité, confiance des voyageurs : découvrez les avantages concrets du classement officiel d’un meublé de tourisme.',
     breadcrumbLabel: 'Avantages du classement',
     ogImageKey: 'pourquoiReferencement',
   },
   '/prerequis-au-classement': {
-    title: "Prérequis au classement d'un meublé de tourisme",
+    title: 'Prérequis au classement d’un meublé de tourisme',
     description:
-      "Conditions minimales et points de contrôle à vérifier avant une demande de classement d'un meublé de tourisme.",
+      'Surface, équipements, état du logement, pièces comptabilisables : les points à vérifier avant de demander le classement de votre meublé.',
     breadcrumbLabel: 'Prérequis',
   },
   '/procedure': {
-    title: "Procédure de classement d'un meublé de tourisme",
+    title: 'Procédure de classement d’un meublé de tourisme',
     description:
-      'Étapes, délais et documents de la procédure de classement des meublés de tourisme.',
+      'Découvrez les étapes d’une demande de classement : prise de contact, visite, rapport, proposition de classement et validité 5 ans.',
     breadcrumbLabel: 'Procédure',
   },
   '/zones-intervention': {
@@ -98,35 +119,35 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/simulateur': {
     title: 'Simulateur de classement meublé de tourisme',
     description:
-      'Estimez gratuitement le classement possible de votre meublé de tourisme à partir de la grille officielle, avant une visite de classement.',
+      'Estimez le classement possible de votre meublé de tourisme avant la visite officielle. Simulation gratuite à partir de la grille de classement.',
     breadcrumbLabel: 'Simulateur de classement',
     ogImageKey: 'simulateurClassement',
   },
   '/simulateur/:simulationId': SIMULATION_DETAIL_SEO,
   '/simulateur-taxe-sejour': {
-    title: 'Simulateur de taxe de séjour meublé de tourisme',
+    title: 'Simulateur taxe de séjour : meublé classé ou non classé',
     description:
-      'Calculez gratuitement l’écart de taxe de séjour entre un meublé non classé et un meublé classé, selon la commune et le nombre d’étoiles.',
+      'Comparez la taxe de séjour d’un meublé classé et non classé selon la commune, le prix de la nuitée, le nombre de voyageurs et les étoiles.',
     breadcrumbLabel: 'Simulateur taxe de séjour',
     ogImageKey: 'simulateurTaxeSejour',
   },
   '/simulateur-fiscal-classement': {
-    title: 'Simulateur fiscal meublé classé 2026',
+    title: 'Simulateur fiscal meublé classé vs non classé 2026',
     description:
-      'Comparez gratuitement la fiscalité d’un meublé classé et non classé avec les seuils et abattements micro-BIC 2026.',
+      'Comparez l’impact fiscal du classement en micro-BIC : seuils, abattements, base imposable et différence entre meublé classé et non classé.',
     breadcrumbLabel: 'Simulateur fiscal classement',
     ogImageKey: 'simulateurFiscalClassement',
   },
   '/faq': {
     title: 'FAQ classement meublé de tourisme',
     description:
-      'Réponses aux questions fréquentes sur le classement des meublés de tourisme, les obligations et la fiscalité.',
+      'Réponses aux questions fréquentes sur le classement des meublés de tourisme : fiscalité, taxe de séjour, procédure, durée, obligations.',
     breadcrumbLabel: 'FAQ',
   },
   '/actualites': {
-    title: 'Actualités meublés de tourisme',
+    title: 'Actualités meublés de tourisme : fiscalité, avantages, réglementation',
     description:
-      'Articles et mises à jour sur la réglementation, la fiscalité et le classement des meublés de tourisme.',
+      'Actualités et guides pratiques sur les meublés de tourisme : classement officiel, fiscalité, réglementation, taxe de séjour, obligations locales et démarches propriétaires.',
     breadcrumbLabel: 'Actualités',
   },
   '/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026': {
@@ -201,7 +222,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/demande-classement': {
     title: 'Demande de classement meublé de tourisme',
     description:
-      "Formulaire de demande de classement d'un meublé de tourisme et informations de contact Etoilys.",
+      'Demandez le classement de votre meublé de tourisme. Procédure simple. Etoilys vous recontacte sous 24h pour organiser la visite.',
     breadcrumbLabel: 'Demande de classement',
   },
   '/confidentialite': {
