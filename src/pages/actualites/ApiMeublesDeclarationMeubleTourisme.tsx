@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import ArticleHeaderMeta from '../../components/ui/ArticleHeaderMeta';
 
 export default function ArticleApiMeubles() {
   return (
@@ -8,17 +9,14 @@ export default function ArticleApiMeubles() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3 text-white/80 text-sm">
-              <Link to="/actualites" className="hover:text-white transition-colors text-white/80">
-                ← Actualités
-              </Link>
-              <span aria-hidden="true">•</span>
-              <time dateTime="2026-05-18">Publié le 18 mai 2026</time>
-              <span aria-hidden="true">•</span>
-              <span>Florian Grisorio</span>
-              <span aria-hidden="true">•</span>
-              <span>9 min de lecture</span>
-            </div>
+            <ArticleHeaderMeta
+              publishedAt="2026-05-18"
+              publishedDate="18 mai 2026"
+              updatedAt="2026-06-07"
+              updatedDate="7 juin 2026"
+              author="Florian Grisorio"
+              readingTime="9 min de lecture"
+            />
             <h1 className="mb-0 text-white">
               API Meublés : tous les propriétaires devront déclarer leur meublé de tourisme
             </h1>
@@ -32,8 +30,8 @@ export default function ArticleApiMeubles() {
           <div className="max-w-4xl mx-auto">
             {/* Chapô */}
             <p className="text-xl leading-comfortable text-gray-700 mb-10">
-              À partir du <strong>20 mai 2026</strong>, le cadre légal de déclaration des meublés de
-              tourisme change : tous les loueurs devront, à terme, obtenir un{' '}
+              Depuis le <strong>20 mai 2026</strong>, le cadre légal de déclaration des meublés de
+              tourisme a changé : tous les loueurs devront, à terme, obtenir un{' '}
               <strong>numéro d&apos;enregistrement national</strong> via un téléservice connecté à{' '}
               <strong>API Meublés</strong>. Le détail un peu gênant, sinon ce serait trop simple :
               la version finale du service destiné aux propriétaires est annoncée pour le{' '}
@@ -74,8 +72,8 @@ export default function ArticleApiMeubles() {
                     •
                   </span>
                   <span>
-                    Le cadre légal bascule à partir du <strong>20 mai 2026</strong>, mais la DGE
-                    annonce l&apos;ouverture du téléservice final pour les loueurs au{' '}
+                    Le cadre légal a basculé depuis le <strong>20 mai 2026</strong>, mais la DGE
+                    indique que le téléservice final destiné aux loueurs doit ouvrir au{' '}
                     <strong>second semestre 2026</strong>.
                   </span>
                 </li>
@@ -84,8 +82,8 @@ export default function ArticleApiMeubles() {
                     •
                   </span>
                   <span>
-                    En attendant, la démarche en ligne actuelle de Service-Public s&apos;arrête le{' '}
-                    <strong>20 mai 2026 à 23h59</strong> et Service-Public renvoie vers le{' '}
+                    Depuis le 20 mai 2026, la démarche en ligne de Service-Public n&apos;est plus
+                    disponible. Service-Public renvoie désormais vers le{' '}
                     <strong>Cerfa n°14004</strong> ou les modalités prévues par la mairie.
                   </span>
                 </li>
@@ -119,7 +117,7 @@ export default function ArticleApiMeubles() {
               n&apos;était pas un système uniforme pour tous les propriétaires.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              À partir du <strong>20 mai 2026</strong>, la rédaction du texte change : toute
+              Depuis le <strong>20 mai 2026</strong>, la rédaction du texte a changé : toute
               personne qui offre à la location un meublé de tourisme doit procéder à une déclaration
               soumise à enregistrement auprès d&apos;un <strong>téléservice national</strong>.
             </p>
@@ -199,16 +197,18 @@ export default function ArticleApiMeubles() {
             </p>
 
             {/* Section 3 - tableau */}
-            <h2 className="mt-12 mb-4">Ce qui se passe à partir du 20 mai 2026</h2>
+            <h2 className="mt-12 mb-4">Ce qui a changé depuis le 20 mai 2026</h2>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Le Code du tourisme prévoit une entrée en vigueur du nouveau cadre à partir du{' '}
-              <strong>20 mai 2026</strong>. À compter de cette date, la déclaration doit être faite
-              auprès d&apos;un téléservice national, qui délivre un avis de réception électronique
-              comprenant un numéro de déclaration.
+              Depuis le <strong>20 mai 2026</strong>, le code du tourisme prévoit une déclaration
+              des meublés de tourisme via un téléservice national. Cette déclaration doit permettre
+              la délivrance d&apos;un récépissé électronique avec un numéro de déclaration.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Mais dans les faits, la DGE indique que le téléservice final destiné aux loueurs sera
-              disponible au <strong>second semestre 2026</strong>.
+              En pratique, il faut toutefois distinguer le cadre légal et le déploiement
+              opérationnel. La DGE indique encore que le téléservice final destiné aux loueurs doit
+              ouvrir au <strong>second semestre 2026</strong>. Pendant cette période de transition,
+              les propriétaires doivent donc continuer à vérifier la procédure applicable auprès de
+              la commune du logement.
             </p>
             <p className="text-gray-700 leading-comfortable mb-6">
               Il faut donc distinguer deux choses :
@@ -237,10 +237,10 @@ export default function ArticleApiMeubles() {
                     </td>
                   </tr>
                   <tr className="bg-gray-50 border-b border-gray-100">
-                    <td className="p-3 text-gray-700 font-medium">À partir du 20 mai 2026</td>
+                    <td className="p-3 text-gray-700 font-medium">Depuis le 20 mai 2026</td>
                     <td className="p-3 text-gray-600">
-                      Le nouveau cadre légal entre en vigueur, mais le service final API Meublés
-                      destiné aux loueurs n&apos;est pas encore annoncé comme ouvert.
+                      Le nouveau cadre légal est en vigueur, mais le téléservice final API Meublés
+                      destiné aux loueurs n&apos;est pas encore ouvert.
                     </td>
                   </tr>
                   <tr className="bg-white">
@@ -254,22 +254,19 @@ export default function ArticleApiMeubles() {
               </table>
             </div>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Le bon réflexe n&apos;est donc pas de paniquer le 20 mai en cherchant un bouton
-              magique qui n&apos;existe pas encore. Le bon réflexe est de comprendre la période de
-              transition et de se préparer à demander un nouveau numéro dès que le service national
-              sera ouvert.
+              Le bon réflexe est de comprendre la période de transition et de se préparer à demander
+              un nouveau numéro dès que le service national sera ouvert.
             </p>
 
             {/* Section 4 */}
             <h2 className="mt-12 mb-4">Que faire pendant la transition ?</h2>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Service-Public indique que la démarche en ligne actuelle de déclaration
-              d&apos;hébergement touristique prendra fin le <strong>20 mai 2026 à 23h59</strong>,
-              heure de Paris. Les déclarations déposées en ligne avant cette date seront traitées
-              jusqu&apos;à leur terme.
+              La démarche en ligne de déclaration d&apos;hébergement touristique sur Service-Public
+              s&apos;est arrêtée le <strong>20 mai 2026</strong>. Les déclarations déposées avant
+              cette date ont été traitées jusqu&apos;à leur terme.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Service-Public précise aussi que cette démarche sera prochainement remplacée par le{' '}
+              Service-Public indique que cette démarche est désormais remplacée par le{' '}
               <strong>formulaire Cerfa n°14004</strong>. Ce Cerfa n&apos;est pas un nouveau
               dispositif API Meublés : c&apos;est le formulaire classique de{' '}
               <strong>déclaration en mairie d&apos;un meublé de tourisme</strong>.
@@ -397,9 +394,22 @@ export default function ArticleApiMeubles() {
             </p>
 
             {/* Section 8 */}
-            <h2 className="mt-12 mb-4">Que faire maintenant ?</h2>
+            <h2 className="mt-12 mb-4">
+              Que faire concrètement pendant la période de transition ?
+            </h2>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Tant que le téléservice final national n&apos;est pas ouvert, le bon réflexe reste le
+              même : vérifier la procédure applicable auprès de la mairie du logement. Selon la
+              commune, la déclaration peut encore passer par le formulaire Cerfa 14004*04 ou par un
+              téléservice local.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Au lancement du téléservice final, les loueurs devront demander un nouveau numéro
+              d&apos;enregistrement pour chaque meublé concerné. Les anciens numéros ont vocation à
+              être invalidés après une période transitoire.
+            </p>
             <p className="text-gray-700 leading-comfortable mb-6">
-              Au 18 mai 2026, les actions utiles sont les suivantes :
+              En attendant, les actions utiles sont les suivantes :
             </p>
             <div className="space-y-4 mb-8 text-gray-700">
               {[
@@ -485,6 +495,21 @@ export default function ArticleApiMeubles() {
                     label:
                       'Service-Public — Formulaire Cerfa n°14004, déclaration en mairie des meublés de tourisme',
                     url: 'https://www.service-public.fr/particuliers/vosdroits/R76417',
+                  },
+                  {
+                    label:
+                      'Légifrance — Code du tourisme, article L.324-1-1, version en vigueur depuis le 20 mai 2026 : déclaration des meublés de tourisme, téléservice national, numéro de déclaration et sanctions',
+                    url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042070525/2026-05-23',
+                  },
+                  {
+                    label:
+                      'Légifrance — Décret n° 2026-196 du 19 mars 2026 relatif à la transmission des données par les intermédiaires aux communes et EPCI',
+                    url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703509',
+                  },
+                  {
+                    label:
+                      'Légifrance — Décret n° 2026-197 du 19 mars 2026 portant création du traitement automatisé API Meublés',
+                    url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703549',
                   },
                 ].map(({ label, url }, i) => (
                   <li key={url} className="flex gap-2">

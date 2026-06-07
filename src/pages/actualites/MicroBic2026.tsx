@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
+import ArticleHeaderMeta from '../../components/ui/ArticleHeaderMeta';
 
 export default function ArticleMicroBic2026() {
   return (
@@ -9,15 +10,14 @@ export default function ArticleMicroBic2026() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3 text-white/80 text-sm">
-              <Link to="/actualites" className="hover:text-white transition-colors text-white/80">
-                ← Actualités
-              </Link>
-              <span aria-hidden="true">•</span>
-              <time dateTime="2026-03-12">Publié le 12 mars 2026</time>
-              <span aria-hidden="true">•</span>
-              <span>Florian Grisorio</span>
-            </div>
+            <ArticleHeaderMeta
+              publishedAt="2026-03-12"
+              publishedDate="12 mars 2026"
+              updatedAt="2026-06-07"
+              updatedDate="7 juin 2026"
+              author="Florian Grisorio"
+              readingTime="8 min de lecture"
+            />
             <h1 className="mb-0 text-white">
               Micro-BIC 2026 : meublé classé vs non classé, l'écart se creuse
             </h1>
@@ -387,9 +387,16 @@ export default function ArticleMicroBic2026() {
               </li>
             </ul>
             <p className="text-gray-700 leading-comfortable mb-4">
-              À l'inverse, un meublé non classé se retrouve très vite confronté à un plafond bas. À
-              partir du moment où les recettes dépassent <strong>15 000 €</strong>, le régime
-              micro-BIC n'est plus accessible.
+              À l'inverse, un meublé non classé se retrouve très vite confronté à un plafond bas. Le
+              seuil de <strong>15 000 €</strong> devient le seuil de référence à surveiller : si les
+              conditions de chiffre d'affaires du régime micro ne sont plus respectées sur les
+              années prises en compte par l'administration, le propriétaire sort du micro-BIC et
+              bascule au réel.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Attention toutefois : un dépassement isolé ne suffit pas toujours à faire sortir
+              immédiatement du régime micro. L'administration apprécie l'accès au micro-BIC à partir
+              des années de référence prévues par le régime micro, notamment N-1 et N-2.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               L'effet concret, pour un propriétaire, est donc moins théorique qu'il n'y paraît :
@@ -464,7 +471,8 @@ export default function ArticleMicroBic2026() {
               </li>
             </ul>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Pour les meublés non classés, la situation devient particulièrement contraignante.{' '}
+              Pour les meublés non classés, la situation devient particulièrement contraignante. À
+              compter du <strong>1er janvier 2026</strong>,{' '}
               <a
                 href="https://entreprendre.service-public.fr/vosdroits/F39451"
                 target="_blank"
@@ -472,26 +480,32 @@ export default function ArticleMicroBic2026() {
               >
                 Service-Public Entreprendre
               </a>{' '}
-              précise qu'à compter du <strong>1er janvier 2026</strong>, le loueur de meublé de
-              tourisme non classé ne sera plus éligible au régime de la micro-entreprise, le nouveau
-              plafond fiscal étant fixé à <strong>15 000 €</strong>.
+              retient un seuil de <strong>15 000 €</strong> pour les meublés de tourisme non
+              classés. Cela ne veut pas dire que tout meublé non classé est automatiquement exclu du
+              régime micro : cela veut dire que le seuil applicable est désormais très bas, et qu'il
+              faut vérifier les conditions d'éligibilité sur les années de référence.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Autrement dit : un loueur non classé ne peut pas continuer tranquillement comme avant
-              dans un cadre micro "standard". Ce n'est plus la bonne lecture depuis la réforme 2024.
+              Autrement dit : un loueur non classé ne peut pas continuer à raisonner avec l'ancien
+              plafond de <strong>77 700 €</strong>. Ce n'est plus la bonne lecture depuis la réforme
+              2024.
             </p>
 
             <h3 className="mt-8 mb-3">3. Le régime réel</h3>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Le régime réel s'applique lorsque les seuils du micro sont dépassés, ou lorsque le
-              loueur y opte. Il ne constitue pas une bonne ou mauvaise solution universelle.
+              Le régime réel s'applique lorsque les conditions d'accès au micro-BIC ne sont plus
+              remplies, ou lorsque le loueur y opte. Il ne constitue pas une bonne ou mauvaise
+              solution universelle.
             </p>
             <ul className="space-y-2 mb-6 text-gray-700">
               <li className="flex gap-3">
                 <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
                   •
                 </span>
-                <span>au-delà des seuils micro, le régime réel devient la règle ;</span>
+                <span>
+                  si les seuils du micro ne sont plus respectés sur les années de référence, le
+                  régime réel devient la règle ;
+                </span>
               </li>
               <li className="flex gap-3">
                 <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
@@ -587,7 +601,7 @@ export default function ArticleMicroBic2026() {
                   {
                     num: '3',
                     title: 'Si le propriétaire reste en régime micro ou doit passer au régime réel',
-                    desc: "Au-delà du plafond applicable, le régime réel s'impose. Il implique une comptabilité plus lourde.",
+                    desc: "Si les conditions de seuil du micro ne sont plus remplies, le régime réel s'impose. Il implique une comptabilité plus lourde.",
                   },
                   {
                     num: '4',

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import ArticleHeaderMeta from '../../components/ui/ArticleHeaderMeta';
 
 export default function ArticleMeubles20252026() {
   return (
@@ -8,15 +9,14 @@ export default function ArticleMeubles20252026() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3 text-white/80 text-sm">
-              <Link to="/actualites" className="hover:text-white transition-colors text-white/80">
-                ← Actualités
-              </Link>
-              <span aria-hidden="true">•</span>
-              <time dateTime="2026-03-03">Publié le 3 mars 2026</time>
-              <span aria-hidden="true">•</span>
-              <span>Florian Grisorio</span>
-            </div>
+            <ArticleHeaderMeta
+              publishedAt="2026-03-03"
+              publishedDate="3 mars 2026"
+              updatedAt="2026-06-07"
+              updatedDate="7 juin 2026"
+              author="Florian Grisorio"
+              readingTime="8 min de lecture"
+            />
             <h1 className="mb-0 text-white">
               Meublés de tourisme : ce qui change vraiment en 2025-2026 pour les propriétaires
             </h1>
@@ -32,7 +32,7 @@ export default function ArticleMeubles20252026() {
             <p className="text-xl leading-comfortable text-gray-700 mb-10">
               Depuis 2025, les plus gros changements pour les propriétaires de meublés de tourisme
               ne concernent pas la grille de classement elle-même, mais la fiscalité, les pouvoirs
-              des communes, le DPE, la copropriété et l'enregistrement. Au 3 mars 2026, le plus
+              des communes, le DPE, la copropriété et l'enregistrement. Au 7 juin 2026, le plus
               important est de distinguer ce qui s'applique partout en France de ce qui dépend
               encore de la commune, du statut du logement ou du calendrier de déploiement
               administratif.
@@ -88,9 +88,10 @@ export default function ArticleMeubles20252026() {
                     •
                   </span>
                   <span>
-                    En 2026, l'<strong>enregistrement national</strong> devient un vrai sujet de
-                    vigilance : le cadre légal avance, mais le déploiement opérationnel reste encore
-                    en transition.
+                    Depuis le <strong>20 mai 2026</strong>, le Code du tourisme prévoit une
+                    déclaration soumise à enregistrement auprès d'un téléservice national, mais la
+                    DGE décrit encore un déploiement opérationnel en deux temps avec une version
+                    finale annoncée pour le second semestre 2026.
                   </span>
                 </li>
               </ul>
@@ -106,7 +107,7 @@ export default function ArticleMeubles20252026() {
               grille de classement elle-même.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Au 3 mars 2026, le classement des meublés de tourisme reste une démarche officielle,
+              Au 7 juin 2026, le classement des meublés de tourisme reste une démarche officielle,
               facultative, valable 5 ans, fondée sur une grille nationale. Il n'y a pas eu de
               nouveau référentiel homologué remplaçant la grille actuelle sur la période 2025-2026.
               En revanche, Atout France a publié en septembre 2025 une{' '}
@@ -223,7 +224,11 @@ export default function ArticleMeubles20252026() {
                 <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
                   •
                 </span>
-                <span>si la commune a mis en place l'enregistrement ;</span>
+                <span>
+                  quelle procédure d'enregistrement s'applique au moment de la démarche : encore
+                  auprès de la commune, ou via le téléservice national lorsque la version finale
+                  sera déployée ;
+                </span>
               </li>
               <li className="flex gap-3">
                 <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
@@ -315,59 +320,41 @@ export default function ArticleMeubles20252026() {
 
             {/* Section 6 */}
             <h2 className="mt-12 mb-4">
-              Enregistrement national : un tournant juridique en 2026, mais un déploiement encore en
-              transition
+              Enregistrement national : le cadre légal est en vigueur, mais le déploiement reste
+              transitoire
             </h2>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Sur le plan juridique,{' '}
+              Depuis le <strong>20 mai 2026</strong>, l'
               <a
-                href="https://www.service-public.fr/particuliers/vosdroits/R14321"
+                href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650414"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Service-Public
+                article L. 324-1-1 du Code du tourisme
               </a>{' '}
-              indique qu'<strong>à partir du 20 mai 2026</strong>, toutes les mairies devront avoir
-              mis en place une procédure d'enregistrement des meublés de tourisme et transmettre un
-              numéro d'enregistrement aux meublés déclarés sur leur territoire.
+              prévoit que toute personne qui offre à la location un meublé de tourisme doit procéder
+              préalablement à une déclaration soumise à enregistrement auprès d'un téléservice
+              national.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Mais sur le plan opérationnel, la DGE décrit encore au 3 mars 2026 un déploiement
-              progressif de l'
+              En pratique, la DGE présente encore le dispositif{' '}
               <a
                 href="https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 API Meublés
-              </a>
-              , avec :
-            </p>
-            <ul className="space-y-2 mb-6 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>une version bêta prévue pour début mars 2026 ;</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>une version finale annoncée pour le second semestre 2026.</span>
-              </li>
-            </ul>
-            <p className="text-gray-700 leading-comfortable mb-4">
-              La DGE précise aussi que pendant la phase bêta, les loueurs doivent continuer à
-              s'enregistrer auprès de leur commune, et qu'au lancement de la version finale, tous
-              les loueurs devront s'enregistrer auprès du téléservice national, y compris ceux qui
-              disposent déjà d'un numéro communal plus ancien.
+              </a>{' '}
+              comme un déploiement en deux temps : la version bêta, accessible depuis début mars
+              2026, laisse les loueurs s'enregistrer directement auprès des communes ; la version
+              finale, annoncée pour le second semestre 2026, doit permettre l'enregistrement direct
+              de chaque meublé sur le téléservice national.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Le cadre légal pousse clairement vers une généralisation de l'enregistrement ; mais au
-              3 mars 2026, le propriétaire a encore intérêt à vérifier la procédure réellement
-              applicable dans sa commune et à ne pas supposer qu'un guichet unique national est déjà
-              pleinement opérationnel partout.
+              Le point à retenir est donc simple : le cadre juridique national est désormais posé,
+              mais tant que la version finale n'est pas pleinement déployée, un propriétaire doit
+              vérifier la procédure réellement applicable auprès de sa commune et suivre les
+              informations officielles sur API Meublés.
             </p>
 
             {/* Section 7 - Checklist */}
@@ -389,7 +376,7 @@ export default function ArticleMeubles20252026() {
                 {
                   num: '2',
                   title: 'Les règles de la commune',
-                  desc: "Le logement est-il situé dans une commune avec enregistrement ? La commune a-t-elle abaissé le plafond de 120 à 90 jours ? Le changement d'usage s'applique-t-il ?",
+                  desc: "Quelle procédure d'enregistrement s'applique au moment de la démarche ? La commune a-t-elle abaissé le plafond de 120 à 90 jours ? Le changement d'usage s'applique-t-il ?",
                 },
                 {
                   num: '3',
@@ -538,6 +525,16 @@ export default function ArticleMeubles20252026() {
                   {
                     label: 'Décret du 20 février 2026 (Légifrance)',
                     url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053525578',
+                  },
+                  {
+                    label:
+                      'Légifrance / Code du tourisme, article L324-1-1 — version en vigueur depuis le 20 mai 2026',
+                    url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650414',
+                  },
+                  {
+                    label:
+                      'Légifrance / Décret n° 2026-196 du 19 mars 2026 relatif à la location de meublés de tourisme',
+                    url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703509',
                   },
                 ].map(({ label, url }, i) => (
                   <li key={url} className="flex gap-2">

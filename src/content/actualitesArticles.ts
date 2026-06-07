@@ -7,6 +7,8 @@ export interface ActualiteArticle {
   href: string;
   date: string;
   publishedAt: string;
+  updatedDate?: string;
+  updatedAt?: string;
 }
 
 const articles: ActualiteArticle[] = [
@@ -18,6 +20,8 @@ const articles: ActualiteArticle[] = [
     href: '/actualites/micro-bic-2026-meuble-classe-vs-non-classe',
     date: '12 mars 2026',
     publishedAt: '2026-03-12',
+    updatedDate: '7 juin 2026',
+    updatedAt: '2026-06-07',
   },
   {
     title: 'Meublés de tourisme : ce qui change vraiment en 2025-2026 pour les propriétaires',
@@ -27,6 +31,8 @@ const articles: ActualiteArticle[] = [
     href: '/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
     date: '3 mars 2026',
     publishedAt: '2026-03-03',
+    updatedDate: '7 juin 2026',
+    updatedAt: '2026-06-07',
   },
   {
     title: 'Airbnb en résidence principale : la limite des 90 jours, qui est concerné ?',
@@ -36,6 +42,8 @@ const articles: ActualiteArticle[] = [
     href: '/actualites/airbnb-residence-principale-limite-90-jours',
     date: '27 mars 2026',
     publishedAt: '2026-03-27',
+    updatedDate: '7 juin 2026',
+    updatedAt: '2026-06-07',
   },
   {
     title: 'Copropriété et location touristique : ce que le règlement peut désormais prévoir',
@@ -81,6 +89,8 @@ const articles: ActualiteArticle[] = [
     href: '/actualites/dpe-meubles-tourisme-2026-2034',
     date: '14 mai 2026',
     publishedAt: '2026-05-14',
+    updatedDate: '7 juin 2026',
+    updatedAt: '2026-06-07',
   },
   {
     title: 'API Meublés : tous les propriétaires devront déclarer leur meublé de tourisme',
@@ -90,6 +100,8 @@ const articles: ActualiteArticle[] = [
     href: '/actualites/api-meubles-declaration-meuble-tourisme',
     date: '18 mai 2026',
     publishedAt: '2026-05-18',
+    updatedDate: '7 juin 2026',
+    updatedAt: '2026-06-07',
   },
 ];
 

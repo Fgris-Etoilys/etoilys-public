@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import ArticleHeaderMeta from '../../components/ui/ArticleHeaderMeta';
 
 export default function ArticleDpeMeublesTourisme() {
   return (
@@ -8,17 +9,14 @@ export default function ArticleDpeMeublesTourisme() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3 text-white/80 text-sm">
-              <Link to="/actualites" className="hover:text-white transition-colors text-white/80">
-                ← Actualités
-              </Link>
-              <span aria-hidden="true">•</span>
-              <time dateTime="2026-05-14">Publié le 14 mai 2026</time>
-              <span aria-hidden="true">•</span>
-              <span>Florian Grisorio</span>
-              <span aria-hidden="true">•</span>
-              <span>6 min de lecture</span>
-            </div>
+            <ArticleHeaderMeta
+              publishedAt="2026-05-14"
+              publishedDate="14 mai 2026"
+              updatedAt="2026-06-07"
+              updatedDate="7 juin 2026"
+              author="Florian Grisorio"
+              readingTime="6 min de lecture"
+            />
             <h1 className="mb-0 text-white">
               DPE des meublés de tourisme : ce qui s&apos;applique en 2026 et ce qui attend 2034
             </h1>
@@ -351,6 +349,18 @@ export default function ArticleDpeMeublesTourisme() {
               instantanément si chaque commune applique une procédure de changement d&apos;usage.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
+              Depuis la mise en place du nouveau cadre d&apos;enregistrement, un DPE peut aussi être
+              demandé dans la procédure administrative lorsque le logement est concerné par une
+              autorisation de changement d&apos;usage. Cette demande ne signifie pas que tous les
+              meublés de tourisme doivent fournir un DPE en 2026 : elle vise les cas où le bien
+              entre déjà dans le champ du changement d&apos;usage.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Si la commune demande un DPE dans le cadre de l&apos;enregistrement, vérifiez
+              d&apos;abord si cette demande est liée à une autorisation de changement d&apos;usage.
+              C&apos;est souvent cette condition qui déclenche l&apos;exigence énergétique dès 2026.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
               La vérification doit donc se faire à partir de sources fiables :
             </p>
             <ul className="space-y-2 mb-6 text-gray-700">
@@ -500,12 +510,13 @@ export default function ArticleDpeMeublesTourisme() {
                 {[
                   {
                     label:
-                      'Légifrance — Article L. 631-10 du code de la construction et de l’habitation',
-                    url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623427',
+                      'Légifrance \u2014 Code de la construction et de l\u2019habitation, article L.\u00a0631-10 : DPE requis pour certaines autorisations de changement d\u2019usage en meublé de tourisme',
+                    url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623427/2026-03-16',
                   },
                   {
-                    label: 'Légifrance — Article L. 324-2-2 du code du tourisme',
-                    url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050614567/',
+                    label:
+                      'Légifrance \u2014 Code du tourisme, article L.\u00a0324-2-2 : exigence de décence énergétique applicable à partir du 1er janvier 2034 aux meublés de tourisme qui ne constituent pas la résidence principale du loueur',
+                    url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050614567/2034-01-01',
                   },
                   {
                     label: 'Légifrance — Loi du 19 novembre 2024',

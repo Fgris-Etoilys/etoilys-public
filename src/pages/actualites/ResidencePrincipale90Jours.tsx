@@ -1,4 +1,6 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import ArticleHeaderMeta from '../../components/ui/ArticleHeaderMeta';
 import Button from '../../components/ui/Button';
 
 export default function ArticleResidencePrincipale90Jours() {
@@ -8,15 +10,14 @@ export default function ArticleResidencePrincipale90Jours() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3 text-white/80 text-sm">
-              <Link to="/actualites" className="hover:text-white transition-colors text-white/80">
-                ← Actualités
-              </Link>
-              <span aria-hidden="true">•</span>
-              <time dateTime="2026-03-27">Publié le 27 mars 2026</time>
-              <span aria-hidden="true">•</span>
-              <span>Florian Grisorio</span>
-            </div>
+            <ArticleHeaderMeta
+              publishedAt="2026-03-27"
+              publishedDate="27 mars 2026"
+              updatedAt="2026-06-07"
+              updatedDate="7 juin 2026"
+              author="Florian Grisorio"
+              readingTime="8 min de lecture"
+            />
             <h1 className="mb-0 text-white">
               Airbnb en résidence principale : la limite des 90 jours, qui est concerné ?
             </h1>
@@ -494,8 +495,26 @@ export default function ArticleResidencePrincipale90Jours() {
                   {
                     num: '3',
                     title:
-                      "La mairie applique-t-elle une procédure d'enregistrement ou des règles locales particulières ?",
-                    desc: "De nombreuses communes exigent une déclaration préalable ou un numéro d'enregistrement, indépendamment du plafond de jours.",
+                      "Quelle déclaration ou quel enregistrement s'applique depuis le 20 mai 2026 ?",
+                    desc: (
+                      <>
+                        <p className="mb-3">
+                          Depuis le 20 mai 2026, le Code du tourisme prévoit une déclaration soumise
+                          à enregistrement via un téléservice national pour les meublés de tourisme.
+                          En pratique, la DGE indique que le dispositif API Meublés est encore en
+                          phase de transition : pendant la version bêta, les loueurs continuent à
+                          s'enregistrer auprès de leur commune, puis la version finale prévue au
+                          second semestre 2026 doit permettre l'enregistrement national direct par
+                          les loueurs.
+                        </p>
+                        <p>
+                          Avant de louer, vérifiez donc à la fois les consignes de votre commune et
+                          l'état du déploiement du téléservice national. Cette démarche est
+                          distincte du plafond de 120 jours ou du plafond local éventuellement
+                          abaissé.
+                        </p>
+                      </>
+                    ),
                   },
                   {
                     num: '4',
@@ -508,7 +527,7 @@ export default function ArticleResidencePrincipale90Jours() {
                     title: 'Ne pas confondre plafond annuel et règle des 90 jours consécutifs',
                     desc: "La limite de 90 jours consécutifs à un même client est une règle distincte qui s'applique indépendamment du plafond annuel.",
                   },
-                ] as { num: string; title: string; desc: string }[]
+                ] as { num: string; title: string; desc: ReactNode }[]
               ).map(({ num, title, desc }) => (
                 <div key={num} className="flex gap-4">
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
@@ -518,7 +537,7 @@ export default function ArticleResidencePrincipale90Jours() {
                     <h3 className="font-semibold text-gray-900 mb-1 text-base leading-snug">
                       {title}
                     </h3>
-                    <p className="text-gray-700 leading-comfortable">{desc}</p>
+                    <div className="text-gray-700 leading-comfortable">{desc}</div>
                   </div>
                 </div>
               ))}
@@ -607,6 +626,11 @@ export default function ArticleResidencePrincipale90Jours() {
                   {
                     label: 'entreprises.gouv.fr — Les meublés de tourisme',
                     url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme',
+                  },
+                  {
+                    label:
+                      "Direction générale des Entreprises — API Meublés, guichet unique de centralisation des données d'activité des intermédiaires de meublés de tourisme — publié le 5 mars 2026, mis à jour le 25 mars 2026",
+                    url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
                   },
                 ].map(({ label, url }, i) => (
                   <li key={url} className="flex gap-2">

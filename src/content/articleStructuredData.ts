@@ -17,7 +17,7 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     description:
       'Fiscalité, 90 jours, DPE, copropriété et enregistrement : points clés des évolutions 2025-2026.',
     datePublished: '2026-03-03',
-    dateModified: '2026-03-03',
+    dateModified: '2026-06-07',
     imageKey: 'articleMeubles20252026',
     authorName: 'Florian Grisorio',
   },
@@ -27,7 +27,7 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     description:
       'Seuils, abattements et régime réel : évolutions 2026 entre meublé de tourisme classé et non classé.',
     datePublished: '2026-03-12',
-    dateModified: '2026-03-12',
+    dateModified: '2026-06-07',
     imageKey: 'articleMicroBic2026',
     authorName: 'Florian Grisorio',
   },
@@ -37,7 +37,7 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     description:
       "La limite des 90 jours ne s'applique pas partout automatiquement. Points de contexte et conditions locales.",
     datePublished: '2026-03-27',
-    dateModified: '2026-03-27',
+    dateModified: '2026-06-07',
     imageKey: 'articleResidence90Jours',
     authorName: 'Florian Grisorio',
   },
@@ -87,7 +87,7 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     description:
       'Faut-il déjà un DPE pour louer un meublé de tourisme ? Changement d\u2019usage, résidence principale, règle 2034 : voici ce qu\u2019il faut vérifier.',
     datePublished: '2026-05-14',
-    dateModified: '2026-05-14',
+    dateModified: '2026-06-07',
     imageKey: 'articleDpeMeublesTourisme',
     authorName: 'Florian Grisorio',
   },
@@ -97,7 +97,7 @@ const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     description:
       'Tous les loueurs devront obtenir un numéro d\u2019enregistrement national via API Meublés. Voici ce qui change à partir du 20 mai 2026.',
     datePublished: '2026-05-18',
-    dateModified: '2026-05-18',
+    dateModified: '2026-06-07',
     imageKey: 'articleApiMeubles',
     authorName: 'Florian Grisorio',
   },

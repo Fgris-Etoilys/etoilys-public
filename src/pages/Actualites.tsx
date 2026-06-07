@@ -9,7 +9,7 @@ export default function Actualites() {
           <div className="max-w-3xl">
             <h1 className="mb-6 text-white">Actualités</h1>
             <p className="text-xl text-white/90 leading-comfortable">
-              Restez informé des dernières nouveautés, conseils et actualités du secteur des meublés
+              Actualités, réglementation et informations utiles autour du classement et des meublés
               de tourisme.
             </p>
           </div>

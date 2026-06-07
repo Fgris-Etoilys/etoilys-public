@@ -29,7 +29,7 @@ export default function ArticleFacturationElectronique2026() {
         <div className="container-adaptive">
           <div className="max-w-4xl mx-auto">
             {/* Chapô */}
-            <p className="text-xl leading-comfortable text-gray-700 mb-10">
+            <p className="text-xl leading-comfortable text-gray-700 mb-6">
               Oui, les propriétaires de meublés de tourisme sont concernés par la réforme de la
               facturation électronique. La confusion vient d'un mauvais réflexe&nbsp;: beaucoup
               pensent que seuls les loueurs qui <strong>collectent la TVA</strong> sont concernés.
@@ -37,6 +37,12 @@ export default function ArticleFacturationElectronique2026() {
               déjà la <strong>réception</strong> des factures électroniques des fournisseurs à
               partir du <strong>1er septembre 2026</strong>, même si les séjours restent exonérés de
               TVA.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-10">
+              En pratique, le sujet concerne surtout les loueurs déclarés avec un numéro{' '}
+              <strong>SIREN/SIRET</strong>. Même lorsque les séjours restent exonérés de TVA, ces
+              loueurs doivent organiser la réception de leurs factures électroniques fournisseurs à
+              partir du <strong>1er septembre 2026</strong>.
             </p>
 
             {/* À retenir */}
@@ -531,8 +537,8 @@ export default function ArticleFacturationElectronique2026() {
                     url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006305347',
                   },
                   {
-                    label: 'Légifrance — Article 289 bis du CGI',
-                    url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000053546670',
+                    label: 'Légifrance — Code général des impôts, article 289 bis',
+                    url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000053546660',
                   },
                   {
                     label: 'Légifrance — Article 290 du CGI',
