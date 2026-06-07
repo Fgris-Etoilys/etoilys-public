@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import Accordion from '../components/ui/Accordion';
 import Button from '../components/ui/Button';
+import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
 
 function SourceLink({ href }: { href: string }) {
   return (
@@ -138,7 +139,16 @@ const faqSections: FaqSection[] = [
         answer: (
           <>
             La visite doit être réalisée par un organisme accrédité ou agréé figurant sur les listes
-            publiées par Atout France.
+            publiées par Atout France. Etoilys est un{' '}
+            <a
+              href={COFRAC_ACCREDITATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary-300 underline hover:text-primary-400"
+            >
+              organisme de contrôle accrédité Cofrac Inspection n°3-2394
+            </a>{' '}
+            pour le classement des meublés de tourisme.
             {/* Source secondaire : https://www.classement.atout-france.fr/nos-documents-de-classement */}
             <SourceLink href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/qui-sadresser-pour-faire-classer-son-meuble-de-tourisme" />
           </>

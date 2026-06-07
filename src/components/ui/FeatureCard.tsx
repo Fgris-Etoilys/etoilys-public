@@ -1,10 +1,13 @@
 import type { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 interface FeatureCardProps {
   icon: LucideIcon;
   title: string;
-  description: string;
+  description: ReactNode;
   iconColor?: 'primary' | 'bicolor';
+  linkHref?: string;
+  linkLabel?: string;
 }
 
 export default function FeatureCard({
@@ -12,6 +15,8 @@ export default function FeatureCard({
   title,
   description,
   iconColor = 'primary',
+  linkHref,
+  linkLabel,
 }: FeatureCardProps) {
   const iconClasses =
     iconColor === 'primary' ? 'text-primary-300' : 'text-primary-300 group-hover:text-tertiary-1';
@@ -23,6 +28,16 @@ export default function FeatureCard({
       </div>
       <h3 className="text-xl font-playfair font-semibold text-gray-900 mb-3">{title}</h3>
       <p className="text-textLight leading-comfortable">{description}</p>
+      {linkHref && linkLabel && (
+        <a
+          href={linkHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex text-sm font-medium text-primary-300 underline hover:text-primary-400"
+        >
+          {linkLabel}
+        </a>
+      )}
     </div>
   );
 }

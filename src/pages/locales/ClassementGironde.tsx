@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Award, Calculator, MapPin, Percent, PiggyBank } from 'lucide-react';
+import { Award, Calculator, MapPin, Percent, PiggyBank, ShieldCheck } from 'lucide-react';
 import Accordion from '../../components/ui/Accordion';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import FeatureCard from '../../components/ui/FeatureCard';
 import SmartImage from '../../components/ui/SmartImage';
+import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
 import {
   GIRONDE_FAQ,
   GIRONDE_PROCEDURE_STEPS,
@@ -136,6 +137,25 @@ export default function ClassementGironde() {
               >
                 Voir tous les avantages du classement
               </Link>
+            </div>
+
+            <div className="mx-auto mt-8 flex max-w-4xl gap-3 rounded-card border border-primary-200 bg-primary-100 px-5 py-4 text-sm leading-comfortable text-textLight">
+              <ShieldCheck className="mt-1 h-5 w-5 flex-shrink-0 text-primary-300" />
+              <div>
+                <p className="font-semibold text-gray-900">Organisme accrédité Cofrac Inspection</p>
+                <p>
+                  Etoilys réalise les visites officielles de classement en Gironde dans le cadre de
+                  son accréditation Cofrac Inspection n°3-2394.
+                </p>
+                <a
+                  href={COFRAC_ACCREDITATION_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex font-medium text-primary-300 underline hover:text-primary-400"
+                >
+                  Voir la portée d’accréditation
+                </a>
+              </div>
             </div>
           </div>
         </div>

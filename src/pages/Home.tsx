@@ -3,13 +3,28 @@ import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import ArticleCard from '../components/ui/ArticleCard';
 import SmartImage from '../components/ui/SmartImage';
+import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
 import { actualitesArticlesByRecency } from '../content/actualitesArticles';
 
 const features = [
   {
     icon: Shield,
-    title: 'Expertise reconnue',
-    description: 'Organisme accrédité par le COFRAC pour le classement des meublés de tourisme.',
+    title: 'Organisme accrédité Cofrac',
+    description: (
+      <>
+        Etoilys est accrédité Cofrac Inspection n°3-2394 pour le classement des meublés de tourisme.
+        La portée d’accréditation est{' '}
+        <a
+          href={COFRAC_ACCREDITATION_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-primary-300 underline hover:text-primary-400"
+        >
+          consultable en ligne
+        </a>
+        .
+      </>
+    ),
   },
   {
     icon: Zap,

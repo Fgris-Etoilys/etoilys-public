@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Star, Calculator, Users, Globe } from 'lucide-react';
+import { Star, Calculator, Users, Globe, ShieldCheck } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
+import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
 
 const classementLevels = [
   {
@@ -104,6 +105,29 @@ export default function Classement() {
                 organisme accrédité par le COFRAC ou agréé par Atout France. Les listes des
                 organismes habilités sont publiées et tenues à jour par Atout France.
               </p>
+              <div className="rounded-card border border-primary-200 bg-primary-100 p-5">
+                <div className="flex gap-3">
+                  <ShieldCheck className="mt-1 h-5 w-5 flex-shrink-0 text-primary-300" />
+                  <div>
+                    <h3 className="mb-2 text-lg font-playfair font-semibold text-gray-900">
+                      Organisme accrédité Cofrac Inspection
+                    </h3>
+                    <p className="text-sm leading-comfortable text-textLight">
+                      Etoilys est un organisme de contrôle accrédité Cofrac Inspection n°3-2394 pour
+                      le classement des meublés de tourisme. Cette accréditation permet de réaliser
+                      les visites officielles et d’émettre les documents de classement.
+                    </p>
+                    <a
+                      href={COFRAC_ACCREDITATION_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-3 inline-flex text-sm font-medium text-primary-300 underline hover:text-primary-400"
+                    >
+                      Voir la portée d’accréditation
+                    </a>
+                  </div>
+                </div>
+              </div>
               <p>
                 Le classement s'applique à tous les types de meublés de tourisme : studios,
                 appartements, maisons, chalets. Il n'est soumis à aucun critère géographique ou de

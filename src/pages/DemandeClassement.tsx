@@ -1,4 +1,5 @@
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
+import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
 
 export default function DemandeClassement() {
   return (
@@ -32,7 +33,7 @@ export default function DemandeClassement() {
                   <ul className="space-y-4 text-textLight leading-comfortable">
                     <li className="flex gap-3">
                       <span className="text-primary-300 font-bold flex-shrink-0">✓</span>
-                      <span>Organisme accrédité par le Cofrac</span>
+                      <span>Organisme accrédité Cofrac Inspection</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="text-primary-300 font-bold flex-shrink-0">✓</span>
@@ -56,7 +57,7 @@ export default function DemandeClassement() {
                 <div className="flex items-center justify-center gap-4 mt-4">
                   <img
                     src="/Inspection_RVB.jpg"
-                    alt="Logo Cofrac"
+                    alt="Marque d’accréditation Cofrac Inspection"
                     width={1440}
                     height={2399}
                     loading="lazy"
@@ -69,7 +70,7 @@ export default function DemandeClassement() {
                     Portée disponible sur
                     <br />
                     <a
-                      href="https://www.cofrac.fr"
+                      href={COFRAC_ACCREDITATION_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary-300 hover:underline"

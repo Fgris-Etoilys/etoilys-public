@@ -252,9 +252,9 @@ Non vérifié proprement dans l'audit externe :
 - [ ] Créer ou renforcer un bloc/page ville pour Périgueux.
 - [ ] Créer ou renforcer des contenus ville/secteur pour Libourne et Saint-Émilion.
 - [ ] Reporter Bordeaux après les zones plus accessibles, sauf besoin business prioritaire.
-- [ ] Mieux exploiter la preuve COFRAC sur les pages service et locales.
-- [ ] Ajouter un badge ou bloc court `Organisme accrédité COFRAC n°3-2394`.
-- [ ] Ajouter un lien vers la portée officielle / Atout France quand pertinent.
+- [x] Mieux exploiter la preuve COFRAC sur les pages service et locales.
+- [x] Ajouter un badge ou bloc court `Organisme accrédité COFRAC n°3-2394`.
+- [x] Ajouter un lien vers la portée officielle / Atout France quand pertinent.
 
 ### P1 - Fort levier SEO
 
@@ -337,7 +337,7 @@ Non vérifié proprement dans l'audit externe :
 
 - [ ] Nettoyage titles/meta.
 - [ ] Correction homepage.
-- [ ] Renforcement COFRAC.
+- [x] Renforcement COFRAC.
 - [ ] Vérification sitemap/robots/canonicals dans le repo et en production.
 - [ ] Ajout d'ancres internes depuis footer/hub vers pages locales.
 

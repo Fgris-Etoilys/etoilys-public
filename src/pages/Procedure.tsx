@@ -1,6 +1,7 @@
 import { CheckCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Timeline from '../components/ui/Timeline';
+import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
 
 const procedureSteps = [
   {
@@ -20,18 +21,34 @@ const procedureSteps = [
     title: "Visite d'inspection",
     description: (
       <>
-        {"L'inspecteur visite le logement en votre présence et contrôle les "}
-        <a
-          href="/Référentiel de classement des meublés de tourisme 2022 V2.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline hover:text-gray-700"
-        >
-          133 critères du référentiel officiel
-        </a>
-        {
-          ". À l'issue de la visite, vous avez la possibilité d'ajuster le niveau de classement visé en fonction des résultats."
-        }
+        <p>
+          {"L'inspecteur visite le logement en votre présence et contrôle les "}
+          <a
+            href="/Référentiel de classement des meublés de tourisme 2022 V2.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-gray-700"
+          >
+            133 critères du référentiel officiel
+          </a>
+          {
+            ". À l'issue de la visite, vous avez la possibilité d'ajuster le niveau de classement visé en fonction des résultats."
+          }
+        </p>
+        <div className="mt-3 rounded-card border border-primary-200 bg-primary-100 px-4 py-3">
+          <p className="text-sm leading-snug">
+            Cette visite officielle est réalisée par Etoilys dans le cadre de son accréditation
+            Cofrac Inspection n°3-2394 pour le classement des meublés de tourisme.
+          </p>
+          <a
+            href={COFRAC_ACCREDITATION_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1.5 inline-flex text-sm font-medium text-primary-300 underline hover:text-primary-400"
+          >
+            Voir la portée d’accréditation
+          </a>
+        </div>
       </>
     ),
   },
@@ -39,7 +56,7 @@ const procedureSteps = [
     number: 4,
     title: 'Proposition de classement',
     description:
-      "Vous recevez sous 7 jours le certificat de visite complet incluant la grille de contrôle, le rapport d'inspection détaillé et la proposition de classement officielle. Vous avez alors 15 jours pour faire appel de la décision.",
+      "Vous recevez sous 7 jours le certificat de visite complet incluant la grille de contrôle, le rapport d'inspection détaillé et la proposition de classement officielle. Vous disposez alors de 15 jours pour refuser la proposition de classement.",
   },
   {
     number: 5,

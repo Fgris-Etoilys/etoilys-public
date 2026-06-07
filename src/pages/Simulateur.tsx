@@ -358,6 +358,20 @@ export default function Simulateur() {
                   </p>
                 </div>
               </div>
+
+              <div className="rounded-card border border-primary-200 bg-white p-5 shadow-card md:p-6">
+                <h2 className="mb-3 text-gray-900">
+                  Passer de l’estimation à la visite officielle
+                </h2>
+                <p className="mb-5 text-sm leading-comfortable text-textLight">
+                  Le simulateur vous aide à préparer votre projet, mais seul un contrôle sur place
+                  permet d’obtenir un classement. Etoilys peut réaliser cette visite en tant
+                  qu’organisme de contrôle accrédité Cofrac Inspection n°3-2394.
+                </p>
+                <Button href="/demande-classement" variant="primary">
+                  Demander une visite de classement
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-5">

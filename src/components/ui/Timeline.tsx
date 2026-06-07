@@ -25,7 +25,7 @@ export default function Timeline({ steps }: TimelineProps) {
           </div>
           <div className="flex-1 pb-8">
             <h3 className="text-xl font-playfair font-semibold text-gray-900 mb-2">{step.title}</h3>
-            <p className="text-textLight leading-comfortable">{step.description}</p>
+            <div className="text-textLight leading-comfortable">{step.description}</div>
           </div>
         </div>
       ))}
