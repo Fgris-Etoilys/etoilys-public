@@ -88,8 +88,8 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="mb-4">Pourquoi choisir Etoilys ?</h2>
             <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
-              Nous sommes le partenaire de confiance des propriétaires de meublés de tourisme
-              partout en France.
+              Un accompagnement simple, réactif et de proximité pour obtenir le classement officiel
+              de votre meublé de tourisme.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

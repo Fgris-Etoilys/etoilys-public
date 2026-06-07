@@ -244,7 +244,7 @@ Non vérifié proprement dans l'audit externe :
 - [x] Nettoyer tous les titles et supprimer les suffixes lourds.
 - [x] Éviter les titles dupliqués du type `Etoilys - Etoilys`.
 - [x] Standardiser le suffixe title en `| Etoilys`.
-- [ ] Corriger la homepage pour remplacer `partout en France` par une formulation centrée Dordogne, Gironde, Lot-et-Garonne et secteurs proches de Bergerac.
+- [x] Corriger la homepage pour remplacer `partout en France` par une formulation centrée Dordogne, Gironde, Lot-et-Garonne et secteurs proches de Bergerac.
 - [ ] Garder l'éventuelle expansion nationale hors promesse principale de homepage.
 - [ ] Créer ou renforcer un bloc/page ville pour Bergerac.
 - [ ] Créer ou renforcer un bloc/page ville pour Agen.
