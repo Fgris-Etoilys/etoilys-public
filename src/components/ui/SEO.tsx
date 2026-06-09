@@ -8,6 +8,8 @@ interface SEOProps {
   robots?: string | undefined;
   ogImage?: string | undefined;
   preloadImage?: string | undefined;
+  preloadImageSrcSet?: string | undefined;
+  preloadImageSizes?: string | undefined;
 }
 
 export default function SEO({
@@ -16,6 +18,8 @@ export default function SEO({
   robots = 'index,follow',
   ogImage,
   preloadImage,
+  preloadImageSrcSet,
+  preloadImageSizes,
 }: SEOProps) {
   const location = useLocation();
   const fullTitle = getSeoTitle(title);
@@ -72,6 +76,16 @@ export default function SEO({
       link.setAttribute('rel', 'preload');
       link.setAttribute('as', 'image');
       link.setAttribute('href', preloadImage);
+      if (preloadImageSrcSet?.trim()) {
+        link.setAttribute('imagesrcset', preloadImageSrcSet);
+      } else {
+        link.removeAttribute('imagesrcset');
+      }
+      if (preloadImageSizes?.trim()) {
+        link.setAttribute('imagesizes', preloadImageSizes);
+      } else {
+        link.removeAttribute('imagesizes');
+      }
       link.setAttribute('data-seo-lcp-preload', 'true');
       if (!preloadLink) {
         document.head.appendChild(link);
@@ -79,7 +93,16 @@ export default function SEO({
     } else if (preloadLink) {
       preloadLink.remove();
     }
-  }, [fullTitle, description, robots, currentUrl, image, preloadImage]);
+  }, [
+    fullTitle,
+    description,
+    robots,
+    currentUrl,
+    image,
+    preloadImage,
+    preloadImageSrcSet,
+    preloadImageSizes,
+  ]);
 
   return null;
 }

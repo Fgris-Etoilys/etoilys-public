@@ -8,9 +8,9 @@ describe('Button hover text contrast classes', () => {
     { variant: 'primary' as const, expectedClasses: ['hover:text-white'] },
     {
       variant: 'secondary' as const,
-      expectedClasses: ['hover:text-primary-300', 'hover:bg-white', 'hover:shadow-sm'],
+      expectedClasses: ['hover:text-primary-500', 'hover:bg-white', 'hover:shadow-sm'],
     },
-    { variant: 'white' as const, expectedClasses: ['hover:text-primary-300'] },
+    { variant: 'white' as const, expectedClasses: ['hover:text-primary-500'] },
     { variant: 'ghost' as const, expectedClasses: ['hover:text-white'] },
   ])(
     'applies expected hover classes for $variant variant when rendered as link',

@@ -43,6 +43,8 @@ export default function Footer() {
                 src={footerBrandBg}
                 alt=""
                 aria-hidden="true"
+                width={1619}
+                height={971}
                 loading="lazy"
                 decoding="async"
                 className="absolute inset-0 h-full w-full object-cover object-left-bottom opacity-85"

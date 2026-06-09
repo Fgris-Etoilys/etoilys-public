@@ -27,11 +27,11 @@ export default function Button({
 
   const variantClasses = {
     primary:
-      'bg-primary-300 text-white hover:bg-primary-400 hover:text-white shadow-sm hover:shadow-md',
+      'bg-primary-400 text-white hover:bg-primary-500 hover:text-white shadow-sm hover:shadow-md',
     secondary:
-      'bg-transparent border-2 border-primary-300 text-primary-300 hover:bg-white hover:text-primary-300 hover:shadow-sm',
+      'bg-transparent border-2 border-primary-400 text-primary-400 hover:bg-white hover:text-primary-500 hover:shadow-sm',
     white:
-      'bg-white text-primary-300 hover:bg-gray-100 hover:text-primary-300 shadow-sm hover:shadow-md',
+      'bg-white text-primary-400 hover:bg-gray-100 hover:text-primary-500 shadow-sm hover:shadow-md',
     ghost: 'bg-transparent border-2 border-white text-white hover:bg-white/10 hover:text-white',
   };
 

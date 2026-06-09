@@ -10,6 +10,7 @@ const TARGET_WIDTHS = [480, 768, 1200, 1600, 1920];
 const DEFAULT_WIDTH = 1200;
 const OG_ASPECT_RATIO = 1200 / 630;
 const FORCE_REBUILD = process.argv.includes('--force');
+const HERO_ASSET_KEYS = new Set(['homeHero', 'dordogneHero', 'girondeHero', 'lotEtGaronneHero']);
 
 const IMAGE_ASSETS = [
   { key: 'homeHero', fileName: 'AdobeStock_70255363.jpeg', outputName: 'home-hero' },
@@ -105,6 +106,30 @@ function buildOgCompositionOverlay(width, height, composition) {
   <text x="${safeMargin}" y="${titleY}" font-family="Inter, Arial, sans-serif" font-size="${titleSize}" font-weight="760" fill="#ffffff">${escapeXml(composition.title)}</text>
   <text x="${safeMargin}" y="${subtitleY}" font-family="Inter, Arial, sans-serif" font-size="${subtitleSize}" font-weight="500" fill="#ffffff">${escapeXml(composition.subtitle)}</text>
 </svg>`);
+}
+
+function getJpegQuality(asset, width) {
+  if (!HERO_ASSET_KEYS.has(asset.key)) {
+    return 82;
+  }
+  return width <= 768 ? 78 : 80;
+}
+
+function getWebpQuality(asset, width) {
+  if (!HERO_ASSET_KEYS.has(asset.key)) {
+    return 82;
+  }
+  return width <= 768 ? 74 : 78;
+}
+
+function getAvifQuality(asset, width) {
+  if (!HERO_ASSET_KEYS.has(asset.key)) {
+    return 65;
+  }
+  if (width <= 768) {
+    return 48;
+  }
+  return width <= 1200 ? 52 : 56;
 }
 
 async function ensureDirs() {
@@ -204,15 +229,15 @@ async function buildAsset(plan) {
     };
 
     await buildPipeline()
-      .jpeg({ quality: 82, mozjpeg: true })
+      .jpeg({ quality: getJpegQuality(asset, width), mozjpeg: true })
       .toFile(path.join(OUTPUT_DIR, `${baseName}-${width}.jpg`));
 
     await buildPipeline()
-      .webp({ quality: 82 })
+      .webp({ quality: getWebpQuality(asset, width) })
       .toFile(path.join(OUTPUT_DIR, `${baseName}-${width}.webp`));
 
     await buildPipeline()
-      .avif({ quality: 65 })
+      .avif({ quality: getAvifQuality(asset, width) })
       .toFile(path.join(OUTPUT_DIR, `${baseName}-${width}.avif`));
   }
 }

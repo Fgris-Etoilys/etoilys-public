@@ -60,26 +60,33 @@ export default {
       },
       fontFamily: {
         playfair: ['"Playfair Display"', 'serif'],
-        roboto: ['Roboto', 'sans-serif'],
+        roboto: [
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'sans-serif',
+        ],
       },
       fontSize: {
-        'h1': 'clamp(2.25rem, 4.5vw, 3.5rem)',
-        'h2': 'clamp(1.875rem, 3.5vw, 2.75rem)',
-        'h3': 'clamp(1.5rem, 2.5vw, 2rem)',
-        'h4': 'clamp(1.25rem, 2vw, 1.5rem)',
+        h1: 'clamp(2.25rem, 4.5vw, 3.5rem)',
+        h2: 'clamp(1.875rem, 3.5vw, 2.75rem)',
+        h3: 'clamp(1.5rem, 2.5vw, 2rem)',
+        h4: 'clamp(1.25rem, 2vw, 1.5rem)',
       },
       lineHeight: {
-        'comfortable': '1.7',
+        comfortable: '1.7',
       },
       spacing: {
-        'section': 'clamp(80px, 10vw, 120px)',
+        section: 'clamp(80px, 10vw, 120px)',
       },
       boxShadow: {
-        'card': '0 2px 8px rgba(49, 107, 255, 0.08)',
+        card: '0 2px 8px rgba(49, 107, 255, 0.08)',
         'card-hover': '0 4px 16px rgba(49, 107, 255, 0.12)',
       },
       borderRadius: {
-        'card': '12px',
+        card: '12px',
       },
     },
   },

@@ -102,7 +102,7 @@ describe('routing', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /classement de meublé de tourisme en dordogne/i,
+        name: /classement de gîte et meublé de tourisme en dordogne/i,
       })
     ).toBeInTheDocument();
   });
@@ -112,7 +112,7 @@ describe('routing', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /classement de meublé de tourisme en gironde/i,
+        name: /classement de gîte et meublé de tourisme en gironde/i,
       })
     ).toBeInTheDocument();
   });
@@ -122,7 +122,7 @@ describe('routing', () => {
     expect(
       screen.getByRole('heading', {
         level: 1,
-        name: /classement de meublé de tourisme dans le lot-et-garonne/i,
+        name: /classement de gîte et meublé de tourisme dans le lot-et-garonne/i,
       })
     ).toBeInTheDocument();
   });

@@ -102,7 +102,7 @@ export default function CookieConsentManager() {
                 <p className="max-w-2xl text-sm leading-relaxed text-textLight">{BANNER_TEXT}</p>
                 <Link
                   to="/confidentialite"
-                  className="mt-4 inline-flex text-sm font-medium text-primary-300 hover:text-primary-400"
+                  className="mt-4 inline-flex text-sm font-medium text-primary-400 hover:text-primary-500"
                 >
                   Politique de confidentialité
                 </Link>

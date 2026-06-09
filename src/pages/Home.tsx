@@ -18,7 +18,7 @@ const features = [
           href={COFRAC_ACCREDITATION_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-medium text-primary-300 underline hover:text-primary-400"
+          className="font-medium text-primary-400 underline hover:text-primary-500"
         >
           consultable en ligne
         </a>
@@ -102,7 +102,7 @@ export default function Home() {
         <div className="container-adaptive">
           <div className="text-center mb-16">
             <h2 className="mb-4">Pourquoi choisir Etoilys ?</h2>
-            <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+            <p className="text-lg text-themePrimary-1 max-w-2xl mx-auto leading-comfortable">
               Un accompagnement simple, réactif et de proximité pour obtenir le classement officiel
               de votre meublé de tourisme.
             </p>

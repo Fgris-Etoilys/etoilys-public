@@ -1,4 +1,3 @@
-import posthog from 'posthog-js';
 import type { CaptureResult, Properties } from 'posthog-js';
 
 export const ANALYTICS_CONSENT_STORAGE_KEY = 'etoilys_analytics_consent';
@@ -149,6 +148,11 @@ const PHONE_PATTERN = /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/;
 let isPostHogInitialized = false;
 let isPostHogCaptureEnabled = false;
 let lastTrackedPathname: string | null = null;
+
+type PostHogClient = typeof import('posthog-js').default;
+
+let postHogClient: PostHogClient | null = null;
+let postHogImportPromise: Promise<PostHogClient | null> | null = null;
 
 function canUseBrowserStorage(): boolean {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
@@ -344,13 +348,33 @@ function beforeSend(event: CaptureResult | null): CaptureResult | null {
   return event;
 }
 
-function initializePostHog(): boolean {
+function loadPostHogClient(): Promise<PostHogClient | null> {
+  if (postHogClient) {
+    return Promise.resolve(postHogClient);
+  }
+
+  postHogImportPromise ??= import('posthog-js')
+    .then((module) => {
+      postHogClient = module.default;
+      return postHogClient;
+    })
+    .catch(() => null);
+
+  return postHogImportPromise;
+}
+
+async function initializePostHog(): Promise<PostHogClient | null> {
   if (isLocalDevelopmentAnalyticsDisabled()) {
-    return false;
+    return null;
   }
 
   if (!isAnalyticsEnabled()) {
-    return false;
+    return null;
+  }
+
+  const posthog = await loadPostHogClient();
+  if (!posthog || !isAnalyticsEnabled()) {
+    return null;
   }
 
   if (isPostHogInitialized) {
@@ -358,12 +382,12 @@ function initializePostHog(): boolean {
       posthog.opt_in_capturing();
       isPostHogCaptureEnabled = true;
     }
-    return true;
+    return posthog;
   }
 
   const token = getPostHogToken();
   if (!token) {
-    return false;
+    return null;
   }
 
   posthog.init(token, {
@@ -388,7 +412,7 @@ function initializePostHog(): boolean {
 
   isPostHogInitialized = true;
   isPostHogCaptureEnabled = true;
-  return true;
+  return posthog;
 }
 
 export function initializeAnalytics(): void {
@@ -406,28 +430,30 @@ export function initializeAnalytics(): void {
   }
 
   if (readConsent() === 'accepted') {
-    initializePostHog();
+    void initializePostHog();
   }
 }
 
 export function acceptAnalyticsConsent(): void {
   writeConsent('accepted');
-  if (initializePostHog()) {
-    trackPageView(getCurrentPathname(), { force: true });
-  }
+  void initializePostHog().then((posthog) => {
+    if (posthog) {
+      trackPageView(getCurrentPathname(), { force: true });
+    }
+  });
 }
 
 export function rejectAnalyticsConsent(): void {
   writeConsent('refused');
   lastTrackedPathname = null;
 
-  if (isPostHogInitialized) {
-    if (typeof posthog.opt_out_capturing === 'function') {
-      posthog.opt_out_capturing();
+  if (isPostHogInitialized && postHogClient) {
+    if (typeof postHogClient.opt_out_capturing === 'function') {
+      postHogClient.opt_out_capturing();
     }
 
-    if (typeof posthog.reset === 'function') {
-      posthog.reset();
+    if (typeof postHogClient.reset === 'function') {
+      postHogClient.reset();
     }
   }
 
@@ -435,46 +461,50 @@ export function rejectAnalyticsConsent(): void {
 }
 
 export function trackPageView(pathname: string, options: { force?: boolean } = {}): void {
-  if (!initializePostHog()) {
-    return;
-  }
+  void initializePostHog().then((posthog) => {
+    if (!posthog) {
+      return;
+    }
 
-  const normalizedPathname = normalizeAnalyticsPath(pathname);
-  if (!options.force && lastTrackedPathname === normalizedPathname) {
-    return;
-  }
+    const normalizedPathname = normalizeAnalyticsPath(pathname);
+    if (!options.force && lastTrackedPathname === normalizedPathname) {
+      return;
+    }
 
-  lastTrackedPathname = normalizedPathname;
-  const properties: AnalyticsProperties = {
-    $current_url: normalizedPathname,
-    $pathname: normalizedPathname,
-    source_path: normalizedPathname,
-    page_type: getPageType(normalizedPathname),
-  };
+    lastTrackedPathname = normalizedPathname;
+    const properties: AnalyticsProperties = {
+      $current_url: normalizedPathname,
+      $pathname: normalizedPathname,
+      source_path: normalizedPathname,
+      page_type: getPageType(normalizedPathname),
+    };
 
-  if (isDebugModeEnabled()) {
-    properties.debug_mode = true;
-  }
+    if (isDebugModeEnabled()) {
+      properties.debug_mode = true;
+    }
 
-  posthog.capture('$pageview', properties);
+    posthog.capture('$pageview', properties);
+  });
 }
 
 export function trackEvent(eventName: AnalyticsEventName, properties: AnalyticsProperties): void {
-  if (!initializePostHog()) {
-    return;
-  }
+  void initializePostHog().then((posthog) => {
+    if (!posthog) {
+      return;
+    }
 
-  const normalizedProperties: AnalyticsProperties = {
-    source_path: getCurrentPathname(),
-    page_type: getPageType(getCurrentPathname()),
-    ...properties,
-  };
+    const normalizedProperties: AnalyticsProperties = {
+      source_path: getCurrentPathname(),
+      page_type: getPageType(getCurrentPathname()),
+      ...properties,
+    };
 
-  if (isDebugModeEnabled()) {
-    normalizedProperties.debug_mode = true;
-  }
+    if (isDebugModeEnabled()) {
+      normalizedProperties.debug_mode = true;
+    }
 
-  posthog.capture(eventName, normalizedProperties);
+    posthog.capture(eventName, normalizedProperties);
+  });
 }
 
 export function trackCtaClick(input: {
@@ -813,5 +843,7 @@ export const analyticsInternalsForTests = {
     isPostHogInitialized = false;
     isPostHogCaptureEnabled = false;
     lastTrackedPathname = null;
+    postHogClient = null;
+    postHogImportPromise = null;
   },
 };

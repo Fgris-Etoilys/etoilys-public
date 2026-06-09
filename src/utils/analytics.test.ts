@@ -37,6 +37,12 @@ function triggerLoadedCallback() {
   config?.loaded?.({ opt_in_capturing: posthogMock.optIn });
 }
 
+async function flushAnalyticsImports() {
+  await vi.dynamicImportSettled();
+  await Promise.resolve();
+  await Promise.resolve();
+}
+
 describe('analytics', () => {
   beforeEach(() => {
     vi.unstubAllEnvs();
@@ -100,9 +106,11 @@ describe('analytics', () => {
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
-  it('initializes only after accepted consent and captures the current pageview manually', () => {
+  it('initializes only after accepted consent and captures the current pageview manually', async () => {
     acceptAnalyticsConsent();
+    await flushAnalyticsImports();
     triggerLoadedCallback();
+    await flushAnalyticsImports();
 
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)).toBe('accepted');
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY)).toEqual(
@@ -130,13 +138,14 @@ describe('analytics', () => {
     );
   });
 
-  it('adds debug_mode only after consent when debug mode is enabled', () => {
+  it('adds debug_mode only after consent when debug mode is enabled', async () => {
     window.history.pushState({}, 'Test', '/?etoilys_analytics_debug=1');
     initializeAnalytics();
     trackPageView('/contact');
     expect(posthogMock.capture).not.toHaveBeenCalled();
 
     acceptAnalyticsConsent();
+    await flushAnalyticsImports();
 
     expect(posthogMock.capture).toHaveBeenCalledWith(
       '$pageview',
@@ -159,14 +168,16 @@ describe('analytics', () => {
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
-  it('opts out and resets PostHog when accepted consent is withdrawn', () => {
+  it('opts out and resets PostHog when accepted consent is withdrawn', async () => {
     acceptAnalyticsConsent();
+    await flushAnalyticsImports();
     rejectAnalyticsConsent();
     trackPageView('/contact');
     trackEvent('cta_clicked', {
       cta_id: 'cta_primary_contact',
       destination_path: '/contact',
     });
+    await flushAnalyticsImports();
 
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)).toBe('refused');
     expect(posthogMock.optOut).toHaveBeenCalledTimes(1);
@@ -174,8 +185,9 @@ describe('analytics', () => {
     expect(posthogMock.capture).toHaveBeenCalledTimes(1);
   });
 
-  it('allows accepting again after a previous refusal and captures the current page once', () => {
+  it('allows accepting again after a previous refusal and captures the current page once', async () => {
     acceptAnalyticsConsent();
+    await flushAnalyticsImports();
     rejectAnalyticsConsent();
     posthogMock.capture.mockClear();
 
@@ -184,6 +196,7 @@ describe('analytics', () => {
       cta_id: 'cta_primary_contact',
       destination_path: '/contact',
     });
+    await flushAnalyticsImports();
 
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)).toBe('accepted');
     expect(posthogMock.optInDirect).toHaveBeenCalledTimes(1);
@@ -244,8 +257,9 @@ describe('analytics', () => {
     ).toBeNull();
   });
 
-  it('captures classement simulator events with bucketed non-identifying properties', () => {
+  it('captures classement simulator events with bucketed non-identifying properties', async () => {
     acceptAnalyticsConsent();
+    await flushAnalyticsImports();
     posthogMock.capture.mockClear();
 
     trackClassementSimulatorStarted({
@@ -254,6 +268,7 @@ describe('analytics', () => {
       floor: 4,
       capacity: 7,
     });
+    await flushAnalyticsImports();
 
     expect(posthogMock.capture).toHaveBeenCalledWith(
       'simulator_started',

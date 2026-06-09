@@ -203,7 +203,7 @@ function buildSeoHead(pathname: string): string {
   const robots = seoConfig.robots ?? 'index,follow';
   const currentUrl = `${SITE_URL}${pathname}`;
   const ogImage = getOgImage(pathname);
-  const preloadImage = seoConfig.lcpImageKey ? IMAGE_MANIFEST[seoConfig.lcpImageKey].src : null;
+  const preloadImage = seoConfig.lcpImageKey ? IMAGE_MANIFEST[seoConfig.lcpImageKey] : null;
 
   const tags = [
     `    <title>${escapeHtml(title)}</title>`,
@@ -225,7 +225,7 @@ function buildSeoHead(pathname: string): string {
 
   if (preloadImage) {
     tags.push(
-      `    <link rel="preload" as="image" href="${escapeHtml(preloadImage)}" data-seo-lcp-preload="true">`
+      `    <link rel="preload" as="image" href="${escapeHtml(preloadImage.src)}" imagesrcset="${escapeHtml(preloadImage.srcSetAvif)}" imagesizes="100vw" data-seo-lcp-preload="true">`
     );
   }
 
