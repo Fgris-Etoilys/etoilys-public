@@ -24,7 +24,25 @@ export const criteresAides: CriteresAides = {
 Ne sont prises en compte que les superficies existantes sous une hauteur de plafond de 1m80. Une pièce d'habitation doit comporter un ouvrant sur l'extérieur.
 Pour les catégories 1*,2* et 3* seulement, et pour les logements T2 et plus, les surfaces habitables requises peuvent être globalisées (réparties différemment par pièce) hors sanitaires dans la limite de 7m² minimum.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Les couchages dans les pièces de plus de 7m² (et respectant l’ensemble des conditions pour être considéré comme pièce d’habitation) sont toujours pris en compte, sans limitation de nombre de couchages (même si la chambre a une surface inférieure à la surface minimale requise pour sa catégorie).
+Néanmoins pour rappel, tout couchage présent dans une pièce ne pouvant pas être considéré comme pièce d’habitation n’est pas comptabilisé.
+Concernant la validation du critère 1 :
+- De 1 à 3* :
+  - Si la chambre a une surface moyenne respectant la surface requise dans sa catégorie (il s’agit bien ici de surfaces moyennes, non pas minimales) ;
+  - Et que la surface totale du logement respecte la surface habitable minimum exigée pour sa catégorie (nombre d’étoiles) + pour le nombre de pièces du logement + pour la capacité du logement ;
+Alors le critère 1 est validé.
+Attention : pour les catégories de 1 à 3* et pour les logements T2 et plus (conditions cumulatives), il s’agit bien de surfaces moyennes, non pas de surface minimale par pièce d’habitation supplémentaire.
+- En 4 et 5* :
+  - Si la chambre a une surface minimale respectant la surface requise dans sa catégorie (il s’agit bien ici de surface minimale) ;
+  - Et que la surface totale du logement respecte la surface minimale requise pour sa catégorie + pour le nombre de pièces du logement + pour la capacité du logement ;
+Alors le critère 1 est validé.
+Attention : si une pièce d’habitation qui comporte des couchages, ne respecte pas la surface minimale requise pour sa catégorie, alors le critère 1 est invalidé, même si la surface totale du logement est respectée.
+Exemple : un logement 5*, comportant 5 pièces pour 8 personnes, doit avoir une surface habitable minimum de 74 m² (ou 71,4m² avec la tolérance de 10%), avec des chambres mesurant 12 m² minimum.
+Si une seule des chambres fait moins de 12m², alors le critère 1 est invalidé.
+Si une chambre comporte plus de couchages que le maximum exigé (4 pers. de 1 à 4* et 3 pers. en 5*), le critère 1 est invalidé, mais le nombre de couchages réel est pris en compte dans le nombre d'équipements nécessaire mentionnés dans les critères suivants.
+Concernant la validation du critère 2 :
+Le critère 2 s’intéresse à la surface globale du logement, sans prise en compte des surfaces par chambre.
+Ainsi, si le logement (quelle que soit la catégorie de classement) a une surface totale majorée supérieure à la surface habitable requise, alors le critère 2 peut être validé.`,
   },
   '2': {
     numero: 2,
@@ -34,7 +52,25 @@ Bonification de 1 point par tranche de 20 % de surface supplémentaire (de 1 à 
 Le critère peut être validé indépendamment du précédent.
 Pour les catégories 4* et 5* ce critère peut être validé même si le critère 1 « Surface totale minimum » n'est pas validé. En effet, en 4* et 5*, dès lors que les surfaces ne peuvent pas être globalisées et que les surfaces des chambres supplémentaires sont des surfaces minimum, si une chambre ne respecte pas ce minimum mais que le reste du logement représente une surface majorée, alors ce critère peut être validé selon la méthodologie des points de bonification.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Les couchages dans les pièces de plus de 7m² (et respectant l’ensemble des conditions pour être considéré comme pièce d’habitation) sont toujours pris en compte, sans limitation de nombre de couchages (même si la chambre a une surface inférieure à la surface minimale requise pour sa catégorie).
+Néanmoins pour rappel, tout couchage présent dans une pièce ne pouvant pas être considéré comme pièce d’habitation n’est pas comptabilisé.
+Concernant la validation du critère 1 :
+- De 1 à 3* :
+  - Si la chambre a une surface moyenne respectant la surface requise dans sa catégorie (il s’agit bien ici de surfaces moyennes, non pas minimales) ;
+  - Et que la surface totale du logement respecte la surface habitable minimum exigée pour sa catégorie (nombre d’étoiles) + pour le nombre de pièces du logement + pour la capacité du logement ;
+Alors le critère 1 est validé.
+Attention : pour les catégories de 1 à 3* et pour les logements T2 et plus (conditions cumulatives), il s’agit bien de surfaces moyennes, non pas de surface minimale par pièce d’habitation supplémentaire.
+- En 4 et 5* :
+  - Si la chambre a une surface minimale respectant la surface requise dans sa catégorie (il s’agit bien ici de surface minimale) ;
+  - Et que la surface totale du logement respecte la surface minimale requise pour sa catégorie + pour le nombre de pièces du logement + pour la capacité du logement ;
+Alors le critère 1 est validé.
+Attention : si une pièce d’habitation qui comporte des couchages, ne respecte pas la surface minimale requise pour sa catégorie, alors le critère 1 est invalidé, même si la surface totale du logement est respectée.
+Exemple : un logement 5*, comportant 5 pièces pour 8 personnes, doit avoir une surface habitable minimum de 74 m² (ou 71,4m² avec la tolérance de 10%), avec des chambres mesurant 12 m² minimum.
+Si une seule des chambres fait moins de 12m², alors le critère 1 est invalidé.
+Si une chambre comporte plus de couchages que le maximum exigé (4 pers. de 1 à 4* et 3 pers. en 5*), le critère 1 est invalidé, mais le nombre de couchages réel est pris en compte dans le nombre d'équipements nécessaire mentionnés dans les critères suivants.
+Concernant la validation du critère 2 :
+Le critère 2 s’intéresse à la surface globale du logement, sans prise en compte des surfaces par chambre.
+Ainsi, si le logement (quelle que soit la catégorie de classement) a une surface totale majorée supérieure à la surface habitable requise, alors le critère 2 peut être validé.`,
   },
   '3': {
     numero: 3,
@@ -82,8 +118,7 @@ Les cas « d'impossibilité technique » tels que mentionnés dans la colonne pr
 Vérification de l'installation d'une connexion Internet par câble filaire, câble fourni.`,
     non_applicabilite:
       'Sauf impossibilité technique (ex : zones blanches justifiées) : alors le critère est non applicable.',
-    notes:
-      "Si le logement dispose d'une connexion Wifi et que cela est constaté lors de la visite de contrôle, alors une connexion filaire n'est pas nécessaire.",
+    notes: `Si le logement dispose d’une connexion Wifi performante et que cela est constaté lors de la visite de contrôle, alors une connexion filaire n’est pas nécessaire. Le critère est validé.`,
   },
   '8': {
     numero: 8,
@@ -91,8 +126,9 @@ Vérification de l'installation d'une connexion Internet par câble filaire, câ
     description: `Méthodologie d'évaluation :
 Vérification sur place de l'état de fonctionnement de la télévision à écran plat et de la télécommande.`,
     non_applicabilite: null,
-    notes:
-      "Si une télévision écran plat est remplacée par un vidéoprojecteur fixé au plafond, avec télécommande, diffusant les chaînes de télévision via une box, cet équipement peut être accepté en remplacement, à condition que l'image projetée soit de qualité suffisante, sur une surface adaptée, et que l'ensemble soit pleinement fonctionnel pour les clients. Dans ce cas, le vidéoprojecteur est bien considéré comme remplissant la fonction de télévision.\n\nEnfin, pour valider le critère, le client ne doit pas avoir à apporter d'équipement supplémentaire pour pouvoir profiter de l'offre de télévision.",
+    notes: `Si une télévision écran plat est remplacée par un vidéoprojecteur fixé au plafond, avec télécommande, diffusant les chaînes de télévision via une box, cet équipement peut être accepté en remplacement à condition que l’image projetée soit de qualité suffisante, sur une surface adaptée, et que l’ensemble soit pleinement fonctionnel pour les clients.
+Dans ce cas, le vidéoprojecteur est bien considéré comme remplissant la fonction de télévision.
+Enfin, pour valider le critère, le client ne doit pas avoir à apporter d’équipement supplémentaire pour pouvoir profiter de l’offre de télévision.`,
   },
   '9': {
     numero: 9,
@@ -108,8 +144,9 @@ Vérification sur place de l'accès aux chaînes supplémentaires à l'offre de 
     description: `Méthodologie d'évaluation :
 Vérification sur place de l'accès à au moins deux chaînes internationales. La TNT valide ce critère si au moins deux chaînes internationales sont présentes dans le bouquet.`,
     non_applicabilite: null,
-    notes:
-      "Une chaine internationale est une chaine diffusée à travers le monde, quelle que soit la localisation d'une personne.\n\nPar exemple : BBC World News, France 24, TV5 Monde, CNN International, Africanews, Al Jazeera, Bein Sport, Disney Channel, etc. (la liste est non exhaustive).\n\nLa chaine doit diffuser de l'actualité, divertissement, etc. internationale et être disponible dans un certain nombre de pays, la langue utilisée n'est pas spécifiée.\n\nLes chaines en langues étrangères sont tolérées.",
+    notes: `Une chaine internationale est une chaine diffusée à travers le monde, quelle que soit la localisation d’une personne. Par exemple : BBC World News, France 24, TV5 Monde, CNN International, Africanews, Al Jazeera, Bein Sport, Disney Channel, etc. (la liste est non exhaustive).
+La chaine doit diffuser de l’actualité, divertissement, etc. internationale et être disponible dans un certain nombre de pays, la langue utilisée n’est pas spécifiée.
+Les chaines en langues étrangères sont tolérées.`,
   },
   '11': {
     numero: 11,
@@ -133,8 +170,11 @@ Enceinte connectée de type enceinte bluetooth, sans fil, avec sortie pour prise
     description: `Méthodologie d'évaluation :
 Le système peut être proposé par différents équipements (service de vidéos à la demande, plateforme de streaming, appareil de streaming multi-médias, passerelle multi-médias…). Les services de VOD ou de plateformes de streaming doivent être ouverts et le visionnage accessible aux locataires.`,
     non_applicabilite: null,
-    notes:
-      "Un lecteur DVD ne permet pas de valider ce critère.\n\nUn vidéoprojecteur ne permet pas de valider ce critère, si le client doit apporter son propre support de diffusion (ordinateur, etc.).\n\nLe Chromecast est accepté pour valider ce critère. Le système de vidéo à la demande (VOD) également.\n\nLes plateformes de streaming doivent disposer d'un abonnement ouvert à la clientèle, le client ne doit pas devoir rentrer ses propres codes.",
+    notes: `Le chromecast étant considéré comme une « passerelle multimédias », il permet de valider le critère.
+Le système de vidéo à la demande (VOD) permet également de valider le critère (cité en exemple dans le guide de contrôle).
+Un lecteur DVD ne permet pas de valider ce critère.
+Un vidéoprojecteur ne permet pas de valider ce critère, si le client doit apporter son propre support de diffusion (ordinateur, etc.).
+Lorsqu'un accès / abonnement est nécessaire pour accéder à une plateforme de streaming, celui-ci doit être ouvert.`,
   },
   '14': {
     numero: 14,
@@ -180,8 +220,8 @@ Les systèmes de ventilation d'air de type ventilateur (fixe ou mobile) ne sont 
 L'équipement doit être proposé a minima dans une pièce de vie commune et une chambre (sauf pour les studios) pour valider le critère. A vérifier par tout moyen.`,
     non_applicabilite:
       "Sauf Saint Pierre et Miquelon et haute montagne (>1000 mètres d'altitude) : alors, le critère est non applicable.",
-    notes:
-      "Le fonctionnement du système de climatisation doit être vérifié dans les pièces requises pour la validation du critère (pièce de vie commune et chambre). Le bon fonctionnement constaté dans l'une de ces pièces ne permet pas de présumer du fonctionnement dans l'autre.",
+    notes: `Outre-mer : la configuration en logement traversant avec un brasseur d'air permet de valider le critère 17.
+En effet, ce critère peut être validé grâce à un système de "rafraîchissement d'air" et cela correspond au système mentionné.`,
   },
   '18': {
     numero: 18,
@@ -251,8 +291,8 @@ Si présence de penderie, alors celle-ci doit être équipée de cintres de qual
     description: `Méthodologie d'évaluation :
 Vérification sur place. Il s'agit de vérifier l'existence d'une table et d'assises correspondant à la capacité d'accueil du logement.`,
     non_applicabilite: null,
-    notes:
-      "A partir de 2*, les assises sans dossier (poufs, tabourets, banquettes sans dossier, etc.) ne permettent pas de valider ce critère.\n\nCe critère fait référence à une table à manger. Il est donc nécessaire qu'une seule et même table correspondant à la capacité d'accueil du logement soit présente pour valider le critère.",
+    notes: `A partir de 2*, les assises sans dossier (poufs, tabourets, banquettes sans dossier, etc.) ne permettent pas de valider ce critère.
+Ce critère fait référence à une table à manger. Il est donc nécessaire qu'une seule et même table correspondant à la capacité d'accueil du logement soit présente pour valider le critère. Plusieurs tables collées les unes aux autres sont tolérées si une première table de grande taille pour au moins 10 personnes est déjà présente.`,
   },
   '26': {
     numero: 26,
@@ -264,8 +304,7 @@ Pour les logements 4* et 5*, les canapés convertibles seuls ne sont pas accept�
 
 Le critère est rendu applicable pour les coins salon. Le nombre d'assises doit correspondre à la capacité d'accueil du logement, plafonné à 7 personnes.`,
     non_applicabilite: "Le critère devient non applicable s'il n'y a pas de séjour (espace salon).",
-    notes:
-      "Pour les 4 et 5*, il est nécessaire que le canapé convertible ne soit pas la seule assise dans le salon, un fauteuil en plus avec une capacité totale d'accueil correspondant à celle du logement permet de valider le critère.",
+    notes: `Pour les 4 et 5*, il est nécessaire que le canapé convertible ne soit pas la seule assise dans le salon, un fauteuil en plus avec une capacité totale d’accueil correspondant à celle du logement permet de valider le critère.`,
   },
   '27': {
     numero: 27,
@@ -289,8 +328,9 @@ Tolérance pour :
 Pour les catégories 3*, 4* et 5*, les canapés convertibles sont acceptés uniquement lorsqu'ils respectent les dimensions indiquées dans la grille de classement selon le niveau de classement demandé.
 Les sommiers en mailles métalliques souples ne sont pas admis.`,
     non_applicabilite: null,
-    notes:
-      "Concernant la tolérance précisée pour les lits escamotables, celle-ci ne fait référence qu'aux lits pour 1 personne.\n\nPour les lits 2 personnes, si le lit escamotable est le lit principal, aucune tolérance n'est appliquée.\n\nS'il s'agit d'un lit additionnel, conformément à l'interprétation donnée pour les canapé-lits convertibles, une tolérance (130cmx190cm) peut s'appliquer pour les studios de catégorie 1* et 2* uniquement. Pour les catégories 3*, 4* et 5*, les dimensions minimales exigées doivent être respectées.",
+    notes: `Concernant la tolérance précisée pour les lits escamotables, celle-ci ne fait référence qu'aux lits pour 1 personne.
+Pour les lits 2 personnes, nous pouvons appliquer la règle suivante, en adéquation avec celle déjà en place pour les canapés convertibles : concernant le lit principal, aucune tolérance n'est appliquée.
+Néanmoins s'il s'agit d'un lit additionnel, une tolérance (130cmx190cm) peut s'appliquer pour les studios de catégorie 1* et 2* uniquement. Pour les catégories 3*, 4* et 5*, les dimensions minimales exigées doivent être respectées.`,
     illustration: '/images/illustrations/notes_crit_28.jpg',
   },
   '29': {
@@ -341,8 +381,8 @@ Dans le cas d'un logement de type studio, l'équipement devra être constaté à
 
 S'il existe une liseuse par personne, alors le critère est validé.`,
     non_applicabilite: null,
-    notes:
-      "C'est l'éclairage en tête de lit qui doit être indépendant de l'éclairage central/principal de la pièce. L'interrupteur peut être présent au milieu du lit, s'il se trouve d'un côté du lit seulement, le critère ne peut pas être validé. Si 2 interrupteurs (un de chaque côté du lit) le critère est validé.\n\nUn néon présent le long de la tête de lit peut valider ce critère s'il éclaire les 2 parties.",
+    notes: `C'est l'éclairage en tête de lit qui doit être indépendant de l'éclairage central/principal de la pièce. L'interrupteur peut être présent au milieu du lit, s'il se trouve d'un côté du lit seulement, le critère ne peut pas être validé. Si 2 interrupteurs (un de chaque côté du lit) le critère est validé.
+Un néon présent le long de la tête de lit peut valider ce critère s'il éclaire les 2 parties.`,
   },
   '34': {
     numero: 34,
@@ -357,7 +397,7 @@ Le critère s'applique uniquement pour les couchages principaux situés dans la 
 Dans le cas d'un logement de type studio, l'équipement devra être constaté à proximité immédiate du couchage et, lorsqu'il s'agit d'un canapé convertible, au moins d'un côté, pour valider le critère.`,
     non_applicabilite: null,
     notes:
-      "Un système d'allumage, extinction avec système de claquage des mains peut permettre de valider ce critère.",
+      "Un système d'allumage/extinction avec système de claquage des mains peut permettre de valider ce critère.",
   },
   '35': {
     numero: 35,
@@ -389,7 +429,7 @@ Une salle d'eau ouverte dans la chambre (implantation dans la chambre elle-même
 
 Une salle d'eau sans accès indépendant valide le critère. Par exemple : une salle d'eau totalement cloisonnée mais donnant sur une chambre. Si toutes les chambres ont une salle d'eau, alors le critère est validé.`,
     non_applicabilite: null,
-    notes: null,
+    notes: 'Les critères 37 et 38 sont cumulables.',
   },
   '38': {
     numero: 38,
@@ -401,7 +441,7 @@ Pour valider ce critère, la salle d'eau ne doit pas donner exclusivement sur un
 
 Si toutes les chambres ont une salle d'eau, alors le critère est validé.`,
     non_applicabilite: null,
-    notes: null,
+    notes: 'Les critères 37 et 38 sont cumulables.',
   },
   '39': {
     numero: 39,
@@ -418,8 +458,12 @@ Les rideaux de douche sont acceptés uniquement pour les catégories 1* et 2*. P
 Les rideaux de douche ou pare-douche ne sont pas obligatoires sur les aménagements tels que les baignoires sur pied, les baignoires d'angle, les balnéo, les baignoires îlots...`,
     non_applicabilite:
       "Il n'y a pas de minimum requis pour la taille des douches et baignoires pour les catégories 1*, 2* et 3*. Ce critère est non applicable pour les catégories 4* et 5*.",
-    notes:
-      "L'absence de paroi de douche (ou mur séparant la douche du reste de la salle d'eau) est tolérée dans le cas où l'ensemble de la salle de bain, et du logement dans son ensemble, est adapté PMR. Dans le cas contraire, le critère doit être invalidé.",
+    notes: `L'absence de paroi de douche (ou mur séparant la douche du reste de la salle d'eau) est tolérée dans le cas où l'ensemble de la salle de bain, et du logement dans son ensemble, est adapté PMR. Dans le cas contraire, le critère doit être invalidé.
+Quid des douches à l'italienne ?
+Il peut y avoir des exceptions à ce critère. Il est ici question de pouvoir se doucher, que ce soit dans une douche ou dans une baignoire, sans mettre d'eau dans la salle de bain (sur le sol, les meubles, etc.). Une douche à l'italienne, par exemple, est faite pour que l'eau reste contenue dans la douche bien qu'il n'y ait pas de porte ou de rideau fermant la douche. Le critère peut donc en effet être validé par ce type de douche.
+L'existence du pare-douche concerne en effet la baignoire uniquement, la douche quand à elle doit être fermée.
+Dans le cas où il y a une baignoire ainsi qu'une douche conforme dans la même salle de bain, la présence d'un pare-douche à la baignoire demeure nécessaire pour valider le critère.
+Dans le cas où la douche est le seul équipement présent dans la salle de bain, celle-ci doit être fermée. Les mêmes conditions s'appliquent pour les meublés de tourisme : dans le cas de douche de 80*80cm, si l'eau ne sort pas de l'espace de la douche, alors le critère peut en effet être validé.`,
   },
   '40': {
     numero: 40,
@@ -436,8 +480,8 @@ Dimensions standard :
 
 Des dimensions différentes mais totalisant une surface supérieure aux dimensions standards valident le critère (ex. : 70cm x 95 cm). La forme de l'équipement est laissée libre (rectangle, carré, ¼ de rond…). Dans la pratique, les mesures se prennent avec les bords.`,
     non_applicabilite: null,
-    notes:
-      "Les douches ou baignoires à angle rond valident le critère par leur largeur et longueur (le diamètre) si elles sont supérieures à celles requises dans le critère.\n\nSi présence des 2 équipements (douche et baignoire), le critère est invalidé si l'un des équipements à des dimensions n'étant pas supérieures au standard.",
+    notes: `Les douches ou baignoires à angle rond valident le critère par leur largeur et longueur (le diamètre) si elles sont supérieures à celles requises dans le critère.
+Si présence des 2 équipements (douche et baignoire), le critère est validé si au moins l'un des équipements a des dimensions supérieures au standard.`,
   },
   '41': {
     numero: 41,
@@ -450,8 +494,8 @@ Les toilettes sèches sont acceptées.
 
 Si toutes les chambres sont équipées de WC privatifs, alors le critère est validé.`,
     non_applicabilite: null,
-    notes:
-      "Si un appartement a un WC qui lui est privatif mais est à l'extérieur de l'appartement sur le palier de son étage, le classement est possible en invalidant le critère obligatoire 41.\n\nLe WC doit être à usage exclusif du meublé de tourisme.",
+    notes: `Si un appartement a un WC qui lui est privatif mais est à l’extérieur de l’appartement sur le palier de son étage, le classement est possible en invalidant le critère obligatoire 41.
+Le WC doit être à usage exclusif du meublé de tourisme.`,
   },
   '42': {
     numero: 42,
@@ -464,8 +508,8 @@ Les toilettes sèches sont acceptées.
 
 Si toutes les chambres sont équipées de WC privatifs, alors le critère est validé.`,
     non_applicabilite: null,
-    notes:
-      'Si des WC sont situés dans une salle de bain, avec une porte fermée, cela ne répond pas à la définition de WC indépendants de la salle de bain.\n\nLe but étant que si la salle de bain est occupée, les WC soient quand-même accessibles.',
+    notes: `Si des WC sont situés dans une salle de bain, avec une porte fermée, cela ne répond pas à la définition de WC indépendants de la salle de bain.
+Le but étant que si la salle de bain est occupée, les WC soient quand même accessibles.`,
   },
   '43': {
     numero: 43,
@@ -479,8 +523,11 @@ Le critère peut être validé si cette deuxième salle d'eau n'a pas d'accès i
 Si toutes les chambres sont équipées de salles d'eau, alors le critère est validé.`,
     non_applicabilite:
       'Pour les logements de moins de 7 personnes, ce critère est non applicable en 1,2,3,4*. Pour les logements de moins de 5 personnes, ce critère est non applicable en 5*.',
-    notes:
-      "Interprétation valable pour les critères 43 à 45.\n\nLes critères 43, 44 et 45 sont à considérer indépendamment. Le critère 43 peut être validé si cette deuxième salle d'eau n'a pas d'accès indépendant, uniquement si la première salle d'eau (jusqu'à 6 personnes en 1*, 2*, 3* et 4*, et jusqu'à 4 personnes en 5*) a bien un accès indépendant. Si toutes les chambres sont équipées de salles d'eau, alors le critère est validé.\n\nPour la seconde salle de bain, les WC peuvent en effet se trouver dans la salle de bain pour valider le critère.",
+    notes: `Les critères 43, 44 et 45 sont à considérer indépendamment.
+Le critère 43 peut être validé si cette deuxième salle d'eau n'a pas d'accès indépendant, uniquement si la première salle d'eau (jusqu'à 6 personnes en 1*, 2*, 3* et 4*, et jusqu'à 4 personnes en 5*) a bien un accès indépendant. Si toutes les chambres sont équipées de salles d'eau, alors le critère est validé.
+Pour la seconde salle de bain, les WC peuvent se trouver dans la salle de bain pour valider le critère.
+Pour un logement de 20 personnes, il est clair que la configuration n'a pas nécessairement été prévue dans ces critères, donc le meublé doit bien disposer de minimum 2 salles de bain selon le classement.
+Il sera évident que pour un confort optimisé pour la clientèle, il sera préférable d'avoir davantage d'équipements, mais cela n'est pas imposé par le classement.`,
   },
   '44': {
     numero: 44,
@@ -501,8 +548,11 @@ Pour les catégories 4* et 5* étoiles, les dimensions doivent être supérieure
 Des dimensions différentes mais totalisant une surface supérieure aux dimensions standard valident le critère (ex. : 70cm x 95 cm). La forme de l'équipement est laissée libre (rectangle, carré, ¼ de rond…).`,
     non_applicabilite:
       'Pour les logements de moins de 7 personnes, ce critère est non applicable en 1,2,3,4*. Pour les logements de moins de 5 personnes, ce critère est non applicable en 5*.',
-    notes:
-      "Interprétation valable pour les critères 43 à 45.\n\nLes critères 43, 44 et 45 sont à considérer indépendamment. Le critère 43 peut être validé si cette deuxième salle d'eau n'a pas d'accès indépendant, uniquement si la première salle d'eau (jusqu'à 6 personnes en 1*, 2*, 3* et 4*, et jusqu'à 4 personnes en 5*) a bien un accès indépendant. Si toutes les chambres sont équipées de salles d'eau, alors le critère est validé.\n\nPour la seconde salle de bain, les WC peuvent en effet se trouver dans la salle de bain pour valider le critère.",
+    notes: `Les critères 43, 44 et 45 sont à considérer indépendamment.
+Le critère 43 peut être validé si cette deuxième salle d'eau n'a pas d'accès indépendant, uniquement si la première salle d'eau (jusqu'à 6 personnes en 1*, 2*, 3* et 4*, et jusqu'à 4 personnes en 5*) a bien un accès indépendant. Si toutes les chambres sont équipées de salles d'eau, alors le critère est validé.
+Pour la seconde salle de bain, les WC peuvent se trouver dans la salle de bain pour valider le critère.
+Pour un logement de 20 personnes, il est clair que la configuration n'a pas nécessairement été prévue dans ces critères, donc le meublé doit bien disposer de minimum 2 salles de bain selon le classement.
+Il sera évident que pour un confort optimisé pour la clientèle, il sera préférable d'avoir davantage d'équipements, mais cela n'est pas imposé par le classement.`,
   },
   '45': {
     numero: 45,
@@ -516,8 +566,11 @@ Les toilettes sèches sont acceptées.
 Si toutes les chambres sont équipées de WC privatifs, alors le critère est validé.`,
     non_applicabilite:
       'Pour les logements de moins de 7 personnes, ce critère est non applicable en 1,2,3,4*. Pour les logements de moins de 5 personnes, ce critère est non applicable en 5*.',
-    notes:
-      "Interprétation valable pour les critères 43 à 45.\n\nLes critères 43, 44 et 45 sont à considérer indépendamment. Le critère 43 peut être validé si cette deuxième salle d'eau n'a pas d'accès indépendant, uniquement si la première salle d'eau (jusqu'à 6 personnes en 1*, 2*, 3* et 4*, et jusqu'à 4 personnes en 5*) a bien un accès indépendant. Si toutes les chambres sont équipées de salles d'eau, alors le critère est validé.\n\nPour la seconde salle de bain, les WC peuvent en effet se trouver dans la salle de bain pour valider le critère.",
+    notes: `Les critères 43, 44 et 45 sont à considérer indépendamment.
+Le critère 43 peut être validé si cette deuxième salle d'eau n'a pas d'accès indépendant, uniquement si la première salle d'eau (jusqu'à 6 personnes en 1*, 2*, 3* et 4*, et jusqu'à 4 personnes en 5*) a bien un accès indépendant. Si toutes les chambres sont équipées de salles d'eau, alors le critère est validé.
+Pour la seconde salle de bain, les WC peuvent se trouver dans la salle de bain pour valider le critère.
+Pour un logement de 20 personnes, il est clair que la configuration n'a pas nécessairement été prévue dans ces critères, donc le meublé doit bien disposer de minimum 2 salles de bain selon le classement.
+Il sera évident que pour un confort optimisé pour la clientèle, il sera préférable d'avoir davantage d'équipements, mais cela n'est pas imposé par le classement.`,
   },
   '46': {
     numero: 46,
@@ -537,7 +590,8 @@ Vérification sur place. Il s'agit de constater au minimum un savon ou un gel do
 
 Le shampoing-douche est accepté pour valider le critère.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Le guide de contrôle ne précisant pas la vérification des stocks, il faut donc vérifier seulement les produits en place.
+Les produits doivent être pleins. S'il s'agit par exemple de contenants rechargeables, celui-ci doit être rechargé à chaque nouvelle location, si cela n'est pas possible, un produit rempli doit être disponible dans la salle de bain.`,
   },
   '48': {
     numero: 48,
@@ -586,8 +640,9 @@ Vérification sur place.
 
 Le miroir en pied peut être situé dans le salon ou l'entrée.`,
     non_applicabilite: null,
-    notes:
-      "Les miroirs sur porte coulissante permettent de valider le critère, s'ils font la taille entière de la porte (de haut en bas).\n\nIl n'y a pas de taille minimum à respecter, il est seulement nécessaire que ce miroir soit disposé de telle façon et respectent des mesures permettant à la clientèle de s'y observer en totalité.",
+    notes: `Les miroirs sur porte coulissante permettent de valider le critère, s’ils font la taille entière de la porte (de haut en bas).
+Le miroir ne doit pas être dans la chambre. La présence du miroir dans la partie dressing de la chambre permet de valider le critère, à condition qu’il ne soit pas nécessaire de traverser la chambre pour atteindre le dressing.
+Il n’y a pas de taille minimum à respecter, il est seulement nécessaire que ce miroir soit disposé de telle façon et respectent des mesures permettant à la clientèle de s’y observer en totalité.`,
   },
   '53': {
     numero: 53,
@@ -671,7 +726,8 @@ Catégories 3*, 4* et 5* :
 Pour toutes les catégories et à partir de 5 personnes :
 - L'équipement doit avoir une capacité minimum de 45 litres.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Un air fryer peut permettre de valider ce critère sur la présence d'un four ou mini-four.
+A noter que le air fryer permet de valider ce critère jusqu'à 4 personnes inclus. A partir de 5 personnes, il ne pourra permettre de valider le critère (comme mentionné par le guide de contrôle, un nombre de litres minimum est nécessaire à partir de 5 personnes).`,
   },
   '60': {
     numero: 60,
@@ -734,7 +790,7 @@ Exemples : verre à bière, punch ou autre apéritif.
 Quantité à vérifier en fonction de la capacité d'accueil du logement. La vaisselle doit être, dans son intégralité, propre et en bon état.`,
     non_applicabilite: null,
     notes:
-      'Les 2 équipements doivent être présents pour valider le critère : 1 coupe à champagne ET 1 verre à apéritif par personne.',
+      'Les 2 équipements doivent être présents pour valider le critère : 1 coupe à champagne ET 1 verre à apéritif, par personne.',
   },
   '65': {
     numero: 65,
@@ -760,7 +816,7 @@ La liste des équipements est non exhaustive.
 
 Les machines à café ne valident pas ce critère et sont concernées aux critères 68 et 69.`,
     non_applicabilite: null,
-    notes: null,
+    notes: "L'air-fryer permet de valides uniquement le critère 66, pas le 67.",
   },
   '67': {
     numero: 67,
@@ -772,7 +828,7 @@ Si un robot de cuisine multifonctions est constaté, alors le critère 66 est é
 
 La présence d'un autocuiseur ou cuit-vapeur valide bien le critère 67 mais ne valide pas le critère 66.`,
     non_applicabilite: null,
-    notes: null,
+    notes: "L'air-fryer permet de valides uniquement le critère 66, pas le 67.",
   },
   '68': {
     numero: 68,
@@ -941,8 +997,8 @@ Les points des critères 79, 80 et 81 peuvent se cumuler.`,
     description: `Méthodologie d'évaluation :
 Vérification sur place de la présence d’un balcon, d’une loggia ou d’une véranda et de sa superficie.`,
     non_applicabilite: null,
-    notes: `Ces critères sont optionnels et indépendants. Ils sont à valider selon la configuration du logement. Ils ne se cumulent pas systématiquement.\
-La loggia étant citée dans le critère 82, elle est associée à un balcon ou une véranda, soit un espace supplémentaire au logement ayant sa propre dimension. Sa surface n’est donc pas à intégrer dans la surface globale du meublé.`,
+    notes: `Ces critères sont optionnels et indépendants. Ils sont à valider selon la configuration du logement. Ils ne se cumulent pas systématiquement.
+La loggia étant citée dans le critère 82, elle est associée à un balcon ou une véranda, soit un espace supplémentaire au logement, ayant sa propre dimension. Sa surface n’est donc pas à intégrer dans la surface globale du meublé.`,
   },
   '83': {
     numero: 83,
@@ -952,8 +1008,8 @@ Vérification sur place de la présence d'une terrasse ou d'un jardin privé et 
 
 Une cour intérieure aménagée est tolérée pour valider le critère.`,
     non_applicabilite: null,
-    notes: `Ces critères sont optionnels et indépendants. Ils sont à valider selon la configuration du logement. Ils ne se cumulent pas systématiquement.\
-La loggia étant citée dans le critère 82, elle est associée à un balcon ou une véranda, soit un espace supplémentaire au logement ayant sa propre dimension. Sa surface n’est donc pas à intégrer dans la surface globale du meublé.`,
+    notes: `Ces critères sont optionnels et indépendants. Ils sont à valider selon la configuration du logement. Ils ne se cumulent pas systématiquement.
+La loggia étant citée dans le critère 82, elle est associée à un balcon ou une véranda, soit un espace supplémentaire au logement, ayant sa propre dimension. Sa surface n’est donc pas à intégrer dans la surface globale du meublé.`,
   },
   '84': {
     numero: 84,
@@ -963,8 +1019,8 @@ Vérification sur place du parc ou du jardin et de sa superficie.
 
 La superficie doit être de 200 m² minimum quand le parc ou jardin est commun à d'autres logements.`,
     non_applicabilite: null,
-    notes: `Ces critères sont optionnels et indépendants. Ils sont à valider selon la configuration du logement. Ils ne se cumulent pas systématiquement.\
-La loggia étant citée dans le critère 82, elle est associée à un balcon ou une véranda, soit un espace supplémentaire au logement ayant sa propre dimension. Sa surface n’est donc pas à intégrer dans la surface globale du meublé.`,
+    notes: `Ces critères sont optionnels et indépendants. Ils sont à valider selon la configuration du logement. Ils ne se cumulent pas systématiquement.
+La loggia étant citée dans le critère 82, elle est associée à un balcon ou une véranda, soit un espace supplémentaire au logement, ayant sa propre dimension. Sa surface n’est donc pas à intégrer dans la surface globale du meublé.`,
   },
   '85': {
     numero: 85,
@@ -976,7 +1032,8 @@ La présence d'une assise extérieure par personne et d'une table doit être con
 
 Le nombre d'assises doit correspondre à la capacité d'accueil du logement, plafonné à 7 personnes.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Pour ce critère, la table ne doit pas obligatoirement correspondre à la capacité d'accueil du logement.
+La présence de plusieurs tables peut donc permettre de valider le critère.`,
   },
   '86': {
     numero: 86,
@@ -1018,7 +1075,7 @@ Exemples d'équipements : terrain de tennis, sauna, jacuzzi, hammam, étang de p
     description: `Méthodologie d'évaluation :
 Vérification sur place. Accès gratuit en propriété pleine ou copropriété.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Le critère peut être validé avec une piscine hors sol non démontable, nécessitant donc des travaux de terrassement ou de maçonnerie. La baignoire balnéo ne valide pas le critère.`,
   },
   '90': {
     numero: 90,
@@ -1026,7 +1083,7 @@ Vérification sur place. Accès gratuit en propriété pleine ou copropriété.`
     description: `Méthodologie d'évaluation :
 Vérification sur place. Accès gratuit en propriété pleine ou copropriété.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Le critère peut être validé avec une piscine hors sol non démontable, nécessitant donc des travaux de terrassement ou de maçonnerie. La baignoire balnéo ne valide pas le critère.`,
   },
   '91': {
     numero: 91,
@@ -1039,7 +1096,7 @@ Il faut au moins un rangement minimum pour valider le critère. Le rangement doi
 Si le logement possède un garage privatif ou un espace de rangement privatif assez grand pour permettre le rangement d'équipements sportifs, alors le critère est validé.`,
     non_applicabilite: 'Le critère est non applicable si la localisation n’est pas adaptée.',
     notes:
-      'Un logement situé en ville peut être concerné par la mention « non applicable » si la localisation n’est pas adaptée.',
+      'Un logement situé en ville peut être concerné par la mention « non applicable si la localisation n’est pas adaptée ».',
   },
   '92': {
     numero: 92,
@@ -1062,7 +1119,8 @@ Exemples d'espaces offrant la possibilité de faire des activités :
 - Plage ou plan d'eau, établissement thermal
 - Théâtre, cinéma, salle de spectacle, parc d'attraction, salle de sport...`,
     non_applicabilite: null,
-    notes: null,
+    notes:
+      'Les activités "nature, culture et sport" sont rédigées à titre d\'exemple, on peut considérer que c\'est du "OU".',
   },
   '94': {
     numero: 94,
@@ -1075,7 +1133,7 @@ Exemples d'espaces :
 - Marchés, services (pharmacie, médecin…)
 - Transports en communs…`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Le critère est rédigé de manière à ce que les 3 services "aux commerces, services et transports en commun" soient présents donc on considère que c'est "ET".`,
   },
   '95': {
     numero: 95,
@@ -1132,8 +1190,7 @@ Le contrôle des équipements de la cuisine ou du coin-cuisine porte sur l'inté
 
 Absence de tâches, moisissures, saleté, d'équipement cassé ou détérioré.`,
     non_applicabilite: null,
-    notes:
-      "Ce critère ne peut être invalidé dans le seul cas où il s'agit de la vaisselle et du matériel de cuisson (critères 63 à 65) qui sont en mauvais état.",
+    notes: `Ce critère ne peut pas être invalidé dans le seul cas où il s'agit de la vaisselle et du matériel de cuisson (critères 63 à 65) qui sont en mauvais état.`,
   },
   '100': {
     numero: 100,
@@ -1185,7 +1242,10 @@ Vérification par tout moyen (brochures, guide d'accueil, site internet, locatio
 
 Accueil des clients sur place par le propriétaire ou par son représentant (agence, personne mandatée…).`,
     non_applicabilite: null,
-    notes: null,
+    notes: `L'accueil physique ne doit pas être à la demande, il doit être systématique.
+Etant donné les exemples donnés dans le guide de contrôle : "brochures, guide d'accueil, site internet, location sur un site revendeur, site office de tourisme, affichette, vérification par email, …", l'information doit être vérifiée sur un support écrit (pas nécessairement une procédure).
+Par exemple, l'inspecteur vérifie que le propriétaire en a informé le client par mail, ou qu'il informe ses clients lors de leur réservation, etc. De manière à ce que, ce ne soit pas qu'une information délivrée lors de le visite de contrôle.
+L'accueil "sur place" signifie dans le logement.`,
   },
   '103': {
     numero: 103,
@@ -1195,8 +1255,7 @@ Vérification par tout moyen (brochures, guide d'accueil, site internet, locatio
 
 Exemples : produits locaux ou régionaux offerts, bouquet de fleurs, billets d'entrée pour des sites de visite, des réductions dans des lieux de restauration, de divertissement, etc…`,
     non_applicabilite: null,
-    notes:
-      'Un élément tangible doit être présenté pour valider le critère. La simple déclaration verbale du propriétaire ne suffit pas.',
+    notes: `Le fait de laisser des produits d’accueil "petit déjeuner", dosette à café, thé, chocolat, ne valide pas le critère. Il faut que ce soit des produits "à part entière" et non des produits laissés d'un visiteur à un autre.`,
   },
   '104': {
     numero: 104,
@@ -1268,8 +1327,8 @@ Il faut au minimum un lit bébé et une chaise bébé (ou équivalent de type si
 
 Prestations pouvant être assurées sous forme de service gratuit ou payant.`,
     non_applicabilite: null,
-    notes:
-      "Même si l'hébergement a un positionnement \"adult only\" le critère reste applicable.\n\nLe matériel doit être présent à la demande du client. S'il n'est pas disponible directement dans l'hébergement, l'information doit être clairement portée à la connaissance de clientèle qu'il peut en faire la demande et un justificatif d'achat du matériel doit être présenté à l'inspecteur.",
+    notes: `Même si l'hébergement a un positionnement "adult only" le critère reste applicable.
+Le matériel doit être présent à la demande du client. S’il n’est pas disponible directement dans l’hébergement, l’information doit être clairement portée à la connaissance de clientèle qu’il peut en faire la demande et un justificatif d'achat du matériel doit être présenté à l'inspecteur.`,
   },
   '110': {
     numero: 110,
@@ -1319,7 +1378,8 @@ Le site internet ou la page dédiée doit être géré(e) directement par le pro
 
 Les plateformes de réservation et sites tiers (offices de tourisme, réseau, conciergerie…) ne sont pas acceptés pour valider le critère.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Le critère 114 mentionnant la présence d'un site internet dans une langue étrangère, cela sous-entend que le site doit, par défaut, être en français.
+Ainsi, pour valider le critère 113, le site doit être en français, et pour valider le critère 114, le site devra être proposé dans une seconde langue.`,
   },
   '114': {
     numero: 114,
@@ -1332,8 +1392,7 @@ Le site internet ou la page dédiée doit être géré(e) directement par le pro
 
 Les plateformes de réservation et sites tiers (offices de tourisme, réseau, conciergerie…) ne sont pas acceptés pour valider le critère.`,
     non_applicabilite: null,
-    notes:
-      "Nous différencions le pop-up de traduction automatique Google qui ne permet pas de valider ces critères, d'une traduction entière du site avec intégration dans la barre d'outils (icône Google).",
+    notes: `Nous différencions le pop-up de traduction automatique Google qui ne permet pas de valider ces critères, d’une traduction entière du site avec intégration dans la barre d’outil (icône Google).`,
   },
   '115': {
     numero: 115,
@@ -1343,8 +1402,8 @@ A vérifier par tout moyen (brochures, guide d'accueil, site internet, site offi
 
 La politique d'accueil des animaux est libre.`,
     non_applicabilite: null,
-    notes:
-      "Tout affichage, quel que soit l'endroit, valide le critère. Même si le client n'est informé des modalités d'accueil des animaux qu'une fois sur place.\n\nPour rappel, ce critère ne peut être validé que si les animaux sont acceptés dans l'établissement.",
+    notes: `Tout affichage, quel que soit l’endroit, valide le critère. Même si le client n’est informé des modalités d’accueil des animaux qu’une fois sur place.
+Pour rappel, ce critère ne peut être validé que si les animaux sont acceptés dans l'établissement.`,
   },
   '116': {
     numero: 116,
@@ -1356,8 +1415,8 @@ Il s'agit, en amont, d'informer la clientèle de l'accessibilité ou non du loge
 
 Si le logement n'est pas adapté, cela doit être clairement précisé.`,
     non_applicabilite: null,
-    notes:
-      "Dans le cas d'un établissement n'étant pas accessible, cette non-accessibilité doit être précisée sur les supports de communication pour pouvoir valider le critère.\n\nSi l'établissement n'est adapté qu'à une partie des 4 familles de handicap, le critère peut être validé. L'information doit être claire pour la clientèle.",
+    notes: `Dans le cas d’un établissement n’étant pas accessible, cette non accessibilité doit être précisée sur les supports de communication pour pouvoir valider le critère.
+Si l'établissement n'est adapté qu'à une partie des 4 familles de handicap, le critère peut être validé. L'information doit être claire pour la clientèle.`,
   },
   '117': {
     numero: 117,
@@ -1446,8 +1505,9 @@ Exemples de mesures courantes :
 
 La liste est non exhaustive.`,
     non_applicabilite: null,
-    notes:
-      "Interprétation valable pour les critères 123 et 124.\n\nLes \"équipements et appareils professionnels économes\" concernent ceux ayant une classe énergétique respectueuse de l'environnement. Le schéma ci-joint permet de vérifier ces catégories.\n\nLa cheminée à bois peut permettre de valider les critères 123 et 124 qu'à la condition que la cheminée soit répandue dans l'ensemble des espaces du logement. Si elle permet de chauffer le logement, elle doit remplacer le chauffage existant dans ces surfaces.\n\nDans le cas contraire, la cheminée à bois ne peut pas permettre de valider les critères 123 et 124.",
+    notes: `Les "équipements et appareils professionnels économes" concernent ceux ayant une classe énergétique respectueuse de l'environnement. Le schéma sur ce lien permet de vérifier ces catégories.
+La cheminée à bois peut permettre de valider les critères 123 et 124 qu’à la condition que la cheminée soit répandue dans l’ensemble des espaces du logement. Si elle permet de chauffer le logement, elle doit remplacer le chauffage existant dans ces surfaces.
+Dans le cas contraire, la cheminée à bois ne peut pas permettre de valider les critères 123 et 124.`,
     illustration: '/images/illustrations/notes_crit_123.jpg',
   },
   '124': {
@@ -1467,8 +1527,9 @@ Exemples de mesures courantes :
 
 La liste est non exhaustive. Les points se cumulent avec ceux du critère précédent.`,
     non_applicabilite: null,
-    notes:
-      "Interprétation valable pour les critères 123 et 124.\n\nLes \"équipements et appareils professionnels économes\" concernent ceux ayant une classe énergétique respectueuse de l'environnement. Le schéma ci-joint permet de vérifier ces catégories.\n\nLa cheminée à bois peut permettre de valider les critères 123 et 124 qu'à la condition que la cheminée soit répandue dans l'ensemble des espaces du logement. Si elle permet de chauffer le logement, elle doit remplacer le chauffage existant dans ces surfaces.\n\nDans le cas contraire, la cheminée à bois ne peut pas permettre de valider les critères 123 et 124.",
+    notes: `Les "équipements et appareils professionnels économes" concernent ceux ayant une classe énergétique respectueuse de l'environnement. Le schéma sur ce lien permet de vérifier ces catégories.
+La cheminée à bois peut permettre de valider les critères 123 et 124 qu’à la condition que la cheminée soit répandue dans l’ensemble des espaces du logement. Si elle permet de chauffer le logement, elle doit remplacer le chauffage existant dans ces surfaces.
+Dans le cas contraire, la cheminée à bois ne peut pas permettre de valider les critères 123 et 124.`,
     illustration: '/images/illustrations/notes_crit_123.jpg',
   },
   '125': {
@@ -1520,7 +1581,9 @@ Exigences spécifiques :
 Si l'immeuble ou la commune n'a pas mis en place un système de tri sélectif, alors le critère est non applicable.`,
     non_applicabilite:
       "Si l'immeuble ou la commune n'a pas mis en place un système de tri sélectif, alors le critère est non applicable.",
-    notes: null,
+    notes: `Le critère peut être validé même si les poubelles dédiées au tri sont à l'extérieur, mais n'ont pas de local dédié.
+Dans ces cas-là, le critère peut être validé à la seule condition que ces bacs de tri ne soient pas accessibles par des personnes extérieures au logement (par exemple, bacs de tri présents sur le terrain privatif du logement, ce même terrain étant cloisonné (barrière, portail, etc.)).
+En effet l'objectif recherché est que les locataires du logement soient les seuls à avoir accès à ces poubelles de tri.`,
   },
   '129': {
     numero: 129,
@@ -1545,8 +1608,10 @@ Vérification sur place du moyen de sensibilisation. Les informations peuvent ê
     description: `Méthodologie d'évaluation :
 Vérification sur place. La présence d'au moins 2 produits d'accueil valide ce critère. Un produit multi-usages (exemple : shampoing-douche) valide le critère. Produits biodégradables / réutilisables / rechargeables et / ou éco-labellisés. Les produits éco-labellisés doivent être certifiés par des labels respectueux de l'environnement. Par exemple : Ecolabel européen, Ecocert, Cosmos Organic, Cosmébio, Fairtrade, Vegan, Cruelty Free, etc… La liste est non exhaustive.`,
     non_applicabilite: null,
-    notes:
-      "Le label apposé sur le produit d'accueil écologique doit valoriser la production et la composition de ce produit, et non le système global de l'entreprise le fournissant.\n\nLes mentions \"Vegan Friendly\", \"OGM Free\", sont des mentions et non des labels octroyés par un organisme tiers, respectant une norme. Elles ne permettent donc pas d'évaluer la performance environnementale du produit et il est compliqué de s'assurer de la pérennité de la démarche.\n\nLe critère peut être validé grâce à des produits porteurs de labels cités dans la description, ainsi que sur le site internet de l'ADEME : https://agirpourlatransition.ademe.fr/particuliers/labels-environnementaux\n\nLes produits d'accueil sont des cosmétiques. Ainsi les mouchoirs, papier toilette et gobelets en carton ne peuvent être pris en compte pour ce critère.",
+    notes: `Le label apposé sur le produit d’accueil écologique doit valoriser la production et la composition de ce produit, et non le système global de l’entreprise le fournissant.
+Les mentions "Vegan Friendly", "OGM Free", sont des mentions et non des labels octroyés par un organisme tiers, respectant une norme. Elles ne permettent donc pas d’évaluer la performance environnementale du produit et il est compliqué de s’assurer de la pérennité de la démarche.
+Le critère peut être validé grâce à des produits porteurs de labels cités dans la description, ainsi que sur le site internet de l’ADEME : https://agirpourlatransition.ademe.fr/particuliers/labels-environnementaux
+Les produits d'accueil sont des cosmétiques. Ainsi les mouchoirs, papier toilette et gobelets en carton ne peuvent être pris en compte pour ce critère.`,
   },
   '132': {
     numero: 132,
@@ -1562,7 +1627,8 @@ Vérification sur place. Les produits de nettoyage utilisés doivent être respe
     description: `Méthodologie d'évaluation :
 Vérification de l'obtention du label (dossier, facture, certification, dates d'obtention du label…). Les labels autorisés pour valider le critère sont les labels recommandés par l'ADEME : https://agirpourlatransition.ademe.fr/particuliers/labels-environnementaux.`,
     non_applicabilite: null,
-    notes:
-      "Le label NF HQE permet-il de valider ce critère ?\n\nSeuls les labels recommandés sur le lien : https://agirpourlatransition.ademe.fr/particuliers/labels-environnementaux permettent de valider ce critère.\n\nLe but étant de certifier l'intégralité de l'activité hôtelière (bâtiment, service, personnel…) et non uniquement le bâtiment.",
+    notes: `Le label NF HQE permet-il de valider ce critère ?
+Seul les labels recommandés sur le lien : https://agirpourlatransition.ademe.fr/particuliers/labels-environnementaux permettent de valider ce critère.
+Le but étant de certifier l'intégralité de l’activité hôtelière (bâtiment, service, personnel, etc.) et non uniquement le bâtiment.`,
   },
 };

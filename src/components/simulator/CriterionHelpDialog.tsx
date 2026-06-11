@@ -12,27 +12,73 @@ interface CriterionHelpDialogProps {
 }
 
 function renderTextBlocks(value: string) {
-  return value.split('\n').map((paragraph, index) => {
-    const trimmedParagraph = paragraph.trim();
-    if (!trimmedParagraph) {
-      return null;
+  const blocks: Array<
+    | { type: 'paragraph'; text: string }
+    | { type: 'list'; items: Array<{ text: string; children: string[] }> }
+  > = [];
+  let currentList: Extract<(typeof blocks)[number], { type: 'list' }> | null = null;
+
+  value.split('\n').forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      currentList = null;
+      return;
     }
 
-    if (trimmedParagraph.startsWith('-')) {
+    if (line.startsWith('  - ')) {
+      if (!currentList || currentList.items.length === 0) {
+        currentList = {
+          type: 'list',
+          items: [{ text: trimmed.replace(/^-\s*/, ''), children: [] }],
+        };
+        blocks.push(currentList);
+        return;
+      }
+
+      const currentItem = currentList.items[currentList.items.length - 1];
+      if (currentItem) {
+        currentItem.children.push(trimmed.replace(/^-\s*/, ''));
+      }
+      return;
+    }
+
+    if (line.startsWith('- ')) {
+      if (!currentList) {
+        currentList = { type: 'list', items: [] };
+        blocks.push(currentList);
+      }
+      currentList.items.push({ text: trimmed.replace(/^-\s*/, ''), children: [] });
+      return;
+    }
+
+    currentList = null;
+    blocks.push({ type: 'paragraph', text: trimmed });
+  });
+
+  return blocks.map((block, index) => {
+    if (block.type === 'paragraph') {
       return (
-        <p key={`${trimmedParagraph}-${index}`} className="relative ml-4">
-          <span className="absolute -ml-4 font-bold text-primary-300" aria-hidden="true">
-            •
-          </span>
-          {trimmedParagraph.replace(/^-\s*/, '')}
+        <p key={`${block.text}-${index}`} className="text-gray-700">
+          {block.text}
         </p>
       );
     }
 
     return (
-      <p key={`${trimmedParagraph}-${index}`} className="text-gray-700">
-        {trimmedParagraph}
-      </p>
+      <ul key={index} className="list-disc space-y-1 pl-5">
+        {block.items.map((item, itemIndex) => (
+          <li key={`${item.text}-${itemIndex}`}>
+            <span>{item.text}</span>
+            {item.children.length > 0 && (
+              <ul className="mt-1 list-[square] space-y-1 pl-5">
+                {item.children.map((child, childIndex) => (
+                  <li key={`${child}-${childIndex}`}>{child}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
     );
   });
 }
