@@ -77,7 +77,7 @@ const etoilysCards = [
   {
     icon: Laptop,
     title: 'Une application métier développée sur mesure',
-    text: 'Notre application automatise la planification, les contrats, les factures, l’édition des rapports et le suivi des dossiers, afin que vous puissiez vous concentrer sur les visites de classement plutôt que sur l’administratif.',
+    text: 'Etoilys vous fournit un outil pensé pour le terrain : contrats générés en un clic, grille de contrôle intuitive, niveau de classement visible en temps réel, critères bloquants identifiés automatiquement, contrôles anti-oubli et génération des documents de fin de dossier.',
   },
   {
     icon: Sparkles,
@@ -247,8 +247,9 @@ export default function Recrutement() {
               Rejoignez Etoilys comme consultant indépendant en classement de meublés de tourisme
             </h1>
             <p className="max-w-3xl text-xl leading-comfortable text-white/90">
-              Parcourez votre région, réalisez des visites de classement et développez votre
-              activité en toute autonomie.
+              Réalisez des visites de classement dans votre région, évaluez des logements
+              touristiques et accompagnez les propriétaires dans une démarche officielle, concrète
+              et utile.
             </p>
             <div className="mt-8 flex">
               <Button
@@ -307,7 +308,7 @@ export default function Recrutement() {
       <section id="role" className="bg-primary-100 py-section scroll-mt-24">
         <div className="container-adaptive">
           <SectionHeader
-            title="Votre rôle chez Etoilys"
+            title="Votre rôle comme consultant Etoilys"
             subtitle="Devenir le relais local d’Etoilys sur votre secteur."
           />
           <div className="mx-auto max-w-4xl space-y-5 text-center text-gray-800">
