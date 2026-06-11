@@ -16,6 +16,7 @@ const IMAGE_ASSETS = [
   { key: 'homeHero', fileName: 'AdobeStock_70255363.jpeg', outputName: 'home-hero' },
   { key: 'homeProcedure', fileName: 'home-procedure.jpg' },
   { key: 'pourquoiReferencement', fileName: 'pourquoi-referencement.jpg' },
+  { key: 'recrutementInspection', fileName: 'AdobeStock_31855482.jpeg' },
   {
     key: 'simulateurClassement',
     fileName: 'gunnar-ridderstrom-4I26owL4-yk-unsplash.jpg',

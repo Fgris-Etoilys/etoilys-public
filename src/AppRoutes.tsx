@@ -25,7 +25,7 @@ import ArticleMeubleClasseNonClasseSeuils from './pages/actualites/MeubleClasseN
 import ArticleFacturationElectronique2026 from './pages/actualites/FacturationElectronique2026';
 import ArticleDpeMeublesTourisme from './pages/actualites/DpeMeublesTourisme';
 import ArticleApiMeubles from './pages/actualites/ApiMeublesDeclarationMeubleTourisme';
-// import Recrutement from './pages/Recrutement'; // TODO: réactiver quand la page sera prête
+import Recrutement from './pages/Recrutement';
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
 import Confidentialite from './pages/Confidentialite';
@@ -92,8 +92,7 @@ export default function AppRoutes() {
           path="actualites/api-meubles-declaration-meuble-tourisme"
           element={<ArticleApiMeubles />}
         />
-        {/* <Route path="recrutement" element={<Recrutement />} /> */}
-        {/* TODO: réactiver quand la page sera prête */}
+        <Route path="recrutement" element={<Recrutement />} />
         <Route path="contact" element={<Contact />} />
         <Route path="demande-classement" element={<DemandeClassement />} />
         <Route path="confidentialite" element={<Confidentialite />} />

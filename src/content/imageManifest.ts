@@ -2,6 +2,7 @@ export type ImageAssetKey =
   | 'homeHero'
   | 'homeProcedure'
   | 'pourquoiReferencement'
+  | 'recrutementInspection'
   | 'simulateurClassement'
   | 'simulateurTaxeSejour'
   | 'simulateurFiscalClassement'
@@ -59,6 +60,15 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pourquoi-referencement-480.webp 480w, /images/optimized/pourquoi-referencement-768.webp 768w, /images/optimized/pourquoi-referencement-1200.webp 1200w, /images/optimized/pourquoi-referencement-1600.webp 1600w, /images/optimized/pourquoi-referencement-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/pourquoi-referencement-480.avif 480w, /images/optimized/pourquoi-referencement-768.avif 768w, /images/optimized/pourquoi-referencement-1200.avif 1200w, /images/optimized/pourquoi-referencement-1600.avif 1600w, /images/optimized/pourquoi-referencement-1920.avif 1920w',
+  },
+  recrutementInspection: {
+    width: 3066,
+    height: 3066,
+    src: '/images/optimized/AdobeStock_31855482-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/AdobeStock_31855482-480.webp 480w, /images/optimized/AdobeStock_31855482-768.webp 768w, /images/optimized/AdobeStock_31855482-1200.webp 1200w, /images/optimized/AdobeStock_31855482-1600.webp 1600w, /images/optimized/AdobeStock_31855482-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/AdobeStock_31855482-480.avif 480w, /images/optimized/AdobeStock_31855482-768.avif 768w, /images/optimized/AdobeStock_31855482-1200.avif 1200w, /images/optimized/AdobeStock_31855482-1600.avif 1600w, /images/optimized/AdobeStock_31855482-1920.avif 1920w',
   },
   simulateurClassement: {
     width: 1200,

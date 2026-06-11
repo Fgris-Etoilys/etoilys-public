@@ -74,7 +74,7 @@ const navigation: NavigationItem[] = [
   },
   // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
   { name: 'Actualités', href: '/actualites' },
-  // { name: 'Recrutement', href: '/recrutement' }, // TODO: réactiver quand la page sera prête
+  { name: 'Recrutement', href: '/recrutement' },
   { name: 'Contact', href: '/contact' },
 ];
 

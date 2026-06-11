@@ -23,7 +23,7 @@ const footerLinks = {
   entreprise: [
     // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
     { name: 'Actualités', href: '/actualites' },
-    // { name: 'Recrutement', href: '/recrutement' }, // TODO: réactiver quand la page sera prête
+    { name: 'Recrutement', href: '/recrutement' },
     { name: 'FAQ', href: '/faq' },
   ],
   legal: [

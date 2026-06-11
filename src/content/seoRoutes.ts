@@ -213,6 +213,13 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'API Meublés : déclaration obligatoire',
     ogImageKey: 'articleApiMeubles',
   },
+  '/recrutement': {
+    title: 'Recrutement consultant classement meublés de tourisme',
+    description:
+      'Etoilys recherche des consultants indépendants pour réaliser des visites de classement de meublés de tourisme sur leur secteur. Formation, outils métier et demandes entrantes selon zone.',
+    breadcrumbLabel: 'Recrutement',
+    ogImageKey: 'recrutementInspection',
+  },
   '/contact': {
     title: 'Contact',
     description:
