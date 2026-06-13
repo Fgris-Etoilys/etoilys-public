@@ -223,11 +223,39 @@ describe('analytics', () => {
     ).toBe('/simulateur/:simulationId');
   });
 
-  it('sanitizes URL and sensitive properties before sending', () => {
+  it('sanitizes URL and sensitive custom properties before capture', () => {
+    const sanitized = analyticsInternalsForTests.sanitizeCustomProperties({
+      source_path: '/contact?email=test@example.com#form',
+      $current_url: 'https://www.etoilys.fr/contact?x=1',
+      $referrer: 'https://www.google.com/search?q=etoilys',
+      form_name: 'contact',
+      invalid_fields: ['email', 'message'],
+      email: 'test@example.com',
+      message: 'contenu libre',
+    });
+
+    expect(sanitized).toEqual({
+      source_path: '/contact',
+      $current_url: '/contact',
+      $referrer: '/search',
+      form_name: 'contact',
+      invalid_fields: ['email', 'message'],
+    });
+  });
+
+  it('preserves PostHog authentication and system properties before sending', () => {
     const sanitized = analyticsInternalsForTests.beforeSend({
       event: 'form_submit_failed',
       uuid: 'test-form-submit-failed',
       properties: {
+        token: 'phc_test',
+        distinct_id: 'anonymous-id',
+        $session_id: 'session-id',
+        $lib: 'web',
+        $session_entry_url: 'https://www.etoilys.fr/contact?utm_source=test',
+        $session_entry_referrer: 'https://www.google.com/search?q=etoilys',
+        $session_entry_pathname: '/contact?utm_source=test',
+        $referring_domain: 'www.google.com',
         source_path: '/contact?email=test@example.com#form',
         $current_url: 'https://www.etoilys.fr/contact?x=1',
         $referrer: 'https://www.google.com/search?q=etoilys',
@@ -239,6 +267,14 @@ describe('analytics', () => {
     });
 
     expect(sanitized?.properties).toEqual({
+      token: 'phc_test',
+      distinct_id: 'anonymous-id',
+      $session_id: 'session-id',
+      $lib: 'web',
+      $session_entry_url: '/contact',
+      $session_entry_referrer: '/search',
+      $session_entry_pathname: '/contact',
+      $referring_domain: 'www.google.com',
       source_path: '/contact',
       $current_url: '/contact',
       $referrer: '/search',

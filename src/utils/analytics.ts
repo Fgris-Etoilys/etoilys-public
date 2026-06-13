@@ -113,35 +113,14 @@ const ALLOWED_CUSTOM_PROPERTIES = new Set<string>([
   'has_missing_criteria',
 ]);
 
-const ALLOWED_POSTHOG_PROPERTIES = new Set<string>([
-  '$browser',
-  '$browser_language',
-  '$browser_language_prefix',
-  '$browser_version',
-  '$config_defaults',
-  '$device',
-  '$device_type',
-  '$geoip_country_code',
-  '$geoip_country_name',
-  '$host',
-  '$lib',
-  '$lib_version',
-  '$os',
-  '$os_version',
+const POSTHOG_REQUIRED_PROPERTY_KEYS = new Set(['token', 'distinct_id']);
+const CUSTOM_URL_PROPERTY_KEYS = new Set([
+  '$current_url',
   '$pathname',
-  '$referring_domain',
-  '$screen_height',
-  '$screen_width',
-  '$search_engine',
-  '$timezone',
-  '$timezone_offset',
-  '$viewport_height',
-  '$viewport_width',
+  '$referrer',
+  'source_path',
+  'destination_path',
 ]);
-
-const URL_PROPERTY_KEYS = new Set(['$current_url', '$referrer', 'source_path', 'destination_path']);
-const SENSITIVE_PROPERTY_PATTERN =
-  /(email|mail|phone|telephone|téléphone|tel|nom|prenom|prénom|name|adresse|address|message|content|contenu|token|turnstile|captcha)/i;
 const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[^\s@]+/;
 const PHONE_PATTERN = /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/;
 
@@ -294,7 +273,17 @@ function sanitizeArray(value: string[]): string[] {
     .filter((entry) => entry.length > 0 && !hasSensitiveString(entry));
 }
 
-function sanitizeProperties(properties: Properties | null | undefined): Properties {
+function isPostHogUrlProperty(key: string): boolean {
+  return (
+    key === '$current_url' ||
+    key === '$referrer' ||
+    key.endsWith('_url') ||
+    key.endsWith('_referrer') ||
+    key.endsWith('_pathname')
+  );
+}
+
+function sanitizeCustomProperties(properties: Properties | null | undefined): Properties {
   const sanitized: Properties = {};
 
   if (!properties) {
@@ -302,15 +291,11 @@ function sanitizeProperties(properties: Properties | null | undefined): Properti
   }
 
   for (const [key, rawValue] of Object.entries(properties)) {
-    if (!ALLOWED_CUSTOM_PROPERTIES.has(key) && !ALLOWED_POSTHOG_PROPERTIES.has(key)) {
+    if (!ALLOWED_CUSTOM_PROPERTIES.has(key)) {
       continue;
     }
 
-    if (!ALLOWED_CUSTOM_PROPERTIES.has(key) && SENSITIVE_PROPERTY_PATTERN.test(key)) {
-      continue;
-    }
-
-    if (URL_PROPERTY_KEYS.has(key)) {
+    if (CUSTOM_URL_PROPERTY_KEYS.has(key)) {
       sanitized[key] = normalizeAnalyticsPath(typeof rawValue === 'string' ? rawValue : undefined);
       continue;
     }
@@ -339,12 +324,42 @@ function sanitizeProperties(properties: Properties | null | undefined): Properti
   return sanitized;
 }
 
+function sanitizePostHogProperties(properties: Properties | null | undefined): Properties {
+  const sanitized: Properties = {};
+
+  if (!properties) {
+    return sanitized;
+  }
+
+  for (const [key, rawValue] of Object.entries(properties)) {
+    if (ALLOWED_CUSTOM_PROPERTIES.has(key)) {
+      Object.assign(sanitized, sanitizeCustomProperties({ [key]: rawValue }));
+      continue;
+    }
+
+    const isPostHogProperty =
+      key.startsWith('$') || POSTHOG_REQUIRED_PROPERTY_KEYS.has(key) || key === 'title';
+    if (!isPostHogProperty) {
+      continue;
+    }
+
+    if (isPostHogUrlProperty(key)) {
+      sanitized[key] = normalizeAnalyticsPath(typeof rawValue === 'string' ? rawValue : undefined);
+      continue;
+    }
+
+    sanitized[key] = rawValue;
+  }
+
+  return sanitized;
+}
+
 function beforeSend(event: CaptureResult | null): CaptureResult | null {
   if (!event || !ALLOWED_EVENT_NAMES.has(event.event)) {
     return null;
   }
 
-  event.properties = sanitizeProperties(event.properties);
+  event.properties = sanitizePostHogProperties(event.properties);
   return event;
 }
 
@@ -483,7 +498,7 @@ export function trackPageView(pathname: string, options: { force?: boolean } = {
       properties.debug_mode = true;
     }
 
-    posthog.capture('$pageview', properties);
+    posthog.capture('$pageview', sanitizeCustomProperties(properties));
   });
 }
 
@@ -503,7 +518,7 @@ export function trackEvent(eventName: AnalyticsEventName, properties: AnalyticsP
       normalizedProperties.debug_mode = true;
     }
 
-    posthog.capture(eventName, normalizedProperties);
+    posthog.capture(eventName, sanitizeCustomProperties(normalizedProperties));
   });
 }
 
@@ -838,7 +853,8 @@ export function trackClassementSimulatorHelpOpened(input: {
 
 export const analyticsInternalsForTests = {
   beforeSend,
-  sanitizeProperties,
+  sanitizeCustomProperties,
+  sanitizePostHogProperties,
   reset: () => {
     isPostHogInitialized = false;
     isPostHogCaptureEnabled = false;

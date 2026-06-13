@@ -15,6 +15,8 @@ Ce contrat décrit le périmètre PostHog v2 pour le site Etoilys.
 - Aucune URL complète n'est envoyée : les chemins sont normalisés au `pathname`, sans query string ni hash.
 - Les chemins dynamiques de simulation de classement sont normalisés en `/simulateur/:simulationId`.
 - Les montants, capacités, étages et compteurs sont bucketisés quand ils peuvent décrire un logement.
+- La sanitisation conserve les propriétés techniques ajoutées par le SDK PostHog, notamment `token`,
+  `distinct_id` et les propriétés préfixées par `$`, tout en normalisant les propriétés d'URL connues.
 - `?etoilys_internal=1` désactive totalement la capture analytics pour le navigateur.
 - `?etoilys_analytics_debug=1` ajoute `debug_mode: true` aux événements envoyés, sans contourner le consentement.
 
