@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ArticleHeaderMeta from '../../components/ui/ArticleHeaderMeta';
 
@@ -480,15 +479,8 @@ export default function ArticleDpeMeublesTourisme() {
             <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
               <h2 className="text-h4 mb-3">Un doute sur votre situation ?</h2>
               <p className="text-gray-700 mb-6">
-                Consultez notre{' '}
-                <Link to="/faq" className="text-primary-400 underline hover:no-underline">
-                  FAQ
-                </Link>{' '}
-                pour les questions fréquentes sur les meublés de tourisme, ou{' '}
-                <Link to="/contact" className="text-primary-400 underline hover:no-underline">
-                  contactez Etoilys
-                </Link>{' '}
-                pour faire le point sur votre dossier.
+                Retrouvez les réponses générales dans la FAQ ou échangez avec Etoilys sur le
+                classement de votre meublé.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button href="/faq" variant="primary">

@@ -188,7 +188,16 @@ export default function ArticleApiMeubles() {
             <p className="text-gray-700 leading-comfortable mb-4">
               La plateforme doit notamment permettre de centraliser les numéros
               d&apos;enregistrement, les données d&apos;activité transmises par les plateformes,
-              l&apos;adresse des logements et les URL des annonces.
+              l&apos;adresse des logements et les URL des annonces. Pour comprendre précisément
+              quelles informations Airbnb, Booking, Abritel et les autres intermédiaires
+              transmettent aux collectivités, consultez{' '}
+              <Link
+                to="/actualites/airbnb-booking-abritel-donnees-communes-api-meubles"
+                className="article-inline-link"
+              >
+                notre décryptage des données qui remontent aux communes
+              </Link>
+              .
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour un propriétaire, le point concret est le suivant : lorsque le service final sera
@@ -444,15 +453,8 @@ export default function ArticleApiMeubles() {
             <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
               <h2 className="text-h4 mb-3">Des questions sur votre situation ?</h2>
               <p className="text-gray-700 mb-6">
-                Consultez notre{' '}
-                <Link to="/faq" className="text-primary-400 underline hover:no-underline">
-                  FAQ
-                </Link>{' '}
-                pour les questions fréquentes sur les meublés de tourisme, ou{' '}
-                <Link to="/contact" className="text-primary-400 underline hover:no-underline">
-                  contactez Etoilys
-                </Link>{' '}
-                pour faire le point sur votre dossier.
+                Retrouvez les réponses générales dans la FAQ ou échangez avec Etoilys sur le
+                classement de votre meublé.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button href="/faq" variant="primary">

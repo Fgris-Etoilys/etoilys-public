@@ -213,6 +213,13 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'API Meublés : déclaration obligatoire',
     ogImageKey: 'articleApiMeubles',
   },
+  '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles': {
+    title: 'Airbnb, Booking, Abritel : données transmises aux communes',
+    description:
+      "API Meublés, plateformes, numéro d'enregistrement, jours loués : voici quelles données sont transmises aux communes et ce que cela change.",
+    breadcrumbLabel: 'Données des plateformes transmises aux communes',
+    ogImageKey: 'articleTransmissionDonnees',
+  },
   '/recrutement': {
     title: 'Recrutement consultant classement meublés de tourisme',
     description:

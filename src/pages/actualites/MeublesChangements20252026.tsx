@@ -177,6 +177,17 @@ export default function ArticleMeubles20252026() {
               2026 un intérêt fiscal concret pour les propriétaires qui restent au micro-BIC.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
+              Pour retrouver les seuils, les abattements et les différences entre revenus 2025 et
+              2026, consultez{' '}
+              <Link
+                to="/actualites/micro-bic-2026-meuble-classe-vs-non-classe"
+                className="article-inline-link"
+              >
+                notre décryptage complet du micro-BIC 2026 pour les meublés classés et non classés
+              </Link>
+              .
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
               Il faut aussi éviter une erreur fréquente : beaucoup de contenus en ligne reprennent
               encore d'anciens seuils. Pour vérifier les paramètres en vigueur, il faut s'appuyer
               sur la{' '}
@@ -207,6 +218,17 @@ export default function ArticleMeubles20252026() {
               existe désormais un cadre légal permettant d'abaisser ce plafond, mais sa mise en
               œuvre dépend de la commune concernée et, plus largement, de la réglementation locale
               applicable au logement.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              La baisse à 90 jours n&apos;est toutefois ni nationale ni automatique :{' '}
+              <Link
+                to="/actualites/airbnb-residence-principale-limite-90-jours"
+                className="article-inline-link"
+              >
+                notre article sur la limite de location d&apos;une résidence principale
+              </Link>{' '}
+              explique quelles communes peuvent l&apos;appliquer et comment vérifier le plafond
+              local.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               En pratique, il faut désormais vérifier au minimum :
@@ -291,6 +313,14 @@ export default function ArticleMeubles20252026() {
               bascule énergétique généralisée pour les meublés touristiques qui ne sont pas la
               résidence principale est un sujet de moyen terme, avec un horizon 2034.
             </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Pour distinguer les obligations déjà applicables des exigences prévues pour 2034,
+              consultez{' '}
+              <Link to="/actualites/dpe-meubles-tourisme-2026-2034" className="article-inline-link">
+                notre décryptage du DPE des meublés de tourisme
+              </Link>
+              .
+            </p>
 
             {/* Section 5 */}
             <h2 className="mt-12 mb-4">Copropriété : un point désormais impossible à négliger</h2>
@@ -316,6 +346,16 @@ export default function ArticleMeubles20252026() {
               <strong>règlement de copropriété</strong> si le bien est concerné. C'est
               particulièrement important pour éviter le raisonnement du type : «j'ai le droit
               fiscalement, donc j'ai le droit dans l'immeuble». Ce n'est pas la même question.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Les règles dépendent notamment de la date et du contenu du règlement :{' '}
+              <Link
+                to="/actualites/copropriete-location-touristique-reglement"
+                className="article-inline-link"
+              >
+                notre article sur la copropriété et la location touristique
+              </Link>{' '}
+              détaille les clauses et décisions à vérifier.
             </p>
 
             {/* Section 6 */}
@@ -355,6 +395,17 @@ export default function ArticleMeubles20252026() {
               mais tant que la version finale n'est pas pleinement déployée, un propriétaire doit
               vérifier la procédure réellement applicable auprès de sa commune et suivre les
               informations officielles sur API Meublés.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Pour suivre la transition vers le numéro national et comprendre ce que deviennent les
+              anciens numéros locaux, consultez{' '}
+              <Link
+                to="/actualites/api-meubles-declaration-meuble-tourisme"
+                className="article-inline-link"
+              >
+                notre article consacré à la déclaration via l&apos;API Meublés
+              </Link>
+              .
             </p>
 
             {/* Section 7 - Checklist */}
@@ -429,9 +480,14 @@ export default function ArticleMeubles20252026() {
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour mieux comprendre ce que le classement apporte concrètement, consultez la page{' '}
-              <Link to="/les-avantages-du-classement">pourquoi faire classer son meublé</Link>, ou
-              pour en savoir plus, découvrez{' '}
-              <Link to="/procedure">comment se déroule la procédure de classement</Link>.
+              <Link to="/les-avantages-du-classement" className="article-inline-link">
+                pourquoi faire classer son meublé
+              </Link>
+              , ou pour en savoir plus, découvrez{' '}
+              <Link to="/procedure" className="article-inline-link">
+                comment se déroule la procédure de classement
+              </Link>
+              .
             </p>
 
             {/* Conclusion */}
@@ -448,8 +504,10 @@ export default function ArticleMeubles20252026() {
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Si vous avez des questions sur vos obligations ou sur la procédure, la{' '}
-              <Link to="/faq">FAQ Etoilys</Link> répond aux questions les plus fréquentes des
-              propriétaires.
+              <Link to="/faq" className="article-inline-link">
+                FAQ Etoilys
+              </Link>{' '}
+              répond aux questions les plus fréquentes des propriétaires.
             </p>
 
             {/* CTA */}

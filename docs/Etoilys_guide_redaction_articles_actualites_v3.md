@@ -472,6 +472,12 @@ Relier l’article à une page utile du site, selon le sujet :
 - lire la FAQ ;
 - contacter Etoilys.
 
+Le texte du CTA doit introduire brièvement l’action proposée, sans dupliquer les liens des boutons :
+
+- si une destination est déjà portée par un bouton, ne pas ajouter un second lien vers cette même destination dans le texte du bloc ;
+- éviter de répéter dans la phrase les libellés exacts des boutons ;
+- garder une phrase courte qui donne du contexte, puis laisser les boutons porter les actions.
+
 ---
 
 ## 8) Template d’article recommandé
@@ -638,8 +644,10 @@ Règle Etoilys :
 chaque article doit contenir des liens vers :
 
 - une page pilier pertinente (`Pourquoi classer`, `Procédure`, `FAQ`) ;
-- au moins un autre article connexe ;
+- un autre article Etoilys connexe lorsque le rapprochement est naturel et utile au lecteur ;
 - la page `Demande de classement` uniquement quand le sujet justifie une démarche de classement.
+
+Les liens vers d’autres articles Etoilys sont encouragés dans le corps du contenu lorsqu’ils permettent d’approfondir un point, d’éviter une répétition ou de compléter le sujet. Ils ne doivent pas être ajoutés uniquement pour satisfaire une règle de maillage : si aucun article existant ne prolonge naturellement le passage, ne pas forcer le lien.
 
 Le texte d’ancre doit être descriptif :
 
@@ -1033,6 +1041,8 @@ sources:
 - [ ] L'auteur affiche est `Florian Grisorio`.
 - [ ] Le temps de lecture est affiche et coherent avec le nombre de mots.
 - [ ] Il y a des liens internes pertinents.
+- [ ] Les liens vers d’autres articles Etoilys sont intégrés quand ils prolongent naturellement le contenu, sans maillage forcé.
+- [ ] Dans le CTA, aucune destination n’est liée à la fois dans le texte et dans un bouton.
 - [ ] Il y a des sources externes fiables si le sujet l’exige.
 - [ ] L’image principale est pertinente et correctement renseignée.
 - [ ] Les tableaux, frises ou visuels éventuels aident vraiment à comprendre.

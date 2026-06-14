@@ -209,7 +209,7 @@ export default function ArticleResidencePrincipale90Jours() {
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour en savoir plus sur ce que le classement peut apporter à votre situation,
               consultez notre page{' '}
-              <Link to="/les-avantages-du-classement">
+              <Link to="/les-avantages-du-classement" className="article-inline-link">
                 pourquoi faire classer son meublé de tourisme
               </Link>
               .
@@ -399,6 +399,18 @@ export default function ArticleResidencePrincipale90Jours() {
               qualification du logement, pas le seul dépassement du plafond de location.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
+              Dans son fonctionnement cible, le contrôle ne repose plus uniquement sur des demandes
+              adressées séparément à chaque plateforme. L&apos;API Meublés doit permettre aux
+              collectivités inscrites de rapprocher les jours loués par intermédiaire ;{' '}
+              <Link
+                to="/actualites/airbnb-booking-abritel-donnees-communes-api-meubles"
+                className="article-inline-link"
+              >
+                notre article sur les données transmises par Airbnb, Booking et Abritel
+              </Link>{' '}
+              détaille ce fonctionnement et son calendrier.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
               En pratique, il faut raisonner en deux temps :
             </p>
             <div className="space-y-4 mb-8">
@@ -469,7 +481,10 @@ export default function ArticleResidencePrincipale90Jours() {
             <p className="text-gray-700 leading-comfortable mb-4">
               Le classement reste utile, mais il ne remplace jamais le respect des règles locales
               sur la durée de location. Pour comprendre tous les avantages du classement,{' '}
-              <Link to="/les-avantages-du-classement">consultez notre page dédiée</Link>.
+              <Link to="/les-avantages-du-classement" className="article-inline-link">
+                consultez notre page dédiée
+              </Link>
+              .
             </p>
 
             {/* Section 7 */}
@@ -545,7 +560,11 @@ export default function ArticleResidencePrincipale90Jours() {
 
             <p className="text-gray-700 leading-comfortable mb-4">
               Des réponses aux questions les plus fréquentes sur le classement et les obligations
-              associées sont disponibles dans notre <Link to="/faq">FAQ</Link>.
+              associées sont disponibles dans notre{' '}
+              <Link to="/faq" className="article-inline-link">
+                FAQ
+              </Link>
+              .
             </p>
 
             {/* Conclusion */}

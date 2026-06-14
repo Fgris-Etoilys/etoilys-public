@@ -477,16 +477,8 @@ export default function ArticleFacturationElectronique2026() {
             <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
               <h2 className="text-h4 mb-3">Besoin d'y voir plus clair&nbsp;?</h2>
               <p className="text-gray-700 mb-6">
-                Vous voulez clarifier les obligations qui s'appliquent à votre activité de meublé de
-                tourisme&nbsp;? Consultez notre{' '}
-                <Link to="/faq" className="text-primary-400 underline hover:no-underline">
-                  FAQ
-                </Link>{' '}
-                ou{' '}
-                <Link to="/contact" className="text-primary-400 underline hover:no-underline">
-                  contactez Etoilys
-                </Link>
-                .
+                Retrouvez les réponses générales dans la FAQ ou échangez avec Etoilys sur le
+                classement de votre meublé.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Button href="/faq" variant="primary">

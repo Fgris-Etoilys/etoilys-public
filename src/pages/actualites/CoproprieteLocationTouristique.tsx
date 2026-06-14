@@ -404,7 +404,10 @@ export default function ArticleCoproprieteLocationTouristique() {
                 <span>
                   fiscalité micro-BIC (abattement et plafond plus favorables) — voir notre article
                   sur le{' '}
-                  <Link to="/actualites/micro-bic-2026-meuble-classe-vs-non-classe">
+                  <Link
+                    to="/actualites/micro-bic-2026-meuble-classe-vs-non-classe"
+                    className="article-inline-link"
+                  >
                     Micro-BIC 2026
                   </Link>{' '}
                   ;
@@ -425,7 +428,10 @@ export default function ArticleCoproprieteLocationTouristique() {
             </ul>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour comprendre tous les avantages du classement,{' '}
-              <Link to="/les-avantages-du-classement">consultez notre page dédiée</Link>.
+              <Link to="/les-avantages-du-classement" className="article-inline-link">
+                consultez notre page dédiée
+              </Link>
+              .
             </p>
 
             {/* Section 7 */}
@@ -500,7 +506,10 @@ export default function ArticleCoproprieteLocationTouristique() {
 
             <p className="text-gray-700 leading-comfortable mb-4">
               Des réponses aux questions les plus fréquentes sont disponibles dans notre{' '}
-              <Link to="/faq">FAQ</Link>.
+              <Link to="/faq" className="article-inline-link">
+                FAQ
+              </Link>
+              .
             </p>
 
             {/* Conclusion */}

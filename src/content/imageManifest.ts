@@ -15,6 +15,7 @@ export type ImageAssetKey =
   | 'articleFacturationElectronique2026'
   | 'articleDpeMeublesTourisme'
   | 'articleApiMeubles'
+  | 'articleTransmissionDonnees'
   | 'dordogneHero'
   | 'dordogneInterior'
   | 'dordogneLandscape'
@@ -177,6 +178,15 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pexels-orneiseppi-32486469-480.webp 480w, /images/optimized/pexels-orneiseppi-32486469-768.webp 768w, /images/optimized/pexels-orneiseppi-32486469-1200.webp 1200w, /images/optimized/pexels-orneiseppi-32486469-1600.webp 1600w, /images/optimized/pexels-orneiseppi-32486469-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/pexels-orneiseppi-32486469-480.avif 480w, /images/optimized/pexels-orneiseppi-32486469-768.avif 768w, /images/optimized/pexels-orneiseppi-32486469-1200.avif 1200w, /images/optimized/pexels-orneiseppi-32486469-1600.avif 1600w, /images/optimized/pexels-orneiseppi-32486469-1920.avif 1920w',
+  },
+  articleTransmissionDonnees: {
+    width: 6779,
+    height: 2995,
+    src: '/images/optimized/article-transmission-donnees-plateformes-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/article-transmission-donnees-plateformes-480.webp 480w, /images/optimized/article-transmission-donnees-plateformes-768.webp 768w, /images/optimized/article-transmission-donnees-plateformes-1200.webp 1200w, /images/optimized/article-transmission-donnees-plateformes-1600.webp 1600w, /images/optimized/article-transmission-donnees-plateformes-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/article-transmission-donnees-plateformes-480.avif 480w, /images/optimized/article-transmission-donnees-plateformes-768.avif 768w, /images/optimized/article-transmission-donnees-plateformes-1200.avif 1200w, /images/optimized/article-transmission-donnees-plateformes-1600.avif 1600w, /images/optimized/article-transmission-donnees-plateformes-1920.avif 1920w',
   },
   dordogneHero: {
     width: 5120,

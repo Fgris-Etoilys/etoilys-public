@@ -13,6 +13,15 @@ export interface ActualiteArticle {
 
 const articles: ActualiteArticle[] = [
   {
+    title: 'Airbnb, Booking, Abritel : quelles données vont désormais remonter aux communes ?',
+    excerpt:
+      "API Meublés, numéro d'enregistrement, adresse, annonces, jours loués : voici quelles données sont transmises aux communes et ce que cela change.",
+    imageKey: 'articleTransmissionDonnees',
+    href: '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles',
+    date: '14 juin 2026',
+    publishedAt: '2026-06-14',
+  },
+  {
     title: "Micro-BIC 2026 : meublé classé vs non classé, l'écart se creuse",
     excerpt:
       'Seuils, abattements, régime réel, micro-entreprise : voici ce qui change en 2026 entre un meublé de tourisme classé et non classé.',

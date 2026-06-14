@@ -316,7 +316,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour comprendre pourquoi le classement fait une différence concrète sur d'autres
               sujets fiscaux, consultez la page{' '}
-              <Link to="/les-avantages-du-classement">
+              <Link to="/les-avantages-du-classement" className="article-inline-link">
                 pourquoi faire classer son meublé de tourisme
               </Link>
               .
@@ -366,7 +366,10 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour un rappel des règles générales sur la fiscalité des meublés classés, la page{' '}
-              <Link to="/faq">FAQ Etoilys</Link> répond aux questions les plus fréquentes.
+              <Link to="/faq" className="article-inline-link">
+                FAQ Etoilys
+              </Link>{' '}
+              répond aux questions les plus fréquentes.
             </p>
 
             {/* Section 5 */}

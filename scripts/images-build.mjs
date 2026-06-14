@@ -53,6 +53,11 @@ const IMAGE_ASSETS = [
   { key: 'articleFacturationElectronique2026', fileName: 'sumup-ru18KXzFA4E-unsplash.jpg' },
   { key: 'articleDpeMeublesTourisme', fileName: 'pexels-rachel-claire-4846106.jpg' },
   { key: 'articleApiMeubles', fileName: 'pexels-orneiseppi-32486469.jpg' },
+  {
+    key: 'articleTransmissionDonnees',
+    fileName: 'AdobeStock_2013598087.jpeg',
+    outputName: 'article-transmission-donnees-plateformes',
+  },
   { key: 'dordogneHero', fileName: 'pexels-slimmars-13-197677686-14298615.jpg' },
   { key: 'dordogneInterior', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
   { key: 'dordogneLandscape', fileName: 'le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg' },

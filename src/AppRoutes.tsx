@@ -25,6 +25,7 @@ import ArticleMeubleClasseNonClasseSeuils from './pages/actualites/MeubleClasseN
 import ArticleFacturationElectronique2026 from './pages/actualites/FacturationElectronique2026';
 import ArticleDpeMeublesTourisme from './pages/actualites/DpeMeublesTourisme';
 import ArticleApiMeubles from './pages/actualites/ApiMeublesDeclarationMeubleTourisme';
+import ArticleTransmissionDonneesPlateformesCommunes from './pages/actualites/TransmissionDonneesPlateformesCommunes';
 import Recrutement from './pages/Recrutement';
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -91,6 +92,10 @@ export default function AppRoutes() {
         <Route
           path="actualites/api-meubles-declaration-meuble-tourisme"
           element={<ArticleApiMeubles />}
+        />
+        <Route
+          path="actualites/airbnb-booking-abritel-donnees-communes-api-meubles"
+          element={<ArticleTransmissionDonneesPlateformesCommunes />}
         />
         <Route path="recrutement" element={<Recrutement />} />
         <Route path="contact" element={<Contact />} />

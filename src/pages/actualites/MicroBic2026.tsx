@@ -353,7 +353,7 @@ export default function ArticleMicroBic2026() {
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour comprendre ce que le classement apporte concrètement au-delà de la fiscalité,
               consultez notre page{' '}
-              <Link to="/les-avantages-du-classement">
+              <Link to="/les-avantages-du-classement" className="article-inline-link">
                 pourquoi faire classer son meublé de tourisme
               </Link>
               .
@@ -399,11 +399,23 @@ export default function ArticleMicroBic2026() {
               des années de référence prévues par le régime micro, notamment N-1 et N-2.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
+              Si vous exploitez à la fois un meublé classé et un meublé non classé, la lecture des
+              seuils demande une distinction supplémentaire :{' '}
+              <Link
+                to="/actualites/meuble-classe-non-classe-seuils-micro-bic"
+                className="article-inline-link"
+              >
+                notre article dédié explique comment séparer les catégories de recettes et vérifier
+                les seuils applicables à l&apos;activité mixte
+              </Link>
+              .
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
               L'effet concret, pour un propriétaire, est donc moins théorique qu'il n'y paraît :
               selon le niveau de recettes, le classement peut faire la différence entre un régime
               simplifié encore accessible et une sortie rapide vers le régime réel. Pour en savoir
               plus sur la procédure,{' '}
-              <Link to="/procedure">
+              <Link to="/procedure" className="article-inline-link">
                 découvrez comment se déroule le classement d'un meublé de tourisme
               </Link>
               .
@@ -630,7 +642,10 @@ export default function ArticleMicroBic2026() {
               ))}
             </div>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Si vous avez des questions sur votre situation, la <Link to="/faq">FAQ Etoilys</Link>{' '}
+              Si vous avez des questions sur votre situation, la{' '}
+              <Link to="/faq" className="article-inline-link">
+                FAQ Etoilys
+              </Link>{' '}
               répond aux questions les plus fréquentes des propriétaires.
             </p>
 
@@ -647,7 +662,10 @@ export default function ArticleMicroBic2026() {
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour mieux comprendre les étapes concrètes,{' '}
-              <Link to="/procedure">consultez la page sur la procédure de classement</Link>.
+              <Link to="/procedure" className="article-inline-link">
+                consultez la page sur la procédure de classement
+              </Link>
+              .
             </p>
 
             {/* Conclusion */}

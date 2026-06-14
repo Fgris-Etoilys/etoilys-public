@@ -12,6 +12,16 @@ export interface ArticleStructuredDataConfig {
 
 const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   {
+    path: '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles',
+    headline: 'Airbnb, Booking, Abritel : quelles données vont désormais remonter aux communes ?',
+    description:
+      "API Meublés, plateformes, numéro d'enregistrement, jours loués : quelles données sont transmises aux communes et ce que cela change.",
+    datePublished: '2026-06-14',
+    dateModified: '2026-06-14',
+    imageKey: 'articleTransmissionDonnees',
+    authorName: 'Florian Grisorio',
+  },
+  {
     path: '/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
     headline: 'Meublés de tourisme : ce qui change vraiment en 2025-2026 pour les propriétaires',
     description:

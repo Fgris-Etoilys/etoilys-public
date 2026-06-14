@@ -216,7 +216,7 @@ export default function ArticleTaxeDeSejour2026() {
               C'est aussi pour cela que le classement garde un intérêt concret, au-delà du seul
               sujet micro-BIC. Pour un panorama plus large des effets du classement, consultez la
               page{' '}
-              <Link to="/les-avantages-du-classement">
+              <Link to="/les-avantages-du-classement" className="article-inline-link">
                 pourquoi faire classer son meublé de tourisme
               </Link>
               .
@@ -560,15 +560,25 @@ export default function ArticleTaxeDeSejour2026() {
               ))}
             </div>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Si vous avez des questions sur votre situation, la <Link to="/faq">FAQ Etoilys</Link>{' '}
+              Si vous avez des questions sur votre situation, la{' '}
+              <Link to="/faq" className="article-inline-link">
+                FAQ Etoilys
+              </Link>{' '}
               répond aux questions les plus fréquentes des propriétaires.
             </p>
 
             {/* Section 7 */}
             <h2 className="mt-12 mb-4">Le lien avec le classement Etoilys</h2>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Le classement ne change pas seulement l'image du bien ou son intérêt fiscal au
-              micro-BIC. Il change aussi la manière dont le bien est rangé dans la taxe de séjour.
+              Le classement ne change pas seulement le calcul de la taxe de séjour. Il conserve
+              aussi un effet distinct sur le micro-BIC, détaillé dans{' '}
+              <Link
+                to="/actualites/micro-bic-2026-meuble-classe-vs-non-classe"
+                className="article-inline-link"
+              >
+                notre comparatif fiscal 2026 entre meublé classé et non classé
+              </Link>
+              .
             </p>
             <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
               Si vous hésitez à faire classer votre meublé, la taxe de séjour fait partie des sujets
@@ -578,8 +588,14 @@ export default function ArticleTaxeDeSejour2026() {
             </blockquote>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour en savoir plus sur la démarche concrète, consultez{' '}
-              <Link to="/procedure">la procédure de classement</Link> ou la{' '}
-              <Link to="/faq">FAQ Etoilys</Link>.
+              <Link to="/procedure" className="article-inline-link">
+                la procédure de classement
+              </Link>{' '}
+              ou la{' '}
+              <Link to="/faq" className="article-inline-link">
+                FAQ Etoilys
+              </Link>
+              .
             </p>
 
             {/* Conclusion */}
