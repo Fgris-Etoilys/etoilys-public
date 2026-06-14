@@ -6,12 +6,8 @@ import { openCookiePreferencesModal } from '../../utils/cookiePreferences';
 
 const analyticsMock = vi.hoisted(() => ({
   consentStatus: null as 'accepted' | 'refused' | null,
-  acceptAnalyticsConsent: vi.fn(() => {
-    analyticsMock.consentStatus = 'accepted';
-  }),
-  rejectAnalyticsConsent: vi.fn(() => {
-    analyticsMock.consentStatus = 'refused';
-  }),
+  acceptAnalyticsConsent: vi.fn(),
+  rejectAnalyticsConsent: vi.fn(),
   getAnalyticsConsentStatus: vi.fn(() => analyticsMock.consentStatus),
 }));
 
@@ -58,6 +54,15 @@ describe('CookieConsentManager', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Refuser' }));
 
     expect(analyticsMock.rejectAnalyticsConsent).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('region', { name: 'Gestion des cookies' })).not.toBeInTheDocument();
+  });
+
+  it('hides the banner after a first-time acceptance without rereading storage', () => {
+    renderCookieConsentManager();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Accepter' }));
+
+    expect(analyticsMock.acceptAnalyticsConsent).toHaveBeenCalledTimes(1);
     expect(screen.queryByRole('region', { name: 'Gestion des cookies' })).not.toBeInTheDocument();
   });
 

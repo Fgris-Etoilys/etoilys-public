@@ -32,15 +32,15 @@ export default function CookieConsentManager() {
 
   const handleAccept = useCallback(() => {
     acceptAnalyticsConsent();
-    refreshConsentStatus();
+    setConsentStatus('accepted');
     setIsPreferencesOpen(false);
-  }, [refreshConsentStatus]);
+  }, []);
 
   const handleReject = useCallback(() => {
     rejectAnalyticsConsent();
-    refreshConsentStatus();
+    setConsentStatus('refused');
     setIsPreferencesOpen(false);
-  }, [refreshConsentStatus]);
+  }, []);
 
   useEffect(() => {
     const openPreferences = () => {

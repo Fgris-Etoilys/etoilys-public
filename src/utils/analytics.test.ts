@@ -94,6 +94,27 @@ describe('analytics', () => {
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
+  it('keeps consent functional for the session when localStorage is unavailable', async () => {
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('Storage unavailable');
+    });
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('Storage unavailable');
+    });
+
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+
+    expect(getAnalyticsConsentStatus()).toBe('accepted');
+    expect(posthogMock.init).toHaveBeenCalledTimes(1);
+
+    rejectAnalyticsConsent();
+    expect(getAnalyticsConsentStatus()).toBe('refused');
+
+    getItemSpy.mockRestore();
+    setItemSpy.mockRestore();
+  });
+
   it('disables analytics completely in internal mode', () => {
     window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted');
     window.history.pushState({}, 'Test', '/?etoilys_internal=1');

@@ -7,6 +7,7 @@ Ce contrat décrit le périmètre PostHog v2 pour le site Etoilys.
 - PostHog n'est initialisé qu'après consentement analytics explicite.
 - La clé de consentement locale est `etoilys_analytics_consent`.
 - La date du choix est stockée dans `etoilys_analytics_consent_updated_at`.
+- Si le stockage local est indisponible, le choix reste appliqué pendant la session navigateur.
 - Les seules valeurs autorisées sont `accepted` et `refused`.
 - Le choix est considéré comme absent si la valeur est invalide, manquante ou si la date du choix a plus de 6 mois.
 - Le lien `Gérer mes cookies` du footer et des pages légales ouvre une modale de préférences permettant de refuser ou d'accepter à nouveau.

@@ -127,6 +127,8 @@ const PHONE_PATTERN = /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/;
 let isPostHogInitialized = false;
 let isPostHogCaptureEnabled = false;
 let lastTrackedPathname: string | null = null;
+let volatileConsent: AnalyticsConsent | null = null;
+let volatileConsentUpdatedAt: number | null = null;
 
 type PostHogClient = typeof import('posthog-js').default;
 
@@ -177,16 +179,21 @@ function isConsentFresh(updatedAt: number | null): boolean {
 
 function readConsent(): AnalyticsConsent | null {
   const value = readLocalStorage(ANALYTICS_CONSENT_STORAGE_KEY);
-  if (value !== 'accepted' && value !== 'refused') {
-    return null;
+  const updatedAt = readConsentUpdatedAt();
+
+  if ((value === 'accepted' || value === 'refused') && isConsentFresh(updatedAt)) {
+    return value;
   }
 
-  return isConsentFresh(readConsentUpdatedAt()) ? value : null;
+  return isConsentFresh(volatileConsentUpdatedAt) ? volatileConsent : null;
 }
 
 function writeConsent(value: AnalyticsConsent): void {
+  const updatedAt = Date.now();
+  volatileConsent = value;
+  volatileConsentUpdatedAt = updatedAt;
   writeLocalStorage(ANALYTICS_CONSENT_STORAGE_KEY, value);
-  writeLocalStorage(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY, String(Date.now()));
+  writeLocalStorage(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY, String(updatedAt));
 }
 
 export function getAnalyticsConsentStatus(): AnalyticsConsent | null {
@@ -859,6 +866,8 @@ export const analyticsInternalsForTests = {
     isPostHogInitialized = false;
     isPostHogCaptureEnabled = false;
     lastTrackedPathname = null;
+    volatileConsent = null;
+    volatileConsentUpdatedAt = null;
     postHogClient = null;
     postHogImportPromise = null;
   },
