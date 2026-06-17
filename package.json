@@ -14,6 +14,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "images:build": "node scripts/images-build.mjs",
+    "dordogne:meubles": "tsx scripts/fetch-dordogne-meubles.ts",
+    "lot-et-garonne:meubles": "tsx scripts/fetch-lot-et-garonne-meubles.ts",
     "taxe-sejour:data": "tsx scripts/build-taxe-sejour-dataset.ts",
     "seo:sitemap": "tsx scripts/generate-sitemap.ts",
     "prerender": "tsx --tsconfig tsconfig.app.json scripts/prerender.ts",
