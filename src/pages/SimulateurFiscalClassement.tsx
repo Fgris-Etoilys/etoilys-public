@@ -54,6 +54,7 @@ interface ShareableFiscalCalculationQuery {
 
 const FISCAL_SIMULATOR_STORAGE_KEY = 'etoilys.simulateurFiscalClassement.v1';
 const FISCAL_SHARE_QUERY_KEYS = ['revenue', 'tmi'] as const;
+const RESULT_SCROLL_OFFSET_PX = 96;
 const URSSAF_SOCIAL_CONTRIBUTIONS_SIMULATOR_URL =
   'https://www.urssaf.fr/accueil/outils-documentation/simulateurs/cotisations-economie-collaborati.html';
 
@@ -520,7 +521,16 @@ export default function SimulateurFiscalClassement() {
     }
 
     shouldScrollToResultRef.current = false;
-    resultBlockRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const resultBlock = resultBlockRef.current;
+    if (!resultBlock) {
+      return;
+    }
+
+    const targetTop = resultBlock.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: Math.max(0, targetTop - RESULT_SCROLL_OFFSET_PX),
+      behavior: 'smooth',
+    });
   }, [result]);
 
   const tableColumns = useMemo<ResponsiveComparisonColumn[]>(
