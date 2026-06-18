@@ -16,6 +16,7 @@ interface TooltipProps {
   placement?: 'top' | 'bottom';
   className?: string;
   triggerClassName?: string;
+  triggerTabIndex?: number;
   trigger?: ReactNode;
 }
 
@@ -29,6 +30,7 @@ export default function Tooltip({
   placement = 'bottom',
   className = '',
   triggerClassName = '',
+  triggerTabIndex,
   trigger = 'i',
 }: TooltipProps) {
   const tooltipId = useId();
@@ -165,6 +167,7 @@ export default function Tooltip({
         className={`inline-flex h-4 w-4 items-center justify-center rounded-full border border-gray-400 text-[10px] text-gray-600 ${triggerClassName}`}
         aria-label={srLabel}
         aria-describedby={isOpen ? tooltipId : undefined}
+        tabIndex={triggerTabIndex}
         onMouseEnter={handleTriggerMouseEnter}
         onMouseLeave={handleTriggerMouseLeave}
       >
