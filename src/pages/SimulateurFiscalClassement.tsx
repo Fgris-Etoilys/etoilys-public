@@ -291,18 +291,6 @@ function getSavingsClassName(value: number): string {
   return 'text-gray-900';
 }
 
-function getSavingsLabel(value: number): string {
-  if (value > 0) return 'Économie annuelle estimée';
-  if (value < 0) return 'Écart fiscal estimé';
-  return 'Aucun écart fiscal estimé';
-}
-
-function getSavingsCardClassName(value: number): string {
-  if (value > 0) return 'border-success-200 bg-success-100';
-  if (value < 0) return 'border-warning-200 bg-warning-100';
-  return 'border-gray-200 bg-gray-50';
-}
-
 function getClasseAmountClassName(classeAmount: number, nonClasseAmount: number): string {
   return classeAmount < nonClasseAmount ? 'font-semibold text-success-500' : '';
 }
@@ -315,6 +303,68 @@ function renderClasseAmount(classeAmount: number, nonClasseAmount: number): Reac
   }
 
   return <span className={className}>{formatEuro(classeAmount)}</span>;
+}
+
+function getFiscalDeltaClassName(delta: number): string {
+  if (delta > 0) {
+    return 'text-success-500';
+  }
+  if (delta < 0) {
+    return 'text-alert-500';
+  }
+  return 'text-gray-600';
+}
+
+function formatFiscalDelta(
+  nonClasseAmount: number,
+  classeAmount: number,
+  favorableSuffix = 'économisés',
+  unfavorableSuffix = 'de plus'
+): string {
+  const delta = nonClasseAmount - classeAmount;
+  if (delta === 0) {
+    return 'Aucun écart';
+  }
+
+  return `${formatEuro(Math.abs(delta))} ${delta > 0 ? favorableSuffix : unfavorableSuffix}`;
+}
+
+function renderFiscalDelta(
+  nonClasseAmount: number,
+  classeAmount: number,
+  favorableSuffix = 'économisés',
+  unfavorableSuffix = 'de plus'
+): ReactNode {
+  const delta = nonClasseAmount - classeAmount;
+  return (
+    <span
+      className={`inline-block max-w-[13rem] text-right font-semibold md:max-w-none md:text-center ${getFiscalDeltaClassName(
+        delta
+      )}`}
+    >
+      {formatFiscalDelta(nonClasseAmount, classeAmount, favorableSuffix, unfavorableSuffix)}
+    </span>
+  );
+}
+
+function getFiscalSummaryMainText(estimatedSavings: number): string {
+  if (estimatedSavings > 0) {
+    return formatEuro(estimatedSavings);
+  }
+  if (estimatedSavings < 0) {
+    return formatEuro(Math.abs(estimatedSavings));
+  }
+  return 'Aucun écart';
+}
+
+function getFiscalSummaryDescription(estimatedSavings: number): string {
+  if (estimatedSavings > 0) {
+    return "d'économie annuelle estimée";
+  }
+  if (estimatedSavings < 0) {
+    return 'de surcoût annuel estimé';
+  }
+  return 'fiscal annuel estimé';
 }
 
 function renderRegimeStatus(scenario: ScenarioSimulationResult, variant: 'non_classe' | 'classe') {
@@ -479,21 +529,28 @@ export default function SimulateurFiscalClassement() {
         key: 'metric',
         label: 'Indicateur',
         mobileLabel: 'Indicateur',
-        widthClassName: 'w-1/3',
+        widthClassName: 'w-[28%]',
         align: 'center',
       },
       {
         key: 'nonClasse',
         label: 'Non classé',
         mobileLabel: 'Non classé',
-        widthClassName: 'w-1/3',
+        widthClassName: 'w-[22%]',
         align: 'center',
       },
       {
         key: 'classe',
         label: 'Classé',
         mobileLabel: 'Classé',
-        widthClassName: 'w-1/3',
+        widthClassName: 'w-[22%]',
+        align: 'center',
+      },
+      {
+        key: 'delta',
+        label: 'Écart',
+        mobileLabel: 'Écart',
+        widthClassName: 'w-[28%]',
         align: 'center',
       },
     ],
@@ -513,6 +570,7 @@ export default function SimulateurFiscalClassement() {
           metric: <span className="font-medium text-gray-900">Régime affiché</span>,
           nonClasse: renderRegimeStatus(result.nonClasse, 'non_classe'),
           classe: renderRegimeStatus(result.classe, 'classe'),
+          delta: <span className="font-medium text-gray-600">Comparaison des régimes</span>,
         },
       },
       {
@@ -522,6 +580,12 @@ export default function SimulateurFiscalClassement() {
           metric: 'Base imposable estimée',
           nonClasse: formatEuro(result.nonClasse.taxableBase),
           classe: formatEuro(result.classe.taxableBase),
+          delta: renderFiscalDelta(
+            result.nonClasse.taxableBase,
+            result.classe.taxableBase,
+            'de base imposable en moins',
+            'de base imposable en plus'
+          ),
         },
       },
       {
@@ -530,9 +594,10 @@ export default function SimulateurFiscalClassement() {
         cells: {
           metric: 'Impôt sur le revenu estimé',
           nonClasse: formatEuro(result.nonClasse.estimatedIncomeTax),
-          classe: renderClasseAmount(
-            result.classe.estimatedIncomeTax,
-            result.nonClasse.estimatedIncomeTax
+          classe: formatEuro(result.classe.estimatedIncomeTax),
+          delta: renderFiscalDelta(
+            result.nonClasse.estimatedIncomeTax,
+            result.classe.estimatedIncomeTax
           ),
         },
       },
@@ -542,9 +607,10 @@ export default function SimulateurFiscalClassement() {
         cells: {
           metric: 'Prélèvements sociaux',
           nonClasse: formatEuro(result.nonClasse.socialLeviesAmount),
-          classe: renderClasseAmount(
-            result.classe.socialLeviesAmount,
-            result.nonClasse.socialLeviesAmount
+          classe: formatEuro(result.classe.socialLeviesAmount),
+          delta: renderFiscalDelta(
+            result.nonClasse.socialLeviesAmount,
+            result.classe.socialLeviesAmount
           ),
         },
       },
@@ -554,13 +620,10 @@ export default function SimulateurFiscalClassement() {
         cells: {
           metric: 'Cotisations sociales',
           nonClasse: renderSocialContributionsCell(result.nonClasse, true),
-          classe: renderSocialContributionsCell(
-            result.classe,
-            false,
-            getClasseAmountClassName(
-              result.classe.socialContributionsAmount,
-              result.nonClasse.socialContributionsAmount
-            )
+          classe: renderSocialContributionsCell(result.classe),
+          delta: renderFiscalDelta(
+            result.nonClasse.socialContributionsAmount,
+            result.classe.socialContributionsAmount
           ),
         },
       },
@@ -571,6 +634,7 @@ export default function SimulateurFiscalClassement() {
           metric: <span className="font-medium text-gray-900">Total estimé</span>,
           nonClasse: formatEuro(result.nonClasse.estimatedTotal),
           classe: renderClasseAmount(result.classe.estimatedTotal, result.nonClasse.estimatedTotal),
+          delta: renderFiscalDelta(result.nonClasse.estimatedTotal, result.classe.estimatedTotal),
         },
       },
     ];
@@ -653,7 +717,10 @@ export default function SimulateurFiscalClassement() {
         startY: cursorY + 10,
         head: [['Paramètre', 'Valeur']],
         body: [
-          ["Chiffre d'affaires annuel 2026", formatPdfEuro(lastCalculationSnapshot.annualRevenue)],
+          [
+            'Recettes locatives annuelles 2026',
+            formatPdfEuro(lastCalculationSnapshot.annualRevenue),
+          ],
           ["Tranche marginale d'imposition", `${lastCalculationSnapshot.tmiRate} %`],
         ],
         styles: { fontSize: 10, cellPadding: 7 },
@@ -667,76 +734,132 @@ export default function SimulateurFiscalClassement() {
       doc.setTextColor(25);
       doc.text('Résultats', marginX, cursorY);
 
-      cursorY += 8;
+      cursorY += 18;
+      if (result.estimatedSavings !== null) {
+        const summaryLines = [
+          `${getFiscalSummaryMainText(result.estimatedSavings)} ${getFiscalSummaryDescription(
+            result.estimatedSavings
+          )} avec un meublé classé, par rapport à un meublé non classé.`,
+          `Recettes locatives 2026 : ${formatPdfEuro(
+            lastCalculationSnapshot.annualRevenue
+          )}. Tranche marginale d'imposition : ${lastCalculationSnapshot.tmiRate} %. Régime comparé : micro-BIC classé / non classé.`,
+        ];
+        if (result.estimatedSavings > 0) {
+          summaryLines.push(
+            `Soit environ ${formatPdfEuro(
+              result.estimatedSavings * 5
+            )} sur 5 ans, à situation identique.`
+          );
+        }
+
+        doc.setFontSize(10);
+        doc.setTextColor(75, 85, 99);
+        const wrappedSummary = doc.splitTextToSize(normalizePdfText(summaryLines.join(' ')), 515);
+        doc.text(wrappedSummary, marginX, cursorY);
+        cursorY += wrappedSummary.length * 13 + 12;
+      }
+
       const resultRowsForPdf = [
         {
           metric: 'Régime affiché',
           nonClasse: result.nonClasse.regimeStatus,
           classe: result.classe.regimeStatus,
-          nonClasseAmount: null,
-          classeAmount: null,
+          deltaText: 'Comparaison des régimes',
+          deltaRaw: 0,
         },
         {
           metric: 'Base imposable estimée',
           nonClasse: formatPdfEuro(result.nonClasse.taxableBase),
           classe: formatPdfEuro(result.classe.taxableBase),
-          nonClasseAmount: null,
-          classeAmount: null,
+          deltaText: normalizePdfText(
+            formatFiscalDelta(
+              result.nonClasse.taxableBase,
+              result.classe.taxableBase,
+              'de base imposable en moins',
+              'de base imposable en plus'
+            )
+          ),
+          deltaRaw: result.nonClasse.taxableBase - result.classe.taxableBase,
         },
         {
           metric: 'Impôt sur le revenu estimé',
           nonClasse: formatPdfEuro(result.nonClasse.estimatedIncomeTax),
           classe: formatPdfEuro(result.classe.estimatedIncomeTax),
-          nonClasseAmount: result.nonClasse.estimatedIncomeTax,
-          classeAmount: result.classe.estimatedIncomeTax,
+          deltaText: normalizePdfText(
+            formatFiscalDelta(result.nonClasse.estimatedIncomeTax, result.classe.estimatedIncomeTax)
+          ),
+          deltaRaw: result.nonClasse.estimatedIncomeTax - result.classe.estimatedIncomeTax,
         },
         {
           metric: 'Prélèvements sociaux',
           nonClasse: formatPdfEuro(result.nonClasse.socialLeviesAmount),
           classe: formatPdfEuro(result.classe.socialLeviesAmount),
-          nonClasseAmount: result.nonClasse.socialLeviesAmount,
-          classeAmount: result.classe.socialLeviesAmount,
+          deltaText: normalizePdfText(
+            formatFiscalDelta(result.nonClasse.socialLeviesAmount, result.classe.socialLeviesAmount)
+          ),
+          deltaRaw: result.nonClasse.socialLeviesAmount - result.classe.socialLeviesAmount,
         },
         {
           metric: 'Cotisations sociales',
           nonClasse: formatPdfEuro(result.nonClasse.socialContributionsAmount),
           classe: formatPdfEuro(result.classe.socialContributionsAmount),
-          nonClasseAmount: result.nonClasse.socialContributionsAmount,
-          classeAmount: result.classe.socialContributionsAmount,
+          deltaText: normalizePdfText(
+            formatFiscalDelta(
+              result.nonClasse.socialContributionsAmount,
+              result.classe.socialContributionsAmount
+            )
+          ),
+          deltaRaw:
+            result.nonClasse.socialContributionsAmount - result.classe.socialContributionsAmount,
         },
         {
           metric: 'Total estimé',
           nonClasse: formatPdfEuro(result.nonClasse.estimatedTotal),
           classe: formatPdfEuro(result.classe.estimatedTotal),
-          nonClasseAmount: result.nonClasse.estimatedTotal,
-          classeAmount: result.classe.estimatedTotal,
+          deltaText: normalizePdfText(
+            formatFiscalDelta(result.nonClasse.estimatedTotal, result.classe.estimatedTotal)
+          ),
+          deltaRaw: result.nonClasse.estimatedTotal - result.classe.estimatedTotal,
         },
       ];
 
       autoTable(doc, {
         startY: cursorY,
-        head: [['Indicateur', 'Non classé', 'Classé']],
-        body: resultRowsForPdf.map((row) => [row.metric, row.nonClasse, row.classe]),
+        head: [['Indicateur', 'Non classé', 'Classé', 'Écart']],
+        body: resultRowsForPdf.map((row) => [row.metric, row.nonClasse, row.classe, row.deltaText]),
         styles: { fontSize: 10, cellPadding: 7 },
         headStyles: { fillColor: [49, 107, 255] },
         alternateRowStyles: { fillColor: [249, 250, 251] },
         didParseCell: (hookData) => {
-          if (hookData.section !== 'body' || hookData.column.index !== 2) {
+          if (hookData.section !== 'body') {
             return;
           }
 
           const rowData = resultRowsForPdf[hookData.row.index];
-          if (
-            !rowData ||
-            rowData.nonClasseAmount === null ||
-            rowData.classeAmount === null ||
-            rowData.classeAmount >= rowData.nonClasseAmount
-          ) {
+          if (!rowData) {
             return;
           }
 
-          hookData.cell.styles.textColor = [0, 115, 0];
-          hookData.cell.styles.fontStyle = 'bold';
+          if (
+            hookData.column.index === 2 &&
+            rowData.metric === 'Total estimé' &&
+            rowData.deltaRaw > 0
+          ) {
+            hookData.cell.styles.textColor = [0, 115, 0];
+            hookData.cell.styles.fontStyle = 'bold';
+          }
+
+          if (hookData.column.index === 3) {
+            if (rowData.deltaRaw > 0) {
+              hookData.cell.styles.textColor = [0, 115, 0];
+              hookData.cell.styles.fontStyle = 'bold';
+            } else if (rowData.deltaRaw < 0) {
+              hookData.cell.styles.textColor = [140, 0, 0];
+              hookData.cell.styles.fontStyle = 'bold';
+            } else {
+              hookData.cell.styles.textColor = [75, 85, 99];
+            }
+          }
         },
       });
 
@@ -882,7 +1005,7 @@ export default function SimulateurFiscalClassement() {
               <h2 className="mb-5">Votre situation 2026</h2>
               <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                 <Input
-                  label="Chiffre d'affaires annuel 2026 (en €)"
+                  label="Recettes locatives annuelles 2026"
                   required
                   type="text"
                   inputMode="decimal"
@@ -902,7 +1025,7 @@ export default function SimulateurFiscalClassement() {
                 <div>
                   <div className="mb-2 flex items-center gap-2">
                     <p className="text-sm font-medium text-gray-700">
-                      Tranche marginale d&apos;imposition de votre foyer fiscal
+                      Votre tranche marginale d&apos;imposition
                       <span className="ml-1 text-alert-400">*</span>
                     </p>
                     <span className="-translate-y-px">
@@ -973,13 +1096,71 @@ export default function SimulateurFiscalClassement() {
                       </div>
                     </div>
 
+                    {result.estimatedSavings !== null && lastCalculationSnapshot && (
+                      <div className="mb-6 rounded-card border border-gray-200 bg-white shadow-sm">
+                        <div className="grid gap-0 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
+                          <div className="p-5 md:p-6">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
+                              Résultat principal
+                            </p>
+                            <p
+                              className={`mt-3 text-3xl font-semibold leading-tight md:text-4xl ${getSavingsClassName(
+                                result.estimatedSavings
+                              )}`}
+                            >
+                              {getFiscalSummaryMainText(result.estimatedSavings)}
+                            </p>
+                            <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-900">
+                              {getFiscalSummaryDescription(result.estimatedSavings)} avec un{' '}
+                              <strong className="font-semibold text-gray-950">meublé classé</strong>
+                              , par rapport à un{' '}
+                              <strong className="font-semibold text-gray-950">
+                                meublé non classé
+                              </strong>
+                              .
+                            </p>
+                          </div>
+
+                          <div className="border-t border-gray-100 bg-gray-50/70 p-5 md:p-6 lg:border-l lg:border-t-0">
+                            <h3 className="text-sm font-semibold text-gray-900">
+                              Hypothèses de simulation
+                            </h3>
+                            <div className="mt-3 space-y-2 text-sm leading-relaxed text-gray-700">
+                              <p>
+                                Recettes locatives 2026 :{' '}
+                                <span className="font-medium text-gray-900">
+                                  {formatEuro(lastCalculationSnapshot.annualRevenue)}
+                                </span>
+                              </p>
+                              <p>
+                                Tranche marginale d&apos;imposition :{' '}
+                                <span className="font-medium text-gray-900">
+                                  {lastCalculationSnapshot.tmiRate} %
+                                </span>
+                              </p>
+                              <p>Régime comparé : micro-BIC classé / non classé</p>
+                            </div>
+                            {result.estimatedSavings > 0 && (
+                              <p className="mt-4 text-xs leading-relaxed text-gray-500">
+                                Soit environ{' '}
+                                <span className="font-semibold text-success-500">
+                                  {formatEuro(result.estimatedSavings * 5)}
+                                </span>{' '}
+                                sur 5 ans, à situation identique.
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     <ResponsiveComparisonTable
                       columns={tableColumns}
                       rows={tableRows}
                       primaryColumnKey="metric"
                       showPrimaryColumnInMobileDetails={false}
                       tableClassName="w-full border-collapse rounded-card text-sm shadow-sm"
-                      desktopWrapperClassName="hidden overflow-visible md:block"
+                      desktopWrapperClassName="hidden overflow-x-auto md:block"
                       headerRowClassName="bg-primary-300 text-white"
                       headerCellClassName="p-3 font-semibold"
                       cellClassName="p-3"
@@ -989,37 +1170,6 @@ export default function SimulateurFiscalClassement() {
                       mobileLabelClassName="text-xs font-medium text-gray-600"
                       mobileValueClassName="text-right text-sm text-gray-900"
                     />
-
-                    {result.estimatedSavings !== null && (
-                      <div
-                        className={`mt-6 rounded-card border p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 ${getSavingsCardClassName(result.estimatedSavings)}`}
-                      >
-                        <div>
-                          <p className="text-sm font-semibold text-gray-900">
-                            {getSavingsLabel(result.estimatedSavings)}
-                          </p>
-                          <p className="mt-0.5 text-xs text-textLight">
-                            Par rapport à un meublé non classé
-                          </p>
-                        </div>
-                        <div className="shrink-0 sm:text-right">
-                          <p
-                            className={`text-lg font-bold ${getSavingsClassName(result.estimatedSavings)}`}
-                          >
-                            {formatEuro(result.estimatedSavings)}
-                          </p>
-                          {result.estimatedSavings > 0 && (
-                            <p className="mt-0.5 text-xs text-textLight">
-                              Soit environ{' '}
-                              <span className="font-semibold text-success-500">
-                                {formatEuro(result.estimatedSavings * 5)}
-                              </span>{' '}
-                              sur 5 ans
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    )}
 
                     <div className="mt-6 space-y-4">
                       {result.showNonClasseWarning && (
