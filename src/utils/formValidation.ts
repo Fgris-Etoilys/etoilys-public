@@ -1,3 +1,6 @@
+import { formContent } from '../i18n/formContent';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/locales';
+
 export interface ValidationError {
   [key: string]: string;
 }
@@ -33,59 +36,67 @@ export interface DemandeClassementFormData {
   consent: boolean;
 }
 
-export const validateContactForm = (data: ContactFormData): ValidationError => {
+export const validateContactForm = (
+  data: ContactFormData,
+  locale: Locale = DEFAULT_LOCALE
+): ValidationError => {
   const errors: ValidationError = {};
+  const messages = formContent[locale].validation;
 
   if (!validateRequired(data.nom)) {
-    errors.nom = 'Le nom est requis';
+    errors.nom = messages.nomRequired;
   }
 
   if (!validateRequired(data.email)) {
-    errors.email = 'L\'email est requis';
+    errors.email = messages.emailRequired;
   } else if (!validateEmail(data.email)) {
-    errors.email = 'L\'email n\'est pas valide';
+    errors.email = messages.emailInvalid;
   }
 
   if (!validateRequired(data.message)) {
-    errors.message = 'Le message est requis';
+    errors.message = messages.messageRequired;
   }
 
   if (!data.consent) {
-    errors.consent = 'Vous devez accepter la politique de confidentialité';
+    errors.consent = messages.consentRequired;
   }
 
   return errors;
 };
 
-export const validateDemandeClassementForm = (data: DemandeClassementFormData): ValidationError => {
+export const validateDemandeClassementForm = (
+  data: DemandeClassementFormData,
+  locale: Locale = DEFAULT_LOCALE
+): ValidationError => {
   const errors: ValidationError = {};
+  const messages = formContent[locale].validation;
 
   if (!validateRequired(data.nom)) {
-    errors.nom = 'Le nom est requis';
+    errors.nom = messages.nomRequired;
   }
 
   if (!validateRequired(data.prenom)) {
-    errors.prenom = 'Le prénom est requis';
+    errors.prenom = messages.prenomRequired;
   }
 
   if (!validateRequired(data.email)) {
-    errors.email = 'L\'email est requis';
+    errors.email = messages.emailRequired;
   } else if (!validateEmail(data.email)) {
-    errors.email = 'L\'email n\'est pas valide';
+    errors.email = messages.emailInvalid;
   }
 
   if (!validateRequired(data.telephone)) {
-    errors.telephone = 'Le téléphone est requis';
+    errors.telephone = messages.telephoneRequired;
   } else if (!validatePhone(data.telephone)) {
-    errors.telephone = 'Le numéro de téléphone n\'est pas valide';
+    errors.telephone = messages.telephoneInvalid;
   }
 
   if (!validateRequired(data.adresse)) {
-    errors.adresse = 'L\'adresse du bien est requise';
+    errors.adresse = messages.adresseRequired;
   }
 
   if (!data.consent) {
-    errors.consent = 'Vous devez accepter la politique de confidentialité';
+    errors.consent = messages.consentRequired;
   }
 
   return errors;

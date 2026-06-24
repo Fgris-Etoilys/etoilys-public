@@ -10,7 +10,7 @@ import {
   type DemandeClassementFormData,
   type ValidationError,
 } from '../../utils/formValidation';
-import { submitToApi } from '../../utils/api';
+import { submitToApi, type ApiErrorCode, type FieldErrorCode } from '../../utils/api';
 import {
   trackFormStarted,
   trackFormSubmitAttempted,
@@ -18,6 +18,23 @@ import {
   trackFormSubmitSucceeded,
   trackFormValidationFailed,
 } from '../../utils/analytics';
+import {
+  formContent,
+  getLocalizedApiErrorMessage,
+  getLocalizedFieldErrors,
+} from '../../i18n/formContent';
+import { DEFAULT_LOCALE, type Locale } from '../../i18n/locales';
+import { getLocalizedPath } from '../../i18n/routeHelpers';
+
+type DemandeClassementFormProps = {
+  locale?: Locale;
+};
+
+type DemandeClassementSubmissionPayload = DemandeClassementFormData & {
+  turnstileToken: string;
+  consentVersion: typeof CONSENT_VERSION;
+  preferredLanguage: Locale;
+};
 
 type DemandeSubmissionResponse =
   | {
@@ -28,12 +45,19 @@ type DemandeSubmissionResponse =
   | {
       success: false;
       error: string;
+      errorCode?: ApiErrorCode;
       fieldErrors?: Record<string, string>;
+      fieldErrorCodes?: Record<string, FieldErrorCode>;
     };
 
 const CONSENT_VERSION = 'privacy-v1';
 
-export default function DemandeClassementForm() {
+export default function DemandeClassementForm({
+  locale = DEFAULT_LOCALE,
+}: DemandeClassementFormProps) {
+  const content = formContent[locale];
+  const demandeContent = content.demandeClassement;
+  const privacyPath = getLocalizedPath('confidentialite', locale) ?? '/confidentialite';
   const [formData, setFormData] = useState<DemandeClassementFormData>({
     nom: '',
     prenom: '',
@@ -96,9 +120,9 @@ export default function DemandeClassementForm() {
     setIsSuccess(false);
     setSubmitError(null);
 
-    const validationErrors = validateDemandeClassementForm(formData);
+    const validationErrors = validateDemandeClassementForm(formData, locale);
     if (!turnstileToken) {
-      validationErrors.turnstileToken = 'Merci de valider la vérification anti-spam.';
+      validationErrors.turnstileToken = content.turnstile.required;
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -111,35 +135,55 @@ export default function DemandeClassementForm() {
     setErrors({});
     trackFormSubmitAttempted('demande_classement');
 
-    const response = await submitToApi<DemandeSubmissionResponse, Record<string, unknown>>(
-      '/public/forms/classement',
-      {
-        ...formData,
-        turnstileToken,
-        consentVersion: CONSENT_VERSION,
-      }
-    );
+    const verifiedTurnstileToken = turnstileToken;
+    if (!verifiedTurnstileToken) {
+      setIsSubmitting(false);
+      setErrors({ turnstileToken: content.turnstile.required });
+      return;
+    }
+
+    const payload: DemandeClassementSubmissionPayload = {
+      ...formData,
+      turnstileToken: verifiedTurnstileToken,
+      consentVersion: CONSENT_VERSION,
+      preferredLanguage: locale,
+    };
+
+    const response = await submitToApi<
+      DemandeSubmissionResponse,
+      DemandeClassementSubmissionPayload
+    >('/public/forms/classement', payload, { locale });
 
     setIsSubmitting(false);
 
     if (!response.success) {
-      setErrors(response.fieldErrors || {});
+      setErrors(getLocalizedFieldErrors(response.fieldErrorCodes, locale, response.fieldErrors));
       setSubmitError(response.error);
       trackFormSubmitFailed(
         'demande_classement',
         'api',
-        Object.keys(response.fieldErrors || {}).sort()
+        Object.keys(response.fieldErrorCodes || {}).sort()
       );
       return;
     }
 
     if (!response.data.success) {
-      setErrors(response.data.fieldErrors || {});
-      setSubmitError(response.data.error || 'La soumission a échoué.');
+      setErrors(
+        getLocalizedFieldErrors(response.data.fieldErrorCodes, locale, response.data.fieldErrors)
+      );
+      setSubmitError(
+        getLocalizedApiErrorMessage(
+          {
+            errorCode: response.data.errorCode,
+            fallbackError: response.data.error,
+          },
+          locale
+        )
+      );
       trackFormSubmitFailed(
         'demande_classement',
         'api',
-        Object.keys(response.data.fieldErrors || {}).sort()
+        Object.keys(response.data.fieldErrorCodes || response.data.fieldErrors || {}).sort()
       );
       return;
     }
@@ -166,16 +210,13 @@ export default function DemandeClassementForm() {
   return (
     <div className="bg-white rounded-card border border-gray-200 p-8">
       <h2 className="text-2xl font-playfair font-semibold text-gray-900 mb-2">
-        Votre demande de classement
+        {demandeContent.title}
       </h2>
-      <p className="text-textLight mb-8 leading-comfortable">
-        Indiquez vos coordonnées et l'adresse du logement à classer. Nous vous recontacterons
-        rapidement pour organiser la suite.
-      </p>
+      <p className="text-textLight mb-8 leading-comfortable">{demandeContent.intro}</p>
 
       {isSuccess && (
         <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
-          Votre demande a été envoyée avec succès. Notre équipe reviendra vers vous sous 24 heures.
+          {demandeContent.success}
         </div>
       )}
 
@@ -188,7 +229,7 @@ export default function DemandeClassementForm() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
-            label="Nom"
+            label={demandeContent.labels.nom}
             name="nom"
             type="text"
             value={formData.nom}
@@ -198,7 +239,7 @@ export default function DemandeClassementForm() {
           />
 
           <Input
-            label="Prénom"
+            label={demandeContent.labels.prenom}
             name="prenom"
             type="text"
             value={formData.prenom}
@@ -210,7 +251,7 @@ export default function DemandeClassementForm() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Input
-            label="Email"
+            label={demandeContent.labels.email}
             name="email"
             type="email"
             value={formData.email}
@@ -220,36 +261,36 @@ export default function DemandeClassementForm() {
           />
 
           <Input
-            label="Téléphone"
+            label={demandeContent.labels.telephone}
             name="telephone"
             type="tel"
             value={formData.telephone}
             onChange={handleChange}
             error={errors.telephone}
-            placeholder="Ex: 06 12 34 56 78"
+            placeholder={demandeContent.placeholders.telephone}
             required
           />
         </div>
 
         <Input
-          label="Adresse du bien"
+          label={demandeContent.labels.adresse}
           name="adresse"
           type="text"
           value={formData.adresse}
           onChange={handleChange}
           error={errors.adresse}
-          placeholder="Adresse complète de votre meublé de tourisme"
+          placeholder={demandeContent.placeholders.adresse}
           required
         />
 
         <Textarea
-          label="Message"
+          label={demandeContent.labels.message}
           name="message"
           rows={5}
           value={formData.message}
           onChange={handleChange}
           error={errors.message}
-          placeholder="Parlez-nous de votre hébergement et de vos attentes (optionnel)"
+          placeholder={demandeContent.placeholders.message}
         />
 
         <Checkbox
@@ -259,9 +300,9 @@ export default function DemandeClassementForm() {
           error={errors.consent}
           label={
             <>
-              J'accepte que mes données soient traitées conformément à la{' '}
-              <Link to="/confidentialite" className="text-primary-300 hover:text-primary-400">
-                politique de confidentialité
+              {demandeContent.consentPrefix}{' '}
+              <Link to={privacyPath} className="text-primary-300 hover:text-primary-400">
+                {demandeContent.privacyLinkLabel}
               </Link>
             </>
           }
@@ -272,10 +313,11 @@ export default function DemandeClassementForm() {
           onTokenChange={handleTurnstileChange}
           error={errors.turnstileToken}
           resetKey={turnstileResetKey}
+          messages={content.turnstile}
         />
 
         <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? 'Envoi en cours...' : 'Envoyer ma demande'}
+          {isSubmitting ? demandeContent.submitting : demandeContent.submitButton}
         </Button>
       </form>
     </div>

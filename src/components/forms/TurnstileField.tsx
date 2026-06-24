@@ -28,9 +28,25 @@ interface TurnstileFieldProps {
   onTokenChange: (token: string | null) => void;
   error?: string | undefined;
   resetKey: number;
+  messages?: {
+    missingConfig: string;
+    expired: string;
+    verificationError: string;
+  };
 }
 
-export default function TurnstileField({ onTokenChange, error, resetKey }: TurnstileFieldProps) {
+const defaultMessages = {
+  missingConfig: 'Protection anti-spam indisponible (configuration manquante).',
+  expired: 'La vérification anti-spam a expiré. Merci de réessayer.',
+  verificationError: 'Erreur de vérification anti-spam. Merci de réessayer.',
+};
+
+export default function TurnstileField({
+  onTokenChange,
+  error,
+  resetKey,
+  messages = defaultMessages,
+}: TurnstileFieldProps) {
   const siteKey = import.meta.env?.VITE_TURNSTILE_SITE_KEY;
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -38,7 +54,7 @@ export default function TurnstileField({ onTokenChange, error, resetKey }: Turns
 
   useEffect(() => {
     if (!siteKey) {
-      setLocalError('Protection anti-spam indisponible (configuration manquante).');
+      setLocalError(messages.missingConfig);
       onTokenChange(null);
       return;
     }
@@ -63,12 +79,12 @@ export default function TurnstileField({ onTokenChange, error, resetKey }: Turns
         'expired-callback': () => {
           if (!isMounted) return;
           onTokenChange(null);
-          setLocalError('La vérification anti-spam a expiré. Merci de réessayer.');
+          setLocalError(messages.expired);
         },
         'error-callback': () => {
           if (!isMounted) return;
           onTokenChange(null);
-          setLocalError('Erreur de vérification anti-spam. Merci de réessayer.');
+          setLocalError(messages.verificationError);
         },
         theme: 'light',
       });
@@ -100,7 +116,7 @@ export default function TurnstileField({ onTokenChange, error, resetKey }: Turns
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey, onTokenChange]);
+  }, [siteKey, onTokenChange, messages]);
 
   useEffect(() => {
     if (widgetIdRef.current && window.turnstile) {

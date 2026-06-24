@@ -1,7 +1,27 @@
+import { formContent, getLocalizedApiErrorMessage } from '../i18n/formContent';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/locales';
+
 const API_BASE_URL = import.meta.env?.VITE_API_BASE_URL || '/api';
 
-export const RATE_LIMIT_ERROR_MESSAGE =
-  'Trop de requêtes envoyées en peu de temps. Réessayez dans quelques minutes.';
+export const API_ERROR_CODES = [
+  'METHOD_NOT_ALLOWED',
+  'INVALID_JSON',
+  'INVALID_PAYLOAD',
+  'VALIDATION_FAILED',
+  'TURNSTILE_INVALID',
+  'RATE_LIMITED',
+  'RATE_LIMIT_UNAVAILABLE',
+  'INSERT_FAILED',
+  'NOTIFICATION_FAILED',
+] as const;
+
+export type ApiErrorCode = (typeof API_ERROR_CODES)[number];
+
+export const FIELD_ERROR_CODES = ['REQUIRED', 'INVALID_EMAIL', 'INVALID_PHONE'] as const;
+
+export type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number];
+
+export const RATE_LIMIT_ERROR_MESSAGE = formContent.fr.api.rateLimited;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
@@ -15,6 +35,12 @@ const isJsonValue = (value: unknown): value is JsonValue => {
   if (isRecord(value)) return Object.values(value).every(isJsonValue);
   return false;
 };
+
+const isApiErrorCode = (value: unknown): value is ApiErrorCode =>
+  typeof value === 'string' && (API_ERROR_CODES as readonly string[]).includes(value);
+
+const isFieldErrorCode = (value: unknown): value is FieldErrorCode =>
+  typeof value === 'string' && (FIELD_ERROR_CODES as readonly string[]).includes(value);
 
 const parseJsonSafe = (text: string): unknown | null => {
   if (!text.trim()) return null;
@@ -30,13 +56,26 @@ const isFieldErrors = (value: unknown): value is Record<string, string> => {
   return Object.values(value).every((entry) => typeof entry === 'string');
 };
 
+const isFieldErrorCodes = (value: unknown): value is Record<string, FieldErrorCode> => {
+  if (!isRecord(value)) return false;
+  return Object.values(value).every(isFieldErrorCode);
+};
+
 const isApiErrorBody = (
   value: unknown
-): value is { error?: string; fieldErrors?: Record<string, string> } => {
+): value is {
+  error?: string;
+  errorCode?: ApiErrorCode;
+  fieldErrors?: Record<string, string>;
+  fieldErrorCodes?: Record<string, FieldErrorCode>;
+} => {
   if (!isRecord(value)) return false;
   const hasError = value.error === undefined || typeof value.error === 'string';
+  const hasErrorCode = value.errorCode === undefined || isApiErrorCode(value.errorCode);
   const hasFieldErrors = value.fieldErrors === undefined || isFieldErrors(value.fieldErrors);
-  return hasError && hasFieldErrors;
+  const hasFieldErrorCodes =
+    value.fieldErrorCodes === undefined || isFieldErrorCodes(value.fieldErrorCodes);
+  return hasError && hasErrorCode && hasFieldErrors && hasFieldErrorCodes;
 };
 
 export type ApiResponse<T = unknown> =
@@ -47,8 +86,15 @@ export type ApiResponse<T = unknown> =
   | {
       success: false;
       error: string;
-      fieldErrors?: Record<string, string>;
+      status?: number | undefined;
+      errorCode?: ApiErrorCode | undefined;
+      fieldErrors?: Record<string, string> | undefined;
+      fieldErrorCodes?: Record<string, FieldErrorCode> | undefined;
     };
+
+type SubmitToApiOptions = {
+  locale?: Locale;
+};
 
 export const getApiUrl = (endpoint: string): string => {
   const normalizedBaseUrl = API_BASE_URL.replace(/\/+$/, '');
@@ -56,13 +102,16 @@ export const getApiUrl = (endpoint: string): string => {
   return `${normalizedBaseUrl}${normalizedEndpoint}`;
 };
 
-export const getHttpErrorMessage = (status: number): string =>
-  status === 429 ? RATE_LIMIT_ERROR_MESSAGE : `Erreur HTTP ${status}`;
+export const getHttpErrorMessage = (status: number, locale: Locale = DEFAULT_LOCALE): string =>
+  status === 429 ? formContent[locale].api.rateLimited : formContent[locale].api.httpError(status);
 
 export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
   endpoint: string,
-  payload: P
+  payload: P,
+  options: SubmitToApiOptions = {}
 ): Promise<ApiResponse<T>> => {
+  const locale = options.locale ?? DEFAULT_LOCALE;
+
   try {
     const response = await fetch(getApiUrl(endpoint), {
       method: 'POST',
@@ -74,34 +123,46 @@ export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
     const parsed = parseJsonSafe(rawText);
 
     if (!response.ok) {
-      if (response.status === 429) {
-        return {
-          success: false,
-          error: RATE_LIMIT_ERROR_MESSAGE,
-        };
-      }
-
       if (isApiErrorBody(parsed)) {
-        const apiError: ApiResponse<T> = {
+        const apiError: Extract<ApiResponse<T>, { success: false }> = {
           success: false,
-          error: parsed.error || getHttpErrorMessage(response.status),
+          status: response.status,
+          error: getLocalizedApiErrorMessage(
+            {
+              errorCode: parsed.errorCode,
+              status: response.status,
+              fallbackError: parsed.error,
+            },
+            locale
+          ),
         };
-        if (parsed.fieldErrors !== undefined) {
-          return { ...apiError, fieldErrors: parsed.fieldErrors };
+
+        if (parsed.errorCode !== undefined) {
+          apiError.errorCode = parsed.errorCode;
         }
+
+        if (parsed.fieldErrors !== undefined) {
+          apiError.fieldErrors = parsed.fieldErrors;
+        }
+
+        if (parsed.fieldErrorCodes !== undefined) {
+          apiError.fieldErrorCodes = parsed.fieldErrorCodes;
+        }
+
         return apiError;
       }
 
       return {
         success: false,
-        error: getHttpErrorMessage(response.status),
+        status: response.status,
+        error: getHttpErrorMessage(response.status, locale),
       };
     }
 
     if (!isJsonValue(parsed)) {
       return {
         success: false,
-        error: 'Réponse API invalide',
+        error: formContent[locale].api.invalidResponse,
       };
     }
 
@@ -109,10 +170,10 @@ export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
       success: true,
       data: parsed as T,
     };
-  } catch (error) {
+  } catch {
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Une erreur est survenue',
+      error: formContent[locale].api.genericError,
     };
   }
 };

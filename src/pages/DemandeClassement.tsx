@@ -1,7 +1,12 @@
+import { useLocation } from 'react-router-dom';
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
 import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
+import { getLocaleFromPath } from '../i18n/routeHelpers';
 
 export default function DemandeClassement() {
+  const location = useLocation();
+  const locale = getLocaleFromPath(location.pathname);
+
   return (
     <>
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
@@ -22,7 +27,7 @@ export default function DemandeClassement() {
         <div className="container-adaptive">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2">
-              <DemandeClassementForm />
+              <DemandeClassementForm locale={locale} />
             </div>
 
             <div>

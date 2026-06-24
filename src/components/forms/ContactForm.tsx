@@ -10,7 +10,7 @@ import {
   type ContactFormData,
   type ValidationError,
 } from '../../utils/formValidation';
-import { submitToApi } from '../../utils/api';
+import { submitToApi, type ApiErrorCode, type FieldErrorCode } from '../../utils/api';
 import {
   trackFormStarted,
   trackFormSubmitAttempted,
@@ -18,12 +18,26 @@ import {
   trackFormSubmitSucceeded,
   trackFormValidationFailed,
 } from '../../utils/analytics';
+import {
+  formContent,
+  getLocalizedApiErrorMessage,
+  getLocalizedFieldErrors,
+} from '../../i18n/formContent';
+import { DEFAULT_LOCALE, type Locale } from '../../i18n/locales';
+import { getLocalizedPath } from '../../i18n/routeHelpers';
 
 interface ContactFormProps {
+  locale?: Locale;
   title?: string;
   submitButtonText?: string;
   successMessage?: string;
 }
+
+type ContactSubmissionPayload = ContactFormData & {
+  turnstileToken: string;
+  consentVersion: typeof CONSENT_VERSION;
+  preferredLanguage: Locale;
+};
 
 type ContactSubmissionResponse =
   | {
@@ -34,16 +48,25 @@ type ContactSubmissionResponse =
   | {
       success: false;
       error: string;
+      errorCode?: ApiErrorCode;
       fieldErrors?: Record<string, string>;
+      fieldErrorCodes?: Record<string, FieldErrorCode>;
     };
 
 const CONSENT_VERSION = 'privacy-v1';
 
 export default function ContactForm({
-  title = 'Posez-nous votre question',
-  submitButtonText = 'Envoyer mon message',
-  successMessage = 'Votre message a été envoyé avec succès. Notre équipe reviendra vers vous rapidement.',
+  locale = DEFAULT_LOCALE,
+  title,
+  submitButtonText,
+  successMessage,
 }: ContactFormProps) {
+  const content = formContent[locale];
+  const contactContent = content.contact;
+  const privacyPath = getLocalizedPath('confidentialite', locale) ?? '/confidentialite';
+  const displayedTitle = title ?? contactContent.title;
+  const displayedSubmitButtonText = submitButtonText ?? contactContent.submitButton;
+  const displayedSuccessMessage = successMessage ?? contactContent.success;
   const [formData, setFormData] = useState<ContactFormData>({
     nom: '',
     email: '',
@@ -103,10 +126,10 @@ export default function ContactForm({
     setIsSuccess(false);
     setSubmitError(null);
 
-    const validationErrors = validateContactForm(formData);
+    const validationErrors = validateContactForm(formData, locale);
 
     if (!turnstileToken) {
-      validationErrors.turnstileToken = 'Merci de valider la vérification anti-spam.';
+      validationErrors.turnstileToken = content.turnstile.required;
     }
 
     if (Object.keys(validationErrors).length > 0) {
@@ -119,28 +142,53 @@ export default function ContactForm({
     setErrors({});
     trackFormSubmitAttempted('contact');
 
-    const response = await submitToApi<ContactSubmissionResponse, Record<string, unknown>>(
+    const verifiedTurnstileToken = turnstileToken;
+    if (!verifiedTurnstileToken) {
+      setIsSubmitting(false);
+      setErrors({ turnstileToken: content.turnstile.required });
+      return;
+    }
+
+    const payload: ContactSubmissionPayload = {
+      ...formData,
+      turnstileToken: verifiedTurnstileToken,
+      consentVersion: CONSENT_VERSION,
+      preferredLanguage: locale,
+    };
+
+    const response = await submitToApi<ContactSubmissionResponse, ContactSubmissionPayload>(
       '/public/forms/contact',
-      {
-        ...formData,
-        turnstileToken,
-        consentVersion: CONSENT_VERSION,
-      }
+      payload,
+      { locale }
     );
 
     setIsSubmitting(false);
 
     if (!response.success) {
-      setErrors(response.fieldErrors || {});
+      setErrors(getLocalizedFieldErrors(response.fieldErrorCodes, locale, response.fieldErrors));
       setSubmitError(response.error);
-      trackFormSubmitFailed('contact', 'api', Object.keys(response.fieldErrors || {}).sort());
+      trackFormSubmitFailed('contact', 'api', Object.keys(response.fieldErrorCodes || {}).sort());
       return;
     }
 
     if (!response.data.success) {
-      setErrors(response.data.fieldErrors || {});
-      setSubmitError(response.data.error || 'La soumission a échoué.');
-      trackFormSubmitFailed('contact', 'api', Object.keys(response.data.fieldErrors || {}).sort());
+      setErrors(
+        getLocalizedFieldErrors(response.data.fieldErrorCodes, locale, response.data.fieldErrors)
+      );
+      setSubmitError(
+        getLocalizedApiErrorMessage(
+          {
+            errorCode: response.data.errorCode,
+            fallbackError: response.data.error,
+          },
+          locale
+        )
+      );
+      trackFormSubmitFailed(
+        'contact',
+        'api',
+        Object.keys(response.data.fieldErrorCodes || response.data.fieldErrors || {}).sort()
+      );
       return;
     }
 
@@ -162,11 +210,11 @@ export default function ContactForm({
 
   return (
     <div className="bg-white rounded-card border border-gray-200 p-8">
-      <h3 className="text-2xl font-playfair font-semibold text-gray-900 mb-6">{title}</h3>
+      <h3 className="text-2xl font-playfair font-semibold text-gray-900 mb-6">{displayedTitle}</h3>
 
       {isSuccess && (
         <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
-          {successMessage}
+          {displayedSuccessMessage}
         </div>
       )}
 
@@ -178,7 +226,7 @@ export default function ContactForm({
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Input
-          label="Nom"
+          label={contactContent.labels.nom}
           name="nom"
           type="text"
           value={formData.nom}
@@ -188,7 +236,7 @@ export default function ContactForm({
         />
 
         <Input
-          label="Email"
+          label={contactContent.labels.email}
           name="email"
           type="email"
           value={formData.email}
@@ -198,7 +246,7 @@ export default function ContactForm({
         />
 
         <Textarea
-          label="Message"
+          label={contactContent.labels.message}
           name="message"
           rows={5}
           value={formData.message}
@@ -214,9 +262,9 @@ export default function ContactForm({
           error={errors.consent}
           label={
             <>
-              J'accepte que mes données soient traitées conformément à la{' '}
-              <Link to="/confidentialite" className="text-primary-300 hover:text-primary-400">
-                politique de confidentialité
+              {contactContent.consentPrefix}{' '}
+              <Link to={privacyPath} className="text-primary-300 hover:text-primary-400">
+                {contactContent.privacyLinkLabel}
               </Link>
             </>
           }
@@ -227,10 +275,11 @@ export default function ContactForm({
           onTokenChange={handleTurnstileChange}
           error={errors.turnstileToken}
           resetKey={turnstileResetKey}
+          messages={content.turnstile}
         />
 
         <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? 'Envoi en cours...' : submitButtonText}
+          {isSubmitting ? contactContent.submitting : displayedSubmitButtonText}
         </Button>
       </form>
     </div>

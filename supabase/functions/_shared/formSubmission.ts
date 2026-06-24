@@ -9,10 +9,27 @@ export interface ApiSuccessBody {
 export interface ApiErrorBody {
   success: false;
   error: string;
+  errorCode?: ApiErrorCode;
   fieldErrors?: Record<string, string>;
+  fieldErrorCodes?: Record<string, FieldErrorCode>;
 }
 
 export type ApiBody = ApiSuccessBody | ApiErrorBody;
+
+export type PreferredLanguage = 'fr' | 'en';
+
+export type ApiErrorCode =
+  | 'METHOD_NOT_ALLOWED'
+  | 'INVALID_JSON'
+  | 'INVALID_PAYLOAD'
+  | 'VALIDATION_FAILED'
+  | 'TURNSTILE_INVALID'
+  | 'RATE_LIMITED'
+  | 'RATE_LIMIT_UNAVAILABLE'
+  | 'INSERT_FAILED'
+  | 'NOTIFICATION_FAILED';
+
+export type FieldErrorCode = 'REQUIRED' | 'INVALID_EMAIL' | 'INVALID_PHONE';
 
 export interface SubmissionRecordInput {
   formType: 'contact' | 'classement';
@@ -24,6 +41,7 @@ export interface SubmissionRecordInput {
   message?: string;
   consentAccepted: boolean;
   consentVersion: string;
+  preferredLanguage: PreferredLanguage;
   turnstileVerified: boolean;
   sourceIpHash: string | null;
   userAgent: string;
@@ -37,6 +55,12 @@ export const normalizeText = (value: unknown): string => {
   if (typeof value !== 'string') return '';
   return value.trim();
 };
+
+export const normalizePreferredLanguage = (value: unknown): PreferredLanguage =>
+  value === 'en' ? 'en' : 'fr';
+
+export const formatPreferredLanguageLabel = (preferredLanguage: PreferredLanguage): string =>
+  preferredLanguage === 'en' ? 'anglais (en)' : 'français (fr)';
 
 export const validateEmail = (value: string): boolean => emailRegex.test(value);
 
@@ -162,7 +186,7 @@ export const enforceRateLimit = async (
   client: SupabaseClient,
   email: string,
   sourceIpHash: string | null
-): Promise<{ allowed: boolean; error?: string }> => {
+): Promise<{ allowed: boolean; error?: string; errorCode?: ApiErrorCode }> => {
   const hourlyIpLimit = parseLimit('FORM_RATE_LIMIT_IP_PER_HOUR', 10);
   const hourlyEmailLimit = parseLimit('FORM_RATE_LIMIT_EMAIL_PER_HOUR', 5);
   const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
@@ -175,11 +199,19 @@ export const enforceRateLimit = async (
       .gte('created_at', oneHourAgo);
 
     if (ipQuery.error) {
-      return { allowed: false, error: 'Impossible de verifier la limite anti-spam.' };
+      return {
+        allowed: false,
+        error: 'Impossible de verifier la limite anti-spam.',
+        errorCode: 'RATE_LIMIT_UNAVAILABLE',
+      };
     }
 
     if ((ipQuery.count || 0) >= hourlyIpLimit) {
-      return { allowed: false, error: 'Trop de tentatives. Merci de reessayer plus tard.' };
+      return {
+        allowed: false,
+        error: 'Trop de tentatives. Merci de reessayer plus tard.',
+        errorCode: 'RATE_LIMITED',
+      };
     }
   }
 
@@ -190,11 +222,19 @@ export const enforceRateLimit = async (
     .gte('created_at', oneHourAgo);
 
   if (emailQuery.error) {
-    return { allowed: false, error: 'Impossible de verifier la limite anti-spam.' };
+    return {
+      allowed: false,
+      error: 'Impossible de verifier la limite anti-spam.',
+      errorCode: 'RATE_LIMIT_UNAVAILABLE',
+    };
   }
 
   if ((emailQuery.count || 0) >= hourlyEmailLimit) {
-    return { allowed: false, error: 'Trop de tentatives. Merci de reessayer plus tard.' };
+    return {
+      allowed: false,
+      error: 'Trop de tentatives. Merci de reessayer plus tard.',
+      errorCode: 'RATE_LIMITED',
+    };
   }
 
   return { allowed: true };
@@ -219,7 +259,10 @@ export const insertSubmission = async (
       turnstile_verified: input.turnstileVerified,
       source_ip_hash: input.sourceIpHash,
       user_agent: input.userAgent,
-      payload_json: input.payload,
+      payload_json: {
+        ...input.payload,
+        preferredLanguage: input.preferredLanguage,
+      },
     })
     .select('id')
     .single();

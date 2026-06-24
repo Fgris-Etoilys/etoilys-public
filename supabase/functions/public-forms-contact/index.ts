@@ -1,6 +1,7 @@
 import {
   createAdminClient,
   enforceRateLimit,
+  formatPreferredLanguageLabel,
   getClientIp,
   hashText,
   insertSubmission,
@@ -8,10 +9,12 @@ import {
   markSubmissionAsNotified,
   markSubmissionNotificationFailed,
   normalizeText,
+  normalizePreferredLanguage,
   preflightResponse,
   sendResendNotification,
   validateEmail,
   verifyTurnstileToken,
+  type FieldErrorCode,
 } from '../_shared/formSubmission.ts';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -30,6 +33,7 @@ Deno.serve(async (req) => {
       {
         success: false,
         error: 'Methode non autorisee.',
+        errorCode: 'METHOD_NOT_ALLOWED',
       },
       requestOrigin
     );
@@ -44,6 +48,7 @@ Deno.serve(async (req) => {
       {
         success: false,
         error: 'Payload JSON invalide.',
+        errorCode: 'INVALID_JSON',
       },
       requestOrigin
     );
@@ -55,6 +60,7 @@ Deno.serve(async (req) => {
       {
         success: false,
         error: 'Payload JSON invalide.',
+        errorCode: 'INVALID_PAYLOAD',
       },
       requestOrigin
     );
@@ -65,17 +71,38 @@ Deno.serve(async (req) => {
   const message = normalizeText(body.message);
   const consentAccepted = body.consent === true;
   const consentVersion = normalizeText(body.consentVersion);
+  const preferredLanguage = normalizePreferredLanguage(body.preferredLanguage);
   const turnstileToken = normalizeText(body.turnstileToken);
   const fieldErrors: Record<string, string> = {};
+  const fieldErrorCodes: Record<string, FieldErrorCode> = {};
 
-  if (!nom) fieldErrors.nom = 'Le nom est requis.';
-  if (!email) fieldErrors.email = 'L email est requis.';
-  if (email && !validateEmail(email)) fieldErrors.email = 'L email n est pas valide.';
-  if (!message) fieldErrors.message = 'Le message est requis.';
-  if (!consentAccepted) fieldErrors.consent = 'Le consentement est requis.';
-  if (!consentVersion) fieldErrors.consentVersion = 'La version de consentement est requise.';
+  if (!nom) {
+    fieldErrors.nom = 'Le nom est requis.';
+    fieldErrorCodes.nom = 'REQUIRED';
+  }
+  if (!email) {
+    fieldErrors.email = 'L email est requis.';
+    fieldErrorCodes.email = 'REQUIRED';
+  }
+  if (email && !validateEmail(email)) {
+    fieldErrors.email = 'L email n est pas valide.';
+    fieldErrorCodes.email = 'INVALID_EMAIL';
+  }
+  if (!message) {
+    fieldErrors.message = 'Le message est requis.';
+    fieldErrorCodes.message = 'REQUIRED';
+  }
+  if (!consentAccepted) {
+    fieldErrors.consent = 'Le consentement est requis.';
+    fieldErrorCodes.consent = 'REQUIRED';
+  }
+  if (!consentVersion) {
+    fieldErrors.consentVersion = 'La version de consentement est requise.';
+    fieldErrorCodes.consentVersion = 'REQUIRED';
+  }
   if (!turnstileToken) {
     fieldErrors.turnstileToken = 'La verification anti-spam est requise.';
+    fieldErrorCodes.turnstileToken = 'REQUIRED';
   }
 
   if (Object.keys(fieldErrors).length > 0) {
@@ -84,7 +111,9 @@ Deno.serve(async (req) => {
       {
         success: false,
         error: 'Donnees invalides.',
+        errorCode: 'VALIDATION_FAILED',
         fieldErrors,
+        fieldErrorCodes,
       },
       requestOrigin
     );
@@ -101,6 +130,7 @@ Deno.serve(async (req) => {
       {
         success: false,
         error: turnstileCheck.error || 'Verification anti-spam invalide.',
+        errorCode: 'TURNSTILE_INVALID',
       },
       requestOrigin
     );
@@ -114,6 +144,7 @@ Deno.serve(async (req) => {
       {
         success: false,
         error: rateLimit.error || 'Trop de tentatives. Merci de reessayer plus tard.',
+        errorCode: rateLimit.errorCode || 'RATE_LIMITED',
       },
       requestOrigin
     );
@@ -126,6 +157,7 @@ Deno.serve(async (req) => {
     message,
     consentAccepted,
     consentVersion,
+    preferredLanguage,
     turnstileVerified: true,
     sourceIpHash,
     userAgent,
@@ -135,6 +167,7 @@ Deno.serve(async (req) => {
       message,
       consent: consentAccepted,
       consentVersion,
+      preferredLanguage,
     },
   });
 
@@ -144,6 +177,7 @@ Deno.serve(async (req) => {
       {
         success: false,
         error: insertResult.error || 'Impossible d enregistrer la demande.',
+        errorCode: 'INSERT_FAILED',
       },
       requestOrigin
     );
@@ -153,6 +187,7 @@ Deno.serve(async (req) => {
     '[Etoilys] Nouveau formulaire de contact',
     [
       `Submission ID: ${insertResult.submissionId}`,
+      `Langue préférée: ${formatPreferredLanguageLabel(preferredLanguage)}`,
       `Nom: ${nom}`,
       `Email: ${email}`,
       `Message:`,
@@ -173,6 +208,7 @@ Deno.serve(async (req) => {
       {
         success: false,
         error: 'Demande enregistree mais notification indisponible. Merci de reessayer plus tard.',
+        errorCode: 'NOTIFICATION_FAILED',
       },
       requestOrigin
     );

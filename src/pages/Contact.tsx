@@ -1,7 +1,12 @@
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import ContactForm from '../components/forms/ContactForm';
+import { getLocaleFromPath } from '../i18n/routeHelpers';
 
 export default function Contact() {
+  const location = useLocation();
+  const locale = getLocaleFromPath(location.pathname);
+
   return (
     <>
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
@@ -91,7 +96,7 @@ export default function Contact() {
             </div>
 
             <div>
-              <ContactForm />
+              <ContactForm locale={locale} />
             </div>
           </div>
         </div>
