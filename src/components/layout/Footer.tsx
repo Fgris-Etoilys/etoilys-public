@@ -1,38 +1,16 @@
-import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Star } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Mail, MapPin, Phone, Star } from 'lucide-react';
 import CookiePreferencesButton from '../ui/CookiePreferencesButton';
+import { layoutContent } from '../../i18n/layoutContent';
+import { getLocaleFromPath } from '../../i18n/routeHelpers';
 
 const footerBrandBg = '/images/brand/footer-brand-bg.png';
 
-const footerLinks = {
-  services: [
-    { name: 'Classement meublé de tourisme', href: '/classement' },
-    { name: 'Les avantages du classement', href: '/les-avantages-du-classement' },
-    { name: 'Prérequis au classement', href: '/prerequis-au-classement' },
-    { name: 'La procédure de classement', href: '/procedure' },
-    { name: 'Simulateur de classement', href: '/simulateur' },
-    { name: 'Simulateur taxe de séjour', href: '/simulateur-taxe-sejour' },
-    { name: 'Simulateur fiscal classement 2026', href: '/simulateur-fiscal-classement' },
-  ],
-  zones: [
-    { name: 'Zones d’intervention', href: '/zones-intervention' },
-    { name: 'Classement en Dordogne', href: '/classement-meuble-tourisme-dordogne' },
-    { name: 'Classement en Gironde', href: '/classement-meuble-tourisme-gironde' },
-    { name: 'Classement en Lot-et-Garonne', href: '/classement-meuble-tourisme-lot-et-garonne' },
-  ],
-  entreprise: [
-    // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
-    { name: 'Actualités', href: '/actualites' },
-    { name: 'Recrutement', href: '/recrutement' },
-    { name: 'FAQ', href: '/faq' },
-  ],
-  legal: [
-    { name: 'Mentions légales', href: '/mentions-legales' },
-    { name: 'Politique de confidentialité', href: '/confidentialite' },
-  ],
-};
-
 export default function Footer() {
+  const location = useLocation();
+  const locale = getLocaleFromPath(location.pathname);
+  const content = layoutContent[locale].footer;
+
   return (
     <footer className="border-t border-gray-200 bg-gray-50">
       <div className="container-adaptive pb-16 pt-section">
@@ -54,7 +32,7 @@ export default function Footer() {
                 aria-hidden="true"
               />
               <div className="relative mx-auto flex max-w-[20rem] flex-col items-center text-center">
-                <Link to="/" className="mb-1.5 flex items-center">
+                <Link to={content.homeHref} className="mb-1.5 flex items-center">
                   <img
                     src="/Logo complet - site web copy.svg"
                     alt="Etoilys"
@@ -66,8 +44,8 @@ export default function Footer() {
                   />
                 </Link>
                 <p className="mb-2 font-playfair text-2xl font-semibold leading-snug text-themePrimary-1">
-                  <span className="block">Classement de meublés</span>
-                  <span className="block">de tourisme</span>
+                  <span className="block">{content.brandTagline[0]}</span>
+                  <span className="block">{content.brandTagline[1]}</span>
                 </p>
                 <div className="flex items-center gap-1.5 text-primary-300/70" aria-hidden="true">
                   {Array.from({ length: 5 }).map((_, index) => (
@@ -96,83 +74,37 @@ export default function Footer() {
             </div>
           </div>
 
-          <div>
-            <h3 className="mb-4 text-lg font-playfair font-semibold text-gray-900">Services</h3>
-            <ul className="space-y-3">
-              {footerLinks.services.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="text-sm text-textLight transition-colors duration-200 hover:text-primary-300"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-4 text-lg font-playfair font-semibold text-gray-900">
-              Zones d’intervention
-            </h3>
-            <ul className="space-y-3">
-              {footerLinks.zones.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="text-sm text-textLight transition-colors duration-200 hover:text-primary-300"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-4 text-lg font-playfair font-semibold text-gray-900">Entreprise</h3>
-            <ul className="space-y-3">
-              {footerLinks.entreprise.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="text-sm text-textLight transition-colors duration-200 hover:text-primary-300"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-4 text-lg font-playfair font-semibold text-gray-900">
-              Informations légales
-            </h3>
-            <ul className="mb-6 space-y-3">
-              {footerLinks.legal.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.href}
-                    className="text-sm text-textLight transition-colors duration-200 hover:text-primary-300"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <CookiePreferencesButton className="text-left text-sm text-textLight transition-colors duration-200 hover:text-primary-300">
-                  Gérer mes cookies
-                </CookiePreferencesButton>
-              </li>
-            </ul>
-          </div>
+          {content.columns.map((column) => (
+            <div key={column.title}>
+              <h3 className="mb-4 text-lg font-playfair font-semibold text-gray-900">
+                {column.title}
+              </h3>
+              <ul className="space-y-3">
+                {column.links.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      to={link.href}
+                      className="text-sm text-textLight transition-colors duration-200 hover:text-primary-300"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+                {column.title === content.columns[content.columns.length - 1]?.title && (
+                  <li>
+                    <CookiePreferencesButton className="text-left text-sm text-textLight transition-colors duration-200 hover:text-primary-300">
+                      {content.cookiePreferencesLabel}
+                    </CookiePreferencesButton>
+                  </li>
+                )}
+              </ul>
+            </div>
+          ))}
         </div>
 
         <div className="border-t border-gray-200 pt-8">
           <p className="text-center text-sm text-textLight">
-            © {new Date().getFullYear()} Etoilys. Tous droits réservés.
+            © {new Date().getFullYear()} Etoilys. {content.copyright}
           </p>
         </div>
       </div>

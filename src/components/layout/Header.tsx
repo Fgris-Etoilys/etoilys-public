@@ -1,82 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, Star } from 'lucide-react';
+import { ChevronDown, Menu, Star, X } from 'lucide-react';
 import Button from '../ui/Button';
-
-type NavigationSubItem = {
-  name: string;
-  href: string;
-  description?: string;
-};
-
-type NavigationItem = {
-  name: string;
-  href: string;
-  showOverviewLink?: boolean;
-  overviewLabel?: string;
-  overviewDescription?: string;
-  submenu?: NavigationSubItem[];
-};
-
-const navigation: NavigationItem[] = [
-  { name: 'Accueil', href: '/' },
-  {
-    name: 'Le classement',
-    href: '/classement',
-    showOverviewLink: true,
-    overviewLabel: "Qu'est-ce que le classement ?",
-    overviewDescription: 'Comprendre le classement officiel',
-    submenu: [
-      {
-        name: 'Les avantages du classement',
-        href: '/les-avantages-du-classement',
-        description: 'Pourquoi faire classer votre logement ?',
-      },
-      {
-        name: 'Prérequis au classement',
-        href: '/prerequis-au-classement',
-        description: 'Les points à vérifier avant la visite',
-      },
-      {
-        name: 'Procédure',
-        href: '/procedure',
-        description: 'De la demande à la décision de classement',
-      },
-      {
-        name: 'Zones d’intervention',
-        href: '/zones-intervention',
-        description: 'Les départements couverts par Etoilys',
-      },
-      { name: 'FAQ', href: '/faq', description: 'Les réponses aux questions fréquentes' },
-    ],
-  },
-  {
-    name: 'Outils',
-    href: '/simulateur',
-    showOverviewLink: false,
-    submenu: [
-      {
-        name: 'Simulateur de classement',
-        href: '/simulateur',
-        description: 'Estimez vos étoiles',
-      },
-      {
-        name: 'Simulateur taxe de séjour',
-        href: '/simulateur-taxe-sejour',
-        description: 'Comparez classé et non classé',
-      },
-      {
-        name: 'Simulateur fiscal 2026',
-        href: '/simulateur-fiscal-classement',
-        description: 'Mesurez l’impact fiscal du classement',
-      },
-    ],
-  },
-  // { name: 'Notre équipe', href: '/equipe' }, // TODO: réactiver quand la page sera prête
-  { name: 'Actualités', href: '/actualites' },
-  { name: 'Recrutement', href: '/recrutement' },
-  { name: 'Contact', href: '/contact' },
-];
+import LanguageSwitcher from './LanguageSwitcher';
+import { layoutContent, type LayoutNavigationItem } from '../../i18n/layoutContent';
+import { getLocaleFromPath } from '../../i18n/routeHelpers';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -86,7 +14,12 @@ export default function Header() {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
+  const locale = getLocaleFromPath(location.pathname);
+  const content = layoutContent[locale].header;
+  const navigation: readonly LayoutNavigationItem[] = content.navigation;
+  const isHomePage =
+    location.pathname === content.homeHref ||
+    (content.homeHref === '/en/' && location.pathname === '/en');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -143,7 +76,7 @@ export default function Header() {
       <header className={headerClasses}>
         <nav className="container-adaptive py-2">
           <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center">
+            <Link to={content.homeHref} className="flex items-center">
               <img
                 src="/Logo complet - site web copy.svg"
                 alt="Etoilys"
@@ -254,20 +187,21 @@ export default function Header() {
                 );
               })}
               <Button
-                href="/demande-classement"
+                href={content.cta.href}
                 variant="primary"
                 size="sm"
                 className="ml-2 gap-2 border border-primary-200 px-4 py-2.5 shadow-[0_10px_24px_rgba(49,107,255,0.22)]"
               >
                 <Star className="h-4 w-4" aria-hidden="true" />
-                Demander mon classement
+                {content.cta.name}
               </Button>
+              <LanguageSwitcher />
             </div>
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="rounded-full p-2 text-themePrimary-1 transition-colors duration-200 hover:bg-primary-100/70 hover:text-primary-500 xl:hidden"
-              aria-label="Ouvrir ou fermer le menu"
+              aria-label={content.menuToggleLabel}
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -349,13 +283,14 @@ export default function Header() {
                   </Link>
                 );
               })}
+              <LanguageSwitcher variant="mobile" className="mt-4" />
               <Button
-                href="/demande-classement"
+                href={content.cta.href}
                 variant="primary"
                 className="mt-4 w-full gap-2 border border-primary-200 shadow-[0_10px_24px_rgba(49,107,255,0.2)]"
               >
                 <Star className="h-4 w-4" aria-hidden="true" />
-                Demander mon classement
+                {content.cta.name}
               </Button>
             </div>
           </nav>

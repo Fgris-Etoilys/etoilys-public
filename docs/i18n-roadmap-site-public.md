@@ -250,17 +250,17 @@ Critères d'acceptation :
 
 Tâches :
 
-- [ ] Traduire le header en anglais pour les routes EN.
-- [ ] Traduire le footer en anglais pour les routes EN.
-- [ ] Traduire les CTA globaux.
-- [ ] Ajouter un sélecteur de langue visible desktop et mobile.
-- [ ] Le switcher doit pointer vers la page équivalente quand elle existe.
-- [ ] Si l'équivalent n'existe pas, masquer ou désactiver proprement l'option de langue indisponible.
-- [ ] Le fallback vers `/en/` n'est autorisé que si ce comportement est explicitement documenté pour un cas précis.
-- [ ] Le comportement doit être identique en desktop et en mobile.
-- [ ] Ne pas casser le menu mobile.
-- [ ] Conserver les tokens Tailwind et composants existants.
-- [ ] Ne pas modifier le design global au-delà du strict nécessaire.
+- [x] Traduire le header en anglais pour les routes EN.
+- [x] Traduire le footer en anglais pour les routes EN.
+- [x] Traduire les CTA globaux.
+- [x] Ajouter un sélecteur de langue visible desktop et mobile.
+- [x] Le switcher doit pointer vers la page équivalente quand elle existe.
+- [x] Si l'équivalent n'existe pas, masquer ou désactiver proprement l'option de langue indisponible.
+- [x] Le fallback vers `/en/` n'est autorisé que si ce comportement est explicitement documenté pour un cas précis.
+- [x] Le comportement doit être identique en desktop et en mobile.
+- [x] Ne pas casser le menu mobile.
+- [x] Conserver les tokens Tailwind et composants existants.
+- [x] Ne pas modifier le design global au-delà du strict nécessaire.
 
 Fichiers probables :
 
@@ -272,13 +272,13 @@ Fichiers probables :
 
 Critères d'acceptation :
 
-- [ ] Navigation FR inchangée sur routes FR.
-- [ ] Navigation EN cohérente sur routes EN.
-- [ ] Switcher utilisable au clavier.
-- [ ] Switcher visible en desktop et mobile.
-- [ ] Les liens du switcher sont de vrais liens React Router.
-- [ ] Les routes sans équivalent EN ne renvoient pas automatiquement vers `/en/`.
-- [ ] Le comportement indisponible/masqué est couvert par tests desktop et mobile.
+- [x] Navigation FR inchangée sur routes FR.
+- [x] Navigation EN cohérente sur routes EN.
+- [x] Switcher utilisable au clavier.
+- [x] Switcher visible en desktop et mobile.
+- [x] Les liens du switcher sont de vrais liens React Router.
+- [x] Les routes sans équivalent EN ne renvoient pas automatiquement vers `/en/`.
+- [x] Le comportement indisponible/masqué est couvert par tests desktop et mobile.
 - [ ] Aucun chevauchement ou débordement visible dans le header mobile.
 
 ## 10. Formulaires
@@ -435,10 +435,10 @@ Terminologie à stabiliser :
 Tests à prévoir pendant l'implémentation :
 
 - [ ] Ajouter ou adapter les tests de routes localisées.
-- [ ] Tester les liens du language switcher.
-- [ ] Tester que le language switcher masque ou désactive l'option EN sur les routes sans équivalent.
-- [ ] Tester que le language switcher ne fallback pas automatiquement vers `/en/`.
-- [ ] Tester que les routes françaises fonctionnent toujours.
+- [x] Tester les liens du language switcher.
+- [x] Tester que le language switcher masque ou désactive l'option EN sur les routes sans équivalent.
+- [x] Tester que le language switcher ne fallback pas automatiquement vers `/en/`.
+- [x] Tester que les routes françaises fonctionnent toujours.
 - [ ] Tester que les routes anglaises existent.
 - [ ] Tester les canonical anglaises.
 - [ ] Tester les `hreflang` réciproques.
@@ -457,7 +457,7 @@ Tests à prévoir pendant l'implémentation :
 - [ ] Vérifier qu'aucune page n'importe `SEO` directement.
 - [ ] Vérifier qu'il n'existe qu'un seul injecteur `<SEO />`.
 - [ ] Vérifier l'absence de scripts JSON-LD dupliqués après navigation SPA.
-- [ ] Vérifier l'absence de BOM et de marqueurs de mojibake dans les fichiers modifiés.
+- [x] Vérifier l'absence de BOM et de marqueurs de mojibake dans les fichiers modifiés.
 
 Commandes à prévoir :
 
@@ -570,22 +570,22 @@ Dépendances : Lot 1 et idéalement Lot 2.
 
 Checklist :
 
-- [ ] Traduire le header.
-- [ ] Traduire le footer.
-- [ ] Traduire les CTA globaux.
-- [ ] Ajouter le language switcher desktop.
-- [ ] Ajouter le language switcher mobile.
-- [ ] Tester les liens équivalents.
-- [ ] Masquer ou désactiver l'option EN sur les routes sans équivalent.
-- [ ] Ne documenter un fallback vers `/en/` que pour un cas précis explicitement choisi.
+- [x] Traduire le header.
+- [x] Traduire le footer.
+- [x] Traduire les CTA globaux.
+- [x] Ajouter le language switcher desktop.
+- [x] Ajouter le language switcher mobile.
+- [x] Tester les liens équivalents.
+- [x] Masquer ou désactiver l'option EN sur les routes sans équivalent.
+- [x] Ne documenter un fallback vers `/en/` que pour un cas précis explicitement choisi.
 
 Critères d'acceptation :
 
-- [ ] Le switcher est visible et accessible.
-- [ ] Le menu mobile fonctionne toujours.
-- [ ] Les liens FR/EN pointent vers les équivalents attendus.
-- [ ] Les routes sans équivalent EN ne renvoient pas automatiquement vers `/en/`.
-- [ ] Le comportement est cohérent en desktop et en mobile.
+- [x] Le switcher est visible et accessible.
+- [x] Le menu mobile fonctionne toujours.
+- [x] Les liens FR/EN pointent vers les équivalents attendus.
+- [x] Les routes sans équivalent EN ne renvoient pas automatiquement vers `/en/`.
+- [x] Le comportement est cohérent en desktop et en mobile.
 
 ### Lot 4 - Formulaires et `preferredLanguage`
 
