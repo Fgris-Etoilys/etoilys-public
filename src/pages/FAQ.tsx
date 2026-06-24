@@ -77,8 +77,9 @@ const faqSections: FaqSection[] = [
         question: 'Une résidence principale peut-elle être classée ?',
         answer: (
           <>
-            Oui. Une résidence principale peut être classée en meublé de tourisme si elle respecte
-            les prérequis et les critères du classement.
+            Oui. Une résidence principale peut être classée si elle respecte les prérequis et les
+            critères du classement. En revanche, le classement ne modifie pas les règles de durée de
+            location applicables à une résidence principale.
             <SourceLink href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/une-residence-principale-peut-elle-etre-classee-en-tant" />
           </>
         ),
@@ -101,7 +102,7 @@ const faqSections: FaqSection[] = [
       {
         question: 'Combien coûte un classement ?',
         answer:
-          'Le tarif dépend de la région, de la superficie du logement et du nombre de biens à classer au même endroit. Chez Etoilys, il faut généralement compter entre 150\u00a0€ et 250\u00a0€, avec des réductions possibles en cas de classement de plusieurs biens sur un même site.',
+          'Le prix d’une visite dépend du logement, de sa localisation et du nombre de biens concernés. Pour obtenir un tarif adapté, le plus simple est de déposer une demande : Etoilys vous confirme les modalités avant validation.',
       },
       {
         question: 'Combien de temps dure une visite de classement ?',
@@ -324,7 +325,7 @@ export default function FAQ() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-3xl">
-            <h1 className="mb-6 text-white">Foire aux questions</h1>
+            <h1 className="mb-6 text-white">FAQ sur le classement des meublés de tourisme</h1>
             <p className="text-xl text-white/90 leading-comfortable">
               Retrouvez les réponses aux questions les plus fréquentes sur le classement des meublés
               de tourisme.

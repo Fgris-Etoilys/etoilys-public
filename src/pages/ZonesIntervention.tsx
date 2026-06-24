@@ -14,12 +14,14 @@ export default function ZonesIntervention() {
               Zones d&rsquo;intervention
             </p>
             <h1 className="mb-6 text-white">
-              Où Etoilys intervient pour classer votre meublé de tourisme ?
+              Zones d’intervention pour le classement des meublés de tourisme
             </h1>
             <p className="max-w-3xl text-xl leading-comfortable text-white/90">
-              Etoilys accompagne les propriétaires de meublés de tourisme dans plusieurs secteurs du
-              Sud-Ouest. Retrouvez les pages locales disponibles et déposez une demande pour
-              vérifier les possibilités d’intervention dans votre secteur.
+              Etoilys réalise des visites de classement dans plusieurs secteurs de Dordogne, Gironde
+              et Lot-et-Garonne. Les zones exactes d’intervention dépendent de la localisation du
+              logement et de l’organisation des tournées. Si votre commune n’apparaît pas, vous
+              pouvez déposer une demande : les possibilités d’intervention sont confirmées avant
+              validation.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Button href="/demande-classement" variant="white" size="lg">
@@ -80,10 +82,6 @@ export default function ZonesIntervention() {
                     davantage de propriétaires sur le territoire. Si votre logement se situe hors
                     des zones déjà présentées, vous pouvez déposer une demande : nous vous
                     confirmerons les possibilités d’intervention avant toute validation.
-                  </p>
-                  <p className="mb-6 text-sm font-medium leading-comfortable text-gray-900">
-                    Vous êtes inspecteur ou souhaitez rejoindre le réseau Etoilys ? Contactez-nous
-                    pour échanger sur les secteurs à développer.
                   </p>
                   <div className="flex flex-col gap-4 sm:flex-row">
                     <Button href="/demande-classement" variant="primary">

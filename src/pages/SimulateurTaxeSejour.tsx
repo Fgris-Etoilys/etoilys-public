@@ -1708,10 +1708,10 @@ export default function SimulateurTaxeSejour() {
       <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <h1 className="mb-4 text-white">Simulateur taxe de séjour</h1>
+            <h1 className="mb-4 text-white">Simulateur taxe de séjour : classé ou non classé</h1>
             <p className="text-base text-white/90">
-              Estimation informative de la taxe de séjour par catégorie de classement, à partir des
-              délibérations locales disponibles.
+              Comparez le montant estimatif de taxe de séjour entre un meublé non classé et un
+              meublé classé de 1 à 5 étoiles, selon les données locales disponibles.
             </p>
           </div>
         </div>
@@ -1721,7 +1721,7 @@ export default function SimulateurTaxeSejour() {
         <div className="container-adaptive">
           <div className="space-y-6">
             <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
-              <h2 className="mb-3 text-gray-900">Sources et méthode taxe de séjour</h2>
+              <h2 className="mb-3 text-gray-900">Ce que compare le simulateur</h2>
               <div className="space-y-3 text-sm">
                 <p>
                   La taxe de séjour peut être très différente entre un meublé non classé et un
@@ -1730,10 +1730,10 @@ export default function SimulateurTaxeSejour() {
                   nuitée.
                 </p>
                 <p>
-                  Ce simulateur permet de comparer les deux situations, commune par commune. Il
-                  affiche l'écart entre un logement non classé et les niveaux de classement de 1 à 5
-                  étoiles, afin de visualiser concrètement l'impact du classement sur la taxe de
-                  séjour.
+                  Le simulateur compare, pour une même commune et un même séjour, le montant
+                  estimatif dû pour un meublé non classé et pour un meublé classé de 1 à 5 étoiles.
+                  En pratique, vous visualisez si le classement change la taxe de séjour affichée au
+                  voyageur, et dans quelles proportions.
                 </p>
                 <p>
                   Le calcul prend en compte la période de location, le nombre de personnes, le prix

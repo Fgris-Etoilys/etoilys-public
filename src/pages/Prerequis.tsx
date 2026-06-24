@@ -103,9 +103,7 @@ export default function Prerequis() {
       <section className="py-section bg-primary-100">
         <div className="container-adaptive">
           <div className="max-w-4xl mx-auto">
-            <h2 className="mb-8 text-center">
-              Ce qu'il faut vraiment vérifier avant de demander le classement
-            </h2>
+            <h2 className="mb-8 text-center">Les points à vérifier avant de demander une visite</h2>
             <p className="text-textLight leading-comfortable mb-10 text-center">
               Avant de parler d'étoiles, il faut d'abord vérifier que le logement peut réellement
               entrer dans la démarche. Le sujet n'est pas seulement d'avoir "assez d'équipements",
@@ -167,9 +165,9 @@ export default function Prerequis() {
             </p>
             <div className="bg-success-100 border border-success-200 rounded-card p-6">
               <p className="text-gray-800 leading-comfortable">
-                <span className="font-semibold">Bonne nouvelle :</span> à l'issue de la visite, les
-                outils d'Etoilys indiquent directement à quel classement maximal le logement peut
-                prétendre. La catégorie visée peut alors être modifiée en conséquence.
+                À l'issue de la visite, les outils d'Etoilys indiquent directement à quel classement
+                maximal le logement peut prétendre. La catégorie visée peut alors être modifiée en
+                conséquence.
               </p>
             </div>
           </div>

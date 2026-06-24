@@ -64,9 +64,9 @@ export default function Classement() {
           <div className="max-w-3xl">
             <h1 className="mb-6 text-white">Le classement des meublés de tourisme</h1>
             <p className="text-xl text-white/90 leading-comfortable">
-              Le classement en étoiles est une certification officielle qui atteste de la qualité et
-              du niveau de confort de votre hébergement touristique. Découvrez tout ce qu'il faut
-              savoir sur cette démarche valorisante.
+              Le classement en étoiles est une démarche officielle qui évalue le niveau de confort,
+              d’équipement et de services de votre meublé de tourisme. Voici l’essentiel pour
+              comprendre son fonctionnement et savoir si votre logement peut être concerné.
             </p>
           </div>
         </div>
@@ -229,8 +229,8 @@ export default function Classement() {
         <div className="container-adaptive text-center">
           <h2 className="mb-6 text-white">Prêt à faire classer votre meublé ?</h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-comfortable">
-            Contactez-nous dès aujourd'hui pour obtenir votre classement officiel et profiter de
-            tous ses avantages.
+            Vous souhaitez faire classer votre meublé ? Transmettez-nous votre demande et nous vous
+            recontactons pour organiser la suite.
           </p>
           <Button
             href="/demande-classement"

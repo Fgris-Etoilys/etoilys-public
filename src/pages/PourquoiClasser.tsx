@@ -25,7 +25,7 @@ const mainBenefits = [
   },
   {
     icon: Award,
-    title: 'Label officiel reconnu',
+    title: 'Repère officiel en étoiles',
     description:
       "Le loueur peut demander un panonceau officiel du ministère chargé du Tourisme (1 à 5 étoiles), apposable sur le bien et mentionnable dans toutes les annonces. Il atteste du respect de critères de confort et d'équipement du logement.",
   },
@@ -105,9 +105,9 @@ export default function PourquoiClasser() {
           <div className="max-w-3xl">
             <h1 className="mb-6 text-white">Pourquoi faire classer son meublé de tourisme ?</h1>
             <p className="text-xl text-white/90 leading-comfortable">
-              Le classement de votre meublé de tourisme est bien plus qu'une simple formalité
-              administrative. C'est un investissement stratégique qui valorise votre bien et
-              optimise vos revenus locatifs.
+              Faire classer son meublé permet d’obtenir un repère officiel en étoiles. Selon votre
+              situation, cela peut aussi avoir un impact sur le régime micro-BIC, la taxe de séjour
+              et la visibilité de votre hébergement.
             </p>
           </div>
         </div>

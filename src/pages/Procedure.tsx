@@ -22,17 +22,17 @@ const procedureSteps = [
     description: (
       <>
         <p>
-          {"L'inspecteur visite le logement en votre présence et contrôle les "}
+          La visite se déroule sur place. L’inspecteur contrôle le logement selon le{' '}
           <a
             href="/Référentiel de classement des meublés de tourisme 2022 V2.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-gray-700"
           >
-            133 critères du référentiel officiel
+            référentiel officiel
           </a>
           {
-            ". À l'issue de la visite, vous avez la possibilité d'ajuster le niveau de classement visé en fonction des résultats."
+            " et vérifie les équipements, les surfaces, l’état général et les services annoncés. À l'issue de la visite, vous avez la possibilité d'ajuster le niveau de classement visé en fonction des résultats."
           }
         </p>
         <div className="mt-3 rounded-card border border-primary-200 bg-primary-100 px-4 py-3">
@@ -70,7 +70,7 @@ const chifflesCles = [
   { value: '24h', label: 'Délai de rappel après la demande' },
   { value: '133', label: 'Critères contrôlés lors de la visite' },
   { value: '7 jours', label: 'Délai de remise du certificat' },
-  { value: '15 jours', label: "Délai d'appel après la proposition" },
+  { value: '15 jours', label: 'Délai pour refuser la proposition' },
   { value: '5 ans', label: 'Durée de validité du classement' },
 ];
 
@@ -146,9 +146,10 @@ export default function Procedure() {
 
       <section className="py-section bg-gradient-to-br from-primary-300 to-themePrimary-2 text-white">
         <div className="container-adaptive text-center">
-          <h2 className="mb-6 text-white">Lancez-vous dès maintenant</h2>
+          <h2 className="mb-6 text-white">Vous souhaitez faire classer votre meublé ?</h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-comfortable">
-            Notre équipe est prête à vous accompagner dans votre démarche de classement.
+            Déposez votre demande en ligne ou contactez Etoilys pour organiser les prochaines
+            étapes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button href="/faq" variant="ghost" size="lg">

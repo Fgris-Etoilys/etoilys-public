@@ -237,12 +237,9 @@ export default function Simulateur() {
           <div className="max-w-3xl">
             <h1 className="mb-4 text-white">Simulateur de classement</h1>
             <p className="text-base text-white/90">
-              Ce simulateur permet d’estimer le classement possible d’un meublé de tourisme à partir
-              de la grille officielle de classement.
-            </p>
-            <p className="mt-3 text-sm text-white/85">
-              Le résultat est une estimation déclarative. Il ne remplace pas une visite officielle
-              de classement.
+              Ce simulateur vous aide à situer votre logement avant une visite officielle :
+              catégorie atteignable, points à vérifier, équipements à préparer. Il ne délivre pas de
+              classement, mais il vous donne une première lecture utile.
             </p>
           </div>
         </div>
@@ -275,17 +272,18 @@ export default function Simulateur() {
                 <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary-500">
                   Nouvelle simulation
                 </p>
-                <h2 className="mb-3">Configurer votre simulation</h2>
+                <h2 className="mb-3">Les informations de départ</h2>
                 <p className="mb-5 text-sm text-gray-700">
-                  Commencez par renseigner les informations principales du logement. <br></br>
-                  Vous pourrez les ajuster en cours de simulation.
+                  Indiquez la catégorie visée et les caractéristiques principales du logement. Vous
+                  pourrez les modifier si besoin pendant la simulation.
                 </p>
 
                 <form className="space-y-5" onSubmit={handleStartFormSubmit}>
                   <Select
                     id="requestedCategory"
                     name="requestedCategory"
-                    label="Classement demandé"
+                    label="Catégorie que vous souhaitez tester"
+                    helperText="Vous ne savez pas quelle catégorie viser ? Commencez par le niveau qui vous semble réaliste. Le simulateur vous aidera à voir si certains points bloquent ou si une catégorie supérieure paraît envisageable."
                     options={REQUESTED_CATEGORY_OPTIONS}
                     value={requestedCategory}
                     onChange={handleRequestedCategoryChange}
@@ -369,7 +367,7 @@ export default function Simulateur() {
                   qu’organisme de contrôle accrédité Cofrac Inspection n°3-2394.
                 </p>
                 <Button href="/demande-classement" variant="primary">
-                  Demander une visite de classement
+                  Organiser une visite officielle
                 </Button>
               </div>
             </div>
@@ -421,7 +419,7 @@ export default function Simulateur() {
                         <div className="mb-4 space-y-3">
                           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                             <h3>
-                              Classement demandé :{' '}
+                              Catégorie que vous souhaitez tester :{' '}
                               {formatRequestedCategory(simulation.categorie_demandee)}
                             </h3>
                             {statusBadge && (

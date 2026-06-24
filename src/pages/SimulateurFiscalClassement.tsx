@@ -975,10 +975,13 @@ export default function SimulateurFiscalClassement() {
       <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
         <div className="container-adaptive">
           <div className="max-w-3xl">
-            <h1 className="mb-4 text-white">Simulateur fiscal classement 2026</h1>
+            <h1 className="mb-4 text-white">
+              Simulateur fiscal 2026 : meublé classé ou non classé
+            </h1>
             <p className="text-base text-white/90">
-              Ce simulateur compare le régime micro-BIC d’un meublé classé et d’un meublé non classé
-              à partir du chiffre d’affaires annuel et de la tranche marginale d’imposition.
+              Comparez l’imposition estimative d’un meublé de tourisme classé et non classé au
+              régime micro-BIC, à partir de vos recettes annuelles et de votre tranche marginale
+              d’imposition.
             </p>
           </div>
         </div>
@@ -991,22 +994,22 @@ export default function SimulateurFiscalClassement() {
               <h2 className="mb-3 text-gray-900">Hypothèses du simulateur fiscal</h2>
               <div className="space-y-3 text-sm">
                 <p>
-                  Ce simulateur compare la fiscalité d'un meublé de tourisme classé et non classé
-                  selon les règles du micro-BIC applicables en 2026. Il prend en compte les recettes
-                  annuelles indiquées, le statut classé envisagé et votre tranche marginale
-                  d'imposition.
+                  Ce simulateur se concentre sur le régime micro-BIC applicable aux recettes 2026.
+                  Il compare un meublé classé et un meublé non classé à partir de vos recettes
+                  annuelles et de votre tranche marginale d’imposition.
                 </p>
                 <p>
                   La comparaison repose sur les principaux paramètres officiels : plafond de
                   recettes, abattement forfaitaire et différence de traitement entre meublé classé
-                  et non classé. En 2026, l'écart est important : un meublé non classé relève du
-                  micro-BIC jusqu'à 15 000 € de recettes, avec un abattement de 30 %, tandis qu'un
-                  meublé classé bénéficie d'un plafond plus élevé et d'un abattement de 50 %.
+                  et non classé. En 2026, l’écart est important : un meublé non classé relève du
+                  micro-BIC jusqu’à 15 000 € de recettes, avec un abattement de 30 %. Un meublé
+                  classé bénéficie d’un plafond de 83 600 € et d’un abattement de 50 %.
                 </p>
                 <p>
-                  Le résultat donne une estimation fiscale simplifiée. Il sert à visualiser l'impact
-                  du classement dans le cadre du micro-BIC, sans remplacer une analyse comptable ou
-                  fiscale complète.
+                  Le résultat sert à comparer classé et non classé au micro-BIC. Il ne remplace pas
+                  une analyse comptable ou fiscale complète, notamment si vous relevez du régime
+                  réel, si vos recettes dépassent les seuils ou si votre situation personnelle
+                  comporte des particularités.
                 </p>
               </div>
             </div>
@@ -1040,9 +1043,8 @@ export default function SimulateurFiscalClassement() {
                     </p>
                     <span className="-translate-y-px">
                       <Tooltip srLabel="Aide sur la tranche marginale d'imposition">
-                        La tranche marginale d&apos;imposition correspond au taux appliqué à la
-                        dernière tranche de vos revenus imposables. Vous la retrouvez sur votre avis
-                        d&apos;impôt sur le revenu.
+                        Votre tranche marginale d’imposition est le taux appliqué à la partie la
+                        plus élevée de vos revenus. Vous pouvez la retrouver sur votre avis d’impôt.
                       </Tooltip>
                     </span>
                   </div>
