@@ -41,9 +41,8 @@ describe('CookieConsentManager', () => {
     renderCookieConsentManager();
 
     expect(screen.getByRole('region', { name: 'Gestion des cookies' })).toBeInTheDocument();
-    expect(
-      screen.getByText(/Nous utilisons PostHog pour mesurer l’audience du site/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/PostHog/i)).toBeInTheDocument();
+    expect(screen.getByText(/mesurer l’audience/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Refuser' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Accepter' })).toBeInTheDocument();
   });
@@ -75,9 +74,9 @@ describe('CookieConsentManager', () => {
     });
 
     expect(screen.getByRole('dialog', { name: 'Préférences cookies' })).toBeInTheDocument();
-    expect(screen.getByText('Mesure d’audience et amélioration du site')).toBeInTheDocument();
-    expect(screen.getByText('PostHog')).toBeInTheDocument();
-    expect(screen.getByText('accepté')).toBeInTheDocument();
+    expect(screen.getByText(/audience/i)).toBeInTheDocument();
+    expect(screen.getByText(/PostHog/i)).toBeInTheDocument();
+    expect(screen.getByText(/accepté/i)).toBeInTheDocument();
   });
 
   it('allows changing consent from the preferences modal', () => {

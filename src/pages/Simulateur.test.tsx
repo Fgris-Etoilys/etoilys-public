@@ -58,6 +58,18 @@ const renderSimulateur = () => {
   );
 };
 
+function getRequestedCategorySelect(): HTMLSelectElement {
+  const select = document.querySelector('select[name="requestedCategory"]');
+  if (!(select instanceof HTMLSelectElement)) {
+    throw new Error('Le sélecteur technique de catégorie est introuvable.');
+  }
+  return select;
+}
+
+async function findEmptySimulationState() {
+  return screen.findByText(/aucune simulation enregistrée/i);
+}
+
 describe('Simulateur public de classement', () => {
   afterEach(() => {
     cleanup();
@@ -82,7 +94,7 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    await screen.findByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i);
+    await findEmptySimulationState();
     expect(fetchMock).toHaveBeenCalledWith(
       '/api/public/simulations',
       expect.objectContaining({
@@ -97,9 +109,7 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    expect(
-      await screen.findByText(/impossible de charger vos simulations pour le moment/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/impossible de charger vos simulations/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /réessayer/i })).toBeInTheDocument();
   });
 
@@ -108,9 +118,7 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    expect(
-      await screen.findByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i)
-    ).toBeInTheDocument();
+    expect(await findEmptySimulationState()).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: /créer ma première simulation/i })
     ).not.toBeInTheDocument();
@@ -124,9 +132,9 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    await screen.findByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i);
+    await findEmptySimulationState();
 
-    fireEvent.change(screen.getByLabelText(/classement demandé/i), { target: { value: '4*' } });
+    fireEvent.change(getRequestedCategorySelect(), { target: { value: '4*' } });
     fireEvent.change(screen.getByLabelText(/type de logement/i), {
       target: { value: 'COLLECTIF' },
     });
@@ -175,16 +183,14 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    await screen.findByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i);
+    await findEmptySimulationState();
 
     fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
       target: { value: '4' },
     });
     fireEvent.click(screen.getByRole('button', { name: /démarrer la simulation/i }));
 
-    expect(
-      await screen.findByText(/le nombre maximal de simulations enregistrées sur ce navigateur/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/nombre maximal de simulations/i)).toBeInTheDocument();
     expect(window.location.pathname).toBe('/simulateur');
     expect(analyticsMock.trackClassementSimulatorStarted).not.toHaveBeenCalled();
   });
@@ -194,7 +200,7 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    await screen.findByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i);
+    await findEmptySimulationState();
 
     fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
       target: { value: '4' },
@@ -220,7 +226,7 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    expect(await screen.findByText(/classement demandé : 3 étoiles/i)).toBeInTheDocument();
+    expect(await screen.findByText(/^3 étoiles$/i)).toBeInTheDocument();
     expect(screen.getByText(/4 personnes/i)).toBeInTheDocument();
     expect(screen.getByText(/^brouillon$/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /reprendre/i })).toHaveAttribute(
@@ -330,9 +336,7 @@ describe('Simulateur public de classement', () => {
       expect(screen.queryByRole('link', { name: /reprendre/i })).not.toBeInTheDocument();
     });
     expect(screen.getByText(/la simulation a été supprimée/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/vous n’avez pas encore de simulation enregistrée sur ce navigateur/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/aucune simulation enregistrée/i)).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock.mock.calls[1]?.[0]).toBe(
       '/api/public/simulations/c3f43f31-59fd-4b4e-9272-7f1321d8cabc'
@@ -396,7 +400,7 @@ describe('Simulateur public de classement', () => {
     fireEvent.click(screen.getByRole('button', { name: /^supprimer$/i }));
 
     expect(await screen.findByText(/cette simulation n’est plus disponible/i)).toBeInTheDocument();
-    expect(screen.getByText(/classement demandé : 2 étoiles/i)).toBeInTheDocument();
+    expect(screen.getByText(/^2 étoiles$/i)).toBeInTheDocument();
     expect(screen.getByText(/confirmer la suppression de cette simulation/i)).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({

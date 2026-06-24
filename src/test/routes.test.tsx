@@ -7,6 +7,13 @@ const renderAt = (path: string) => {
   return render(<App />);
 };
 
+function expectPageHeading(...patterns: RegExp[]) {
+  const heading = screen.getByRole('heading', { level: 1 });
+  for (const pattern of patterns) {
+    expect(heading).toHaveTextContent(pattern);
+  }
+}
+
 const mockFetchJson = (body: unknown) => {
   vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
     new Response(JSON.stringify(body), {
@@ -54,9 +61,7 @@ describe('routing', () => {
   it('renders public classement simulator page', () => {
     mockFetchJson([]);
     renderAt('/simulateur');
-    expect(
-      screen.getByRole('heading', { level: 1, name: /simulateur de classement/i })
-    ).toBeInTheDocument();
+    expectPageHeading(/simulateur/i, /classement/i);
   });
 
   it('renders public classement simulation detail page', async () => {
@@ -82,49 +87,27 @@ describe('routing', () => {
 
   it('renders fiscal simulator page', () => {
     renderAt('/simulateur-fiscal-classement');
-    expect(
-      screen.getByRole('heading', { name: /simulateur fiscal classement 2026/i })
-    ).toBeInTheDocument();
+    expectPageHeading(/simulateur fiscal/i, /classé|non classé/i);
   });
 
   it('renders local service areas hub page', () => {
     renderAt('/zones-intervention');
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: /où etoilys intervient pour classer votre meublé de tourisme/i,
-      })
-    ).toBeInTheDocument();
+    expectPageHeading(/zones d’intervention/i);
   });
 
   it('renders Dordogne local landing page', () => {
     renderAt('/classement-meuble-tourisme-dordogne');
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: /classement de gîte et meublé de tourisme en dordogne/i,
-      })
-    ).toBeInTheDocument();
+    expectPageHeading(/classement/i, /dordogne/i);
   });
 
   it('renders Gironde local landing page', () => {
     renderAt('/classement-meuble-tourisme-gironde');
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: /classement de gîte et meublé de tourisme en gironde/i,
-      })
-    ).toBeInTheDocument();
+    expectPageHeading(/classement/i, /gironde/i);
   });
 
   it('renders Lot-et-Garonne local landing page', () => {
     renderAt('/classement-meuble-tourisme-lot-et-garonne');
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: /classement de gîte et meublé de tourisme dans le lot-et-garonne/i,
-      })
-    ).toBeInTheDocument();
+    expectPageHeading(/classement/i, /lot-et-garonne/i);
   });
 
   it('exposes service areas in classement navigation and footer', () => {

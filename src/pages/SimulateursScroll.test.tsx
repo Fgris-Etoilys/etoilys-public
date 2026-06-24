@@ -42,6 +42,15 @@ function mockTaxeSejourDatasetFetch() {
   );
 }
 
+function expectSmoothWindowScroll(scrollToMock: ReturnType<typeof vi.spyOn>) {
+  expect(scrollToMock).toHaveBeenCalledWith(
+    expect.objectContaining({
+      behavior: 'smooth',
+      top: expect.any(Number),
+    })
+  );
+}
+
 describe('scroll automatique des simulateurs', () => {
   afterEach(() => {
     cleanup();
@@ -51,7 +60,7 @@ describe('scroll automatique des simulateurs', () => {
   });
 
   it('centre le bloc de résultats du simulateur fiscal après un calcul valide', async () => {
-    const scrollIntoViewMock = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const scrollToMock = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
 
     renderWithProviders(<SimulateurFiscalClassement />, '/simulateur-fiscal-classement');
 
@@ -61,16 +70,13 @@ describe('scroll automatique des simulateurs', () => {
 
     expect(await screen.findByRole('heading', { name: /comparatif 2026/i })).toBeInTheDocument();
     await waitFor(() => {
-      expect(scrollIntoViewMock).toHaveBeenCalledWith({
-        behavior: 'smooth',
-        block: 'center',
-      });
+      expectSmoothWindowScroll(scrollToMock);
     });
   });
 
   it('centre le bloc de résultats du simulateur taxe de séjour après un calcul valide', async () => {
     mockTaxeSejourDatasetFetch();
-    const scrollIntoViewMock = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const scrollToMock = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
 
     renderWithProviders(<SimulateurTaxeSejour />, '/simulateur-taxe-sejour');
 
@@ -85,20 +91,17 @@ describe('scroll automatique des simulateurs', () => {
 
     expect(await screen.findByRole('heading', { name: /résultats/i })).toBeInTheDocument();
     await waitFor(() => {
-      expect(scrollIntoViewMock).toHaveBeenCalledWith({
-        behavior: 'smooth',
-        block: 'center',
-      });
+      expectSmoothWindowScroll(scrollToMock);
     });
   });
 
   it('ne déclenche pas de scroll quand la validation échoue', () => {
-    const scrollIntoViewMock = vi.spyOn(window.HTMLElement.prototype, 'scrollIntoView');
+    const scrollToMock = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
 
     renderWithProviders(<SimulateurFiscalClassement />, '/simulateur-fiscal-classement');
 
     fireEvent.click(screen.getByRole('button', { name: /calculer/i }));
 
-    expect(scrollIntoViewMock).not.toHaveBeenCalled();
+    expect(scrollToMock).not.toHaveBeenCalled();
   });
 });

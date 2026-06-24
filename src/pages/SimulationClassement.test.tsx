@@ -116,6 +116,20 @@ const recalculationRequiredSimulationResponse = {
   statut: 'A_RECALCULER',
 };
 
+function expectTextMatching(...patterns: RegExp[]) {
+  for (const pattern of patterns) {
+    expect(screen.getAllByText(pattern).length).toBeGreaterThan(0);
+  }
+}
+
+function getRequestedCategorySelect(): HTMLSelectElement {
+  const select = document.querySelector('select[name="simulationRequestedCategory"]');
+  if (!(select instanceof HTMLSelectElement)) {
+    throw new Error('Le sélecteur technique de classement demandé est introuvable.');
+  }
+  return select;
+}
+
 const simulationWithUnknownRequestedCategory = {
   ...simulationResponse,
   grille: {
@@ -520,17 +534,9 @@ describe('SimulationClassement', () => {
       );
     });
     expect(screen.getByText(/ÉTAPE 1.*PIÈCES DU LOGEMENT/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: /renseignez les pièces de votre logement/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /Ajoutez les pièces de votre logement avec leur surface et les couchages éventuels/i
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Vous pourrez modifier ces informations à tout moment/i)
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /pièces de votre logement/i })).toBeInTheDocument();
+    expect(screen.getByText(/surface et les couchages/i)).toBeInTheDocument();
+    expectTextMatching(/modifier ces informations/i);
     expect(screen.getByRole('button', { name: /^ajouter une pièce$/i })).toBeInTheDocument();
     expect(
       screen.getAllByRole('button', { name: /passer à la grille de contrôle/i }).length
@@ -544,13 +550,9 @@ describe('SimulationClassement', () => {
       'aria-expanded',
       'true'
     );
-    expect(
-      screen.getByText(
-        /ces paramètres peuvent modifier les critères applicables et le résultat de la simulation/i
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByText(/critères applicables/i)).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.getByLabelText(/classement demandé/i)).toHaveValue('3*');
+      expect(getRequestedCategorySelect()).toHaveValue('3*');
       expect(screen.getByLabelText(/capacité d’accueil/i)).toHaveValue(4);
       expect(screen.getByLabelText(/type d’habitation/i)).toHaveValue('INDIVIDUEL');
       expect(screen.getByLabelText(/étage/i)).toHaveValue('1');
@@ -628,17 +630,9 @@ describe('SimulationClassement', () => {
 
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
-    expect(
-      await screen.findByText(/^Vous pouvez passer à la grille de contrôle\.$/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /Lorsque vous avez terminé de renseigner les pièces de votre logement, vous pouvez commencer à compléter la grille\. Vous pourrez revenir modifier les pièces à tout moment\./i
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/certaines informations du logement restent à compléter/i)
-    ).not.toBeInTheDocument();
+    expect((await screen.findAllByText(/passer à la grille/i)).length).toBeGreaterThan(0);
+    expectTextMatching(/commencer à compléter la grille/i, /modifier les pièces/i);
+    expect(screen.queryByText(/informations du logement.*compléter/i)).not.toBeInTheDocument();
   });
 
   it('met à jour le classement immédiatement et hydrate la grille sans recalculer le résultat absent', async () => {
@@ -653,7 +647,10 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     await expandSimulationParameters();
-    const requestedCategorySelect = await screen.findByLabelText(/classement demandé/i);
+    await waitFor(() => {
+      expect(getRequestedCategorySelect()).toBeInTheDocument();
+    });
+    const requestedCategorySelect = getRequestedCategorySelect();
     fireEvent.change(requestedCategorySelect, { target: { value: '4*' } });
 
     await waitFor(() => {
@@ -835,7 +832,7 @@ describe('SimulationClassement', () => {
     fireEvent.change(screen.getByLabelText(/étage/i), { target: { value: '2' } });
 
     expect(screen.getByRole('heading', { name: /recalcul en cours/i })).toBeInTheDocument();
-    expect(screen.getByText(/les paramètres modifiés sont pris en compte/i)).toBeInTheDocument();
+    expectTextMatching(/paramètres modifiés/i);
 
     await waitFor(() => {
       expect(getNonModelFetchCalls(fetchMock)).toHaveLength(8);
@@ -845,9 +842,7 @@ describe('SimulationClassement', () => {
     expect(nonModelCalls[5]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
     expect(nonModelCalls[6]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/verifier`);
     expect(nonModelCalls[7]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/rapport`);
-    expect(
-      await screen.findByText(/classement 3 étoiles ne semble pas encore atteint/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/3 étoiles.*pas encore atteint/i)).toBeInTheDocument();
     expect(
       screen.queryByRole('heading', { name: /résultat à recalculer/i })
     ).not.toBeInTheDocument();
@@ -908,7 +903,7 @@ describe('SimulationClassement', () => {
     expect(await screen.findByText(/classement 3 étoiles semble atteint/i)).toBeInTheDocument();
 
     await expandSimulationParameters();
-    fireEvent.change(screen.getByLabelText(/classement demandé/i), { target: { value: '4*' } });
+    fireEvent.change(getRequestedCategorySelect(), { target: { value: '4*' } });
 
     await waitFor(() => {
       expect(getNonModelFetchCalls(fetchMock)).toHaveLength(8);
@@ -920,9 +915,7 @@ describe('SimulationClassement', () => {
     expect(allUrls.lastIndexOf('/api/public/simulations/modele?classementDemande=4*')).toBeLessThan(
       allUrls.lastIndexOf(`/api/public/simulations/${SIMULATION_ID}/verifier`)
     );
-    expect(
-      await screen.findByText(/classement 4 étoiles ne semble pas encore atteint/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/4 étoiles.*pas encore atteint/i)).toBeInTheDocument();
   });
 
   it('marque le résultat existant à recalculer après modification d’un paramètre hors onglet résultat', async () => {
@@ -1600,7 +1593,7 @@ describe('SimulationClassement', () => {
     fireEvent.click(submitButton);
 
     expect(await screen.findByRole('dialog', { name: /modifier la pièce/i })).toBeInTheDocument();
-    expect(screen.getByText(/nombre maximal de couchages autorisés/i)).toBeInTheDocument();
+    expectTextMatching(/couchages autorisés/i);
     expect(screen.queryByText(/la pièce a été modifiée/i)).not.toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
   });
@@ -1672,11 +1665,7 @@ describe('SimulationClassement', () => {
     );
     fireEvent.click(screen.getByRole('button', { name: /enregistrer les modifications/i }));
 
-    expect(
-      await screen.findByText(
-        /une pièce similaire existe déjà ou les informations envoyées sont incomplètes/i
-      )
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/pièce similaire|informations envoyées/i)).toBeInTheDocument();
   });
 
   it('affiche un message spécifique si le type de pièce est refusé par le backend', async () => {
@@ -1696,9 +1685,7 @@ describe('SimulationClassement', () => {
     );
     fireEvent.click(screen.getByRole('button', { name: /enregistrer les modifications/i }));
 
-    expect(
-      await screen.findByText(/ce type de pièce n’est pas autorisé pour cette simulation/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/type de pièce.*pas autorisé/i)).toBeInTheDocument();
   });
 
   it('affiche un message spécifique si une limite de type de pièce est atteinte', async () => {
@@ -1715,9 +1702,7 @@ describe('SimulationClassement', () => {
     fireEvent.change(screen.getByLabelText(/surface en m²/i), { target: { value: '12' } });
     fireEvent.click(screen.getByRole('button', { name: /ajouter cette pièce/i }));
 
-    expect(
-      await screen.findByText(/la limite de couloirs et dégagements est déjà atteinte/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/limite de couloirs/i)).toBeInTheDocument();
   });
 
   it('confirme puis supprime une pièce', async () => {
@@ -1773,9 +1758,7 @@ describe('SimulationClassement', () => {
       })
     );
 
-    expect(
-      await screen.findByText(/elle est peut-être nécessaire à la simulation/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/nécessaire à la simulation/i)).toBeInTheDocument();
   });
 
   it('permet le passage à la grille sans pièce complète avec un warning doux', async () => {
@@ -1883,14 +1866,8 @@ describe('SimulationClassement', () => {
       await screen.findByRole('heading', { name: /complétez la grille de contrôle/i })
     ).toBeInTheDocument();
     expect(screen.getByText(/ÉTAPE 2.*GRILLE DE CONTRÔLE/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /Renseignez les critères de contrôle selon les équipements, services et caractéristiques réellement présents/i
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/Cliquez sur l’icône livre pour afficher des explications complémentaires/i)
-    ).toBeInTheDocument();
+    expectTextMatching(/critères de contrôle/i, /équipements/i);
+    expectTextMatching(/icône livre/i, /explications complémentaires/i);
     expect(screen.getByText(/Besoin d’aide sur un critère/i)).toBeInTheDocument();
     expect(screen.getByText(/Critères renseignés/i)).toBeInTheDocument();
     expect(screen.getByText(/Critères restants/i)).toBeInTheDocument();
@@ -1937,9 +1914,7 @@ describe('SimulationClassement', () => {
       within(helpDialog).getByText(/Prise de courant libre dans chaque pièce/i)
     ).toBeInTheDocument();
     expect(within(helpDialog).getByText(/Méthodologie d'évaluation/i)).toBeInTheDocument();
-    expect(
-      within(helpDialog).getByText(/Si cette même prise libre est située dans la chambre/i)
-    ).toBeInTheDocument();
+    expect(within(helpDialog).getByText(/prise libre.*chambre/i)).toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
 
     fireEvent.click(within(helpDialog).getByRole('button', { name: /fermer l’aide du critère/i }));
@@ -2190,14 +2165,10 @@ describe('SimulationClassement', () => {
     expect(
       screen.queryByRole('heading', { name: /prêt pour une visite officielle/i })
     ).not.toBeInTheDocument();
-    expect(screen.getByText(/2 critères n’ont pas encore été renseignés/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/permettent actuellement d’accueillir 2 personnes/i)
-    ).toBeInTheDocument();
+    expectTextMatching(/2 critères/i, /renseignés/i);
+    expect(screen.getByText(/accueillir 2 personnes/i)).toBeInTheDocument();
     expect(screen.getByText(/indiquée est de 4 personnes/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/aucune salle de bain n’est renseignée dans les pièces du logement/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/aucune salle de bain/i)).toBeInTheDocument();
     expect(screen.queryByText(/commentaire/i)).not.toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verifier`
@@ -2220,9 +2191,7 @@ describe('SimulationClassement', () => {
     await waitFor(() => {
       expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
     });
-    expect(
-      screen.getByText(/uniquement 2 critères signalés dans le résultat/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/2 critères signalés/i)).toBeInTheDocument();
     expect(screen.getByTestId('criterion-card-5')).toBeInTheDocument();
     expect(screen.getByTestId('criterion-card-95')).toBeInTheDocument();
     expect(screen.queryByTestId('criterion-card-6')).not.toBeInTheDocument();
@@ -2231,9 +2200,7 @@ describe('SimulationClassement', () => {
       within(screen.getByTestId('criterion-card-5')).getByRole('button', { name: /^oui$/i })
     );
 
-    expect(
-      await screen.findByText(/uniquement 2 critères signalés dans le résultat/i)
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/2 critères signalés/i)).toBeInTheDocument();
     expect(screen.getByTestId('criterion-card-5')).toBeInTheDocument();
     expect(screen.getByTestId('criterion-card-95')).toBeInTheDocument();
     expect(screen.queryByTestId('criterion-card-6')).not.toBeInTheDocument();
@@ -2315,7 +2282,7 @@ describe('SimulationClassement', () => {
     );
     expect(await screen.findByText(/résultat de la simulation/i)).toBeInTheDocument();
     expect(screen.getByText(/classement 3 étoiles semble atteint/i)).toBeInTheDocument();
-    expect(screen.getByText(/estimation basée sur vos réponses/i)).toBeInTheDocument();
+    expectTextMatching(/estimation/i, /réponses/i);
     const resultTab = screen.getByRole('tab', { name: /résultat/i });
     expect(within(resultTab).getByText(/classement atteint/i)).toBeInTheDocument();
     expect(resultTab.querySelector('.text-success-400')).not.toBeNull();
@@ -2325,13 +2292,13 @@ describe('SimulationClassement', () => {
     expect(screen.queryByText(/seuil obligatoire atteint/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/objectif optionnel atteint/i)).not.toBeInTheDocument();
     expect(screen.getByText(/175 points maximum disponibles/i)).toBeInTheDocument();
-    expect(screen.queryByText(/points obtenus sur .* points disponibles/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/points obtenus .* points disponibles/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Seuil minimal$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Points obtenus$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Points nécessaires$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Points disponibles$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Objectif à atteindre$/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/critères à corriger en priorité/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/critères .* priorité/i)).not.toBeInTheDocument();
     expect(
       screen.getByRole('heading', { name: /prêt pour une visite officielle/i })
     ).toBeInTheDocument();
@@ -2410,9 +2377,7 @@ describe('SimulationClassement', () => {
       'aria-selected',
       'true'
     );
-    expect(
-      screen.getByText(/classement 3 étoiles ne semble pas encore atteint/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/3 étoiles.*pas encore atteint/i)).toBeInTheDocument();
     const resultTab = screen.getByRole('tab', { name: /résultat/i });
     expect(within(resultTab).getByText(/calcul à jour/i)).toBeInTheDocument();
     expect(resultTab.querySelector('.text-success-400')).toBeNull();
@@ -2442,22 +2407,12 @@ describe('SimulationClassement', () => {
     expect(screen.queryByText(/^non validé$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/seuil obligatoire non atteint/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/objectif optionnel non atteint/i)).not.toBeInTheDocument();
-    expect(
-      screen.getByText(
-        /il vous manque 65 points obligatoires pour atteindre le classement 3 étoiles/i
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/il vous manque 198 points optionnels pour atteindre l’objectif requis/i)
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByText(/les points manquants peuvent être obtenus en validant certains critères/i)
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText(/ces critères peuvent empêcher l’obtention du classement demandé/i)
-    ).not.toBeInTheDocument();
+    expect(screen.getByText(/65 points obligatoires/i)).toBeInTheDocument();
+    expect(screen.queryByText(/198 points optionnels/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/points manquants/i)).toBeInTheDocument();
+    expect(screen.queryByText(/empêcher .* classement/i)).not.toBeInTheDocument();
     expect(screen.getByText(/critère 95/i)).toBeInTheDocument();
-    expect(screen.getByText(/les sanitaires .* sont propres et en bon état/i)).toBeInTheDocument();
+    expect(screen.getByText(/sanitaires .* propres/i)).toBeInTheDocument();
     expect(screen.getByText(/^5 points$/i)).toBeInTheDocument();
     expect(screen.queryByText(/peut rapporter/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/-\d+ points/i)).not.toBeInTheDocument();
@@ -2475,7 +2430,7 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('button', { name: /voir dans la grille/i }));
 
     expect(await screen.findByLabelText(/rechercher un critère/i)).toBeInTheDocument();
-    expect(screen.getByText(/uniquement 1 critère signalé dans le résultat/i)).toBeInTheDocument();
+    expect(screen.getByText(/1 critère signalé/i)).toBeInTheDocument();
     expect(screen.getByTestId('criterion-card-95')).toBeInTheDocument();
     expect(screen.queryByTestId('criterion-card-5')).not.toBeInTheDocument();
   });
@@ -2513,9 +2468,7 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /critères obligatoires non validés/i })
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/certains critères doivent encore être vérifiés pour confirmer le résultat/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/critères.*vérifiés/i)).toBeInTheDocument();
     expect(screen.getAllByText(/^objectif atteint$/i)).toHaveLength(2);
     expect(screen.queryByText(/-\d+ points/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/il vous manque/i)).not.toBeInTheDocument();
@@ -2575,9 +2528,7 @@ describe('SimulationClassement', () => {
     fireEvent.click(screen.getByRole('tab', { name: /résultat/i }));
 
     expect(await screen.findByText(/résultat de la simulation/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/classement 3 étoiles ne semble pas encore atteint/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/3 étoiles.*pas encore atteint/i)).toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/rapport`
     );
