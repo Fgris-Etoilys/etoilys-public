@@ -11,13 +11,19 @@ import {
   BreadcrumbStructuredData,
   GlobalStructuredData,
 } from '../ui/StructuredData';
-import { getSeoRouteConfig, getBreadcrumbItems, SITE_URL } from '../../content/seoRoutes';
+import {
+  getSeoRouteConfig,
+  getBreadcrumbItems,
+  getSeoAlternateLinks,
+  SITE_URL,
+} from '../../content/seoRoutes';
 import { getArticleStructuredData } from '../../content/articleStructuredData';
 import { IMAGE_MANIFEST } from '../../content/imageManifest';
 
 export default function Layout() {
   const location = useLocation();
   const seoConfig = getSeoRouteConfig(location.pathname);
+  const alternateLinks = getSeoAlternateLinks(location.pathname);
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
   const articleData = getArticleStructuredData(location.pathname);
   const defaultOgImageUrl = `${SITE_URL}${IMAGE_MANIFEST.homeHero.src}`;
@@ -45,6 +51,7 @@ export default function Layout() {
         preloadImage={lcpPreloadAsset?.src}
         preloadImageSrcSet={lcpPreloadAsset?.srcSetAvif}
         preloadImageSizes={lcpPreloadAsset ? '100vw' : undefined}
+        alternateLinks={alternateLinks}
       />
       <GlobalStructuredData />
       <BreadcrumbStructuredData items={breadcrumbItems} />

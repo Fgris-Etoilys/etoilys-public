@@ -1,4 +1,11 @@
 import type { ImageAssetKey } from './imageManifest';
+import { DEFAULT_LOCALE, isIndexableByLocale, type Locale } from '../i18n/locales';
+import {
+  getAlternateLocaleLinks,
+  getLocaleFromPath,
+  getRouteIdFromPath,
+} from '../i18n/routeHelpers';
+import type { LocalizedRouteId } from '../i18n/localizedRoutes';
 
 export interface SeoRouteConfig {
   title: string;
@@ -9,11 +16,18 @@ export interface SeoRouteConfig {
   indexable?: boolean;
   prerender?: boolean;
   lcpImageKey?: ImageAssetKey;
+  locale?: Locale;
+  routeId?: LocalizedRouteId;
 }
 
 export interface BreadcrumbItem {
   name: string;
   url: string;
+}
+
+export interface SeoAlternateLink {
+  hreflang: Locale | 'x-default';
+  href: string;
 }
 
 export const SITE_URL = 'https://www.etoilys.fr';
@@ -60,12 +74,16 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Etoilys accompagne les propriétaires de meublés de tourisme pour obtenir leur classement officiel en Dordogne, Gironde et Lot-et-Garonne.',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
+    locale: 'fr',
+    routeId: 'home',
   },
   '/classement': {
     title: 'Classement des meublés de tourisme : principe, avantages et procédure',
     description:
       'Comprendre le classement officiel des meublés de tourisme : étoiles, durée de validité, organisme accrédité, visite et critères à vérifier.',
     breadcrumbLabel: 'Classement',
+    locale: 'fr',
+    routeId: 'classement',
   },
   '/les-avantages-du-classement': {
     title: 'Pourquoi faire classer son meublé de tourisme ?',
@@ -73,18 +91,24 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Fiscalité, taxe de séjour, visibilité, confiance des voyageurs : découvrez les avantages concrets du classement officiel d’un meublé de tourisme.',
     breadcrumbLabel: 'Avantages du classement',
     ogImageKey: 'pourquoiReferencement',
+    locale: 'fr',
+    routeId: 'avantages',
   },
   '/prerequis-au-classement': {
     title: 'Prérequis au classement d’un meublé de tourisme',
     description:
       'Surface, équipements, état du logement, pièces comptabilisables : les points à vérifier avant de demander le classement de votre meublé.',
     breadcrumbLabel: 'Prérequis',
+    locale: 'fr',
+    routeId: 'prerequis',
   },
   '/procedure': {
     title: 'Procédure de classement d’un meublé de tourisme',
     description:
       'Découvrez les étapes d’une demande de classement : prise de contact, visite, rapport, proposition de classement et validité 5 ans.',
     breadcrumbLabel: 'Procédure',
+    locale: 'fr',
+    routeId: 'procedure',
   },
   '/zones-intervention': {
     title: 'Zones d’intervention pour le classement des meublés de tourisme',
@@ -143,6 +167,8 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     description:
       'Réponses aux questions fréquentes sur le classement des meublés de tourisme : fiscalité, taxe de séjour, procédure, durée, obligations.',
     breadcrumbLabel: 'FAQ',
+    locale: 'fr',
+    routeId: 'faq',
   },
   '/actualites': {
     title: 'Actualités meublés de tourisme : fiscalité, avantages, réglementation',
@@ -232,18 +258,99 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     description:
       'Coordonnées et formulaire de contact pour échanger avec Etoilys sur le classement des meublés de tourisme.',
     breadcrumbLabel: 'Contact',
+    locale: 'fr',
+    routeId: 'contact',
   },
   '/demande-classement': {
     title: 'Demande de classement meublé de tourisme',
     description:
       'Demandez le classement de votre meublé de tourisme. Procédure simple. Etoilys vous recontacte sous 24h pour organiser la visite.',
     breadcrumbLabel: 'Demande de classement',
+    locale: 'fr',
+    routeId: 'demandeClassement',
   },
   '/confidentialite': {
     title: 'Politique de confidentialité',
     description:
       'Informations sur le traitement des données personnelles dans le cadre des services Etoilys.',
     breadcrumbLabel: 'Confidentialité',
+    locale: 'fr',
+    routeId: 'confidentialite',
+  },
+  '/en/': {
+    title: 'Furnished tourist accommodation classification in France',
+    description:
+      'Etoilys presents the official French classification process for furnished tourist accommodation.',
+    breadcrumbLabel: 'Home',
+    ogImageKey: 'homeHero',
+    lcpImageKey: 'homeHero',
+    locale: 'en',
+    routeId: 'home',
+  },
+  '/en/furnished-tourist-accommodation-classification': {
+    title: 'Official classification of furnished tourist accommodation',
+    description:
+      'Understand the French official classification of furnished tourist accommodation: star rating, validity, accredited body, inspection and criteria.',
+    breadcrumbLabel: 'Classification',
+    locale: 'en',
+    routeId: 'classement',
+  },
+  '/en/benefits-of-furnished-tourist-accommodation-classification': {
+    title: 'Benefits of official furnished tourist accommodation classification',
+    description:
+      'Objective information about the French official classification framework, including tax regime, tourist tax, official reference points and traveller information.',
+    breadcrumbLabel: 'Classification benefits',
+    ogImageKey: 'pourquoiReferencement',
+    locale: 'en',
+    routeId: 'avantages',
+  },
+  '/en/classification-requirements': {
+    title: 'Requirements for furnished tourist accommodation classification',
+    description:
+      'Key requirements before a French furnished tourist accommodation classification request: surface area, equipment, property condition and eligible rooms.',
+    breadcrumbLabel: 'Requirements',
+    locale: 'en',
+    routeId: 'prerequis',
+  },
+  '/en/classification-process': {
+    title: 'Furnished tourist accommodation classification process',
+    description:
+      'Steps in a French furnished tourist accommodation classification request: contact, inspection, report, classification proposal and five-year validity.',
+    breadcrumbLabel: 'Process',
+    locale: 'en',
+    routeId: 'procedure',
+  },
+  '/en/faq': {
+    title: 'FAQ on furnished tourist accommodation classification',
+    description:
+      'Frequently asked questions about French furnished tourist accommodation classification, tax regime, tourist tax, process, validity and obligations.',
+    breadcrumbLabel: 'FAQ',
+    locale: 'en',
+    routeId: 'faq',
+  },
+  '/en/contact': {
+    title: 'Contact',
+    description:
+      'Contact details and form for questions about Etoilys and the French furnished tourist accommodation classification process.',
+    breadcrumbLabel: 'Contact',
+    locale: 'en',
+    routeId: 'contact',
+  },
+  '/en/request-a-classification': {
+    title: 'Request a furnished tourist accommodation classification',
+    description:
+      'Request information about the French furnished tourist accommodation classification process with Etoilys.',
+    breadcrumbLabel: 'Request a classification',
+    locale: 'en',
+    routeId: 'demandeClassement',
+  },
+  '/en/privacy-policy': {
+    title: 'Privacy policy',
+    description:
+      'Information about personal data processing in connection with Etoilys services and public forms.',
+    breadcrumbLabel: 'Privacy policy',
+    locale: 'en',
+    routeId: 'confidentialite',
   },
   '/mentions-legales': {
     title: 'Mentions légales',
@@ -267,22 +374,88 @@ const DYNAMIC_SEO_ROUTES: Array<{ pattern: RegExp; config: SeoRouteConfig }> = [
   },
 ];
 
+const EN_LOCALE_PREFIX = '/en';
+
 function normalizePath(pathname: string): string {
   if (!pathname) return '/';
   if (pathname === '/') return pathname;
-  return pathname.replace(/\/+$/, '') || '/';
+  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
+  return normalizedPath === EN_LOCALE_PREFIX ? '/en/' : normalizedPath;
+}
+
+function applyLocaleIndexing(route: SeoRouteConfig): SeoRouteConfig {
+  const locale = route.locale ?? DEFAULT_LOCALE;
+
+  if (isIndexableByLocale(locale)) {
+    return route;
+  }
+
+  return {
+    ...route,
+    robots: 'noindex,follow',
+    indexable: false,
+    prerender: false,
+  };
 }
 
 export function getSeoRouteConfig(pathname: string): SeoRouteConfig {
   const normalizedPath = normalizePath(pathname);
-  return (
+  const route =
     SEO_ROUTES[normalizedPath] ??
     DYNAMIC_SEO_ROUTES.find((route) => route.pattern.test(normalizedPath))?.config ??
-    NOT_FOUND_SEO
-  );
+    NOT_FOUND_SEO;
+
+  return applyLocaleIndexing(route);
+}
+
+export function getCanonicalUrl(pathname: string): string {
+  const normalizedPath = normalizePath(pathname);
+  return normalizedPath === '/' ? `${SITE_URL}/` : `${SITE_URL}${normalizedPath}`;
+}
+
+export function getHtmlLang(pathname: string): Locale {
+  return getLocaleFromPath(normalizePath(pathname));
+}
+
+function pathnameFromSiteUrl(url: string): string {
+  return url.startsWith(SITE_URL) ? url.slice(SITE_URL.length) || '/' : url;
+}
+
+function getIndexableLocalizedAlternates(pathname: string): SeoAlternateLink[] {
+  return getAlternateLocaleLinks(normalizePath(pathname), SITE_URL)
+    .map((link): SeoAlternateLink => ({ hreflang: link.locale, href: link.href }))
+    .filter((link) => isIndexableRoute(getSeoRouteConfig(pathnameFromSiteUrl(link.href))));
+}
+
+export function getSeoAlternateLinks(pathname: string): SeoAlternateLink[] {
+  const routeId = getRouteIdFromPath(pathname);
+
+  if (routeId === null || !isIndexableRoute(getSeoRouteConfig(pathname))) {
+    return [];
+  }
+
+  const alternates = getIndexableLocalizedAlternates(pathname);
+
+  if (alternates.length < 2) {
+    return [];
+  }
+
+  const defaultAlternate = alternates.find((alternate) => alternate.hreflang === DEFAULT_LOCALE);
+
+  return defaultAlternate
+    ? [...alternates, { hreflang: 'x-default', href: defaultAlternate.href }]
+    : alternates;
+}
+
+export function getSitemapAlternateLinks(pathname: string): SeoAlternateLink[] {
+  return getSeoAlternateLinks(pathname);
 }
 
 function isIndexableRoute(route: SeoRouteConfig): boolean {
+  const locale = route.locale ?? DEFAULT_LOCALE;
+  if (!isIndexableByLocale(locale)) {
+    return false;
+  }
   if (route.robots?.includes('noindex')) {
     return false;
   }
@@ -317,12 +490,16 @@ export function getPrerenderPaths(): string[] {
 export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
   const normalizedPath = normalizePath(pathname);
   const route = getSeoRouteConfig(normalizedPath);
+  const locale = getHtmlLang(normalizedPath);
 
-  if (route === NOT_FOUND_SEO || normalizedPath === '/') {
+  if (route === NOT_FOUND_SEO || route.routeId === 'home' || normalizedPath === '/') {
     return [];
   }
 
-  const home: BreadcrumbItem = { name: 'Accueil', url: `${SITE_URL}/` };
+  const home: BreadcrumbItem =
+    locale === 'en'
+      ? { name: 'Home', url: `${SITE_URL}/en/` }
+      : { name: 'Accueil', url: `${SITE_URL}/` };
 
   if (normalizedPath.startsWith('/actualites/') && normalizedPath !== '/actualites') {
     return [
@@ -330,7 +507,7 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
       { name: 'Actualités', url: `${SITE_URL}/actualites` },
       {
         name: route.breadcrumbLabel ?? route.title,
-        url: `${SITE_URL}${normalizedPath}`,
+        url: getCanonicalUrl(normalizedPath),
       },
     ];
   }
@@ -339,7 +516,7 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
     home,
     {
       name: route.breadcrumbLabel ?? route.title,
-      url: `${SITE_URL}${normalizedPath}`,
+      url: getCanonicalUrl(normalizedPath),
     },
   ];
 }

@@ -3,11 +3,27 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   getAllKnownPaths,
+  getCanonicalUrl,
+  getHtmlLang,
   getIndexablePaths,
   getPrerenderPaths,
   getSeoRouteConfig,
+  getSeoAlternateLinks,
   SITE_URL,
 } from '../content/seoRoutes';
+import { EN_CONTENT_READY } from '../i18n/locales';
+
+const EN_MVP_PATHS = [
+  '/en/',
+  '/en/furnished-tourist-accommodation-classification',
+  '/en/benefits-of-furnished-tourist-accommodation-classification',
+  '/en/classification-requirements',
+  '/en/classification-process',
+  '/en/faq',
+  '/en/contact',
+  '/en/request-a-classification',
+  '/en/privacy-policy',
+] as const;
 
 function normalizePath(pathname: string): string {
   if (!pathname) return '/';
@@ -57,10 +73,13 @@ describe('seo governance', () => {
     const sitemapXml = readFileSync(path.resolve(process.cwd(), 'public', 'sitemap.xml'), 'utf8');
     const sitemapUrls = extractSitemapUrls(sitemapXml).sort();
     const expectedUrls = getIndexablePaths()
-      .map((pathname) => (pathname === '/' ? `${SITE_URL}/` : `${SITE_URL}${pathname}`))
+      .map((pathname) => getCanonicalUrl(pathname))
       .sort();
 
     expect(sitemapUrls).toEqual(expectedUrls);
+    expect(sitemapXml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"');
+    expect(sitemapUrls.some((url) => url.includes('/en/'))).toBe(false);
+    expect(sitemapXml).not.toMatch(/<xhtml:link[^>]+href="https:\/\/www\.etoilys\.fr\/en\//);
   });
 
   it('keeps prerender paths aligned with indexable routes', () => {
@@ -78,5 +97,32 @@ describe('seo governance', () => {
     expect(dynamicSimulationSeo.robots).toBe('noindex,follow');
     expect(dynamicSimulationSeo.indexable).toBe(false);
     expect(getIndexablePaths()).not.toContain('/simulateur/:simulationId');
+  });
+
+  it('keeps English MVP routes noindex while English content is not ready', () => {
+    expect(EN_CONTENT_READY).toBe(false);
+
+    EN_MVP_PATHS.forEach((pathname) => {
+      const seoConfig = getSeoRouteConfig(pathname);
+
+      expect(seoConfig.locale).toBe('en');
+      expect(seoConfig.robots).toBe('noindex,follow');
+      expect(seoConfig.indexable).toBe(false);
+      expect(seoConfig.prerender).toBe(false);
+      expect(getIndexablePaths()).not.toContain(pathname);
+      expect(getPrerenderPaths()).not.toContain(pathname);
+    });
+  });
+
+  it('does not expose hreflang to noindex English pages', () => {
+    expect(getSeoAlternateLinks('/procedure')).toEqual([]);
+    expect(getSeoAlternateLinks('/en/classification-process')).toEqual([]);
+  });
+
+  it('exposes canonical URLs and html lang for technical English routes', () => {
+    expect(getCanonicalUrl('/en')).toBe(`${SITE_URL}/en/`);
+    expect(getCanonicalUrl('/en/contact')).toBe(`${SITE_URL}/en/contact`);
+    expect(getHtmlLang('/en/contact')).toBe('en');
+    expect(getHtmlLang('/enquete')).toBe('fr');
   });
 });

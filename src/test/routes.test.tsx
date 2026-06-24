@@ -142,4 +142,31 @@ describe('routing', () => {
     renderAt('/url-inexistante');
     expect(screen.getByRole('heading', { name: /page non trouvée/i })).toBeInTheDocument();
   });
+
+  it.each([
+    '/en/',
+    '/en/furnished-tourist-accommodation-classification',
+    '/en/benefits-of-furnished-tourist-accommodation-classification',
+    '/en/classification-requirements',
+    '/en/classification-process',
+    '/en/faq',
+    '/en/contact',
+    '/en/request-a-classification',
+    '/en/privacy-policy',
+  ])('renders technical English MVP route %s', (pathname) => {
+    renderAt(pathname);
+    expect(screen.queryByRole('heading', { name: /page non trouv/i })).not.toBeInTheDocument();
+  });
+
+  it('keeps English routes outside the MVP unavailable', () => {
+    renderAt('/en/actualites');
+    expect(screen.getByRole('heading', { name: /page non trouv/i })).toBeInTheDocument();
+  });
+
+  it('sets html lang on English technical routes without exposing alternate links while EN is noindex', () => {
+    renderAt('/en/contact');
+
+    expect(document.documentElement.lang).toBe('en');
+    expect(document.querySelectorAll("link[data-seo-alternate='true']")).toHaveLength(0);
+  });
 });

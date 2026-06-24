@@ -1,6 +1,12 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getSeoTitle, SITE_NAME, SITE_URL } from '../../content/seoRoutes';
+import {
+  getHtmlLang,
+  getCanonicalUrl,
+  getSeoTitle,
+  SITE_NAME,
+  type SeoAlternateLink,
+} from '../../content/seoRoutes';
 
 interface SEOProps {
   title: string;
@@ -10,6 +16,7 @@ interface SEOProps {
   preloadImage?: string | undefined;
   preloadImageSrcSet?: string | undefined;
   preloadImageSizes?: string | undefined;
+  alternateLinks?: SeoAlternateLink[] | undefined;
 }
 
 export default function SEO({
@@ -20,14 +27,17 @@ export default function SEO({
   preloadImage,
   preloadImageSrcSet,
   preloadImageSizes,
+  alternateLinks = [],
 }: SEOProps) {
   const location = useLocation();
   const fullTitle = getSeoTitle(title);
-  const currentUrl = `${SITE_URL}${location.pathname}`;
+  const currentUrl = getCanonicalUrl(location.pathname);
   const image = ogImage?.trim();
+  const htmlLang = getHtmlLang(location.pathname);
 
   useEffect(() => {
     document.title = fullTitle;
+    document.documentElement.lang = htmlLang;
 
     const metaTags = [
       { name: 'description', content: description },
@@ -68,6 +78,19 @@ export default function SEO({
     }
     canonical.setAttribute('href', currentUrl);
 
+    document.querySelectorAll("link[data-seo-alternate='true']").forEach((element) => {
+      element.remove();
+    });
+
+    alternateLinks.forEach((alternate) => {
+      const link = document.createElement('link');
+      link.setAttribute('rel', 'alternate');
+      link.setAttribute('hreflang', alternate.hreflang);
+      link.setAttribute('href', alternate.href);
+      link.setAttribute('data-seo-alternate', 'true');
+      document.head.appendChild(link);
+    });
+
     const preloadSelector = "link[data-seo-lcp-preload='true']";
     const preloadLink = document.querySelector<HTMLLinkElement>(preloadSelector);
 
@@ -99,6 +122,8 @@ export default function SEO({
     robots,
     currentUrl,
     image,
+    htmlLang,
+    alternateLinks,
     preloadImage,
     preloadImageSrcSet,
     preloadImageSizes,

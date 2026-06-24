@@ -8,9 +8,12 @@ import {
   SITE_NAME,
   SITE_URL,
   getBreadcrumbItems,
+  getCanonicalUrl,
+  getHtmlLang,
   getIndexablePaths,
   getPrerenderPaths,
   getSeoRouteConfig,
+  getSeoAlternateLinks,
   getSeoTitle,
 } from '../src/content/seoRoutes.ts';
 import { getArticleStructuredData } from '../src/content/articleStructuredData.ts';
@@ -182,6 +185,7 @@ function stripSeoTags(html: string): string {
     /<meta[^>]+name=['"]twitter:description['"][^>]*>\s*/gi,
     /<meta[^>]+name=['"]twitter:image['"][^>]*>\s*/gi,
     /<link[^>]+rel=['"]canonical['"][^>]*>\s*/gi,
+    /<link[^>]+rel=['"]alternate['"][^>]*>\s*/gi,
     /<link[^>]+data-seo-lcp-preload=['"]true['"][^>]*>\s*/gi,
     /<script[^>]+id=['"]structured-data-global['"][\s\S]*?<\/script>\s*/gi,
     /<script[^>]+id=['"]structured-data-breadcrumbs['"][\s\S]*?<\/script>\s*/gi,
@@ -201,9 +205,10 @@ function buildSeoHead(pathname: string): string {
   const title = getSeoTitle(seoConfig.title);
   const description = seoConfig.description;
   const robots = seoConfig.robots ?? 'index,follow';
-  const currentUrl = `${SITE_URL}${pathname}`;
+  const currentUrl = getCanonicalUrl(pathname);
   const ogImage = getOgImage(pathname);
   const preloadImage = seoConfig.lcpImageKey ? IMAGE_MANIFEST[seoConfig.lcpImageKey] : null;
+  const alternateLinks = getSeoAlternateLinks(pathname);
 
   const tags = [
     `    <title>${escapeHtml(title)}</title>`,
@@ -222,6 +227,12 @@ function buildSeoHead(pathname: string): string {
     `    <meta name="twitter:image" content="${escapeHtml(ogImage)}">`,
     `    <link rel="canonical" href="${escapeHtml(currentUrl)}">`,
   ];
+
+  alternateLinks.forEach((alternate) => {
+    tags.push(
+      `    <link rel="alternate" hreflang="${escapeHtml(alternate.hreflang)}" href="${escapeHtml(alternate.href)}" data-seo-alternate="true">`
+    );
+  });
 
   if (preloadImage) {
     tags.push(
@@ -254,8 +265,11 @@ function injectSeoHead(templateHtml: string, pathname: string): string {
   const normalizedPath = normalizePath(pathname);
   const cleaned = stripSeoTags(ensureDoctype(templateHtml));
   const seoHead = buildSeoHead(normalizedPath);
+  const withLang = cleaned.replace(/<html([^>]*)\s+lang=["'][^"']*["']([^>]*)>/i, '<html$1$2>');
 
-  return cleaned.replace(/<\/head>/i, `${seoHead}\n  </head>`);
+  return withLang
+    .replace(/<html([^>]*)>/i, `<html$1 lang="${escapeHtml(getHtmlLang(normalizedPath))}">`)
+    .replace(/<\/head>/i, `${seoHead}\n  </head>`);
 }
 
 function renderAppHtml(pathname: string): string {
@@ -310,7 +324,9 @@ function assertPrerenderedHtml(pathname: string, html: string): void {
     .replace(/<[^>]+>/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  const expectedCanonical = pathname === '/' ? `${SITE_URL}/` : `${SITE_URL}${pathname}`;
+  const expectedCanonical = getCanonicalUrl(pathname);
+  const expectedLang = getHtmlLang(pathname);
+  const alternateLinks = getSeoAlternateLinks(pathname);
 
   if (!rootContent || /<div id="root"><\/div>/i.test(html)) {
     throw new Error(`${pathname} was prerendered with an empty #root.`);
@@ -333,6 +349,15 @@ function assertPrerenderedHtml(pathname: string, html: string): void {
   if (!html.includes(`<link rel="canonical" href="${expectedCanonical}">`)) {
     throw new Error(`${pathname} has an invalid canonical URL.`);
   }
+  if (!new RegExp(`<html[^>]+lang=["']${expectedLang}["']`, 'i').test(html)) {
+    throw new Error(`${pathname} has an invalid html lang attribute.`);
+  }
+  alternateLinks.forEach((alternate) => {
+    const expectedAlternate = `<link rel="alternate" hreflang="${alternate.hreflang}" href="${alternate.href}" data-seo-alternate="true">`;
+    if (!html.includes(expectedAlternate)) {
+      throw new Error(`${pathname} is missing alternate link ${alternate.hreflang}.`);
+    }
+  });
 
   assertUniqueJsonLdIds(html, pathname);
 }

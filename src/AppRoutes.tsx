@@ -101,6 +101,18 @@ export default function AppRoutes() {
         <Route path="contact" element={<Contact />} />
         <Route path="demande-classement" element={<DemandeClassement />} />
         <Route path="confidentialite" element={<Confidentialite />} />
+        <Route path="en" element={<Home />} />
+        <Route path="en/furnished-tourist-accommodation-classification" element={<Classement />} />
+        <Route
+          path="en/benefits-of-furnished-tourist-accommodation-classification"
+          element={<PourquoiClasser />}
+        />
+        <Route path="en/classification-requirements" element={<Prerequis />} />
+        <Route path="en/classification-process" element={<Procedure />} />
+        <Route path="en/faq" element={<FAQ />} />
+        <Route path="en/contact" element={<Contact />} />
+        <Route path="en/request-a-classification" element={<DemandeClassement />} />
+        <Route path="en/privacy-policy" element={<Confidentialite />} />
         <Route path="mentions-legales" element={<MentionsLegales />} />
         <Route path="*" element={<NotFound />} />
       </Route>
