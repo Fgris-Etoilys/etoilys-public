@@ -142,6 +142,10 @@ Quand tu dois écrire du code, applique cette instruction:
 
 ### Périmètre
 
+Ces règles s'appliquent uniquement au contenu créé ou réécrit par l'agent dans la tâche en cours.
+Ne jamais modifier une copy, un texte ou un contenu déjà généré, fourni ou validé par l'utilisateur
+pour le rendre conforme à ces règles, sauf demande explicite de réécriture ou de mise en conformité.
+
 Ces règles de conformité éditoriale ne s'appliquent pas aux articles de blog ni aux contenus
 éditoriaux `Actualités`. Les articles peuvent utiliser une formulation pratique orientée lecteur
 lorsqu'elle sert l'intention éditoriale de l'article. Elles restent applicables aux pages de

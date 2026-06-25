@@ -53,7 +53,7 @@ export const privacyPolicyContent = {
             <p className="font-semibold text-gray-800">ETOILYS</p>
             <p>SAS with share capital of EUR 2,000</p>
             <p>RCS Bergerac 939 330 809</p>
-            <p>Registered office: 1345 route de Dautre, 24150 Mauzac-et-Grand-Castang, France</p>
+            <p>Registered office: 1345 route de Dautres, 24150 Mauzac-et-Grand-Castang, France</p>
             <p>
               Email:{' '}
               <a href="mailto:contact@etoilys.fr" className={linkClassName}>

@@ -28,7 +28,7 @@ export default function MentionsLegales() {
                   <strong className="text-gray-800">ETOILYS</strong>, société par actions simplifiée
                   (SAS) au capital social de 2&nbsp;000&nbsp;€, immatriculée au RCS de Bergerac sous
                   le numéro 939&nbsp;330&nbsp;809, dont le siège social est situé 1345 route de
-                  Dautre, 24150 Mauzac-et-Grand-Castang, France.
+                  Dautres, 24150 Mauzac-et-Grand-Castang, France.
                 </p>
                 <p>SIRET : 939&nbsp;330&nbsp;809&nbsp;00012</p>
                 <p>Numéro de TVA intracommunautaire : FR43939330809</p>

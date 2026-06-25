@@ -168,6 +168,10 @@ npm run preview
 
 ### Scope
 
+These rules apply only to content the agent creates or rewrites in the current task.
+Do not modify existing, generated, user-provided, or user-approved copy solely to satisfy these
+rules unless the user explicitly asks for a rewrite or compliance edit.
+
 These compliance rules do not apply to blog articles or `Actualites` editorial content. Blog
 articles may use practical, reader-facing wording when it serves the article's editorial intent.
 They still apply to service pages, forms, commercial CTAs, simulators, and non-blog business copy.

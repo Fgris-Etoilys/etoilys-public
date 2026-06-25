@@ -57,7 +57,7 @@ export default function Confidentialite() {
                   <p className="font-semibold text-gray-800">ETOILYS</p>
                   <p>SAS au capital social de 2&nbsp;000&nbsp;€</p>
                   <p>RCS Bergerac 939&nbsp;330&nbsp;809</p>
-                  <p>Siège social : 1345 route de Dautre, 24150 Mauzac-et-Grand-Castang, France</p>
+                  <p>Siège social : 1345 route de Dautres, 24150 Mauzac-et-Grand-Castang, France</p>
                   <p>
                     E-mail :{' '}
                     <a href="mailto:contact@etoilys.fr" className="text-primary hover:underline">

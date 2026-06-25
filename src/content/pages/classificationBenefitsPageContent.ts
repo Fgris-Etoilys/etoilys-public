@@ -137,6 +137,9 @@ export type ClassificationBenefitsPageContent = {
   };
 };
 
+const OFFICIAL_FISCAL_SOURCE_HREF =
+  'https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau';
+
 export const classificationBenefitsPageContent = {
   fr: {
     hero: {
@@ -219,8 +222,8 @@ export const classificationBenefitsPageContent = {
           "l'établissement et la télétransmission d'une liasse fiscale (formulaire 2031) avant la déclaration de revenus ;",
           'le recours habituel à un expert-comptable.',
         ],
-        sourceLabel: 'jedeclaremonmeuble.com',
-        sourceHref: 'https://www.jedeclaremonmeuble.com/micro-bic-changements-regime-reel/',
+        sourceLabel: 'impots.gouv.fr — régime fiscal des meublés de tourisme',
+        sourceHref: OFFICIAL_FISCAL_SOURCE_HREF,
       },
     },
     touristTax: {
@@ -465,8 +468,8 @@ export const classificationBenefitsPageContent = {
           'preparing and electronically filing a tax package, including form 2031, before the income tax return;',
           'usually working with an accountant.',
         ],
-        sourceLabel: 'jedeclaremonmeuble.com',
-        sourceHref: 'https://www.jedeclaremonmeuble.com/micro-bic-changements-regime-reel/',
+        sourceLabel: 'impots.gouv.fr — furnished tourist accommodation tax regime',
+        sourceHref: OFFICIAL_FISCAL_SOURCE_HREF,
       },
     },
     touristTax: {

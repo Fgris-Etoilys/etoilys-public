@@ -110,7 +110,7 @@ function buildGlobalStructuredData(): Record<string, unknown> {
         ],
         address: {
           '@type': 'PostalAddress',
-          streetAddress: '1345 route de Dautre',
+          streetAddress: '1345 route de Dautres',
           addressLocality: 'Mauzac-et-Grand-Castang',
           postalCode: '24150',
           addressCountry: 'FR',
