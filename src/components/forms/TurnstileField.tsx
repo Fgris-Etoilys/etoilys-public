@@ -9,6 +9,7 @@ interface TurnstileRenderOptions {
   callback: (token: string) => void;
   'expired-callback': () => void;
   'error-callback': () => void;
+  size: 'normal' | 'flexible' | 'compact';
   theme: 'light' | 'dark' | 'auto';
 }
 
@@ -86,6 +87,7 @@ export default function TurnstileField({
           onTokenChange(null);
           setLocalError(messages.verificationError);
         },
+        size: 'flexible',
         theme: 'light',
       });
     };
