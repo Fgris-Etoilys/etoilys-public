@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import App from '../App';
+import { EN_MVP_PATHS } from './i18nMvpTestData';
 
 const renderAt = (path: string) => {
   window.history.pushState({}, 'Test page', path);
@@ -143,30 +144,39 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { name: /page non trouvée/i })).toBeInTheDocument();
   });
 
-  it.each([
-    '/en/',
-    '/en/furnished-tourist-accommodation-classification',
-    '/en/benefits-of-furnished-tourist-accommodation-classification',
-    '/en/classification-requirements',
-    '/en/classification-process',
-    '/en/faq',
-    '/en/contact',
-    '/en/request-a-classification',
-    '/en/privacy-policy',
-  ])('renders technical English MVP route %s', (pathname) => {
+  it.each(EN_MVP_PATHS)('renders technical English MVP route %s', (pathname) => {
     renderAt(pathname);
     expect(screen.queryByRole('heading', { name: /page non trouv/i })).not.toBeInTheDocument();
   });
 
-  it('keeps English routes outside the MVP unavailable', () => {
-    renderAt('/en/actualites');
+  it.each([
+    '/en/actualites',
+    '/en/simulateur',
+    '/en/simulateur-taxe-sejour',
+    '/en/zones-intervention',
+    '/en/recrutement',
+    '/en/mentions-legales',
+    '/en/legal-notice',
+  ])('keeps English route outside the MVP unavailable: %s', (pathname) => {
+    renderAt(pathname);
     expect(screen.getByRole('heading', { name: /page non trouv/i })).toBeInTheDocument();
   });
 
-  it('sets html lang on English technical routes without exposing alternate links while EN is noindex', () => {
-    renderAt('/en/contact');
+  it('sets html lang and alternate links on completed English MVP routes', () => {
+    renderAt('/en/benefits-of-furnished-tourist-accommodation-classification');
 
     expect(document.documentElement.lang).toBe('en');
-    expect(document.querySelectorAll("link[data-seo-alternate='true']")).toHaveLength(0);
+    expect(document.querySelector('link[hreflang="fr"]')).toHaveAttribute(
+      'href',
+      'https://www.etoilys.fr/les-avantages-du-classement'
+    );
+    expect(document.querySelector('link[hreflang="en"]')).toHaveAttribute(
+      'href',
+      'https://www.etoilys.fr/en/benefits-of-furnished-tourist-accommodation-classification'
+    );
+    expect(document.querySelector('link[hreflang="x-default"]')).toHaveAttribute(
+      'href',
+      'https://www.etoilys.fr/les-avantages-du-classement'
+    );
   });
 });

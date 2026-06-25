@@ -11,19 +11,8 @@ import {
   getSeoAlternateLinks,
   SITE_URL,
 } from '../content/seoRoutes';
-import { EN_CONTENT_READY } from '../i18n/locales';
-
-const EN_MVP_PATHS = [
-  '/en/',
-  '/en/furnished-tourist-accommodation-classification',
-  '/en/benefits-of-furnished-tourist-accommodation-classification',
-  '/en/classification-requirements',
-  '/en/classification-process',
-  '/en/faq',
-  '/en/contact',
-  '/en/request-a-classification',
-  '/en/privacy-policy',
-] as const;
+import { localizedRoutes } from '../i18n/localizedRoutes';
+import { EN_MVP_PATH_COUNT, EN_MVP_PATHS } from './i18nMvpTestData';
 
 function normalizePath(pathname: string): string {
   if (!pathname) return '/';
@@ -75,11 +64,16 @@ describe('seo governance', () => {
     const expectedUrls = getIndexablePaths()
       .map((pathname) => getCanonicalUrl(pathname))
       .sort();
+    const englishSitemapUrls = sitemapUrls.filter((url) => url.startsWith(`${SITE_URL}/en/`));
 
     expect(sitemapUrls).toEqual(expectedUrls);
     expect(sitemapXml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"');
-    expect(sitemapUrls.some((url) => url.includes('/en/'))).toBe(false);
-    expect(sitemapXml).not.toMatch(/<xhtml:link[^>]+href="https:\/\/www\.etoilys\.fr\/en\//);
+    expect(englishSitemapUrls).toHaveLength(EN_MVP_PATH_COUNT);
+    EN_MVP_PATHS.forEach((pathname) => {
+      expect(sitemapUrls).toContain(getCanonicalUrl(pathname));
+      expect(sitemapXml).toContain(`href="${getCanonicalUrl(pathname)}"`);
+    });
+    expect(sitemapUrls).not.toContain(`${SITE_URL}/404`);
   });
 
   it('keeps prerender paths aligned with indexable routes', () => {
@@ -99,30 +93,78 @@ describe('seo governance', () => {
     expect(getIndexablePaths()).not.toContain('/simulateur/:simulationId');
   });
 
-  it('keeps English MVP routes noindex while English content is not ready', () => {
-    expect(EN_CONTENT_READY).toBe(false);
+  it('keeps unknown English routes noindex and out of sitemap/prerender', () => {
+    const pathname = '/en/not-ready-route';
+    const seoConfig = getSeoRouteConfig(pathname);
+
+    expect(seoConfig.robots).toBe('noindex,follow');
+    expect(seoConfig.indexable).toBe(false);
+    expect(seoConfig.prerender).toBe(false);
+    expect(getIndexablePaths()).not.toContain(pathname);
+    expect(getPrerenderPaths()).not.toContain(pathname);
+  });
+
+  it('makes all completed English MVP routes indexable and prerenderable', () => {
+    const englishIndexablePaths = getIndexablePaths().filter((pathname) =>
+      pathname.startsWith('/en/')
+    );
+    const englishPrerenderPaths = getPrerenderPaths().filter((pathname) =>
+      pathname.startsWith('/en/')
+    );
+
+    expect(englishIndexablePaths).toHaveLength(EN_MVP_PATH_COUNT);
+    expect(englishPrerenderPaths).toHaveLength(EN_MVP_PATH_COUNT);
 
     EN_MVP_PATHS.forEach((pathname) => {
       const seoConfig = getSeoRouteConfig(pathname);
 
       expect(seoConfig.locale).toBe('en');
-      expect(seoConfig.robots).toBe('noindex,follow');
-      expect(seoConfig.indexable).toBe(false);
-      expect(seoConfig.prerender).toBe(false);
-      expect(getIndexablePaths()).not.toContain(pathname);
-      expect(getPrerenderPaths()).not.toContain(pathname);
+      expect(seoConfig.robots).toBeUndefined();
+      expect(seoConfig.indexable ?? true).toBe(true);
+      expect(seoConfig.prerender ?? true).toBe(true);
+      expect(getIndexablePaths()).toContain(pathname);
+      expect(getPrerenderPaths()).toContain(pathname);
     });
   });
 
-  it('does not expose hreflang to noindex English pages', () => {
-    expect(getSeoAlternateLinks('/procedure')).toEqual([]);
-    expect(getSeoAlternateLinks('/en/classification-process')).toEqual([]);
+  it('exposes reciprocal hreflang for every completed English MVP route', () => {
+    Object.values(localizedRoutes).forEach(({ fr, en }) => {
+      const expectedAlternates = [
+        { hreflang: 'fr', href: getCanonicalUrl(fr) },
+        { hreflang: 'en', href: getCanonicalUrl(en) },
+        { hreflang: 'x-default', href: getCanonicalUrl(fr) },
+      ];
+
+      expect(getSeoAlternateLinks(fr)).toEqual(expectedAlternates);
+      expect(getSeoAlternateLinks(en)).toEqual(expectedAlternates);
+    });
   });
 
-  it('exposes canonical URLs and html lang for technical English routes', () => {
+  it('does not expose English alternates from French routes outside the MVP', () => {
+    [
+      '/actualites',
+      '/simulateur',
+      '/simulateur-taxe-sejour',
+      '/simulateur-fiscal-classement',
+      '/zones-intervention',
+      '/classement-meuble-tourisme-dordogne',
+      '/classement-meuble-tourisme-gironde',
+      '/classement-meuble-tourisme-lot-et-garonne',
+      '/recrutement',
+      '/mentions-legales',
+    ].forEach((pathname) => {
+      expect(getSeoAlternateLinks(pathname)).toEqual([]);
+    });
+  });
+
+  it('exposes self-referencing canonical URLs and html lang for English MVP routes', () => {
     expect(getCanonicalUrl('/en')).toBe(`${SITE_URL}/en/`);
-    expect(getCanonicalUrl('/en/contact')).toBe(`${SITE_URL}/en/contact`);
-    expect(getHtmlLang('/en/contact')).toBe('en');
+    EN_MVP_PATHS.forEach((pathname) => {
+      expect(getCanonicalUrl(pathname)).toBe(
+        pathname === '/en/' ? `${SITE_URL}/en/` : `${SITE_URL}${pathname}`
+      );
+      expect(getHtmlLang(pathname)).toBe('en');
+    });
     expect(getHtmlLang('/enquete')).toBe('fr');
   });
 });

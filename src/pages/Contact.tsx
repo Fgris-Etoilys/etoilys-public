@@ -1,22 +1,21 @@
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import ContactForm from '../components/forms/ContactForm';
+import { contactPageContent } from '../content/pages/contactPageContent';
 import { getLocaleFromPath } from '../i18n/routeHelpers';
 
 export default function Contact() {
   const location = useLocation();
   const locale = getLocaleFromPath(location.pathname);
+  const content = contactPageContent[locale];
 
   return (
     <>
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-3xl">
-            <h1 className="mb-6 text-white">Contacter Etoilys</h1>
-            <p className="text-xl text-white/90 leading-comfortable">
-              Vous avez une question avant de demander le classement de votre meublé ? Etoilys vous
-              répond et vous aide à comprendre les prochaines étapes.
-            </p>
+            <h1 className="mb-6 text-white">{content.hero.title}</h1>
+            <p className="text-xl text-white/90 leading-comfortable">{content.hero.description}</p>
           </div>
         </div>
       </section>
@@ -25,7 +24,7 @@ export default function Contact() {
         <div className="container-adaptive">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div>
-              <h2 className="mb-8">Nos coordonnées</h2>
+              <h2 className="mb-8">{content.detailsTitle}</h2>
               <div className="space-y-6 mb-12">
                 <div className="flex gap-4">
                   <div className="flex-shrink-0">
@@ -35,7 +34,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-lg font-playfair font-semibold text-gray-900 mb-2">
-                      Téléphone
+                      {content.contactLabels.phone}
                     </h3>
                     <a
                       href="tel:+33649551540"
@@ -54,7 +53,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-lg font-playfair font-semibold text-gray-900 mb-2">
-                      Email
+                      {content.contactLabels.email}
                     </h3>
                     <a
                       href="mailto:contact@etoilys.fr"
@@ -73,7 +72,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <h3 className="text-lg font-playfair font-semibold text-gray-900 mb-2">
-                      Siège social
+                      {content.contactLabels.headOffice}
                     </h3>
                     <p className="text-textLight leading-comfortable">
                       1345 route de Dautres
@@ -86,11 +85,10 @@ export default function Contact() {
 
               <div className="bg-primary-100 rounded-card p-6">
                 <h3 className="text-lg font-playfair font-semibold text-gray-900 mb-3">
-                  Réponse rapide
+                  {content.quickResponse.title}
                 </h3>
                 <p className="text-textLight leading-comfortable">
-                  Nous nous engageons à répondre à votre demande sous 24 heures ouvrées. Pour une
-                  demande urgente, n'hésitez pas à nous appeler directement.
+                  {content.quickResponse.description}
                 </p>
               </div>
             </div>

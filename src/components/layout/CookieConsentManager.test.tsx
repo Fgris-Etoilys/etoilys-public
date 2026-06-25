@@ -17,9 +17,9 @@ vi.mock('../../utils/analytics', () => ({
   getAnalyticsConsentStatus: analyticsMock.getAnalyticsConsentStatus,
 }));
 
-function renderCookieConsentManager() {
+function renderCookieConsentManager(pathname = '/') {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[pathname]}>
       <CookieConsentManager />
     </MemoryRouter>
   );
@@ -37,7 +37,7 @@ describe('CookieConsentManager', () => {
     cleanup();
   });
 
-  it('shows the initial banner when consent is not set', () => {
+  it('shows the initial French banner when consent is not set', () => {
     renderCookieConsentManager();
 
     expect(screen.getByRole('region', { name: 'Gestion des cookies' })).toBeInTheDocument();
@@ -45,6 +45,20 @@ describe('CookieConsentManager', () => {
     expect(screen.getByText(/mesurer l’audience/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Refuser' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Accepter' })).toBeInTheDocument();
+  });
+
+  it('shows localized English banner and privacy link on English routes', () => {
+    renderCookieConsentManager('/en/contact');
+
+    expect(screen.getByRole('region', { name: 'Cookie management' })).toBeInTheDocument();
+    expect(screen.getByText(/pages and forms are used/i)).toBeInTheDocument();
+    expect(screen.queryByText(/simulateurs|simulators/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Privacy policy' })).toHaveAttribute(
+      'href',
+      '/en/privacy-policy'
+    );
+    expect(screen.getByRole('button', { name: 'Refuse' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Accept' })).toBeInTheDocument();
   });
 
   it('hides the banner after a first-time refusal', () => {

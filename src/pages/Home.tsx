@@ -1,75 +1,65 @@
-import { Shield, Zap, Clock, Calculator, Users, Globe } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Shield, Zap, Clock, Calculator, Users, Globe, type LucideIcon } from 'lucide-react';
 import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import ArticleCard from '../components/ui/ArticleCard';
 import SmartImage from '../components/ui/SmartImage';
+import Card from '../components/ui/Card';
 import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
 import { actualitesArticlesByRecency } from '../content/actualitesArticles';
+import {
+  homePageContent,
+  type HomeFeature,
+  type HomeIconKey,
+  type HomePageContent,
+} from '../content/pages/homePageContent';
+import { getLocaleFromPath } from '../i18n/routeHelpers';
 
-const features = [
-  {
-    icon: Shield,
-    title: 'Organisme accrédité Cofrac',
-    description: (
-      <>
-        Etoilys est accrédité Cofrac Inspection n°3-2394 pour le classement des meublés de tourisme.
-        La portée d’accréditation est{' '}
-        <a
-          href={COFRAC_ACCREDITATION_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-primary-400 underline hover:text-primary-500"
-        >
-          consultable en ligne
-        </a>
-        .
-      </>
-    ),
-  },
-  {
-    icon: Zap,
-    title: 'Un parcours simplifié',
-    description:
-      "Nos outils internes simplifient la démarche : pas de dossier complexe à constituer, un suivi clair et un accompagnement fluide jusqu'à la décision de classement.",
-  },
-  {
-    icon: Clock,
-    title: 'Proximité et réactivité',
-    description:
-      'Nos inspecteurs proches de chez vous vous accompagnent personnellement pour un classement rapide et efficace.',
-  },
-];
+const homeFeatureIcons = {
+  shield: Shield,
+  zap: Zap,
+  clock: Clock,
+  calculator: Calculator,
+  users: Users,
+  globe: Globe,
+} as const satisfies Record<HomeIconKey, LucideIcon>;
 
-const advantages = [
-  {
-    icon: Calculator,
-    title: 'Régime fiscal avantageux',
-    description:
-      "Un meublé classé bénéficie d'un abattement fiscal majoré en régime micro-BIC (50 % contre 30 %).",
-  },
-  {
-    icon: Users,
-    title: 'Confiance des voyageurs',
-    description:
-      'Le classement en étoiles est un gage de qualité et de transparence pour les locataires.',
-  },
-  {
-    icon: Globe,
-    title: 'Référencement officiel',
-    description:
-      "Les meublés classés sont référencés dans les réseaux officiels du tourisme et bénéficient d'une meilleure visibilité.",
-  },
-];
+function renderFeatureDescription(feature: HomeFeature) {
+  if (!feature.link) {
+    return feature.description;
+  }
+
+  const href = feature.link.href === 'cofrac' ? COFRAC_ACCREDITATION_URL : feature.link.href;
+
+  return (
+    <>
+      {feature.description}
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-medium text-primary-400 underline hover:text-primary-500"
+      >
+        {feature.link.label}
+      </a>
+      .
+    </>
+  );
+}
 
 export default function Home() {
+  const location = useLocation();
+  const locale = getLocaleFromPath(location.pathname);
+  const content: HomePageContent = homePageContent[locale];
   const latestArticles = actualitesArticlesByRecency.slice(0, 2);
+
   return (
     <>
       <section className="relative min-h-[600px] flex items-center justify-center text-white overflow-hidden">
         <div className="absolute inset-0">
           <SmartImage
             assetKey="homeHero"
-            alt="Terrasse avec piscine d'un meublé de tourisme"
+            alt={content.hero.imageAlt}
             priority
             sizes="100vw"
             className="h-full w-full object-cover"
@@ -77,22 +67,21 @@ export default function Home() {
         </div>
         <div className="absolute inset-0 bg-black/50"></div>
         <div className="container-adaptive relative z-10 py-24 text-center">
-          <h1 className="mb-6 text-white">Classement officiel de votre meublé de tourisme</h1>
+          <h1 className="mb-6 text-white">{content.hero.title}</h1>
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-comfortable">
-            Etoilys vous accompagne pour obtenir le classement officiel en étoiles de votre meublé
-            de tourisme.
+            {content.hero.description}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button href="/demande-classement" variant="primary" size="lg">
-              Demander votre classement
+            <Button href={content.hero.primaryCta.href} variant="primary" size="lg">
+              {content.hero.primaryCta.label}
             </Button>
             <Button
-              href="/les-avantages-du-classement"
+              href={content.hero.secondaryCta.href}
               variant="secondary"
               size="lg"
               className="bg-white/10 border-white text-white hover:!bg-white/20 hover:text-white"
             >
-              Les avantages du classement
+              {content.hero.secondaryCta.label}
             </Button>
           </div>
         </div>
@@ -101,19 +90,18 @@ export default function Home() {
       <section className="py-section bg-white">
         <div className="container-adaptive">
           <div className="text-center mb-16">
-            <h2 className="mb-4">Pourquoi choisir Etoilys ?</h2>
+            <h2 className="mb-4">{content.features.title}</h2>
             <p className="text-lg text-themePrimary-1 max-w-2xl mx-auto leading-comfortable">
-              Un accompagnement simple, réactif et de proximité pour obtenir le classement officiel
-              de votre meublé de tourisme.
+              {content.features.description}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature) => (
+            {content.features.items.map((feature) => (
               <FeatureCard
                 key={feature.title}
-                icon={feature.icon}
+                icon={homeFeatureIcons[feature.icon]}
                 title={feature.title}
-                description={feature.description}
+                description={renderFeatureDescription(feature)}
                 iconColor="bicolor"
               />
             ))}
@@ -124,25 +112,24 @@ export default function Home() {
       <section className="py-section bg-primary-100">
         <div className="container-adaptive">
           <div className="text-center mb-16">
-            <h2 className="mb-4">Les bénéfices d'un classement officiel</h2>
+            <h2 className="mb-4">{content.benefits.title}</h2>
             <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
-              Un classement en étoiles apporte de nombreux avantages pour votre activité de location
-              saisonnière.
+              {content.benefits.description}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {advantages.map((advantage) => (
+            {content.benefits.items.map((advantage) => (
               <FeatureCard
                 key={advantage.title}
-                icon={advantage.icon}
+                icon={homeFeatureIcons[advantage.icon]}
                 title={advantage.title}
                 description={advantage.description}
               />
             ))}
           </div>
           <div className="text-center mt-12">
-            <Button href="/les-avantages-du-classement" variant="primary">
-              Découvrir tous les avantages
+            <Button href={content.benefits.cta.href} variant="primary">
+              {content.benefits.cta.label}
             </Button>
           </div>
         </div>
@@ -152,32 +139,22 @@ export default function Home() {
         <div className="container-adaptive">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="mb-6">Une procédure simple et rapide</h2>
+              <h2 className="mb-6">{content.procedure.title}</h2>
               <div className="space-y-4 text-textLight leading-comfortable">
-                <p>
-                  La démarche est simple : vous déposez votre demande, puis un inspecteur vous
-                  contacte sous 24 heures pour vérifier les informations utiles et organiser la
-                  visite selon vos disponibilités.
-                </p>
-                <p>
-                  La visite se déroule à votre logement, sur rendez-vous, à une date qui vous
-                  convient.
-                </p>
-                <p>
-                  Sous 7 jours suivant la visite, vous recevez une proposition de classement en
-                  étoiles, que vous êtes libre d'accepter ou de refuser.
-                </p>
+                {content.procedure.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
               </div>
               <div className="mt-8">
-                <Button href="/procedure" variant="primary">
-                  Découvrir la procédure
+                <Button href={content.procedure.cta.href} variant="primary">
+                  {content.procedure.cta.label}
                 </Button>
               </div>
             </div>
             <div className="relative">
               <SmartImage
                 assetKey="homeProcedure"
-                alt="Interieur d'un meuble de tourisme moderne"
+                alt={content.procedure.imageAlt}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="rounded-card shadow-card-hover w-full"
               />
@@ -186,50 +163,77 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-section bg-accent-1">
-        <div className="container-adaptive">
-          <div className="text-center mb-16">
-            <h2 className="mb-4">Nos dernières actualités</h2>
-            <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
-              Restez informé des nouveautés réglementaires et des évolutions du secteur de la
-              location meublée de tourisme.
-            </p>
+      {content.news && (
+        <section className="py-section bg-accent-1">
+          <div className="container-adaptive">
+            <div className="text-center mb-16">
+              <h2 className="mb-4">{content.news.title}</h2>
+              <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+                {content.news.description}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+              {latestArticles.map((article) => (
+                <ArticleCard
+                  key={article.title}
+                  title={article.title}
+                  excerpt={article.excerpt}
+                  imageKey={article.imageKey}
+                  href={article.href}
+                  date={article.date}
+                />
+              ))}
+            </div>
+            <div className="text-center">
+              <Button href={content.news.cta.href} variant="secondary">
+                {content.news.cta.label}
+              </Button>
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {latestArticles.map((article) => (
-              <ArticleCard
-                key={article.title}
-                title={article.title}
-                excerpt={article.excerpt}
-                imageKey={article.imageKey}
-                href={article.href}
-                date={article.date}
-              />
-            ))}
+        </section>
+      )}
+
+      {content.serviceLinks && (
+        <section className="py-section bg-accent-1">
+          <div className="container-adaptive">
+            <div className="text-center mb-16">
+              <h2 className="mb-4">{content.serviceLinks.title}</h2>
+              <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+                {content.serviceLinks.description}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {content.serviceLinks.links.map((link) => (
+                <Card key={link.href} hover={false} className="h-full bg-white">
+                  <Link
+                    to={link.href}
+                    className="block h-full p-6 transition-colors duration-200 hover:bg-primary-100/50"
+                  >
+                    <h3 className="mb-3 text-xl font-playfair font-semibold text-gray-900">
+                      {link.title}
+                    </h3>
+                    <p className="text-sm leading-comfortable text-textLight">{link.description}</p>
+                  </Link>
+                </Card>
+              ))}
+            </div>
           </div>
-          <div className="text-center">
-            <Button href="/actualites" variant="secondary">
-              Voir toutes les actualités
-            </Button>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <section className="py-section bg-gradient-to-br from-primary-300 to-themePrimary-2 text-white">
         <div className="container-adaptive text-center">
-          <h2 className="mb-6 text-white">Lancez votre démarche de classement.</h2>
+          <h2 className="mb-6 text-white">{content.finalCta.title}</h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-comfortable">
-            Etoilys prend en charge l'intégralité de la procédure. Un inspecteur de proximité vous
-            accompagne de la première prise de contact jusqu'à la délivrance de votre certificat
-            officiel.
+            {content.finalCta.description}
           </p>
           <Button
-            href="/demande-classement"
+            href={content.finalCta.cta.href}
             variant="secondary"
             size="lg"
             className="border-white text-white hover:!bg-white/20 hover:text-white"
           >
-            Demander votre classement
+            {content.finalCta.cta.label}
           </Button>
         </div>
       </section>

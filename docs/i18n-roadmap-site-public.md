@@ -4,6 +4,46 @@ Document de suivi pour découper et implémenter progressivement la version angl
 
 Source de vérité stratégique : `docs/etoilys-strategie-i18n-site-public.md`.
 
+## État courant au 24 juin 2026
+
+Sous-lots Lot 5 livrés :
+
+- [x] Conversion courte EN :
+  - `/en/contact`
+  - `/en/request-a-classification`
+  - `/en/privacy-policy`
+- [x] Information classement EN :
+  - `/en/furnished-tourist-accommodation-classification`
+  - `/en/classification-requirements`
+  - `/en/classification-process`
+  - `/en/faq`
+- [x] Home + Avantages EN :
+  - `/en/`
+  - `/en/benefits-of-furnished-tourist-accommodation-classification`
+
+Routes EN indexables à ce stade :
+
+- [x] `/en/`
+- [x] `/en/furnished-tourist-accommodation-classification`
+- [x] `/en/benefits-of-furnished-tourist-accommodation-classification`
+- [x] `/en/classification-requirements`
+- [x] `/en/classification-process`
+- [x] `/en/faq`
+- [x] `/en/contact`
+- [x] `/en/request-a-classification`
+- [x] `/en/privacy-policy`
+
+Routes EN MVP encore noindex / hors sitemap :
+
+- [x] Aucune route EN MVP restante : les 9 routes MVP EN sont traduites, indexables, dans le sitemap et prerenderées.
+
+Notes de dette temporaire :
+
+- La home EN est désormais dans le périmètre indexable ; le logo/brand EN pointe vers `/en/`.
+- Le lien Benefits EN est réintroduit dans la navigation globale EN et le footer EN.
+- Les simulateurs, Actualités, zones locales, Recrutement et Mentions légales restent hors périmètre EN MVP.
+- Les mentions légales ne sont pas traduites dans le MVP : ne pas créer `/en/legal-notice`. Si un lien EN vers `/mentions-legales` devient nécessaire pour une contrainte légale globale, il devra être documenté comme dette volontaire vers la page FR, sans l'ajouter aux routes EN MVP.
+
 ## 1. Objectif
 
 Ajouter une version anglaise native du site public Etoilys, maintenable, propre pour le SEO et fidèle à la version française.
@@ -42,15 +82,15 @@ La traduction doit rester factuelle, sobre et bloc par bloc. Elle ne doit pas tr
 
 | Page FR                        | Page EN recommandée                                              | Priorité                    | Statut |
 | ------------------------------ | ---------------------------------------------------------------- | --------------------------- | ------ |
-| `/`                            | `/en/`                                                           | MVP                         | [ ]    |
-| `/classement`                  | `/en/furnished-tourist-accommodation-classification`             | MVP                         | [ ]    |
-| `/les-avantages-du-classement` | `/en/benefits-of-furnished-tourist-accommodation-classification` | MVP                         | [ ]    |
-| `/prerequis-au-classement`     | `/en/classification-requirements`                                | MVP                         | [ ]    |
-| `/procedure`                   | `/en/classification-process`                                     | MVP                         | [ ]    |
-| `/faq`                         | `/en/faq`                                                        | MVP                         | [ ]    |
-| `/contact`                     | `/en/contact`                                                    | MVP                         | [ ]    |
-| `/demande-classement`          | `/en/request-a-classification`                                   | MVP                         | [ ]    |
-| `/confidentialite`             | `/en/privacy-policy`                                             | MVP si formulaires traduits | [ ]    |
+| `/`                            | `/en/`                                                           | MVP                         | [x]    |
+| `/classement`                  | `/en/furnished-tourist-accommodation-classification`             | MVP                         | [x]    |
+| `/les-avantages-du-classement` | `/en/benefits-of-furnished-tourist-accommodation-classification` | MVP                         | [x]    |
+| `/prerequis-au-classement`     | `/en/classification-requirements`                                | MVP                         | [x]    |
+| `/procedure`                   | `/en/classification-process`                                     | MVP                         | [x]    |
+| `/faq`                         | `/en/faq`                                                        | MVP                         | [x]    |
+| `/contact`                     | `/en/contact`                                                    | MVP                         | [x]    |
+| `/demande-classement`          | `/en/request-a-classification`                                   | MVP                         | [x]    |
+| `/confidentialite`             | `/en/privacy-policy`                                             | MVP si formulaires traduits | [x]    |
 
 Sur la home EN, ne pas afficher les derniers articles Actualités FR tant qu'aucun article evergreen anglais n'est publié. Remplacer ce bloc par des liens de service EN, par exemple : procédure, avantages du classement, FAQ et demande de classement.
 
@@ -434,28 +474,28 @@ Terminologie à stabiliser :
 
 Tests à prévoir pendant l'implémentation :
 
-- [ ] Ajouter ou adapter les tests de routes localisées.
+- [x] Ajouter ou adapter les tests de routes localisées.
 - [x] Tester les liens du language switcher.
 - [x] Tester que le language switcher masque ou désactive l'option EN sur les routes sans équivalent.
 - [x] Tester que le language switcher ne fallback pas automatiquement vers `/en/`.
 - [x] Tester que les routes françaises fonctionnent toujours.
-- [ ] Tester que les routes anglaises existent.
-- [ ] Tester les canonical anglaises.
-- [ ] Tester les `hreflang` réciproques.
-- [ ] Tester les alternatives `hreflang` dans le sitemap dès le Lot 2.
-- [ ] Tester `x-default`.
-- [ ] Tester `<html lang="fr">` et `<html lang="en">`.
+- [x] Tester que les routes anglaises existent.
+- [x] Tester les canonical anglaises.
+- [x] Tester les `hreflang` réciproques.
+- [x] Tester les alternatives `hreflang` dans le sitemap dès le Lot 2.
+- [x] Tester `x-default`.
+- [x] Tester `<html lang="fr">` et `<html lang="en">`.
 - [ ] Tester les breadcrumbs JSON-LD EN.
-- [ ] Tester les formulaires en français.
-- [ ] Tester les formulaires en anglais.
-- [ ] Tester `preferredLanguage`.
-- [ ] Tester que les erreurs visibles sur pages EN sont localisées.
-- [ ] Vérifier le sitemap, y compris les alternatives `hreflang` réciproques.
-- [ ] Vérifier le prerender.
-- [ ] Vérifier qu'aucune route anglaise indexable ne manque dans le SEO.
-- [ ] Vérifier qu'aucune route `noindex` ne part dans le sitemap.
-- [ ] Vérifier qu'aucune page n'importe `SEO` directement.
-- [ ] Vérifier qu'il n'existe qu'un seul injecteur `<SEO />`.
+- [x] Tester les formulaires en français.
+- [x] Tester les formulaires en anglais.
+- [x] Tester `preferredLanguage`.
+- [x] Tester que les erreurs visibles sur pages EN sont localisées.
+- [x] Vérifier le sitemap, y compris les alternatives `hreflang` réciproques.
+- [x] Vérifier le prerender.
+- [x] Vérifier qu'aucune route anglaise indexable ne manque dans le SEO.
+- [x] Vérifier qu'aucune route `noindex` ne part dans le sitemap.
+- [x] Vérifier qu'aucune page n'importe `SEO` directement.
+- [x] Vérifier qu'il n'existe qu'un seul injecteur `<SEO />`.
 - [ ] Vérifier l'absence de scripts JSON-LD dupliqués après navigation SPA.
 - [x] Vérifier l'absence de BOM et de marqueurs de mojibake dans les fichiers modifiés.
 
@@ -593,26 +633,26 @@ Dépendances : Lots 1 à 3.
 
 Checklist :
 
-- [ ] Localiser ContactForm.
-- [ ] Localiser DemandeClassementForm.
-- [ ] Localiser les messages de validation.
-- [ ] Localiser les messages de succès et d'erreur frontend.
-- [ ] Envoyer `preferredLanguage`.
-- [ ] Adapter les Edge Functions pour stocker `preferredLanguage` dans `payload_json`.
-- [ ] Ajouter la langue dans les notifications email internes.
-- [ ] Mapper côté front les erreurs backend attendues vers des messages localisés quand c'est possible.
-- [ ] Afficher un message générique localisé pour les erreurs backend imprévues.
-- [ ] Ne pas créer de colonne dédiée `preferredLanguage` dans le MVP.
-- [ ] Tester les liens vers la confidentialité FR/EN.
+- [x] Localiser ContactForm.
+- [x] Localiser DemandeClassementForm.
+- [x] Localiser les messages de validation.
+- [x] Localiser les messages de succès et d'erreur frontend.
+- [x] Envoyer `preferredLanguage`.
+- [x] Adapter les Edge Functions pour stocker `preferredLanguage` dans `payload_json`.
+- [x] Ajouter la langue dans les notifications email internes.
+- [x] Mapper côté front les erreurs backend attendues vers des messages localisés quand c'est possible.
+- [x] Afficher un message générique localisé pour les erreurs backend imprévues.
+- [x] Ne pas créer de colonne dédiée `preferredLanguage` dans le MVP.
+- [x] Tester les liens vers la confidentialité FR/EN.
 
 Critères d'acceptation :
 
-- [ ] Les formulaires FR restent fonctionnels.
-- [ ] Les formulaires EN sont cohérents.
-- [ ] Aucun message d'erreur visible sur page EN ne reste en français.
-- [ ] `preferredLanguage: "en"` est présent pour les soumissions EN.
-- [ ] `preferredLanguage` est stocké dans `payload_json` et mentionné dans l'email interne.
-- [ ] Aucun contournement frontend permanent ne masque un contrat backend manquant.
+- [x] Les formulaires FR restent fonctionnels.
+- [x] Les formulaires EN sont cohérents.
+- [x] Aucun message d'erreur visible sur page EN ne reste en français.
+- [x] `preferredLanguage: "en"` est présent pour les soumissions EN.
+- [x] `preferredLanguage` est stocké dans `payload_json` et mentionné dans l'email interne.
+- [x] Aucun contournement frontend permanent ne masque un contrat backend manquant.
 
 ### Lot 5 - Pages de contenu MVP
 
@@ -620,48 +660,68 @@ Dépendances : Lots 1 à 4.
 
 Checklist :
 
-- [ ] Accueil.
-- [ ] Classement.
-- [ ] Avantages du classement.
-- [ ] Prérequis.
-- [ ] Procédure.
-- [ ] FAQ.
-- [ ] Contact.
-- [ ] Demande de classement.
-- [ ] Confidentialité.
-- [ ] Home EN sans bloc derniers articles Actualités FR ; utiliser des liens de service EN tant qu'aucun article evergreen EN n'est publié.
-- [ ] `/en/privacy-policy` complète, sobre et fidèle à la version française.
-- [ ] Activer l'indexation EN uniquement après validation complète des contenus anglais.
-- [ ] Repasser `EN_CONTENT_READY` ou l'équivalent à `true` seulement quand aucune page EN MVP ne contient encore de contenu français.
-- [ ] Vérification des liens internes.
-- [ ] Vérification des sources.
-- [ ] Vérification conformité éditoriale.
+- [x] Accueil.
+- [x] Classement.
+- [x] Avantages du classement.
+- [x] Prérequis.
+- [x] Procédure.
+- [x] FAQ.
+- [x] Contact.
+- [x] Demande de classement.
+- [x] Confidentialité.
+- [x] Home EN sans bloc derniers articles Actualités FR ; utiliser des liens de service EN tant qu'aucun article evergreen EN n'est publié.
+- [x] `/en/privacy-policy` complète, sobre et fidèle à la version française.
+- [x] Activer l'indexation EN uniquement après validation complète des contenus anglais.
+- [x] Repasser `EN_CONTENT_READY` ou l'équivalent à `true` seulement quand aucune page EN MVP ne contient encore de contenu français.
+- [x] Vérification des liens internes.
+- [x] Vérification des sources.
+- [x] Vérification conformité éditoriale.
 
 Critères d'acceptation :
 
-- [ ] Chaque page EN est entièrement traduite.
-- [ ] Les sources officielles restent disponibles.
-- [ ] Aucun contenu juridique/fiscal nouveau n'est ajouté.
-- [ ] La terminologie est cohérente.
+- [x] Chaque page EN est entièrement traduite.
+- [x] Les sources officielles restent disponibles.
+- [x] Aucun contenu juridique/fiscal nouveau n'est ajouté.
+- [x] La terminologie est cohérente.
+
+Sous-lots Lot 5 terminés :
+
+- [x] Conversion courte EN : Contact, Demande de classement, Confidentialité.
+- [x] Information classement EN : Classement, Prérequis, Procédure, FAQ.
+- [x] Home + Avantages EN : Accueil, Avantages du classement.
+
+Sous-lots Lot 5 restants :
+
+- [x] Aucun sous-lot Lot 5 restant pour le MVP EN.
 
 ### Lot 6 - QA complète et release
 
 Dépendances : Lots 1 à 5.
 
+Statut au 25 juin 2026 :
+
+- [x] Les chemins EN MVP utilisés par les tests de gouvernance sont dérivés de `EN_INDEXABLE_ROUTE_IDS` et `localizedRoutes`.
+- [x] Les tests SEO vérifient les 9 routes EN MVP, leurs canonical auto-référentes, leurs `hreflang` réciproques et l'absence d'alternates EN sur les routes FR hors MVP.
+- [x] Les tests de rendu EN refusent les liens internes hors MVP dans les pages, CTA, cartes, menus et footer EN, sans bloquer les sources officielles externes françaises.
+- [x] Le prerender refuse les HTML EN MVP contenant des liens ou blocs rendus vers Actualités, simulateurs, zones locales, Recrutement ou Mentions légales hors périmètre.
+- [x] Aucun lien `/en/legal-notice` ni route EN de mentions légales n'est prévu dans le MVP.
+
 Checklist :
 
-- [ ] Lancer `npm run typecheck`.
-- [ ] Lancer `npm run lint`.
-- [ ] Lancer `npm run test:run`.
-- [ ] Lancer `npm run build`.
-- [ ] Lancer `npm run seo:sitemap`.
-- [ ] Lancer `npm run prerender`.
-- [ ] Lancer `npm run build:seo`.
+- [x] Lancer `npm run typecheck`.
+- [x] Lancer `npm run lint`.
+- [x] Lancer `npm run test:run`.
+- [x] Lancer `npm run build`.
+- [x] Lancer `npm run build:seo`.
+- [x] Lancer `npm run seo:sitemap`.
+- [x] Lancer `npm run prerender`.
 - [ ] Vérifier responsive desktop/mobile.
 - [ ] Vérifier no-regression FR.
-- [ ] Vérifier sitemap et prerender EN.
+- [x] Vérifier sitemap et prerender EN.
 - [ ] Vérifier que les URLs EN apparaissent dans le sitemap uniquement après activation explicite de l'indexation EN.
-- [ ] Vérifier JSON-LD sans doublon.
+- [x] Vérifier JSON-LD sans doublon.
+- [x] Vérifier que les sources officielles externes françaises restent autorisées sur les pages EN.
+- [x] Vérifier que les mentions légales restent hors MVP EN, sans création de `/en/legal-notice`.
 - [ ] Préparer les notes de release.
 
 Critères d'acceptation :
@@ -739,20 +799,17 @@ Ne pas faire pendant les lots MVP :
 
 ## 18. Prochaine action recommandée
 
-Commencer par le Lot 0, puis implémenter le Lot 1 dans une session dédiée.
+Le Lot 5 MVP EN est complet : les 9 routes anglaises MVP sont traduites, indexables, dans le sitemap et prerenderées.
 
-Prompt de reprise conseillé :
+Prochaine étape : Lot 6 - QA complète et release.
 
-```txt
-Implémente le Lot 1 de docs/i18n-roadmap-site-public.md. Ne traduis pas encore les pages. Crée uniquement le socle i18n technique, la table des routes localisées, les helpers de route testés, `getLocalizedPathFromPathname(pathname, targetLocale)` et `getAlternateLocaleLinks(pathname, baseUrl)`. Ne modifie pas AppRoutes, SEO, sitemap, prerender, Header, Footer, formulaires ni contenu de pages.
-```
+Avant release :
 
-Avant le Lot 1 :
-
-- [ ] Relire cette roadmap.
-- [ ] Vérifier que `docs/etoilys-strategie-i18n-site-public.md` n'a pas changé.
-- [ ] Vérifier l'état git.
-- [ ] Confirmer que le MVP anglais reste limité aux 9 routes listées.
+- [ ] Exécuter toutes les commandes de validation listées au Lot 6.
+- [ ] Vérifier le sitemap et les alternates `hreflang` réciproques sur les 9 routes EN MVP.
+- [ ] Vérifier que les simulateurs, Actualités, zones locales, Recrutement et Mentions légales restent hors périmètre EN.
+- [ ] Vérifier qu'aucune route EN partiellement traduite ou inconnue n'est indexable.
+- [ ] Préparer les notes de release.
 
 ## 19. Fichiers inspectés pour préparer cette roadmap
 

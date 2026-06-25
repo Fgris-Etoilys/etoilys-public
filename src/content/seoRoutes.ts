@@ -1,5 +1,6 @@
 import type { ImageAssetKey } from './imageManifest';
-import { DEFAULT_LOCALE, isIndexableByLocale, type Locale } from '../i18n/locales';
+import { DEFAULT_LOCALE, type Locale } from '../i18n/locales';
+import { isContentReadyForIndexing } from '../i18n/contentReadiness';
 import {
   getAlternateLocaleLinks,
   getLocaleFromPath,
@@ -278,9 +279,9 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'confidentialite',
   },
   '/en/': {
-    title: 'Furnished tourist accommodation classification in France',
+    title: 'Official classification of your furnished tourist accommodation',
     description:
-      'Etoilys presents the official French classification process for furnished tourist accommodation.',
+      'Etoilys supports you in obtaining the official star classification of your furnished tourist accommodation.',
     breadcrumbLabel: 'Home',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
@@ -298,7 +299,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/en/benefits-of-furnished-tourist-accommodation-classification': {
     title: 'Benefits of official furnished tourist accommodation classification',
     description:
-      'Objective information about the French official classification framework, including tax regime, tourist tax, official reference points and traveller information.',
+      'Tax regime, tourist tax, visibility, traveller trust and official signs: discover the benefits of official furnished tourist accommodation classification.',
     breadcrumbLabel: 'Classification benefits',
     ogImageKey: 'pourquoiReferencement',
     locale: 'en',
@@ -337,9 +338,9 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/en/request-a-classification': {
-    title: 'Request a furnished tourist accommodation classification',
+    title: 'Classification request',
     description:
-      'Request information about the French furnished tourist accommodation classification process with Etoilys.',
+      'Submit your furnished tourist accommodation classification request to Etoilys in a few minutes.',
     breadcrumbLabel: 'Request a classification',
     locale: 'en',
     routeId: 'demandeClassement',
@@ -386,7 +387,7 @@ function normalizePath(pathname: string): string {
 function applyLocaleIndexing(route: SeoRouteConfig): SeoRouteConfig {
   const locale = route.locale ?? DEFAULT_LOCALE;
 
-  if (isIndexableByLocale(locale)) {
+  if (isContentReadyForIndexing(locale, route.routeId)) {
     return route;
   }
 
@@ -453,7 +454,7 @@ export function getSitemapAlternateLinks(pathname: string): SeoAlternateLink[] {
 
 function isIndexableRoute(route: SeoRouteConfig): boolean {
   const locale = route.locale ?? DEFAULT_LOCALE;
-  if (!isIndexableByLocale(locale)) {
+  if (!isContentReadyForIndexing(locale, route.routeId)) {
     return false;
   }
   if (route.robots?.includes('noindex')) {

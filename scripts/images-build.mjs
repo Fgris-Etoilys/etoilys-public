@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { format } from 'prettier';
 import sharp from 'sharp';
 
 const ROOT_DIR = process.cwd();
@@ -308,12 +309,13 @@ async function main() {
     entries.push(buildManifestEntry(plan));
   }
 
-  const manifest = buildManifest(entries);
+  const manifest = await format(buildManifest(entries), {
+    parser: 'typescript',
+    singleQuote: true,
+  });
   await fs.writeFile(MANIFEST_PATH, manifest, 'utf8');
 
-  console.log(
-    `Built ${builtCount} SEO image assets. Skipped ${skippedCount} unchanged assets.`
-  );
+  console.log(`Built ${builtCount} SEO image assets. Skipped ${skippedCount} unchanged assets.`);
 }
 
 main().catch((error) => {

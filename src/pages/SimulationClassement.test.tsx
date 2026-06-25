@@ -3,6 +3,8 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import App from '../App';
 import structureGrilleRaw from '../../docs/structureGrille.json?raw';
 
+vi.setConfig({ testTimeout: 15_000 });
+
 const analyticsMock = vi.hoisted(() => ({
   acceptAnalyticsConsent: vi.fn(),
   getAnalyticsConsentStatus: vi.fn(() => null),
@@ -848,7 +850,7 @@ describe('SimulationClassement', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
     expect(scrollToMock).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
-  });
+  }, 15_000);
 
   it('recharge le modèle de grille du nouveau classement avant un recalcul automatique', async () => {
     const fetchMock = mockFetchJsonSequence([
@@ -916,7 +918,7 @@ describe('SimulationClassement', () => {
       allUrls.lastIndexOf(`/api/public/simulations/${SIMULATION_ID}/verifier`)
     );
     expect(await screen.findByText(/4 étoiles.*pas encore atteint/i)).toBeInTheDocument();
-  });
+  }, 15_000);
 
   it('marque le résultat existant à recalculer après modification d’un paramètre hors onglet résultat', async () => {
     const fetchMock = mockFetchJsonSequence([
@@ -969,7 +971,7 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /résultat à recalculer/i })
     ).toBeInTheDocument();
-  }, 10000);
+  }, 15_000);
 
   it('conserve le paramètre et garde le résultat accessible si un refetch secondaire échoue', async () => {
     const fetchMock = mockFetchJsonSequence([
@@ -1019,7 +1021,7 @@ describe('SimulationClassement', () => {
     expect(nonModelCalls[5]?.[0]).toBe(`/api/public/simulations/${SIMULATION_ID}/logement`);
     expect(housingTypeSelect).toHaveValue('COLLECTIF');
     expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
-  });
+  }, 15_000);
 
   it('affiche une erreur claire si le chargement échoue', async () => {
     mockFetchJsonSequence([

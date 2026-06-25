@@ -18,6 +18,8 @@ import {
 } from '../src/content/seoRoutes.ts';
 import { getArticleStructuredData } from '../src/content/articleStructuredData.ts';
 import { IMAGE_MANIFEST } from '../src/content/imageManifest.ts';
+import { EN_INDEXABLE_ROUTE_IDS } from '../src/i18n/contentReadiness.ts';
+import { localizedRoutes } from '../src/i18n/localizedRoutes.ts';
 
 const NOT_FOUND_PRERENDER_PATH = '/404';
 const DYNAMIC_SIMULATION_RENDER_PATH = '/simulateur/seo-shell';
@@ -26,6 +28,25 @@ const OG_IMAGE_ALT = 'Etoilys - Classement des meublés de tourisme';
 const ROOT_PLACEHOLDER_PATTERN = /<div id="root"><\/div>/i;
 const ROOT_CONTAINER_PATTERN = /<div id="root">[\s\S]*<\/div>\s*<\/body>/i;
 const ROOT_CONTENT_PATTERN = /<div id="root">([\s\S]*)<\/div>\s*<\/body>/i;
+const EN_MVP_PRERENDER_PATHS = new Set(
+  EN_INDEXABLE_ROUTE_IDS.map((routeId) => localizedRoutes[routeId].en)
+);
+const FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS = [
+  /^\/actualites(?:\/|$)/,
+  /^\/simulateur(?:\/|-|$)/,
+  /^\/zones-intervention(?:\/|$)/,
+  /^\/classement-meuble-tourisme-(?:dordogne|gironde|lot-et-garonne)(?:\/|$)/,
+  /^\/recrutement(?:\/|$)/,
+  /^\/mentions-legales(?:\/|$)/,
+  /^\/en\/actualites(?:\/|$)/,
+  /^\/en\/simulateur(?:\/|-|$)/,
+  /^\/en\/zones(?:\/|-|$)/,
+  /^\/en\/recrutement(?:\/|$)/,
+  /^\/en\/mentions-legales(?:\/|$)/,
+  /^\/en\/legal-notice(?:\/|$)/,
+] as const;
+const FORBIDDEN_EN_MVP_VISIBLE_TEXT_PATTERN =
+  /nos dernières actualités|actualités|latest news|news articles|zones d’intervention|service areas|recrutement|recruitment|mentions légales|legal notice/i;
 
 function normalizePath(pathname: string): string {
   if (!pathname) return '/';
@@ -307,6 +328,49 @@ function getRootContent(html: string): string {
   return ROOT_CONTENT_PATTERN.exec(html)?.[1] ?? '';
 }
 
+function getInternalHrefPath(href: string): string | null {
+  if (!href.startsWith('/')) {
+    return null;
+  }
+
+  return href.split(/[?#]/)[0] ?? href;
+}
+
+function isForbiddenEnglishMvpInternalHref(href: string): boolean {
+  return FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href));
+}
+
+function assertEnglishMvpPrerenderScope(
+  pathname: string,
+  rootContent: string,
+  rootText: string
+): void {
+  if (!pathname.startsWith('/en')) {
+    return;
+  }
+
+  const internalHrefs = [...rootContent.matchAll(/href="([^"]+)"/g)]
+    .map((match) => match[1])
+    .filter((href): href is string => href !== undefined)
+    .map(getInternalHrefPath)
+    .filter((href): href is string => href !== null);
+  const outOfScopeHrefs = internalHrefs.filter(
+    (href) =>
+      isForbiddenEnglishMvpInternalHref(href) ||
+      (href.startsWith('/en/') && !EN_MVP_PRERENDER_PATHS.has(href))
+  );
+
+  if (outOfScopeHrefs.length > 0) {
+    throw new Error(
+      `${pathname} contains out-of-scope English MVP internal links: ${outOfScopeHrefs.join(', ')}.`
+    );
+  }
+
+  if (FORBIDDEN_EN_MVP_VISIBLE_TEXT_PATTERN.test(rootText)) {
+    throw new Error(`${pathname} contains visible text from an out-of-scope English MVP block.`);
+  }
+}
+
 function assertUniqueJsonLdIds(html: string, pathname: string): void {
   const ids = ['structured-data-global', 'structured-data-breadcrumbs', 'structured-data-article'];
 
@@ -337,6 +401,7 @@ function assertPrerenderedHtml(pathname: string, html: string): void {
   if (!/<h1[\s>]/i.test(rootContent)) {
     throw new Error(`${pathname} prerendered body does not contain an h1.`);
   }
+  assertEnglishMvpPrerenderScope(pathname, rootContent, rootText);
   if (!/<title>[\s\S]+<\/title>/i.test(html)) {
     throw new Error(`${pathname} is missing a title tag.`);
   }

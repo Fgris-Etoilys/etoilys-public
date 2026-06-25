@@ -179,7 +179,6 @@ export const layoutContent = {
       homeHref: '/en/',
       menuToggleLabel: 'Open or close menu',
       navigation: [
-        { name: 'Home', href: '/en/' },
         {
           name: 'Official classification',
           href: '/en/furnished-tourist-accommodation-classification',
@@ -190,7 +189,7 @@ export const layoutContent = {
             {
               name: 'Benefits of classification',
               href: '/en/benefits-of-furnished-tourist-accommodation-classification',
-              description: 'Key effects of the official classification',
+              description: 'Tax, tourist tax and official reference points',
             },
             {
               name: 'Classification requirements',

@@ -7,7 +7,7 @@ interface AccordionItem {
 }
 
 interface AccordionProps {
-  items: AccordionItem[];
+  items: readonly AccordionItem[];
 }
 
 export default function Accordion({ items }: AccordionProps) {

@@ -1,8 +1,6 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Check, ChevronDown } from 'lucide-react';
-import flagEn from '../../assets/flags/en.svg';
-import flagFr from '../../assets/flags/fr.svg';
 import { layoutContent, localeNativeNames } from '../../i18n/layoutContent';
 import { SUPPORTED_LOCALES, type Locale } from '../../i18n/locales';
 import { getLocaleFromPath, getLocalizedPathFromPathname } from '../../i18n/routeHelpers';
@@ -20,10 +18,10 @@ type LocaleVisualConfig = {
 
 const localeVisualConfig = {
   fr: {
-    flagSrc: flagFr,
+    flagSrc: '/flags/fr.svg',
   },
   en: {
-    flagSrc: flagEn,
+    flagSrc: '/flags/en.svg',
   },
 } as const satisfies Record<Locale, LocaleVisualConfig>;
 

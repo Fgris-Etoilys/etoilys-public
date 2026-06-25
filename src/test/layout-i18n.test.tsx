@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
+import { EN_MVP_PATH_SET, isForbiddenEnglishMvpInternalHref } from './i18nMvpTestData';
 
 const renderAt = (path: string) => {
   window.history.pushState({}, 'Test page', path);
@@ -20,6 +21,42 @@ const getLastElement = <T,>(items: T[]): T => {
   }
   return item;
 };
+
+function getInternalPathname(href: string): string | null {
+  if (!href.startsWith('/')) {
+    return null;
+  }
+
+  return href.split(/[?#]/)[0] ?? href;
+}
+
+function expectEnglishMvpInternalLinksInScope(container: HTMLElement) {
+  const outOfScopeHrefs = Array.from(container.querySelectorAll<HTMLAnchorElement>('a[href]'))
+    .map((link) => link.getAttribute('href') ?? '')
+    .map(getInternalPathname)
+    .filter((pathname): pathname is string => pathname !== null)
+    .filter(
+      (pathname) =>
+        isForbiddenEnglishMvpInternalHref(pathname) ||
+        (pathname.startsWith('/en/') && !EN_MVP_PATH_SET.has(pathname))
+    );
+
+  expect(outOfScopeHrefs).toEqual([]);
+}
+
+function expectSeoHeadWithoutDuplicates({ hasBreadcrumb }: { hasBreadcrumb: boolean }) {
+  expect(document.querySelectorAll('script#structured-data-global')).toHaveLength(1);
+  expect(document.querySelectorAll('script#structured-data-breadcrumbs')).toHaveLength(
+    hasBreadcrumb ? 1 : 0
+  );
+  expect(document.querySelectorAll('script#structured-data-article')).toHaveLength(0);
+  expect(document.querySelectorAll('link[data-seo-alternate="true"]')).toHaveLength(3);
+  expect(
+    Array.from(document.querySelectorAll('link[data-seo-alternate="true"]')).map((link) =>
+      link.getAttribute('hreflang')
+    )
+  ).toEqual(['fr', 'en', 'x-default']);
+}
 
 describe('localized layout', () => {
   afterEach(() => {
@@ -101,10 +138,16 @@ describe('localized layout', () => {
 
     const header = screen.getByRole('banner');
 
-    expect(within(header).getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/en/');
+    expect(within(header).getByRole('link', { name: 'Etoilys' })).toHaveAttribute('href', '/en/');
+    expect(within(header).queryByRole('link', { name: 'Home' })).not.toBeInTheDocument();
+    const classificationMenu = within(header).getByRole('button', {
+      name: /^Official classification$/,
+    });
+    expect(classificationMenu).toBeInTheDocument();
+    fireEvent.mouseEnter(classificationMenu);
     expect(
-      within(header).getByRole('button', { name: /^Official classification$/ })
-    ).toBeInTheDocument();
+      within(header).getByRole('menuitem', { name: /benefits of classification/i })
+    ).toHaveAttribute('href', '/en/benefits-of-furnished-tourist-accommodation-classification');
     expect(within(header).getByRole('link', { name: 'Contact' })).toHaveAttribute(
       'href',
       '/en/contact'
@@ -121,6 +164,7 @@ describe('localized layout', () => {
       within(header).queryByRole('link', { name: /recruitment|recrutement/i })
     ).not.toBeInTheDocument();
     expect(within(header).queryByRole('button', { name: /tools|outils/i })).not.toBeInTheDocument();
+    expectEnglishMvpInternalLinksInScope(header);
   });
 
   it('renders English footer labels without non-MVP destinations', () => {
@@ -137,6 +181,9 @@ describe('localized layout', () => {
       '/en/classification-process'
     );
     expect(
+      within(footer).getByRole('link', { name: /benefits of classification/i })
+    ).toHaveAttribute('href', '/en/benefits-of-furnished-tourist-accommodation-classification');
+    expect(
       within(footer).queryByRole('link', { name: /news|actualités/i })
     ).not.toBeInTheDocument();
     expect(
@@ -144,6 +191,7 @@ describe('localized layout', () => {
     ).not.toBeInTheDocument();
     expect(footer.querySelector('a[href="/simulateur"]')).not.toBeInTheDocument();
     expect(footer.querySelector('a[href="/mentions-legales"]')).not.toBeInTheDocument();
+    expectEnglishMvpInternalLinksInScope(footer);
   });
 
   it('keeps the French header and footer destinations unchanged', () => {
@@ -197,6 +245,38 @@ describe('localized layout', () => {
         .getAllByRole('link', { name: /request a classification/i })
         .some((link) => link.getAttribute('href') === '/en/request-a-classification')
     ).toBe(true);
+    expectEnglishMvpInternalLinksInScope(document.body);
+  });
+
+  it('does not duplicate JSON-LD or hreflang tags after SPA navigation between English routes', async () => {
+    renderAt('/en/classification-process');
+
+    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true });
+
+    fireEvent.click(
+      within(screen.getByRole('main')).getByRole('link', { name: /frequently asked questions/i })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', {
+          level: 1,
+          name: /faq on furnished tourist accommodation classification/i,
+        })
+      ).toBeInTheDocument();
+    });
+    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true });
+
+    fireEvent.click(
+      within(screen.getByRole('main')).getByRole('link', { name: /contact etoilys/i })
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('heading', { level: 1, name: /contact etoilys/i })
+      ).toBeInTheDocument();
+    });
+    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true });
   });
 
   it('keeps unavailable language options disabled in the mobile menu', () => {

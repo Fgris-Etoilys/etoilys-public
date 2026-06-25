@@ -182,7 +182,7 @@ export const formContent = {
     demandeClassement: {
       title: 'Your classification request',
       intro:
-        'Enter your contact details and the address of the accommodation to be classified. We will contact you soon to organize the next steps.',
+        'Enter your contact details and the address of the accommodation to be classified. We will contact you quickly to organize the next steps.',
       labels: {
         nom: 'Last name',
         prenom: 'First name',
@@ -200,7 +200,8 @@ export const formContent = {
       privacyLinkLabel: 'privacy policy',
       submitButton: 'Send my request',
       submitting: 'Sending...',
-      success: 'Your request has been sent successfully. Our team will get back to you soon.',
+      success:
+        'Your request has been sent successfully. Our team will get back to you within 24 hours.',
     },
     validation: {
       nomRequired: 'Name is required',

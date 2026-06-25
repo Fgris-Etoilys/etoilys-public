@@ -7,7 +7,7 @@ interface TimelineStep {
 }
 
 interface TimelineProps {
-  steps: TimelineStep[];
+  steps: readonly TimelineStep[];
 }
 
 export default function Timeline({ steps }: TimelineProps) {
