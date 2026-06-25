@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 const TURNSTILE_SCRIPT_ID = 'turnstile-script';
 const TURNSTILE_SCRIPT_SRC =
@@ -9,9 +9,13 @@ interface TurnstileRenderOptions {
   callback: (token: string) => void;
   'expired-callback': () => void;
   'error-callback': () => void;
-  size: 'normal' | 'flexible' | 'compact';
+  size: TurnstileSize;
   theme: 'light' | 'dark' | 'auto';
 }
+
+type TurnstileSize = 'normal' | 'flexible' | 'compact';
+
+const NORMAL_TURNSTILE_WIDTH = 300;
 
 interface TurnstileApi {
   render: (container: HTMLElement, options: TurnstileRenderOptions) => string;
@@ -52,6 +56,28 @@ export default function TurnstileField({
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [widgetSize, setWidgetSize] = useState<TurnstileSize>('normal');
+
+  useLayoutEffect(() => {
+    const updateWidgetSize = () => {
+      const containerWidth = containerRef.current?.getBoundingClientRect().width ?? 0;
+      setWidgetSize(
+        containerWidth > 0 && containerWidth < NORMAL_TURNSTILE_WIDTH ? 'compact' : 'normal'
+      );
+    };
+
+    updateWidgetSize();
+
+    if (!containerRef.current || typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', updateWidgetSize);
+      return () => window.removeEventListener('resize', updateWidgetSize);
+    }
+
+    const observer = new ResizeObserver(updateWidgetSize);
+    observer.observe(containerRef.current);
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!siteKey) {
@@ -87,7 +113,7 @@ export default function TurnstileField({
           onTokenChange(null);
           setLocalError(messages.verificationError);
         },
-        size: 'flexible',
+        size: widgetSize,
         theme: 'light',
       });
     };
@@ -118,7 +144,7 @@ export default function TurnstileField({
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey, onTokenChange, messages]);
+  }, [siteKey, onTokenChange, messages, widgetSize]);
 
   useEffect(() => {
     if (widgetIdRef.current && window.turnstile) {
