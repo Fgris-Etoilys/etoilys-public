@@ -247,6 +247,13 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Données des plateformes transmises aux communes',
     ogImageKey: 'articleTransmissionDonnees',
   },
+  '/actualites/que-faire-apres-classement-meuble-tourisme': {
+    title: 'Que faire après le classement d’un meublé de tourisme ?',
+    description:
+      'Affichage, déclaration, taxe de séjour et plateformes : suivez les démarches à effectuer après le classement de votre meublé de tourisme.',
+    breadcrumbLabel: 'Après la décision de classement',
+    ogImageKey: 'articleApresClassement',
+  },
   '/recrutement': {
     title: 'Recrutement consultant classement meublés de tourisme',
     description:

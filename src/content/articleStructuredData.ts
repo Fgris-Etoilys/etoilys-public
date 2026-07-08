@@ -12,6 +12,16 @@ export interface ArticleStructuredDataConfig {
 
 const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   {
+    path: '/actualites/que-faire-apres-classement-meuble-tourisme',
+    headline: 'Meublé de tourisme classé : que faire après la décision de classement ?',
+    description:
+      'Affichage, déclaration, taxe de séjour et plateformes : démarches à effectuer après le classement de votre meublé de tourisme.',
+    datePublished: '2026-07-08',
+    dateModified: '2026-07-08',
+    imageKey: 'articleApresClassement',
+    authorName: 'Florian Grisorio',
+  },
+  {
     path: '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles',
     headline: 'Airbnb, Booking, Abritel : quelles données vont désormais remonter aux communes ?',
     description:

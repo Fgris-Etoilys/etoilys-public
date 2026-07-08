@@ -26,6 +26,7 @@ import ArticleFacturationElectronique2026 from './pages/actualites/FacturationEl
 import ArticleDpeMeublesTourisme from './pages/actualites/DpeMeublesTourisme';
 import ArticleApiMeubles from './pages/actualites/ApiMeublesDeclarationMeubleTourisme';
 import ArticleTransmissionDonneesPlateformesCommunes from './pages/actualites/TransmissionDonneesPlateformesCommunes';
+import ArticleQueFaireApresClassementMeubleTourisme from './pages/actualites/QueFaireApresClassementMeubleTourisme';
 import Recrutement from './pages/Recrutement';
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -96,6 +97,10 @@ export default function AppRoutes() {
         <Route
           path="actualites/airbnb-booking-abritel-donnees-communes-api-meubles"
           element={<ArticleTransmissionDonneesPlateformesCommunes />}
+        />
+        <Route
+          path="actualites/que-faire-apres-classement-meuble-tourisme"
+          element={<ArticleQueFaireApresClassementMeubleTourisme />}
         />
         <Route path="recrutement" element={<Recrutement />} />
         <Route path="contact" element={<Contact />} />

@@ -13,6 +13,17 @@ export interface ActualiteArticle {
 
 const articles: ActualiteArticle[] = [
   {
+    title: 'Meublé de tourisme classé : que faire après la décision de classement ?',
+    excerpt:
+      'Affichage, déclaration, taxe de séjour et plateformes : suivez les démarches à effectuer après le classement de votre meublé de tourisme.',
+    imageKey: 'articleApresClassement',
+    href: '/actualites/que-faire-apres-classement-meuble-tourisme',
+    date: '8 juillet 2026',
+    publishedAt: '2026-07-08',
+    updatedDate: '8 juillet 2026',
+    updatedAt: '2026-07-08',
+  },
+  {
     title: 'Airbnb, Booking, Abritel : quelles données vont désormais remonter aux communes ?',
     excerpt:
       "API Meublés, numéro d'enregistrement, adresse, annonces, jours loués : voici quelles données sont transmises aux communes et ce que cela change.",

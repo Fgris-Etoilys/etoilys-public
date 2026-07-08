@@ -59,6 +59,11 @@ const IMAGE_ASSETS = [
     fileName: 'AdobeStock_2013598087.jpeg',
     outputName: 'article-transmission-donnees-plateformes',
   },
+  {
+    key: 'articleApresClassement',
+    fileName: 'AdobeStock_445466807.jpeg',
+    outputName: 'article-apres-classement',
+  },
   { key: 'dordogneHero', fileName: 'pexels-slimmars-13-197677686-14298615.jpg' },
   { key: 'dordogneInterior', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
   { key: 'dordogneLandscape', fileName: 'le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg' },
