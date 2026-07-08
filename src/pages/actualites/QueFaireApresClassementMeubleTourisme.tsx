@@ -4,10 +4,9 @@ import Button from '../../components/ui/Button';
 
 const keyTakeaways = [
   'La décision de classement doit être affichée de manière visible à l’intérieur du logement.',
-  'La déclaration ou l’enregistrement du meublé doit être actualisé avec la date et la catégorie de classement.',
-  'Etoilys transmet la décision à l’office de tourisme du secteur ; vérifiez ensuite que le classement apparaît correctement sur votre portail local de taxe de séjour.',
-  'Le classement doit être renseigné sur vos plateformes de réservation pour que la taxe de séjour soit calculée avec la bonne catégorie.',
-  'Le classement est valable cinq ans : conservez les documents et notez l’échéance de renouvellement.',
+  'La déclaration ou l’enregistrement du meublé doit être actualisé si la procédure de votre commune le prévoit.',
+  'Le classement doit être pris en compte par l’organisme chargé de la taxe de séjour dans votre secteur.',
+  'Lorsque votre plateforme calcule ou collecte la taxe de séjour, vérifiez que votre catégorie de classement est correctement renseignée.',
 ];
 
 const declarationSteps = [
@@ -39,7 +38,7 @@ const bookingSteps = [
   'Se connecter à l’extranet Booking.com.',
   'Ouvrir le menu Établissement.',
   'Sélectionner TVA, taxes et frais.',
-  'Ouvrir les paramètres de calcul de la taxe, intitulés Edit tax drivers dans la version anglaise.',
+  'Ouvrir les paramètres utilisés pour calculer la taxe de séjour, parfois intitulés « Edit tax drivers » dans l’extranet anglophone.',
   'Remplir le questionnaire en vérifiant le type ou la catégorie de l’hébergement.',
   'Enregistrer les modifications, puis contrôler le tarif affiché sur les prochaines réservations.',
 ];
@@ -49,7 +48,7 @@ const finalChecklist = [
   'Actualiser la déclaration ou l’enregistrement du meublé, puis conserver l’accusé.',
   'Vérifier la catégorie et le tarif sur le portail local de taxe de séjour.',
   'Mettre à jour le classement sur vos plateformes de réservation.',
-  'Conserver la décision, le rapport et la grille, puis noter la date d’expiration.',
+  'Noter la date d’expiration du classement.',
 ];
 
 const officialSources = [
@@ -136,10 +135,10 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
         <div className="container-adaptive">
           <div className="max-w-4xl mx-auto">
             <p className="text-xl leading-comfortable text-gray-700 mb-10">
-              Vous venez de recevoir votre décision de classement. Quelques démarches simples
-              permettent maintenant de mettre à jour la situation de votre logement, d’appliquer le
-              bon tarif de taxe de séjour et de renseigner correctement votre classement auprès des
-              services et plateformes de réservation concernés.
+              Vous venez de recevoir votre décision de classement ? Voici les principales démarches
+              à effectuer : afficher la décision dans le logement, actualiser votre déclaration,
+              mettre à jour votre classement pour la taxe de séjour et le renseigner sur les
+              plateformes qui la calculent.
             </p>
 
             <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
@@ -196,9 +195,9 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
             <h2 className="mt-12 mb-4">Actualisez la déclaration ou l’enregistrement du meublé</h2>
             <p className="text-gray-700 leading-comfortable mb-4">
               La date de la décision et la catégorie de classement font partie des informations
-              déclarées pour un meublé de tourisme. Après obtention du classement, la déclaration ou
-              l’enregistrement doit donc être mis à jour selon la procédure prévue par la commune du
-              logement.
+              déclarées pour un meublé de tourisme. Après obtention du classement, vérifiez donc si
+              la déclaration ou l’enregistrement doit être mis à jour selon la procédure prévue par
+              la commune du logement.
             </p>
             <div className="space-y-4 mb-6 text-gray-700">
               {declarationSteps.map((step, index) => (
@@ -217,13 +216,13 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
               service indiqué par le portail.
             </p>
             <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-6">
+              <p className="text-h4 font-playfair font-semibold text-gray-900 mb-3">
+                Attention au calendrier 2026
+              </p>
               <p className="text-gray-700 leading-comfortable">
-                <strong>Au 8 juillet 2026</strong>, la DGE annonce toujours l’ouverture de la
-                version finale du téléservice national au second semestre 2026. Tant que ce service
-                n’est pas ouvert aux loueurs, utilisez la procédure actuellement indiquée par votre
-                commune. Lors du lancement national, tous les loueurs devront demander un nouveau
-                numéro d’enregistrement pour chaque meublé de tourisme. Les anciens numéros
-                resteront utilisables pendant une période transitoire, puis deviendront invalides.
+                Au 8 juillet 2026, le téléservice national définitif n’est pas encore ouvert aux
+                loueurs. Continuez à suivre la procédure indiquée par votre commune. Un nouveau
+                numéro national devra être demandé lorsque le téléservice sera lancé.
               </p>
               <p className="text-gray-700 leading-comfortable mt-3">
                 Pour situer cette transition, vous pouvez{' '}
@@ -243,16 +242,14 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
               n’avez donc pas à renvoyer systématiquement la décision à ce même office de tourisme.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              La taxe de séjour peut toutefois être administrée, selon le territoire, par la
-              commune, une communauté de communes — c’est-à-dire un regroupement de communes — ou un
-              service dédié. Etoilys ne garantit pas que l’information sera automatiquement
-              répercutée dans chaque outil local.
+              Vérifiez que votre classement est bien enregistré auprès de l’organisme chargé de la
+              taxe de séjour dans votre secteur, afin que le tarif correspondant à votre nombre
+              d’étoiles soit appliqué. Selon le territoire, il peut s’agir de l’office de tourisme,
+              de la commune ou de la communauté de communes.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Vérifiez donc que votre catégorie apparaît correctement sur le portail local de taxe
-              de séjour. Si elle n’est pas mise à jour, contactez le service indiqué par ce portail
-              et transmettez la décision si nécessaire. Vérifiez aussi le tarif appliqué aux
-              prochains séjours.
+              Si votre catégorie n’est pas à jour sur le portail local, contactez le service indiqué
+              par ce portail et transmettez la décision si nécessaire.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour aller plus loin, vous pouvez{' '}
@@ -272,6 +269,10 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
             <h2 className="mt-12 mb-4">
               Renseignez votre classement sur les plateformes de réservation
             </h2>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Les intitulés peuvent varier selon la version de l’application, le type de compte et
+              les évolutions de chaque plateforme.
+            </p>
 
             <h3 className="mt-8 mb-3">Sur Airbnb</h3>
             <p className="text-gray-700 leading-comfortable mb-4">
@@ -288,8 +289,7 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
               ))}
             </ol>
             <p className="text-gray-700 leading-comfortable mb-4">
-              La prise en compte de la modification peut prendre jusqu’à 24 heures. La taxe est
-              collectée au moment de la réservation.
+              La taxe est collectée au moment de la réservation.
             </p>
 
             <h3 className="mt-8 mb-3">Sur Abritel</h3>
@@ -319,9 +319,8 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
               ))}
             </ol>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Les intitulés peuvent varier selon le compte partenaire, le type d’établissement ou la
-              version de l’extranet. Après l’enregistrement, contrôlez que la catégorie et le tarif
-              affichés sur les prochaines réservations correspondent au classement obtenu.
+              Après l’enregistrement, contrôlez que la catégorie et le tarif affichés sur les
+              prochaines réservations correspondent au classement obtenu.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour les autres plateformes de réservation, recherchez la rubrique liée aux taxes,
@@ -342,12 +341,26 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
               toute la durée du classement.
             </p>
 
-            <h2 className="mt-12 mb-4">Vous souhaitez accepter les Chèques-Vacances ?</h2>
+            <div className="mt-12 mb-10 rounded-card border border-primary-200 bg-primary-100 p-6">
+              <h2 className="text-h4 mb-4">Votre checklist après classement</h2>
+              <ul className="space-y-3 text-gray-700">
+                {finalChecklist.map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <span
+                      className="mt-1 h-4 w-4 shrink-0 rounded border-2 border-primary-300 bg-white"
+                      aria-hidden="true"
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <h2 className="mt-12 mb-4">Une démarche facultative : accepter les Chèques-Vacances</h2>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Cette démarche est facultative. Le classement permet à un propriétaire de location
-              meublée de déposer une demande de conventionnement auprès de l’ANCV. Ce
-              conventionnement est nécessaire pour accepter les Chèques-Vacances, mais il n’est pas
-              automatique.
+              Le classement permet à un propriétaire de location meublée de déposer une demande de
+              conventionnement auprès de l’ANCV. Ce conventionnement est nécessaire pour accepter
+              les Chèques-Vacances, mais il n’est pas automatique.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               L’ANCV demande notamment une activité éligible, un numéro SIRET, un compte bancaire
@@ -364,40 +377,19 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
               .
             </p>
 
-            <div className="mt-12 mb-10 rounded-card border border-primary-200 bg-primary-100 p-6">
-              <h2 className="text-h4 mb-4">Votre checklist après classement</h2>
-              <ul className="space-y-3 text-gray-700">
-                {finalChecklist.map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <span
-                      className="mt-1 h-4 w-4 shrink-0 rounded border-2 border-primary-300 bg-white"
-                      aria-hidden="true"
-                    />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <p className="text-gray-700 leading-comfortable mb-4">
-              Après la décision de classement, l’essentiel tient en quelques vérifications :
-              afficher le document dans le logement, actualiser sa déclaration, contrôler la taxe de
-              séjour et renseigner correctement les plateformes qui la calculent. Il reste ensuite à
-              conserver les documents et à anticiper l’échéance des cinq ans.
-            </p>
-
             <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
-              <h2 className="text-h4 mb-3">Faire le point après le classement</h2>
+              <h2 className="text-h4 mb-3">Vérifiez maintenant votre taxe de séjour</h2>
               <p className="text-gray-700 mb-6">
-                Retrouvez les réponses générales dans la FAQ ou estimez le montant de taxe de séjour
-                selon la commune et la catégorie du logement.
+                Une fois votre classement renseigné, utilisez le simulateur Etoilys pour contrôler
+                le tarif applicable dans votre commune. La FAQ répond également aux principales
+                questions sur les démarches qui suivent le classement.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Button href="/faq" variant="primary">
-                  Consulter la FAQ
-                </Button>
-                <Button href="/simulateur-taxe-sejour" variant="secondary">
+                <Button href="/simulateur-taxe-sejour" variant="primary">
                   Simuler ma taxe de séjour
+                </Button>
+                <Button href="/faq" variant="secondary">
+                  Consulter la FAQ
                 </Button>
               </div>
             </div>
