@@ -42,3 +42,6 @@ docs/Rapport Annaig le Meur.pdf
 docs/dordogne-tourisme-meubles.json
 docs/gironde-tourisme-hebergements-locatif.json
 docs/lot-et-garonne-tourisme-meubles.json
+
+.vercel
+.env*
