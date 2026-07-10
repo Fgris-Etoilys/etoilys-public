@@ -176,7 +176,7 @@ export const layoutContent = {
   },
   en: {
     header: {
-      homeHref: '/en/',
+      homeHref: '/en',
       menuToggleLabel: 'Open or close menu',
       navigation: [
         {
@@ -212,7 +212,7 @@ export const layoutContent = {
       },
     },
     footer: {
-      homeHref: '/en/',
+      homeHref: '/en',
       brandTagline: ['Furnished tourist', 'accommodation classification'],
       columns: [
         {

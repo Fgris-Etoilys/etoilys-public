@@ -18,7 +18,7 @@ const normalizePathname = (pathname: string): string => {
 
   const withoutTrailingSlash = withLeadingSlash.replace(/\/+$/, '') || '/';
 
-  return withoutTrailingSlash === EN_LOCALE_PREFIX ? '/en/' : withoutTrailingSlash;
+  return withoutTrailingSlash;
 };
 
 const normalizeBaseUrl = (baseUrl: string): string => baseUrl.replace(/\/+$/, '');
@@ -29,7 +29,7 @@ const toAbsoluteUrl = (path: string, baseUrl: string): string =>
 export const getLocaleFromPath = (pathname: string): Locale => {
   const normalizedPathname = normalizePathname(pathname);
 
-  if (normalizedPathname === '/en/' || normalizedPathname.startsWith('/en/')) {
+  if (normalizedPathname === EN_LOCALE_PREFIX || normalizedPathname.startsWith('/en/')) {
     return 'en';
   }
 

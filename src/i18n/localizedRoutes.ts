@@ -21,7 +21,7 @@ export type LocalizedRoutes = Readonly<Record<LocalizedRouteId, LocalizedRoutePa
 export const localizedRoutes = {
   home: {
     fr: '/',
-    en: '/en/',
+    en: '/en',
   },
   classement: {
     fr: '/classement',

@@ -18,12 +18,12 @@ Sous-lots Lot 5 livrés :
   - `/en/classification-process`
   - `/en/faq`
 - [x] Home + Avantages EN :
-  - `/en/`
+  - `/en`
   - `/en/benefits-of-furnished-tourist-accommodation-classification`
 
 Routes EN indexables à ce stade :
 
-- [x] `/en/`
+- [x] `/en`
 - [x] `/en/furnished-tourist-accommodation-classification`
 - [x] `/en/benefits-of-furnished-tourist-accommodation-classification`
 - [x] `/en/classification-requirements`
@@ -39,7 +39,7 @@ Routes EN MVP encore noindex / hors sitemap :
 
 Notes de dette temporaire :
 
-- La home EN est désormais dans le périmètre indexable ; le logo/brand EN pointe vers `/en/`.
+- La home EN est désormais dans le périmètre indexable ; le logo/brand EN pointe vers `/en`.
 - Le lien Benefits EN est réintroduit dans la navigation globale EN et le footer EN.
 - Les simulateurs, Actualités, zones locales, Recrutement et Mentions légales restent hors périmètre EN MVP.
 - Les mentions légales ne sont pas traduites dans le MVP : ne pas créer `/en/legal-notice`. Si un lien EN vers `/mentions-legales` devient nécessaire pour une contrainte légale globale, il devra être documenté comme dette volontaire vers la page FR, sans l'ajouter aux routes EN MVP.
@@ -71,7 +71,7 @@ La traduction doit rester factuelle, sobre et bloc par bloc. Elle ne doit pas tr
 - [x] Les sources officielles françaises restent disponibles ; ne pas inventer de sources anglaises.
 - [x] Les disclaimers restent sobres.
 - [x] La traduction se fait page par page, bloc par bloc, à partir du français.
-- [x] Pour les routes sans équivalent anglais, le sélecteur de langue masque ou désactive l'option EN ; pas de fallback automatique vers `/en/` par défaut.
+- [x] Pour les routes sans équivalent anglais, le sélecteur de langue masque ou désactive l'option EN ; pas de fallback automatique vers `/en` par défaut.
 - [x] Sur la home EN, ne pas afficher les derniers articles Actualités FR pendant le MVP ; les remplacer par des liens de service EN.
 - [x] Aucun message d'erreur visible par l'utilisateur sur une page EN ne doit rester en français.
 - [x] Pour le MVP, stocker `preferredLanguage` dans `payload_json` et l'afficher dans la notification email interne, sans colonne dédiée.
@@ -82,7 +82,7 @@ La traduction doit rester factuelle, sobre et bloc par bloc. Elle ne doit pas tr
 
 | Page FR                        | Page EN recommandée                                              | Priorité                    | Statut |
 | ------------------------------ | ---------------------------------------------------------------- | --------------------------- | ------ |
-| `/`                            | `/en/`                                                           | MVP                         | [x]    |
+| `/`                            | `/en`                                                            | MVP                         | [x]    |
 | `/classement`                  | `/en/furnished-tourist-accommodation-classification`             | MVP                         | [x]    |
 | `/les-avantages-du-classement` | `/en/benefits-of-furnished-tourist-accommodation-classification` | MVP                         | [x]    |
 | `/prerequis-au-classement`     | `/en/classification-requirements`                                | MVP                         | [x]    |
@@ -207,14 +207,14 @@ Critères d'acceptation :
 Stratégie attendue :
 
 - [ ] Conserver toutes les routes françaises existantes.
-- [ ] Ajouter les routes anglaises MVP sous `/en/`.
+- [ ] Ajouter les routes anglaises MVP sous `/en/*`, avec la home canonique sur `/en`.
 - [ ] Utiliser des slugs anglais propres.
 - [ ] Garder la route inconnue `*` avec le fallback `noindex,follow`.
 - [ ] Ne pas rediriger automatiquement `/` vers `/en`.
 - [ ] Gérer les liens internes par la table `localizedRoutes`.
 - [ ] Prévoir les équivalents de page pour le language switcher.
 - [ ] Pour une route sans équivalent anglais, masquer ou désactiver l'option EN dans le language switcher.
-- [ ] Ne pas utiliser `/en/` comme fallback automatique. Un fallback vers `/en/` n'est autorisé que pour un cas précis explicitement documenté.
+- [ ] Ne pas utiliser `/en` comme fallback automatique. Un fallback vers `/en` n'est autorisé que pour un cas précis explicitement documenté.
 
 Fichiers probables :
 
@@ -233,7 +233,7 @@ Critères d'acceptation :
 - [ ] Les routes françaises existantes rendent toujours les mêmes pages.
 - [ ] Les routes anglaises MVP rendent les pages prévues.
 - [ ] Les routes hors MVP ne sont pas exposées artificiellement en anglais.
-- [ ] Les routes sans équivalent anglais ne déclenchent pas de fallback automatique vers `/en/`.
+- [ ] Les routes sans équivalent anglais ne déclenchent pas de fallback automatique vers `/en`.
 - [ ] La 404 reste disponible et `noindex,follow`.
 
 ## 8. SEO multilingue
@@ -296,7 +296,7 @@ Tâches :
 - [x] Ajouter un sélecteur de langue visible desktop et mobile.
 - [x] Le switcher doit pointer vers la page équivalente quand elle existe.
 - [x] Si l'équivalent n'existe pas, masquer ou désactiver proprement l'option de langue indisponible.
-- [x] Le fallback vers `/en/` n'est autorisé que si ce comportement est explicitement documenté pour un cas précis.
+- [x] Le fallback vers `/en` n'est autorisé que si ce comportement est explicitement documenté pour un cas précis.
 - [x] Le comportement doit être identique en desktop et en mobile.
 - [x] Ne pas casser le menu mobile.
 - [x] Conserver les tokens Tailwind et composants existants.
@@ -317,7 +317,7 @@ Critères d'acceptation :
 - [x] Switcher utilisable au clavier.
 - [x] Switcher visible en desktop et mobile.
 - [x] Les liens du switcher sont de vrais liens React Router.
-- [x] Les routes sans équivalent EN ne renvoient pas automatiquement vers `/en/`.
+- [x] Les routes sans équivalent EN ne renvoient pas automatiquement vers `/en`.
 - [x] Le comportement indisponible/masqué est couvert par tests desktop et mobile.
 - [ ] Aucun chevauchement ou débordement visible dans le header mobile.
 
@@ -477,7 +477,7 @@ Tests à prévoir pendant l'implémentation :
 - [x] Ajouter ou adapter les tests de routes localisées.
 - [x] Tester les liens du language switcher.
 - [x] Tester que le language switcher masque ou désactive l'option EN sur les routes sans équivalent.
-- [x] Tester que le language switcher ne fallback pas automatiquement vers `/en/`.
+- [x] Tester que le language switcher ne fallback pas automatiquement vers `/en`.
 - [x] Tester que les routes françaises fonctionnent toujours.
 - [x] Tester que les routes anglaises existent.
 - [x] Tester les canonical anglaises.
@@ -570,7 +570,7 @@ Checklist :
 Critères d'acceptation :
 
 - [x] Les chemins FR/EN du MVP sont typés.
-- [x] Les helpers couvrent `/`, `/en/`, les slugs EN et les routes inconnues.
+- [x] Les helpers couvrent `/`, `/en`, l'alias redirigé `/en/`, les slugs EN et les routes inconnues.
 - [x] Les helpers retournent `null` quand une route n'a pas d'équivalent dans la langue cible.
 - [x] Les alternatives de langue sont produites par un helper pur, testable sans rendu React.
 - [x] `npm run typecheck` passe.
@@ -617,14 +617,14 @@ Checklist :
 - [x] Ajouter le language switcher mobile.
 - [x] Tester les liens équivalents.
 - [x] Masquer ou désactiver l'option EN sur les routes sans équivalent.
-- [x] Ne documenter un fallback vers `/en/` que pour un cas précis explicitement choisi.
+- [x] Ne documenter un fallback vers `/en` que pour un cas précis explicitement choisi.
 
 Critères d'acceptation :
 
 - [x] Le switcher est visible et accessible.
 - [x] Le menu mobile fonctionne toujours.
 - [x] Les liens FR/EN pointent vers les équivalents attendus.
-- [x] Les routes sans équivalent EN ne renvoient pas automatiquement vers `/en/`.
+- [x] Les routes sans équivalent EN ne renvoient pas automatiquement vers `/en`.
 - [x] Le comportement est cohérent en desktop et en mobile.
 
 ### Lot 4 - Formulaires et `preferredLanguage`
@@ -754,14 +754,14 @@ Critères d'acceptation :
 - [ ] Traductions trop marketing ou trop libres.
 - [ ] Ajout de contenu juridique/fiscal non présent dans la version française.
 - [ ] Sitemap incluant une route `noindex` par erreur.
-- [ ] Language switcher envoyant vers `/en/` sur une route sans équivalent au lieu de masquer ou désactiver l'option EN.
+- [ ] Language switcher envoyant vers `/en` sur une route sans équivalent au lieu de masquer ou désactiver l'option EN.
 - [ ] Régression du menu mobile avec le language switcher.
 - [ ] Tests existants trop orientés routes FR et à adapter proprement.
 
 ## 16. Questions tranchées
 
 - [x] Routes sans équivalent anglais : masquer ou désactiver l'option EN dans le language switcher.
-- [x] Fallback vers `/en/` : interdit par défaut, autorisé seulement pour un cas précis explicitement documenté.
+- [x] Fallback vers `/en` : interdit par défaut, autorisé seulement pour un cas précis explicitement documenté.
 - [x] Home EN : ne pas afficher les derniers articles Actualités FR pendant le MVP.
 - [x] Home EN : remplacer le bloc Actualités par des liens de service EN tant qu'aucun article evergreen anglais n'est publié.
 - [x] Erreurs visibles utilisateur : toutes les erreurs affichées sur page EN doivent être localisées.
@@ -850,3 +850,86 @@ Avant release :
 - `supabase/functions/public-forms-contact/index.ts`
 - `supabase/functions/public-forms-classement/index.ts`
 - `supabase/migrations/20260325190000_create_form_submissions.sql`
+
+## 20. Mini-lot post-release monitoring
+
+Contrôles réalisés le 10 juillet 2026 sur la propriété Search Console
+`https://www.etoilys.fr/` et sur le site public.
+
+### Search Console et sitemap
+
+- [x] La propriété Search Console est accessible avec le niveau `siteRestrictedUser`.
+- [x] Le sitemap `https://www.etoilys.fr/sitemap.xml` est déclaré dans Search Console.
+- [x] Le sitemap remonte sans erreur ni avertissement, n'est pas en attente et a été téléchargé
+      par Google pour la dernière fois le 5 juillet 2026.
+- [ ] La nouvelle soumission du sitemap a été refusée par l'API avec une erreur `403` : le compte
+      de monitoring n'a pas un niveau d'autorisation suffisant. La soumission doit être faite par un
+      propriétaire ou un utilisateur disposant des droits complets.
+- [x] Le sitemap public contient exactement les 9 routes EN MVP.
+- [x] Les 9 paires FR/EN comportent des alternatives `fr`, `en` et `x-default` réciproques dans le
+      sitemap.
+- [ ] Le résumé sitemap de l'API remonte `indexed: 0`, alors que l'inspection individuelle confirme
+      8 URLs EN indexées. Cette donnée contradictoire doit être recontrôlée dans l'interface Search
+      Console.
+
+### Inspection des 9 URLs EN
+
+- [x] 8 URLs sur 9 ont le verdict `PASS` avec l'état `Submitted and indexed`.
+- [x] Pour ces 8 URLs, Google et le site déclarent la même canonical.
+- [x] Les 9 pages publiques exposent `lang="en"`, `index,follow`, une canonical et les trois
+      alternatives `fr`, `en` et `x-default` attendues dans le HTML prerendered.
+- [x] Googlebot a exploré les 9 routes EN entre le 27 juin et le 3 juillet 2026 avec un rendu mobile
+      et une récupération réussie.
+- [ ] La home EN présente un écart : `/en/` répond par une redirection `308` vers `/en`, tandis que
+      la canonical et le `hreflang="en"` déclarent `/en/`. Google retient `/en` et classe l'URL inspectée
+      `/en/` comme `Page with redirect`.
+- [x] Correctif préparé dans le code le 10 juillet 2026 : route localisée, canonical, `hreflang`,
+      breadcrumbs, liens globaux, sitemap et prerender sont alignés sur `/en`.
+- [ ] L'API d'inspection ne fournit pas le `hreflang` interprété par Google. Sa présence est confirmée
+      dans le HTML public et le sitemap, mais un contrôle complémentaire dans l'interface Search Console
+      reste nécessaire si une preuve du rendu exploré est requise.
+
+### 404 et cohérence des routes EN
+
+- [x] Tous les liens internes `/en/*` découverts sur les 9 pages pointent vers les routes MVP
+      attendues ; les 8 routes hors home répondent directement en `200`.
+- [x] Les données Search Console ne font apparaître aucune URL `/en/*` inattendue avec des
+      impressions sur la période contrôlée.
+- [x] Une URL EN inconnue répond bien en `404` avec `noindex,follow`, sans canonical vers une route
+      indexable et sans `hreflang`.
+- [ ] La 404 servie sous `/en/*` reste française (`lang="fr"`, titre et contenu français). Cette
+      incohérence doit être corrigée pour fournir une 404 anglaise sur les chemins EN inconnus.
+- [ ] L'API Search Console ne permet pas d'extraire la liste du rapport d'indexation `Not found
+(404)`. La surveillance exhaustive des 404 doit donc être effectuée dans ce rapport de l'interface
+      Search Console ou via des logs HTTP de production.
+
+### Premières performances EN
+
+Période contrôlée : du 20 juin au 10 juillet 2026, données fraîches incluses.
+
+- [x] Premières impressions détectées le 29 juin 2026.
+- [x] Total EN : 197 impressions, 2 clics, CTR de 1,02 % et position moyenne de 6,67.
+- [x] Pages les plus exposées : avantages du classement (80 impressions), prérequis (49) et page
+      générale du classement (44).
+- [x] Les seules URLs EN remontées sont les 9 routes MVP, avec deux variantes pour la home (`/en` et
+      `/en/`) en raison de l'écart de canonical/redirection.
+- [ ] Search Console mesure l'acquisition organique, pas le comportement après le clic. Un contrôle
+      des sessions et conversions EN nécessite l'outil analytics de production.
+
+### Formulaire EN
+
+- [ ] La soumission réelle et les vérifications runtime de `preferredLanguage` dans `payload_json`
+      et dans l'email interne n'ont pas été réalisées. Le test a été arrêté à la demande de l'utilisateur
+      et aucune soumission bidon n'a été créée.
+
+### Actions de suivi
+
+- [x] Aligner dans le code la home EN sur `/en`, URL servie en `200` compte tenu de
+      `trailingSlash: false`, puis régénérer le sitemap et le prerender.
+- [ ] Déployer le correctif et confirmer en production que canonical, `hreflang`, liens internes et
+      sitemap ciblent `/en`.
+- [ ] Faire resoumettre le sitemap par un compte Search Console disposant des droits complets.
+- [ ] Contrôler le rapport d'indexation des 404 dans l'interface Search Console.
+- [ ] Localiser la page 404 selon le préfixe `/en/*`.
+- [ ] Reprendre les impressions, clics, requêtes et pays après deux à quatre semaines de données
+      supplémentaires.

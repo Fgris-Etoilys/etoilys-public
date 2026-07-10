@@ -14,7 +14,7 @@ const localizedRouteCases: Array<{
   fr: string;
   en: string;
 }> = [
-  { routeId: 'home', fr: '/', en: '/en/' },
+  { routeId: 'home', fr: '/', en: '/en' },
   {
     routeId: 'classement',
     fr: '/classement',
@@ -75,6 +75,8 @@ describe('i18n route helpers', () => {
   });
 
   it('returns the direct equivalent path from an existing localized pathname', () => {
+    expect(getLocalizedPathFromPathname('/', 'en')).toBe('/en');
+    expect(getLocalizedPathFromPathname('/en/', 'en')).toBe('/en');
     expect(getLocalizedPathFromPathname('/procedure', 'en')).toBe('/en/classification-process');
     expect(getLocalizedPathFromPathname('/en/classification-process', 'fr')).toBe('/procedure');
     expect(getLocalizedPathFromPathname('/en/contact/', 'fr')).toBe('/contact');

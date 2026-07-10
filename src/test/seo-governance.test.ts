@@ -20,6 +20,10 @@ function normalizePath(pathname: string): string {
   return pathname.replace(/\/+$/, '') || '/';
 }
 
+function isEnglishPath(pathname: string): boolean {
+  return pathname === '/en' || pathname.startsWith('/en/');
+}
+
 function extractSitemapUrls(xml: string): string[] {
   const regex = /<loc>(.*?)<\/loc>/g;
   const urls: string[] = [];
@@ -64,7 +68,7 @@ describe('seo governance', () => {
     const expectedUrls = getIndexablePaths()
       .map((pathname) => getCanonicalUrl(pathname))
       .sort();
-    const englishSitemapUrls = sitemapUrls.filter((url) => url.startsWith(`${SITE_URL}/en/`));
+    const englishSitemapUrls = sitemapUrls.filter((url) => isEnglishPath(new URL(url).pathname));
 
     expect(sitemapUrls).toEqual(expectedUrls);
     expect(sitemapXml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"');
@@ -105,12 +109,8 @@ describe('seo governance', () => {
   });
 
   it('makes all completed English MVP routes indexable and prerenderable', () => {
-    const englishIndexablePaths = getIndexablePaths().filter((pathname) =>
-      pathname.startsWith('/en/')
-    );
-    const englishPrerenderPaths = getPrerenderPaths().filter((pathname) =>
-      pathname.startsWith('/en/')
-    );
+    const englishIndexablePaths = getIndexablePaths().filter(isEnglishPath);
+    const englishPrerenderPaths = getPrerenderPaths().filter(isEnglishPath);
 
     expect(englishIndexablePaths).toHaveLength(EN_MVP_PATH_COUNT);
     expect(englishPrerenderPaths).toHaveLength(EN_MVP_PATH_COUNT);
@@ -158,11 +158,10 @@ describe('seo governance', () => {
   });
 
   it('exposes self-referencing canonical URLs and html lang for English MVP routes', () => {
-    expect(getCanonicalUrl('/en')).toBe(`${SITE_URL}/en/`);
+    expect(getCanonicalUrl('/en')).toBe(`${SITE_URL}/en`);
+    expect(getCanonicalUrl('/en/')).toBe(`${SITE_URL}/en`);
     EN_MVP_PATHS.forEach((pathname) => {
-      expect(getCanonicalUrl(pathname)).toBe(
-        pathname === '/en/' ? `${SITE_URL}/en/` : `${SITE_URL}${pathname}`
-      );
+      expect(getCanonicalUrl(pathname)).toBe(`${SITE_URL}${pathname}`);
       expect(getHtmlLang(pathname)).toBe('en');
     });
     expect(getHtmlLang('/enquete')).toBe('fr');

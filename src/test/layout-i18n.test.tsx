@@ -83,7 +83,7 @@ describe('localized layout', () => {
     );
   });
 
-  it('disables unavailable language options without falling back to /en/', () => {
+  it('disables unavailable language options without falling back to /en', () => {
     renderAt('/actualites');
     openLanguageSwitcher();
 
@@ -95,7 +95,7 @@ describe('localized layout', () => {
     expect(unavailableEnglishOption).toHaveAttribute('aria-disabled', 'true');
     expect(unavailableEnglishOption).not.toHaveAttribute('href');
     expect(screen.queryByRole('link', { name: /passer en anglais/i })).not.toBeInTheDocument();
-    expect(document.querySelector('a[href="/en/"]')).not.toBeInTheDocument();
+    expect(document.querySelector('a[href="/en"]')).not.toBeInTheDocument();
   });
 
   it('uses a compact trigger and closes the dropdown with Escape and outside clicks', () => {
@@ -138,7 +138,7 @@ describe('localized layout', () => {
 
     const header = screen.getByRole('banner');
 
-    expect(within(header).getByRole('link', { name: 'Etoilys' })).toHaveAttribute('href', '/en/');
+    expect(within(header).getByRole('link', { name: 'Etoilys' })).toHaveAttribute('href', '/en');
     expect(within(header).queryByRole('link', { name: 'Home' })).not.toBeInTheDocument();
     const classificationMenu = within(header).getByRole('button', {
       name: /^Official classification$/,

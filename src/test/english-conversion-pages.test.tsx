@@ -86,7 +86,7 @@ describe('English conversion pages', () => {
   });
 
   it('renders the English home page without French news content', () => {
-    renderAt('/en/');
+    renderAt('/en');
 
     const main = screen.getByRole('main');
 
@@ -113,7 +113,7 @@ describe('English conversion pages', () => {
     expectHref(main, '/en/classification-requirements');
     expectHref(main, '/en/request-a-classification');
     expectHref(main, '/en/benefits-of-furnished-tourist-accommodation-classification');
-    expectNoHref(main, '/en/');
+    expectNoHref(main, '/en');
     expectEnglishMvpPageGovernance();
   });
 
@@ -125,7 +125,7 @@ describe('English conversion pages', () => {
     expectHref(main, '/en/classification-requirements');
     expectHref(main, '/en/request-a-classification');
     expect(main.querySelector('a[href^="/simulateur"]')).toBeNull();
-    expectNoHref(main, '/en/');
+    expectNoHref(main, '/en');
     expectEnglishMvpPageGovernance();
   });
 
@@ -136,7 +136,7 @@ describe('English conversion pages', () => {
 
     expectHref(main, '/en/classification-process');
     expectHref(main, '/en/request-a-classification');
-    expectNoHref(main, '/en/');
+    expectNoHref(main, '/en');
     expectEnglishMvpPageGovernance();
   });
 
@@ -147,7 +147,7 @@ describe('English conversion pages', () => {
 
     expectHref(main, '/en/faq');
     expectHref(main, '/en/request-a-classification');
-    expectNoHref(main, '/en/');
+    expectNoHref(main, '/en');
     expectEnglishMvpPageGovernance();
   });
 
@@ -160,7 +160,7 @@ describe('English conversion pages', () => {
     expectHref(main, '/en/contact');
     expectHref(main, '/en/request-a-classification');
     expect(main.querySelector('a[href="/simulateur-taxe-sejour"]')).toBeNull();
-    expectNoHref(main, '/en/');
+    expectNoHref(main, '/en');
     expectEnglishMvpPageGovernance();
   });
 

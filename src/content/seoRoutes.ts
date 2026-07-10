@@ -285,7 +285,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     locale: 'fr',
     routeId: 'confidentialite',
   },
-  '/en/': {
+  '/en': {
     title: 'Official classification of your furnished tourist accommodation',
     description:
       'Etoilys supports you in obtaining the official star classification of your furnished tourist accommodation.',
@@ -382,13 +382,10 @@ const DYNAMIC_SEO_ROUTES: Array<{ pattern: RegExp; config: SeoRouteConfig }> = [
   },
 ];
 
-const EN_LOCALE_PREFIX = '/en';
-
 function normalizePath(pathname: string): string {
   if (!pathname) return '/';
   if (pathname === '/') return pathname;
-  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
-  return normalizedPath === EN_LOCALE_PREFIX ? '/en/' : normalizedPath;
+  return pathname.replace(/\/+$/, '') || '/';
 }
 
 function applyLocaleIndexing(route: SeoRouteConfig): SeoRouteConfig {
@@ -506,7 +503,7 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
 
   const home: BreadcrumbItem =
     locale === 'en'
-      ? { name: 'Home', url: `${SITE_URL}/en/` }
+      ? { name: 'Home', url: `${SITE_URL}/en` }
       : { name: 'Accueil', url: `${SITE_URL}/` };
 
   if (normalizedPath.startsWith('/actualites/') && normalizedPath !== '/actualites') {

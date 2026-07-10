@@ -6,6 +6,9 @@ import LanguageSwitcher from './LanguageSwitcher';
 import { layoutContent, type LayoutNavigationItem } from '../../i18n/layoutContent';
 import { getLocaleFromPath } from '../../i18n/routeHelpers';
 
+const normalizePathForComparison = (pathname: string): string =>
+  pathname === '/' ? pathname : pathname.replace(/\/+$/, '') || '/';
+
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,8 +21,7 @@ export default function Header() {
   const content = layoutContent[locale].header;
   const navigation: readonly LayoutNavigationItem[] = content.navigation;
   const isHomePage =
-    location.pathname === content.homeHref ||
-    (content.homeHref === '/en/' && location.pathname === '/en');
+    normalizePathForComparison(location.pathname) === normalizePathForComparison(content.homeHref);
 
   useEffect(() => {
     const handleScroll = () => {
