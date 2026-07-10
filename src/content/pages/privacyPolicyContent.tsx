@@ -15,13 +15,13 @@ const strongClassName = 'text-gray-700';
 export const privacyPolicyContent = {
   fr: {
     title: 'Politique de confidentialité',
-    lastUpdated: 'Dernière mise à jour : 1 mai 2026',
+    lastUpdated: 'Dernière mise à jour : 10 juillet 2026',
     cookiePreferencesLabel: 'Gérer mes cookies',
     body: undefined,
   },
   en: {
     title: 'Privacy policy',
-    lastUpdated: 'Last updated: May 1, 2026',
+    lastUpdated: 'Last updated: July 10, 2026',
     cookiePreferencesLabel: 'Manage cookies',
     body: (
       <>
@@ -109,9 +109,10 @@ export const privacyPolicyContent = {
               , when this mechanism is used to secure form submissions;
             </li>
             <li>
-              <strong className={strongClassName}>audience measurement data</strong>: browsing
-              journey, pages viewed, interactions with buttons, forms and simulators, only after
-              analytics consent has been accepted.
+              <strong className={strongClassName}>audience measurement data</strong>: detailed
+              journeys, acquisition and interactions only after analytics consent has been accepted;
+              after an explicit refusal, an optional cookieless count may contain only the landing
+              page without parameters and the language.
             </li>
           </ul>
           <p>
@@ -212,8 +213,9 @@ export const privacyPolicyContent = {
               protection on forms;
             </li>
             <li>
-              <strong className={strongClassName}>PostHog</strong> for audience measurement and
-              journey analysis, only after analytics consent has been accepted.
+              <strong className={strongClassName}>PostHog</strong> for detailed audience,
+              acquisition and journey analysis after analytics consent, or for optional minimal
+              cookieless measurement after an explicit refusal.
             </li>
           </ul>
           <p className="mb-3">
@@ -335,15 +337,22 @@ export const privacyPolicyContent = {
             strictly necessary may only be placed after your consent has been collected.
           </p>
           <p className="mb-3">
-            The cookie management mechanism allows you to accept, refuse or change your choice
-            relating to audience measurement. This choice is kept for 6 months, after which a new
-            choice may be requested.
+            Until you make a choice, the PostHog SDK is not loaded and no PostHog event is sent. If
+            you accept, persistent analytics may measure viewed pages, acquisition, forms, contact
+            links, simulators and conversions. The choice is kept for up to 6 months.
+          </p>
+          <p className="mb-3">
+            After an explicit refusal, and only if the dedicated production setting is enabled, at
+            most one cookieless event per page load may contain the landing page without query or
+            fragment and the language. It contains no campaign, UTM, AI referrer, conversion or
+            persistent identifier. This minimal measurement can be disabled independently in cookie
+            preferences.
           </p>
           <p>
-            In this respect, PostHog is used on the site only after analytics consent has been
-            accepted. The events sent are limited to journey information and values grouped by
-            ranges; full URLs, query parameters and free-text form content are not voluntarily
-            transmitted.
+            Withdrawing consent stops detailed tracking and sends no new event on the current
+            document. Minimal measurement may resume on the next page load unless separately
+            disabled. A reload before a choice loses the volatile acquisition context and cannot be
+            linked to a later conversion.
           </p>
         </div>
 

@@ -8,7 +8,9 @@ vi.setConfig({ testTimeout: 15_000 });
 const analyticsMock = vi.hoisted(() => ({
   acceptAnalyticsConsent: vi.fn(),
   getAnalyticsConsentStatus: vi.fn(() => null),
+  isCookielessAudienceMeasurementEnabled: vi.fn(() => true),
   rejectAnalyticsConsent: vi.fn(),
+  setCookielessAudienceMeasurementEnabled: vi.fn(),
   trackClassementSimulatorCalculated: vi.fn(),
   trackClassementSimulatorGridProgressReached: vi.fn(),
   trackClassementSimulatorGridResponseSaved: vi.fn(),
@@ -21,13 +23,16 @@ const analyticsMock = vi.hoisted(() => ({
   trackClassementSimulatorResultRequested: vi.fn(),
   trackClassementSimulatorStepViewed: vi.fn(),
   trackCtaClick: vi.fn(),
+  trackContactClick: vi.fn(),
   trackPageView: vi.fn(),
 }));
 
 vi.mock('../utils/analytics', () => ({
   acceptAnalyticsConsent: analyticsMock.acceptAnalyticsConsent,
   getAnalyticsConsentStatus: analyticsMock.getAnalyticsConsentStatus,
+  isCookielessAudienceMeasurementEnabled: analyticsMock.isCookielessAudienceMeasurementEnabled,
   rejectAnalyticsConsent: analyticsMock.rejectAnalyticsConsent,
+  setCookielessAudienceMeasurementEnabled: analyticsMock.setCookielessAudienceMeasurementEnabled,
   normalizeAnalyticsPath: (value: string | null | undefined) => {
     if (!value) return '/';
     const pathname = new URL(value, 'https://www.etoilys.fr').pathname;
@@ -47,6 +52,7 @@ vi.mock('../utils/analytics', () => ({
   trackClassementSimulatorResultRequested: analyticsMock.trackClassementSimulatorResultRequested,
   trackClassementSimulatorStepViewed: analyticsMock.trackClassementSimulatorStepViewed,
   trackCtaClick: analyticsMock.trackCtaClick,
+  trackContactClick: analyticsMock.trackContactClick,
   trackPageView: analyticsMock.trackPageView,
 }));
 

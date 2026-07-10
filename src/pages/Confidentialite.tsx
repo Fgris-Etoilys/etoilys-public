@@ -122,9 +122,10 @@ export default function Confidentialite() {
                   </li>
                   <li>
                     <strong className="text-gray-700">données de mesure d&apos;audience</strong> :
-                    parcours de navigation, pages consultées, interactions avec les boutons,
-                    formulaires et simulateurs, uniquement après acceptation du consentement
-                    analytics.
+                    parcours détaillé, acquisition et interactions uniquement après acceptation du
+                    consentement analytics ; après un refus explicite, un comptage facultatif sans
+                    cookie peut contenir uniquement la page d&apos;entrée sans paramètres et la
+                    langue.
                   </li>
                 </ul>
                 <p>
@@ -238,9 +239,9 @@ export default function Confidentialite() {
                     protection anti-bot des formulaires.
                   </li>
                   <li>
-                    <strong className="text-gray-700">PostHog</strong> pour la mesure
-                    d&apos;audience et l&apos;analyse des parcours, uniquement après acceptation du
-                    consentement analytics.
+                    <strong className="text-gray-700">PostHog</strong> pour la mesure détaillée de
+                    l&apos;audience, de l&apos;acquisition et des parcours après consentement, ou
+                    pour une mesure minimale facultative sans cookie après un refus explicite.
                   </li>
                 </ul>
                 <p className="mb-3">
@@ -390,16 +391,25 @@ export default function Confidentialite() {
                   déposés qu&apos;après recueil de votre consentement.
                 </p>
                 <p className="mb-3">
-                  Le mécanisme de gestion des cookies permet d&apos;accepter, de refuser ou de
-                  modifier le choix relatif à la mesure d&apos;audience. Ce choix est conservé
-                  pendant 6 mois, puis un nouveau choix peut être demandé.
+                  Tant qu&apos;aucun choix n&apos;est exprimé, le SDK PostHog n&apos;est pas chargé
+                  et aucun événement PostHog n&apos;est envoyé. En cas d&apos;acceptation, les
+                  analytics persistants peuvent mesurer les pages consultées, l&apos;acquisition,
+                  les formulaires, les contacts, les simulateurs et les conversions. Le choix est
+                  conservé au maximum 6 mois.
+                </p>
+                <p className="mb-3">
+                  Après un refus explicite, et seulement si le réglage de production dédié est
+                  activé, au maximum un événement sans cookie par chargement peut contenir la page
+                  d&apos;entrée sans query ni fragment et la langue. Il ne contient ni campagne, ni
+                  UTM, ni référent IA, ni conversion, ni identifiant persistant. Cette mesure
+                  minimale peut être désactivée indépendamment dans les préférences.
                 </p>
                 <p>
-                  À ce titre, PostHog n&apos;est utilisé sur le site qu&apos;après acceptation du
-                  consentement analytics. Les événements envoyés sont limités à des informations de
-                  parcours et à des valeurs regroupées par tranches ; les URL complètes, les
-                  paramètres de requête et le contenu libre des formulaires ne sont pas
-                  volontairement transmis.
+                  Le retrait du consentement arrête le suivi détaillé et n&apos;envoie aucun nouvel
+                  événement sur le document courant. La mesure minimale peut reprendre au prochain
+                  chargement, sauf opposition distincte. Un rechargement avant tout choix perd le
+                  contexte d&apos;acquisition conservé en mémoire et ne peut pas être raccordé à une
+                  conversion ultérieure.
                 </p>
                 <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-primary-300 hover:text-primary-400">
                   Gérer mes cookies

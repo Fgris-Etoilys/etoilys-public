@@ -4,7 +4,9 @@ import { X } from 'lucide-react';
 import {
   acceptAnalyticsConsent,
   getAnalyticsConsentStatus,
+  isCookielessAudienceMeasurementEnabled,
   rejectAnalyticsConsent,
+  setCookielessAudienceMeasurementEnabled,
   type AnalyticsConsent,
 } from '../../utils/analytics';
 import { COOKIE_PREFERENCES_EVENT_NAME } from '../../utils/cookiePreferences';
@@ -14,19 +16,25 @@ import { getLocaleFromPath, getLocalizedPath } from '../../i18n/routeHelpers';
 const cookieConsentContent = {
   fr: {
     bannerAriaLabel: 'Gestion des cookies',
-    bannerTitle: 'Cookies et mesure d’audience',
+    bannerTitle: 'Vos préférences de confidentialité',
     bannerText:
-      'Nous utilisons PostHog pour mesurer l’audience du site et comprendre l’utilisation de nos pages, formulaires et simulateurs. Ces données nous aident à améliorer le site Etoilys. Aucun nom, email, téléphone, adresse ou message n’est envoyé volontairement à PostHog. Vous pouvez accepter, refuser ou modifier votre choix à tout moment.',
+      'Etoilys utilise PostHog pour mesurer l’utilisation du site et améliorer ses pages, formulaires et simulateurs. Avec votre accord, nous mesurons également l’origine des visites et les actions réalisées sur le site.\n\nSi vous refusez, aucun cookie analytique n’est utilisé. Une mesure limitée, sans cookie, de la page d’entrée et de la langue peut toutefois rester active. Vous pouvez aussi la désactiver dans les préférences et modifier votre choix à tout moment.',
     privacyLinkLabel: 'Politique de confidentialité',
     rejectLabel: 'Refuser',
     acceptLabel: 'Accepter',
     preferencesTitle: 'Préférences cookies',
-    preferencesDescription: 'Vous pouvez modifier votre choix à tout moment.',
+    preferencesDescription:
+      'Le consentement détaillé et la mesure minimale après refus sont deux réglages distincts.',
     closePreferencesLabel: 'Fermer les préférences cookies',
-    purposeLabel: 'Finalité',
-    purposeValue: 'Mesure d’audience et amélioration du site',
+    detailedPurposeLabel: 'Analytics détaillés',
+    detailedPurposeValue:
+      'Pages consultées, acquisition, formulaires, contacts, simulateurs et conversions, uniquement après acceptation.',
+    minimalPurposeLabel: 'Audience minimale après refus',
+    minimalPurposeValue:
+      'Au maximum un événement sans cookie par chargement, limité à la page d’entrée sans paramètres et à la langue. Le flag de production reste désactivé tant que les contrôles préalables ne sont pas terminés.',
+    minimalToggleLabel: 'Autoriser la mesure d’audience minimale après un refus',
     toolLabel: 'Outil',
-    currentStatusLabel: 'Statut actuel',
+    currentStatusLabel: 'Consentement détaillé',
     statusLabels: {
       accepted: 'accepté',
       refused: 'refusé',
@@ -35,19 +43,25 @@ const cookieConsentContent = {
   },
   en: {
     bannerAriaLabel: 'Cookie management',
-    bannerTitle: 'Cookies and audience measurement',
+    bannerTitle: 'Your privacy preferences',
     bannerText:
-      'Etoilys uses PostHog to measure website audience and understand how pages and forms are used. This data helps improve the Etoilys website. No name, email address, phone number, postal address or message is voluntarily sent to PostHog. You can accept, refuse or change your choice at any time.',
+      'Etoilys uses PostHog to understand how the website is used and improve its pages, forms and simulators. With your consent, we also measure where visits come from and the actions taken on the website.\n\nIf you decline, no analytics cookies will be used. A limited, cookieless measurement of the landing page and language may still remain active. You can also disable it in the preferences and change your choice at any time.',
     privacyLinkLabel: 'Privacy policy',
     rejectLabel: 'Refuse',
     acceptLabel: 'Accept',
     preferencesTitle: 'Cookie preferences',
-    preferencesDescription: 'You can change your choice at any time.',
+    preferencesDescription:
+      'Detailed consent and minimal measurement after refusal are two separate settings.',
     closePreferencesLabel: 'Close cookie preferences',
-    purposeLabel: 'Purpose',
-    purposeValue: 'Audience measurement and website improvement',
+    detailedPurposeLabel: 'Detailed analytics',
+    detailedPurposeValue:
+      'Viewed pages, acquisition, forms, contact links, simulators and conversions, only after acceptance.',
+    minimalPurposeLabel: 'Minimal audience measurement after refusal',
+    minimalPurposeValue:
+      'At most one cookieless event per page load, limited to the landing page without parameters and the language. The production flag remains disabled until the prerequisite checks are complete.',
+    minimalToggleLabel: 'Allow minimal audience measurement after refusal',
     toolLabel: 'Tool',
-    currentStatusLabel: 'Current status',
+    currentStatusLabel: 'Detailed consent',
     statusLabels: {
       accepted: 'accepted',
       refused: 'refused',
@@ -66,8 +80,11 @@ const cookieConsentContent = {
     preferencesTitle: string;
     preferencesDescription: string;
     closePreferencesLabel: string;
-    purposeLabel: string;
-    purposeValue: string;
+    detailedPurposeLabel: string;
+    detailedPurposeValue: string;
+    minimalPurposeLabel: string;
+    minimalPurposeValue: string;
+    minimalToggleLabel: string;
     toolLabel: string;
     currentStatusLabel: string;
     statusLabels: Record<AnalyticsConsent | 'unset', string>;
@@ -91,12 +108,16 @@ export default function CookieConsentManager() {
   const [consentStatus, setConsentStatus] = useState<AnalyticsConsent | null>(() =>
     getAnalyticsConsentStatus()
   );
+  const [isMinimalAudienceEnabled, setIsMinimalAudienceEnabled] = useState(() =>
+    isCookielessAudienceMeasurementEnabled()
+  );
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const showInitialBanner = consentStatus === null && !isPreferencesOpen;
 
-  const refreshConsentStatus = useCallback(() => {
+  const refreshPreferences = useCallback(() => {
     setConsentStatus(getAnalyticsConsentStatus());
+    setIsMinimalAudienceEnabled(isCookielessAudienceMeasurementEnabled());
   }, []);
 
   const handleAccept = useCallback(() => {
@@ -111,20 +132,23 @@ export default function CookieConsentManager() {
     setIsPreferencesOpen(false);
   }, []);
 
+  const handleMinimalAudienceChange = useCallback((enabled: boolean) => {
+    setCookielessAudienceMeasurementEnabled(enabled);
+    setIsMinimalAudienceEnabled(enabled);
+  }, []);
+
   useEffect(() => {
     const openPreferences = () => {
-      refreshConsentStatus();
+      refreshPreferences();
       setIsPreferencesOpen(true);
     };
 
     window.addEventListener(COOKIE_PREFERENCES_EVENT_NAME, openPreferences);
     return () => window.removeEventListener(COOKIE_PREFERENCES_EVENT_NAME, openPreferences);
-  }, [refreshConsentStatus]);
+  }, [refreshPreferences]);
 
   useEffect(() => {
-    if (!showInitialBanner) {
-      return undefined;
-    }
+    if (!showInitialBanner) return undefined;
 
     const previousScrollPaddingBottom = document.documentElement.style.scrollPaddingBottom;
     document.documentElement.style.scrollPaddingBottom = '220px';
@@ -135,16 +159,11 @@ export default function CookieConsentManager() {
   }, [showInitialBanner]);
 
   useEffect(() => {
-    if (!isPreferencesOpen) {
-      return undefined;
-    }
+    if (!isPreferencesOpen) return undefined;
 
     closeButtonRef.current?.focus();
-
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsPreferencesOpen(false);
-      }
+      if (event.key === 'Escape') setIsPreferencesOpen(false);
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -195,9 +214,7 @@ export default function CookieConsentManager() {
         <div
           className="fixed inset-0 z-[70] flex items-end justify-center bg-gray-900/35 px-4 py-6 sm:items-center"
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              setIsPreferencesOpen(false);
-            }
+            if (event.target === event.currentTarget) setIsPreferencesOpen(false);
           }}
         >
           <section
@@ -227,23 +244,31 @@ export default function CookieConsentManager() {
               </button>
             </div>
 
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm">
-              <dl className="grid gap-3">
-                <div>
-                  <dt className="font-medium text-gray-900">{content.purposeLabel}</dt>
-                  <dd className="mt-1 text-textLight">{content.purposeValue}</dd>
-                </div>
-                <div>
-                  <dt className="font-medium text-gray-900">{content.toolLabel}</dt>
-                  <dd className="mt-1 text-textLight">PostHog</dd>
-                </div>
-                <div>
-                  <dt className="font-medium text-gray-900">{content.currentStatusLabel}</dt>
-                  <dd className="mt-1 text-textLight">
-                    {getStatusLabel(consentStatus, content.statusLabels)}
-                  </dd>
-                </div>
-              </dl>
+            <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm">
+              <div>
+                <p className="font-medium text-gray-900">{content.detailedPurposeLabel}</p>
+                <p className="mt-1 text-textLight">{content.detailedPurposeValue}</p>
+                <p className="mt-2 text-textLight">
+                  {content.currentStatusLabel} :{' '}
+                  {getStatusLabel(consentStatus, content.statusLabels)}
+                </p>
+              </div>
+              <div className="border-t border-gray-200 pt-4">
+                <p className="font-medium text-gray-900">{content.minimalPurposeLabel}</p>
+                <p className="mt-1 text-textLight">{content.minimalPurposeValue}</p>
+                <label className="mt-3 flex cursor-pointer items-start gap-3 text-gray-800">
+                  <input
+                    type="checkbox"
+                    checked={isMinimalAudienceEnabled}
+                    onChange={(event) => handleMinimalAudienceChange(event.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary-400 focus:ring-primary-300"
+                  />
+                  <span>{content.minimalToggleLabel}</span>
+                </label>
+              </div>
+              <p className="border-t border-gray-200 pt-4 text-textLight">
+                {content.toolLabel} : PostHog
+              </p>
             </div>
 
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">

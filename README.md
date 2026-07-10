@@ -2,6 +2,16 @@
 
 Application web React + TypeScript + Vite pour la présentation des parcours de classement des meublés de tourisme.
 
+## Gouvernance GEO / AEO
+
+- [Index de la documentation GEO / AEO](docs/geo-aeo/README.md)
+- [Roadmap GEO / AEO](docs/geo-aeo/roadmap-geo-aeo-site-public-etoilys.md)
+- [Baseline de juillet 2026](docs/geo-aeo/geo-aeo-baseline-2026-07.md)
+- [Panel de 20 requêtes ChatGPT](docs/geo-aeo/geo-aeo-query-panel.md)
+- [Résultats du 10 juillet 2026](docs/geo-aeo/tests/2026-07-10.md)
+
+ChatGPT est le seul assistant testé activement. Les autres référents IA restent observés passivement lorsqu’ils apparaissent dans les données analytics.
+
 ## Prérequis
 
 - Node.js 22 LTS (voir `.nvmrc`)
@@ -22,6 +32,7 @@ Copier `.env.example` vers `.env.local` puis renseigner :
 VITE_API_BASE_URL=/api
 VITE_TURNSTILE_SITE_KEY=...
 VITE_ENABLE_ANALYTICS_IN_DEV=false
+VITE_ENABLE_COOKIELESS_AUDIENCE=false
 ETOILYS_SIMULATOR_API_BASE_URL=https://api-dev.etoilys.fr
 SUPABASE_FUNCTIONS_BASE_URL=https://<project_ref>.supabase.co/functions/v1
 ```
@@ -30,6 +41,7 @@ SUPABASE_FUNCTIONS_BASE_URL=https://<project_ref>.supabase.co/functions/v1
 `SUPABASE_FUNCTIONS_BASE_URL` est utilisé uniquement en développement local par le proxy Vite pour les formulaires.
 `ETOILYS_SIMULATOR_API_BASE_URL` est utilisé uniquement en développement local par le proxy Vite pour le simulateur public.
 `VITE_ENABLE_ANALYTICS_IN_DEV=false` évite les appels PostHog en local, même si un ancien consentement analytics est stocké dans le navigateur. Utiliser `true` uniquement pour tester explicitement l’analytics.
+`VITE_ENABLE_COOKIELESS_AUDIENCE=false` maintient la mesure minimale après refus désactivée. Ce flag ne doit passer à `true` qu’après validation des textes, contrôle du payload réel, configuration du projet PostHog et test live.
 
 ## Backends publics
 

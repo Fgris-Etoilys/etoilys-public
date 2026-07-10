@@ -6,7 +6,7 @@ export default function MentionsLegales() {
       <section className="py-section bg-white">
         <div className="container-adaptive max-w-4xl">
           <h1 className="mb-3">Mentions légales</h1>
-          <p className="text-sm text-textLight mb-10">Dernière mise à jour : 1 mai 2026</p>
+          <p className="text-sm text-textLight mb-10">Dernière mise à jour : 10 juillet 2026</p>
 
           <div className="space-y-10 text-textLight leading-comfortable">
             {/* Éditeur */}
@@ -178,10 +178,13 @@ export default function MentionsLegales() {
                 mécanisme prévu à cet effet sur le site.
               </p>
               <p className="mt-3">
-                PostHog peut être utilisé pour mesurer l&apos;audience et comprendre les parcours
-                sur le site uniquement après acceptation du consentement analytics. ETOILYS ne
-                transmet volontairement à PostHog ni nom, ni adresse e-mail, ni téléphone, ni
-                adresse postale, ni contenu de message.
+                Aucun événement PostHog n&apos;est envoyé sans choix. Après acceptation, PostHog
+                peut mesurer l&apos;audience détaillée, l&apos;acquisition et les conversions. Après
+                un refus explicite, une mesure minimale sans cookie, limitée à la page d&apos;entrée
+                sans paramètres et à la langue, peut être activée sous réserve des contrôles
+                préalables. Elle dispose d&apos;un mécanisme d&apos;opposition distinct dans les
+                préférences. ETOILYS ne transmet volontairement à PostHog ni nom, ni adresse e-mail,
+                ni téléphone, ni adresse postale, ni contenu de message.
               </p>
               <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-primary-300 hover:text-primary-400">
                 Gérer mes cookies

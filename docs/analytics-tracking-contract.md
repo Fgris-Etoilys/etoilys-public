@@ -1,68 +1,87 @@
-# Contrat de tracking analytics
+# Contrat de tracking analytics — v3
 
-Ce contrat décrit le périmètre PostHog v2 pour le site Etoilys.
+Version du 10 juillet 2026.
 
-## Principes
+Ce contrat sépare strictement la mesure minimale sans cookie après un refus explicite et les analytics détaillés après consentement. Il ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
 
-- PostHog n'est initialisé qu'après consentement analytics explicite.
-- La clé de consentement locale est `etoilys_analytics_consent`.
-- La date du choix est stockée dans `etoilys_analytics_consent_updated_at`.
-- Si le stockage local est indisponible, le choix reste appliqué pendant la session navigateur.
-- Les seules valeurs autorisées sont `accepted` et `refused`.
-- Le choix est considéré comme absent si la valeur est invalide, manquante ou si la date du choix a plus de 6 mois.
-- Le lien `Gérer mes cookies` du footer et des pages légales ouvre une modale de préférences permettant de refuser ou d'accepter à nouveau.
-- Les impressions, refus et interactions avec la bannière cookies ne sont pas trackés dans PostHog.
-- Aucun nom, prénom, email, téléphone, adresse, contenu de message ou saisie libre n'est volontairement envoyé.
-- Aucune URL complète n'est envoyée : les chemins sont normalisés au `pathname`, sans query string ni hash.
-- Les chemins dynamiques de simulation de classement sont normalisés en `/simulateur/:simulationId`.
-- Les montants, capacités, étages et compteurs sont bucketisés quand ils peuvent décrire un logement.
-- La sanitisation conserve les propriétés techniques ajoutées par le SDK PostHog, notamment `token`,
-  `distinct_id` et les propriétés préfixées par `$`, tout en normalisant les propriétés d'URL connues.
-- `?etoilys_internal=1` désactive totalement la capture analytics pour le navigateur.
-- `?etoilys_analytics_debug=1` ajoute `debug_mode: true` aux événements envoyés, sans contourner le consentement.
+## Matrice des états
 
-## Événements autorisés
+| État                      | Initialisation PostHog                                            | Collecte autorisée                                                                                |
+| ------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Aucun choix               | Non                                                               | Aucune                                                                                            |
+| Acceptation               | Oui, mode persistant consenti                                     | Pageviews, acquisition, formulaires, contacts, simulateurs et conversions                         |
+| Refus explicite           | Oui uniquement si le flag cookieless est actif et sans opposition | `audience_landed` uniquement                                                                      |
+| Retrait après acceptation | Arrêt et réinitialisation                                         | Aucun nouvel événement sur le document courant ; mesure minimale éventuelle au chargement suivant |
+| Rechargement avant choix  | Non                                                               | Aucune ; le contexte volatile précédent est perdu                                                 |
 
-- `$pageview` : pageview manuel, avec chemin normalisé uniquement.
-- `cta_clicked` : clic sur un bouton CTA existant.
-- `form_started` : première interaction avec un formulaire.
-- `form_validation_failed` : validation frontend échouée.
-- `form_submit_attempted` : tentative de soumission API.
-- `form_submit_succeeded` : soumission acceptée.
-- `form_submit_failed` : soumission refusée ou erreur API.
-- `simulator_started` : première création réussie d'un simulateur.
-- `simulator_calculated` : calcul valide d'un simulateur.
-- `simulator_resumed` : reprise ou ouverture d'un simulateur de classement existant.
-- `simulator_deleted` : suppression réussie d'une simulation de classement.
-- `simulator_step_viewed` : affichage utile d'une étape du simulateur de classement.
-- `simulator_piece_saved` : ajout ou modification réussie d'une pièce.
-- `simulator_piece_deleted` : suppression réussie d'une pièce.
-- `simulator_grid_response_saved` : réponse de critère enregistrée.
-- `simulator_grid_progress_reached` : jalon de progression atteint dans la grille.
-- `simulator_result_requested` : demande explicite de calcul ou recalcul du résultat.
-- `simulator_result_blocked` : calcul bloqué par une vérification à compléter.
-- `simulator_pdf_exported` : export PDF réussi depuis un rapport à jour.
-- `simulator_help_opened` : ouverture d'une aide de critère.
+Le mode PostHog `cookieless_mode: "on_reject"` ne permet pas de mesurer une personne qui n’a fait aucun choix. Le site renforce cette règle en ne chargeant pas le SDK avant une décision explicite ou la lecture d’un choix encore valide.
 
-## Propriétés autorisées
+## Choix locaux
 
-- Communes : `source_path`, `destination_path`, `page_type`, `debug_mode`.
-- CTA : `cta_id`, `cta_location`.
-- Formulaires : `form_name`, `invalid_fields`, `invalid_field_count`, `failure_type`, `field_error_keys`.
-- Simulateur taxe de séjour : `simulator`, `city_department`, `nights_bucket`, `nightly_price_bucket`, `occupancy_bucket`, `has_exemptions`, `is_indicative`.
-- Simulateur fiscal : `simulator`, `revenue_bucket`, `tmi_rate`, `scope`, `social_threshold_exceeded`, `non_classe_threshold_exceeded`, `savings_bucket`.
-- Simulateur de classement, contexte : `simulator`, `requested_category`, `housing_type`, `floor_bucket`, `capacity_bucket`, `entry_point`.
-- Simulateur de classement, étapes : `step`, `piece_action`, `piece_type`, `piece_scope`, `piece_count_bucket`.
-- Simulateur de classement, grille : `criterion_number`, `criterion_status`, `validation_status`, `progress_bucket`, `remaining_criteria_bucket`, `missing_mandatory_bucket`.
-- Simulateur de classement, résultat : `result_outcome`, `has_sleeping_capacity_issue`, `has_bathroom_issue`, `has_missing_criteria`.
+- `etoilys_analytics_consent` : `accepted` ou `refused` ;
+- `etoilys_analytics_consent_updated_at` : date du choix, avec une validité maximale de six mois ;
+- `etoilys_cookieless_audience_opt_out` : opposition indépendante à la mesure minimale, sans identifiant ;
+- `VITE_ENABLE_COOKIELESS_AUDIENCE=false` : flag de production désactivé par défaut.
 
-## Interdits
+Si `localStorage` est indisponible, le choix est appliqué uniquement en mémoire pour le document courant. `?etoilys_internal=1` désactive toute collecte et `?etoilys_analytics_debug=1` ajoute `debug_mode: true` aux seuls événements consentis.
 
-- Valeurs exactes de chiffre d'affaires, prix par nuit, téléphone, email, adresse ou message.
-- Identifiant de simulation, identifiant de logement, identifiant de pièce ou identifiant de soumission backend.
-- Nom de pièce, commentaire de critère, commentaire obligatoire ou saisie libre.
-- Valeurs exactes de surface, capacité, étage et compteurs de critères quand un bucket existe.
-- URL complète, query string ou hash.
-- Valeurs de champs invalides.
-- Session Replay en v2.
-- Autocapture PostHog en v2.
+## Contexte d’acquisition volatile
+
+Au bootstrap, le navigateur conserve uniquement en mémoire :
+
+- `utm_source` et `utm_medium` ;
+- le référent initial ;
+- la page d’entrée normalisée ;
+- la langue.
+
+Rien n’est transmis à PostHog avant consentement. Après acceptation, la classification est enregistrée avec `register_for_session` et se propage aux pageviews et événements. Un rechargement avant acceptation perd volontairement ce contexte.
+
+La priorité de classification est : UTM, référent externe, accès direct. Les domaines sont comparés au domaine exact ou à un sous-domaine réel afin d’exclure les domaines trompeurs. Les sources libres sont normalisées, limitées à 64 caractères et rejetées si elles ressemblent à un email ou à un téléphone.
+
+Propriétés de session consenties :
+
+- `acquisition_channel` : `direct`, `generative_ai`, `organic_search`, `paid_search`, `social`, `email`, `referral` ou `campaign` ;
+- `acquisition_source` : source normalisée ou domaine référent ;
+- `ai_referrer` : `chatgpt`, `perplexity`, `claude`, `gemini`, `copilot` ou `other`, uniquement pour une source IA ;
+- `landing_page` ;
+- `locale` : `fr` ou `en`.
+
+## Événement d’audience minimale
+
+`audience_landed` est envoyé au maximum une fois par chargement, uniquement après un refus explicite, avec le flag actif et sans opposition.
+
+Propriétés fonctionnelles autorisées :
+
+- `landing_page` : pathname normalisé, sans query ni hash ;
+- `locale` : `fr` ou `en`.
+
+Le SDK ajoute les propriétés techniques strictement nécessaires au transport cookieless, dont le hash cookieless non persistant et `$geoip_disable`. La sanitisation dédiée supprime URL complète, référent, UTM, campagne, acquisition, navigateur, écran, appareil, géolocalisation et toute autre propriété automatique non indispensable. `referrer_host` est exclu de la v3.
+
+## Événements consentis
+
+- `$pageview` : pageview manuel et pathname normalisé ;
+- `contact_clicked` : clic sur le téléphone ou l’email Etoilys, avec `contact_method` égal à `phone` ou `email` ;
+- `cta_clicked` : clic sur un CTA déclaré ;
+- `form_started`, `form_validation_failed`, `form_submit_attempted`, `form_submit_succeeded`, `form_submit_failed` ;
+- `simulator_started`, `simulator_calculated`, `simulator_resumed`, `simulator_deleted` ;
+- `simulator_step_viewed`, `simulator_piece_saved`, `simulator_piece_deleted` ;
+- `simulator_grid_response_saved`, `simulator_grid_progress_reached` ;
+- `simulator_result_requested`, `simulator_result_blocked`, `simulator_pdf_exported`, `simulator_help_opened`.
+
+Les clics de contact ne reconnaissent que `+33 6 49 55 15 40` et `contact@etoilys.fr`. Les coordonnées de tiers, notamment celles de l’hébergeur dans les mentions légales, sont exclues.
+
+## Données interdites
+
+- nom, prénom, email, téléphone, adresse, texte libre ou valeur de formulaire ;
+- identifiant de simulation, logement, pièce ou soumission backend ;
+- URL complète, query string, hash ou paramètres UTM bruts dans un événement ;
+- valeur exacte lorsqu’un bucket existe ;
+- autocapture, replay, surveys, pageviews automatiques et dead clicks.
+
+Les chemins dynamiques de classement sont normalisés en `/simulateur/:simulationId`. Les événements non déclarés sont rejetés par `before_send`.
+
+## Séparation des analyses
+
+Les vues « Audience minimale » utilisent exclusivement `audience_landed`, `landing_page` et `locale`. Les vues « Acquisition consentie » utilisent exclusivement les événements consentis et leurs propriétés de session. Il est interdit de diviser des conversions consenties par l’audience cookieless pour produire un taux de conversion.
+
+La procédure d’activation et les contrôles externes sont détaillés dans [Mesure GEO/AEO](./geo-aeo/geo-aeo-measurement.md).

@@ -3,11 +3,13 @@ import {
   acceptAnalyticsConsent,
   ANALYTICS_CONSENT_STORAGE_KEY,
   ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY,
+  COOKIELESS_AUDIENCE_OPT_OUT_STORAGE_KEY,
   analyticsInternalsForTests,
   getAnalyticsConsentStatus,
   initializeAnalytics,
   normalizeAnalyticsPath,
   rejectAnalyticsConsent,
+  setCookielessAudienceMeasurementEnabled,
   trackClassementSimulatorStarted,
   trackEvent,
   trackPageView,
@@ -16,9 +18,9 @@ import {
 const posthogMock = vi.hoisted(() => ({
   init: vi.fn(),
   capture: vi.fn(),
-  optIn: vi.fn(),
   optInDirect: vi.fn(),
   optOut: vi.fn(),
+  registerForSession: vi.fn(),
   reset: vi.fn(),
 }));
 
@@ -28,14 +30,10 @@ vi.mock('posthog-js', () => ({
     capture: posthogMock.capture,
     opt_in_capturing: posthogMock.optInDirect,
     opt_out_capturing: posthogMock.optOut,
+    register_for_session: posthogMock.registerForSession,
     reset: posthogMock.reset,
   },
 }));
-
-function triggerLoadedCallback() {
-  const config = posthogMock.init.mock.calls[0]?.[1];
-  config?.loaded?.({ opt_in_capturing: posthogMock.optIn });
-}
 
 async function flushAnalyticsImports() {
   await vi.dynamicImportSettled();
@@ -48,13 +46,14 @@ describe('analytics', () => {
     vi.unstubAllEnvs();
     posthogMock.init.mockReset();
     posthogMock.capture.mockReset();
-    posthogMock.optIn.mockReset();
     posthogMock.optInDirect.mockReset();
     posthogMock.optOut.mockReset();
+    posthogMock.registerForSession.mockReset();
     posthogMock.reset.mockReset();
     analyticsInternalsForTests.reset();
     vi.stubEnv('VITE_PUBLIC_POSTHOG_TOKEN', 'phc_test');
     vi.stubEnv('VITE_PUBLIC_POSTHOG_HOST', 'https://f.etoilys.fr');
+    vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'false');
     window.localStorage.clear();
     window.history.pushState({}, 'Test', '/test?secret=value#hash');
   });
@@ -65,6 +64,15 @@ describe('analytics', () => {
       cta_id: 'cta_primary_demande_classement',
       destination_path: '/demande-classement',
     });
+
+    expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
+  });
+
+  it('does not initialize PostHog without a choice even when cookieless is enabled', () => {
+    vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
+
+    initializeAnalytics();
 
     expect(posthogMock.init).not.toHaveBeenCalled();
     expect(posthogMock.capture).not.toHaveBeenCalled();
@@ -82,6 +90,75 @@ describe('analytics', () => {
     expect(posthogMock.init).not.toHaveBeenCalled();
   });
 
+  it('captures one minimal event after an explicit refusal when the feature is enabled', async () => {
+    vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
+    window.history.pushState({}, 'Test', '/contact?utm_source=chatgpt.com#form');
+
+    rejectAnalyticsConsent();
+    await flushAnalyticsImports();
+    initializeAnalytics();
+    await flushAnalyticsImports();
+
+    expect(posthogMock.init).toHaveBeenCalledWith(
+      'phc_test',
+      expect.objectContaining({
+        cookieless_mode: 'on_reject',
+        opt_out_capturing_by_default: true,
+        autocapture: false,
+        capture_pageview: false,
+        disable_session_recording: true,
+      })
+    );
+    expect(posthogMock.capture).toHaveBeenCalledTimes(1);
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      'audience_landed',
+      {
+        landing_page: '/contact',
+        locale: 'fr',
+        $geoip_disable: true,
+      },
+      { send_instantly: true }
+    );
+  });
+
+  it('does not capture minimal audience after the independent opposition', async () => {
+    vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
+    setCookielessAudienceMeasurementEnabled(false);
+
+    rejectAnalyticsConsent();
+    await flushAnalyticsImports();
+
+    expect(window.localStorage.getItem(COOKIELESS_AUDIENCE_OPT_OUT_STORAGE_KEY)).toBe('true');
+    expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
+  });
+
+  it('removes automatic acquisition properties from the cookieless payload', () => {
+    const sanitized = analyticsInternalsForTests.sanitizeCookielessAudienceProperties({
+      token: 'phc_test',
+      distinct_id: 'server-hash',
+      $cookieless_mode: true,
+      $geoip_disable: true,
+      landing_page: '/contact?utm_source=chatgpt',
+      locale: 'fr',
+      $current_url: 'https://www.etoilys.fr/contact?utm_source=chatgpt',
+      $referrer: 'https://chatgpt.com/',
+      utm_source: 'chatgpt',
+      acquisition_channel: 'generative_ai',
+      $browser: 'Chrome',
+      $screen_width: 1920,
+    });
+
+    expect(sanitized).toEqual({
+      token: 'phc_test',
+      distinct_id: 'server-hash',
+      $cookieless_mode: true,
+      $geoip_disable: true,
+      landing_page: '/contact',
+      locale: 'fr',
+    });
+  });
+
   it('does not initialize PostHog in local dev unless explicitly enabled', () => {
     vi.stubEnv('DEV', true);
     vi.stubEnv('MODE', 'development');
@@ -91,6 +168,18 @@ describe('analytics', () => {
     trackPageView('/contact');
 
     expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
+  });
+
+  it('fails closed when the PostHog SDK cannot be initialized', async () => {
+    posthogMock.init.mockImplementationOnce(() => {
+      throw new Error('SDK unavailable');
+    });
+
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+
+    expect(posthogMock.init).toHaveBeenCalledTimes(1);
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
@@ -130,8 +219,6 @@ describe('analytics', () => {
   it('initializes only after accepted consent and captures the current pageview manually', async () => {
     acceptAnalyticsConsent();
     await flushAnalyticsImports();
-    triggerLoadedCallback();
-    await flushAnalyticsImports();
 
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)).toBe('accepted');
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY)).toEqual(
@@ -148,7 +235,14 @@ describe('analytics', () => {
         opt_out_capturing_persistence_type: 'localStorage',
       })
     );
-    expect(posthogMock.optIn).toHaveBeenCalledTimes(1);
+    expect(posthogMock.optInDirect).toHaveBeenCalledWith({ captureEventName: false });
+    expect(posthogMock.registerForSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        acquisition_channel: 'direct',
+        landing_page: '/test',
+        locale: 'fr',
+      })
+    );
     expect(posthogMock.capture).toHaveBeenCalledWith(
       '$pageview',
       expect.objectContaining({
@@ -157,6 +251,28 @@ describe('analytics', () => {
         source_path: '/test',
       })
     );
+  });
+
+  it('registers volatile UTM attribution only after consent', async () => {
+    window.history.pushState(
+      {},
+      'Test',
+      '/demande-classement?utm_source=chatgpt.com&utm_medium=referral'
+    );
+    initializeAnalytics();
+
+    expect(posthogMock.registerForSession).not.toHaveBeenCalled();
+
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+
+    expect(posthogMock.registerForSession).toHaveBeenCalledWith({
+      acquisition_channel: 'generative_ai',
+      acquisition_source: 'chatgpt.com',
+      ai_referrer: 'chatgpt',
+      landing_page: '/demande-classement',
+      locale: 'fr',
+    });
   });
 
   it('adds debug_mode only after consent when debug mode is enabled', async () => {
@@ -220,7 +336,7 @@ describe('analytics', () => {
     await flushAnalyticsImports();
 
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)).toBe('accepted');
-    expect(posthogMock.optInDirect).toHaveBeenCalledTimes(1);
+    expect(posthogMock.optInDirect).toHaveBeenCalledTimes(2);
     expect(posthogMock.capture).toHaveBeenCalledWith(
       '$pageview',
       expect.objectContaining({ source_path: '/test' })
@@ -264,30 +380,28 @@ describe('analytics', () => {
     });
   });
 
-  it('preserves PostHog authentication and system properties before sending', () => {
-    const sanitized = analyticsInternalsForTests.beforeSend({
-      event: 'form_submit_failed',
-      uuid: 'test-form-submit-failed',
-      properties: {
-        token: 'phc_test',
-        distinct_id: 'anonymous-id',
-        $session_id: 'session-id',
-        $lib: 'web',
-        $session_entry_url: 'https://www.etoilys.fr/contact?utm_source=test',
-        $session_entry_referrer: 'https://www.google.com/search?q=etoilys',
-        $session_entry_pathname: '/contact?utm_source=test',
-        $referring_domain: 'www.google.com',
-        source_path: '/contact?email=test@example.com#form',
-        $current_url: 'https://www.etoilys.fr/contact?x=1',
-        $referrer: 'https://www.google.com/search?q=etoilys',
-        form_name: 'contact',
-        invalid_fields: ['email', 'message'],
-        email: 'test@example.com',
-        message: 'contenu libre',
-      },
+  it('preserves PostHog authentication and system properties after detailed consent', () => {
+    const sanitized = analyticsInternalsForTests.sanitizePostHogProperties({
+      token: 'phc_test',
+      distinct_id: 'anonymous-id',
+      $session_id: 'session-id',
+      $lib: 'web',
+      $session_entry_url: 'https://www.etoilys.fr/contact?utm_source=test',
+      $session_entry_referrer: 'https://www.google.com/search?q=etoilys',
+      $session_entry_pathname: '/contact?utm_source=test',
+      $referring_domain: 'www.google.com',
+      source_path: '/contact?email=test@example.com#form',
+      $current_url: 'https://www.etoilys.fr/contact?x=1',
+      $referrer: 'https://www.google.com/search?q=etoilys',
+      $utm_source: 'chatgpt.com',
+      $initial_utm_medium: 'referral',
+      form_name: 'contact',
+      invalid_fields: ['email', 'message'],
+      email: 'test@example.com',
+      message: 'contenu libre',
     });
 
-    expect(sanitized?.properties).toEqual({
+    expect(sanitized).toEqual({
       token: 'phc_test',
       distinct_id: 'anonymous-id',
       $session_id: 'session-id',
