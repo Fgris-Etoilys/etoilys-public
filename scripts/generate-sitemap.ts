@@ -5,6 +5,7 @@ import {
   getIndexablePaths,
   getSitemapAlternateLinks,
 } from '../src/content/seoRoutes.ts';
+import { getSitemapLastModified } from '../src/content/sitemapLastmod.ts';
 
 function escapeXml(value: string): string {
   return value
@@ -15,9 +16,10 @@ function escapeXml(value: string): string {
     .replace(/'/g, '&apos;');
 }
 
-function buildSitemapXml(paths: string[]): string {
+export function buildSitemapXml(paths: string[]): string {
   const entries = paths
     .map((pathname) => {
+      const lastModified = getSitemapLastModified(pathname);
       const alternateLinks = getSitemapAlternateLinks(pathname);
       const alternateEntries = alternateLinks
         .map(
@@ -27,8 +29,8 @@ function buildSitemapXml(paths: string[]): string {
         .join('\n');
 
       return alternateEntries
-        ? `  <url>\n    <loc>${escapeXml(getCanonicalUrl(pathname))}</loc>\n${alternateEntries}\n  </url>`
-        : `  <url><loc>${escapeXml(getCanonicalUrl(pathname))}</loc></url>`;
+        ? `  <url>\n    <loc>${escapeXml(getCanonicalUrl(pathname))}</loc>\n    <lastmod>${escapeXml(lastModified)}</lastmod>\n${alternateEntries}\n  </url>`
+        : `  <url>\n    <loc>${escapeXml(getCanonicalUrl(pathname))}</loc>\n    <lastmod>${escapeXml(lastModified)}</lastmod>\n  </url>`;
     })
     .join('\n');
 

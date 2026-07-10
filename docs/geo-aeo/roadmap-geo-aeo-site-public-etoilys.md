@@ -295,42 +295,49 @@ Rendre les mises à jour immédiatement compréhensibles par les moteurs et évi
 
 ## 3.1 Audit de l’existant
 
-- [ ] **`[CODEX]`** Auditer le script IndexNow déjà présent dans le repo avant toute nouvelle implémentation.
-- [ ] **`[CODEX]`** Auditer la génération actuelle du sitemap.
-- [ ] **`[CODEX]`** Vérifier si chaque URL reçoit un `<lastmod>` :
+- [x] **`[CODEX]`** Auditer le script IndexNow déjà présent dans le repo avant toute nouvelle implémentation.
+- [x] **`[CODEX]`** Auditer la génération actuelle du sitemap.
+- [x] **`[CODEX]`** Vérifier si chaque URL reçoit un `<lastmod>` :
   - exact ;
   - stable ;
   - issu d’une vraie date de modification ;
   - non régénéré artificiellement à chaque build.
-- [ ] **`[CODEX]`** Vérifier le traitement des pages FR, EN, locales et des articles.
+- [x] **`[CODEX]`** Vérifier le traitement des pages FR, EN, locales et des articles.
 
 ## 3.2 Lastmod exact
 
-- [ ] **`[CODEX]`** Définir une source fiable de `lastmod` selon le type de page.
-- [ ] **`[CODEX]`** Pour les articles, utiliser la vraie date `updatedDate` ou équivalent.
-- [ ] **`[CODEX]`** Pour les pages statiques, utiliser une date de contenu explicite ou une source contrôlée.
-- [ ] **`[CODEX]`** Ne pas utiliser la date du build comme date de modification de toutes les pages.
-- [ ] **`[CODEX]`** Ajouter des tests sur le format et la cohérence des dates.
-- [ ] **`[CODEX]`** Vérifier que le sitemap final reste valide.
+- [x] **`[CODEX]`** Définir une source fiable de `lastmod` selon le type de page.
+- [x] **`[CODEX]`** Pour les articles, utiliser la vraie date `updatedDate` ou équivalent.
+- [x] **`[CODEX]`** Pour les pages statiques, utiliser une date de contenu explicite ou une source contrôlée.
+- [x] **`[CODEX]`** Ne pas utiliser la date du build comme date de modification de toutes les pages.
+- [x] **`[CODEX]`** Ajouter des tests sur le format et la cohérence des dates.
+- [x] **`[CODEX]`** Vérifier que le sitemap final reste valide.
 
 ## 3.3 IndexNow
 
-- [ ] **`[CODEX]`** Vérifier que la clé publique IndexNow est servie correctement.
-- [ ] **`[CODEX]`** Vérifier que le script soumet seulement les URLs modifiées ou publiées.
-- [ ] **`[CODEX]`** Éviter une soumission massive inutile à chaque déploiement si aucun contenu n’a changé.
-- [ ] **`[CODEX]`** Ajouter une commande documentée pour :
+- [x] **`[CODEX]`** Vérifier que la clé publique IndexNow est servie correctement.
+- [x] **`[CODEX]`** Vérifier que le script soumet seulement les URLs modifiées ou publiées.
+- [x] **`[CODEX]`** Éviter une soumission massive inutile à chaque déploiement si aucun contenu n’a changé.
+- [x] **`[CODEX]`** Ajouter une commande documentée pour :
   - soumettre une URL ;
   - soumettre une liste d’URLs ;
   - vérifier les erreurs.
-- [ ] **`[MIXTE]`** Intégrer l’appel au workflow de publication si cela reste fiable et observable.
-- [ ] **`[CODEX]`** Journaliser les succès et échecs sans exposer de secret.
+- [x] **`[MIXTE]`** Intégrer l’appel au workflow de publication si cela reste fiable et observable.
+- [x] **`[CODEX]`** Journaliser les succès et échecs sans exposer de secret.
 
 ### Critères d’acceptation
 
-- [ ] Les `<lastmod>` reflètent les vraies modifications.
-- [ ] Le build ne donne pas artificiellement la date du jour à toutes les pages.
-- [ ] IndexNow fonctionne et son usage est documenté.
-- [ ] Une publication ou une mise à jour d’article peut déclencher une soumission propre.
+- [x] Les `<lastmod>` reflètent les vraies modifications.
+- [x] Le build ne donne pas artificiellement la date du jour à toutes les pages.
+- [x] IndexNow fonctionne et son usage est documenté.
+- [x] Une publication ou une mise à jour d’article peut déclencher une soumission propre.
+
+### Preuves
+
+- `npm run seo:sitemap` : 39 URLs générées avec `<lastmod>`.
+- `npm run test:run` : 276 tests passés.
+- `npm run typecheck` : OK.
+- `INDEXNOW_DRY_RUN=1 npm run indexnow:submit` validé sur URL unique, liste, fichiers modifiés et diff sitemap.
 
 ---
 
@@ -973,7 +980,7 @@ Ces objectifs servent de repères, pas de garanties :
 - [ ] Lot 0 — Baseline et gouvernance.
 - [ ] Lot 1 — Cohérence Cofrac et identité publique.
 - [ ] Lot 2 — Mesure des citations et conversions.
-- [ ] Lot 3 — Sitemap, `lastmod` et IndexNow.
+- [x] Lot 3 — Sitemap, `lastmod` et IndexNow.
 - [ ] Lot 7 — Désambiguïsation fiscale et temporelle.
 
 ## Phase 2 — Entité et confiance

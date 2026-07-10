@@ -9,14 +9,7 @@ export default function ArticleMeubles20252026() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <ArticleHeaderMeta
-              publishedAt="2026-03-03"
-              publishedDate="3 mars 2026"
-              updatedAt="2026-06-07"
-              updatedDate="7 juin 2026"
-              author="Florian Grisorio"
-              readingTime="8 min de lecture"
-            />
+            <ArticleHeaderMeta readingTime="8 min de lecture" />
             <h1 className="mb-0 text-white">
               Meublés de tourisme : ce qui change vraiment en 2025-2026 pour les propriétaires
             </h1>

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import ArticleHeaderMeta from '../../components/ui/ArticleHeaderMeta';
 import Button from '../../components/ui/Button';
 
 export default function ArticleFacturationElectronique2026() {
@@ -8,15 +8,7 @@ export default function ArticleFacturationElectronique2026() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3 text-white/80 text-sm">
-              <Link to="/actualites" className="hover:text-white transition-colors text-white/80">
-                ← Actualités
-              </Link>
-              <span aria-hidden="true">•</span>
-              <time dateTime="2026-05-04">Publié le 4 mai 2026</time>
-              <span aria-hidden="true">•</span>
-              <span>Florian Grisorio</span>
-            </div>
+            <ArticleHeaderMeta readingTime="7 min de lecture" />
             <h1 className="mb-0 text-white">
               Facturation électronique 2026 : oui, les propriétaires de meublés sont concernés
             </h1>

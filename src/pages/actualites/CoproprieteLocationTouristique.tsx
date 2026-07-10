@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import ArticleHeaderMeta from '../../components/ui/ArticleHeaderMeta';
 import Button from '../../components/ui/Button';
 
 export default function ArticleCoproprieteLocationTouristique() {
@@ -8,15 +9,7 @@ export default function ArticleCoproprieteLocationTouristique() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center gap-3 text-white/80 text-sm">
-              <Link to="/actualites" className="hover:text-white transition-colors text-white/80">
-                ← Actualités
-              </Link>
-              <span aria-hidden="true">•</span>
-              <time dateTime="2026-03-23">Publié le 23 mars 2026</time>
-              <span aria-hidden="true">•</span>
-              <span>Florian Grisorio</span>
-            </div>
+            <ArticleHeaderMeta readingTime="8 min de lecture" />
             <h1 className="mb-0 text-white">
               Copropriété et location touristique : ce que le règlement peut désormais prévoir
             </h1>

@@ -11,6 +11,7 @@ import type { LocalizedRouteId } from '../i18n/localizedRoutes';
 export interface SeoRouteConfig {
   title: string;
   description: string;
+  lastModified?: string;
   robots?: string;
   breadcrumbLabel?: string;
   ogImageKey?: ImageAssetKey;
@@ -70,6 +71,7 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
 
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/': {
+    lastModified: '2026-07-10',
     title: 'Classement meublé de tourisme en Dordogne, Gironde et Lot-et-Garonne',
     description:
       'Etoilys accompagne les propriétaires de meublés de tourisme pour obtenir leur classement officiel en Dordogne, Gironde et Lot-et-Garonne.',
@@ -79,6 +81,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'home',
   },
   '/classement': {
+    lastModified: '2026-06-25',
     title: 'Classement des meublés de tourisme : principe, avantages et procédure',
     description:
       'Comprendre le classement officiel des meublés de tourisme : étoiles, durée de validité, organisme accrédité, visite et critères à vérifier.',
@@ -87,6 +90,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'classement',
   },
   '/les-avantages-du-classement': {
+    lastModified: '2026-06-25',
     title: 'Pourquoi faire classer son meublé de tourisme ?',
     description:
       'Fiscalité, taxe de séjour, visibilité, confiance des voyageurs : découvrez les avantages concrets du classement officiel d’un meublé de tourisme.',
@@ -96,6 +100,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'avantages',
   },
   '/prerequis-au-classement': {
+    lastModified: '2026-06-25',
     title: 'Prérequis au classement d’un meublé de tourisme',
     description:
       'Surface, équipements, état du logement, pièces comptabilisables : les points à vérifier avant de demander le classement de votre meublé.',
@@ -104,6 +109,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'prerequis',
   },
   '/procedure': {
+    lastModified: '2026-06-25',
     title: 'Procédure de classement d’un meublé de tourisme',
     description:
       'Découvrez les étapes d’une demande de classement : prise de contact, visite, rapport, proposition de classement et validité 5 ans.',
@@ -112,12 +118,14 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'procedure',
   },
   '/zones-intervention': {
+    lastModified: '2026-06-24',
     title: 'Zones d’intervention pour le classement des meublés de tourisme',
     description:
       'Découvrez les zones où Etoilys intervient pour le classement des meublés de tourisme, notamment en Dordogne, Gironde, Lot-et-Garonne et secteurs proches.',
     breadcrumbLabel: 'Zones d’intervention',
   },
   '/classement-meuble-tourisme-dordogne': {
+    lastModified: '2026-06-07',
     title: 'Classement gîte, Airbnb et meublé de tourisme en Dordogne',
     description:
       'Etoilys accompagne les propriétaires de gîtes et locations saisonnières en Dordogne pour le classement officiel de leur meublé de tourisme.',
@@ -126,6 +134,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     lcpImageKey: 'dordogneHero',
   },
   '/classement-meuble-tourisme-gironde': {
+    lastModified: '2026-06-07',
     title: 'Classement gîte, Airbnb et meublé de tourisme en Gironde',
     description:
       'Etoilys accompagne les propriétaires de meublés de tourisme en Gironde : classement officiel, zones d’intervention, procédure, fiscalité, taxe de séjour et demande en ligne.',
@@ -134,6 +143,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     lcpImageKey: 'girondeHero',
   },
   '/classement-meuble-tourisme-lot-et-garonne': {
+    lastModified: '2026-06-07',
     title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot-et-Garonne',
     description:
       'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot-et-Garonne pour leur classement officiel.',
@@ -142,6 +152,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     lcpImageKey: 'lotEtGaronneHero',
   },
   '/simulateur': {
+    lastModified: '2026-06-24',
     title: 'Simulateur de classement meublé de tourisme',
     description:
       'Estimez le classement possible de votre meublé de tourisme avant la visite officielle. Simulation gratuite à partir de la grille de classement.',
@@ -150,6 +161,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   },
   '/simulateur/:simulationId': SIMULATION_DETAIL_SEO,
   '/simulateur-taxe-sejour': {
+    lastModified: '2026-06-24',
     title: 'Simulateur taxe de séjour : meublé classé ou non classé',
     description:
       'Comparez la taxe de séjour d’un meublé classé et non classé selon la commune, le prix de la nuitée, le nombre de voyageurs et les étoiles.',
@@ -157,6 +169,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'simulateurTaxeSejour',
   },
   '/simulateur-fiscal-classement': {
+    lastModified: '2026-06-24',
     title: 'Simulateur fiscal meublé classé vs non classé 2026',
     description:
       'Comparez l’impact fiscal du classement en micro-BIC : seuils, abattements, base imposable et différence entre meublé classé et non classé.',
@@ -164,6 +177,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'simulateurFiscalClassement',
   },
   '/faq': {
+    lastModified: '2026-06-25',
     title: 'FAQ classement meublé de tourisme',
     description:
       'Réponses aux questions fréquentes sur le classement des meublés de tourisme : fiscalité, taxe de séjour, procédure, durée, obligations.',
@@ -172,6 +186,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'faq',
   },
   '/actualites': {
+    lastModified: '2026-07-08',
     title: 'Actualités meublés de tourisme : fiscalité, avantages, réglementation',
     description:
       'Actualités et guides pratiques sur les meublés de tourisme : classement officiel, fiscalité, réglementation, taxe de séjour, obligations locales et démarches propriétaires.',
@@ -255,6 +270,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'articleApresClassement',
   },
   '/recrutement': {
+    lastModified: '2026-07-10',
     title: 'Recrutement consultant classement meublés de tourisme',
     description:
       'Etoilys recherche des consultants indépendants pour réaliser des visites de classement de meublés de tourisme sur leur secteur. Formation, outils métier et demandes entrantes selon zone.',
@@ -262,6 +278,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'recrutementInspection',
   },
   '/contact': {
+    lastModified: '2026-07-10',
     title: 'Contact',
     description:
       'Coordonnées et formulaire de contact pour échanger avec Etoilys sur le classement des meublés de tourisme.',
@@ -270,6 +287,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/demande-classement': {
+    lastModified: '2026-07-10',
     title: 'Demande de classement meublé de tourisme',
     description:
       'Demandez le classement de votre meublé de tourisme. Procédure simple. Etoilys vous recontacte sous 24h pour organiser la visite.',
@@ -278,6 +296,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'demandeClassement',
   },
   '/confidentialite': {
+    lastModified: '2026-07-10',
     title: 'Politique de confidentialité',
     description:
       'Informations sur le traitement des données personnelles dans le cadre des services Etoilys.',
@@ -286,6 +305,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'confidentialite',
   },
   '/en': {
+    lastModified: '2026-07-10',
     title: 'Official classification of your furnished tourist accommodation',
     description:
       'Etoilys supports you in obtaining the official star classification of your furnished tourist accommodation.',
@@ -296,6 +316,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'home',
   },
   '/en/furnished-tourist-accommodation-classification': {
+    lastModified: '2026-07-10',
     title: 'Official classification of furnished tourist accommodation',
     description:
       'Understand the French official classification of furnished tourist accommodation: star rating, validity, accredited body, inspection and criteria.',
@@ -304,6 +325,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'classement',
   },
   '/en/benefits-of-furnished-tourist-accommodation-classification': {
+    lastModified: '2026-07-10',
     title: 'Benefits of official furnished tourist accommodation classification',
     description:
       'Tax regime, tourist tax, visibility, traveller trust and official signs: discover the benefits of official furnished tourist accommodation classification.',
@@ -313,6 +335,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'avantages',
   },
   '/en/classification-requirements': {
+    lastModified: '2026-07-10',
     title: 'Requirements for furnished tourist accommodation classification',
     description:
       'Key requirements before a French furnished tourist accommodation classification request: surface area, equipment, property condition and eligible rooms.',
@@ -321,6 +344,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'prerequis',
   },
   '/en/classification-process': {
+    lastModified: '2026-07-10',
     title: 'Furnished tourist accommodation classification process',
     description:
       'Steps in a French furnished tourist accommodation classification request: contact, inspection, report, classification proposal and five-year validity.',
@@ -329,6 +353,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'procedure',
   },
   '/en/faq': {
+    lastModified: '2026-07-10',
     title: 'FAQ on furnished tourist accommodation classification',
     description:
       'Frequently asked questions about French furnished tourist accommodation classification, tax regime, tourist tax, process, validity and obligations.',
@@ -337,6 +362,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'faq',
   },
   '/en/contact': {
+    lastModified: '2026-07-10',
     title: 'Contact',
     description:
       'Contact details and form for questions about Etoilys and the French furnished tourist accommodation classification process.',
@@ -345,6 +371,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/en/request-a-classification': {
+    lastModified: '2026-07-10',
     title: 'Classification request',
     description:
       'Submit your furnished tourist accommodation classification request to Etoilys in a few minutes.',
@@ -353,6 +380,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'demandeClassement',
   },
   '/en/privacy-policy': {
+    lastModified: '2026-07-10',
     title: 'Privacy policy',
     description:
       'Information about personal data processing in connection with Etoilys services and public forms.',
@@ -361,6 +389,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'confidentialite',
   },
   '/mentions-legales': {
+    lastModified: '2026-07-10',
     title: 'Mentions légales',
     description: "Mentions légales et informations d'édition du site Etoilys.",
     breadcrumbLabel: 'Mentions légales',

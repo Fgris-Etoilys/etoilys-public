@@ -81,12 +81,7 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <ArticleHeaderMeta
-              publishedAt="2026-06-14"
-              publishedDate="14 juin 2026"
-              author="Florian Grisorio"
-              readingTime="9 min de lecture"
-            />
+            <ArticleHeaderMeta readingTime="9 min de lecture" />
             <h1 className="mb-0 text-white">
               Airbnb, Booking, Abritel : quelles données vont désormais remonter aux communes ?
             </h1>

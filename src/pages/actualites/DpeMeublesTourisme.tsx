@@ -8,14 +8,7 @@ export default function ArticleDpeMeublesTourisme() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <ArticleHeaderMeta
-              publishedAt="2026-05-14"
-              publishedDate="14 mai 2026"
-              updatedAt="2026-06-07"
-              updatedDate="7 juin 2026"
-              author="Florian Grisorio"
-              readingTime="6 min de lecture"
-            />
+            <ArticleHeaderMeta readingTime="6 min de lecture" />
             <h1 className="mb-0 text-white">
               DPE des meublés de tourisme : ce qui s&apos;applique en 2026 et ce qui attend 2034
             </h1>

@@ -10,7 +10,7 @@ export interface ArticleStructuredDataConfig {
   authorName: string;
 }
 
-const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
+export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   {
     path: '/actualites/que-faire-apres-classement-meuble-tourisme',
     headline: 'Meublé de tourisme classé : que faire après la décision de classement ?',
@@ -132,4 +132,8 @@ function normalizePath(pathname: string): string {
 export function getArticleStructuredData(pathname: string): ArticleStructuredDataConfig | null {
   const normalizedPath = normalizePath(pathname);
   return ARTICLE_STRUCTURED_DATA.find((article) => article.path === normalizedPath) ?? null;
+}
+
+export function getAllArticleStructuredData(): ArticleStructuredDataConfig[] {
+  return ARTICLE_STRUCTURED_DATA;
 }

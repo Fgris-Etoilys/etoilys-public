@@ -1,20 +1,38 @@
 name: IndexNow
 
 on:
-  push:
-    branches:
-      - main
+  repository_dispatch:
+    types:
+      - vercel.deployment.success
+  workflow_dispatch:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
+permissions:
+  actions: read
+  contents: read
+
 jobs:
   submit-indexnow:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event.client_payload.environment == 'production' && github.event.client_payload.git.sha != '') }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Resolve deployed SHA
+        id: deployment
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.event.client_payload.git.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout deployed commit
         uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.deployment.outputs.sha }}
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -25,11 +43,75 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Wait for deploy propagation
-        run: sleep 120
+      - name: Resolve previous submitted production SHA
+        id: previous
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
 
-      - name: Generate sitemap from SEO routes
+          previous_sha=""
+          mkdir -p .indexnow-state
+
+          for run_id in $(gh run list --workflow indexnow.yml --status success --limit 30 --json databaseId --jq '.[].databaseId'); do
+            if [ "$run_id" = "$CURRENT_RUN_ID" ]; then
+              continue
+            fi
+
+            rm -rf .indexnow-state/*
+            if gh run download "$run_id" --name indexnow-production-sha --dir .indexnow-state >/dev/null 2>&1; then
+              if [ -f .indexnow-state/indexnow-production-sha.txt ]; then
+                previous_sha="$(tr -d '[:space:]' < .indexnow-state/indexnow-production-sha.txt)"
+                break
+              fi
+            fi
+          done
+
+          rm -rf .indexnow-state
+
+          if [ -n "$previous_sha" ] && git cat-file -e "${previous_sha}^{commit}" 2>/dev/null; then
+            echo "sha=$previous_sha" >> "$GITHUB_OUTPUT"
+            echo "has_previous=true" >> "$GITHUB_OUTPUT"
+            echo "Using previous submitted production SHA: $previous_sha"
+          else
+            echo "sha=" >> "$GITHUB_OUTPUT"
+            echo "has_previous=false" >> "$GITHUB_OUTPUT"
+            echo "No previous submitted production SHA found; sitemap diff will submit all current URLs."
+          fi
+
+      - name: Capture changed files from deployed SHA
+        run: |
+          if [ "${{ steps.previous.outputs.has_previous }}" = "true" ]; then
+            git diff --name-status --find-renames "${{ steps.previous.outputs.sha }}" "${{ steps.deployment.outputs.sha }}" > changed-files.txt
+          else
+            git diff-tree --no-commit-id --name-status --find-renames -r "${{ steps.deployment.outputs.sha }}" > changed-files.txt
+          fi
+
+      - name: Capture previous sitemap
+        run: |
+          if [ "${{ steps.previous.outputs.has_previous }}" = "true" ] && git show "${{ steps.previous.outputs.sha }}:public/sitemap.xml" > previous-sitemap.xml 2>/dev/null; then
+            echo "Previous sitemap captured."
+          else
+            touch previous-sitemap.xml
+          fi
+
+      - name: Generate expected sitemap from deployed SHA
         run: npm run seo:sitemap
 
-      - name: Submit URLs to IndexNow
-        run: npm run indexnow:submit
+      - name: Submit URLs to IndexNow after live deployment is ready
+        run: >-
+          npm run indexnow:submit --
+          --from-changed-files changed-files.txt
+          --from-sitemap-diff previous-sitemap.xml public/sitemap.xml
+          --verify-live
+
+      - name: Save submitted production SHA
+        run: printf '%s\n' "${{ steps.deployment.outputs.sha }}" > indexnow-production-sha.txt
+
+      - name: Upload submitted production SHA
+        uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-production-sha
+          path: indexnow-production-sha.txt
+          retention-days: 90

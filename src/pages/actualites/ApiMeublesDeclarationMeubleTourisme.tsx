@@ -9,14 +9,7 @@ export default function ArticleApiMeubles() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <ArticleHeaderMeta
-              publishedAt="2026-05-18"
-              publishedDate="18 mai 2026"
-              updatedAt="2026-06-07"
-              updatedDate="7 juin 2026"
-              author="Florian Grisorio"
-              readingTime="9 min de lecture"
-            />
+            <ArticleHeaderMeta readingTime="9 min de lecture" />
             <h1 className="mb-0 text-white">
               API Meublés : tous les propriétaires devront déclarer leur meublé de tourisme
             </h1>

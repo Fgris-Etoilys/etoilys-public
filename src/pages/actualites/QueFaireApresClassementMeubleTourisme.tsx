@@ -116,14 +116,7 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <ArticleHeaderMeta
-              publishedAt="2026-07-08"
-              publishedDate="8 juillet 2026"
-              updatedAt="2026-07-08"
-              updatedDate="8 juillet 2026"
-              author="Florian Grisorio"
-              readingTime="7 min de lecture"
-            />
+            <ArticleHeaderMeta readingTime="7 min de lecture" />
             <h1 className="mb-0 text-white">
               Meublé de tourisme classé : que faire après la décision de classement ?
             </h1>

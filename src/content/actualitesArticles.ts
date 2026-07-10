@@ -1,3 +1,9 @@
+import {
+  getAllArticleStructuredData,
+  getArticleStructuredData,
+  type ArticleStructuredDataConfig,
+} from './articleStructuredData';
+import { formatFrenchDate } from './dateFormatting';
 import type { ImageAssetKey } from './imageManifest';
 
 export interface ActualiteArticle {
@@ -11,119 +17,120 @@ export interface ActualiteArticle {
   updatedAt?: string;
 }
 
-const articles: ActualiteArticle[] = [
+type ActualiteArticleContent = Omit<
+  ActualiteArticle,
+  'date' | 'publishedAt' | 'updatedDate' | 'updatedAt'
+>;
+
+const articleContent: ActualiteArticleContent[] = [
   {
     title: 'Meublé de tourisme classé : que faire après la décision de classement ?',
     excerpt:
-      'Affichage, déclaration, taxe de séjour et plateformes : suivez les démarches à effectuer après le classement de votre meublé de tourisme.',
+      'Affichage, déclaration, taxe de séjour et plateformes : les démarches à effectuer après le classement de votre meublé de tourisme.',
     imageKey: 'articleApresClassement',
     href: '/actualites/que-faire-apres-classement-meuble-tourisme',
-    date: '8 juillet 2026',
-    publishedAt: '2026-07-08',
-    updatedDate: '8 juillet 2026',
-    updatedAt: '2026-07-08',
   },
   {
     title: 'Airbnb, Booking, Abritel : quelles données vont désormais remonter aux communes ?',
     excerpt:
-      "API Meublés, numéro d'enregistrement, adresse, annonces, jours loués : voici quelles données sont transmises aux communes et ce que cela change.",
+      "API Meublés, numéro d'enregistrement, adresse, annonces, jours loués : quelles données sont transmises aux communes et ce que cela change.",
     imageKey: 'articleTransmissionDonnees',
     href: '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles',
-    date: '14 juin 2026',
-    publishedAt: '2026-06-14',
   },
   {
     title: "Micro-BIC 2026 : meublé classé vs non classé, l'écart se creuse",
     excerpt:
-      'Seuils, abattements, régime réel, micro-entreprise : voici ce qui change en 2026 entre un meublé de tourisme classé et non classé.',
+      'Seuils, abattements, régime réel, micro-entreprise : ce qui change en 2026 entre un meublé de tourisme classé et non classé.',
     imageKey: 'articleMicroBic2026',
     href: '/actualites/micro-bic-2026-meuble-classe-vs-non-classe',
-    date: '12 mars 2026',
-    publishedAt: '2026-03-12',
-    updatedDate: '7 juin 2026',
-    updatedAt: '2026-06-07',
   },
   {
     title: 'Meublés de tourisme : ce qui change vraiment en 2025-2026 pour les propriétaires',
     excerpt:
-      'Fiscalité, 90 jours, DPE, copropriété, enregistrement : voici ce qui change vraiment en 2025-2026 pour les propriétaires de meublés de tourisme.',
+      'Fiscalité, 90 jours, DPE, copropriété, enregistrement : ce qui change vraiment en 2025-2026 pour les propriétaires de meublés de tourisme.',
     imageKey: 'articleMeubles20252026',
     href: '/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
-    date: '3 mars 2026',
-    publishedAt: '2026-03-03',
-    updatedDate: '7 juin 2026',
-    updatedAt: '2026-06-07',
   },
   {
     title: 'Airbnb en résidence principale : la limite des 90 jours, qui est concerné ?',
     excerpt:
-      "La limite des 90 jours ne s'applique pas partout automatiquement. Voici qui est concerné, qui décide et ce que cela change pour votre meublé de tourisme.",
+      "La limite des 90 jours ne s'applique pas partout automatiquement. Qui est concerné, qui décide et ce que cela change pour votre meublé de tourisme.",
     imageKey: 'articleResidence90Jours',
     href: '/actualites/airbnb-residence-principale-limite-90-jours',
-    date: '27 mars 2026',
-    publishedAt: '2026-03-27',
-    updatedDate: '7 juin 2026',
-    updatedAt: '2026-06-07',
   },
   {
     title: 'Copropriété et location touristique : ce que le règlement peut désormais prévoir',
     excerpt:
-      'Depuis fin 2024, les règles ont évolué en copropriété pour les meublés de tourisme. Voici ce que le règlement peut désormais autoriser, interdire ou encadrer.',
+      'Depuis fin 2024, les règles ont évolué en copropriété pour les meublés de tourisme : autorisation, interdiction, syndic et règlement.',
     imageKey: 'articleCoproprieteReglement',
     href: '/actualites/copropriete-location-touristique-reglement',
-    date: '23 mars 2026',
-    publishedAt: '2026-03-23',
   },
   {
     title: 'Taxe de séjour 2026 : pourquoi le classement change la donne',
     excerpt:
-      'Meublé classé ou non classé, barème 2026, taux, plafonds et surtaxes : voici comment le classement change concrètement la taxe de séjour.',
+      'Meublé classé ou non classé, barème 2026, taux, plafonds et surtaxes : comment le classement change concrètement la taxe de séjour.',
     imageKey: 'articleTaxeDeSejour2026',
     href: '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne',
-    date: '17 avril 2026',
-    publishedAt: '2026-04-17',
   },
   {
     title: "Meublé classé et non classé : comment s'appliquent les seuils micro-BIC ?",
     excerpt:
-      'Vous avez un meublé classé et un non classé ? Voici comment lire les seuils micro-BIC, les abattements et le passage au réel sans tout mélanger.',
+      'Vous avez un meublé classé et un non classé ? Comment lire les seuils micro-BIC, les abattements et le passage au réel sans tout mélanger.',
     imageKey: 'articleMeubleClasseNonClasse',
     href: '/actualites/meuble-classe-non-classe-seuils-micro-bic',
-    date: '8 avril 2026',
-    publishedAt: '2026-04-08',
   },
   {
     title: 'Facturation électronique 2026 : oui, les propriétaires de meublés sont concernés',
     excerpt:
-      "Réception, émission, e-reporting, calendrier, sanctions : voici ce qui s'applique vraiment aux propriétaires de meublés de tourisme.",
+      "Réception, émission, e-reporting, calendrier, sanctions : ce qui s'applique vraiment aux propriétaires de meublés de tourisme.",
     imageKey: 'articleFacturationElectronique2026',
     href: '/actualites/facturation-electronique-2026-proprietaires-meubles',
-    date: '4 mai 2026',
-    publishedAt: '2026-05-04',
   },
   {
-    title: 'DPE des meublés de tourisme : ce qui s\u2019applique en 2026 et ce qui attend 2034',
+    title: 'DPE des meublés de tourisme : ce qui s’applique en 2026 et ce qui attend 2034',
     excerpt:
-      'Faut-il déjà un DPE pour louer un meublé de tourisme ? Changement d\u2019usage, résidence principale, règle 2034 : voici ce qu\u2019il faut vérifier.',
+      'Faut-il déjà un DPE pour louer un meublé de tourisme ? Changement d’usage, résidence principale, règle 2034 : les points à vérifier.',
     imageKey: 'articleDpeMeublesTourisme',
     href: '/actualites/dpe-meubles-tourisme-2026-2034',
-    date: '14 mai 2026',
-    publishedAt: '2026-05-14',
-    updatedDate: '7 juin 2026',
-    updatedAt: '2026-06-07',
   },
   {
     title: 'API Meublés : tous les propriétaires devront déclarer leur meublé de tourisme',
     excerpt:
-      'Tous les loueurs devront obtenir un numéro d\u2019enregistrement national via API Meublés. Voici ce qui change à partir du 20 mai 2026 et comment se préparer.',
+      'Tous les loueurs devront obtenir un numéro d’enregistrement national via API Meublés. Ce qui change à partir du 20 mai 2026.',
     imageKey: 'articleApiMeubles',
     href: '/actualites/api-meubles-declaration-meuble-tourisme',
-    date: '18 mai 2026',
-    publishedAt: '2026-05-18',
-    updatedDate: '7 juin 2026',
-    updatedAt: '2026-06-07',
   },
 ];
+
+function buildArticle(article: ActualiteArticleContent): ActualiteArticle {
+  const canonicalArticle = getArticleStructuredData(article.href);
+
+  if (canonicalArticle === null) {
+    throw new Error(`Missing canonical article metadata for ${article.href}`);
+  }
+
+  const result: ActualiteArticle = {
+    ...article,
+    date: formatFrenchDate(canonicalArticle.datePublished),
+    publishedAt: canonicalArticle.datePublished,
+  };
+
+  if (canonicalArticle.dateModified !== canonicalArticle.datePublished) {
+    result.updatedDate = formatFrenchDate(canonicalArticle.dateModified);
+    result.updatedAt = canonicalArticle.dateModified;
+  }
+
+  return result;
+}
+
+const articles = articleContent.map(buildArticle);
+const articlePaths = new Set(articleContent.map((article) => article.href));
+
+getAllArticleStructuredData().forEach((article: ArticleStructuredDataConfig) => {
+  if (!articlePaths.has(article.path)) {
+    throw new Error(`Missing article list content for ${article.path}`);
+  }
+});
 
 export const actualitesArticlesByRecency = [...articles].sort(
   (left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime()

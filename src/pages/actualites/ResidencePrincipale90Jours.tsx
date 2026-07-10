@@ -10,14 +10,7 @@ export default function ArticleResidencePrincipale90Jours() {
       <section className="py-section bg-gradient-to-br from-themePrimary-1 to-primary-300 text-white">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <ArticleHeaderMeta
-              publishedAt="2026-03-27"
-              publishedDate="27 mars 2026"
-              updatedAt="2026-06-07"
-              updatedDate="7 juin 2026"
-              author="Florian Grisorio"
-              readingTime="8 min de lecture"
-            />
+            <ArticleHeaderMeta readingTime="8 min de lecture" />
             <h1 className="mb-0 text-white">
               Airbnb en résidence principale : la limite des 90 jours, qui est concerné ?
             </h1>

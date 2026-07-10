@@ -11,6 +11,8 @@ import {
   getSeoAlternateLinks,
   SITE_URL,
 } from '../content/seoRoutes';
+import { getArticleStructuredData } from '../content/articleStructuredData';
+import { getSitemapLastModified, isValidIsoDateOnly } from '../content/sitemapLastmod';
 import { localizedRoutes } from '../i18n/localizedRoutes';
 import { EN_MVP_PATH_COUNT, EN_MVP_PATHS } from './i18nMvpTestData';
 
@@ -36,6 +38,26 @@ function extractSitemapUrls(xml: string): string[] {
     match = regex.exec(xml);
   }
   return urls;
+}
+
+function extractSitemapLastmods(xml: string): Map<string, string> {
+  const entries = new Map<string, string>();
+  const regex = /<url>([\s\S]*?)<\/url>/g;
+  let match = regex.exec(xml);
+
+  while (match) {
+    const block = match[1] ?? '';
+    const loc = block.match(/<loc>(.*?)<\/loc>/)?.[1];
+    const lastmod = block.match(/<lastmod>(.*?)<\/lastmod>/)?.[1];
+
+    if (loc !== undefined && lastmod !== undefined) {
+      entries.set(loc, lastmod);
+    }
+
+    match = regex.exec(xml);
+  }
+
+  return entries;
 }
 
 function extractActiveAppPaths(): string[] {
@@ -78,6 +100,27 @@ describe('seo governance', () => {
       expect(sitemapXml).toContain(`href="${getCanonicalUrl(pathname)}"`);
     });
     expect(sitemapUrls).not.toContain(`${SITE_URL}/404`);
+  });
+
+  it('keeps sitemap lastmod complete, controlled and canonical', () => {
+    const sitemapXml = readFileSync(path.resolve(process.cwd(), 'public', 'sitemap.xml'), 'utf8');
+    const lastmods = extractSitemapLastmods(sitemapXml);
+    const expectedPaths = getIndexablePaths();
+
+    expect(lastmods.size).toBe(expectedPaths.length);
+
+    expectedPaths.forEach((pathname) => {
+      const canonicalUrl = getCanonicalUrl(pathname);
+      const lastmod = lastmods.get(canonicalUrl);
+
+      expect(lastmod).toBe(getSitemapLastModified(pathname));
+      expect(isValidIsoDateOnly(lastmod ?? '')).toBe(true);
+    });
+
+    const articlePath = '/actualites/micro-bic-2026-meuble-classe-vs-non-classe';
+    const article = getArticleStructuredData(articlePath);
+    expect(lastmods.get(getCanonicalUrl(articlePath))).toBe(article?.dateModified);
+    expect(lastmods.get(getCanonicalUrl('/actualites'))).toBe('2026-07-08');
   });
 
   it('keeps prerender paths aligned with indexable routes', () => {
