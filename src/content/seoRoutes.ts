@@ -20,6 +20,9 @@ export interface SeoRouteConfig {
   lcpImageKey?: ImageAssetKey;
   locale?: Locale;
   routeId?: LocalizedRouteId;
+  includeCanonical?: boolean;
+  includeStructuredData?: boolean;
+  isNotFound?: boolean;
 }
 
 export interface BreadcrumbItem {
@@ -402,6 +405,22 @@ export const NOT_FOUND_SEO: SeoRouteConfig = {
   robots: 'noindex,follow',
   indexable: false,
   prerender: false,
+  locale: 'fr',
+  includeCanonical: false,
+  includeStructuredData: false,
+  isNotFound: true,
+};
+
+export const NOT_FOUND_SEO_EN: SeoRouteConfig = {
+  title: 'Page not found',
+  description: 'The requested page does not exist or is no longer available.',
+  robots: 'noindex,follow',
+  indexable: false,
+  prerender: false,
+  locale: 'en',
+  includeCanonical: false,
+  includeStructuredData: false,
+  isNotFound: true,
 };
 
 const DYNAMIC_SEO_ROUTES: Array<{ pattern: RegExp; config: SeoRouteConfig }> = [
@@ -437,7 +456,7 @@ export function getSeoRouteConfig(pathname: string): SeoRouteConfig {
   const route =
     SEO_ROUTES[normalizedPath] ??
     DYNAMIC_SEO_ROUTES.find((route) => route.pattern.test(normalizedPath))?.config ??
-    NOT_FOUND_SEO;
+    (getHtmlLang(normalizedPath) === 'en' ? NOT_FOUND_SEO_EN : NOT_FOUND_SEO);
 
   return applyLocaleIndexing(route);
 }
@@ -526,7 +545,7 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
   const route = getSeoRouteConfig(normalizedPath);
   const locale = getHtmlLang(normalizedPath);
 
-  if (route === NOT_FOUND_SEO || route.routeId === 'home' || normalizedPath === '/') {
+  if (route.isNotFound === true || route.routeId === 'home' || normalizedPath === '/') {
     return [];
   }
 

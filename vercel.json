@@ -3,6 +3,13 @@
   "buildCommand": "npm run build:seo",
   "outputDirectory": "dist",
   "trailingSlash": false,
+  "routes": [
+    {
+      "src": "/en/(?!(furnished-tourist-accommodation-classification|benefits-of-furnished-tourist-accommodation-classification|classification-requirements|classification-process|faq|contact|request-a-classification|privacy-policy)/?$).+",
+      "dest": "/en/404.html",
+      "status": 404
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

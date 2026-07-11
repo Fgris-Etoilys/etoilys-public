@@ -144,11 +144,34 @@ describe('seo governance', () => {
     const pathname = '/en/not-ready-route';
     const seoConfig = getSeoRouteConfig(pathname);
 
+    expect(seoConfig.locale).toBe('en');
+    expect(seoConfig.title).toBe('Page not found');
     expect(seoConfig.robots).toBe('noindex,follow');
     expect(seoConfig.indexable).toBe(false);
     expect(seoConfig.prerender).toBe(false);
+    expect(seoConfig.includeCanonical).toBe(false);
+    expect(seoConfig.includeStructuredData).toBe(false);
+    expect(seoConfig.isNotFound).toBe(true);
+    expect(getHtmlLang(pathname)).toBe('en');
+    expect(getSeoAlternateLinks(pathname)).toEqual([]);
     expect(getIndexablePaths()).not.toContain(pathname);
     expect(getPrerenderPaths()).not.toContain(pathname);
+  });
+
+  it('keeps unknown French routes noindex without canonical or hreflang', () => {
+    const pathname = '/route-inexistante';
+    const seoConfig = getSeoRouteConfig(pathname);
+
+    expect(seoConfig.locale).toBe('fr');
+    expect(seoConfig.title).toBe('Page non trouvée');
+    expect(seoConfig.robots).toBe('noindex,follow');
+    expect(seoConfig.indexable).toBe(false);
+    expect(seoConfig.prerender).toBe(false);
+    expect(seoConfig.includeCanonical).toBe(false);
+    expect(seoConfig.includeStructuredData).toBe(false);
+    expect(seoConfig.isNotFound).toBe(true);
+    expect(getHtmlLang(pathname)).toBe('fr');
+    expect(getSeoAlternateLinks(pathname)).toEqual([]);
   });
 
   it('makes all completed English MVP routes indexable and prerenderable', () => {

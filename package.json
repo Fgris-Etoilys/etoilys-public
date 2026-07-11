@@ -20,6 +20,7 @@
     "seo:sitemap": "tsx scripts/generate-sitemap.ts",
     "prerender": "tsx --tsconfig tsconfig.app.json scripts/prerender.ts",
     "indexnow:submit": "tsx scripts/indexnow-submit.ts",
+    "verify:i18n-release": "tsx --tsconfig tsconfig.app.json scripts/verify-i18n-release.ts",
     "typecheck": "tsc -b",
     "test": "vitest",
     "test:run": "vitest run",

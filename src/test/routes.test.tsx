@@ -142,6 +142,24 @@ describe('routing', () => {
   it('renders not found page for unknown route', () => {
     renderAt('/url-inexistante');
     expect(screen.getByRole('heading', { name: /page non trouvée/i })).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe('fr');
+    expect(document.querySelector("link[rel='canonical']")).not.toBeInTheDocument();
+    expect(document.querySelector("link[rel='alternate']")).not.toBeInTheDocument();
+    expect(document.querySelector("script[type='application/ld+json']")).not.toBeInTheDocument();
+  });
+
+  it('renders localized English not found page for unknown /en routes', () => {
+    renderAt('/en/route-inexistante');
+    expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /back to home/i })).toHaveAttribute('href', '/en');
+    expect(screen.getByRole('link', { name: /contact etoilys/i })).toHaveAttribute(
+      'href',
+      '/en/contact'
+    );
+    expect(document.documentElement.lang).toBe('en');
+    expect(document.querySelector("link[rel='canonical']")).not.toBeInTheDocument();
+    expect(document.querySelector("link[rel='alternate']")).not.toBeInTheDocument();
+    expect(document.querySelector("script[type='application/ld+json']")).not.toBeInTheDocument();
   });
 
   it.each(EN_MVP_PATHS)('renders technical English MVP route %s', (pathname) => {
@@ -159,7 +177,7 @@ describe('routing', () => {
     '/en/legal-notice',
   ])('keeps English route outside the MVP unavailable: %s', (pathname) => {
     renderAt(pathname);
-    expect(screen.getByRole('heading', { name: /page non trouv/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument();
   });
 
   it('sets html lang and alternate links on completed English MVP routes', () => {

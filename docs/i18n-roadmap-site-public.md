@@ -801,7 +801,7 @@ Ne pas faire pendant les lots MVP :
 
 Le Lot 5 MVP EN est complet : les 9 routes anglaises MVP sont traduites, indexables, dans le sitemap et prerenderées.
 
-Prochaine étape : Lot 6 - QA complète et release.
+Prochaine étape : Lot 6 bis - Stabilisation post-release, 404 EN et clôture de la roadmap.
 
 Avant release :
 
@@ -933,3 +933,105 @@ Période contrôlée : du 20 juin au 10 juillet 2026, données fraîches incluse
 - [ ] Localiser la page 404 selon le préfixe `/en/*`.
 - [ ] Reprendre les impressions, clics, requêtes et pays après deux à quatre semaines de données
       supplémentaires.
+
+## 21. Lot 6 bis - Stabilisation post-release, 404 EN et clôture de la roadmap
+
+Statut ouvert au 11 juillet 2026.
+
+Objectif : fermer les écarts détectés après release EN sans rouvrir le périmètre MVP, puis clarifier
+les cases historiques encore non cochées.
+
+### Correctifs code
+
+- [ ] 404 EN : servir une vraie réponse HTTP `404` pour `/en/*` inconnu, avec HTML anglais,
+      `lang="en"`, `noindex,follow`, sans canonical, sans `hreflang` et sans JSON-LD.
+- [ ] 404 FR : conserver une vraie réponse HTTP `404` pour les routes FR inconnues, avec HTML
+      français, `lang="fr"`, `noindex,follow`, sans canonical, sans `hreflang` et sans JSON-LD.
+- [ ] Vercel : ajouter une règle qui sert `en/404.html` avec status `404` sans intercepter `/en`,
+      `/en/`, les 9 routes EN MVP, les assets ni les API.
+- [ ] Prerender : générer `404.html` et `en/404.html`.
+- [ ] Formulaires : vérifier les deux formulaires FR/EN côté payload frontend, stockage
+      `form_submissions.payload_json`, payload Resend et contenu email interne.
+- [x] Edge Functions : confirmer les versions réellement déployées de `public-forms-contact` et
+      `public-forms-classement`, puis redéployer si le code prod ne contient pas la ligne de langue.
+- [ ] Ne pas créer de colonne SQL ni de migration pour `preferredLanguage`.
+
+Diagnostic Supabase du 11 juillet 2026 :
+
+- [x] Connexion CLI cloud restaurée avec le profil `etoilys-public`.
+- [x] Sources déployées avant correctif téléchargées et comparées : les fonctions prod ne contenaient
+      ni `preferredLanguage`, ni `Langue préférée`, ni `formatPreferredLanguageLabel`.
+- [x] Requête SQL non-PII sur les dernières soumissions : `payload_json ->> 'preferredLanguage'`
+      était `null` sur les lignes notifiées existantes, confirmant un ancien code Edge Function en
+      production.
+- [x] Redéploiement effectué de `public-forms-contact` et `public-forms-classement` avec
+      `--no-verify-jwt` et `--use-api`.
+- [x] Vérification post-déploiement par téléchargement des sources : les deux fonctions prod
+      contiennent désormais `preferredLanguage`, `Langue préférée` et
+      `formatPreferredLanguageLabel`.
+- [ ] Test réel post-déploiement encore à refaire : soumission FR/EN, contrôle
+      `payload_json.preferredLanguage` et email interne.
+
+### QA et validation
+
+- [ ] `npm run typecheck`.
+- [ ] `npm run lint`.
+- [ ] `npm run test:run`.
+- [ ] `npm run build`.
+- [ ] `npm run seo:sitemap`.
+- [ ] `npm run prerender`.
+- [ ] `npm run build:seo`.
+- [ ] Smoke test preview ou production :
+      `/en/route-inexistante` -> 404 EN, `/route-inexistante` -> 404 FR, `/en` -> 200,
+      `/en/` -> 308 vers `/en`, 9 routes EN MVP -> 200.
+- [ ] QA responsive desktop/mobile.
+- [ ] Non-régression FR.
+- [ ] Smoke test production FR/EN après déploiement.
+- [ ] Test réel des formulaires FR/EN après déploiement Edge Functions.
+- [ ] Notes de release.
+
+### Réconciliation des cases historiques
+
+Entrées réalisées malgré des cases anciennes encore ouvertes :
+
+- Lot 2 / SEO : `hreflang` réciproques, `x-default`, sitemap EN, canonical EN, `html lang`,
+  breadcrumbs EN et prerender sont livrés et couverts par tests. Les cases anciennes non cochées
+  dans les sections descriptives 8 et 13 sont obsolètes au regard du statut Lot 2 et Lot 5.
+- Lot 3 / layout : header, footer, CTA et language switcher FR/EN sont livrés. La case
+  "aucun chevauchement mobile" reste une QA visuelle active, pas un manque fonctionnel connu.
+- Lot 4 / formulaires : localisation front, validations, erreurs, liens confidentialité et payload
+  `preferredLanguage` sont livrés. L'écart actif porte uniquement sur la vérification runtime
+  production de l'email interne et des Edge Functions déployées.
+- Lot 5 / contenus : les 9 pages EN MVP sont traduites, indexables, dans le sitemap et prerenderées.
+  Les sous-checklists de traduction encore non cochées dans les sections descriptives sont donc
+  historiques.
+
+Entrées hors périmètre assumé :
+
+- Simulateurs EN, Actualités EN, pages locales EN, `zones-intervention` EN, recrutement EN,
+  mentions légales EN et néerlandais restent post-MVP.
+- Changement de design global, refonte des formulaires, réécriture de la copy française et ajout
+  d'une dépendance i18n restent hors périmètre.
+- Colonne dédiée `preferredLanguage` reste hors périmètre tant qu'aucun besoin back-office réel ne
+  justifie une migration.
+
+Entrées obsolètes :
+
+- Les mentions `EN_CONTENT_READY = false` et routes EN MVP `noindex` ne décrivent plus l'état
+  courant : les 9 routes EN MVP sont activées pour indexation.
+- Le report du `hreflang` sitemap n'a pas eu lieu ; le sitemap public contient les alternatives
+  réciproques.
+- L'écart `/en/` canonical/hreflang a été corrigé dans le code et le sitemap public expose déjà
+  `/en` sans slash. Il reste seulement à confirmer durablement en Search Console après crawl.
+
+Entrées encore actives :
+
+- 404 EN localisée avec vrai statut HTTP 404.
+- Vérification production de `preferredLanguage` dans Supabase, Resend et l'email interne.
+- QA responsive desktop/mobile.
+- Non-régression FR.
+- Smoke test production FR/EN après déploiement.
+- Notes de release.
+- Actions Search Console manuelles : resoumettre le sitemap avec un compte disposant des droits
+  complets, contrôler le rapport `Not found (404)`, recontrôler le résumé sitemap contradictoire
+  et vérifier le `hreflang` interprété si une preuve Search Console est nécessaire.

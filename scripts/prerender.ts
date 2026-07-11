@@ -27,6 +27,8 @@ import { EN_INDEXABLE_ROUTE_IDS } from '../src/i18n/contentReadiness.ts';
 import { localizedRoutes } from '../src/i18n/localizedRoutes.ts';
 
 const NOT_FOUND_PRERENDER_PATH = '/404';
+const EN_NOT_FOUND_RENDER_PATH = '/en/route-inexistante';
+const EN_NOT_FOUND_OUTPUT_PATH = 'en/404.html';
 const DYNAMIC_SIMULATION_RENDER_PATH = '/simulateur/seo-shell';
 const DYNAMIC_SIMULATION_SHELL_OUTPUT = 'simulation-noindex.html';
 const OG_IMAGE_ALT = 'Etoilys - Classement des meublés de tourisme';
@@ -185,8 +187,11 @@ function buildSeoHead(pathname: string): string {
     `    <meta name="twitter:title" content="${escapeHtml(title)}">`,
     `    <meta name="twitter:description" content="${escapeHtml(description)}">`,
     `    <meta name="twitter:image" content="${escapeHtml(ogImage)}">`,
-    `    <link rel="canonical" href="${escapeHtml(currentUrl)}">`,
   ];
+
+  if (seoConfig.includeCanonical !== false) {
+    tags.push(`    <link rel="canonical" href="${escapeHtml(currentUrl)}">`);
+  }
 
   alternateLinks.forEach((alternate) => {
     tags.push(
@@ -200,25 +205,27 @@ function buildSeoHead(pathname: string): string {
     );
   }
 
-  const pageStructuredData = buildPageStructuredData(pathname);
-  if (pageStructuredData) {
-    tags.push(
-      `    <script type="application/ld+json" id="structured-data-global">${serializeJsonLd(pageStructuredData)}</script>`
-    );
-  }
+  if (seoConfig.includeStructuredData !== false) {
+    const pageStructuredData = buildPageStructuredData(pathname);
+    if (pageStructuredData) {
+      tags.push(
+        `    <script type="application/ld+json" id="structured-data-global">${serializeJsonLd(pageStructuredData)}</script>`
+      );
+    }
 
-  const breadcrumbData = buildBreadcrumbStructuredData(pathname);
-  if (breadcrumbData) {
-    tags.push(
-      `    <script type="application/ld+json" id="structured-data-breadcrumbs">${serializeJsonLd(breadcrumbData)}</script>`
-    );
-  }
+    const breadcrumbData = buildBreadcrumbStructuredData(pathname);
+    if (breadcrumbData) {
+      tags.push(
+        `    <script type="application/ld+json" id="structured-data-breadcrumbs">${serializeJsonLd(breadcrumbData)}</script>`
+      );
+    }
 
-  const articleData = buildArticleStructuredDataForPath(pathname);
-  if (articleData) {
-    tags.push(
-      `    <script type="application/ld+json" id="structured-data-article">${serializeJsonLd(articleData)}</script>`
-    );
+    const articleData = buildArticleStructuredDataForPath(pathname);
+    if (articleData) {
+      tags.push(
+        `    <script type="application/ld+json" id="structured-data-article">${serializeJsonLd(articleData)}</script>`
+      );
+    }
   }
 
   return tags.join('\n');
@@ -324,6 +331,18 @@ function assertUniqueJsonLdIds(html: string, pathname: string): void {
   }
 }
 
+function assertNoSeoLinksOrJsonLd(html: string, pathname: string): void {
+  if (/<link[^>]+rel=["']canonical["']/i.test(html)) {
+    throw new Error(`${pathname} 404 must not contain a canonical link.`);
+  }
+  if (/<link[^>]+rel=["']alternate["']/i.test(html)) {
+    throw new Error(`${pathname} 404 must not contain hreflang alternate links.`);
+  }
+  if (/<script[^>]+type=["']application\/ld\+json["']/i.test(html)) {
+    throw new Error(`${pathname} 404 must not contain JSON-LD.`);
+  }
+}
+
 function assertPrerenderedHtml(pathname: string, html: string): void {
   const rootContent = getRootContent(html);
   const rootText = rootContent
@@ -367,6 +386,31 @@ function assertPrerenderedHtml(pathname: string, html: string): void {
   });
 
   assertUniqueJsonLdIds(html, pathname);
+}
+
+function assertPrerenderedNotFoundHtml(pathname: string, html: string): void {
+  const rootContent = getRootContent(html);
+  const rootText = rootContent
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const expectedLang = getHtmlLang(pathname);
+  const expectedHeading = expectedLang === 'en' ? 'Page not found' : 'Page non trouvée';
+
+  if (!rootContent || /<div id="root"><\/div>/i.test(html)) {
+    throw new Error(`${pathname} 404 was prerendered with an empty #root.`);
+  }
+  if (!rootText.includes(expectedHeading)) {
+    throw new Error(`${pathname} 404 is missing localized heading ${expectedHeading}.`);
+  }
+  if (!/<meta\s+name=["']robots["']\s+content=["']noindex,follow["']/i.test(html)) {
+    throw new Error(`${pathname} 404 is missing noindex,follow robots metadata.`);
+  }
+  if (!new RegExp(`<html[^>]+lang=["']${expectedLang}["']`, 'i').test(html)) {
+    throw new Error(`${pathname} 404 has an invalid html lang attribute.`);
+  }
+
+  assertNoSeoLinksOrJsonLd(html, pathname);
 }
 
 async function assertSitemapMatchesIndexableRoutes(): Promise<void> {
@@ -415,11 +459,20 @@ async function main() {
   }
 
   const notFound = await prerenderRoute(distDir, templateHtml, NOT_FOUND_PRERENDER_PATH);
-  if (!/<meta\s+name=["']robots["']\s+content=["']noindex,follow["']/i.test(notFound.html)) {
-    throw new Error('404 prerender is missing noindex,follow robots metadata.');
-  }
+  assertPrerenderedNotFoundHtml(notFound.pathname, notFound.html);
   assertUniqueJsonLdIds(notFound.html, NOT_FOUND_PRERENDER_PATH);
   console.log(`Prerendered: ${NOT_FOUND_PRERENDER_PATH} -> ${notFound.outputPath}`);
+
+  const englishNotFoundOutputPath = path.join(distDir, EN_NOT_FOUND_OUTPUT_PATH);
+  const englishNotFound = await prerenderRoute(
+    distDir,
+    templateHtml,
+    EN_NOT_FOUND_RENDER_PATH,
+    englishNotFoundOutputPath
+  );
+  assertPrerenderedNotFoundHtml(englishNotFound.pathname, englishNotFound.html);
+  assertUniqueJsonLdIds(englishNotFound.html, EN_NOT_FOUND_RENDER_PATH);
+  console.log(`Prerendered: ${EN_NOT_FOUND_RENDER_PATH} -> ${englishNotFoundOutputPath}`);
 
   const simulationShellOutputPath = path.join(distDir, DYNAMIC_SIMULATION_SHELL_OUTPUT);
   const simulationShell = await prerenderRoute(

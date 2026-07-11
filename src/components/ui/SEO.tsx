@@ -17,6 +17,7 @@ interface SEOProps {
   preloadImageSrcSet?: string | undefined;
   preloadImageSizes?: string | undefined;
   alternateLinks?: SeoAlternateLink[] | undefined;
+  includeCanonical?: boolean | undefined;
 }
 
 export default function SEO({
@@ -28,6 +29,7 @@ export default function SEO({
   preloadImageSrcSet,
   preloadImageSizes,
   alternateLinks = [],
+  includeCanonical = true,
 }: SEOProps) {
   const location = useLocation();
   const fullTitle = getSeoTitle(title);
@@ -70,13 +72,17 @@ export default function SEO({
       element.setAttribute('content', content);
     });
 
-    let canonical = document.querySelector("link[rel='canonical']");
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonical);
+    const canonical = document.querySelector("link[rel='canonical']");
+    if (includeCanonical) {
+      const canonicalLink = canonical ?? document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      canonicalLink.setAttribute('href', currentUrl);
+      if (!canonical) {
+        document.head.appendChild(canonicalLink);
+      }
+    } else if (canonical) {
+      canonical.remove();
     }
-    canonical.setAttribute('href', currentUrl);
 
     document.querySelectorAll("link[data-seo-alternate='true']").forEach((element) => {
       element.remove();
@@ -124,6 +130,7 @@ export default function SEO({
     image,
     htmlLang,
     alternateLinks,
+    includeCanonical,
     preloadImage,
     preloadImageSrcSet,
     preloadImageSizes,

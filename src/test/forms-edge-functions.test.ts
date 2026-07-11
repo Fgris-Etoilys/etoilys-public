@@ -28,13 +28,29 @@ describe('public form Edge Functions i18n contract', () => {
   });
 
   it('adds preferred language to internal notification emails', () => {
+    const shared = readRepoFile('supabase/functions/_shared/formSubmission.ts');
     const contact = readRepoFile('supabase/functions/public-forms-contact/index.ts');
     const classement = readRepoFile('supabase/functions/public-forms-classement/index.ts');
 
+    expect(shared).toContain("preferredLanguage === 'en' ? 'anglais (en)' : 'français (fr)'");
     expect(contact).toContain('Langue préférée:');
     expect(classement).toContain('Langue préférée:');
     expect(contact).toContain('formatPreferredLanguageLabel(preferredLanguage)');
     expect(classement).toContain('formatPreferredLanguageLabel(preferredLanguage)');
+    expect(contact).toMatch(
+      /sendResendNotification\([\s\S]*Langue préférée:[\s\S]*formatPreferredLanguageLabel\(preferredLanguage\)[\s\S]*email\s*\)/
+    );
+    expect(classement).toMatch(
+      /sendResendNotification\([\s\S]*Langue préférée:[\s\S]*formatPreferredLanguageLabel\(preferredLanguage\)[\s\S]*email\s*\)/
+    );
+  });
+
+  it('sends the assembled text body to Resend without dropping preferred language', () => {
+    const shared = readRepoFile('supabase/functions/_shared/formSubmission.ts');
+
+    expect(shared).toContain('textBody: string');
+    expect(shared).toContain('text: textBody');
+    expect(shared).toContain('reply_to: replyToEmail');
   });
 
   it('returns stable backend error codes without adding a preferredLanguage column', () => {

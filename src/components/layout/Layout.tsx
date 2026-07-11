@@ -36,6 +36,7 @@ export default function Layout() {
     : null;
   const ogImageUrl = articleOgImageUrl ?? routeOgImageUrl;
   const lcpPreloadAsset = seoConfig.lcpImageKey ? IMAGE_MANIFEST[seoConfig.lcpImageKey] : undefined;
+  const shouldRenderStructuredData = seoConfig.includeStructuredData !== false;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,10 +55,11 @@ export default function Layout() {
         preloadImageSrcSet={lcpPreloadAsset?.srcSetAvif}
         preloadImageSizes={lcpPreloadAsset ? '100vw' : undefined}
         alternateLinks={alternateLinks}
+        includeCanonical={seoConfig.includeCanonical !== false}
       />
-      <GlobalStructuredData pathname={location.pathname} />
-      <BreadcrumbStructuredData items={breadcrumbItems} />
-      {articleData && (
+      {shouldRenderStructuredData && <GlobalStructuredData pathname={location.pathname} />}
+      {shouldRenderStructuredData && <BreadcrumbStructuredData items={breadcrumbItems} />}
+      {shouldRenderStructuredData && articleData && (
         <ArticleStructuredData
           url={`${SITE_URL}${articleData.path}`}
           headline={articleData.headline}
