@@ -1,5 +1,10 @@
 import { useEffect } from 'react';
-import { SITE_URL, type BreadcrumbItem } from '../../content/seoRoutes';
+import type { BreadcrumbItem } from '../../content/seoRoutes';
+import {
+  buildArticleStructuredData,
+  buildBreadcrumbStructuredData,
+  buildPageStructuredData,
+} from '../../content/structuredData';
 
 interface JsonLdScriptProps {
   id: string;
@@ -42,43 +47,12 @@ function JsonLdScript({ id, data }: JsonLdScriptProps) {
   return null;
 }
 
-export function GlobalStructuredData() {
-  const data = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Organization',
-        name: 'Etoilys',
-        legalName: 'ETOILYS',
-        url: SITE_URL,
-        logo: `${SITE_URL}/logo-etoilys.svg`,
-        identifier: '93933080900012',
-        email: 'contact@etoilys.fr',
-        telephone: '+33649551540',
-        contactPoint: [
-          {
-            '@type': 'ContactPoint',
-            contactType: 'customer support',
-            email: 'contact@etoilys.fr',
-            telephone: '+33649551540',
-            availableLanguage: 'fr',
-          },
-        ],
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: '1345 route de Dautres',
-          addressLocality: 'Mauzac-et-Grand-Castang',
-          postalCode: '24150',
-          addressCountry: 'FR',
-        },
-      },
-      {
-        '@type': 'WebSite',
-        name: 'Etoilys',
-        url: SITE_URL,
-      },
-    ],
-  };
+export function GlobalStructuredData({ pathname }: { pathname: string }) {
+  const data = buildPageStructuredData(pathname);
+
+  if (!data) {
+    return null;
+  }
 
   return <JsonLdScript id="structured-data-global" data={data} />;
 }
@@ -88,16 +62,11 @@ export function BreadcrumbStructuredData({ items }: { items: BreadcrumbItem[] })
     return null;
   }
 
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: item.url,
-    })),
-  };
+  const data = buildBreadcrumbStructuredData(items);
+
+  if (!data) {
+    return null;
+  }
 
   return <JsonLdScript id="structured-data-breadcrumbs" data={data} />;
 }
@@ -111,28 +80,15 @@ export function ArticleStructuredData({
   image,
   authorName,
 }: ArticleStructuredDataProps) {
-  const data = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+  const data = buildArticleStructuredData({
+    url,
     headline,
     description,
     datePublished,
     dateModified,
     image,
-    author: {
-      '@type': 'Person',
-      name: authorName,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Etoilys',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/logo-etoilys.svg`,
-      },
-    },
-    mainEntityOfPage: url,
-  };
+    authorName,
+  });
 
   return <JsonLdScript id="structured-data-article" data={data} />;
 }

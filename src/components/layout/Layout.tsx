@@ -55,7 +55,7 @@ export default function Layout() {
         preloadImageSizes={lcpPreloadAsset ? '100vw' : undefined}
         alternateLinks={alternateLinks}
       />
-      <GlobalStructuredData />
+      <GlobalStructuredData pathname={location.pathname} />
       <BreadcrumbStructuredData items={breadcrumbItems} />
       {articleData && (
         <ArticleStructuredData

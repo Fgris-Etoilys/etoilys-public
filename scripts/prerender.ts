@@ -18,6 +18,11 @@ import {
 } from '../src/content/seoRoutes.ts';
 import { getArticleStructuredData } from '../src/content/articleStructuredData.ts';
 import { IMAGE_MANIFEST } from '../src/content/imageManifest.ts';
+import {
+  buildArticleStructuredData,
+  buildBreadcrumbStructuredData as buildBreadcrumbStructuredDataFromItems,
+  buildPageStructuredData,
+} from '../src/content/structuredData.ts';
 import { EN_INDEXABLE_ROUTE_IDS } from '../src/i18n/contentReadiness.ts';
 import { localizedRoutes } from '../src/i18n/localizedRoutes.ts';
 
@@ -86,91 +91,25 @@ function serializeJsonLd(data: Record<string, unknown>): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
-function buildGlobalStructuredData(): Record<string, unknown> {
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Organization',
-        name: 'Etoilys',
-        legalName: 'ETOILYS',
-        url: SITE_URL,
-        logo: `${SITE_URL}/logo-etoilys.svg`,
-        identifier: '93933080900012',
-        email: 'contact@etoilys.fr',
-        telephone: '+33649551540',
-        contactPoint: [
-          {
-            '@type': 'ContactPoint',
-            contactType: 'customer support',
-            email: 'contact@etoilys.fr',
-            telephone: '+33649551540',
-            availableLanguage: 'fr',
-          },
-        ],
-        address: {
-          '@type': 'PostalAddress',
-          streetAddress: '1345 route de Dautres',
-          addressLocality: 'Mauzac-et-Grand-Castang',
-          postalCode: '24150',
-          addressCountry: 'FR',
-        },
-      },
-      {
-        '@type': 'WebSite',
-        name: 'Etoilys',
-        url: SITE_URL,
-      },
-    ],
-  };
-}
-
 function buildBreadcrumbStructuredData(pathname: string): Record<string, unknown> | null {
-  const items = getBreadcrumbItems(pathname);
-  if (items.length === 0) {
-    return null;
-  }
-
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: item.url,
-    })),
-  };
+  return buildBreadcrumbStructuredDataFromItems(getBreadcrumbItems(pathname));
 }
 
-function buildArticleStructuredData(pathname: string): Record<string, unknown> | null {
+function buildArticleStructuredDataForPath(pathname: string): Record<string, unknown> | null {
   const article = getArticleStructuredData(pathname);
   if (!article) {
     return null;
   }
 
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+  return buildArticleStructuredData({
+    url: `${SITE_URL}${article.path}`,
     headline: article.headline,
     description: article.description,
     datePublished: article.datePublished,
     dateModified: article.dateModified,
     image: `${SITE_URL}${IMAGE_MANIFEST[article.imageKey].src}`,
-    author: {
-      '@type': 'Person',
-      name: article.authorName,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Etoilys',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/logo-etoilys.svg`,
-      },
-    },
-    mainEntityOfPage: `${SITE_URL}${article.path}`,
-  };
+    authorName: article.authorName,
+  });
 }
 
 function getOgImage(pathname: string): string {
@@ -261,9 +200,12 @@ function buildSeoHead(pathname: string): string {
     );
   }
 
-  tags.push(
-    `    <script type="application/ld+json" id="structured-data-global">${serializeJsonLd(buildGlobalStructuredData())}</script>`
-  );
+  const pageStructuredData = buildPageStructuredData(pathname);
+  if (pageStructuredData) {
+    tags.push(
+      `    <script type="application/ld+json" id="structured-data-global">${serializeJsonLd(pageStructuredData)}</script>`
+    );
+  }
 
   const breadcrumbData = buildBreadcrumbStructuredData(pathname);
   if (breadcrumbData) {
@@ -272,7 +214,7 @@ function buildSeoHead(pathname: string): string {
     );
   }
 
-  const articleData = buildArticleStructuredData(pathname);
+  const articleData = buildArticleStructuredDataForPath(pathname);
   if (articleData) {
     tags.push(
       `    <script type="application/ld+json" id="structured-data-article">${serializeJsonLd(articleData)}</script>`

@@ -44,8 +44,16 @@ function expectEnglishMvpInternalLinksInScope(container: HTMLElement) {
   expect(outOfScopeHrefs).toEqual([]);
 }
 
-function expectSeoHeadWithoutDuplicates({ hasBreadcrumb }: { hasBreadcrumb: boolean }) {
-  expect(document.querySelectorAll('script#structured-data-global')).toHaveLength(1);
+function expectSeoHeadWithoutDuplicates({
+  hasBreadcrumb,
+  hasGlobalStructuredData,
+}: {
+  hasBreadcrumb: boolean;
+  hasGlobalStructuredData: boolean;
+}) {
+  expect(document.querySelectorAll('script#structured-data-global')).toHaveLength(
+    hasGlobalStructuredData ? 1 : 0
+  );
   expect(document.querySelectorAll('script#structured-data-breadcrumbs')).toHaveLength(
     hasBreadcrumb ? 1 : 0
   );
@@ -251,7 +259,7 @@ describe('localized layout', () => {
   it('does not duplicate JSON-LD or hreflang tags after SPA navigation between English routes', async () => {
     renderAt('/en/classification-process');
 
-    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true });
+    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true, hasGlobalStructuredData: true });
 
     fireEvent.click(
       within(screen.getByRole('main')).getByRole('link', { name: /frequently asked questions/i })
@@ -265,7 +273,7 @@ describe('localized layout', () => {
         })
       ).toBeInTheDocument();
     });
-    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true });
+    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true, hasGlobalStructuredData: false });
 
     fireEvent.click(
       within(screen.getByRole('main')).getByRole('link', { name: /contact etoilys/i })
@@ -276,7 +284,7 @@ describe('localized layout', () => {
         screen.getByRole('heading', { level: 1, name: /contact etoilys/i })
       ).toBeInTheDocument();
     });
-    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true });
+    expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true, hasGlobalStructuredData: true });
   });
 
   it('keeps unavailable language options disabled in the mobile menu', () => {
