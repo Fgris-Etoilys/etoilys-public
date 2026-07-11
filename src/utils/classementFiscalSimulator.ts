@@ -1,3 +1,5 @@
+import { CURRENT_MICRO_BIC_RULES } from '../content/microBicFiscalRules';
+
 export type TmiRate = 0 | 11 | 30 | 41 | 45;
 
 export type RegimeStatus = 'micro-BIC' | 'micro-BIC sous vigilance';
@@ -34,10 +36,11 @@ export interface SimulationResult {
   showOutOfScopeWarning: boolean;
 }
 
-export const NON_CLASSE_MICRO_BIC_THRESHOLD_2026 = 15_000;
-export const NON_CLASSE_ABATTEMENT_RATE_2026 = 0.3;
-export const CLASSE_MICRO_BIC_THRESHOLD_2026 = 83_600;
-export const CLASSE_ABATTEMENT_RATE_2026 = 0.5;
+export const NON_CLASSE_MICRO_BIC_THRESHOLD_2026 =
+  CURRENT_MICRO_BIC_RULES.nonClasse.microBicThreshold;
+export const NON_CLASSE_ABATTEMENT_RATE_2026 = CURRENT_MICRO_BIC_RULES.nonClasse.abattementRate;
+export const CLASSE_MICRO_BIC_THRESHOLD_2026 = CURRENT_MICRO_BIC_RULES.classe.microBicThreshold;
+export const CLASSE_ABATTEMENT_RATE_2026 = CURRENT_MICRO_BIC_RULES.classe.abattementRate;
 export const SOCIAL_THRESHOLD_2026 = 23_000;
 export const SOCIAL_LEVIES_RATE_2026 = 0.186;
 export const NON_CLASSE_SOCIAL_CONTRIBUTIONS_RATE_2026 = 0.19004;

@@ -94,7 +94,10 @@ export default function ArticleMicroBic2026() {
                       ),
                       nonClasseAbattement: '30 %',
                       classePlafond: (
-                        <span className="font-semibold text-primary-400">77 700 €</span>
+                        <span className="font-semibold text-primary-400">
+                          77 700 €
+                          <span className="sr-only"> pour les revenus 2025 déclarés en 2026</span>
+                        </span>
                       ),
                       classeAbattement: '50 %',
                     },
@@ -115,7 +118,10 @@ export default function ArticleMicroBic2026() {
                       ),
                       nonClasseAbattement: '30 %',
                       classePlafond: (
-                        <span className="font-semibold text-primary-400">83 600 €</span>
+                        <span className="font-semibold text-primary-400">
+                          83 600 €
+                          <span className="sr-only"> pour les revenus 2026 déclarés en 2027</span>
+                        </span>
                       ),
                       classeAbattement: '50 %',
                     },
@@ -293,7 +299,12 @@ export default function ArticleMicroBic2026() {
                     ),
                     nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
                     nonClasseAbattement: '30 %',
-                    classePlafond: <span className="font-semibold text-primary-400">77 700 €</span>,
+                    classePlafond: (
+                      <span className="font-semibold text-primary-400">
+                        77 700 €
+                        <span className="sr-only"> pour les revenus 2025 déclarés en 2026</span>
+                      </span>
+                    ),
                     classeAbattement: '50 %',
                   },
                 },
@@ -310,7 +321,12 @@ export default function ArticleMicroBic2026() {
                     ),
                     nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
                     nonClasseAbattement: '30 %',
-                    classePlafond: <span className="font-semibold text-primary-400">83 600 €</span>,
+                    classePlafond: (
+                      <span className="font-semibold text-primary-400">
+                        83 600 €
+                        <span className="sr-only"> pour les revenus 2026 déclarés en 2027</span>
+                      </span>
+                    ),
                     classeAbattement: '50 %',
                   },
                 },
@@ -331,9 +347,9 @@ export default function ArticleMicroBic2026() {
               L'écart est structurant. Avant la réforme, de nombreux propriétaires raisonnaient
               encore avec les anciens seuils (188 700 € et 71 % d'abattement pour les classés). Ce
               n'est plus le bon cadre de référence depuis la déclaration 2026. Et l'écart ne
-              s'efface pas en 2027 : le plafond classé monte à 83 600 € par revalorisation, tandis
-              que le seuil non classé reste bloqué à 15 000 €. Ces paramètres sont également
-              confirmés par la{' '}
+              disparaît pas pour les revenus 2026 déclarés en 2027 : le plafond des meublés classés
+              passe à 83 600 €, tandis que celui des meublés non classés reste fixé à 15 000 €. Ces
+              paramètres sont également confirmés par la{' '}
               <a
                 href="https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence"
                 target="_blank"
@@ -491,9 +507,9 @@ export default function ArticleMicroBic2026() {
               faut vérifier les conditions d'éligibilité sur les années de référence.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Autrement dit : un loueur non classé ne peut pas continuer à raisonner avec l'ancien
-              plafond de <strong>77 700 €</strong>. Ce n'est plus la bonne lecture depuis la réforme
-              2024.
+              Autrement dit : un loueur non classé ne peut plus raisonner avec le seuil de 77 700 €
+              qui s’appliquait avant la réforme. Depuis les revenus 2025, son seuil micro-BIC est
+              fixé à 15 000 €.
             </p>
 
             <h3 className="mt-8 mb-3">3. Le régime réel</h3>
@@ -601,7 +617,7 @@ export default function ArticleMicroBic2026() {
                   {
                     num: '2',
                     title: 'Quel est le niveau réel de recettes attendu',
-                    desc: "La comparaison entre 15 000 € et 77 700 € / 83 600 € n'est pas abstraite : elle détermine concrètement si le régime micro reste accessible.",
+                    desc: 'Ces différences de seuils ont un effet très concret : elles déterminent si le régime micro-BIC reste accessible. Le plafond est fixé à 15 000 € pour un meublé non classé, contre 77 700 € pour les revenus 2025 et 83 600 € pour les revenus 2026 pour un meublé classé.',
                   },
                   {
                     num: '3',

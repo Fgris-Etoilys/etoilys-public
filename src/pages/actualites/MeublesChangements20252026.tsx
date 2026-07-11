@@ -41,7 +41,7 @@ export default function ArticleMeubles20252026() {
                   </span>
                   <span>
                     Pour les <strong>revenus 2025 déclarés en 2026</strong>, le micro-BIC a été
-                    fortement durci : <strong>15 000 € de plafond et 30 % d'abattement</strong> pour
+                    fortement durci : <strong>15 000 € de plafond et 30 % d’abattement</strong> pour
                     les meublés de tourisme non classés, contre <strong>77 700 € et 50 %</strong>{' '}
                     pour les meublés classés.
                   </span>
@@ -157,12 +157,13 @@ export default function ArticleMeubles20252026() {
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Pour un <strong>meublé de tourisme classé</strong>, le régime micro reste beaucoup
-              plus favorable : <strong>77 700 € de recettes annuelles</strong> pour les revenus 2025
-              déclarés en 2026, avec un <strong>abattement de 50 %</strong>.
+              plus favorable :{' '}
+              <strong>77 700 € de recettes annuelles pour les revenus 2025 déclarés en 2026</strong>
+              , avec un <strong>abattement de 50 %</strong>.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Et pour les <strong>revenus 2026 déclarés en 2027</strong>, le plafond micro des
-              meublés classés passe à <strong>83 600 €</strong>, alors que le seuil des meublés non
+              Pour les <strong>revenus 2026 déclarés en 2027</strong>, le plafond micro-BIC des
+              meublés classés passe à <strong>83 600 €</strong>, tandis que celui des meublés non
               classés reste fixé à <strong>15 000 €</strong>.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">

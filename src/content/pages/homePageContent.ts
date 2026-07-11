@@ -132,7 +132,7 @@ export const homePageContent = {
           icon: 'calculator',
           title: 'Régime fiscal avantageux',
           description:
-            "Un meublé classé bénéficie d'un abattement fiscal majoré en régime micro-BIC (50 % contre 30 %).",
+            'Pour les revenus 2026 déclarés en 2027, un meublé classé bénéficie d’un abattement micro-BIC de 50 %, contre 30 % pour un meublé non classé.',
         },
         {
           icon: 'users',
@@ -236,7 +236,7 @@ export const homePageContent = {
           icon: 'calculator',
           title: 'Advantageous tax regime',
           description:
-            'Classified furnished tourist accommodation benefits from an increased micro-BIC tax allowance (50% instead of 30%).',
+            'For 2026 income declared in 2027, classified furnished tourist accommodation benefits from a 50% micro-BIC tax allowance, compared with 30% for non-classified accommodation.',
         },
         {
           icon: 'users',

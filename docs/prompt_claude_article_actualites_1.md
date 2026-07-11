@@ -155,7 +155,7 @@ La loi du 19 novembre 2024 a mis fin à l’ancien écart très favorable dont b
 
 Pour un **meublé de tourisme non classé**, le régime micro est désormais limité à **15 000 € de recettes annuelles**, avec un **abattement de 30 %**.
 
-Pour un **meublé de tourisme classé**, le régime micro reste beaucoup plus favorable : **77 700 € de recettes annuelles** pour les revenus 2025 déclarés en 2026, avec un **abattement de 50 %**.
+Pour un **meublé de tourisme classé**, le régime micro distingue désormais deux périodes : **77 700 € de recettes annuelles** pour les revenus 2025 déclarés en 2026, puis **83 600 €** pour les revenus 2026 déclarés en 2027, avec un **abattement de 50 %**.
 
 Et pour les **revenus 2026 déclarés en 2027**, le plafond micro des meublés classés passe à **83 600 €**, alors que le seuil des meublés non classés reste fixé à **15 000 €**.
 

@@ -154,7 +154,7 @@ export const classificationBenefitsPageContent = {
           icon: 'calculator',
           title: 'Abattement fiscal majoré',
           description:
-            'En régime micro-BIC, le classement donne accès à un abattement de 50 % (plafond 77 700 €) contre 30 % (plafond 15 000 €) pour un meublé non classé, depuis la loi du 19 novembre 2024.',
+            'Pour les revenus 2026 déclarés en 2027, un meublé classé bénéficie d’un abattement micro-BIC de 50 % jusqu’à 83 600 € de recettes, contre 30 % jusqu’à 15 000 € pour un meublé non classé.',
         },
         {
           icon: 'percent',
@@ -191,20 +191,22 @@ export const classificationBenefitsPageContent = {
     fiscalComparison: {
       title: 'Avantages fiscaux : comparaison',
       description:
-        "Le classement vous permet de bénéficier d'un abattement fiscal majoré, réduisant significativement votre base imposable.",
+        'Au régime micro-BIC, le classement réduit la part de vos recettes imposable. Le tableau ci-dessous montre concrètement la différence pour les revenus 2026 déclarés en 2027.',
       items: [
         {
           title: 'Sans classement',
           allowance: '30%',
           allowanceLabel: "d'abattement fiscal",
-          example: 'Pour 12 000 € de revenus : 8 400 € imposables (plafond micro-BIC* : 15 000 €)',
+          example:
+            'Pour 12 000 € de recettes perçues en 2026 : 8 400 € imposables (plafond micro-BIC* : 15 000 €)',
           color: 'bg-gray-100',
         },
         {
           title: 'Avec classement',
           allowance: '50%',
           allowanceLabel: "d'abattement fiscal",
-          example: 'Pour 12 000 € de revenus : 6 000 € imposables (plafond micro-BIC* : 77 700 €)',
+          example:
+            'Pour 12 000 € de recettes perçues en 2026 : 6 000 € imposables (plafond micro-BIC* : 83 600 €)',
           color: 'bg-success-100',
         },
       ],
@@ -212,7 +214,7 @@ export const classificationBenefitsPageContent = {
         value: '2 400 €',
         label: 'de base imposable en moins',
         description:
-          'Sur 12 000 € de recettes, la base micro-BIC est de 6 000 € avec classement (50 %) contre 8 400 € sans classement (30 %).',
+          'Pour 12 000 € de recettes perçues en 2026, la base imposable est de 6 000 € avec classement (50 %), contre 8 400 € sans classement (30 %).',
       },
       footnote: {
         intro:
@@ -277,7 +279,7 @@ export const classificationBenefitsPageContent = {
       },
     },
     socialRegime: {
-      title: 'Régime social : un avantage concret pour les meublés classés en 2026',
+      title: 'Régime social : ce que le classement change en 2026',
       description:
         'En dessous de 23 000 € de recettes annuelles, loueurs classés et non classés relèvent des mêmes prélèvements sociaux (18,6 % sur les revenus nets) — sans cotisations sociales professionnelles. Au-delà de ce seuil, les situations divergent nettement sur le plan social. Le meublé de tourisme classé peut, selon sa situation, continuer à relever du micro-social à 6 % sur les recettes brutes. En 2026, la location de courte durée non classée ne peut plus accéder à ce cadre : elle bascule vers le régime des travailleurs indépendants, plus complexe et potentiellement plus lourd.',
       headers: ['Situation', 'Meublé classé', 'Meublé non classé', 'À retenir'],
@@ -298,14 +300,14 @@ export const classificationBenefitsPageContent = {
           situation: '> 23 000 €/an',
           classified: 'Micro-social possible à 6 %*',
           unclassified: 'Régime des travailleurs indépendants',
-          takeaway: 'Le classement permet de conserver un cadre social plus simple et favorable',
+          takeaway: 'Le classement change aussi les seuils du régime micro-social',
           highlight: 'classified',
         },
       ],
       footnote:
-        "* Applicable entre 23 000 € et 83 600 €, si les recettes 2024 ou 2025 n'excèdent pas 77 700 €. Au-delà de 83 600 €, le meublé classé bascule également vers le régime des indépendants.",
+        '* Pour les recettes 2026 déclarées en 2027, le seuil applicable aux meublés classés est fixé à 83 600 €. L’accès au régime micro-social dépend également des années précédentes : les recettes 2024 ou les revenus 2025 déclarés en 2026 ne doivent pas dépasser 77 700 €. Après deux années consécutives de dépassement du seuil applicable, le régime des indépendants s’applique.',
       callout:
-        'En 2026, le classement ne se limite pas à un avantage fiscal : il permet aussi de conserver un cadre social plus simple et potentiellement beaucoup plus favorable.',
+        'En 2026, l’intérêt du classement ne se limite donc pas au micro-BIC : selon le montant de vos recettes, il peut aussi vous permettre de conserver le régime micro-social.',
       sources: [
         {
           label:
@@ -400,7 +402,7 @@ export const classificationBenefitsPageContent = {
           icon: 'calculator',
           title: 'Increased tax allowance',
           description:
-            'Under the micro-BIC tax regime, classification gives access to a 50% allowance (€77,700 threshold), compared with 30% (€15,000 threshold) for non-classified accommodation, since the law of 19 November 2024.',
+            'For 2026 income declared in 2027, classified furnished tourist accommodation benefits from a 50% micro-BIC tax allowance on revenue of up to €83,600, compared with 30% on revenue of up to €15,000 for non-classified accommodation.',
         },
         {
           icon: 'percent',
@@ -437,20 +439,22 @@ export const classificationBenefitsPageContent = {
     fiscalComparison: {
       title: 'Tax benefits: comparison',
       description:
-        'Classification allows you to benefit from an increased tax allowance, significantly reducing your taxable base.',
+        'Under the micro-BIC tax regime, classification reduces the taxable share of your revenue. The table below shows the difference for 2026 income declared in 2027.',
       items: [
         {
           title: 'Without classification',
           allowance: '30%',
           allowanceLabel: 'tax allowance',
-          example: 'For €12,000 in revenue: €8,400 taxable income (micro-BIC threshold*: €15,000)',
+          example:
+            'For €12,000 in revenue earned in 2026: €8,400 taxable income (micro-BIC threshold*: €15,000)',
           color: 'bg-gray-100',
         },
         {
           title: 'With classification',
           allowance: '50%',
           allowanceLabel: 'tax allowance',
-          example: 'For €12,000 in revenue: €6,000 taxable income (micro-BIC threshold*: €77,700)',
+          example:
+            'For €12,000 in revenue earned in 2026: €6,000 taxable income (micro-BIC threshold*: €83,600)',
           color: 'bg-success-100',
         },
       ],
@@ -458,7 +462,7 @@ export const classificationBenefitsPageContent = {
         value: '€2,400',
         label: 'less taxable base in this example',
         description:
-          'On €12,000 in revenue, the micro-BIC taxable base is €6,000 with classification (50%) compared with €8,400 without classification (30%).',
+          'For €12,000 in revenue earned in 2026, the taxable amount is €6,000 with classification (50%), compared with €8,400 without classification (30%).',
       },
       footnote: {
         intro:

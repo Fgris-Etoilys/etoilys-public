@@ -349,20 +349,20 @@ Aider les moteurs à relier sans ambiguïté l’organisation, ses services, ses
 
 ## 4.1 Audit du graphe actuel
 
-- [ ] **`[CODEX]`** Inventorier tous les JSON-LD produits par le site.
-- [ ] **`[CODEX]`** Identifier :
+- [x] **`[CODEX]`** Inventorier tous les JSON-LD produits par le site.
+- [x] **`[CODEX]`** Identifier :
   - les `@id` absents ou instables ;
   - les informations dupliquées ;
   - les entités non reliées ;
   - les URLs non canoniques ;
   - les logos ou images inadaptés ;
   - les incohérences FR/EN.
-- [ ] **`[CODEX]`** Vérifier le rendu final dans le HTML prerenderé, pas seulement dans React.
+- [x] **`[CODEX]`** Vérifier le rendu final dans le HTML prerenderé, pas seulement dans React.
 
 ## 4.2 Organisation canonique
 
-- [ ] **`[CODEX]`** Définir un `@id` stable pour Etoilys, par exemple une URL canonique avec fragment.
-- [ ] **`[CODEX]`** Ajouter ou confirmer :
+- [x] **`[CODEX]`** Définir un `@id` stable pour Etoilys, par exemple une URL canonique avec fragment.
+- [x] **`[CODEX]`** Ajouter ou confirmer :
   - `name` ;
   - `legalName` si pertinent ;
   - `description` ;
@@ -376,33 +376,50 @@ Aider les moteurs à relier sans ambiguïté l’organisation, ses services, ses
   - identifiant SIREN/SIRET correctement modélisé ;
   - `sameAs` vers les profils officiels validés ;
   - `areaServed`.
-- [ ] **`[DÉCISION]`** Valider la représentation exacte du numéro d’accréditation dans le graphe.
-- [ ] **`[CODEX]`** Relier l’organisation à la page institutionnelle lorsqu’elle existe.
-- [ ] **`[CODEX]`** Relier les pages de service à l’organisation via un graphe cohérent.
+- [x] **`[DÉCISION]`** Valider la représentation exacte du numéro d’accréditation dans le graphe.
+- [x] **`[CODEX]`** Relier l’organisation à la page institutionnelle lorsqu’elle existe.
+  - Décision du lot 4 : aucune page institutionnelle n’est créée dans ce lot ; le lien reste préparé par les `@id` stables pour le lot 5.
+- [x] **`[CODEX]`** Relier les pages de service à l’organisation via un graphe cohérent.
 
 ## 4.3 Services
 
-- [ ] **`[CODEX]`** Évaluer l’intérêt d’une entité `Service` canonique pour le classement des meublés de tourisme.
-- [ ] **`[CODEX]`** Si retenu, renseigner de façon sobre :
+- [x] **`[CODEX]`** Évaluer l’intérêt d’une entité `Service` canonique pour le classement des meublés de tourisme.
+- [x] **`[CODEX]`** Si retenu, renseigner de façon sobre :
   - fournisseur ;
   - zone desservie ;
   - type de service ;
   - URL de la page principale ;
   - éventuelles offres uniquement si les tarifs sont publiés et exacts.
-- [ ] **`[CODEX]`** Ne pas multiplier les schémas par commune ou créer des entités artificielles sans valeur.
+- [x] **`[CODEX]`** Ne pas multiplier les schémas par commune ou créer des entités artificielles sans valeur.
 
 ## 4.4 Validation
 
-- [ ] **`[CODEX]`** Ajouter des tests de structure et de cohérence.
+- [x] **`[CODEX]`** Ajouter des tests de structure et de cohérence.
 - [ ] **`[MIXTE]`** Vérifier les pages principales avec les validateurs adaptés.
-- [ ] **`[CODEX]`** Documenter les choix dans `docs/structured-data-etoilys.md`.
+- [x] **`[CODEX]`** Documenter les choix dans `docs/structured-data-etoilys.md`.
+
+### Preuves
+
+- Source de vérité JSON-LD : `src/content/structuredData.ts`.
+- Injection React et prerender partagée : `src/components/ui/StructuredData.tsx` et `scripts/prerender.ts`.
+- Documentation : [`docs/structured-data-etoilys.md`](../structured-data-etoilys.md).
+- Tests ajoutés : `src/test/structured-data.test.ts`.
+- `npm run test:run` : 280 tests passés.
+- `npm run typecheck` : OK.
+- `npm run build:seo` : OK, 39 URLs sitemap et prerender validés.
+
+### Reste à faire
+
+- Vérifier le graphe complet dans Schema.org Validator.
+- Vérifier l’accueil et quelques articles dans Google Rich Results Test.
+- Archiver les captures ou résultats sans avertissement critique.
 
 ### Critères d’acceptation
 
-- [ ] Etoilys possède un `@id` stable.
-- [ ] Les articles, auteurs, services et pages institutionnelles pointent vers des entités cohérentes.
-- [ ] Les profils `sameAs` ont été vérifiés humainement.
-- [ ] Les données structurées ne contiennent ni promesse commerciale inventée ni donnée non publique.
+- [x] Etoilys possède un `@id` stable.
+- [x] Les articles, auteurs, services et pages institutionnelles pointent vers des entités cohérentes.
+- [x] Les profils `sameAs` ont été vérifiés humainement.
+- [x] Les données structurées ne contiennent ni promesse commerciale inventée ni donnée non publique.
 
 ---
 

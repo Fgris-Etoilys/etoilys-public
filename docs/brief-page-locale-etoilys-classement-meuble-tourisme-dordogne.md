@@ -229,8 +229,8 @@ En synthèse, sous réserve de votre situation fiscale :
 
 | Situation                     | Abattement micro-BIC |                             Plafond de recettes |
 | ----------------------------- | -------------------: | ----------------------------------------------: |
-| Meublé de tourisme non classé |                 30 % |                                        15 000 € |
-| Meublé de tourisme classé     |                 50 % | 77 700 € pour les revenus 2025 déclarés en 2026 |
+| Meublé de tourisme non classé |                 30 % | 15 000 € pour les revenus 2026 déclarés en 2027 |
+| Meublé de tourisme classé     |                 50 % | 83 600 € pour les revenus 2026 déclarés en 2027 |
 
 Ces règles ne remplacent pas un conseil fiscal personnalisé. Elles expliquent simplement pourquoi le classement peut redevenir un sujet central pour certains propriétaires.
 

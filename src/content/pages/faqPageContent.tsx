@@ -258,9 +258,9 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             question: 'Le classement change-t-il quelque chose fiscalement ?',
             answer: (
               <>
-                Oui. Pour les revenus 2025 déclarés en 2026, le régime micro-BIC prévoit un
-                abattement de 50&nbsp;% pour les meublés de tourisme classés, contre 30&nbsp;% pour
-                les meublés non classés.
+                Oui. Pour les revenus 2026 déclarés en 2027, les meublés de tourisme classés
+                bénéficient d’un abattement micro-BIC de 50&nbsp;%, contre 30&nbsp;% pour les
+                meublés non classés.
                 <SourceLink
                   href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
                   label="Source officielle"
@@ -272,8 +272,9 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             question: 'Quels sont les seuils micro-BIC à retenir ?',
             answer: (
               <>
-                Pour les revenus 2025 déclarés en 2026, le seuil micro-BIC est de 77&nbsp;700&nbsp;€
-                pour les meublés classés et de 15&nbsp;000&nbsp;€ pour les meublés non classés.
+                Pour les revenus 2026 déclarés en 2027, le régime micro-BIC s’applique jusqu’à
+                83&nbsp;600&nbsp;€ de recettes pour un meublé classé, contre 15&nbsp;000&nbsp;€ pour
+                un meublé non classé.
                 <SourceLink
                   href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
                   label="Source officielle"
@@ -621,9 +622,9 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             question: 'Does classification change anything for tax purposes?',
             answer: (
               <>
-                Yes. For 2025 income declared in 2026, the micro-BIC tax regime provides a 50%
-                allowance for classified furnished tourist accommodation, compared with 30% for
-                non-classified accommodation.
+                Yes. For 2026 income declared in 2027, classified furnished tourist accommodation
+                benefits from a 50% micro-BIC tax allowance, compared with 30% for non-classified
+                accommodation.
                 <SourceLink
                   href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
                   label="Official French source"
@@ -635,9 +636,9 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             question: 'Which micro-BIC thresholds apply?',
             answer: (
               <>
-                For 2025 income declared in 2026, the micro-BIC threshold is EUR 77,700 for
-                classified furnished tourist accommodation and EUR 15,000 for non-classified
-                furnished accommodation.
+                For 2026 income declared in 2027, the micro-BIC regime applies to revenue of up to
+                €83,600 for classified furnished tourist accommodation, compared with €15,000 for
+                non-classified accommodation.
                 <SourceLink
                   href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
                   label="Official French source"

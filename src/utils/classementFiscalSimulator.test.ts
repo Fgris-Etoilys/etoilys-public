@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest';
+import { CURRENT_MICRO_BIC_RULES } from '../content/microBicFiscalRules';
 import { simulateClassementFiscal } from './classementFiscalSimulator';
 
 describe('simulateClassementFiscal', () => {
+  it('uses the centralized current micro-BIC fiscal rules', () => {
+    const result = simulateClassementFiscal({ annualRevenue: 83_600, tmiRate: 30 });
+
+    expect(result.nonClasse.microBicThreshold).toBe(
+      CURRENT_MICRO_BIC_RULES.nonClasse.microBicThreshold
+    );
+    expect(result.nonClasse.abattementRate).toBe(CURRENT_MICRO_BIC_RULES.nonClasse.abattementRate);
+    expect(result.classe.microBicThreshold).toBe(CURRENT_MICRO_BIC_RULES.classe.microBicThreshold);
+    expect(result.classe.abattementRate).toBe(CURRENT_MICRO_BIC_RULES.classe.abattementRate);
+  });
+
   it('keeps a complete micro comparison at 15 000 €', () => {
     const result = simulateClassementFiscal({ annualRevenue: 15_000, tmiRate: 30 });
 

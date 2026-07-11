@@ -375,8 +375,8 @@ function renderRegimeStatus(scenario: ScenarioSimulationResult, variant: 'non_cl
 
   const tooltipText =
     variant === 'non_classe'
-      ? "Si vous dépassez le seuil de 15 000 € de CA deux années consécutives, vous basculerez automatiquement au régime réel l'année suivante."
-      : 'Au-delà de 83 600 € de CA, le scénario classé est également sous vigilance de sortie du cadre micro-BIC.';
+      ? 'Pour les revenus 2026 déclarés en 2027, le seuil micro-BIC d’un meublé non classé est fixé à 15 000 € de chiffre d’affaires. Après deux années consécutives de dépassement, le régime réel s’applique l’année suivante.'
+      : 'Pour les revenus 2026 déclarés en 2027, le seuil micro-BIC d’un meublé classé est fixé à 83 600 € de chiffre d’affaires. Après deux années consécutives de dépassement, le régime réel s’applique l’année suivante.';
 
   return (
     <span className="inline-flex items-center gap-2 font-medium text-warning-500">
@@ -421,13 +421,13 @@ function getFiscalWarningMessages(result: SimulationResult): string[] {
 
   if (result.showNonClasseWarning) {
     warnings.push(
-      "Au-delà de 15 000 € de chiffre d'affaires, un meublé de tourisme non classé ne reste pas durablement au micro-BIC. Si le dépassement se répète deux années de suite, le régime réel s'applique l'année suivante. En 2026, le classement permet de rester au micro-BIC jusqu'à 83 600 € de chiffre d'affaires."
+      'Pour les revenus 2026 déclarés en 2027, le seuil micro-BIC est fixé à 15 000 € de chiffre d’affaires pour un meublé non classé, contre 83 600 € pour un meublé classé. Après deux années consécutives de dépassement du seuil applicable, le régime réel s’applique l’année suivante.'
     );
   }
 
   if (result.showOutOfScopeWarning) {
     warnings.push(
-      "À partir de 83 600 €, le régime réel s'applique au-delà de ce seuil sur deux années consécutives. Le classement n'apporte alors plus d'avantage fiscal ou social dans ce comparatif."
+      'Pour les revenus 2026 déclarés en 2027, le seuil micro-BIC d’un meublé classé est fixé à 83 600 €. Si vos recettes dépassent ce montant pendant deux années consécutives, le régime réel s’applique l’année suivante et ce simulateur ne couvre plus votre situation.'
     );
   }
 
@@ -994,16 +994,15 @@ export default function SimulateurFiscalClassement() {
               <h2 className="mb-3 text-gray-900">Hypothèses du simulateur fiscal</h2>
               <div className="space-y-3 text-sm">
                 <p>
-                  Ce simulateur se concentre sur le régime micro-BIC applicable aux recettes 2026.
-                  Il compare un meublé classé et un meublé non classé à partir de vos recettes
-                  annuelles et de votre tranche marginale d’imposition.
+                  Ce simulateur compare le régime micro-BIC d’un meublé classé et d’un meublé non
+                  classé pour les revenus 2026 déclarés en 2027, à partir de vos recettes annuelles
+                  et de votre tranche marginale d’imposition.
                 </p>
                 <p>
-                  La comparaison repose sur les principaux paramètres officiels : plafond de
-                  recettes, abattement forfaitaire et différence de traitement entre meublé classé
-                  et non classé. En 2026, l’écart est important : un meublé non classé relève du
-                  micro-BIC jusqu’à 15 000 € de recettes, avec un abattement de 30 %. Un meublé
-                  classé bénéficie d’un plafond de 83 600 € et d’un abattement de 50 %.
+                  La comparaison repose sur les principaux paramètres officiels : seuil de recettes
+                  et abattement forfaitaire. Pour les revenus 2026 déclarés en 2027, le seuil
+                  micro-BIC est fixé à 15 000 € avec un abattement de 30 % pour un meublé non
+                  classé, contre 83 600 € et 50 % pour un meublé classé.
                 </p>
                 <p>
                   Le résultat sert à comparer classé et non classé au micro-BIC. Il ne remplace pas
@@ -1193,8 +1192,8 @@ export default function SimulateurFiscalClassement() {
                             suivante, avec plus de gestion et de formalités.
                           </p>
                           <p className="mt-3">
-                            En 2026, le classement permet de rester au micro-BIC jusqu&apos;à 83 600
-                            € de chiffre d&apos;affaires.
+                            Pour les revenus 2026 déclarés en 2027, un meublé classé peut relever du
+                            régime micro-BIC jusqu&apos;à 83 600 € de chiffre d&apos;affaires.
                           </p>
                         </div>
                       )}
@@ -1213,7 +1212,9 @@ export default function SimulateurFiscalClassement() {
                   >
                     <div className="mb-4">
                       <h2 className="text-gray-900">
-                        À partir de 83 600 €, vous êtes au régime réel
+                        Au-delà de 83 600 € de recettes
+                        <span className="sr-only"> pour les revenus 2026 déclarés en 2027</span>, ce
+                        comparatif micro-BIC peut ne plus s’appliquer
                       </h2>
                     </div>
 

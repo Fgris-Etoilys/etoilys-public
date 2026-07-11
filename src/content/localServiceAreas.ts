@@ -744,12 +744,14 @@ export const DORDOGNE_MICRO_BIC_ROWS: LocalTableRow[] = [
   {
     key: 'non-classe',
     label: 'Meublé de tourisme non classé',
-    value: '30 % d’abattement, plafond de recettes de 15 000 €',
+    value:
+      'Pour les revenus 2026 déclarés en 2027 : 30 % d’abattement, dans la limite de 15 000 € de recettes.',
   },
   {
     key: 'classe',
     label: 'Meublé de tourisme classé',
-    value: '50 % d’abattement, plafond de recettes de 77 700 € pour les revenus 2025',
+    value:
+      'Pour les revenus 2026 déclarés en 2027 : 50 % d’abattement, dans la limite de 83 600 € de recettes.',
   },
 ];
 
