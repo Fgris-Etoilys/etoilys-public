@@ -39,6 +39,16 @@ const localizedRouteCases: Array<{
     en: '/en/request-a-classification',
   },
   { routeId: 'confidentialite', fr: '/confidentialite', en: '/en/privacy-policy' },
+  {
+    routeId: 'simulateurTaxeSejour',
+    fr: '/simulateur-taxe-sejour',
+    en: '/en/tourist-tax-simulator',
+  },
+  {
+    routeId: 'simulateurFiscalClassement',
+    fr: '/simulateur-fiscal-classement',
+    en: '/en/furnished-tourist-accommodation-tax-simulator',
+  },
 ];
 
 describe('i18n route helpers', () => {

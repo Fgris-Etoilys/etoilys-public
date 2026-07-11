@@ -936,7 +936,10 @@ Période contrôlée : du 20 juin au 10 juillet 2026, données fraîches incluse
 
 ## 21. Lot 6 bis - Stabilisation post-release, 404 EN et clôture de la roadmap
 
-Statut ouvert au 11 juillet 2026.
+Statut clôturé au 11 juillet 2026. Les écarts de production déjà corrigés sont considérés livrés ;
+les contrôles manuels Search Console, la surveillance après crawl et les éventuels nouveaux tests
+réels de formulaires restent des actions d'exploitation documentées, sans bloquer les lots
+post-MVP.
 
 Objectif : fermer les écarts détectés après release EN sans rouvrir le périmètre MVP, puis clarifier
 les cases historiques encore non cochées.
@@ -1035,3 +1038,35 @@ Entrées encore actives :
 - Actions Search Console manuelles : resoumettre le sitemap avec un compte disposant des droits
   complets, contrôler le rapport `Not found (404)`, recontrôler le résumé sitemap contradictoire
   et vérifier le `hreflang` interprété si une preuve Search Console est nécessaire.
+
+## 22. Lot 7 - Simulateurs fiscal et taxe de séjour EN
+
+Statut ouvert au 11 juillet 2026.
+
+Objectif : publier en anglais les deux simulateurs frontend autonomes, avec une source de vérité
+fonctionnelle unique et sans ouvrir le simulateur de classement ni son API.
+
+### Périmètre
+
+- [x] Route `/en/furnished-tourist-accommodation-tax-simulator`.
+- [x] Route `/en/tourist-tax-simulator`.
+- [x] Traduction fidèle et complète des libellés, aides, validations, résultats, avertissements,
+      exports et textes accessibles.
+- [x] Calculs, constantes, seuils, données locales et branches conditionnelles partagés entre FR/EN.
+- [x] Formatage central `fr-FR` / `en-GB`, montants en euros et mêmes arrondis.
+- [x] Navigation EN limitée à ces deux simulateurs ; aucun fallback vers le simulateur de classement.
+- [x] SEO centralisé, canonical auto-référentes, `hreflang` réciproques, sitemap et prerender.
+- [ ] QA responsive, non-régression FR et validation de production.
+
+### Hors périmètre
+
+- Simulateur de classement `/simulateur` et `/simulateur/:simulationId`.
+- Traduction des contrats API, rapports ou PDF du simulateur de classement.
+- Conversion de devise, modification des formules ou enrichissement des données réglementaires.
+
+### QA de production
+
+- [ ] Réponse HTTP `200` réelle sur les deux routes EN.
+- [ ] HTML prerenderé complet avec canonical et `hreflang`.
+- [ ] Présence des deux routes et de leurs alternates dans le sitemap public.
+- [ ] Absence de routes EN parasites, notamment `/en/classification-simulator`.

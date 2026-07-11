@@ -170,6 +170,8 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Comparez la taxe de séjour d’un meublé classé et non classé selon la commune, le prix de la nuitée, le nombre de voyageurs et les étoiles.',
     breadcrumbLabel: 'Simulateur taxe de séjour',
     ogImageKey: 'simulateurTaxeSejour',
+    locale: 'fr',
+    routeId: 'simulateurTaxeSejour',
   },
   '/simulateur-fiscal-classement': {
     lastModified: '2026-06-24',
@@ -178,6 +180,8 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Comparez l’impact fiscal du classement en micro-BIC : seuils, abattements, base imposable et différence entre meublé classé et non classé.',
     breadcrumbLabel: 'Simulateur fiscal classement',
     ogImageKey: 'simulateurFiscalClassement',
+    locale: 'fr',
+    routeId: 'simulateurFiscalClassement',
   },
   '/faq': {
     lastModified: '2026-06-25',
@@ -390,6 +394,26 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Privacy policy',
     locale: 'en',
     routeId: 'confidentialite',
+  },
+  '/en/tourist-tax-simulator': {
+    lastModified: '2026-07-11',
+    title: 'Tourist tax simulator: classified and unclassified accommodation',
+    description:
+      'Compare French tourist tax for classified and unclassified furnished tourist accommodation using local 2026 rates, the nightly price and the number of guests.',
+    breadcrumbLabel: 'Tourist tax simulator',
+    ogImageKey: 'simulateurTaxeSejour',
+    locale: 'en',
+    routeId: 'simulateurTaxeSejour',
+  },
+  '/en/furnished-tourist-accommodation-tax-simulator': {
+    lastModified: '2026-07-11',
+    title: '2026 tax simulator for classified furnished tourist accommodation',
+    description:
+      'Compare the estimated 2026 micro-BIC taxation of classified and unclassified furnished tourist accommodation using the applicable thresholds and allowances.',
+    breadcrumbLabel: 'Tax simulator',
+    ogImageKey: 'simulateurFiscalClassement',
+    locale: 'en',
+    routeId: 'simulateurFiscalClassement',
   },
   '/mentions-legales': {
     lastModified: '2026-07-10',

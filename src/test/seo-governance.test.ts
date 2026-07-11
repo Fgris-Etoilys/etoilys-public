@@ -210,8 +210,6 @@ describe('seo governance', () => {
     [
       '/actualites',
       '/simulateur',
-      '/simulateur-taxe-sejour',
-      '/simulateur-fiscal-classement',
       '/zones-intervention',
       '/classement-meuble-tourisme-dordogne',
       '/classement-meuble-tourisme-gironde',

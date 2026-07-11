@@ -11,6 +11,8 @@ export const EN_INDEXABLE_ROUTE_IDS = [
   'prerequis',
   'procedure',
   'faq',
+  'simulateurTaxeSejour',
+  'simulateurFiscalClassement',
 ] as const satisfies readonly LocalizedRouteId[];
 
 const EN_INDEXABLE_ROUTE_ID_SET = new Set<LocalizedRouteId>(EN_INDEXABLE_ROUTE_IDS);

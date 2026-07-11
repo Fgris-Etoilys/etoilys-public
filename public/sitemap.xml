@@ -58,10 +58,16 @@
   <url>
     <loc>https://www.etoilys.fr/simulateur-taxe-sejour</loc>
     <lastmod>2026-06-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.etoilys.fr/simulateur-taxe-sejour" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.etoilys.fr/en/tourist-tax-simulator" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.etoilys.fr/simulateur-taxe-sejour" />
   </url>
   <url>
     <loc>https://www.etoilys.fr/simulateur-fiscal-classement</loc>
     <lastmod>2026-06-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.etoilys.fr/simulateur-fiscal-classement" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.etoilys.fr/en/furnished-tourist-accommodation-tax-simulator" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.etoilys.fr/simulateur-fiscal-classement" />
   </url>
   <url>
     <loc>https://www.etoilys.fr/faq</loc>
@@ -205,6 +211,20 @@
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.etoilys.fr/confidentialite" />
     <xhtml:link rel="alternate" hreflang="en" href="https://www.etoilys.fr/en/privacy-policy" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.etoilys.fr/confidentialite" />
+  </url>
+  <url>
+    <loc>https://www.etoilys.fr/en/tourist-tax-simulator</loc>
+    <lastmod>2026-07-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.etoilys.fr/simulateur-taxe-sejour" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.etoilys.fr/en/tourist-tax-simulator" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.etoilys.fr/simulateur-taxe-sejour" />
+  </url>
+  <url>
+    <loc>https://www.etoilys.fr/en/furnished-tourist-accommodation-tax-simulator</loc>
+    <lastmod>2026-07-11</lastmod>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.etoilys.fr/simulateur-fiscal-classement" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.etoilys.fr/en/furnished-tourist-accommodation-tax-simulator" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.etoilys.fr/simulateur-fiscal-classement" />
   </url>
   <url>
     <loc>https://www.etoilys.fr/mentions-legales</loc>

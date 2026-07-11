@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
@@ -26,6 +27,12 @@ import {
   normalizePdfText,
 } from '../utils/simulatorExport';
 import { trackSimulatorCalculated, trackSimulatorStarted } from '../utils/analytics';
+import LocalizedContent from '../i18n/LocalizedContent';
+import { translateText } from '../i18n/textTranslation';
+import { touristTaxSimulatorEnglishTranslations } from '../i18n/simulatorContent';
+import { getLocaleFromPath } from '../i18n/routeHelpers';
+import { formatDate, formatEuro as formatLocalizedEuro } from '../i18n/numberFormatting';
+import type { Locale } from '../i18n/locales';
 
 interface FormErrors {
   city?: string;
@@ -385,17 +392,24 @@ function buildShareUrl(snapshot: PersistedCalculationSnapshot): string {
   return url.toString();
 }
 
-function formatEuro(value: number): string {
-  return value.toLocaleString('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+function formatEuro(value: number, locale: Locale): string {
+  return formatLocalizedEuro(value, locale);
 }
 
-function formatPdfEuro(value: number): string {
-  return normalizePdfText(formatEuro(value));
+function formatPdfEuro(value: number, locale: Locale): string {
+  return normalizePdfText(formatEuro(value, locale));
+}
+
+function localizeTouristTaxSimulatorText(value: string, locale: Locale): string {
+  return locale === 'en' ? translateText(value, touristTaxSimulatorEnglishTranslations) : value;
+}
+
+function formatDatasetDate(value: string, locale: Locale): string {
+  const [day, month, year] = value.split('/').map(Number);
+  if (!day || !month || !year) {
+    return value;
+  }
+  return formatDate(new Date(Date.UTC(year, month - 1, day)), locale);
 }
 
 function formatDeltaPercent(delta: number, nonClasseReference: number): string {
@@ -408,20 +422,35 @@ function formatDeltaPercent(delta: number, nonClasseReference: number): string {
   return `${sign}${percent} %`;
 }
 
-function formatReadableDeltaWithPercent(delta: number, nonClasseReference: number): string {
+function getReadableDeltaLabel(delta: number, locale: Locale): string {
+  if (locale === 'en') {
+    return delta < 0 ? 'saved' : 'more';
+  }
+  return delta < 0 ? 'économisés' : 'de plus';
+}
+
+function formatReadableDeltaWithPercent(
+  delta: number,
+  nonClasseReference: number,
+  locale: Locale
+): string {
   if (delta === 0) {
-    return 'Aucun écart';
+    return localizeTouristTaxSimulatorText('Aucun écart', locale);
   }
 
-  const formattedAmount = formatEuro(Math.abs(delta));
+  const formattedAmount = formatEuro(Math.abs(delta), locale);
   const formattedPercent = formatDeltaPercent(delta, nonClasseReference);
-  const deltaLabel = delta < 0 ? 'économisés' : 'de plus';
+  const deltaLabel = getReadableDeltaLabel(delta, locale);
 
   return `${formattedAmount} ${deltaLabel} (${formattedPercent})`;
 }
 
-function formatPdfReadableDeltaWithPercent(delta: number, nonClasseReference: number): string {
-  return normalizePdfText(formatReadableDeltaWithPercent(delta, nonClasseReference));
+function formatPdfReadableDeltaWithPercent(
+  delta: number,
+  nonClasseReference: number,
+  locale: Locale
+): string {
+  return normalizePdfText(formatReadableDeltaWithPercent(delta, nonClasseReference, locale));
 }
 
 function getDeltaClassName(delta: number): string {
@@ -434,11 +463,17 @@ function getDeltaClassName(delta: number): string {
   return 'text-gray-600';
 }
 
-function getNightsLabel(nights: number): string {
+function getNightsLabel(nights: number, locale: Locale): string {
+  if (locale === 'en') {
+    return `${nights} ${nights > 1 ? 'nights' : 'night'}`;
+  }
   return `${nights} ${nights > 1 ? 'nuits' : 'nuit'}`;
 }
 
-function getRentedNightsLabel(nights: number): string {
+function getRentedNightsLabel(nights: number, locale: Locale): string {
+  if (locale === 'en') {
+    return `${nights} ${nights > 1 ? 'nights rented' : 'night rented'}`;
+  }
   return `${nights} ${nights > 1 ? 'nuits louées' : 'nuit louée'}`;
 }
 
@@ -446,13 +481,16 @@ function formatPeopleLabel(count: number, singular: string, plural: string): str
   return `${count} ${count > 1 ? plural : singular}`;
 }
 
-function formatClassifiedCategoryForSentence(category: string): string {
+function formatClassifiedCategoryForSentence(category: string, locale: Locale): string {
   const match = category.match(/^([1-5])\*$/);
   if (!match) {
     return category;
   }
 
   const stars = Number(match[1]);
+  if (locale === 'en') {
+    return `${stars} ${stars > 1 ? 'stars' : 'star'}`;
+  }
   return `${stars} ${stars > 1 ? 'étoiles' : 'étoile'}`;
 }
 
@@ -485,56 +523,111 @@ function findBestSavings(
 
 function getSimulationAssumptionsSentence(
   cityLabel: string,
-  snapshot: PersistedCalculationSnapshot
+  snapshot: PersistedCalculationSnapshot,
+  locale: Locale
 ): string {
-  const parts = [`Simulation réalisée pour ${cityLabel}`, `sur ${getNightsLabel(snapshot.nights)}`];
+  const parts =
+    locale === 'en'
+      ? [`Simulation for ${cityLabel}`, `over ${getNightsLabel(snapshot.nights, locale)}`]
+      : [`Simulation réalisée pour ${cityLabel}`, `sur ${getNightsLabel(snapshot.nights, locale)}`];
 
   if (snapshot.personsStaying !== undefined) {
-    const personsLabel = formatPeopleLabel(
-      snapshot.personsStaying,
-      'personne accueillie',
-      'personnes accueillies'
-    );
-    const exemptedLabel = formatPeopleLabel(snapshot.exemptedPersons ?? 0, 'exonérée', 'exonérées');
-    parts.push(`avec ${personsLabel} dont ${exemptedLabel}`);
-  } else if (snapshot.capacity !== undefined) {
+    const personsLabel =
+      locale === 'en'
+        ? formatPeopleLabel(snapshot.personsStaying, 'guest staying', 'guests staying')
+        : formatPeopleLabel(
+            snapshot.personsStaying,
+            'personne accueillie',
+            'personnes accueillies'
+          );
+    const exemptedLabel =
+      locale === 'en'
+        ? formatPeopleLabel(snapshot.exemptedPersons ?? 0, 'exempt', 'exempt')
+        : formatPeopleLabel(snapshot.exemptedPersons ?? 0, 'exonérée', 'exonérées');
     parts.push(
-      `avec une capacité renseignée de ${formatPeopleLabel(
-        snapshot.capacity,
-        'personne',
-        'personnes'
-      )}`
+      locale === 'en'
+        ? `with ${personsLabel}, including ${exemptedLabel}`
+        : `avec ${personsLabel} dont ${exemptedLabel}`
+    );
+  } else if (snapshot.capacity !== undefined) {
+    const capacityLabel =
+      locale === 'en'
+        ? formatPeopleLabel(snapshot.capacity, 'person capacity', 'person capacity')
+        : formatPeopleLabel(snapshot.capacity, 'personne', 'personnes');
+    parts.push(
+      locale === 'en'
+        ? `with a stated capacity of ${capacityLabel}`
+        : `avec une capacité renseignée de ${capacityLabel}`
     );
   }
 
-  parts.push(`au prix moyen de ${formatEuro(snapshot.nightlyPriceHt)} HT / nuit`);
+  parts.push(
+    locale === 'en'
+      ? `at an average price of ${formatEuro(snapshot.nightlyPriceHt, locale)} excluding tax / night`
+      : `au prix moyen de ${formatEuro(snapshot.nightlyPriceHt, locale)} HT / nuit`
+  );
 
   return `${parts.join(', ')}.`;
 }
 
 function getSimulationAssumptionFacts(
   cityLabel: string,
-  snapshot: PersistedCalculationSnapshot
+  snapshot: PersistedCalculationSnapshot,
+  locale: Locale
 ): string[] {
-  const facts = [cityLabel, getRentedNightsLabel(snapshot.nights)];
+  const facts = [cityLabel, getRentedNightsLabel(snapshot.nights, locale)];
 
   if (snapshot.personsStaying !== undefined) {
     facts.push(
-      formatPeopleLabel(snapshot.personsStaying, 'personne accueillie', 'personnes accueillies')
+      locale === 'en'
+        ? formatPeopleLabel(snapshot.personsStaying, 'guest staying', 'guests staying')
+        : formatPeopleLabel(snapshot.personsStaying, 'personne accueillie', 'personnes accueillies')
     );
-    facts.push(formatPeopleLabel(snapshot.exemptedPersons ?? 0, 'exonérée', 'exonérées'));
+    facts.push(
+      locale === 'en'
+        ? formatPeopleLabel(snapshot.exemptedPersons ?? 0, 'exempt', 'exempt')
+        : formatPeopleLabel(snapshot.exemptedPersons ?? 0, 'exonérée', 'exonérées')
+    );
   } else if (snapshot.capacity !== undefined) {
     facts.push(
-      formatPeopleLabel(snapshot.capacity, 'personne de capacité', 'personnes de capacité')
+      locale === 'en'
+        ? formatPeopleLabel(snapshot.capacity, 'person capacity', 'person capacity')
+        : formatPeopleLabel(snapshot.capacity, 'personne de capacité', 'personnes de capacité')
     );
   }
 
   return facts;
 }
 
-function formatFrenchTariffDateLabel(label: string): string {
+const ENGLISH_TARIFF_MONTHS: Readonly<Record<string, string>> = {
+  janvier: 'January',
+  février: 'February',
+  mars: 'March',
+  avril: 'April',
+  mai: 'May',
+  juin: 'June',
+  juillet: 'July',
+  août: 'August',
+  septembre: 'September',
+  octobre: 'October',
+  novembre: 'November',
+  décembre: 'December',
+};
+
+function formatTariffDateLabel(label: string, locale: Locale): string {
   const normalizedLabel = label.trim().replace(/\s+/g, ' ');
   const firstDayMatch = normalizedLabel.match(/^0?1\s+(.+)$/i);
+  const regularDayMatch = normalizedLabel.match(/^0?([1-9]|[12]\d|3[01])\s+(.+)$/i);
+
+  if (locale === 'en') {
+    const day = firstDayMatch?.[0] ? 1 : Number(regularDayMatch?.[1]);
+    const month = firstDayMatch?.[1] ?? regularDayMatch?.[2];
+    if (day && month) {
+      return `${day} ${ENGLISH_TARIFF_MONTHS[month.toLowerCase()] ?? month}`;
+    }
+    return normalizedLabel;
+  }
+
   if (firstDayMatch?.[1]) {
     return `1er ${firstDayMatch[1]}`;
   }
@@ -542,16 +635,22 @@ function formatFrenchTariffDateLabel(label: string): string {
   return normalizedLabel.replace(/^0([2-9])\s+/, '$1 ');
 }
 
-function getTariffPeriodSentence(startLabel: string, endLabel: string): string {
-  return `Période tarifaire considérée : du ${formatFrenchTariffDateLabel(
-    startLabel
-  )} au ${formatFrenchTariffDateLabel(endLabel)}.`;
+function getTariffPeriodSentence(startLabel: string, endLabel: string, locale: Locale): string {
+  const formattedStart = formatTariffDateLabel(startLabel, locale);
+  const formattedEnd = formatTariffDateLabel(endLabel, locale);
+  if (locale === 'en') {
+    return `Tariff period considered: from ${formattedStart} to ${formattedEnd}.`;
+  }
+  return `Période tarifaire considérée : du ${formattedStart} au ${formattedEnd}.`;
 }
 
-function getTariffPeriodCompactLabel(startLabel: string, endLabel: string): string {
-  return `Période : du ${formatFrenchTariffDateLabel(startLabel)} au ${formatFrenchTariffDateLabel(
-    endLabel
-  )}`;
+function getTariffPeriodCompactLabel(startLabel: string, endLabel: string, locale: Locale): string {
+  const formattedStart = formatTariffDateLabel(startLabel, locale);
+  const formattedEnd = formatTariffDateLabel(endLabel, locale);
+  if (locale === 'en') {
+    return `Period: from ${formattedStart} to ${formattedEnd}`;
+  }
+  return `Période : du ${formattedStart} au ${formattedEnd}`;
 }
 
 function isFullYearPeriod(startLabel: string, endLabel: string): boolean {
@@ -684,6 +783,13 @@ function getFuzzyScore(query: string, citySearch: PreparedCitySearch): number | 
 }
 
 export default function SimulateurTaxeSejour() {
+  const location = useLocation();
+  const locale = getLocaleFromPath(location.pathname);
+  const localize = useCallback(
+    (value: string): string =>
+      locale === 'en' ? translateText(value, touristTaxSimulatorEnglishTranslations) : value,
+    [locale]
+  );
   const { showToast } = useToast();
   const [dataset, setDataset] = useState<TaxeSejourDataset | null>(null);
   const [loadingError, setLoadingError] = useState<string | null>(null);
@@ -732,27 +838,27 @@ export default function SimulateurTaxeSejour() {
     () => [
       {
         key: 'category',
-        label: 'Catégorie',
-        mobileLabel: 'Catégorie',
+        label: localize('Catégorie'),
+        mobileLabel: localize('Catégorie'),
         align: 'center',
         widthClassName: 'w-1/4',
       },
       {
         key: 'delta',
-        label: 'Économie / surcoût',
-        mobileLabel: 'Écart vs non classé',
+        label: localize('Économie / surcoût'),
+        mobileLabel: localize('Écart vs non classé'),
         align: 'center',
         widthClassName: 'w-5/12',
       },
       {
         key: 'amount',
-        label: 'Taxe de séjour totale',
-        mobileLabel: 'Taxe de séjour totale',
+        label: localize('Taxe de séjour totale'),
+        mobileLabel: localize('Taxe de séjour totale'),
         align: 'center',
         widthClassName: 'w-1/3',
       },
     ],
-    []
+    [localize]
   );
 
   const resultRows = useMemo<ResponsiveComparisonRow[]>(() => {
@@ -776,9 +882,11 @@ export default function SimulateurTaxeSejour() {
         cells: {
           category: (
             <div className="flex flex-col items-center justify-center gap-1">
-              <span className="font-semibold">{row.category}</span>
+              <span className="font-semibold">{localize(row.category)}</span>
               {row.status === 'indicatif' && (
-                <span className="text-xs font-semibold text-warning-500">indicatif</span>
+                <span className="text-xs font-semibold text-warning-500">
+                  {localize('indicatif')}
+                </span>
               )}
             </div>
           ),
@@ -790,12 +898,12 @@ export default function SimulateurTaxeSejour() {
                   : 'font-semibold text-gray-900'
               }
             >
-              {formatEuro(row.amount)}
+              {formatEuro(row.amount, locale)}
             </span>
           ),
           delta: isReferenceRow ? (
             <span className="inline-block max-w-[13rem] text-right font-medium text-gray-600 md:max-w-none md:text-center">
-              Référence de comparaison
+              {localize('Référence de comparaison')}
             </span>
           ) : (
             <span
@@ -803,7 +911,7 @@ export default function SimulateurTaxeSejour() {
                 delta
               )}`}
             >
-              {formatReadableDeltaWithPercent(delta, nonClassReference)}
+              {formatReadableDeltaWithPercent(delta, nonClassReference, locale)}
             </span>
           ),
         },
@@ -815,7 +923,7 @@ export default function SimulateurTaxeSejour() {
 
       return comparisonRow;
     });
-  }, [result, nonClasseAmount]);
+  }, [localize, locale, result, nonClasseAmount]);
 
   const resultSummary = useMemo(() => {
     if (!lastCalculationSnapshot) {
@@ -823,13 +931,14 @@ export default function SimulateurTaxeSejour() {
     }
 
     return {
-      facts: getSimulationAssumptionFacts(resultCityLabel, lastCalculationSnapshot),
-      nightlyPriceLabel: `Prix moyen : ${formatEuro(
-        lastCalculationSnapshot.nightlyPriceHt
-      )} HT / nuit`,
+      facts: getSimulationAssumptionFacts(resultCityLabel, lastCalculationSnapshot, locale),
+      nightlyPriceLabel:
+        locale === 'en'
+          ? `Average price: ${formatEuro(lastCalculationSnapshot.nightlyPriceHt, locale)} excluding tax / night`
+          : `Prix moyen : ${formatEuro(lastCalculationSnapshot.nightlyPriceHt, locale)} HT / nuit`,
       bestSavings,
     };
-  }, [bestSavings, lastCalculationSnapshot, resultCityLabel]);
+  }, [bestSavings, lastCalculationSnapshot, locale, resultCityLabel]);
 
   const closeTimerRef = useRef<number | null>(null);
   const listId = 'taxe-sejour-city-listbox';
@@ -889,9 +998,11 @@ export default function SimulateurTaxeSejour() {
           return;
         }
         setLoadingError(
-          error instanceof Error
-            ? error.message
-            : 'Le chargement du simulateur taxe de séjour a échoué.'
+          locale === 'en'
+            ? 'The tourist tax simulator data could not be loaded.'
+            : error instanceof Error
+              ? error.message
+              : 'Le chargement du simulateur taxe de séjour a échoué.'
         );
       })
       .finally(() => {
@@ -904,7 +1015,7 @@ export default function SimulateurTaxeSejour() {
         window.clearTimeout(closeTimerRef.current);
       }
     };
-  }, []);
+  }, [locale]);
 
   const selectedCity = useMemo(() => {
     if (!dataset || !selectedCityId) {
@@ -1420,20 +1531,20 @@ export default function SimulateurTaxeSejour() {
 
   async function handleCopyShareLink() {
     if (!lastCalculationSnapshot) {
-      showToast('Aucun résultat à partager.', { type: 'info' });
+      showToast(localize('Aucun résultat à partager.'), { type: 'info' });
       return;
     }
 
     const shareUrl = buildShareUrl(lastCalculationSnapshot);
     const isCopied = await copyToClipboard(shareUrl);
-    showToast(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.', {
+    showToast(localize(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.'), {
       type: isCopied ? 'success' : 'error',
     });
   }
 
   async function handleExportPdf() {
     if (!result || !lastCalculationSnapshot) {
-      showToast('Aucun résultat à exporter.', { type: 'info' });
+      showToast(localize('Aucun résultat à exporter.'), { type: 'info' });
       return;
     }
 
@@ -1470,7 +1581,7 @@ export default function SimulateurTaxeSejour() {
 
       doc.setFontSize(18);
       doc.setTextColor(49, 107, 255);
-      const title = 'Simulation taxe de séjour';
+      const title = localize('Simulation taxe de séjour');
       const titleWidth = doc.getTextWidth(title);
       const centeredTitleX = (pageWidth - titleWidth) / 2;
       doc.text(title, centeredTitleX, cursorY);
@@ -1478,35 +1589,38 @@ export default function SimulateurTaxeSejour() {
       cursorY += 34;
       doc.setFontSize(11);
       doc.setTextColor(25);
-      doc.text('Paramètres de simulation', marginX, cursorY);
+      doc.text(localize('Paramètres de simulation'), marginX, cursorY);
 
       const simulationParametersRows: string[][] = [
-        ['Commune', resultCityLabel],
-        ['Prix par nuit HT', formatPdfEuro(lastCalculationSnapshot.nightlyPriceHt)],
-        ['Durée du séjour', getNightsLabel(lastCalculationSnapshot.nights)],
+        [localize('Commune'), resultCityLabel],
+        [
+          localize('Prix par nuit HT'),
+          formatPdfEuro(lastCalculationSnapshot.nightlyPriceHt, locale),
+        ],
+        [localize('Durée du séjour'), getNightsLabel(lastCalculationSnapshot.nights, locale)],
       ];
       if (lastCalculationSnapshot.capacity !== undefined) {
         simulationParametersRows.push([
-          'Capacité du logement',
+          localize('Capacité du logement'),
           String(lastCalculationSnapshot.capacity),
         ]);
       }
       if (lastCalculationSnapshot.personsStaying !== undefined) {
         simulationParametersRows.push([
-          'Personnes accueillies',
+          localize('Personnes accueillies'),
           String(lastCalculationSnapshot.personsStaying),
         ]);
       }
       if (lastCalculationSnapshot.exemptedPersons !== undefined) {
         simulationParametersRows.push([
-          'Personnes exonérées',
+          localize('Personnes exonérées'),
           String(lastCalculationSnapshot.exemptedPersons),
         ]);
       }
 
       autoTable(doc, {
         startY: cursorY + 10,
-        head: [['Paramètre', 'Valeur']],
+        head: [[localize('Paramètre'), localize('Valeur')]],
         body: simulationParametersRows,
         styles: { fontSize: 10, cellPadding: 7 },
         headStyles: { fillColor: [49, 107, 255] },
@@ -1517,7 +1631,7 @@ export default function SimulateurTaxeSejour() {
 
       doc.setFontSize(11);
       doc.setTextColor(25);
-      doc.text('Résultats', marginX, cursorY);
+      doc.text(localize('Résultats'), marginX, cursorY);
 
       cursorY += 18;
       doc.setFontSize(10);
@@ -1525,23 +1639,37 @@ export default function SimulateurTaxeSejour() {
       const resultSummaryLines =
         bestSavings !== null
           ? [
-              `Jusqu’à ${formatPdfEuro(
-                bestSavings.savingsAmount
-              )} de taxe de séjour en moins avec un classement ${formatClassifiedCategoryForSentence(
-                bestSavings.category
-              )}, par rapport à un meublé non classé.`,
-              getSimulationAssumptionsSentence(resultCityLabel, lastCalculationSnapshot),
+              locale === 'en'
+                ? `Up to ${formatPdfEuro(
+                    bestSavings.savingsAmount,
+                    locale
+                  )} less tourist tax with a ${formatClassifiedCategoryForSentence(
+                    bestSavings.category,
+                    locale
+                  )} classification, compared with unclassified furnished tourist accommodation.`
+                : `Jusqu’à ${formatPdfEuro(
+                    bestSavings.savingsAmount,
+                    locale
+                  )} de taxe de séjour en moins avec un classement ${formatClassifiedCategoryForSentence(
+                    bestSavings.category,
+                    locale
+                  )}, par rapport à un meublé non classé.`,
+              getSimulationAssumptionsSentence(resultCityLabel, lastCalculationSnapshot, locale),
               getTariffPeriodSentence(
                 result.selectedPeriod.startLabel,
-                result.selectedPeriod.endLabel
+                result.selectedPeriod.endLabel,
+                locale
               ),
             ]
           : [
-              'Dans cette simulation, le classement ne réduit pas la taxe de séjour par rapport au non classé. Les montants varient selon la catégorie de classement et les tarifs votés localement.',
-              getSimulationAssumptionsSentence(resultCityLabel, lastCalculationSnapshot),
+              localize(
+                'Dans cette simulation, le classement ne réduit pas la taxe de séjour par rapport au non classé. Les montants varient selon la catégorie de classement et les tarifs votés localement.'
+              ),
+              getSimulationAssumptionsSentence(resultCityLabel, lastCalculationSnapshot, locale),
               getTariffPeriodSentence(
                 result.selectedPeriod.startLabel,
-                result.selectedPeriod.endLabel
+                result.selectedPeriod.endLabel,
+                locale
               ),
             ];
       const wrappedResultSummary = doc.splitTextToSize(
@@ -1555,24 +1683,30 @@ export default function SimulateurTaxeSejour() {
         const nonClassReference = nonClasseAmount ?? 0;
         const deltaRaw = row.amount - nonClassReference;
         return {
-          category: row.category,
+          category: localize(row.category),
           rawCategory: row.category,
           amount: row.amount,
           deltaText:
             row.category === 'Non classé'
-              ? 'Référence de comparaison'
-              : formatPdfReadableDeltaWithPercent(deltaRaw, nonClassReference),
+              ? localize('Référence de comparaison')
+              : formatPdfReadableDeltaWithPercent(deltaRaw, nonClassReference, locale),
           deltaRaw,
         };
       });
 
       autoTable(doc, {
         startY: cursorY,
-        head: [['Catégorie', 'Économie / surcoût', 'Taxe de séjour totale']],
+        head: [
+          [
+            localize('Catégorie'),
+            localize('Économie / surcoût'),
+            localize('Taxe de séjour totale'),
+          ],
+        ],
         body: resultRowsForPdf.map((row) => [
           row.category,
           row.deltaText,
-          formatPdfEuro(row.amount),
+          formatPdfEuro(row.amount, locale),
         ]),
         styles: { fontSize: 10, cellPadding: 7 },
         headStyles: { fillColor: [49, 107, 255] },
@@ -1610,13 +1744,16 @@ export default function SimulateurTaxeSejour() {
 
       doc.setFontSize(11);
       doc.setTextColor(25);
-      doc.text('Taxes additionnelles', marginX, cursorY);
+      doc.text(localize('Taxes additionnelles'), marginX, cursorY);
       cursorY += 8;
 
       autoTable(doc, {
         startY: cursorY,
-        head: [['Taxes additionnelles', 'Appliquée']],
-        body: result.additionalTaxes.map((tax) => [tax.label, tax.isApplied ? 'Oui' : 'Non']),
+        head: [[localize('Taxes additionnelles'), localize('Appliquée')]],
+        body: result.additionalTaxes.map((tax) => [
+          localize(tax.label),
+          tax.isApplied ? localize('Oui') : localize('Non'),
+        ]),
         styles: { fontSize: 10, cellPadding: 7 },
         headStyles: { fillColor: [49, 107, 255] },
         alternateRowStyles: { fillColor: [249, 250, 251] },
@@ -1627,12 +1764,12 @@ export default function SimulateurTaxeSejour() {
       if (result.warnings.length > 0) {
         doc.setFontSize(11);
         doc.setTextColor(25);
-        doc.text("Points d'attention", marginX, cursorY);
+        doc.text(localize("Points d'attention"), marginX, cursorY);
 
         autoTable(doc, {
           startY: cursorY + 8,
-          head: [['Avertissement']],
-          body: result.warnings.map((warning) => [warning]),
+          head: [[localize('Avertissement')]],
+          body: result.warnings.map((warning) => [localize(warning)]),
           styles: { fontSize: 10, cellPadding: 7 },
           headStyles: { fillColor: [145, 109, 0] },
           alternateRowStyles: { fillColor: [255, 248, 211] },
@@ -1640,8 +1777,10 @@ export default function SimulateurTaxeSejour() {
       }
 
       const sourceLine = dataset
-        ? `Source Etoilys: données DELTA v${dataset.version} (date de référence: ${dataset.sourceDate}).`
-        : 'Source Etoilys: données DELTA indisponibles.';
+        ? locale === 'en'
+          ? `Etoilys source: DELTA v${dataset.version} data (reference date: ${dataset.sourceDate}). Official sources are available in French.`
+          : `Source Etoilys: données DELTA v${dataset.version} (date de référence: ${dataset.sourceDate}).`
+        : localize('Source Etoilys: données DELTA indisponibles.');
       const sourceWrapped = doc.splitTextToSize(sourceLine, 520);
       doc.setFontSize(9);
       doc.setTextColor(110);
@@ -1658,9 +1797,9 @@ export default function SimulateurTaxeSejour() {
 
       const safeCityId = lastCalculationSnapshot.cityId.replace(/[^a-zA-Z0-9_-]/g, '-');
       doc.save(`simulation-taxe-sejour-${safeCityId}-${formatFilenameDate(new Date())}.pdf`);
-      showToast('PDF généré.', { type: 'success' });
+      showToast(localize('PDF généré.'), { type: 'success' });
     } catch {
-      showToast('Impossible de générer le PDF.', { type: 'error' });
+      showToast(localize('Impossible de générer le PDF.'), { type: 'error' });
     }
   }
 
@@ -1704,11 +1843,13 @@ export default function SimulateurTaxeSejour() {
   }
 
   return (
-    <>
+    <LocalizedContent locale={locale} translations={touristTaxSimulatorEnglishTranslations}>
       <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
         <div className="container-adaptive">
           <div className="max-w-4xl">
-            <h1 className="mb-4 text-white">Simulateur taxe de séjour : classé ou non classé</h1>
+            <h1 className="mb-4 text-white">
+              Simulateur taxe de séjour 2026 : classé ou non classé
+            </h1>
             <p className="text-base text-white/90">
               Comparez le montant estimatif de taxe de séjour entre un meublé non classé et un
               meublé classé de 1 à 5 étoiles, selon les données locales disponibles.
@@ -1748,6 +1889,12 @@ export default function SimulateurTaxeSejour() {
                 Sélectionnez une commune puis renseignez les informations du séjour pour comparer
                 les montants estimatifs.
               </p>
+              {dataset && (
+                <p className="mb-5 text-sm font-medium text-gray-700">
+                  Données de taxe de séjour 2026 · Mise à jour de référence :{' '}
+                  {formatDatasetDate(dataset.sourceDate, locale)} · DELTA v{dataset.version}
+                </p>
+              )}
 
               {isLoading && <p className="text-textLight">Chargement des données en cours...</p>}
               {loadingError && (
@@ -2012,21 +2159,43 @@ export default function SimulateurTaxeSejour() {
                           {resultSummary.bestSavings ? (
                             <>
                               <p className="mt-3 text-3xl font-semibold leading-tight text-success-500 md:text-4xl">
-                                Jusqu’à {formatEuro(resultSummary.bestSavings.savingsAmount)}
+                                Jusqu’à{' '}
+                                {formatEuro(resultSummary.bestSavings.savingsAmount, locale)}
                               </p>
                               <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-900">
-                                de taxe de séjour en moins avec un{' '}
-                                <strong className="font-semibold text-gray-950">
-                                  classement{' '}
-                                  {formatClassifiedCategoryForSentence(
-                                    resultSummary.bestSavings.category
-                                  )}
-                                </strong>
-                                , par rapport à un{' '}
-                                <strong className="font-semibold text-gray-950">
-                                  meublé non classé
-                                </strong>
-                                .
+                                {locale === 'en' ? (
+                                  <>
+                                    less tourist tax with a{' '}
+                                    <strong className="font-semibold text-gray-950">
+                                      {formatClassifiedCategoryForSentence(
+                                        resultSummary.bestSavings.category,
+                                        locale
+                                      )}{' '}
+                                      classification
+                                    </strong>
+                                    , compared with{' '}
+                                    <strong className="font-semibold text-gray-950">
+                                      unclassified furnished tourist accommodation
+                                    </strong>
+                                    .
+                                  </>
+                                ) : (
+                                  <>
+                                    de taxe de séjour en moins avec un{' '}
+                                    <strong className="font-semibold text-gray-950">
+                                      classement{' '}
+                                      {formatClassifiedCategoryForSentence(
+                                        resultSummary.bestSavings.category,
+                                        locale
+                                      )}
+                                    </strong>
+                                    , par rapport à un{' '}
+                                    <strong className="font-semibold text-gray-950">
+                                      meublé non classé
+                                    </strong>
+                                    .
+                                  </>
+                                )}
                               </p>
                             </>
                           ) : (
@@ -2063,7 +2232,8 @@ export default function SimulateurTaxeSejour() {
                           <p className="mt-1 text-sm leading-relaxed text-gray-600">
                             {getTariffPeriodCompactLabel(
                               result.selectedPeriod.startLabel,
-                              result.selectedPeriod.endLabel
+                              result.selectedPeriod.endLabel,
+                              locale
                             )}
                           </p>
                           {!isFullYearPeriod(
@@ -2150,10 +2320,13 @@ export default function SimulateurTaxeSejour() {
                     </p>
 
                     {dataset && (
-                      <p className="text-xs text-textLight">
-                        Source de données: DELTA v{dataset.version} (date de référence:{' '}
-                        {dataset.sourceDate}).
-                      </p>
+                      <div className="space-y-1 text-xs text-textLight">
+                        <p>
+                          Source de données: DELTA v{dataset.version} (date de référence:{' '}
+                          {dataset.sourceDate}).
+                        </p>
+                        {locale === 'en' && <p>Official sources are available in French.</p>}
+                      </div>
                     )}
                   </div>
                 </Card>
@@ -2165,10 +2338,22 @@ export default function SimulateurTaxeSejour() {
                     meublé non classé.
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <Button href="/simulateur-fiscal-classement" variant="primary">
+                    <Button
+                      href={
+                        locale === 'en'
+                          ? '/en/furnished-tourist-accommodation-tax-simulator'
+                          : '/simulateur-fiscal-classement'
+                      }
+                      variant="primary"
+                    >
                       Simulateur fiscal
                     </Button>
-                    <Button href="/demande-classement" variant="secondary">
+                    <Button
+                      href={
+                        locale === 'en' ? '/en/request-a-classification' : '/demande-classement'
+                      }
+                      variant="secondary"
+                    >
                       Demande de classement
                     </Button>
                   </div>
@@ -2178,6 +2363,6 @@ export default function SimulateurTaxeSejour() {
           </div>
         </div>
       </section>
-    </>
+    </LocalizedContent>
   );
 }

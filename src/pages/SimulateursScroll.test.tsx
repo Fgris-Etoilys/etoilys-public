@@ -51,6 +51,10 @@ function expectSmoothWindowScroll(scrollToMock: ReturnType<typeof vi.spyOn>) {
   );
 }
 
+function getNormalizedText(container: HTMLElement): string {
+  return container.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+}
+
 describe('scroll automatique des simulateurs', () => {
   afterEach(() => {
     cleanup();
@@ -103,5 +107,64 @@ describe('scroll automatique des simulateurs', () => {
     fireEvent.click(screen.getByRole('button', { name: /calculer/i }));
 
     expect(scrollToMock).not.toHaveBeenCalled();
+  });
+
+  it('localise les résultats calculés du simulateur fiscal en anglais', async () => {
+    const scrollToMock = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
+    const view = renderWithProviders(
+      <SimulateurFiscalClassement />,
+      '/en/furnished-tourist-accommodation-tax-simulator'
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/20,000/i), { target: { value: '30000' } });
+    fireEvent.click(screen.getByRole('button', { name: '30 %' }));
+    fireEvent.click(screen.getByRole('button', { name: /calculate/i }));
+
+    expect(await screen.findByRole('heading', { name: /2026 comparison/i })).toBeInTheDocument();
+
+    const text = getNormalizedText(view.container);
+    expect(text).toContain(
+      'estimated annual saving with classified furnished tourist accommodation, compared with unclassified furnished tourist accommodation.'
+    );
+    expect(text).toContain('Metric');
+    expect(text).toContain('Regime shown');
+    expect(text).toContain('Estimated taxable base');
+    expect(text).not.toContain('avec un');
+    expect(text).not.toContain('Indicateur');
+    expect(text).not.toContain('Régime affiché');
+    expectSmoothWindowScroll(scrollToMock);
+  });
+
+  it('localise les résultats calculés du simulateur taxe de séjour en anglais', async () => {
+    mockTaxeSejourDatasetFetch();
+    const scrollToMock = vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
+    const view = renderWithProviders(<SimulateurTaxeSejour />, '/en/tourist-tax-simulator');
+
+    const cityInput = await screen.findByPlaceholderText(/biarritz/i);
+    fireEvent.change(cityInput, { target: { value: 'Testville' } });
+    fireEvent.mouseDown(await screen.findByRole('option', { name: /testville/i }));
+
+    fireEvent.change(screen.getByPlaceholderText(/120/i), { target: { value: '150' } });
+    fireEvent.change(screen.getByPlaceholderText(/3/i), { target: { value: '1' } });
+    fireEvent.change(screen.getByPlaceholderText(/4/i), { target: { value: '1' } });
+    fireEvent.click(screen.getByRole('button', { name: /calculate/i }));
+
+    expect(await screen.findByRole('heading', { name: /results/i })).toBeInTheDocument();
+
+    const text = getNormalizedText(view.container);
+    expect(text).toContain('less tourist tax with a');
+    expect(text).toContain('Category');
+    expect(text).toContain('Saving / additional cost');
+    expect(text).toContain('Total tourist tax');
+    expect(text).toContain('Unclassified');
+    expect(text).toContain('Comparison reference');
+    expect(text).toMatch(/€[\d,.]+ saved \(-\d+ %\)/);
+    expect(text).toContain('Period: from 1 January to 31 December');
+    expect(text).not.toContain('économisés');
+    expect(text).not.toContain('de tourist tax');
+    expect(text).not.toContain('Période');
+    expect(text).not.toContain('Catégorie');
+    expect(text).not.toContain('Référence de comparaison');
+    expectSmoothWindowScroll(scrollToMock);
   });
 });

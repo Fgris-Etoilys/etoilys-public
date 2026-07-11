@@ -1,4 +1,5 @@
-import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
@@ -25,6 +26,16 @@ import {
   normalizePdfText,
 } from '../utils/simulatorExport';
 import { trackSimulatorCalculated, trackSimulatorStarted } from '../utils/analytics';
+import LocalizedContent from '../i18n/LocalizedContent';
+import { translateText } from '../i18n/textTranslation';
+import { fiscalSimulatorEnglishTranslations } from '../i18n/simulatorContent';
+import { getLocaleFromPath } from '../i18n/routeHelpers';
+import {
+  formatDate,
+  formatEuro as formatLocalizedEuro,
+  formatInteger,
+} from '../i18n/numberFormatting';
+import type { Locale } from '../i18n/locales';
 
 interface FormErrors {
   annualRevenue?: string;
@@ -234,17 +245,16 @@ function buildFiscalShareUrl(snapshot: PersistedFiscalCalculationSnapshot): stri
   return url.toString();
 }
 
-function formatEuro(value: number): string {
-  return value.toLocaleString('fr-FR', {
-    style: 'currency',
-    currency: 'EUR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+function formatEuro(value: number, locale: Locale): string {
+  return formatLocalizedEuro(value, locale);
 }
 
-function formatPdfEuro(value: number): string {
-  return normalizePdfText(formatEuro(value));
+function formatPdfEuro(value: number, locale: Locale): string {
+  return normalizePdfText(formatEuro(value, locale));
+}
+
+function localizeFiscalSimulatorText(value: string, locale: Locale): string {
+  return locale === 'en' ? translateText(value, fiscalSimulatorEnglishTranslations) : value;
 }
 
 function parseAnnualRevenue(value: string): number | null {
@@ -296,14 +306,18 @@ function getClasseAmountClassName(classeAmount: number, nonClasseAmount: number)
   return classeAmount < nonClasseAmount ? 'font-semibold text-success-500' : '';
 }
 
-function renderClasseAmount(classeAmount: number, nonClasseAmount: number): ReactNode {
+function renderClasseAmount(
+  classeAmount: number,
+  nonClasseAmount: number,
+  locale: Locale
+): ReactNode {
   const className = getClasseAmountClassName(classeAmount, nonClasseAmount);
 
   if (!className) {
-    return formatEuro(classeAmount);
+    return formatEuro(classeAmount, locale);
   }
 
-  return <span className={className}>{formatEuro(classeAmount)}</span>;
+  return <span className={className}>{formatEuro(classeAmount, locale)}</span>;
 }
 
 function getFiscalDeltaClassName(delta: number): string {
@@ -319,20 +333,26 @@ function getFiscalDeltaClassName(delta: number): string {
 function formatFiscalDelta(
   nonClasseAmount: number,
   classeAmount: number,
+  locale: Locale,
   favorableSuffix = 'économisés',
   unfavorableSuffix = 'de plus'
 ): string {
   const delta = nonClasseAmount - classeAmount;
   if (delta === 0) {
-    return 'Aucun écart';
+    return localizeFiscalSimulatorText('Aucun écart', locale);
   }
 
-  return `${formatEuro(Math.abs(delta))} ${delta > 0 ? favorableSuffix : unfavorableSuffix}`;
+  const suffix = localizeFiscalSimulatorText(
+    delta > 0 ? favorableSuffix : unfavorableSuffix,
+    locale
+  );
+  return `${formatEuro(Math.abs(delta), locale)} ${suffix}`;
 }
 
 function renderFiscalDelta(
   nonClasseAmount: number,
   classeAmount: number,
+  locale: Locale,
   favorableSuffix = 'économisés',
   unfavorableSuffix = 'de plus'
 ): ReactNode {
@@ -343,32 +363,36 @@ function renderFiscalDelta(
         delta
       )}`}
     >
-      {formatFiscalDelta(nonClasseAmount, classeAmount, favorableSuffix, unfavorableSuffix)}
+      {formatFiscalDelta(nonClasseAmount, classeAmount, locale, favorableSuffix, unfavorableSuffix)}
     </span>
   );
 }
 
-function getFiscalSummaryMainText(estimatedSavings: number): string {
+function getFiscalSummaryMainText(estimatedSavings: number, locale: Locale): string {
   if (estimatedSavings > 0) {
-    return formatEuro(estimatedSavings);
+    return formatEuro(estimatedSavings, locale);
   }
   if (estimatedSavings < 0) {
-    return formatEuro(Math.abs(estimatedSavings));
+    return formatEuro(Math.abs(estimatedSavings), locale);
   }
   return 'Aucun écart';
 }
 
-function getFiscalSummaryDescription(estimatedSavings: number): string {
+function getFiscalSummaryDescription(estimatedSavings: number, locale: Locale): string {
   if (estimatedSavings > 0) {
-    return "d'économie annuelle estimée";
+    return localizeFiscalSimulatorText("d'économie annuelle estimée", locale);
   }
   if (estimatedSavings < 0) {
-    return 'de surcoût annuel estimé';
+    return localizeFiscalSimulatorText('de surcoût annuel estimé', locale);
   }
-  return 'fiscal annuel estimé';
+  return localizeFiscalSimulatorText('fiscal annuel estimé', locale);
 }
 
-function renderRegimeStatus(scenario: ScenarioSimulationResult, variant: 'non_classe' | 'classe') {
+function renderRegimeStatus(
+  scenario: ScenarioSimulationResult,
+  variant: 'non_classe' | 'classe',
+  locale: Locale
+) {
   if (scenario.regimeStatus === 'micro-BIC') {
     return <span className="font-medium text-gray-900">micro-BIC</span>;
   }
@@ -380,14 +404,19 @@ function renderRegimeStatus(scenario: ScenarioSimulationResult, variant: 'non_cl
 
   return (
     <span className="inline-flex items-center gap-2 font-medium text-warning-500">
-      micro-BIC sous vigilance
-      <Tooltip srLabel="Information sur la vigilance du régime">{tooltipText}</Tooltip>
+      {localizeFiscalSimulatorText('micro-BIC sous vigilance', locale)}
+      <Tooltip
+        srLabel={localizeFiscalSimulatorText('Information sur la vigilance du régime', locale)}
+      >
+        {localizeFiscalSimulatorText(tooltipText, locale)}
+      </Tooltip>
     </span>
   );
 }
 
 function renderSocialContributionsCell(
   scenario: ScenarioSimulationResult,
+  locale: Locale,
   showNonClasseTooltip = false,
   amountClassName = ''
 ): ReactNode {
@@ -395,12 +424,22 @@ function renderSocialContributionsCell(
 
   return (
     <span className="inline-flex items-center justify-center gap-2">
-      <span className={amountClassName}>{formatEuro(scenario.socialContributionsAmount)}</span>
+      <span className={amountClassName}>
+        {formatEuro(scenario.socialContributionsAmount, locale)}
+      </span>
       {shouldShowTooltip && (
-        <Tooltip srLabel="Information sur les cotisations sociales non classées" placement="top">
+        <Tooltip
+          srLabel={localizeFiscalSimulatorText(
+            'Information sur les cotisations sociales non classées',
+            locale
+          )}
+          placement="top"
+        >
           <span>
-            Montant estimatif fondé sur le simulateur officiel Urssaf pour la location de logement
-            meublé de courte durée.
+            {localizeFiscalSimulatorText(
+              'Montant estimatif fondé sur le simulateur officiel Urssaf pour la location de logement meublé de courte durée.',
+              locale
+            )}
           </span>
           <a
             href={URSSAF_SOCIAL_CONTRIBUTIONS_SIMULATOR_URL}
@@ -408,7 +447,7 @@ function renderSocialContributionsCell(
             rel="noreferrer"
             className="mt-2 block font-medium text-primary-300 underline underline-offset-2"
           >
-            Simulateur officiel Urssaf
+            {localizeFiscalSimulatorText('Simulateur officiel Urssaf', locale)}
           </a>
         </Tooltip>
       )}
@@ -416,18 +455,24 @@ function renderSocialContributionsCell(
   );
 }
 
-function getFiscalWarningMessages(result: SimulationResult): string[] {
+function getFiscalWarningMessages(result: SimulationResult, locale: Locale): string[] {
   const warnings: string[] = [];
 
   if (result.showNonClasseWarning) {
     warnings.push(
-      'Pour les revenus 2026 déclarés en 2027, le seuil micro-BIC est fixé à 15 000 € de chiffre d’affaires pour un meublé non classé, contre 83 600 € pour un meublé classé. Après deux années consécutives de dépassement du seuil applicable, le régime réel s’applique l’année suivante.'
+      localizeFiscalSimulatorText(
+        'Pour les revenus 2026 déclarés en 2027, le seuil micro-BIC est fixé à 15 000 € de chiffre d’affaires pour un meublé non classé, contre 83 600 € pour un meublé classé. Après deux années consécutives de dépassement du seuil applicable, le régime réel s’applique l’année suivante.',
+        locale
+      )
     );
   }
 
   if (result.showOutOfScopeWarning) {
     warnings.push(
-      'Pour les revenus 2026 déclarés en 2027, le seuil micro-BIC d’un meublé classé est fixé à 83 600 €. Si vos recettes dépassent ce montant pendant deux années consécutives, le régime réel s’applique l’année suivante et ce simulateur ne couvre plus votre situation.'
+      localizeFiscalSimulatorText(
+        'Pour les revenus 2026 déclarés en 2027, le seuil micro-BIC d’un meublé classé est fixé à 83 600 €. Si vos recettes dépassent ce montant pendant deux années consécutives, le régime réel s’applique l’année suivante et ce simulateur ne couvre plus votre situation.',
+        locale
+      )
     );
   }
 
@@ -435,6 +480,13 @@ function getFiscalWarningMessages(result: SimulationResult): string[] {
 }
 
 export default function SimulateurFiscalClassement() {
+  const location = useLocation();
+  const locale = getLocaleFromPath(location.pathname);
+  const localize = useCallback(
+    (value: string): string =>
+      locale === 'en' ? translateText(value, fiscalSimulatorEnglishTranslations) : value,
+    [locale]
+  );
   const { showToast } = useToast();
   const [annualRevenueInput, setAnnualRevenueInput] = useState('');
   const [selectedTmiRate, setSelectedTmiRate] = useState<TmiRate | null>(null);
@@ -537,34 +589,34 @@ export default function SimulateurFiscalClassement() {
     () => [
       {
         key: 'metric',
-        label: 'Indicateur',
-        mobileLabel: 'Indicateur',
+        label: localize('Indicateur'),
+        mobileLabel: localize('Indicateur'),
         widthClassName: 'w-[28%]',
         align: 'center',
       },
       {
         key: 'nonClasse',
-        label: 'Non classé',
-        mobileLabel: 'Non classé',
+        label: localize('Non classé'),
+        mobileLabel: localize('Non classé'),
         widthClassName: 'w-[22%]',
         align: 'center',
       },
       {
         key: 'classe',
-        label: 'Classé',
-        mobileLabel: 'Classé',
+        label: localize('Classé'),
+        mobileLabel: localize('Classé'),
         widthClassName: 'w-[22%]',
         align: 'center',
       },
       {
         key: 'delta',
-        label: 'Écart',
-        mobileLabel: 'Écart',
+        label: localize('Écart'),
+        mobileLabel: localize('Écart'),
         widthClassName: 'w-[28%]',
         align: 'center',
       },
     ],
-    []
+    [localize]
   );
 
   const tableRows = useMemo<ResponsiveComparisonRow[]>(() => {
@@ -577,22 +629,25 @@ export default function SimulateurFiscalClassement() {
         key: 'regime',
         rowClassName: 'border-b border-gray-100 bg-white',
         cells: {
-          metric: <span className="font-medium text-gray-900">Régime affiché</span>,
-          nonClasse: renderRegimeStatus(result.nonClasse, 'non_classe'),
-          classe: renderRegimeStatus(result.classe, 'classe'),
-          delta: <span className="font-medium text-gray-600">Comparaison des régimes</span>,
+          metric: <span className="font-medium text-gray-900">{localize('Régime affiché')}</span>,
+          nonClasse: renderRegimeStatus(result.nonClasse, 'non_classe', locale),
+          classe: renderRegimeStatus(result.classe, 'classe', locale),
+          delta: (
+            <span className="font-medium text-gray-600">{localize('Comparaison des régimes')}</span>
+          ),
         },
       },
       {
         key: 'base',
         rowClassName: 'border-b border-gray-100 bg-gray-50',
         cells: {
-          metric: 'Base imposable estimée',
-          nonClasse: formatEuro(result.nonClasse.taxableBase),
-          classe: formatEuro(result.classe.taxableBase),
+          metric: localize('Base imposable estimée'),
+          nonClasse: formatEuro(result.nonClasse.taxableBase, locale),
+          classe: formatEuro(result.classe.taxableBase, locale),
           delta: renderFiscalDelta(
             result.nonClasse.taxableBase,
             result.classe.taxableBase,
+            locale,
             'de base imposable en moins',
             'de base imposable en plus'
           ),
@@ -602,12 +657,13 @@ export default function SimulateurFiscalClassement() {
         key: 'income-tax',
         rowClassName: 'border-b border-gray-100 bg-white',
         cells: {
-          metric: 'Impôt sur le revenu estimé',
-          nonClasse: formatEuro(result.nonClasse.estimatedIncomeTax),
-          classe: formatEuro(result.classe.estimatedIncomeTax),
+          metric: localize('Impôt sur le revenu estimé'),
+          nonClasse: formatEuro(result.nonClasse.estimatedIncomeTax, locale),
+          classe: formatEuro(result.classe.estimatedIncomeTax, locale),
           delta: renderFiscalDelta(
             result.nonClasse.estimatedIncomeTax,
-            result.classe.estimatedIncomeTax
+            result.classe.estimatedIncomeTax,
+            locale
           ),
         },
       },
@@ -615,12 +671,13 @@ export default function SimulateurFiscalClassement() {
         key: 'social-levies',
         rowClassName: 'border-b border-gray-100 bg-gray-50',
         cells: {
-          metric: 'Prélèvements sociaux',
-          nonClasse: formatEuro(result.nonClasse.socialLeviesAmount),
-          classe: formatEuro(result.classe.socialLeviesAmount),
+          metric: localize('Prélèvements sociaux'),
+          nonClasse: formatEuro(result.nonClasse.socialLeviesAmount, locale),
+          classe: formatEuro(result.classe.socialLeviesAmount, locale),
           delta: renderFiscalDelta(
             result.nonClasse.socialLeviesAmount,
-            result.classe.socialLeviesAmount
+            result.classe.socialLeviesAmount,
+            locale
           ),
         },
       },
@@ -628,12 +685,13 @@ export default function SimulateurFiscalClassement() {
         key: 'social-contributions',
         rowClassName: 'border-b border-gray-100 bg-white',
         cells: {
-          metric: 'Cotisations sociales',
-          nonClasse: renderSocialContributionsCell(result.nonClasse, true),
-          classe: renderSocialContributionsCell(result.classe),
+          metric: localize('Cotisations sociales'),
+          nonClasse: renderSocialContributionsCell(result.nonClasse, locale, true),
+          classe: renderSocialContributionsCell(result.classe, locale),
           delta: renderFiscalDelta(
             result.nonClasse.socialContributionsAmount,
-            result.classe.socialContributionsAmount
+            result.classe.socialContributionsAmount,
+            locale
           ),
         },
       },
@@ -641,14 +699,22 @@ export default function SimulateurFiscalClassement() {
         key: 'total',
         rowClassName: 'bg-gray-50',
         cells: {
-          metric: <span className="font-medium text-gray-900">Total estimé</span>,
-          nonClasse: formatEuro(result.nonClasse.estimatedTotal),
-          classe: renderClasseAmount(result.classe.estimatedTotal, result.nonClasse.estimatedTotal),
-          delta: renderFiscalDelta(result.nonClasse.estimatedTotal, result.classe.estimatedTotal),
+          metric: <span className="font-medium text-gray-900">{localize('Total estimé')}</span>,
+          nonClasse: formatEuro(result.nonClasse.estimatedTotal, locale),
+          classe: renderClasseAmount(
+            result.classe.estimatedTotal,
+            result.nonClasse.estimatedTotal,
+            locale
+          ),
+          delta: renderFiscalDelta(
+            result.nonClasse.estimatedTotal,
+            result.classe.estimatedTotal,
+            locale
+          ),
         },
       },
     ];
-  }, [result]);
+  }, [locale, localize, result]);
 
   function clearFormError(key: keyof FormErrors) {
     setErrors((previous) => {
@@ -663,20 +729,20 @@ export default function SimulateurFiscalClassement() {
 
   async function handleCopyShareLink() {
     if (!result?.canDisplayMicroComparison || !lastCalculationSnapshot) {
-      showToast('Aucun résultat à partager.', { type: 'info' });
+      showToast(localize('Aucun résultat à partager.'), { type: 'info' });
       return;
     }
 
     const shareUrl = buildFiscalShareUrl(lastCalculationSnapshot);
     const isCopied = await copyToClipboard(shareUrl);
-    showToast(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.', {
+    showToast(localize(isCopied ? 'Lien copié.' : 'Impossible de copier le lien.'), {
       type: isCopied ? 'success' : 'error',
     });
   }
 
   async function handleExportPdf() {
     if (!result?.canDisplayMicroComparison || !lastCalculationSnapshot) {
-      showToast('Aucun résultat à exporter.', { type: 'info' });
+      showToast(localize('Aucun résultat à exporter.'), { type: 'info' });
       return;
     }
 
@@ -713,7 +779,7 @@ export default function SimulateurFiscalClassement() {
 
       doc.setFontSize(18);
       doc.setTextColor(49, 107, 255);
-      const title = 'Simulation fiscale classement 2026';
+      const title = localize('Simulation fiscale classement 2026');
       const titleWidth = doc.getTextWidth(title);
       const centeredTitleX = (pageWidth - titleWidth) / 2;
       doc.text(title, centeredTitleX, cursorY);
@@ -721,17 +787,17 @@ export default function SimulateurFiscalClassement() {
       cursorY += 34;
       doc.setFontSize(11);
       doc.setTextColor(25);
-      doc.text('Paramètres de simulation', marginX, cursorY);
+      doc.text(localize('Paramètres de simulation'), marginX, cursorY);
 
       autoTable(doc, {
         startY: cursorY + 10,
-        head: [['Paramètre', 'Valeur']],
+        head: [[localize('Paramètre'), localize('Valeur')]],
         body: [
           [
-            'Recettes locatives annuelles 2026',
-            formatPdfEuro(lastCalculationSnapshot.annualRevenue),
+            localize('Recettes locatives annuelles 2026'),
+            formatPdfEuro(lastCalculationSnapshot.annualRevenue, locale),
           ],
-          ["Tranche marginale d'imposition", `${lastCalculationSnapshot.tmiRate} %`],
+          [localize("Tranche marginale d'imposition"), `${lastCalculationSnapshot.tmiRate} %`],
         ],
         styles: { fontSize: 10, cellPadding: 7 },
         headStyles: { fillColor: [49, 107, 255] },
@@ -742,22 +808,24 @@ export default function SimulateurFiscalClassement() {
 
       doc.setFontSize(11);
       doc.setTextColor(25);
-      doc.text('Résultats', marginX, cursorY);
+      doc.text(localize('Résultats'), marginX, cursorY);
 
       cursorY += 18;
       if (result.estimatedSavings !== null) {
         const summaryLines = [
-          `${getFiscalSummaryMainText(result.estimatedSavings)} ${getFiscalSummaryDescription(
-            result.estimatedSavings
-          )} avec un meublé classé, par rapport à un meublé non classé.`,
+          `${getFiscalSummaryMainText(result.estimatedSavings, locale)} ${localize(
+            getFiscalSummaryDescription(result.estimatedSavings, locale)
+          )} ${localize('avec un meublé classé, par rapport à un meublé non classé.')}`,
           `Recettes locatives 2026 : ${formatPdfEuro(
-            lastCalculationSnapshot.annualRevenue
+            lastCalculationSnapshot.annualRevenue,
+            locale
           )}. Tranche marginale d'imposition : ${lastCalculationSnapshot.tmiRate} %. Régime comparé : micro-BIC classé / non classé.`,
         ];
         if (result.estimatedSavings > 0) {
           summaryLines.push(
             `Soit environ ${formatPdfEuro(
-              result.estimatedSavings * 5
+              result.estimatedSavings * 5,
+              locale
             )} sur 5 ans, à situation identique.`
           );
         }
@@ -771,20 +839,23 @@ export default function SimulateurFiscalClassement() {
 
       const resultRowsForPdf = [
         {
-          metric: 'Régime affiché',
-          nonClasse: result.nonClasse.regimeStatus,
-          classe: result.classe.regimeStatus,
-          deltaText: 'Comparaison des régimes',
+          metricKey: 'regime',
+          metric: localize('Régime affiché'),
+          nonClasse: localize(result.nonClasse.regimeStatus),
+          classe: localize(result.classe.regimeStatus),
+          deltaText: localize('Comparaison des régimes'),
           deltaRaw: 0,
         },
         {
-          metric: 'Base imposable estimée',
-          nonClasse: formatPdfEuro(result.nonClasse.taxableBase),
-          classe: formatPdfEuro(result.classe.taxableBase),
+          metricKey: 'base',
+          metric: localize('Base imposable estimée'),
+          nonClasse: formatPdfEuro(result.nonClasse.taxableBase, locale),
+          classe: formatPdfEuro(result.classe.taxableBase, locale),
           deltaText: normalizePdfText(
             formatFiscalDelta(
               result.nonClasse.taxableBase,
               result.classe.taxableBase,
+              locale,
               'de base imposable en moins',
               'de base imposable en plus'
             )
@@ -792,42 +863,55 @@ export default function SimulateurFiscalClassement() {
           deltaRaw: result.nonClasse.taxableBase - result.classe.taxableBase,
         },
         {
-          metric: 'Impôt sur le revenu estimé',
-          nonClasse: formatPdfEuro(result.nonClasse.estimatedIncomeTax),
-          classe: formatPdfEuro(result.classe.estimatedIncomeTax),
+          metricKey: 'income-tax',
+          metric: localize('Impôt sur le revenu estimé'),
+          nonClasse: formatPdfEuro(result.nonClasse.estimatedIncomeTax, locale),
+          classe: formatPdfEuro(result.classe.estimatedIncomeTax, locale),
           deltaText: normalizePdfText(
-            formatFiscalDelta(result.nonClasse.estimatedIncomeTax, result.classe.estimatedIncomeTax)
+            formatFiscalDelta(
+              result.nonClasse.estimatedIncomeTax,
+              result.classe.estimatedIncomeTax,
+              locale
+            )
           ),
           deltaRaw: result.nonClasse.estimatedIncomeTax - result.classe.estimatedIncomeTax,
         },
         {
-          metric: 'Prélèvements sociaux',
-          nonClasse: formatPdfEuro(result.nonClasse.socialLeviesAmount),
-          classe: formatPdfEuro(result.classe.socialLeviesAmount),
+          metricKey: 'social-levies',
+          metric: localize('Prélèvements sociaux'),
+          nonClasse: formatPdfEuro(result.nonClasse.socialLeviesAmount, locale),
+          classe: formatPdfEuro(result.classe.socialLeviesAmount, locale),
           deltaText: normalizePdfText(
-            formatFiscalDelta(result.nonClasse.socialLeviesAmount, result.classe.socialLeviesAmount)
+            formatFiscalDelta(
+              result.nonClasse.socialLeviesAmount,
+              result.classe.socialLeviesAmount,
+              locale
+            )
           ),
           deltaRaw: result.nonClasse.socialLeviesAmount - result.classe.socialLeviesAmount,
         },
         {
-          metric: 'Cotisations sociales',
-          nonClasse: formatPdfEuro(result.nonClasse.socialContributionsAmount),
-          classe: formatPdfEuro(result.classe.socialContributionsAmount),
+          metricKey: 'social-contributions',
+          metric: localize('Cotisations sociales'),
+          nonClasse: formatPdfEuro(result.nonClasse.socialContributionsAmount, locale),
+          classe: formatPdfEuro(result.classe.socialContributionsAmount, locale),
           deltaText: normalizePdfText(
             formatFiscalDelta(
               result.nonClasse.socialContributionsAmount,
-              result.classe.socialContributionsAmount
+              result.classe.socialContributionsAmount,
+              locale
             )
           ),
           deltaRaw:
             result.nonClasse.socialContributionsAmount - result.classe.socialContributionsAmount,
         },
         {
-          metric: 'Total estimé',
-          nonClasse: formatPdfEuro(result.nonClasse.estimatedTotal),
-          classe: formatPdfEuro(result.classe.estimatedTotal),
+          metricKey: 'total',
+          metric: localize('Total estimé'),
+          nonClasse: formatPdfEuro(result.nonClasse.estimatedTotal, locale),
+          classe: formatPdfEuro(result.classe.estimatedTotal, locale),
           deltaText: normalizePdfText(
-            formatFiscalDelta(result.nonClasse.estimatedTotal, result.classe.estimatedTotal)
+            formatFiscalDelta(result.nonClasse.estimatedTotal, result.classe.estimatedTotal, locale)
           ),
           deltaRaw: result.nonClasse.estimatedTotal - result.classe.estimatedTotal,
         },
@@ -835,7 +919,9 @@ export default function SimulateurFiscalClassement() {
 
       autoTable(doc, {
         startY: cursorY,
-        head: [['Indicateur', 'Non classé', 'Classé', 'Écart']],
+        head: [
+          [localize('Indicateur'), localize('Non classé'), localize('Classé'), localize('Écart')],
+        ],
         body: resultRowsForPdf.map((row) => [row.metric, row.nonClasse, row.classe, row.deltaText]),
         styles: { fontSize: 10, cellPadding: 7 },
         headStyles: { fillColor: [49, 107, 255] },
@@ -852,7 +938,7 @@ export default function SimulateurFiscalClassement() {
 
           if (
             hookData.column.index === 2 &&
-            rowData.metric === 'Total estimé' &&
+            rowData.metricKey === 'total' &&
             rowData.deltaRaw > 0
           ) {
             hookData.cell.styles.textColor = [0, 115, 0];
@@ -874,15 +960,15 @@ export default function SimulateurFiscalClassement() {
       });
 
       cursorY = (getAutoTableFinalY(doc) ?? cursorY) + 24;
-      const warningMessages = getFiscalWarningMessages(result);
+      const warningMessages = getFiscalWarningMessages(result, locale);
       if (warningMessages.length > 0) {
         doc.setFontSize(11);
         doc.setTextColor(25);
-        doc.text("Points d'attention", marginX, cursorY);
+        doc.text(localize("Points d'attention"), marginX, cursorY);
 
         autoTable(doc, {
           startY: cursorY + 8,
-          head: [['Avertissement']],
+          head: [[localize('Avertissement')]],
           body: warningMessages.map((warning) => [warning]),
           styles: { fontSize: 10, cellPadding: 7 },
           headStyles: { fillColor: [145, 109, 0] },
@@ -890,8 +976,9 @@ export default function SimulateurFiscalClassement() {
         });
       }
 
-      const sourceLine =
-        'Simulation Etoilys fournie à titre indicatif. Elle ne remplace pas un avis fiscal ou comptable personnalisé.';
+      const sourceLine = localize(
+        'Simulation Etoilys fournie à titre indicatif. Elle ne remplace pas un avis fiscal ou comptable personnalisé.'
+      );
       const sourceWrapped = doc.splitTextToSize(sourceLine, 520);
       doc.setFontSize(9);
       doc.setTextColor(110);
@@ -912,9 +999,9 @@ export default function SimulateurFiscalClassement() {
       doc.save(
         `simulation-fiscale-classement-${safeRevenue}-${formatFilenameDate(new Date())}.pdf`
       );
-      showToast('PDF généré.', { type: 'success' });
+      showToast(localize('PDF généré.'), { type: 'success' });
     } catch {
-      showToast('Impossible de générer le PDF.', { type: 'error' });
+      showToast(localize('Impossible de générer le PDF.'), { type: 'error' });
     }
   }
 
@@ -971,7 +1058,7 @@ export default function SimulateurFiscalClassement() {
   };
 
   return (
-    <>
+    <LocalizedContent locale={locale} translations={fiscalSimulatorEnglishTranslations}>
       <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
         <div className="container-adaptive">
           <div className="max-w-3xl">
@@ -982,6 +1069,10 @@ export default function SimulateurFiscalClassement() {
               Comparez l’imposition estimative d’un meublé de tourisme classé et non classé au
               régime micro-BIC, à partir de vos recettes annuelles et de votre tranche marginale
               d’imposition.
+            </p>
+            <p className="mt-3 text-sm text-white/80">
+              Paramètres fiscaux : revenus 2026 déclarés en 2027 · Mise à jour :{' '}
+              {formatDate(new Date(Date.UTC(2026, 6, 11)), locale)}
             </p>
           </div>
         </div>
@@ -1011,6 +1102,11 @@ export default function SimulateurFiscalClassement() {
                   comporte des particularités.
                 </p>
               </div>
+              {locale === 'en' && (
+                <p className="mt-3 text-xs text-textLight">
+                  Official sources are available in French.
+                </p>
+              )}
             </div>
 
             <Card hover={false} className="p-5 md:p-6">
@@ -1119,16 +1215,36 @@ export default function SimulateurFiscalClassement() {
                                 result.estimatedSavings
                               )}`}
                             >
-                              {getFiscalSummaryMainText(result.estimatedSavings)}
+                              {getFiscalSummaryMainText(result.estimatedSavings, locale)}
                             </p>
                             <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-900">
-                              {getFiscalSummaryDescription(result.estimatedSavings)} avec un{' '}
-                              <strong className="font-semibold text-gray-950">meublé classé</strong>
-                              , par rapport à un{' '}
-                              <strong className="font-semibold text-gray-950">
-                                meublé non classé
-                              </strong>
-                              .
+                              {locale === 'en' ? (
+                                <>
+                                  {getFiscalSummaryDescription(result.estimatedSavings, locale)}{' '}
+                                  with{' '}
+                                  <strong className="font-semibold text-gray-950">
+                                    classified furnished tourist accommodation
+                                  </strong>
+                                  , compared with{' '}
+                                  <strong className="font-semibold text-gray-950">
+                                    unclassified furnished tourist accommodation
+                                  </strong>
+                                  .
+                                </>
+                              ) : (
+                                <>
+                                  {getFiscalSummaryDescription(result.estimatedSavings, locale)}{' '}
+                                  avec un{' '}
+                                  <strong className="font-semibold text-gray-950">
+                                    meublé classé
+                                  </strong>
+                                  , par rapport à un{' '}
+                                  <strong className="font-semibold text-gray-950">
+                                    meublé non classé
+                                  </strong>
+                                  .
+                                </>
+                              )}
                             </p>
                           </div>
 
@@ -1140,7 +1256,7 @@ export default function SimulateurFiscalClassement() {
                               <p>
                                 Recettes locatives 2026 :{' '}
                                 <span className="font-medium text-gray-900">
-                                  {formatEuro(lastCalculationSnapshot.annualRevenue)}
+                                  {formatEuro(lastCalculationSnapshot.annualRevenue, locale)}
                                 </span>
                               </p>
                               <p>
@@ -1155,7 +1271,7 @@ export default function SimulateurFiscalClassement() {
                               <p className="mt-4 text-xs leading-relaxed text-gray-500">
                                 Soit environ{' '}
                                 <span className="font-semibold text-success-500">
-                                  {formatEuro(result.estimatedSavings * 5)}
+                                  {formatEuro(result.estimatedSavings * 5, locale)}
                                 </span>{' '}
                                 sur 5 ans, à situation identique.
                               </p>
@@ -1183,18 +1299,13 @@ export default function SimulateurFiscalClassement() {
                     />
 
                     <div className="mt-6 space-y-4">
-                      {result.showNonClasseWarning && (
+                      {getFiscalWarningMessages(result, locale).length > 0 && (
                         <div className="rounded-card border border-warning-200 bg-warning-100 p-4 text-sm text-gray-700">
-                          <p>
-                            Au-delà de 15 000 € de chiffre d&apos;affaires, un meublé de tourisme
-                            non classé ne reste pas durablement au micro-BIC. Si le dépassement se
-                            répète deux années de suite, le régime réel s&apos;applique l&apos;année
-                            suivante, avec plus de gestion et de formalités.
-                          </p>
-                          <p className="mt-3">
-                            Pour les revenus 2026 déclarés en 2027, un meublé classé peut relever du
-                            régime micro-BIC jusqu&apos;à 83 600 € de chiffre d&apos;affaires.
-                          </p>
+                          {getFiscalWarningMessages(result, locale).map((warning, index) => (
+                            <p key={warning} className={index > 0 ? 'mt-3' : undefined}>
+                              {warning}
+                            </p>
+                          ))}
                         </div>
                       )}
                     </div>
@@ -1220,7 +1331,7 @@ export default function SimulateurFiscalClassement() {
 
                     <div className="space-y-3 text-sm text-gray-700">
                       <p>
-                        Au-delà de {CLASSE_MICRO_BIC_THRESHOLD_2026.toLocaleString('fr-FR')} € de
+                        Au-delà de {formatInteger(CLASSE_MICRO_BIC_THRESHOLD_2026, locale)} € de
                         chiffre d&apos;affaires sur deux années consécutives, votre meublé doit être
                         au régime réel. Le classement n&apos;apporte alors plus d&apos;avantage
                         fiscal ou social dans ce comparatif.
@@ -1240,10 +1351,20 @@ export default function SimulateurFiscalClassement() {
                     la taxe de séjour d’un meublé.
                   </p>
                   <div className="flex flex-wrap gap-3">
-                    <Button href="/simulateur-taxe-sejour" variant="primary">
+                    <Button
+                      href={
+                        locale === 'en' ? '/en/tourist-tax-simulator' : '/simulateur-taxe-sejour'
+                      }
+                      variant="primary"
+                    >
                       Simulateur taxe de séjour
                     </Button>
-                    <Button href="/demande-classement" variant="secondary">
+                    <Button
+                      href={
+                        locale === 'en' ? '/en/request-a-classification' : '/demande-classement'
+                      }
+                      variant="secondary"
+                    >
                       Demande de classement
                     </Button>
                   </div>
@@ -1253,6 +1374,6 @@ export default function SimulateurFiscalClassement() {
           </div>
         </div>
       </section>
-    </>
+    </LocalizedContent>
   );
 }

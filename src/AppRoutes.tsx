@@ -118,6 +118,11 @@ export default function AppRoutes() {
         <Route path="en/contact" element={<Contact />} />
         <Route path="en/request-a-classification" element={<DemandeClassement />} />
         <Route path="en/privacy-policy" element={<Confidentialite />} />
+        <Route path="en/tourist-tax-simulator" element={<SimulateurTaxeSejour />} />
+        <Route
+          path="en/furnished-tourist-accommodation-tax-simulator"
+          element={<SimulateurFiscalClassement />}
+        />
         <Route path="mentions-legales" element={<MentionsLegales />} />
         <Route path="*" element={<NotFound />} />
       </Route>

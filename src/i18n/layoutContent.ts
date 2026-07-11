@@ -204,6 +204,20 @@ export const layoutContent = {
             { name: 'FAQ', href: '/en/faq', description: 'Answers to common questions' },
           ],
         },
+        {
+          name: 'Simulators',
+          href: '/en/furnished-tourist-accommodation-tax-simulator',
+          showOverviewLink: true,
+          overviewLabel: '2026 tax simulator',
+          overviewDescription: 'Compare classified and unclassified accommodation',
+          submenu: [
+            {
+              name: 'Tourist tax simulator',
+              href: '/en/tourist-tax-simulator',
+              description: 'Compare local tourist tax calculations',
+            },
+          ],
+        },
         { name: 'Contact', href: '/en/contact' },
       ],
       cta: {
@@ -234,6 +248,11 @@ export const layoutContent = {
         {
           title: 'Information',
           links: [
+            {
+              name: '2026 tax simulator',
+              href: '/en/furnished-tourist-accommodation-tax-simulator',
+            },
+            { name: 'Tourist tax simulator', href: '/en/tourist-tax-simulator' },
             { name: 'FAQ', href: '/en/faq' },
             { name: 'Contact', href: '/en/contact' },
           ],
