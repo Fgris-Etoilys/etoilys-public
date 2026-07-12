@@ -265,4 +265,107 @@ export const classificationRequirementsPageContent: Record<
       ],
     },
   },
+  nl: {
+    hero: {
+      title: 'Voorwaarden voor classificatie van een vakantiewoning',
+      description:
+        'Classificatie is niet voorbehouden aan luxe woningen. Er zijn minimumcriteria, maar veel vakantiewoningen, juridisch meublés de tourisme, kunnen in de procedure passen wanneer zij schoon, functioneel, correct uitgerust en afgestemd op hun opvangcapaciteit zijn.',
+    },
+    eligibility: {
+      title: 'Classificatie geldt voor meer woningen dan vaak wordt gedacht',
+      paragraphs: [
+        'Een meublé de tourisme is een gemeubileerde volledige woning, verhuurd voor exclusief gebruik door de huurder, aan reizigers die er tijdelijk verblijven en er niet hun hoofdverblijf vestigen. Het kan gaan om een huis, appartement of studio.',
+        'De officiële classificatie kent 1 tot 5 sterren toe volgens een nationale beoordelingslijst. Een woning hoeft dus geen luxe woning te zijn om voor classificatie in aanmerking te komen.',
+        'De classificatie begint niet bij 4 of 5 sterren: zij begint bij 1 ster, met een eenvoudig niveau dat wel voldoet aan een basis van comfort, uitrusting en onderhoud.',
+      ],
+      highlight: {
+        lead: 'Een studio kan zeker worden geclassificeerd.',
+        text: ' Voor een studio of eenkamerwoning voor 1 tot 2 personen begint de minimale basisoppervlakte bij 12 m² voor 1 ster. Voor een woning met één ruimte is de blokkerende voorwaarde 9 m² als de keuken apart is, of 12 m² met kitchenette.',
+      },
+    },
+    criteria: {
+      title: 'Punten om te controleren vóór een inspectiebezoek',
+      description:
+        'Voordat over sterren wordt gesproken, moet eerst worden nagegaan of de woning daadwerkelijk in de classificatieprocedure past. Het gaat niet alleen om voldoende uitrusting, maar ook om een woning die overeenkomt met de definitie van meublé de tourisme, de minimumvoorwaarden respecteert en een coherente opvangcapaciteit heeft.',
+      items: [
+        {
+          title: 'Een echte meublé de tourisme, geen uitgesloten accommodatievorm',
+          paragraphs: [
+            'Om als meublé de tourisme te worden geclassificeerd, moet de woning een volledige, gemeubileerde woning zijn, verhuurd voor exclusief gebruik door de huurder, aan reizigers die er niet hun woonplaats vestigen.',
+            'Sommige accommodaties zijn uitgesloten van deze classificatie, waaronder niet-onafhankelijke accommodaties, lichte of mobiele accommodaties, woningen die gelijktijdig aan meerdere klanten kunnen worden verhuurd en chambres d’hôtes.',
+          ],
+        },
+        {
+          title: 'Een schone, onderhouden woning zonder duidelijke gebreken',
+          paragraphs: [
+            'De algemene staat van de woning telt zwaar mee. Een vuile, slecht onderhouden woning of een woning met beschadigde elementen brengt de uitkomst van het bezoek direct in gevaar.',
+            'Nog vóór de details van de beoordelingslijst moet de woning een gezonde basis tonen: echte netheid, werkende uitrusting, correcte sanitaire voorzieningen, schone afwerkingen en geschikte bedden.',
+          ],
+        },
+        {
+          title: 'Ruimtes die werkelijk meetellen voor de classificatie',
+          paragraphs: [
+            'Niet alle delen van de woning tellen automatisch als verblijfsruimte. Om te worden meegeteld, moet een ruimte met name voldoende oppervlakte, geschikte hoogte en een opening naar buiten hebben.',
+            'Een te kleine cabine, slaaphoek of ruimte zonder opening naar buiten wordt daarentegen niet beschouwd als echte verblijfsruimte voor de classificatie. Bedden in zulke ruimtes tellen niet mee voor de opvangcapaciteit.',
+          ],
+        },
+        {
+          title: 'Een woning die voldoet aan minimale bewoonbaarheidsvoorwaarden',
+          paragraphs: [
+            'De woning moet voldoen aan een minimale basis van comfort en bewoonbaarheid. Concreet betekent dit onder meer dat zij een verblijfsruimte, een binnenkeuken of kitchenette, een binnenbadkamer of doucheruimte en sanitaire voorzieningen binnen moet hebben.',
+            'De keuken of kitchenette moet zich binnen de woning bevinden. De badkamer of doucheruimte moet eveneens binnen liggen en warm en koud water hebben. Geen warm water of keuken- of sanitaire voorzieningen buiten de woning maken classificatie in de praktijk onmogelijk.',
+          ],
+        },
+      ],
+      summary: {
+        beforeStrong:
+          'Kort gezegd moeten vóór het kiezen van een categorie vier punten worden gecontroleerd: dat de woning overeenkomt met de definitie van meublé de tourisme, dat zij aan minimale bewoonbaarheidsvoorwaarden voldoet, dat oppervlakte en opvangcapaciteit coherent zijn, en dat zij wordt gepresenteerd in een ',
+        strong: 'schone en verzorgde staat.',
+        afterStrong: '',
+      },
+    },
+    blockingPoints: {
+      title: 'De meest voorkomende blokkerende punten',
+      description:
+        'Sommige punten komen vaak terug wanneer een woning niet klaar is voor een classificatiebezoek of wanneer de beoogde categorie te ambitieus is.',
+      items: [
+        'onvoldoende oppervlakte voor de beoogde categorie;',
+        'sanitaire voorzieningen die niet privé zijn of buiten de woning liggen;',
+        'een slecht onderhouden of onvoldoende schone woning;',
+        'bedden, meubels of uitrusting die niet overeenkomen met de opgegeven capaciteit;',
+        'het ontbreken van een blokkerende voorwaarde;',
+        'een beoogde categorie die te hoog is voor de werkelijke kenmerken van de woning.',
+      ],
+      closing:
+        'In veel gevallen is het probleem niet dat de woning niet classificeerbaar is, maar dat de beoogde categorie niet de juiste is.',
+      resultBox:
+        'Na het bezoek geven de tools van Etoilys direct aan welk maximaal classificatieniveau de woning kan behalen. De beoogde categorie kan dan worden aangepast.',
+    },
+    checklist: {
+      title: 'Eenvoudige checklist vóór het aanvragen van het bezoek',
+      description:
+        'Enkele eenvoudige controles helpen om de procedure duidelijker te benaderen voordat een bezoek wordt gepland.',
+      items: [
+        'de werkelijke oppervlakte van de woning en de beoogde categorie controleren;',
+        'controleren dat de sanitaire voorzieningen zich binnen de woning bevinden;',
+        'de staat van bedden, meubels, keuken en sanitaire voorzieningen controleren;',
+        'nagaan of de uitrusting overeenkomt met het aantal ontvangen personen;',
+        'de diensten voorbereiden die aan reizigers worden aangekondigd;',
+        'zorgen voor een schone, opgeruimde en bezoekklare woning op de dag van inspectie.',
+      ],
+    },
+    finalCta: {
+      title: 'Welke stappen zijn nodig om classificatie te verkrijgen?',
+      description:
+        'Wanneer aan de voorwaarden is voldaan, volgt de classificatieprocedure een duidelijk verloop in enkele stappen.',
+      links: [
+        {
+          label: 'De classificatieprocedure',
+          href: '/nl/classificatieprocedure-vakantiewoning',
+          variant: 'ghost',
+        },
+        { label: 'Classificatie aanvragen', href: '/nl/classificatie-aanvragen', variant: 'white' },
+      ],
+    },
+  },
 };

@@ -10,6 +10,7 @@ import {
   getBreadcrumbItems,
   getCanonicalUrl,
   getHtmlLang,
+  getOgLocale,
   getIndexablePaths,
   getPrerenderPaths,
   getSeoRouteConfig,
@@ -29,6 +30,8 @@ import { localizedRoutes } from '../src/i18n/localizedRoutes.ts';
 const NOT_FOUND_PRERENDER_PATH = '/404';
 const EN_NOT_FOUND_RENDER_PATH = '/en/route-inexistante';
 const EN_NOT_FOUND_OUTPUT_PATH = 'en/404.html';
+const NL_NOT_FOUND_RENDER_PATH = '/nl/route-inconnue';
+const NL_NOT_FOUND_OUTPUT_PATH = 'nl/404.html';
 const DYNAMIC_SIMULATION_RENDER_PATH = '/simulateur/seo-shell';
 const DYNAMIC_SIMULATION_SHELL_OUTPUT = 'simulation-noindex.html';
 const OG_IMAGE_ALT = 'Etoilys - Classement des meublés de tourisme';
@@ -140,6 +143,7 @@ function stripSeoTags(html: string): string {
     /<meta[^>]+property=['"]og:url['"][^>]*>\s*/gi,
     /<meta[^>]+property=['"]og:type['"][^>]*>\s*/gi,
     /<meta[^>]+property=['"]og:site_name['"][^>]*>\s*/gi,
+    /<meta[^>]+property=['"]og:locale['"][^>]*>\s*/gi,
     /<meta[^>]+property=['"]og:image['"][^>]*>\s*/gi,
     /<meta[^>]+property=['"]og:image:alt['"][^>]*>\s*/gi,
     /<meta[^>]+name=['"]twitter:card['"][^>]*>\s*/gi,
@@ -181,6 +185,7 @@ function buildSeoHead(pathname: string): string {
     `    <meta property="og:url" content="${escapeHtml(currentUrl)}">`,
     '    <meta property="og:type" content="website">',
     `    <meta property="og:site_name" content="${escapeHtml(SITE_NAME)}">`,
+    `    <meta property="og:locale" content="${escapeHtml(getOgLocale(pathname))}">`,
     `    <meta property="og:image" content="${escapeHtml(ogImage)}">`,
     `    <meta property="og:image:alt" content="${escapeHtml(OG_IMAGE_ALT)}">`,
     '    <meta name="twitter:card" content="summary_large_image">',
@@ -400,7 +405,10 @@ function assertPrerenderedNotFoundHtml(pathname: string, html: string): void {
   if (!rootContent || /<div id="root"><\/div>/i.test(html)) {
     throw new Error(`${pathname} 404 was prerendered with an empty #root.`);
   }
-  if (!rootText.includes(expectedHeading)) {
+  if (
+    !rootText.includes(expectedHeading) &&
+    !(expectedLang === 'nl' && rootText.includes('Pagina niet gevonden'))
+  ) {
     throw new Error(`${pathname} 404 is missing localized heading ${expectedHeading}.`);
   }
   if (!/<meta\s+name=["']robots["']\s+content=["']noindex,follow["']/i.test(html)) {
@@ -473,6 +481,17 @@ async function main() {
   assertPrerenderedNotFoundHtml(englishNotFound.pathname, englishNotFound.html);
   assertUniqueJsonLdIds(englishNotFound.html, EN_NOT_FOUND_RENDER_PATH);
   console.log(`Prerendered: ${EN_NOT_FOUND_RENDER_PATH} -> ${englishNotFoundOutputPath}`);
+
+  const dutchNotFoundOutputPath = path.join(distDir, NL_NOT_FOUND_OUTPUT_PATH);
+  const dutchNotFound = await prerenderRoute(
+    distDir,
+    templateHtml,
+    NL_NOT_FOUND_RENDER_PATH,
+    dutchNotFoundOutputPath
+  );
+  assertPrerenderedNotFoundHtml(dutchNotFound.pathname, dutchNotFound.html);
+  assertUniqueJsonLdIds(dutchNotFound.html, NL_NOT_FOUND_RENDER_PATH);
+  console.log(`Prerendered: ${NL_NOT_FOUND_RENDER_PATH} -> ${dutchNotFoundOutputPath}`);
 
   const simulationShellOutputPath = path.join(distDir, DYNAMIC_SIMULATION_SHELL_OUTPUT);
   const simulationShell = await prerenderRoute(

@@ -19,7 +19,7 @@ describe('public form Edge Functions i18n contract', () => {
     const classement = readRepoFile('supabase/functions/public-forms-classement/index.ts');
 
     expect(shared).toContain('normalizePreferredLanguage');
-    expect(shared).toContain("value === 'en' ? 'en' : 'fr'");
+    expect(shared).toContain("value === 'en' || value === 'nl' ? value : 'fr'");
     expect(shared).toContain('preferredLanguage: input.preferredLanguage');
     expect(contact).toContain('const preferredLanguage = normalizePreferredLanguage');
     expect(classement).toContain('const preferredLanguage = normalizePreferredLanguage');
@@ -32,7 +32,8 @@ describe('public form Edge Functions i18n contract', () => {
     const contact = readRepoFile('supabase/functions/public-forms-contact/index.ts');
     const classement = readRepoFile('supabase/functions/public-forms-classement/index.ts');
 
-    expect(shared).toContain("preferredLanguage === 'en' ? 'anglais (en)' : 'français (fr)'");
+    expect(shared).toContain("preferredLanguage === 'nl'");
+    expect(shared).toContain('néerlandais (nl)');
     expect(contact).toContain('Langue préférée:');
     expect(classement).toContain('Langue préférée:');
     expect(contact).toContain('formatPreferredLanguageLabel(preferredLanguage)');

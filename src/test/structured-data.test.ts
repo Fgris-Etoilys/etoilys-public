@@ -74,6 +74,11 @@ describe('structured data graph', () => {
     expect(organization.areaServed).toBeUndefined();
     expect(organization.iso6523Code).toBe('0009:93933080900012');
     expect(String(organization.iso6523Code)).toMatch(/^\d{4}:[A-Z0-9]+$/);
+    expect(asStringArray(asObject(organization.contactPoint).availableLanguage)).toEqual([
+      'fr',
+      'en',
+      'nl',
+    ]);
     expect(asStringArray(organization.sameAs)).toEqual([
       ETOILYS_GOOGLE_MAPS_URL,
       'https://www.linkedin.com/company/etoilys-classement/',
@@ -127,6 +132,25 @@ describe('structured data graph', () => {
     expect(
       servicePageGraph.some((node) => node['@id'] === STRUCTURED_DATA_IDS.cofracAccreditation)
     ).toBe(false);
+  });
+
+  it('exposes global structured data on completed Dutch pages', () => {
+    const homeGraph = getGraph(buildPageStructuredData('/nl'));
+    const classificationGraph = getGraph(
+      buildPageStructuredData('/nl/classificatie-vakantiewoning-frankrijk')
+    );
+    const servicePageGraph = getGraph(
+      buildPageStructuredData('/nl/classificatieprocedure-vakantiewoning')
+    );
+    const privacyGraph = getGraph(buildPageStructuredData('/nl/privacybeleid'));
+
+    expect(findNodeById(homeGraph, STRUCTURED_DATA_IDS.website)).toBeDefined();
+    expect(findNodeById(homeGraph, STRUCTURED_DATA_IDS.serviceClassification)).toBeDefined();
+    expect(
+      findNodeById(classificationGraph, STRUCTURED_DATA_IDS.cofracAccreditation)
+    ).toBeDefined();
+    expect(findNodeById(servicePageGraph, STRUCTURED_DATA_IDS.serviceClassification)).toBeDefined();
+    expect(findNodeById(privacyGraph, STRUCTURED_DATA_IDS.organization)).toBeDefined();
   });
 
   it('defines canonical article author and publisher nodes on article pages', () => {

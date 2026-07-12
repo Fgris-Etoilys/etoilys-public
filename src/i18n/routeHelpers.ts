@@ -1,12 +1,10 @@
-import { DEFAULT_LOCALE, SUPPORTED_LOCALES, type Locale } from './locales';
+import { DEFAULT_LOCALE, LOCALE_URL_PREFIXES, SUPPORTED_LOCALES, type Locale } from './locales';
 import { LOCALIZED_ROUTE_IDS, localizedRoutes, type LocalizedRouteId } from './localizedRoutes';
 
 export interface AlternateLocaleLink {
   locale: Locale;
   href: string;
 }
-
-const EN_LOCALE_PREFIX = '/en';
 
 const normalizePathname = (pathname: string): string => {
   const pathOnly = pathname.split(/[?#]/)[0] ?? '';
@@ -29,8 +27,15 @@ const toAbsoluteUrl = (path: string, baseUrl: string): string =>
 export const getLocaleFromPath = (pathname: string): Locale => {
   const normalizedPathname = normalizePathname(pathname);
 
-  if (normalizedPathname === EN_LOCALE_PREFIX || normalizedPathname.startsWith('/en/')) {
-    return 'en';
+  for (const locale of SUPPORTED_LOCALES) {
+    if (locale === DEFAULT_LOCALE) {
+      continue;
+    }
+
+    const prefix = LOCALE_URL_PREFIXES[locale];
+    if (prefix && (normalizedPathname === prefix || normalizedPathname.startsWith(`${prefix}/`))) {
+      return locale;
+    }
   }
 
   return DEFAULT_LOCALE;
@@ -43,7 +48,8 @@ export const getRouteIdFromPath = (pathname: string): LocalizedRouteId | null =>
     const routePaths = localizedRoutes[routeId];
     if (
       Object.values(routePaths).some(
-        (routePath) => normalizePathname(routePath) === normalizedPathname
+        (routePath) =>
+          routePath !== undefined && normalizePathname(routePath) === normalizedPathname
       )
     ) {
       return routeId;

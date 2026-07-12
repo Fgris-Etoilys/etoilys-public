@@ -159,6 +159,18 @@ describe('analytics', () => {
     });
   });
 
+  it('keeps Dutch locale in the cookieless audience payload', () => {
+    const sanitized = analyticsInternalsForTests.sanitizeCookielessAudienceProperties({
+      landing_page: '/nl/contact?utm_source=chatgpt',
+      locale: 'nl',
+    });
+
+    expect(sanitized).toEqual({
+      landing_page: '/nl/contact',
+      locale: 'nl',
+    });
+  });
+
   it('does not initialize PostHog in local dev unless explicitly enabled', () => {
     vi.stubEnv('DEV', true);
     vi.stubEnv('MODE', 'development');

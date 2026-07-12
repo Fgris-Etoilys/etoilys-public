@@ -8,6 +8,11 @@
       "src": "/en/(?!(furnished-tourist-accommodation-classification|benefits-of-furnished-tourist-accommodation-classification|classification-requirements|classification-process|faq|contact|request-a-classification|privacy-policy|tourist-tax-simulator|furnished-tourist-accommodation-tax-simulator)/?$).+",
       "dest": "/en/404.html",
       "status": 404
+    },
+    {
+      "src": "/nl/(?!(classificatie-vakantiewoning-frankrijk|voordelen-classificatie-vakantiewoning|voorwaarden-classificatie-vakantiewoning|classificatieprocedure-vakantiewoning|faq|contact|classificatie-aanvragen|privacybeleid)/?$).+",
+      "dest": "/nl/404.html",
+      "status": 404
     }
   ],
   "headers": [

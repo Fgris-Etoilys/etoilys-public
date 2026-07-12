@@ -279,4 +279,106 @@ export const classificationPageContent: Record<Locale, ClassificationPageContent
       primaryHref: '/en/request-a-classification',
     },
   },
+  nl: {
+    hero: {
+      title: 'Officiële classificatie van een vakantiewoning in Frankrijk',
+      description:
+        'De sterrenclassificatie is een officiële Franse procedure die het comfort, de uitrusting en de diensten van een vakantiewoning beoordeelt. In juridische termen gaat het om een meublé de tourisme. Deze pagina legt de basis uit: hoe de classificatie werkt en wanneer een woning ermee te maken kan hebben.',
+    },
+    definition: {
+      title: 'Wat is de classificatie van een meublé de tourisme?',
+      paragraph1: {
+        beforeCodeLink:
+          'De classificatie van meublés de tourisme is een vrijwillige procedure waarmee een officiële classificatie van 1 tot 5 sterren kan worden verkregen, geldig voor 5 jaar. Zij wordt geregeld door de ',
+        codeLinkLabel: 'Franse Code du tourisme (artikelen L.324-1 en volgende)',
+        betweenLinks: ' en het referentiekader is vastgesteld bij het ',
+        orderLinkLabel: 'besluit van 24 november 2021',
+        afterOrderLink: ', dat op 1 februari 2022 in werking is getreden.',
+      },
+      paragraph2:
+        'Het controlebezoek moet fysiek ter plaatse worden uitgevoerd door een instantie die door Cofrac is geaccrediteerd of door Atout France is goedgekeurd. Atout France publiceert en actualiseert de lijsten van bevoegde instanties.',
+      accreditation: {
+        title: 'Door Cofrac Inspection geaccrediteerde instantie',
+        description:
+          'Etoilys is een door Cofrac Inspection geaccrediteerde controle-instantie, nr. 3-2394, voor de classificatie van meublés de tourisme. Deze accreditatie maakt het mogelijk officiële bezoeken uit te voeren en classificatiedocumenten af te geven.',
+        linkLabel: 'De accreditatiescope bekijken',
+      },
+      paragraph3: {
+        beforeReferenceLink:
+          'De classificatie geldt voor alle soorten vakantiewoningen: studio’s, appartementen, huizen en chalets. Zij is niet afhankelijk van een geografische voorwaarde of een minimale grootte, behalve de voorwaarden uit het ',
+        referenceLinkLabel: 'officiële referentiekader',
+        beforeRequirementsLink: '. Meer informatie over de toelatingsvoorwaarden staat bij de ',
+        requirementsLinkLabel: 'voorwaarden voor classificatie',
+        afterRequirementsLink: '.',
+      },
+      note: {
+        label: 'Let op: ',
+        text: 'de classificatie vervangt lokale verplichtingen niet, zoals aangifte bij de gemeente, een registratienummer wanneer dat van toepassing is, of SIRET-registratie. Deze stappen staan los van de classificatie en kunnen onafhankelijk daarvan verplicht zijn.',
+      },
+    },
+    levelsTitle: 'De 5 classificatieniveaus',
+    levels: [
+      {
+        stars: 1,
+        title: '1 ster',
+        description:
+          'Comfortabele accommodatie die voldoet aan basiscriteria voor kwaliteit en uitrusting.',
+      },
+      {
+        stars: 2,
+        title: '2 sterren',
+        description: 'Een hoger comfortniveau met kwaliteitsvolle uitrusting en diensten.',
+      },
+      {
+        stars: 3,
+        title: '3 sterren',
+        description: 'Een verzorgde accommodatie met moderne uitrusting en nette voorzieningen.',
+      },
+      {
+        stars: 4,
+        title: '4 sterren',
+        description:
+          'Een zeer hoog comfortniveau, hoogwaardige uitrusting en uitgebreide voorzieningen.',
+      },
+      {
+        stars: 5,
+        title: '5 sterren',
+        description: 'De hoogste categorie, met luxe uitrusting en uitzonderlijke voorzieningen.',
+      },
+    ],
+    advantages: {
+      title: 'De voordelen van een officiële classificatie',
+      description:
+        'Een sterrenclassificatie heeft verschillende concrete effecten voor seizoensverhuur in Frankrijk.',
+      items: [
+        {
+          icon: 'calculator',
+          title: 'Fiscaal regime',
+          description:
+            'Voor inkomsten over 2026 die in 2027 worden aangegeven, geldt voor een geclassificeerde vakantiewoning een micro-BIC-aftrek van 50%, tegenover 30% voor een niet-geclassificeerde woning.',
+        },
+        {
+          icon: 'users',
+          title: 'Vertrouwen van reizigers',
+          description:
+            'De sterrenclassificatie is een officieel herkenningspunt voor kwaliteit en transparantie.',
+        },
+        {
+          icon: 'globe',
+          title: 'Officiële toeristische vermelding',
+          description:
+            'Geclassificeerde vakantiewoningen kunnen worden opgenomen in officiële toeristische netwerken en krijgen een gestandaardiseerd sterrenniveau.',
+        },
+      ],
+      ctaLabel: 'Alle voordelen bekijken',
+      ctaHref: '/nl/voordelen-classificatie-vakantiewoning',
+    },
+    finalCta: {
+      title: 'Een classificatie voor uw vakantiewoning aanvragen?',
+      description:
+        'Wilt u uw vakantiewoning laten classificeren? Stuur uw aanvraag en Etoilys neemt contact met u op om de volgende stappen te organiseren.',
+      primaryLabel: 'Classificatie aanvragen',
+      primaryHref: '/nl/classificatie-aanvragen',
+    },
+  },
 };

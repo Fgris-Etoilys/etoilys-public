@@ -6,6 +6,7 @@ import {
   normalizeAnalyticsPath,
   type VolatileAcquisitionContext,
 } from './acquisition';
+import { isSupportedLocale } from '../i18n/locales';
 
 export { normalizeAnalyticsPath } from './acquisition';
 
@@ -428,7 +429,7 @@ function sanitizeCookielessAudienceProperties(
     }
 
     if (key === 'locale') {
-      if (rawValue === 'fr' || rawValue === 'en') sanitized[key] = rawValue;
+      if (isSupportedLocale(rawValue)) sanitized[key] = rawValue;
       continue;
     }
 

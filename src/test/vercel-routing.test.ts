@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { EN_MVP_PATHS } from './i18nMvpTestData';
+import { EN_MVP_PATHS, NL_MVP_PATHS } from './i18nMvpTestData';
 
 interface VercelRoute {
   src: string;
@@ -40,6 +40,31 @@ describe('Vercel i18n routing', () => {
     expect(matcher.test('/assets/index.js')).toBe(false);
 
     EN_MVP_PATHS.forEach((pathname) => {
+      expect(matcher.test(pathname)).toBe(false);
+      expect(matcher.test(`${pathname}/`)).toBe(false);
+    });
+  });
+
+  it('serves unknown /nl paths with the localized 404 HTML and a real 404 status', () => {
+    const config = readVercelConfig();
+    const dutchNotFoundRoute = config.routes?.find((route) => route.dest === '/nl/404.html');
+
+    expect(config.trailingSlash).toBe(false);
+    expect(dutchNotFoundRoute).toMatchObject({
+      dest: '/nl/404.html',
+      status: 404,
+    });
+
+    const matcher = routeSourceToRegExp(dutchNotFoundRoute?.src ?? '');
+
+    expect(matcher.test('/nl/route-inconnue')).toBe(true);
+    expect(matcher.test('/nl/actualites')).toBe(true);
+    expect(matcher.test('/nl')).toBe(false);
+    expect(matcher.test('/nl/')).toBe(false);
+    expect(matcher.test('/api/public/forms/contact')).toBe(false);
+    expect(matcher.test('/assets/index.js')).toBe(false);
+
+    NL_MVP_PATHS.forEach((pathname) => {
       expect(matcher.test(pathname)).toBe(false);
       expect(matcher.test(`${pathname}/`)).toBe(false);
     });

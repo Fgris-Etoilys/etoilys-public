@@ -54,4 +54,22 @@ export const contactPageContent = {
         'We undertake to reply to your request within 24 working hours. For an urgent request, please feel free to call us directly.',
     },
   },
+  nl: {
+    hero: {
+      title: 'Contact met Etoilys',
+      description:
+        'Heeft u een vraag voordat u de officiële classificatie van uw Franse vakantiewoning aanvraagt? Etoilys kan antwoorden en de volgende stappen toelichten.',
+    },
+    detailsTitle: 'Onze contactgegevens',
+    contactLabels: {
+      phone: 'Telefoon',
+      email: 'E-mail',
+      headOffice: 'Maatschappelijke zetel',
+    },
+    quickResponse: {
+      title: 'Snelle reactie',
+      description:
+        'Wij beantwoorden uw aanvraag binnen 24 werkuren. Voor een dringende vraag kunt u ons ook rechtstreeks bellen.',
+    },
+  },
 } as const satisfies Record<Locale, ContactPageContent>;

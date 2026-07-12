@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import {
   getHtmlLang,
   getCanonicalUrl,
+  getOgLocale,
   getSeoTitle,
   SITE_NAME,
   type SeoAlternateLink,
@@ -36,6 +37,7 @@ export default function SEO({
   const currentUrl = getCanonicalUrl(location.pathname);
   const image = ogImage?.trim();
   const htmlLang = getHtmlLang(location.pathname);
+  const ogLocale = getOgLocale(location.pathname);
 
   useEffect(() => {
     document.title = fullTitle;
@@ -49,6 +51,7 @@ export default function SEO({
       { property: 'og:url', content: currentUrl },
       { property: 'og:type', content: 'website' },
       { property: 'og:site_name', content: SITE_NAME },
+      { property: 'og:locale', content: ogLocale },
       { name: 'twitter:card', content: image ? 'summary_large_image' : 'summary' },
       { name: 'twitter:title', content: fullTitle },
       { name: 'twitter:description', content: description },
@@ -129,6 +132,7 @@ export default function SEO({
     currentUrl,
     image,
     htmlLang,
+    ogLocale,
     alternateLinks,
     includeCanonical,
     preloadImage,

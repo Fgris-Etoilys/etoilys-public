@@ -3,6 +3,7 @@ import type { Locale } from './locales';
 const NUMBER_LOCALES: Readonly<Record<Locale, string>> = {
   fr: 'fr-FR',
   en: 'en-GB',
+  nl: 'nl-NL',
 };
 
 export function getNumberLocale(locale: Locale): string {

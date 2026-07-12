@@ -1,5 +1,5 @@
 import type { ImageAssetKey } from './imageManifest';
-import { DEFAULT_LOCALE, type Locale } from '../i18n/locales';
+import { DEFAULT_LOCALE, OG_LOCALES, type Locale } from '../i18n/locales';
 import { isContentReadyForIndexing } from '../i18n/contentReadiness';
 import {
   getAlternateLocaleLinks,
@@ -395,6 +395,90 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     locale: 'en',
     routeId: 'confidentialite',
   },
+  '/nl': {
+    lastModified: '2026-07-11',
+    title: 'Officiële classificatie van uw vakantiewoning in Frankrijk',
+    description:
+      'Etoilys begeleidt eigenaars bij de officiële sterrenclassificatie van hun Franse vakantiewoning, het juridische meublé de tourisme.',
+    breadcrumbLabel: 'Home',
+    ogImageKey: 'homeHero',
+    lcpImageKey: 'homeHero',
+    locale: 'nl',
+    routeId: 'home',
+  },
+  '/nl/classificatie-vakantiewoning-frankrijk': {
+    lastModified: '2026-07-11',
+    title: 'Officiële classificatie van een vakantiewoning in Frankrijk',
+    description:
+      'Begrijp de Franse officiële classificatie van een vakantiewoning: sterren, geldigheid, erkende controle-instantie, inspectie en criteria.',
+    breadcrumbLabel: 'Classificatie',
+    locale: 'nl',
+    routeId: 'classement',
+  },
+  '/nl/voordelen-classificatie-vakantiewoning': {
+    lastModified: '2026-07-11',
+    title: 'Voordelen van de officiële classificatie van een vakantiewoning',
+    description:
+      'Fiscaal regime, toeristenbelasting, officiële sterren en toeristische referenties: de concrete effecten van de classificatie van een Franse vakantiewoning.',
+    breadcrumbLabel: 'Voordelen van classificatie',
+    ogImageKey: 'pourquoiReferencement',
+    locale: 'nl',
+    routeId: 'avantages',
+  },
+  '/nl/voorwaarden-classificatie-vakantiewoning': {
+    lastModified: '2026-07-11',
+    title: 'Voorwaarden voor classificatie van een vakantiewoning',
+    description:
+      'Belangrijke voorwaarden vóór een Franse classificatieaanvraag: oppervlakte, uitrusting, staat van de woning en meetellende ruimtes.',
+    breadcrumbLabel: 'Voorwaarden',
+    locale: 'nl',
+    routeId: 'prerequis',
+  },
+  '/nl/classificatieprocedure-vakantiewoning': {
+    lastModified: '2026-07-11',
+    title: 'Classificatieprocedure voor een vakantiewoning in Frankrijk',
+    description:
+      'De stappen van een classificatieaanvraag: contact, inspectiebezoek, rapport, classificatievoorstel en geldigheid van vijf jaar.',
+    breadcrumbLabel: 'Procedure',
+    locale: 'nl',
+    routeId: 'procedure',
+  },
+  '/nl/faq': {
+    lastModified: '2026-07-11',
+    title: 'FAQ over classificatie van vakantiewoningen in Frankrijk',
+    description:
+      'Veelgestelde vragen over de Franse classificatie van vakantiewoningen, fiscaliteit, toeristenbelasting, procedure, geldigheid en verplichtingen.',
+    breadcrumbLabel: 'FAQ',
+    locale: 'nl',
+    routeId: 'faq',
+  },
+  '/nl/contact': {
+    lastModified: '2026-07-11',
+    title: 'Contact',
+    description:
+      'Contactgegevens en formulier voor vragen over Etoilys en de Franse classificatieprocedure voor vakantiewoningen.',
+    breadcrumbLabel: 'Contact',
+    locale: 'nl',
+    routeId: 'contact',
+  },
+  '/nl/classificatie-aanvragen': {
+    lastModified: '2026-07-11',
+    title: 'Classificatie aanvragen',
+    description:
+      'Dien in enkele minuten uw aanvraag in voor de officiële classificatie van uw Franse vakantiewoning.',
+    breadcrumbLabel: 'Classificatie aanvragen',
+    locale: 'nl',
+    routeId: 'demandeClassement',
+  },
+  '/nl/privacybeleid': {
+    lastModified: '2026-07-11',
+    title: 'Privacybeleid',
+    description:
+      'Informatie over de verwerking van persoonsgegevens in het kader van de diensten en openbare formulieren van Etoilys.',
+    breadcrumbLabel: 'Privacybeleid',
+    locale: 'nl',
+    routeId: 'confidentialite',
+  },
   '/en/tourist-tax-simulator': {
     lastModified: '2026-07-11',
     title: 'Tourist tax simulator: classified and unclassified accommodation',
@@ -447,6 +531,18 @@ export const NOT_FOUND_SEO_EN: SeoRouteConfig = {
   isNotFound: true,
 };
 
+export const NOT_FOUND_SEO_NL: SeoRouteConfig = {
+  title: 'Pagina niet gevonden',
+  description: 'De gevraagde pagina bestaat niet of is niet meer beschikbaar.',
+  robots: 'noindex,follow',
+  indexable: false,
+  prerender: false,
+  locale: 'nl',
+  includeCanonical: false,
+  includeStructuredData: false,
+  isNotFound: true,
+};
+
 const DYNAMIC_SEO_ROUTES: Array<{ pattern: RegExp; config: SeoRouteConfig }> = [
   {
     pattern: /^\/simulateur\/[^/]+$/,
@@ -480,7 +576,11 @@ export function getSeoRouteConfig(pathname: string): SeoRouteConfig {
   const route =
     SEO_ROUTES[normalizedPath] ??
     DYNAMIC_SEO_ROUTES.find((route) => route.pattern.test(normalizedPath))?.config ??
-    (getHtmlLang(normalizedPath) === 'en' ? NOT_FOUND_SEO_EN : NOT_FOUND_SEO);
+    (getHtmlLang(normalizedPath) === 'en'
+      ? NOT_FOUND_SEO_EN
+      : getHtmlLang(normalizedPath) === 'nl'
+        ? NOT_FOUND_SEO_NL
+        : NOT_FOUND_SEO);
 
   return applyLocaleIndexing(route);
 }
@@ -492,6 +592,10 @@ export function getCanonicalUrl(pathname: string): string {
 
 export function getHtmlLang(pathname: string): Locale {
   return getLocaleFromPath(normalizePath(pathname));
+}
+
+export function getOgLocale(pathname: string): string {
+  return OG_LOCALES[getHtmlLang(pathname)];
 }
 
 function pathnameFromSiteUrl(url: string): string {
@@ -573,10 +677,12 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
     return [];
   }
 
-  const home: BreadcrumbItem =
-    locale === 'en'
-      ? { name: 'Home', url: `${SITE_URL}/en` }
-      : { name: 'Accueil', url: `${SITE_URL}/` };
+  const homeByLocale: Record<Locale, BreadcrumbItem> = {
+    fr: { name: 'Accueil', url: `${SITE_URL}/` },
+    en: { name: 'Home', url: `${SITE_URL}/en` },
+    nl: { name: 'Home', url: `${SITE_URL}/nl` },
+  };
+  const home = homeByLocale[locale];
 
   if (normalizedPath.startsWith('/actualites/') && normalizedPath !== '/actualites') {
     return [

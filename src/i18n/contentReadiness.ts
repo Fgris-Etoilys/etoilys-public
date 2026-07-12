@@ -1,4 +1,5 @@
 import { DEFAULT_LOCALE, type Locale } from './locales';
+import { localizedRoutes } from './localizedRoutes';
 import type { LocalizedRouteId } from './localizedRoutes';
 
 export const EN_INDEXABLE_ROUTE_IDS = [
@@ -15,7 +16,22 @@ export const EN_INDEXABLE_ROUTE_IDS = [
   'simulateurFiscalClassement',
 ] as const satisfies readonly LocalizedRouteId[];
 
-const EN_INDEXABLE_ROUTE_ID_SET = new Set<LocalizedRouteId>(EN_INDEXABLE_ROUTE_IDS);
+export const NL_INDEXABLE_ROUTE_IDS = [
+  'home',
+  'classement',
+  'avantages',
+  'prerequis',
+  'procedure',
+  'faq',
+  'contact',
+  'demandeClassement',
+  'confidentialite',
+] as const satisfies readonly LocalizedRouteId[];
+
+const INDEXABLE_ROUTE_IDS_BY_LOCALE: Partial<Record<Locale, ReadonlySet<LocalizedRouteId>>> = {
+  en: new Set<LocalizedRouteId>(EN_INDEXABLE_ROUTE_IDS),
+  nl: new Set<LocalizedRouteId>(NL_INDEXABLE_ROUTE_IDS),
+};
 
 export const isContentReadyForIndexing = (
   locale: Locale,
@@ -25,5 +41,9 @@ export const isContentReadyForIndexing = (
     return true;
   }
 
-  return locale === 'en' && routeId !== undefined && EN_INDEXABLE_ROUTE_ID_SET.has(routeId);
+  if (routeId === undefined || localizedRoutes[routeId][locale] === undefined) {
+    return false;
+  }
+
+  return INDEXABLE_ROUTE_IDS_BY_LOCALE[locale]?.has(routeId) ?? false;
 };

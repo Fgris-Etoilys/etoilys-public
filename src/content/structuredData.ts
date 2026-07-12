@@ -35,10 +35,11 @@ export const ETOILYS_COFRAC_CERTIFICATE_URL = 'https://tools.cofrac.fr/annexes/s
 const CLASSIFICATION_AREA_SERVED =
   'Dordogne, Gironde, Lot-et-Garonne et secteurs proches de Bergerac';
 
-const HOME_GRAPH_PATHS = new Set(['/', '/en']);
+const HOME_GRAPH_PATHS = new Set(['/', '/en', '/nl']);
 const CLASSIFICATION_GRAPH_PATHS = new Set([
   '/classement',
   '/en/furnished-tourist-accommodation-classification',
+  '/nl/classificatie-vakantiewoning-frankrijk',
 ]);
 const SERVICE_COMPACT_GRAPH_PATHS = new Set([
   '/les-avantages-du-classement',
@@ -55,11 +56,17 @@ const SERVICE_COMPACT_GRAPH_PATHS = new Set([
   '/en/classification-process',
   '/en/request-a-classification',
   '/en/contact',
+  '/nl/voordelen-classificatie-vakantiewoning',
+  '/nl/voorwaarden-classificatie-vakantiewoning',
+  '/nl/classificatieprocedure-vakantiewoning',
+  '/nl/classificatie-aanvragen',
+  '/nl/contact',
 ]);
 const ORGANIZATION_COMPACT_GRAPH_PATHS = new Set([
   '/mentions-legales',
   '/confidentialite',
   '/en/privacy-policy',
+  '/nl/privacybeleid',
 ]);
 
 const STRUCTURED_DATA_AUTHORS = {
@@ -147,7 +154,7 @@ function buildDetailedOrganization(): JsonLdObject {
       contactType: 'customer service',
       telephone: '+33649551540',
       email: 'contact@etoilys.fr',
-      availableLanguage: ['fr', 'en'],
+      availableLanguage: ['fr', 'en', 'nl'],
     },
     address: buildPostalAddress(),
   };

@@ -35,6 +35,7 @@ const panonceaux = [
     label: {
       fr: '1 étoile',
       en: '1 star',
+      nl: '1 ster',
     },
   },
   {
@@ -42,6 +43,7 @@ const panonceaux = [
     label: {
       fr: '2 étoiles',
       en: '2 stars',
+      nl: '2 sterren',
     },
   },
   {
@@ -49,6 +51,7 @@ const panonceaux = [
     label: {
       fr: '3 étoiles',
       en: '3 stars',
+      nl: '3 sterren',
     },
   },
   {
@@ -56,6 +59,7 @@ const panonceaux = [
     label: {
       fr: '4 étoiles',
       en: '4 stars',
+      nl: '4 sterren',
     },
   },
   {
@@ -63,6 +67,7 @@ const panonceaux = [
     label: {
       fr: '5 étoiles',
       en: '5 stars',
+      nl: '5 sterren',
     },
   },
 ] as const;

@@ -632,4 +632,253 @@ export const classificationBenefitsPageContent = {
       ],
     },
   },
+  nl: {
+    hero: {
+      title: 'Waarom een vakantiewoning in Frankrijk laten classificeren?',
+      description:
+        'De classificatie van een vakantiewoning, juridisch een meublé de tourisme, geeft een officieel sterrenreferentiepunt. Afhankelijk van de situatie kan dit ook gevolgen hebben voor het micro-BIC-regime, de toeristenbelasting en de presentatie van de accommodatie.',
+    },
+    mainBenefits: {
+      title: 'De voordelen van een geclassificeerde vakantiewoning',
+      items: [
+        {
+          icon: 'calculator',
+          title: 'Verhoogde fiscale aftrek',
+          description:
+            'Voor inkomsten over 2026 die in 2027 worden aangegeven, geldt voor een geclassificeerde vakantiewoning een micro-BIC-aftrek van 50% tot 83.600 euro omzet, tegenover 30% tot 15.000 euro voor een niet-geclassificeerde woning.',
+        },
+        {
+          icon: 'percent',
+          title: 'Toeristenbelasting',
+          description:
+            'Geclassificeerde vakantiewoningen vallen onder een vast bedrag toeristenbelasting per persoon en per nacht, meestal lager dan het bedrag voor niet-geclassificeerde vakantiewoningen.',
+        },
+        {
+          icon: 'piggyBank',
+          title: 'Sociale bijdragen',
+          description:
+            'Verhuurders onder het Franse micro-entrepreneurregime hebben een percentage sociale bijdragen van 6% voor geclassificeerde vakantiewoningen, tegenover 21,2% voor niet-geclassificeerde vakantiewoningen.',
+        },
+        {
+          icon: 'award',
+          title: 'Officieel sterrenreferentiepunt',
+          description:
+            'De verhuurder kan het officiële bord van het ministerie belast met Toerisme aanvragen (1 tot 5 sterren), dat bij de woning kan worden aangebracht en in advertenties kan worden vermeld. Het bevestigt dat de woning voldoet aan comfort- en uitrustingscriteria.',
+        },
+        {
+          icon: 'globe',
+          title: 'Toeristische vermelding',
+          description:
+            'Geclassificeerde vakantiewoningen kunnen door lokale toeristenbureaus worden vermeld en in aanmerking komen voor nationale toeristische promotiedatabases. Het sterrenniveau vormt een gestandaardiseerd herkenningspunt voor reizigers.',
+        },
+        {
+          icon: 'ticket',
+          title: 'Chèques-vacances van ANCV',
+          description:
+            'Classificatie geeft toegang tot aansluiting bij ANCV, de Franse nationale organisatie voor vakantiecheques. Aangesloten woningen kunnen chèques-vacances accepteren en in ANCV-dragers worden vermeld.',
+        },
+      ],
+    },
+    fiscalComparison: {
+      title: 'Fiscale voordelen: vergelijking',
+      description:
+        'Binnen het micro-BIC-regime verlaagt classificatie het belastbare deel van de omzet. De vergelijking hieronder toont het verschil voor inkomsten over 2026 die in 2027 worden aangegeven.',
+      items: [
+        {
+          title: 'Zonder classificatie',
+          allowance: '30%',
+          allowanceLabel: 'fiscale aftrek',
+          example:
+            'Bij 12.000 euro omzet in 2026: 8.400 euro belastbaar (micro-BIC-plafond*: 15.000 euro)',
+          color: 'bg-gray-100',
+        },
+        {
+          title: 'Met classificatie',
+          allowance: '50%',
+          allowanceLabel: 'fiscale aftrek',
+          example:
+            'Bij 12.000 euro omzet in 2026: 6.000 euro belastbaar (micro-BIC-plafond*: 83.600 euro)',
+          color: 'bg-success-100',
+        },
+      ],
+      result: {
+        value: '2.400 euro',
+        label: 'minder belastbare basis in dit voorbeeld',
+        description:
+          'Bij 12.000 euro omzet in 2026 bedraagt de belastbare basis 6.000 euro met classificatie (50%), tegenover 8.400 euro zonder classificatie (30%).',
+      },
+      footnote: {
+        intro:
+          '* Het micro-BIC-regime geldt zolang de jaarlijkse omzet onder het toepasselijke plafond blijft. Bij overschrijding gedurende twee opeenvolgende jaren gaat de verhuurder verplicht over naar het régime réel, wat inhoudt:',
+        items: [
+          'een boekhouding voeren volgens het Franse algemene rekeningenstelsel;',
+          'een fiscale aangiftebundel opstellen en elektronisch indienen, waaronder formulier 2031, vóór de inkomstenbelastingaangifte;',
+          'meestal een accountant inschakelen.',
+        ],
+        sourceLabel: 'impots.gouv.fr — fiscaal regime van meublés de tourisme',
+        sourceHref: OFFICIAL_FISCAL_SOURCE_HREF,
+      },
+    },
+    touristTax: {
+      title: 'Toeristenbelasting: vast bedrag of proportioneel tarief',
+      description:
+        'Geclassificeerde vakantiewoningen vallen onder een vast bedrag per persoon en per nacht, vastgesteld volgens het aantal sterren binnen een nationale bandbreedte. Niet-geclassificeerde vakantiewoningen vallen onder een proportioneel tarief op de nachtprijs, tussen 1% en 5% volgens lokale besluiten.',
+      unclassified: {
+        title: 'Niet-geclassificeerde vakantiewoning',
+        value: '1% – 5%',
+        label: 'van de prijs exclusief btw per persoon per nacht',
+        note: 'Het tarief wordt lokaal vastgesteld binnen deze nationale bandbreedte.',
+      },
+      classified: {
+        title: 'Geclassificeerde vakantiewoning',
+        intro: 'Vast bedrag per sterrencategorie (nationale bandbreedte 2026)',
+        headerCategory: 'Classificatie',
+        headerRange: 'Min – max / pers. / nacht',
+        ranges: [
+          { label: '1 ster', value: '0,20 euro – 0,80 euro' },
+          { label: '2 sterren', value: '0,30 euro – 1,00 euro' },
+          { label: '3 sterren', value: '0,50 euro – 1,70 euro' },
+          { label: '4 sterren', value: '0,70 euro – 2,60 euro' },
+          { label: '5 sterren', value: '0,70 euro – 3,60 euro' },
+        ],
+      },
+      example: {
+        title:
+          'Voorbeeld in Parijs — 3★-woning, verhuurd voor 120 euro / nacht aan 2 personen (60 euro excl. btw / pers.)',
+        note: 'Parijs past een departementale toeslag (+10%) en een Île-de-France Mobilités-toeslag (+200%) toe op de basis van de toeristenbelasting.',
+        headers: ['', 'Niet geclassificeerd', 'Geclassificeerd 3★'],
+        rows: [
+          {
+            label: 'Basis toeristenbelasting',
+            unclassified: '5% × 60 euro = 3,00 euro',
+            classified: '1,70 euro',
+          },
+          {
+            label: '+ Departementale toeslag (10%)',
+            unclassified: '0,30 euro',
+            classified: '0,17 euro',
+          },
+          {
+            label: '+ Toeslag IDF Mobilités (200%)',
+            unclassified: '6,00 euro',
+            classified: '3,40 euro',
+          },
+          { label: 'Totaal / pers. / nacht', unclassified: '9,30 euro', classified: '5,27 euro' },
+          { label: 'Totaal 2 pers. / nacht', unclassified: '18,60 euro', classified: '10,54 euro' },
+        ],
+        totalValue: '8,06 euro',
+        totalLabel:
+          'minder toeristenbelasting per nacht in dit voorbeeld, doorberekend aan de reiziger',
+      },
+    },
+    socialRegime: {
+      title: 'Sociaal regime: wat classificatie in 2026 verandert',
+      description:
+        'Onder 23.000 euro jaarlijkse omzet gelden voor geclassificeerde en niet-geclassificeerde verhuurders dezelfde sociale heffingen op netto-inkomsten, zonder professionele sociale bijdragen. Boven deze drempel lopen de situaties uiteen. Een geclassificeerde vakantiewoning kan, afhankelijk van de situatie, onder het micro-sociale regime van 6% op bruto-omzet blijven vallen. In 2026 heeft niet-geclassificeerde kortetermijnverhuur geen toegang meer tot dit kader en valt zij onder het regime voor zelfstandigen.',
+      headers: ['Situatie', 'Geclassificeerde woning', 'Niet-geclassificeerde woning', 'Kernpunt'],
+      rows: [
+        {
+          situation: 'Omzet < 15.000 euro/jaar',
+          classified: 'Sociale heffingen — geen professionele bijdragen',
+          unclassified: 'Sociale heffingen — geen professionele bijdragen',
+          takeaway: 'Zelfde kader in beide gevallen',
+        },
+        {
+          situation: '15.000 euro – 23.000 euro/jaar',
+          classified: 'Geen sociale bijdragen — micro-BIC toegankelijk',
+          unclassified: 'Geen sociale bijdragen — régime réel fiscaal',
+          takeaway: 'Nog geen bijdragen; fiscale behandeling verschilt',
+        },
+        {
+          situation: '> 23.000 euro/jaar',
+          classified: 'Micro-social mogelijk tegen 6%*',
+          unclassified: 'Regime voor zelfstandigen',
+          takeaway: 'Classificatie beïnvloedt ook de drempels van het micro-sociale regime',
+          highlight: 'classified',
+        },
+      ],
+      footnote:
+        '* Voor inkomsten over 2026 die in 2027 worden aangegeven, bedraagt de drempel voor geclassificeerde woningen 83.600 euro. Toegang tot het micro-sociale regime hangt ook af van eerdere jaren: de omzet 2024 of de inkomsten 2025 die in 2026 zijn aangegeven, mogen niet hoger zijn dan 77.700 euro. Na twee opeenvolgende jaren boven de toepasselijke drempel geldt het zelfstandigenregime.',
+      callout:
+        'In 2026 beperkt het effect van classificatie zich dus niet tot micro-BIC: afhankelijk van de omzet kan zij ook helpen het micro-sociale regime te behouden.',
+      sources: [
+        {
+          label: 'Bron: Urssaf — auto-entrepreneur loueur en meublé: overzicht van de wijzigingen',
+          href: 'https://www.urssaf.fr/accueil/actualites/auto-entrepreneur-loueur-meuble.html',
+        },
+        {
+          label: 'Urssaf — économie collaborative',
+          href: 'https://www.urssaf.fr/accueil/services/economie-collaborative.html',
+        },
+      ],
+    },
+    officialSign: {
+      title: 'Het officiële bord: een gecertificeerd herkenningspunt',
+      description:
+        'Na toekenning van de classificatie heeft de verhuurder het recht het officiële bord te gebruiken dat door Atout France wordt beheerd onder het gezag van het ministerie belast met Toerisme. Het kan aan de gevel worden geplaatst en in advertenties worden weergegeven.',
+      sourceLabel: 'Officiële borden 2026 — Atout France',
+      sourceHref: 'https://www.classement.atout-france.fr/les-panonceaux-de-classement',
+      panonceauAltPrefix: 'Officieel bord meublé de tourisme',
+      items: [
+        {
+          title: 'Uitgegeven onder het gezag van het ministerie belast met Toerisme',
+          description:
+            'Het bord wordt beheerd door Atout France. Het bevestigt dat de woning is geïnspecteerd door een door Cofrac geaccrediteerde of door Atout France goedgekeurde instantie.',
+        },
+        {
+          title: 'Te gebruiken in alle advertenties',
+          description:
+            'Het aantal sterren kan worden vermeld op boekingsplatforms, op de website van de verhuurder en op communicatiemateriaal.',
+        },
+        {
+          title: '5 jaar geldig',
+          description:
+            'Het bord vermeldt het jaar van toekenning en wordt vernieuwd na een nieuwe inspectie, zodat het classificatieniveau regelmatig wordt bijgewerkt.',
+        },
+        {
+          title: 'Objectieve en raadpleegbare criteria',
+          description:
+            'De sterren komen overeen met comfort- en uitrustingscriteria die bij ministerieel besluit zijn vastgesteld. De beoordelingslijst is openbaar en controleerbaar.',
+        },
+      ],
+    },
+    tourismReference: {
+      title: 'Toeristische vermelding',
+      imageAlt: 'Vakantiewoning',
+      items: [
+        {
+          title: 'Een classificatie die uw woning een officieel referentiepunt geeft',
+          description:
+            'De officiële classificatie geeft uw vakantiewoning een herkenningspunt dat in het toeristische ecosysteem wordt erkend. Zij kan opname in informatiekanalen van toeristenbureaus en lokale toeristische organisaties vergemakkelijken.',
+        },
+        {
+          title: 'Informatie die verder gaat dan de advertentie',
+          description:
+            'Toeristische gegevens van toeristenbureaus, departementale agentschappen en regionale comités voeden DATAtourisme, het Franse nationale referentieplatform. Dit systeem verspreidt geharmoniseerde informatie die op grote schaal kan worden hergebruikt.',
+        },
+        {
+          title: 'Sterren die reizigers meteen begrijpen',
+          description:
+            'De classificatie berust op een officiële schaal van 1 tot 5 sterren, geldig voor 5 jaar en gebaseerd op 133 criteria. Voor reizigers is dit een eenvoudig signaal voor comfort, uitrusting en diensten.',
+        },
+      ],
+    },
+    finalCta: {
+      title: 'Welke soorten woningen kunnen worden geclassificeerd?',
+      description:
+        'In tegenstelling tot wat vaak wordt gedacht, is classificatie niet voorbehouden aan luxe woningen.',
+      links: [
+        {
+          label: 'Voorwaarden bekijken',
+          href: '/nl/voorwaarden-classificatie-vakantiewoning',
+          variant: 'ghost',
+        },
+        {
+          label: 'Classificatie aanvragen',
+          href: '/nl/classificatie-aanvragen',
+          variant: 'white',
+        },
+      ],
+    },
+  },
 } as const satisfies Record<Locale, ClassificationBenefitsPageContent>;

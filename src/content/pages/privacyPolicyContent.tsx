@@ -368,4 +368,379 @@ export const privacyPolicyContent = {
       </>
     ),
   },
+  nl: {
+    title: 'Privacybeleid',
+    lastUpdated: 'Laatst bijgewerkt: 10 juli 2026',
+    cookiePreferencesLabel: 'Cookies beheren',
+    body: (
+      <>
+        <div className="space-y-4">
+          <p>
+            Dit privacybeleid beschrijft hoe ETOILYS persoonsgegevens verzamelt en verwerkt van
+            gebruikers van de website{' '}
+            <a
+              href="https://www.etoilys.fr"
+              className={linkClassName}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              www.etoilys.fr
+            </a>
+            , met name wanneer zij het contactformulier of het formulier voor een
+            classificatieaanvraag gebruiken.
+          </p>
+          <p>
+            ETOILYS hecht bijzonder belang aan de bescherming van persoonsgegevens en verbindt zich
+            ertoe deze gegevens rechtmatig, behoorlijk, transparant en evenredig met de nagestreefde
+            doeleinden te verwerken.
+          </p>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>1. Verwerkingsverantwoordelijke</h2>
+          <p className="mb-4">De verwerkingsverantwoordelijke is:</p>
+          <div className="bg-primary-100 rounded-card p-6 text-sm space-y-0.5 mb-4">
+            <p className="font-semibold text-gray-800">ETOILYS</p>
+            <p>SAS met maatschappelijk kapitaal van 2.000 euro</p>
+            <p>RCS Bergerac 939 330 809</p>
+            <p>
+              Maatschappelijke zetel: 1345 route de Dautres, 24150 Mauzac-et-Grand-Castang,
+              Frankrijk
+            </p>
+            <p>
+              E-mail:{' '}
+              <a href="mailto:contact@etoilys.fr" className={linkClassName}>
+                contact@etoilys.fr
+              </a>
+            </p>
+            <p>
+              Telefoon:{' '}
+              <a href="tel:+33649551540" className={linkClassName}>
+                +33 6 49 55 15 40
+              </a>
+            </p>
+          </div>
+          <p>
+            Voor vragen over dit beleid of de verwerking van uw persoonsgegevens kunt u contact met
+            ons opnemen via:{' '}
+            <a href="mailto:contact@etoilys.fr" className={linkClassName}>
+              contact@etoilys.fr
+            </a>
+            .
+          </p>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>2. Verzamelde persoonsgegevens</h2>
+          <p className="mb-3">
+            Afhankelijk van de formulieren en uitwisselingen kan ETOILYS de volgende categorieën
+            gegevens verzamelen:
+          </p>
+          <ul className="list-disc list-inside space-y-1.5 pl-2 mb-4">
+            <li>
+              <strong className={strongClassName}>identificatie- en contactgegevens</strong>: naam,
+              voornaam, e-mailadres, telefoonnummer;
+            </li>
+            <li>
+              <strong className={strongClassName}>gegevens over uw aanvraag</strong>: onderwerp van
+              de aanvraag, inhoud van het bericht, informatie over uw classificatieproject;
+            </li>
+            <li>
+              <strong className={strongClassName}>
+                gegevens over de betrokken gemeubileerde woning
+              </strong>
+              : adres van de woning, nuttige kenmerken voor de behandeling van de aanvraag en, meer
+              algemeen, alle informatie die u ervoor kiest aan ons door te geven;
+            </li>
+            <li>
+              <strong className={strongClassName}>
+                technische gegevens in verband met sitegebruik
+              </strong>
+              : IP-adres, technische logs, beveiligingsgegevens, informatie die nodig is om misbruik
+              te voorkomen en de formulieren te laten functioneren;
+            </li>
+            <li>
+              <strong className={strongClassName}>
+                gegevens uit een antispam- of antibotsysteem
+              </strong>
+              , wanneer dit mechanisme wordt gebruikt om formulierverzendingen te beveiligen;
+            </li>
+            <li>
+              <strong className={strongClassName}>gegevens voor publieksmeting</strong>:
+              gedetailleerde trajecten, acquisitie en interacties uitsluitend na aanvaarding van
+              analytics-toestemming; na een uitdrukkelijke weigering kan een optionele telling
+              zonder cookie uitsluitend de landingspagina zonder parameters en de taal bevatten.
+            </li>
+          </ul>
+          <p>
+            ETOILYS zorgt ervoor alleen gegevens te verzamelen die strikt noodzakelijk zijn voor de
+            behandeling van de aan haar gerichte aanvragen.
+          </p>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>
+            3. Doeleinden en rechtsgronden van de verwerking
+          </h2>
+          <p className="mb-4">Uw persoonsgegevens worden verwerkt voor de volgende doeleinden:</p>
+          <div className="space-y-4">
+            <div>
+              <p className="font-medium text-gray-700 mb-1">
+                a) Beantwoorden van aanvragen via het contactformulier
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Rechtsgrond:</span> het gerechtvaardigd belang van
+                ETOILYS om ontvangen verzoeken te beantwoorden of, afhankelijk van de aard van het
+                verzoek, precontractuele maatregelen op uw verzoek.
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-gray-700 mb-1">
+                b) Onderzoeken en behandelen van classificatie- of offerteaanvragen
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Rechtsgrond:</span> precontractuele maatregelen op uw
+                verzoek en, indien van toepassing, uitvoering van de overeenkomst wanneer een
+                contractuele relatie wordt aangegaan.
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-gray-700 mb-1">
+                c) Administratieve en commerciële opvolging van de relatie
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Rechtsgrond:</span> uitvoering van de overeenkomst,
+                precontractuele maatregelen of gerechtvaardigd belang, afhankelijk van de fase van
+                de relatie.
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-gray-700 mb-1">
+                d) Beveiliging van de site en preventie van spam, geautomatiseerde verzendingen en
+                misbruik
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Rechtsgrond:</span> het gerechtvaardigd belang van
+                ETOILYS om haar site, formulieren en diensten te beschermen. De CNIL noemt ook
+                CAPTCHA-achtige maatregelen als maatregelen die kunnen worden gebruikt voor een
+                legitiem technisch beschermingsdoel.
+              </p>
+            </div>
+            <div>
+              <p className="font-medium text-gray-700 mb-1">
+                e) Naleving van toepasselijke wettelijke, boekhoudkundige, fiscale of
+                bewijsverplichtingen
+              </p>
+              <p className="text-sm">
+                <span className="font-medium">Rechtsgrond:</span> wettelijke verplichting.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>4. Ontvangers van de gegevens</h2>
+          <p className="mb-3">
+            De verzamelde persoonsgegevens zijn uitsluitend bestemd voor bevoegde personen binnen
+            ETOILYS, voor zover nodig om uw aanvraag te beheren.
+          </p>
+          <p className="mb-3">
+            Zij kunnen ook worden doorgegeven aan technische dienstverleners die voor rekening van
+            ETOILYS handelen, met name voor:
+          </p>
+          <ul className="list-disc list-inside space-y-1 pl-2 mb-4">
+            <li>hosting en technische exploitatie van de site;</li>
+            <li>technische verwerking van formulieren;</li>
+            <li>verzending en routering van e-mails;</li>
+            <li>beveiliging van formulieren en preventie van misbruik;</li>
+            <li>technische opslag of beheer van applicatielogs.</li>
+          </ul>
+          <p className="mb-3">
+            In dit verband kan de site, afhankelijk van de daadwerkelijke configuratie, met name
+            steunen op de volgende diensten:
+          </p>
+          <ul className="list-disc list-inside space-y-1 pl-2 mb-4">
+            <li>
+              <strong className={strongClassName}>Vercel</strong> voor hosting en exploitatie van de
+              site;
+            </li>
+            <li>
+              <strong className={strongClassName}>Supabase</strong> voor bepaalde technische of
+              verwerkingsfuncties;
+            </li>
+            <li>
+              <strong className={strongClassName}>Resend</strong> voor e-mailroutering;
+            </li>
+            <li>
+              <strong className={strongClassName}>Cloudflare Turnstile</strong> voor
+              antibotbescherming van formulieren;
+            </li>
+            <li>
+              <strong className={strongClassName}>PostHog</strong> voor gedetailleerde publieks-,
+              acquisitie- en trajectanalyse na analytics-toestemming, of voor optionele minimale
+              meting zonder cookie na een uitdrukkelijke weigering.
+            </li>
+          </ul>
+          <p className="mb-3">
+            ETOILYS geeft PostHog niet vrijwillig namen, e-mailadressen, telefoonnummers,
+            postadressen of vrije berichtinhoud door die in formulieren zijn ingevoerd.
+          </p>
+          <p>ETOILYS verkoopt uw persoonsgegevens niet aan derden.</p>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>
+            5. Doorgifte van gegevens buiten de Europese Unie
+          </h2>
+          <p className="mb-3">
+            Sommige technische dienstverleners die door ETOILYS worden gebruikt, kunnen buiten de
+            Europese Unie of de Europese Economische Ruimte zijn gevestigd of daar bepaalde gegevens
+            verwerken.
+          </p>
+          <p className="mb-3">
+            Wanneer dergelijke doorgiften plaatsvinden, zorgt ETOILYS ervoor dat zij worden omkaderd
+            door passende waarborgen, bijvoorbeeld:
+          </p>
+          <ul className="list-disc list-inside space-y-1 pl-2">
+            <li>standaardcontractbepalingen goedgekeurd door de Europese Commissie;</li>
+            <li>
+              of, indien van toepassing, een erkend mechanisme zoals het Data Privacy Framework.
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>6. Bewaartermijnen</h2>
+          <p className="mb-3">
+            ETOILYS bewaart uw persoonsgegevens alleen gedurende de periode die nodig is voor de
+            nagestreefde doeleinden, en daarna gedurende de termijnen die vereist zijn om aan
+            wettelijke verplichtingen te voldoen of haar rechten te verdedigen.
+          </p>
+          <p className="mb-3">In beginsel:</p>
+          <ul className="list-disc list-inside space-y-1.5 pl-2">
+            <li>
+              gegevens over een contactaanvraag of classificatieaanvraag zonder latere contractuele
+              relatie worden bewaard zolang nodig is om de aanvraag te behandelen en kunnen
+              vervolgens tot 3 jaar na het laatste contact van de betrokkene worden bewaard voor
+              commerciële opvolging of hernieuwd contact;
+            </li>
+            <li>
+              bij een contractuele relatie worden de gegevens bewaard gedurende de relatie en daarna
+              gearchiveerd gedurende de toepasselijke wettelijke termijnen;
+            </li>
+            <li>contracten en commerciële correspondentie kunnen 5 jaar worden bewaard;</li>
+            <li>facturen en boekhoudstukken worden 10 jaar bewaard;</li>
+            <li>
+              informatie die nodig is om bezwaar tegen prospectie te beheren, kan 3 jaar worden
+              bewaard om met uw keuze rekening te houden.
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>7. Gegevensbeveiliging</h2>
+          <p>
+            ETOILYS treft passende technische en organisatorische maatregelen om de veiligheid,
+            integriteit en vertrouwelijkheid van persoonsgegevens te waarborgen en met name
+            wijziging, verlies, openbaarmaking of ongeoorloofde toegang te voorkomen.
+          </p>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>8. Uw rechten</h2>
+          <p className="mb-3">
+            Overeenkomstig de toepasselijke regelgeving beschikt u, afhankelijk van het geval, over
+            de volgende rechten:
+          </p>
+          <ul className="list-disc list-inside space-y-1 pl-2 mb-4">
+            <li>recht op toegang tot uw gegevens;</li>
+            <li>recht op rectificatie;</li>
+            <li>recht op wissing;</li>
+            <li>recht op beperking van de verwerking;</li>
+            <li>recht van bezwaar;</li>
+            <li>recht op gegevensoverdraagbaarheid indien van toepassing;</li>
+            <li>
+              recht om uw toestemming op elk moment in te trekken wanneer verwerking op toestemming
+              berust.
+            </li>
+          </ul>
+          <p className="mb-3">
+            U kunt uw rechten uitoefenen door te schrijven naar:{' '}
+            <a href="mailto:contact@etoilys.fr" className={linkClassName}>
+              contact@etoilys.fr
+            </a>
+          </p>
+          <p className="mb-3">
+            Bij redelijke twijfel over uw identiteit kan een identiteitsbewijs worden gevraagd om de
+            behandeling van uw verzoek te beveiligen.
+          </p>
+          <p className="mb-3">
+            ETOILYS zal zo snel mogelijk antwoorden en in elk geval binnen de toepasselijke maximale
+            wettelijke termijn. De CNIL herinnert eraan dat deze termijn in beginsel één maand is.
+          </p>
+          <p>
+            Als u na contact met ons van mening bent dat uw rechten niet worden gerespecteerd, kunt
+            u een klacht indienen bij de{' '}
+            <a
+              href="https://www.cnil.fr"
+              className={linkClassName}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              CNIL
+            </a>
+            .
+          </p>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>9. Cookies en andere trackers</h2>
+          <p className="mb-3">
+            De site kan cookies of andere trackers gebruiken die nodig zijn voor de werking,
+            beveiliging of formulierverzending.
+          </p>
+          <p className="mb-3">
+            Overeenkomstig de door de CNIL in herinnering gebrachte regels kunnen sommige trackers
+            van toestemming zijn vrijgesteld wanneer zij strikt noodzakelijk zijn voor de werking
+            van de gevraagde dienst of voor bepaalde aanvaarde technische doeleinden. Cookies of
+            trackers die niet strikt noodzakelijk zijn, mogen daarentegen alleen na uw toestemming
+            worden geplaatst.
+          </p>
+          <p className="mb-3">
+            Zolang geen keuze is gemaakt, wordt de PostHog SDK niet geladen en wordt geen
+            PostHog-gebeurtenis verzonden. Bij acceptatie kunnen persistente analytics bekeken
+            pagina’s, acquisitie, formulieren, contactlinks, simulators en conversies meten. De
+            keuze wordt maximaal 6 maanden bewaard.
+          </p>
+          <p className="mb-3">
+            Na een uitdrukkelijke weigering, en alleen als de specifieke productie-instelling is
+            ingeschakeld, kan maximaal één gebeurtenis zonder cookie per laadbeurt de landingspagina
+            zonder query of fragment en de taal bevatten. Zij bevat geen campagne, UTM, AI-referrer,
+            conversie of persistente identifier. Deze minimale meting kan afzonderlijk worden
+            uitgeschakeld in de cookievoorkeuren.
+          </p>
+          <p>
+            Het intrekken van toestemming stopt gedetailleerde tracking en verzendt geen nieuwe
+            gebeurtenis op het huidige document. Minimale meting kan bij de volgende paginaweergave
+            worden hervat, tenzij zij afzonderlijk is uitgeschakeld. Herladen vóór een keuze doet de
+            vluchtige acquisitiecontext verloren gaan en kan niet aan een latere conversie worden
+            gekoppeld.
+          </p>
+        </div>
+
+        <div>
+          <h2 className={sectionTitleClassName}>10. Wijziging van dit beleid</h2>
+          <p className="mb-3">
+            ETOILYS kan dit privacybeleid op elk moment wijzigen, met name om rekening te houden met
+            wettelijke, regelgevende of technische ontwikkelingen, of met wijzigingen in de
+            verwerkingen die op de site worden uitgevoerd.
+          </p>
+          <p>
+            De toepasselijke versie is de versie die op de datum van uw bezoek op de site is
+            gepubliceerd.
+          </p>
+        </div>
+      </>
+    ),
+  },
 } as const satisfies Record<Locale, PrivacyPolicyContent>;

@@ -4,7 +4,7 @@ import Button from '../components/ui/Button';
 import FeatureCard from '../components/ui/FeatureCard';
 import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
 import { classificationPageContent } from '../content/pages/classificationPageContent';
-import { getLocaleFromPath } from '../i18n/routeHelpers';
+import { getLocaleFromPath, getLocalizedPath } from '../i18n/routeHelpers';
 
 const CODE_DU_TOURISME_URL = 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000025576926';
 const ARRETE_CLASSEMENT_URL = 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000044413389';
@@ -21,6 +21,7 @@ export default function Classement() {
   const location = useLocation();
   const locale = getLocaleFromPath(location.pathname);
   const content = classificationPageContent[locale];
+  const requirementsPath = getLocalizedPath('prerequis', locale) ?? '/prerequis-au-classement';
 
   return (
     <>
@@ -92,12 +93,7 @@ export default function Classement() {
                   {content.definition.paragraph3.referenceLinkLabel}
                 </a>
                 {content.definition.paragraph3.beforeRequirementsLink}
-                <Link
-                  to={
-                    locale === 'en' ? '/en/classification-requirements' : '/prerequis-au-classement'
-                  }
-                  className="text-primary-300 hover:underline"
-                >
+                <Link to={requirementsPath} className="text-primary-300 hover:underline">
                   {content.definition.paragraph3.requirementsLinkLabel}
                 </Link>
                 {content.definition.paragraph3.afterRequirementsLink}

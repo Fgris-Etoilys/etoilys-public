@@ -46,6 +46,7 @@ export type LayoutContent = {
 export const localeNativeNames = {
   fr: 'Français',
   en: 'English',
+  nl: 'Nederlands',
 } as const satisfies Readonly<Record<Locale, string>>;
 
 export const layoutContent = {
@@ -168,6 +169,7 @@ export const layoutContent = {
       shortLabels: {
         fr: 'FR',
         en: 'EN',
+        nl: 'NL',
       },
       activeLabel: 'Langue active :',
       switchLabel: 'Passer en',
@@ -270,10 +272,101 @@ export const layoutContent = {
       shortLabels: {
         fr: 'FR',
         en: 'EN',
+        nl: 'NL',
       },
       activeLabel: 'Active language:',
       switchLabel: 'Switch to',
       unavailableLabel: 'Version unavailable in',
+    },
+  },
+  nl: {
+    header: {
+      homeHref: '/nl',
+      menuToggleLabel: 'Menu openen of sluiten',
+      navigation: [
+        {
+          name: 'Classificatie',
+          href: '/nl/classificatie-vakantiewoning-frankrijk',
+          showOverviewLink: true,
+          overviewLabel: 'Wat is officiële classificatie?',
+          overviewDescription: 'Begrijp de officiële classificatie',
+          submenu: [
+            {
+              name: 'Voordelen van classificatie',
+              href: '/nl/voordelen-classificatie-vakantiewoning',
+              description: 'Fiscaliteit, toeristenbelasting en officiële herkenningspunten',
+            },
+            {
+              name: 'Voorwaarden voor classificatie',
+              href: '/nl/voorwaarden-classificatie-vakantiewoning',
+              description: 'Belangrijke punten vóór het inspectiebezoek',
+            },
+            {
+              name: 'Classificatieprocedure',
+              href: '/nl/classificatieprocedure-vakantiewoning',
+              description: 'Van aanvraag tot classificatiebesluit',
+            },
+            { name: 'FAQ', href: '/nl/faq', description: 'Antwoorden op veelgestelde vragen' },
+          ],
+        },
+        { name: 'Contact', href: '/nl/contact' },
+      ],
+      cta: {
+        name: 'Classificatie aanvragen',
+        href: '/nl/classificatie-aanvragen',
+      },
+    },
+    footer: {
+      homeHref: '/nl',
+      brandTagline: ['Classificatie van', 'vakantiewoningen'],
+      columns: [
+        {
+          title: 'Diensten',
+          links: [
+            {
+              name: 'Classificatie van vakantiewoningen',
+              href: '/nl/classificatie-vakantiewoning-frankrijk',
+            },
+            {
+              name: 'Voordelen van classificatie',
+              href: '/nl/voordelen-classificatie-vakantiewoning',
+            },
+            {
+              name: 'Voorwaarden voor classificatie',
+              href: '/nl/voorwaarden-classificatie-vakantiewoning',
+            },
+            {
+              name: 'Classificatieprocedure',
+              href: '/nl/classificatieprocedure-vakantiewoning',
+            },
+            { name: 'Classificatie aanvragen', href: '/nl/classificatie-aanvragen' },
+          ],
+        },
+        {
+          title: 'Informatie',
+          links: [
+            { name: 'FAQ', href: '/nl/faq' },
+            { name: 'Contact', href: '/nl/contact' },
+          ],
+        },
+        {
+          title: 'Juridische informatie',
+          links: [{ name: 'Privacybeleid', href: '/nl/privacybeleid' }],
+        },
+      ],
+      cookiePreferencesLabel: 'Cookies beheren',
+      copyright: 'Alle rechten voorbehouden.',
+    },
+    languageSwitcher: {
+      ariaLabel: 'Taalkiezer',
+      shortLabels: {
+        fr: 'FR',
+        en: 'EN',
+        nl: 'NL',
+      },
+      activeLabel: 'Actieve taal:',
+      switchLabel: 'Overschakelen naar',
+      unavailableLabel: 'Versie niet beschikbaar in',
     },
   },
 } as const satisfies Record<Locale, LayoutContent>;

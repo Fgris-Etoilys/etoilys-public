@@ -780,4 +780,370 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
       ],
     },
   },
+  nl: {
+    hero: {
+      title: 'FAQ over classificatie van vakantiewoningen in Frankrijk',
+      description:
+        'Antwoorden op veelgestelde vragen over de officiële Franse classificatie van vakantiewoningen, juridisch meublés de tourisme.',
+    },
+    sourceLinkLabel: 'Officiële Franse bron',
+    sections: [
+      {
+        title: '1. Definitie en basis',
+        items: [
+          {
+            question: 'Wat is een meublé de tourisme?',
+            answer: (
+              <>
+                Volgens de Franse Code du tourisme zijn meublés de tourisme gemeubileerde villa’s,
+                appartementen of studio’s, voor exclusief gebruik door de huurder, verhuurd aan
+                reizigers die er per dag, week of maand verblijven en er niet hun woonplaats
+                vestigen. Het gaat dus om een volledige vakantiewoning voor tijdelijke gasten.
+                <SourceLink
+                  href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000039475084"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Is classificatie van een vakantiewoning verplicht?',
+            answer: (
+              <>
+                Nee. Classificatie is vrijwillig. Een woning kan zonder classificatie worden
+                verhuurd, mits de andere toepasselijke verplichtingen worden nageleefd.
+                <SourceLink
+                  href="https://www.classement.atout-france.fr/le-classement-des-meubles-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Hoeveel sterrencategorieën bestaan er?',
+            answer: (
+              <>
+                De officiële classificatie kent 5 categorieën, van 1 tot 5 sterren.
+                <SourceLink
+                  href="https://www.classement.atout-france.fr/le-classement-des-meubles-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Wat is het verschil tussen een chambre d’hôtes en een meublé de tourisme?',
+            answer: (
+              <>
+                Een meublé de tourisme wordt als volledige woning verhuurd, voor exclusief gebruik
+                door de huurder. Een chambre d’hôtes houdt in dat de eigenaar ter plaatse aanwezig
+                is. Zij valt niet onder hetzelfde officiële sterrenclassificatiesysteem.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-chambres-dhotes"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Kan een hoofdverblijf worden geclassificeerd?',
+            answer: (
+              <>
+                Ja. Een hoofdverblijf kan worden geclassificeerd als het aan de voorwaarden en
+                criteria voldoet. Classificatie verandert echter niet de verhuurduurregels die op
+                een hoofdverblijf van toepassing zijn.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/une-residence-principale-peut-elle-etre-classee-en-tant"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        title: '2. Classificatie in de praktijk',
+        items: [
+          {
+            question: 'Hoe lang is een classificatie geldig?',
+            answer: (
+              <>
+                Een classificatie is 5 jaar geldig. Na deze periode is een nieuwe aanvraag nodig om
+                de classificatie te behouden.
+                <SourceLink
+                  href="https://www.classement.atout-france.fr/le-classement-des-meubles-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Hoeveel kost een classificatie?',
+            answer:
+              'De prijs van een bezoek hangt af van de woning, de ligging en het aantal betrokken woningen. Voor een passend tarief kan een aanvraag worden ingediend: Etoilys bevestigt de voorwaarden vóór validatie.',
+          },
+          {
+            question: 'Hoe lang duurt een classificatiebezoek?',
+            answer:
+              'Een bezoek duurt meestal tussen 45 minuten en 2 uur, afhankelijk van de oppervlakte en kenmerken van de woning.',
+          },
+          {
+            question: 'Waarop heeft de beoordeling betrekking?',
+            answer: (
+              <>
+                De beoordeling berust op een nationale lijst van 133 criteria, verdeeld over 3
+                hoofdstukken: uitrusting en inrichting, diensten aan de klant, toegankelijkheid en
+                duurzame ontwikkeling.
+                <SourceLink
+                  href="https://www.classement.atout-france.fr/le-classement-des-meubles-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Hoe verloopt de classificatieprocedure?',
+            answer: (
+              <>
+                De eigenaar kiest een bevoegde instantie, plant het bezoek en ontvangt vervolgens
+                een inspectiecertificaat met het rapport, de controlelijst en het voorgestelde
+                besluit. De eigenaar heeft daarna 15 dagen om het voorstel te weigeren. Zonder
+                weigering binnen die termijn is de classificatie verworven.
+                <Link
+                  to="/nl/classificatieprocedure-vakantiewoning"
+                  className={sourceLinkClassName}
+                >
+                  Bekijk de pagina over de procedure &rarr;
+                </Link>
+              </>
+            ),
+          },
+          {
+            question: 'Wie mag het classificatiebezoek uitvoeren?',
+            answer: (
+              <>
+                Het bezoek moet worden uitgevoerd door een geaccrediteerde of goedgekeurde instantie
+                die voorkomt op de lijsten van Atout France. Etoilys is een{' '}
+                <a
+                  href={COFRAC_ACCREDITATION_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={accreditationLinkClassName}
+                >
+                  door Cofrac Inspection geaccrediteerde controle-instantie, nr. 3-2394
+                </a>{' '}
+                voor de classificatie van meublés de tourisme.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/qui-sadresser-pour-faire-classer-son-meuble-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Kan classificatie op afstand plaatsvinden?',
+            answer: (
+              <>
+                Nee. De procedure voorziet in een inspectiebezoek van de woning. Classificatie
+                berust dus op een bezoek ter plaatse.
+                <SourceLink
+                  href="https://www.classement.atout-france.fr/documents/20142/1516337/Guide%2Bde%2Bcontr%C3%B4le%2B-%2BMeubl%C3%A9s%2Bde%2Btourisme.pdf/299cffdd-92c7-839a-ac7a-b13a3e1e81c1?download=true&version=1.0"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Kan het voorgestelde classificatieniveau worden geweigerd?',
+            answer: (
+              <>
+                Ja. De eigenaar kan het classificatievoorstel weigeren binnen 15 dagen na ontvangst
+                van het inspectiecertificaat.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/principes-communs-au-classement-des"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Moet er iets worden opgehangen nadat de woning is geclassificeerd?',
+            answer: (
+              <>
+                Ja. Het classificatiebesluit moet zichtbaar in de woning worden aangebracht. Het
+                buitenbord is daarentegen niet verplicht voor een meublé de tourisme, ook al kan het
+                worden gebruikt.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/existe-t-il-des-obligations-en-termes-daffichage-du"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        title: '3. Fiscaliteit, voordelen en grenzen',
+        items: [
+          {
+            question: 'Verandert classificatie iets fiscaal?',
+            answer: (
+              <>
+                Ja. Voor inkomsten over 2026 die in 2027 worden aangegeven, geldt voor
+                geclassificeerde meublés de tourisme een micro-BIC-aftrek van 50%, tegenover 30%
+                voor niet-geclassificeerde woningen.
+                <SourceLink
+                  href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Welke micro-BIC-drempels gelden?',
+            answer: (
+              <>
+                Voor inkomsten over 2026 die in 2027 worden aangegeven, geldt het micro-BIC-regime
+                tot 83.600 euro omzet voor een geclassificeerde woning, tegenover 15.000 euro voor
+                een niet-geclassificeerde woning.
+                <SourceLink
+                  href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Verandert classificatie de toeristenbelasting?',
+            answer: (
+              <>
+                Ja. Een geclassificeerde vakantiewoning valt onder een tarief volgens de
+                sterrencategorie. Een niet-geclassificeerde woning of een woning in afwachting van
+                classificatie valt in principe onder een proportioneel tarief op de nachtprijs,
+                binnen de grenzen van de lokale overheid.
+                <SourceLink
+                  href="https://entreprendre.service-public.fr/vosdroits/F31635"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Garandeert classificatie meer boekingen of hogere inkomsten?',
+            answer: (
+              <>
+                Nee, niet automatisch. Classificatie is een officieel herkenningspunt voor reizigers
+                en een informatie-instrument, maar geen garantie voor inkomsten of bezettingsgraad.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Is classificatie hetzelfde als een label?',
+            answer: (
+              <>
+                Nee. Classificatie is een officieel sterrensysteem dat door de Code du tourisme
+                wordt geregeld. Een label is een aparte procedure. Er bestaat geen automatische
+                gelijkwaardigheid tussen labels en sterren.
+                <SourceLink
+                  href="https://www.classement.atout-france.fr/le-classement-des-meubles-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+        ],
+      },
+      {
+        title: '4. Formaliteiten en bijzondere gevallen',
+        items: [
+          {
+            question: 'Vervangt classificatie de aangifte bij de gemeente?',
+            answer: (
+              <>
+                Nee. Classificatie vervangt lokale administratieve stappen niet. Afhankelijk van de
+                gemeente en het type woning kan een aangifte bij de gemeente, een registratienummer
+                of een toestemming voor wijziging van gebruik nodig blijven.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Is een SIRET-nummer verplicht?',
+            answer: (
+              <>
+                Ja. De verplichting om een SIRET-nummer te verkrijgen geldt voor alle verhuurders,
+                professioneel en niet-professioneel.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/lobligation-dobtenir-un-numero-siret-simpose-t-elle-tous"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Kan een woning zonder classificatie worden verhuurd?',
+            answer: (
+              <>
+                Ja. Classificatie is niet verplicht. Het ontbreken van classificatie ontslaat echter
+                niet van fiscale, declaratieve en lokale regels die van toepassing zijn.
+                <SourceLink
+                  href="https://www.classement.atout-france.fr/le-classement-des-meubles-de-tourisme"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question:
+              'Kunnen bijzondere accommodaties als meublé de tourisme worden geclassificeerd?',
+            answer: (
+              <>
+                Niet altijd. Om classificeerbaar te zijn als meublé de tourisme, moet de
+                accommodatie een huis of appartement op funderingen zijn en mag zij niet
+                demonteerbaar, verplaatsbaar of sleepbaar zijn.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/les-hebergements-dits-insolites-cabanes-dans-les-arbres"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+          {
+            question: 'Kan een eigenaar zelf om declassificatie vragen?',
+            answer: (
+              <>
+                Nee. Er bestaat geen declassificatieprocedure op verzoek van de eigenaar. De
+                bevoegde autoriteit kan het classificatiebesluit wel voor de toekomst intrekken in
+                bepaalde objectieve gevallen, bijvoorbeeld bij verkoop van de woning.
+                <SourceLink
+                  href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/un-loueur-peut-il-renoncer-de-lui-meme-au-classement-de"
+                  label="Officiële Franse bron"
+                />
+              </>
+            ),
+          },
+        ],
+      },
+    ],
+    finalCta: {
+      title: 'Nog een vraag?',
+      description:
+        'Ons team kan vragen beantwoorden over de classificatie van uw vakantiewoning in Frankrijk.',
+      links: [
+        { label: 'Contact met Etoilys', href: '/nl/contact', variant: 'primary' },
+        {
+          label: 'Classificatie aanvragen',
+          href: '/nl/classificatie-aanvragen',
+          variant: 'secondary',
+        },
+      ],
+    },
+  },
 };

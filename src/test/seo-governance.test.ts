@@ -6,6 +6,7 @@ import {
   getCanonicalUrl,
   getHtmlLang,
   getIndexablePaths,
+  getOgLocale,
   getPrerenderPaths,
   getSeoRouteConfig,
   getSeoAlternateLinks,
@@ -14,7 +15,12 @@ import {
 import { getArticleStructuredData } from '../content/articleStructuredData';
 import { getSitemapLastModified, isValidIsoDateOnly } from '../content/sitemapLastmod';
 import { localizedRoutes } from '../i18n/localizedRoutes';
-import { EN_MVP_PATH_COUNT, EN_MVP_PATHS } from './i18nMvpTestData';
+import {
+  EN_MVP_PATH_COUNT,
+  EN_MVP_PATHS,
+  NL_MVP_PATH_COUNT,
+  NL_MVP_PATHS,
+} from './i18nMvpTestData';
 
 function normalizePath(pathname: string): string {
   if (!pathname) return '/';
@@ -24,6 +30,10 @@ function normalizePath(pathname: string): string {
 
 function isEnglishPath(pathname: string): boolean {
   return pathname === '/en' || pathname.startsWith('/en/');
+}
+
+function isDutchPath(pathname: string): boolean {
+  return pathname === '/nl' || pathname.startsWith('/nl/');
 }
 
 function extractSitemapUrls(xml: string): string[] {
@@ -91,11 +101,17 @@ describe('seo governance', () => {
       .map((pathname) => getCanonicalUrl(pathname))
       .sort();
     const englishSitemapUrls = sitemapUrls.filter((url) => isEnglishPath(new URL(url).pathname));
+    const dutchSitemapUrls = sitemapUrls.filter((url) => isDutchPath(new URL(url).pathname));
 
     expect(sitemapUrls).toEqual(expectedUrls);
     expect(sitemapXml).toContain('xmlns:xhtml="http://www.w3.org/1999/xhtml"');
     expect(englishSitemapUrls).toHaveLength(EN_MVP_PATH_COUNT);
+    expect(dutchSitemapUrls).toHaveLength(NL_MVP_PATH_COUNT);
     EN_MVP_PATHS.forEach((pathname) => {
+      expect(sitemapUrls).toContain(getCanonicalUrl(pathname));
+      expect(sitemapXml).toContain(`href="${getCanonicalUrl(pathname)}"`);
+    });
+    NL_MVP_PATHS.forEach((pathname) => {
       expect(sitemapUrls).toContain(getCanonicalUrl(pathname));
       expect(sitemapXml).toContain(`href="${getCanonicalUrl(pathname)}"`);
     });
@@ -158,6 +174,25 @@ describe('seo governance', () => {
     expect(getPrerenderPaths()).not.toContain(pathname);
   });
 
+  it('keeps unknown Dutch routes noindex and out of sitemap/prerender', () => {
+    const pathname = '/nl/route-inconnue';
+    const seoConfig = getSeoRouteConfig(pathname);
+
+    expect(seoConfig.locale).toBe('nl');
+    expect(seoConfig.title).toBe('Pagina niet gevonden');
+    expect(seoConfig.robots).toBe('noindex,follow');
+    expect(seoConfig.indexable).toBe(false);
+    expect(seoConfig.prerender).toBe(false);
+    expect(seoConfig.includeCanonical).toBe(false);
+    expect(seoConfig.includeStructuredData).toBe(false);
+    expect(seoConfig.isNotFound).toBe(true);
+    expect(getHtmlLang(pathname)).toBe('nl');
+    expect(getOgLocale(pathname)).toBe('nl_NL');
+    expect(getSeoAlternateLinks(pathname)).toEqual([]);
+    expect(getIndexablePaths()).not.toContain(pathname);
+    expect(getPrerenderPaths()).not.toContain(pathname);
+  });
+
   it('keeps unknown French routes noindex without canonical or hreflang', () => {
     const pathname = '/route-inexistante';
     const seoConfig = getSeoRouteConfig(pathname);
@@ -193,16 +228,41 @@ describe('seo governance', () => {
     });
   });
 
-  it('exposes reciprocal hreflang for every completed English MVP route', () => {
-    Object.values(localizedRoutes).forEach(({ fr, en }) => {
-      const expectedAlternates = [
-        { hreflang: 'fr', href: getCanonicalUrl(fr) },
-        { hreflang: 'en', href: getCanonicalUrl(en) },
-        { hreflang: 'x-default', href: getCanonicalUrl(fr) },
-      ];
+  it('makes all completed Dutch MVP routes indexable and prerenderable', () => {
+    const dutchIndexablePaths = getIndexablePaths().filter(isDutchPath);
+    const dutchPrerenderPaths = getPrerenderPaths().filter(isDutchPath);
 
-      expect(getSeoAlternateLinks(fr)).toEqual(expectedAlternates);
-      expect(getSeoAlternateLinks(en)).toEqual(expectedAlternates);
+    expect(dutchIndexablePaths).toHaveLength(NL_MVP_PATH_COUNT);
+    expect(dutchPrerenderPaths).toHaveLength(NL_MVP_PATH_COUNT);
+
+    NL_MVP_PATHS.forEach((pathname) => {
+      const seoConfig = getSeoRouteConfig(pathname);
+
+      expect(seoConfig.locale).toBe('nl');
+      expect(seoConfig.robots).toBeUndefined();
+      expect(seoConfig.indexable ?? true).toBe(true);
+      expect(seoConfig.prerender ?? true).toBe(true);
+      expect(getIndexablePaths()).toContain(pathname);
+      expect(getPrerenderPaths()).toContain(pathname);
+      expect(getOgLocale(pathname)).toBe('nl_NL');
+    });
+  });
+
+  it('exposes reciprocal hreflang for every completed localized route', () => {
+    Object.values(localizedRoutes).forEach((paths) => {
+      const availablePaths = [
+        paths.fr ? ({ hreflang: 'fr', href: getCanonicalUrl(paths.fr) } as const) : null,
+        paths.en ? ({ hreflang: 'en', href: getCanonicalUrl(paths.en) } as const) : null,
+        paths.nl ? ({ hreflang: 'nl', href: getCanonicalUrl(paths.nl) } as const) : null,
+      ].filter((alternate): alternate is NonNullable<typeof alternate> => alternate !== null);
+      const expectedAlternates =
+        availablePaths.length > 1 && paths.fr
+          ? [...availablePaths, { hreflang: 'x-default' as const, href: getCanonicalUrl(paths.fr) }]
+          : [];
+
+      availablePaths.forEach((alternate) => {
+        expect(getSeoAlternateLinks(new URL(alternate.href).pathname)).toEqual(expectedAlternates);
+      });
     });
   });
 
@@ -227,7 +287,16 @@ describe('seo governance', () => {
     EN_MVP_PATHS.forEach((pathname) => {
       expect(getCanonicalUrl(pathname)).toBe(`${SITE_URL}${pathname}`);
       expect(getHtmlLang(pathname)).toBe('en');
+      expect(getOgLocale(pathname)).toBe('en_GB');
+    });
+    expect(getCanonicalUrl('/nl')).toBe(`${SITE_URL}/nl`);
+    expect(getCanonicalUrl('/nl/')).toBe(`${SITE_URL}/nl`);
+    NL_MVP_PATHS.forEach((pathname) => {
+      expect(getCanonicalUrl(pathname)).toBe(`${SITE_URL}${pathname}`);
+      expect(getHtmlLang(pathname)).toBe('nl');
+      expect(getOgLocale(pathname)).toBe('nl_NL');
     });
     expect(getHtmlLang('/enquete')).toBe('fr');
+    expect(getHtmlLang('/nligne')).toBe('fr');
   });
 });

@@ -68,6 +68,33 @@ const cookieConsentContent = {
       unset: 'not set',
     },
   },
+  nl: {
+    bannerAriaLabel: 'Cookiebeheer',
+    bannerTitle: 'Uw privacyvoorkeuren',
+    bannerText:
+      'Etoilys gebruikt PostHog om te begrijpen hoe de website wordt gebruikt en om pagina’s, formulieren en diensten te verbeteren. Met uw toestemming meten wij ook waar bezoeken vandaan komen en welke acties op de website worden uitgevoerd.\n\nAls u weigert, worden er geen analytische cookies gebruikt. Een beperkte meting zonder cookies van de landingspagina en de taal kan wel actief blijven. U kunt die ook uitschakelen in de voorkeuren en uw keuze op elk moment wijzigen.',
+    privacyLinkLabel: 'Privacybeleid',
+    rejectLabel: 'Weigeren',
+    acceptLabel: 'Accepteren',
+    preferencesTitle: 'Cookievoorkeuren',
+    preferencesDescription:
+      'Gedetailleerde toestemming en minimale meting na weigering zijn twee aparte instellingen.',
+    closePreferencesLabel: 'Cookievoorkeuren sluiten',
+    detailedPurposeLabel: 'Gedetailleerde analytics',
+    detailedPurposeValue:
+      'Bekeken pagina’s, acquisitie, formulieren, contactlinks, simulators en conversies, alleen na acceptatie.',
+    minimalPurposeLabel: 'Minimale publieksmeting na weigering',
+    minimalPurposeValue:
+      'Maximaal één gebeurtenis zonder cookie per paginaweergave, beperkt tot de landingspagina zonder parameters en de taal. De productievlag blijft uitgeschakeld zolang de voorafgaande controles niet zijn afgerond.',
+    minimalToggleLabel: 'Minimale publieksmeting na een weigering toestaan',
+    toolLabel: 'Tool',
+    currentStatusLabel: 'Gedetailleerde toestemming',
+    statusLabels: {
+      accepted: 'geaccepteerd',
+      refused: 'geweigerd',
+      unset: 'niet ingesteld',
+    },
+  },
 } as const satisfies Record<
   Locale,
   {

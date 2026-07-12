@@ -23,6 +23,9 @@ const localeVisualConfig = {
   en: {
     flagSrc: '/flags/en.svg',
   },
+  nl: {
+    flagSrc: '/flags/nl.svg',
+  },
 } as const satisfies Record<Locale, LocaleVisualConfig>;
 
 const joinClassNames = (...classes: Array<string | false | undefined>): string =>

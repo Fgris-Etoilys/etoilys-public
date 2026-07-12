@@ -58,12 +58,12 @@ function expectSeoHeadWithoutDuplicates({
     hasBreadcrumb ? 1 : 0
   );
   expect(document.querySelectorAll('script#structured-data-article')).toHaveLength(0);
-  expect(document.querySelectorAll('link[data-seo-alternate="true"]')).toHaveLength(3);
+  expect(document.querySelectorAll('link[data-seo-alternate="true"]')).toHaveLength(4);
   expect(
     Array.from(document.querySelectorAll('link[data-seo-alternate="true"]')).map((link) =>
       link.getAttribute('hreflang')
     )
-  ).toEqual(['fr', 'en', 'x-default']);
+  ).toEqual(['fr', 'en', 'nl', 'x-default']);
 }
 
 describe('localized layout', () => {

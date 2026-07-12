@@ -15,7 +15,7 @@ export default function Confidentialite() {
           <h1 className="mb-3">{content.title}</h1>
           <p className="text-sm text-textLight mb-10">{content.lastUpdated}</p>
 
-          {locale === 'en' ? (
+          {content.body ? (
             <div className="space-y-10 text-textLight leading-comfortable">
               {content.body}
               <CookiePreferencesButton className="inline-flex text-sm font-medium text-primary-300 hover:text-primary-400">

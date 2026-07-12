@@ -263,6 +263,103 @@ export const formContent = {
       },
     },
   },
+  nl: {
+    contact: {
+      title: 'Stel uw vraag',
+      labels: {
+        nom: 'Naam',
+        email: 'E-mail',
+        message: 'Bericht',
+      },
+      consentPrefix: 'Ik ga ermee akkoord dat mijn gegevens worden verwerkt volgens het',
+      privacyLinkLabel: 'privacybeleid',
+      submitButton: 'Mijn bericht versturen',
+      submitting: 'Bezig met verzenden...',
+      success: 'Uw bericht is succesvol verzonden. Ons team neemt binnenkort contact met u op.',
+    },
+    demandeClassement: {
+      title: 'Uw classificatieaanvraag',
+      intro:
+        'Vul uw contactgegevens en het adres van de te classificeren vakantiewoning in. Wij nemen snel contact met u op om de volgende stappen te organiseren.',
+      labels: {
+        nom: 'Achternaam',
+        prenom: 'Voornaam',
+        email: 'E-mail',
+        telephone: 'Telefoon',
+        adresse: 'Adres van de vakantiewoning',
+        message: 'Bericht',
+      },
+      placeholders: {
+        telephone: 'Voorbeeld: +33 6 12 34 56 78',
+        adresse: 'Volledig adres van uw vakantiewoning in Frankrijk',
+        message: 'Vertel ons over uw woning en uw verwachtingen (optioneel)',
+      },
+      consentPrefix: 'Ik ga ermee akkoord dat mijn gegevens worden verwerkt volgens het',
+      privacyLinkLabel: 'privacybeleid',
+      submitButton: 'Mijn aanvraag versturen',
+      submitting: 'Bezig met verzenden...',
+      success: 'Uw aanvraag is succesvol verzonden. Ons team neemt binnen 24 uur contact met u op.',
+    },
+    validation: {
+      nomRequired: 'Naam is verplicht',
+      prenomRequired: 'Voornaam is verplicht',
+      emailRequired: 'E-mail is verplicht',
+      emailInvalid: 'E-mail is niet geldig',
+      telephoneRequired: 'Telefoonnummer is verplicht',
+      telephoneInvalid: 'Telefoonnummer is niet geldig',
+      adresseRequired: 'Adres van de vakantiewoning is verplicht',
+      messageRequired: 'Bericht is verplicht',
+      consentRequired: 'U moet het privacybeleid accepteren',
+    },
+    turnstile: {
+      required: 'Vul de antispamcontrole in.',
+      missingConfig: 'Antispambeveiliging is niet beschikbaar (configuratie ontbreekt).',
+      expired: 'De antispamcontrole is verlopen. Probeer het opnieuw.',
+      verificationError: 'Antispamcontrole mislukt. Probeer het opnieuw.',
+    },
+    api: {
+      genericError: 'Er is een onverwachte fout opgetreden. Probeer het later opnieuw.',
+      invalidResponse: 'Ongeldig API-antwoord',
+      rateLimited:
+        'Er zijn te veel verzoeken in korte tijd verzonden. Probeer het over enkele minuten opnieuw.',
+      httpError: (status: number) => `HTTP-fout ${status}`,
+      errorCodes: {
+        METHOD_NOT_ALLOWED: 'Het formulier kan momenteel niet worden verzonden.',
+        INVALID_JSON: 'Het verzenden is mislukt. Probeer het opnieuw.',
+        INVALID_PAYLOAD: 'Het verzenden is mislukt. Probeer het opnieuw.',
+        VALIDATION_FAILED: 'Sommige velden moeten worden gecorrigeerd.',
+        TURNSTILE_INVALID: 'De antispamcontrole is mislukt. Probeer het opnieuw.',
+        RATE_LIMITED:
+          'Er zijn te veel verzoeken in korte tijd verzonden. Probeer het over enkele minuten opnieuw.',
+        RATE_LIMIT_UNAVAILABLE: 'Er is een onverwachte fout opgetreden. Probeer het later opnieuw.',
+        INSERT_FAILED: 'De aanvraag kon niet worden opgeslagen. Probeer het later opnieuw.',
+        NOTIFICATION_FAILED:
+          'De aanvraag is opgeslagen, maar de melding is niet beschikbaar. Probeer het later opnieuw.',
+      },
+      fieldErrorCodes: {
+        REQUIRED: 'Dit veld is verplicht.',
+        INVALID_EMAIL: 'E-mail is niet geldig.',
+        INVALID_PHONE: 'Telefoonnummer is niet geldig.',
+      },
+      fieldErrors: {
+        nom: { REQUIRED: 'Naam is verplicht.' },
+        prenom: { REQUIRED: 'Voornaam is verplicht.' },
+        email: {
+          REQUIRED: 'E-mail is verplicht.',
+          INVALID_EMAIL: 'E-mail is niet geldig.',
+        },
+        telephone: {
+          REQUIRED: 'Telefoonnummer is verplicht.',
+          INVALID_PHONE: 'Telefoonnummer is niet geldig.',
+        },
+        adresse: { REQUIRED: 'Adres van de vakantiewoning is verplicht.' },
+        message: { REQUIRED: 'Bericht is verplicht.' },
+        consent: { REQUIRED: 'Toestemming is verplicht.' },
+        consentVersion: { REQUIRED: 'Versie van de toestemming is verplicht.' },
+        turnstileToken: { REQUIRED: 'Antispamcontrole is verplicht.' },
+      },
+    },
+  },
 } as const satisfies Record<Locale, FormContent>;
 
 export const getLocalizedApiErrorMessage = (

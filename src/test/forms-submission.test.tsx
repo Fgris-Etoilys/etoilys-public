@@ -125,6 +125,37 @@ describe('localized form submissions', () => {
     });
   });
 
+  it('sends preferredLanguage nl from the Dutch contact form', async () => {
+    render(
+      <MemoryRouter>
+        <ContactForm locale="nl" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^naam/i, 'Jane Doe');
+    fillInput(/^e-mail/i, 'jane@example.com');
+    fillTextarea('message', 'Hallo');
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /mijn bericht versturen/i }));
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
+
+    expect(getLastFetchBody()).toMatchObject({
+      nom: 'Jane Doe',
+      email: 'jane@example.com',
+      message: 'Hallo',
+      consent: true,
+      turnstileToken: 'turnstile-token',
+      consentVersion: 'privacy-v1',
+      preferredLanguage: 'nl',
+    });
+  });
+
   it('sends preferredLanguage en from the English classification request form', async () => {
     render(
       <MemoryRouter>
@@ -159,6 +190,43 @@ describe('localized form submissions', () => {
       turnstileToken: 'turnstile-token',
       consentVersion: 'privacy-v1',
       preferredLanguage: 'en',
+    });
+  });
+
+  it('sends preferredLanguage nl from the Dutch classification request form', async () => {
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="nl" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^achternaam/i, 'Doe');
+    fillInput(/^voornaam/i, 'Jane');
+    fillInput(/^e-mail/i, 'jane@example.com');
+    fillInput(/^telefoon/i, '+33 6 12 34 56 78');
+    fillInput(/^adres van de vakantiewoning/i, '1 rue de test, 24150 Mauzac');
+    fillTextarea('message', 'Classificatie');
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /mijn aanvraag versturen/i }));
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
+
+    expect(getLastFetchBody()).toMatchObject({
+      nom: 'Doe',
+      prenom: 'Jane',
+      email: 'jane@example.com',
+      telephone: '+33 6 12 34 56 78',
+      adresse: '1 rue de test, 24150 Mauzac',
+      message: 'Classificatie',
+      consent: true,
+      turnstileToken: 'turnstile-token',
+      consentVersion: 'privacy-v1',
+      preferredLanguage: 'nl',
     });
   });
 

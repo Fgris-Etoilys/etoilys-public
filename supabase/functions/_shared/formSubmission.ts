@@ -16,7 +16,7 @@ export interface ApiErrorBody {
 
 export type ApiBody = ApiSuccessBody | ApiErrorBody;
 
-export type PreferredLanguage = 'fr' | 'en';
+export type PreferredLanguage = 'fr' | 'en' | 'nl';
 
 export type ApiErrorCode =
   | 'METHOD_NOT_ALLOWED'
@@ -57,10 +57,14 @@ export const normalizeText = (value: unknown): string => {
 };
 
 export const normalizePreferredLanguage = (value: unknown): PreferredLanguage =>
-  value === 'en' ? 'en' : 'fr';
+  value === 'en' || value === 'nl' ? value : 'fr';
 
 export const formatPreferredLanguageLabel = (preferredLanguage: PreferredLanguage): string =>
-  preferredLanguage === 'en' ? 'anglais (en)' : 'français (fr)';
+  preferredLanguage === 'en'
+    ? 'anglais (en)'
+    : preferredLanguage === 'nl'
+      ? 'néerlandais (nl)'
+      : 'français (fr)';
 
 export const validateEmail = (value: string): boolean => emailRegex.test(value);
 

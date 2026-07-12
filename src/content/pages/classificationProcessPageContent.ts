@@ -207,4 +207,80 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
       ],
     },
   },
+  nl: {
+    hero: {
+      title: 'Classificatieprocedure voor een vakantiewoning',
+      description:
+        'De classificatie van een Franse vakantiewoning, juridisch een meublé de tourisme, volgt een gestructureerde procedure in 5 stappen, van de eerste aanvraag tot de officiële toekenning.',
+    },
+    stepsTitle: 'De 5 stappen van de classificatie',
+    steps: [
+      {
+        number: 1,
+        title: 'Classificatieaanvraag',
+        description:
+          'De aanvraag kan online worden ingediend of door rechtstreeks contact op te nemen met Etoilys via +33 6 49 55 15 40.',
+      },
+      {
+        number: 2,
+        title: 'Contactopname',
+        description:
+          'De inspecteur in uw sector neemt binnen 24 uur contact met u op om te bevestigen dat de woning in aanmerking komt en om samen met u de datum van het inspectiebezoek vast te leggen.',
+      },
+      {
+        number: 3,
+        title: 'Inspectiebezoek',
+        inspection: {
+          beforeReferenceLink:
+            'Het bezoek vindt ter plaatse plaats. De inspecteur controleert de woning volgens het ',
+          referenceLinkLabel: 'officiële referentiekader',
+          afterReferenceLink:
+            ' en verifieert de uitrusting, oppervlaktes, algemene staat en aangekondigde diensten. Na het bezoek kan het beoogde classificatieniveau worden aangepast volgens de resultaten.',
+          accreditationText:
+            'Dit officiële bezoek wordt door Etoilys uitgevoerd binnen zijn Cofrac Inspection-accreditatie nr. 3-2394 voor de classificatie van meublés de tourisme.',
+          accreditationLinkLabel: 'De accreditatiescope bekijken',
+        },
+      },
+      {
+        number: 4,
+        title: 'Classificatievoorstel',
+        description:
+          'Binnen 7 dagen ontvangt u het volledige inspectiecertificaat, met de controlelijst, het gedetailleerde inspectierapport en het officiële classificatievoorstel. Daarna heeft u 15 dagen om het voorstel te weigeren.',
+      },
+      {
+        number: 5,
+        title: 'Toekenning van de classificatie',
+        description:
+          'Aan het einde van de procedure is de verkregen classificatie 5 jaar geldig en kan zij worden vermeld in advertenties en communicatiedragers van de woning.',
+      },
+    ],
+    keyFigures: {
+      title: 'Kerncijfers van de procedure',
+      items: [
+        { value: '24u', label: 'Terugbeltermijn na de aanvraag' },
+        { value: '133', label: 'Criteria gecontroleerd tijdens het bezoek' },
+        { value: '7 dagen', label: 'Termijn voor afgifte van het certificaat' },
+        { value: '15 dagen', label: 'Termijn om het voorstel te weigeren' },
+        { value: '5 jaar', label: 'Geldigheidsduur van de classificatie' },
+      ],
+    },
+    certificate: {
+      title: 'Wat het inspectiecertificaat bevat',
+      description: 'Na het bezoek wordt binnen 7 dagen een volledig dossier verzonden.',
+      items: [
+        'De volledige controlelijst van de 133 criteria',
+        'Het gedetailleerde inspectierapport',
+        'Het officiële classificatievoorstel',
+      ],
+    },
+    finalCta: {
+      title: 'Wilt u uw vakantiewoning laten classificeren?',
+      description:
+        'Dien uw aanvraag online in of neem contact op met Etoilys om de volgende stappen te organiseren.',
+      links: [
+        { label: 'Veelgestelde vragen', href: '/nl/faq', variant: 'ghost' },
+        { label: 'Classificatie aanvragen', href: '/nl/classificatie-aanvragen', variant: 'white' },
+      ],
+    },
+  },
 };

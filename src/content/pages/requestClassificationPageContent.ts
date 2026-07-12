@@ -67,4 +67,28 @@ export const requestClassificationPageContent = {
       scopeLinkLabel: 'www.cofrac.fr',
     },
   },
+  nl: {
+    hero: {
+      title: 'Classificatie aanvragen',
+      description:
+        'Dien uw aanvraag in enkele minuten in. Etoilys neemt binnen 24 werkuren contact met u op om de inspectievoorwaarden, het toepasselijke tarief en de eerstvolgende beschikbaarheden te bevestigen vóór elke validatie.',
+      phoneNote: 'U kunt ook bellen naar +33 6 49 55 15 40',
+    },
+    sidebar: {
+      title: 'Waarom uw classificatie aan Etoilys toevertrouwen?',
+      items: [
+        'Door Cofrac Inspection geaccrediteerde controle-instantie',
+        'Persoonlijke begeleiding bij elke stap',
+        'Eenvoudige procedure, zonder dossier om samen te stellen',
+        'Responsiviteit en betrouwbaarheid',
+        'Bezoek snel gepland',
+      ],
+    },
+    accreditation: {
+      imageAlt: 'Cofrac Inspection-accreditatiemerk',
+      numberLabel: 'Accreditatie nr. 3-2394',
+      scopePrefix: 'Scope beschikbaar op',
+      scopeLinkLabel: 'www.cofrac.fr',
+    },
+  },
 } as const satisfies Record<Locale, RequestClassificationPageContent>;

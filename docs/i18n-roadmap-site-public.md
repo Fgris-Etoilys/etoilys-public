@@ -1070,3 +1070,82 @@ fonctionnelle unique et sans ouvrir le simulateur de classement ni son API.
 - [ ] HTML prerenderé complet avec canonical et `hreflang`.
 - [ ] Présence des deux routes et de leurs alternates dans le sitemap public.
 - [ ] Absence de routes EN parasites, notamment `/en/classification-simulator`.
+
+## 23. Lots NL MVP - Version néerlandaise des 9 pages prioritaires
+
+Statut ouvert au 11 juillet 2026.
+
+Objectif : ajouter une version néerlandaise générique `nl`, destinée principalement aux
+propriétaires néerlandais mais utilisable par les néerlandophones, sans rouvrir les lots EN
+clôturés et sans inclure les simulateurs.
+
+### Périmètre NL MVP
+
+- [ ] `/nl`
+- [ ] `/nl/classificatie-vakantiewoning-frankrijk`
+- [ ] `/nl/voordelen-classificatie-vakantiewoning`
+- [ ] `/nl/voorwaarden-classificatie-vakantiewoning`
+- [ ] `/nl/classificatieprocedure-vakantiewoning`
+- [ ] `/nl/faq`
+- [ ] `/nl/contact`
+- [ ] `/nl/classificatie-aanvragen`
+- [ ] `/nl/privacybeleid`
+
+### Lot NL 1 - Extension du socle i18n
+
+- [ ] Étendre `Locale` à `fr | en | nl`.
+- [ ] Généraliser les routes localisées en disponibilités réelles, par exemple
+      `Partial<Record<Locale, string>>`.
+- [ ] Conserver les simulateurs en FR/EN uniquement et les Actualités/routes locales en FR si aucun
+      contenu traduit n'existe.
+- [ ] Ajouter les contenus courts NL : layout, footer, switcher, cookies, 404 et formulaires.
+- [ ] Préserver la convention actuelle du language switcher.
+
+### Lot NL 2 - Routing et SEO
+
+- [ ] Ajouter les 9 routes NL dans `AppRoutes.tsx`.
+- [ ] Ajouter les métadonnées NL centralisées dans `seoRoutes.ts`.
+- [ ] Exposer `lang="nl"`, `hreflang="nl"` et `og:locale="nl_NL"`.
+- [ ] Générer les alternates selon les locales réellement disponibles : FR/EN/NL, FR/EN ou aucune
+      alternative pour les routes FR seules.
+- [ ] Conserver les `hreflang` FR/EN existants sur les routes qui restent uniquement FR/EN.
+- [ ] Servir `/nl/*` inconnu en vraie 404 NL, `noindex,follow`, sans canonical, sans hreflang et
+      sans JSON-LD.
+
+### Lot NL 3 - Navigation et switcher
+
+- [ ] Ajouter navigation et footer NL pour les 9 pages MVP seulement.
+- [ ] Sur une route FR/EN sans NL, conserver FR et EN et masquer ou désactiver seulement NL.
+- [ ] Ne jamais appliquer de fallback automatique vers `/nl`.
+
+### Lot NL 4 - Formulaires
+
+- [ ] Traduire Contact et Demande de classement en NL.
+- [ ] Pointer les consentements NL vers `/nl/privacybeleid`.
+- [ ] Envoyer `preferredLanguage: "nl"` depuis le frontend.
+- [ ] Normaliser `fr | en | nl` côté Edge Functions, stocker dans `payload_json` et afficher
+      `néerlandais (nl)` dans les emails internes.
+- [ ] Ne pas créer de colonne SQL ni de migration.
+
+### Lot NL 5 - Contenus
+
+- [ ] Traduire intégralement les 9 pages MVP en néerlandais naturel, fidèle au français, sans ajout
+      juridique ou fiscal.
+- [ ] Utiliser `vakantiewoning` comme terme naturel et expliquer à la première occurrence le terme
+      juridique français `meublé de tourisme`.
+- [ ] Traduire `/nl/privacybeleid` intégralement et strictement depuis la politique française
+      actuelle.
+- [ ] Remplacer sur la home NL le bloc Actualités par des liens de service NL.
+
+### QA finale NL
+
+- [ ] Preview puis production : HTTP 200 sur les 9 routes NL.
+- [ ] Vraie HTTP 404 sur `/nl/route-inconnue`.
+- [ ] Contenu NL dans le HTML prerenderé.
+- [ ] Canonical, `hreflang`, `html lang` et `og:locale` réels.
+- [ ] Sitemap de production contrôlé.
+- [ ] Tests réels des deux formulaires NL et de `preferredLanguage: "nl"`.
+- [ ] Présence de `néerlandais (nl)` dans les emails internes.
+- [ ] Responsive desktop/mobile.
+- [ ] Non-régression FR/EN.
+- [ ] Actions Search Console documentées après déploiement.

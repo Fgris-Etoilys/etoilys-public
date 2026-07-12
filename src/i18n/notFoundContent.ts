@@ -31,4 +31,14 @@ export const notFoundContent = {
     contactLabel: 'Contact Etoilys',
     contactHref: '/en/contact',
   },
+  nl: {
+    eyebrow: 'Fout 404',
+    title: 'Pagina niet gevonden',
+    description:
+      'De gevraagde pagina is niet beschikbaar. U kunt teruggaan naar de Nederlandstalige homepagina of contact opnemen met Etoilys.',
+    homeLabel: 'Terug naar home',
+    homeHref: '/nl',
+    contactLabel: 'Contact met Etoilys',
+    contactHref: '/nl/contact',
+  },
 } as const satisfies Record<Locale, NotFoundContent>;

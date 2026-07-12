@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import App from '../App';
-import { EN_MVP_PATHS } from './i18nMvpTestData';
+import { EN_MVP_PATHS, NL_MVP_PATHS } from './i18nMvpTestData';
 
 const renderAt = (path: string) => {
   window.history.pushState({}, 'Test page', path);
@@ -162,9 +162,30 @@ describe('routing', () => {
     expect(document.querySelector("script[type='application/ld+json']")).not.toBeInTheDocument();
   });
 
+  it('renders localized Dutch not found page for unknown /nl routes', () => {
+    renderAt('/nl/route-inconnue');
+    expect(screen.getByRole('heading', { name: /pagina niet gevonden/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /terug naar home/i })).toHaveAttribute('href', '/nl');
+    expect(screen.getByRole('link', { name: /contact met etoilys/i })).toHaveAttribute(
+      'href',
+      '/nl/contact'
+    );
+    expect(document.documentElement.lang).toBe('nl');
+    expect(document.querySelector("link[rel='canonical']")).not.toBeInTheDocument();
+    expect(document.querySelector("link[rel='alternate']")).not.toBeInTheDocument();
+    expect(document.querySelector("script[type='application/ld+json']")).not.toBeInTheDocument();
+  });
+
   it.each(EN_MVP_PATHS)('renders technical English MVP route %s', (pathname) => {
     renderAt(pathname);
     expect(screen.queryByRole('heading', { name: /page non trouv/i })).not.toBeInTheDocument();
+  });
+
+  it.each(NL_MVP_PATHS)('renders technical Dutch MVP route %s', (pathname) => {
+    renderAt(pathname);
+    expect(
+      screen.queryByRole('heading', { name: /pagina niet gevonden/i })
+    ).not.toBeInTheDocument();
   });
 
   it.each([
@@ -191,6 +212,36 @@ describe('routing', () => {
     expect(document.querySelector('link[hreflang="en"]')).toHaveAttribute(
       'href',
       'https://www.etoilys.fr/en/benefits-of-furnished-tourist-accommodation-classification'
+    );
+    expect(document.querySelector('link[hreflang="nl"]')).toHaveAttribute(
+      'href',
+      'https://www.etoilys.fr/nl/voordelen-classificatie-vakantiewoning'
+    );
+    expect(document.querySelector('link[hreflang="x-default"]')).toHaveAttribute(
+      'href',
+      'https://www.etoilys.fr/les-avantages-du-classement'
+    );
+  });
+
+  it('sets html lang and alternate links on completed Dutch MVP routes', () => {
+    renderAt('/nl/voordelen-classificatie-vakantiewoning');
+
+    expect(document.documentElement.lang).toBe('nl');
+    expect(document.querySelector('meta[property="og:locale"]')).toHaveAttribute(
+      'content',
+      'nl_NL'
+    );
+    expect(document.querySelector('link[hreflang="fr"]')).toHaveAttribute(
+      'href',
+      'https://www.etoilys.fr/les-avantages-du-classement'
+    );
+    expect(document.querySelector('link[hreflang="en"]')).toHaveAttribute(
+      'href',
+      'https://www.etoilys.fr/en/benefits-of-furnished-tourist-accommodation-classification'
+    );
+    expect(document.querySelector('link[hreflang="nl"]')).toHaveAttribute(
+      'href',
+      'https://www.etoilys.fr/nl/voordelen-classificatie-vakantiewoning'
     );
     expect(document.querySelector('link[hreflang="x-default"]')).toHaveAttribute(
       'href',
