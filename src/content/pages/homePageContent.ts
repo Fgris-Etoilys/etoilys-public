@@ -324,7 +324,7 @@ export const homePageContent = {
       imageAlt: 'Terras met zwembad bij een Franse vakantiewoning',
       title: 'Officiële classificatie van uw vakantiewoning in Frankrijk',
       description:
-        'Etoilys begeleidt u bij het verkrijgen van de officiële sterrenclassificatie van uw vakantiewoning, juridisch een meublé de tourisme in Frankrijk.',
+        'Etoilys begeleidt u in Dordogne, Gironde en Lot-et-Garonne bij het verkrijgen van de officiële sterrenclassificatie van uw vakantiewoning, juridisch aangeduid als een “meublé de tourisme” in Frankrijk.',
       primaryCta: {
         label: 'Classificatie aanvragen',
         href: '/nl/classificatie-aanvragen',
@@ -337,13 +337,13 @@ export const homePageContent = {
     features: {
       title: 'Waarom Etoilys?',
       description:
-        'Een duidelijke, responsieve en lokale begeleiding voor de officiële classificatie van uw vakantiewoning in Frankrijk.',
+        'Duidelijke, persoonlijke begeleiding door een lokale specialist voor de officiële classificatie van uw vakantiewoning in Frankrijk.',
       items: [
         {
           icon: 'shield',
-          title: 'Door Cofrac geaccrediteerde controle-instantie',
+          title: 'Door Cofrac geaccrediteerde inspectie-instelling',
           description:
-            'Etoilys is geaccrediteerd door Cofrac Inspection, nr. 3-2394, voor de classificatie van meublés de tourisme. De accreditatiescope is ',
+            'Etoilys is geaccrediteerd door Cofrac Inspection, nr. 3-2394, voor de classificatie van vakantiewoningen. De reikwijdte van de accreditatie is ',
           link: {
             label: 'online beschikbaar',
             href: 'cofrac',
@@ -353,11 +353,11 @@ export const homePageContent = {
           icon: 'zap',
           title: 'Een vereenvoudigd traject',
           description:
-            'Onze interne tools maken de procedure eenvoudiger: geen complex dossier om samen te stellen, duidelijke opvolging en een vlot traject tot aan het classificatiebesluit.',
+            'Onze interne tools maken de procedure eenvoudiger: geen complex dossier om samen te stellen, een duidelijk verloop en persoonlijke begeleiding tot aan het classificatiebesluit.',
         },
         {
           icon: 'clock',
-          title: 'Lokale aanwezigheid en responsiviteit',
+          title: 'Lokale aanwezigheid en snelle reactie',
           description:
             'Inspecteurs in de buurt begeleiden u persoonlijk voor een snelle en betrouwbare classificatieprocedure.',
         },
@@ -378,7 +378,7 @@ export const homePageContent = {
           icon: 'users',
           title: 'Herkenningspunt voor reizigers',
           description:
-            'De sterrenclassificatie is een officieel kwaliteits- en transparantiepunt voor huurders.',
+            'De sterrenclassificatie is een officieel kwaliteitskenmerk dat reizigers duidelijkheid geeft over het comfort en de uitrusting.',
         },
         {
           icon: 'globe',
@@ -438,7 +438,7 @@ export const homePageContent = {
         {
           title: 'Classificatie aanvragen',
           description:
-            'Stuur de nuttige informatie zodat Etoilys contact kan opnemen over de volgende stappen.',
+            'Stuur de benodigde gegevens zodat Etoilys contact kan opnemen over de volgende stappen.',
           href: '/nl/classificatie-aanvragen',
         },
       ],

@@ -351,7 +351,10 @@ export const layoutContent = {
         },
         {
           title: 'Juridische informatie',
-          links: [{ name: 'Privacybeleid', href: '/nl/privacybeleid' }],
+          links: [
+            { name: 'Privacybeleid', href: '/nl/privacybeleid' },
+            { name: 'Juridische informatie (Frans)', href: '/mentions-legales' },
+          ],
         },
       ],
       cookiePreferencesLabel: 'Cookies beheren',

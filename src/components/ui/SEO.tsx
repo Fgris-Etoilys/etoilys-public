@@ -9,6 +9,12 @@ import {
   type SeoAlternateLink,
 } from '../../content/seoRoutes';
 
+const OG_IMAGE_ALT_BY_LANG = {
+  fr: 'Etoilys - Classement des meublés de tourisme',
+  en: 'Etoilys - Furnished tourist accommodation classification',
+  nl: 'Etoilys - Classificatie van vakantiewoningen in Frankrijk',
+} as const;
+
 interface SEOProps {
   title: string;
   description: string;
@@ -58,6 +64,7 @@ export default function SEO({
     ];
     if (image) {
       metaTags.push({ property: 'og:image', content: image });
+      metaTags.push({ property: 'og:image:alt', content: OG_IMAGE_ALT_BY_LANG[htmlLang] });
       metaTags.push({ name: 'twitter:image', content: image });
     }
 
@@ -74,6 +81,14 @@ export default function SEO({
 
       element.setAttribute('content', content);
     });
+
+    if (!image) {
+      [
+        "meta[property='og:image']",
+        "meta[property='og:image:alt']",
+        "meta[name='twitter:image']",
+      ].forEach((selector) => document.querySelector(selector)?.remove());
+    }
 
     const canonical = document.querySelector("link[rel='canonical']");
     if (includeCanonical) {

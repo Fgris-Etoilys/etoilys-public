@@ -32,8 +32,7 @@ export const ETOILYS_ANNUAIRE_ETABLISSEMENT_URL =
   'https://annuaire-entreprises.data.gouv.fr/etablissement/93933080900012';
 export const ETOILYS_COFRAC_CERTIFICATE_URL = 'https://tools.cofrac.fr/annexes/sect3/3-2394.pdf';
 
-const CLASSIFICATION_AREA_SERVED =
-  'Dordogne, Gironde, Lot-et-Garonne et secteurs proches de Bergerac';
+const CLASSIFICATION_AREA_SERVED = 'Dordogne, Gironde et Lot-et-Garonne';
 
 const HOME_GRAPH_PATHS = new Set(['/', '/en', '/nl']);
 const CLASSIFICATION_GRAPH_PATHS = new Set([
@@ -154,7 +153,7 @@ function buildDetailedOrganization(): JsonLdObject {
       contactType: 'customer service',
       telephone: '+33649551540',
       email: 'contact@etoilys.fr',
-      availableLanguage: ['fr', 'en', 'nl'],
+      availableLanguage: ['fr', 'en'],
     },
     address: buildPostalAddress(),
   };

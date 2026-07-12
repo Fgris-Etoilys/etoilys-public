@@ -124,7 +124,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     lastModified: '2026-06-24',
     title: 'Zones d’intervention pour le classement des meublés de tourisme',
     description:
-      'Découvrez les zones où Etoilys intervient pour le classement des meublés de tourisme, notamment en Dordogne, Gironde, Lot-et-Garonne et secteurs proches.',
+      'Découvrez les zones où Etoilys intervient pour le classement des meublés de tourisme, notamment en Dordogne, Gironde et Lot-et-Garonne.',
     breadcrumbLabel: 'Zones d’intervention',
   },
   '/classement-meuble-tourisme-dordogne': {
@@ -397,9 +397,9 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   },
   '/nl': {
     lastModified: '2026-07-11',
-    title: 'Officiële classificatie van uw vakantiewoning in Frankrijk',
+    title: 'Vakantiewoning classificeren in Frankrijk',
     description:
-      'Etoilys begeleidt eigenaars bij de officiële sterrenclassificatie van hun Franse vakantiewoning, het juridische meublé de tourisme.',
+      'Etoilys begeleidt eigenaars in Dordogne, Gironde en Lot-et-Garonne bij de officiële sterrenclassificatie van hun Franse vakantiewoning.',
     breadcrumbLabel: 'Home',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
@@ -408,16 +408,16 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   },
   '/nl/classificatie-vakantiewoning-frankrijk': {
     lastModified: '2026-07-11',
-    title: 'Officiële classificatie van een vakantiewoning in Frankrijk',
+    title: 'Vakantiewoning classificeren in Frankrijk',
     description:
-      'Begrijp de Franse officiële classificatie van een vakantiewoning: sterren, geldigheid, erkende controle-instantie, inspectie en criteria.',
+      'Begrijp de Franse officiële classificatie van een vakantiewoning: sterren, geldigheid, erkende inspectie-instelling, inspectie en criteria.',
     breadcrumbLabel: 'Classificatie',
     locale: 'nl',
     routeId: 'classement',
   },
   '/nl/voordelen-classificatie-vakantiewoning': {
     lastModified: '2026-07-11',
-    title: 'Voordelen van de officiële classificatie van een vakantiewoning',
+    title: 'Voordelen van classificatie voor uw vakantiewoning',
     description:
       'Fiscaal regime, toeristenbelasting, officiële sterren en toeristische referenties: de concrete effecten van de classificatie van een Franse vakantiewoning.',
     breadcrumbLabel: 'Voordelen van classificatie',
@@ -436,7 +436,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   },
   '/nl/classificatieprocedure-vakantiewoning': {
     lastModified: '2026-07-11',
-    title: 'Classificatieprocedure voor een vakantiewoning in Frankrijk',
+    title: 'Classificatieprocedure vakantiewoning',
     description:
       'De stappen van een classificatieaanvraag: contact, inspectiebezoek, rapport, classificatievoorstel en geldigheid van vijf jaar.',
     breadcrumbLabel: 'Procedure',

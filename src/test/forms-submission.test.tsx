@@ -7,7 +7,7 @@ import DemandeClassementForm from '../components/forms/DemandeClassementForm';
 let turnstileCallback: ((token: string) => void) | null = null;
 
 const renderTurnstile = vi.fn(
-  (_container: HTMLElement, options: { callback: (token: string) => void }) => {
+  (_container: HTMLElement, options: { callback: (token: string) => void; language: string }) => {
     turnstileCallback = options.callback;
     return 'turnstile-widget';
   }
@@ -201,6 +201,10 @@ describe('localized form submissions', () => {
     );
 
     await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    expect(renderTurnstile).toHaveBeenLastCalledWith(
+      expect.any(HTMLElement),
+      expect.objectContaining({ language: 'nl' })
+    );
     act(() => {
       turnstileCallback?.('turnstile-token');
     });

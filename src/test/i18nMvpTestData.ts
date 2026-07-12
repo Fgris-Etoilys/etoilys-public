@@ -39,6 +39,21 @@ export const FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS = [
   /^\/en\/legal-notice(?:\/|$)/,
 ] as const;
 
+export const FORBIDDEN_NL_MVP_INTERNAL_LINK_PATTERNS = [
+  /^\/nl\/actualites(?:\/|$)/,
+  /^\/nl\/simulateur(?:\/|-|$)/,
+  /^\/nl\/simulators(?:\/|$)/,
+  /^\/nl\/classification-simulator(?:\/|$)/,
+  /^\/nl\/tourist-tax-simulator(?:\/|$)/,
+  /^\/nl\/zones(?:\/|-|$)/,
+  /^\/nl\/recrutement(?:\/|$)/,
+  /^\/nl\/mentions-legales(?:\/|$)/,
+] as const;
+
 export function isForbiddenEnglishMvpInternalHref(href: string): boolean {
   return FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href));
+}
+
+export function isForbiddenDutchMvpInternalHref(href: string): boolean {
+  return FORBIDDEN_NL_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href));
 }

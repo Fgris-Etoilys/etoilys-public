@@ -313,6 +313,7 @@ export default function DemandeClassementForm({
           onTokenChange={handleTurnstileChange}
           error={errors.turnstileToken}
           resetKey={turnstileResetKey}
+          locale={locale}
           messages={content.turnstile}
         />
 

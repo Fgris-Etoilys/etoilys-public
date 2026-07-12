@@ -170,7 +170,7 @@ export default function PourquoiClasser() {
                 ))}
               </ul>
               <p>
-                Source:{' '}
+                {content.fiscalComparison.footnote.sourcePrefix}{' '}
                 <a
                   href={content.fiscalComparison.footnote.sourceHref}
                   target="_blank"

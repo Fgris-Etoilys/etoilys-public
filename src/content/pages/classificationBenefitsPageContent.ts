@@ -61,6 +61,7 @@ export type ClassificationBenefitsPageContent = {
     footnote: {
       intro: string;
       items: readonly string[];
+      sourcePrefix: string;
       sourceLabel: string;
       sourceHref: string;
     };
@@ -224,6 +225,7 @@ export const classificationBenefitsPageContent = {
           "l'établissement et la télétransmission d'une liasse fiscale (formulaire 2031) avant la déclaration de revenus ;",
           'le recours habituel à un expert-comptable.',
         ],
+        sourcePrefix: 'Source :',
         sourceLabel: 'impots.gouv.fr — régime fiscal des meublés de tourisme',
         sourceHref: OFFICIAL_FISCAL_SOURCE_HREF,
       },
@@ -331,7 +333,7 @@ export const classificationBenefitsPageContent = {
         {
           title: "Émis sous l'autorité du ministère chargé du Tourisme",
           description:
-            'Le panonceau est géré par Atout France. Il atteste que le logement a été inspecté par un organisme accrédité par le Cofrac ou agréé par Atout France.',
+            'Le panonceau est géré par Atout France. Il atteste que le logement a été inspecté par un organisme évaluateur accrédité ou un organisme agréé figurant sur la liste officielle.',
         },
         {
           title: 'Reproductible sur toutes les annonces',
@@ -472,6 +474,7 @@ export const classificationBenefitsPageContent = {
           'preparing and electronically filing a tax package, including form 2031, before the income tax return;',
           'usually working with an accountant.',
         ],
+        sourcePrefix: 'Source:',
         sourceLabel: 'impots.gouv.fr — furnished tourist accommodation tax regime',
         sourceHref: OFFICIAL_FISCAL_SOURCE_HREF,
       },
@@ -574,7 +577,7 @@ export const classificationBenefitsPageContent = {
         {
           title: 'Issued under the authority of the ministry in charge of tourism',
           description:
-            'The sign is managed by Atout France. It attests that the accommodation has been inspected by a body accredited by Cofrac or approved by Atout France.',
+            'The sign is managed by Atout France. It attests that the accommodation has been inspected by a Cofrac-accredited inspection body or a body recognised under the French regulatory scheme and included on the official list.',
         },
         {
           title: 'Reusable in listings',
@@ -636,7 +639,7 @@ export const classificationBenefitsPageContent = {
     hero: {
       title: 'Waarom een vakantiewoning in Frankrijk laten classificeren?',
       description:
-        'De classificatie van een vakantiewoning, juridisch een meublé de tourisme, geeft een officieel sterrenreferentiepunt. Afhankelijk van de situatie kan dit ook gevolgen hebben voor het micro-BIC-regime, de toeristenbelasting en de presentatie van de accommodatie.',
+        'De classificatie van een vakantiewoning, juridisch aangeduid als een “meublé de tourisme”, geeft een officiële sterrenclassificatie. Afhankelijk van de situatie kan dit ook gevolgen hebben voor het micro-BIC-regime, de toeristenbelasting en de presentatie van de accommodatie.',
     },
     mainBenefits: {
       title: 'De voordelen van een geclassificeerde vakantiewoning',
@@ -661,7 +664,7 @@ export const classificationBenefitsPageContent = {
         },
         {
           icon: 'award',
-          title: 'Officieel sterrenreferentiepunt',
+          title: 'Officiële sterrenclassificatie',
           description:
             'De verhuurder kan het officiële bord van het ministerie belast met Toerisme aanvragen (1 tot 5 sterren), dat bij de woning kan worden aangebracht en in advertenties kan worden vermeld. Het bevestigt dat de woning voldoet aan comfort- en uitrustingscriteria.',
         },
@@ -675,7 +678,7 @@ export const classificationBenefitsPageContent = {
           icon: 'ticket',
           title: 'Chèques-vacances van ANCV',
           description:
-            'Classificatie geeft toegang tot aansluiting bij ANCV, de Franse nationale organisatie voor vakantiecheques. Aangesloten woningen kunnen chèques-vacances accepteren en in ANCV-dragers worden vermeld.',
+            'Classificatie geeft toegang tot aansluiting bij ANCV, de Franse nationale organisatie voor vakantiecheques. Aangesloten woningen kunnen chèques-vacances accepteren en in de communicatiekanalen van ANCV worden vermeld.',
         },
       ],
     },
@@ -715,7 +718,8 @@ export const classificationBenefitsPageContent = {
           'een fiscale aangiftebundel opstellen en elektronisch indienen, waaronder formulier 2031, vóór de inkomstenbelastingaangifte;',
           'meestal een accountant inschakelen.',
         ],
-        sourceLabel: 'impots.gouv.fr — fiscaal regime van meublés de tourisme',
+        sourcePrefix: 'Bron:',
+        sourceLabel: 'impots.gouv.fr — fiscaal regime van vakantiewoningen',
         sourceHref: OFFICIAL_FISCAL_SOURCE_HREF,
       },
     },
@@ -774,7 +778,7 @@ export const classificationBenefitsPageContent = {
     socialRegime: {
       title: 'Sociaal regime: wat classificatie in 2026 verandert',
       description:
-        'Onder 23.000 euro jaarlijkse omzet gelden voor geclassificeerde en niet-geclassificeerde verhuurders dezelfde sociale heffingen op netto-inkomsten, zonder professionele sociale bijdragen. Boven deze drempel lopen de situaties uiteen. Een geclassificeerde vakantiewoning kan, afhankelijk van de situatie, onder het micro-sociale regime van 6% op bruto-omzet blijven vallen. In 2026 heeft niet-geclassificeerde kortetermijnverhuur geen toegang meer tot dit kader en valt zij onder het regime voor zelfstandigen.',
+        'Onder 23.000 euro jaarlijkse omzet gelden voor geclassificeerde en niet-geclassificeerde verhuurders dezelfde sociale heffingen op netto-inkomsten, zonder professionele sociale premies. Boven deze drempel lopen de situaties uiteen. Een geclassificeerde vakantiewoning kan, afhankelijk van de situatie, onder het micro-sociale regime van 6% op bruto-omzet blijven vallen. In 2026 heeft niet-geclassificeerde kortetermijnverhuur geen toegang meer tot dit kader en valt zij onder het regime voor zelfstandigen.',
       headers: ['Situatie', 'Geclassificeerde woning', 'Niet-geclassificeerde woning', 'Kernpunt'],
       rows: [
         {
@@ -813,17 +817,17 @@ export const classificationBenefitsPageContent = {
       ],
     },
     officialSign: {
-      title: 'Het officiële bord: een gecertificeerd herkenningspunt',
+      title: 'Het officiële bord: een officieel herkenningspunt',
       description:
         'Na toekenning van de classificatie heeft de verhuurder het recht het officiële bord te gebruiken dat door Atout France wordt beheerd onder het gezag van het ministerie belast met Toerisme. Het kan aan de gevel worden geplaatst en in advertenties worden weergegeven.',
       sourceLabel: 'Officiële borden 2026 — Atout France',
       sourceHref: 'https://www.classement.atout-france.fr/les-panonceaux-de-classement',
-      panonceauAltPrefix: 'Officieel bord meublé de tourisme',
+      panonceauAltPrefix: 'Officieel bord vakantiewoning',
       items: [
         {
           title: 'Uitgegeven onder het gezag van het ministerie belast met Toerisme',
           description:
-            'Het bord wordt beheerd door Atout France. Het bevestigt dat de woning is geïnspecteerd door een door Cofrac geaccrediteerde of door Atout France goedgekeurde instantie.',
+            'Het bord wordt beheerd door Atout France. Het bevestigt dat de woning is geïnspecteerd door een door Cofrac geaccrediteerde inspectie-instelling of een volgens de Franse regelgeving erkende instantie (organisme agréé) die op de officiële lijst staat.',
         },
         {
           title: 'Te gebruiken in alle advertenties',

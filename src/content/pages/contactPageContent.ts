@@ -58,18 +58,18 @@ export const contactPageContent = {
     hero: {
       title: 'Contact met Etoilys',
       description:
-        'Heeft u een vraag voordat u de officiële classificatie van uw Franse vakantiewoning aanvraagt? Etoilys kan antwoorden en de volgende stappen toelichten.',
+        'Heeft u een vraag voordat u de officiële classificatie van uw vakantiewoning in Dordogne, Gironde of Lot-et-Garonne aanvraagt? Etoilys kan antwoorden en de volgende stappen toelichten.',
     },
     detailsTitle: 'Onze contactgegevens',
     contactLabels: {
       phone: 'Telefoon',
       email: 'E-mail',
-      headOffice: 'Maatschappelijke zetel',
+      headOffice: 'Vestigingsadres',
     },
     quickResponse: {
       title: 'Snelle reactie',
       description:
-        'Wij beantwoorden uw aanvraag binnen 24 werkuren. Voor een dringende vraag kunt u ons ook rechtstreeks bellen.',
+        'Wij beantwoorden uw aanvraag binnen één werkdag. Voor een spoedvraag kunt u ons ook rechtstreeks bellen.',
     },
   },
 } as const satisfies Record<Locale, ContactPageContent>;

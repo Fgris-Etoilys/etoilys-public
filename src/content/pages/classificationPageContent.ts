@@ -85,7 +85,7 @@ export const classificationPageContent: Record<Locale, ClassificationPageContent
         afterOrderLink: ', entré en vigueur le 1er février 2022.',
       },
       paragraph2:
-        'La visite de contrôle est obligatoirement réalisée en présence physique par un organisme accrédité par le COFRAC ou agréé par Atout France. Les listes des organismes habilités sont publiées et tenues à jour par Atout France.',
+        'La visite de contrôle est obligatoirement réalisée en présence physique par un organisme évaluateur accrédité ou un organisme agréé figurant sur la liste officielle. Les listes des organismes habilités sont publiées et tenues à jour par Atout France.',
       accreditation: {
         title: 'Organisme accrédité Cofrac Inspection',
         description:
@@ -196,7 +196,7 @@ export const classificationPageContent: Record<Locale, ClassificationPageContent
         afterOrderLink: ', which entered into force on 1 February 2022.',
       },
       paragraph2:
-        'The inspection visit must be carried out on site by a body accredited by Cofrac or approved by Atout France. Atout France publishes and updates the lists of authorised bodies.',
+        'The inspection visit must be carried out on site by a Cofrac-accredited inspection body or a body recognised under the French regulatory scheme and included on the official list. Atout France publishes and updates the lists of authorised bodies.',
       accreditation: {
         title: 'Cofrac Inspection accredited body',
         description:
@@ -283,25 +283,25 @@ export const classificationPageContent: Record<Locale, ClassificationPageContent
     hero: {
       title: 'Officiële classificatie van een vakantiewoning in Frankrijk',
       description:
-        'De sterrenclassificatie is een officiële Franse procedure die het comfort, de uitrusting en de diensten van een vakantiewoning beoordeelt. In juridische termen gaat het om een meublé de tourisme. Deze pagina legt de basis uit: hoe de classificatie werkt en wanneer een woning ermee te maken kan hebben.',
+        'De sterrenclassificatie is een officiële Franse procedure die het comfort, de uitrusting en de diensten van een vakantiewoning beoordeelt. In juridische termen gaat het om een “meublé de tourisme”. Deze pagina legt de basis uit: hoe de classificatie werkt en wanneer een woning ermee te maken kan hebben.',
     },
     definition: {
-      title: 'Wat is de classificatie van een meublé de tourisme?',
+      title: 'Wat is de classificatie van een vakantiewoning?',
       paragraph1: {
         beforeCodeLink:
-          'De classificatie van meublés de tourisme is een vrijwillige procedure waarmee een officiële classificatie van 1 tot 5 sterren kan worden verkregen, geldig voor 5 jaar. Zij wordt geregeld door de ',
+          'De classificatie van vakantiewoningen is een vrijwillige procedure waarmee een officiële classificatie van 1 tot 5 sterren kan worden verkregen, geldig voor 5 jaar. Zij wordt geregeld door de ',
         codeLinkLabel: 'Franse Code du tourisme (artikelen L.324-1 en volgende)',
         betweenLinks: ' en het referentiekader is vastgesteld bij het ',
         orderLinkLabel: 'besluit van 24 november 2021',
         afterOrderLink: ', dat op 1 februari 2022 in werking is getreden.',
       },
       paragraph2:
-        'Het controlebezoek moet fysiek ter plaatse worden uitgevoerd door een instantie die door Cofrac is geaccrediteerd of door Atout France is goedgekeurd. Atout France publiceert en actualiseert de lijsten van bevoegde instanties.',
+        'Het controlebezoek moet fysiek ter plaatse worden uitgevoerd door een door Cofrac geaccrediteerde inspectie-instelling of een volgens de Franse regelgeving erkende instantie (organisme agréé) die op de officiële lijst staat. Atout France publiceert en actualiseert de lijsten van bevoegde instanties.',
       accreditation: {
-        title: 'Door Cofrac Inspection geaccrediteerde instantie',
+        title: 'Door Cofrac Inspection geaccrediteerde inspectie-instelling',
         description:
-          'Etoilys is een door Cofrac Inspection geaccrediteerde controle-instantie, nr. 3-2394, voor de classificatie van meublés de tourisme. Deze accreditatie maakt het mogelijk officiële bezoeken uit te voeren en classificatiedocumenten af te geven.',
-        linkLabel: 'De accreditatiescope bekijken',
+          'Etoilys is een door Cofrac Inspection geaccrediteerde inspectie-instelling, nr. 3-2394, voor de classificatie van vakantiewoningen. Deze accreditatie maakt het mogelijk officiële bezoeken uit te voeren en classificatiedocumenten af te geven.',
+        linkLabel: 'De reikwijdte van de accreditatie bekijken',
       },
       paragraph3: {
         beforeReferenceLink:
@@ -327,7 +327,7 @@ export const classificationPageContent: Record<Locale, ClassificationPageContent
       {
         stars: 2,
         title: '2 sterren',
-        description: 'Een hoger comfortniveau met kwaliteitsvolle uitrusting en diensten.',
+        description: 'Een hoger comfortniveau met hoogwaardige uitrusting en diensten.',
       },
       {
         stars: 3,

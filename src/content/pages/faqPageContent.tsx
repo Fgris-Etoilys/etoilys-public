@@ -784,7 +784,7 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
     hero: {
       title: 'FAQ over classificatie van vakantiewoningen in Frankrijk',
       description:
-        'Antwoorden op veelgestelde vragen over de officiële Franse classificatie van vakantiewoningen, juridisch meublés de tourisme.',
+        'Antwoorden op veelgestelde vragen over de officiële Franse classificatie van vakantiewoningen, juridisch aangeduid als “meublés de tourisme”.',
     },
     sourceLinkLabel: 'Officiële Franse bron',
     sections: [
@@ -792,7 +792,7 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
         title: '1. Definitie en basis',
         items: [
           {
-            question: 'Wat is een meublé de tourisme?',
+            question: 'Wat is een vakantiewoning in de Franse classificatie?',
             answer: (
               <>
                 Volgens de Franse Code du tourisme zijn meublés de tourisme gemeubileerde villa’s,
@@ -832,12 +832,12 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             ),
           },
           {
-            question: 'Wat is het verschil tussen een chambre d’hôtes en een meublé de tourisme?',
+            question: 'Wat is het verschil tussen een chambre d’hôtes en een vakantiewoning?',
             answer: (
               <>
-                Een meublé de tourisme wordt als volledige woning verhuurd, voor exclusief gebruik
-                door de huurder. Een chambre d’hôtes houdt in dat de eigenaar ter plaatse aanwezig
-                is. Zij valt niet onder hetzelfde officiële sterrenclassificatiesysteem.
+                Een vakantiewoning wordt als volledige woning verhuurd, voor exclusief gebruik door
+                de huurder. Een chambre d’hôtes houdt in dat de eigenaar ter plaatse aanwezig is.
+                Zij valt niet onder hetzelfde officiële sterrenclassificatiesysteem.
                 <SourceLink
                   href="https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-chambres-dhotes"
                   label="Officiële Franse bron"
@@ -922,17 +922,18 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             question: 'Wie mag het classificatiebezoek uitvoeren?',
             answer: (
               <>
-                Het bezoek moet worden uitgevoerd door een geaccrediteerde of goedgekeurde instantie
-                die voorkomt op de lijsten van Atout France. Etoilys is een{' '}
+                Het bezoek moet worden uitgevoerd door een door Cofrac geaccrediteerde
+                inspectie-instelling of een volgens de Franse regelgeving erkende instantie
+                (organisme agréé) die op de officiële lijst staat. Etoilys is een{' '}
                 <a
                   href={COFRAC_ACCREDITATION_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={accreditationLinkClassName}
                 >
-                  door Cofrac Inspection geaccrediteerde controle-instantie, nr. 3-2394
+                  door Cofrac Inspection geaccrediteerde inspectie-instelling, nr. 3-2394
                 </a>{' '}
-                voor de classificatie van meublés de tourisme.
+                voor de classificatie van vakantiewoningen.
                 <SourceLink
                   href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/qui-sadresser-pour-faire-classer-son-meuble-de-tourisme"
                   label="Officiële Franse bron"
@@ -971,7 +972,7 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             answer: (
               <>
                 Ja. Het classificatiebesluit moet zichtbaar in de woning worden aangebracht. Het
-                buitenbord is daarentegen niet verplicht voor een meublé de tourisme, ook al kan het
+                buitenbord is daarentegen niet verplicht voor een vakantiewoning, ook al kan het
                 worden gebruikt.
                 <SourceLink
                   href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/existe-t-il-des-obligations-en-termes-daffichage-du"
@@ -990,8 +991,8 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             answer: (
               <>
                 Ja. Voor inkomsten over 2026 die in 2027 worden aangegeven, geldt voor
-                geclassificeerde meublés de tourisme een micro-BIC-aftrek van 50%, tegenover 30%
-                voor niet-geclassificeerde woningen.
+                geclassificeerde vakantiewoningen een micro-BIC-aftrek van 50%, tegenover 30% voor
+                niet-geclassificeerde woningen.
                 <SourceLink
                   href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
                   label="Officiële Franse bron"
@@ -1101,13 +1102,12 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             ),
           },
           {
-            question:
-              'Kunnen bijzondere accommodaties als meublé de tourisme worden geclassificeerd?',
+            question: 'Kunnen bijzondere accommodaties als vakantiewoning worden geclassificeerd?',
             answer: (
               <>
-                Niet altijd. Om classificeerbaar te zijn als meublé de tourisme, moet de
-                accommodatie een huis of appartement op funderingen zijn en mag zij niet
-                demonteerbaar, verplaatsbaar of sleepbaar zijn.
+                Niet altijd. Om classificeerbaar te zijn als vakantiewoning, moet de accommodatie
+                een huis of appartement op funderingen zijn en mag zij niet demonteerbaar,
+                verplaatsbaar of sleepbaar zijn.
                 <SourceLink
                   href="https://www.entreprises.gouv.fr/espace-entreprises/faq/meubles-de-tourisme/les-hebergements-dits-insolites-cabanes-dans-les-arbres"
                   label="Officiële Franse bron"
@@ -1116,7 +1116,7 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
             ),
           },
           {
-            question: 'Kan een eigenaar zelf om declassificatie vragen?',
+            question: 'Kan een eigenaar zelf afstand doen van de classificatie?',
             answer: (
               <>
                 Nee. Er bestaat geen declassificatieprocedure op verzoek van de eigenaar. De

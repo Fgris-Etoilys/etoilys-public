@@ -1,7 +1,12 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
-import { EN_MVP_PATH_SET, isForbiddenEnglishMvpInternalHref } from './i18nMvpTestData';
+import {
+  EN_MVP_PATH_SET,
+  NL_MVP_PATH_SET,
+  isForbiddenDutchMvpInternalHref,
+  isForbiddenEnglishMvpInternalHref,
+} from './i18nMvpTestData';
 
 const renderAt = (path: string) => {
   window.history.pushState({}, 'Test page', path);
@@ -39,6 +44,20 @@ function expectEnglishMvpInternalLinksInScope(container: HTMLElement) {
       (pathname) =>
         isForbiddenEnglishMvpInternalHref(pathname) ||
         (pathname.startsWith('/en/') && !EN_MVP_PATH_SET.has(pathname))
+    );
+
+  expect(outOfScopeHrefs).toEqual([]);
+}
+
+function expectDutchMvpInternalLinksInScope(container: HTMLElement) {
+  const outOfScopeHrefs = Array.from(container.querySelectorAll<HTMLAnchorElement>('a[href]'))
+    .map((link) => link.getAttribute('href') ?? '')
+    .map(getInternalPathname)
+    .filter((pathname): pathname is string => pathname !== null)
+    .filter(
+      (pathname) =>
+        isForbiddenDutchMvpInternalHref(pathname) ||
+        (pathname.startsWith('/nl/') && !NL_MVP_PATH_SET.has(pathname))
     );
 
   expect(outOfScopeHrefs).toEqual([]);
@@ -200,6 +219,26 @@ describe('localized layout', () => {
     expect(footer.querySelector('a[href="/simulateur"]')).not.toBeInTheDocument();
     expect(footer.querySelector('a[href="/mentions-legales"]')).not.toBeInTheDocument();
     expectEnglishMvpInternalLinksInScope(footer);
+  });
+
+  it('renders Dutch footer labels without Dutch non-MVP destinations', () => {
+    renderAt('/nl/contact');
+
+    const footer = screen.getByRole('contentinfo');
+
+    expect(within(footer).getByRole('link', { name: /privacybeleid/i })).toHaveAttribute(
+      'href',
+      '/nl/privacybeleid'
+    );
+    expect(
+      within(footer).getByRole('link', { name: /juridische informatie \(frans\)/i })
+    ).toHaveAttribute('href', '/mentions-legales');
+    expect(within(footer).getByRole('link', { name: /classificatieprocedure/i })).toHaveAttribute(
+      'href',
+      '/nl/classificatieprocedure-vakantiewoning'
+    );
+    expect(footer.querySelector('a[href="/nl/mentions-legales"]')).not.toBeInTheDocument();
+    expectDutchMvpInternalLinksInScope(footer);
   });
 
   it('keeps the French header and footer destinations unchanged', () => {

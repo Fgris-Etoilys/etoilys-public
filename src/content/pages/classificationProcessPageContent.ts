@@ -211,7 +211,7 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
     hero: {
       title: 'Classificatieprocedure voor een vakantiewoning',
       description:
-        'De classificatie van een Franse vakantiewoning, juridisch een meublé de tourisme, volgt een gestructureerde procedure in 5 stappen, van de eerste aanvraag tot de officiële toekenning.',
+        'De classificatie van een Franse vakantiewoning, juridisch aangeduid als een “meublé de tourisme”, volgt een gestructureerde procedure in 5 stappen, van de eerste aanvraag tot de officiële toekenning.',
     },
     stepsTitle: 'De 5 stappen van de classificatie',
     steps: [
@@ -223,7 +223,7 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
       },
       {
         number: 2,
-        title: 'Contactopname',
+        title: 'Persoonlijk contact',
         description:
           'De inspecteur in uw sector neemt binnen 24 uur contact met u op om te bevestigen dat de woning in aanmerking komt en om samen met u de datum van het inspectiebezoek vast te leggen.',
       },
@@ -235,10 +235,10 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
             'Het bezoek vindt ter plaatse plaats. De inspecteur controleert de woning volgens het ',
           referenceLinkLabel: 'officiële referentiekader',
           afterReferenceLink:
-            ' en verifieert de uitrusting, oppervlaktes, algemene staat en aangekondigde diensten. Na het bezoek kan het beoogde classificatieniveau worden aangepast volgens de resultaten.',
+            ' en verifieert de uitrusting, oppervlakten, algemene staat en aangekondigde diensten. Na het bezoek kan het beoogde classificatieniveau worden aangepast volgens de resultaten.',
           accreditationText:
-            'Dit officiële bezoek wordt door Etoilys uitgevoerd binnen zijn Cofrac Inspection-accreditatie nr. 3-2394 voor de classificatie van meublés de tourisme.',
-          accreditationLinkLabel: 'De accreditatiescope bekijken',
+            'Dit officiële bezoek wordt door Etoilys uitgevoerd binnen zijn Cofrac Inspection-accreditatie nr. 3-2394 voor de classificatie van vakantiewoningen.',
+          accreditationLinkLabel: 'De reikwijdte van de accreditatie bekijken',
         },
       },
       {
@@ -251,13 +251,13 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
         number: 5,
         title: 'Toekenning van de classificatie',
         description:
-          'Aan het einde van de procedure is de verkregen classificatie 5 jaar geldig en kan zij worden vermeld in advertenties en communicatiedragers van de woning.',
+          'Aan het einde van de procedure is de verkregen classificatie 5 jaar geldig en kan zij worden vermeld in advertenties en communicatiemiddelen van de woning.',
       },
     ],
     keyFigures: {
       title: 'Kerncijfers van de procedure',
       items: [
-        { value: '24u', label: 'Terugbeltermijn na de aanvraag' },
+        { value: '24 uur', label: 'Terugbeltermijn na de aanvraag' },
         { value: '133', label: 'Criteria gecontroleerd tijdens het bezoek' },
         { value: '7 dagen', label: 'Termijn voor afgifte van het certificaat' },
         { value: '15 dagen', label: 'Termijn om het voorstel te weigeren' },

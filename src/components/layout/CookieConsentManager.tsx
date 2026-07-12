@@ -82,11 +82,11 @@ const cookieConsentContent = {
     closePreferencesLabel: 'Cookievoorkeuren sluiten',
     detailedPurposeLabel: 'Gedetailleerde analytics',
     detailedPurposeValue:
-      'Bekeken pagina’s, acquisitie, formulieren, contactlinks, simulators en conversies, alleen na acceptatie.',
-    minimalPurposeLabel: 'Minimale publieksmeting na weigering',
+      'Bekeken pagina’s, acquisitie, formulieren, contactlinks, simulatoren en conversies, alleen na acceptatie.',
+    minimalPurposeLabel: 'Minimale bezoekersmeting na weigering',
     minimalPurposeValue:
-      'Maximaal één gebeurtenis zonder cookie per paginaweergave, beperkt tot de landingspagina zonder parameters en de taal. De productievlag blijft uitgeschakeld zolang de voorafgaande controles niet zijn afgerond.',
-    minimalToggleLabel: 'Minimale publieksmeting na een weigering toestaan',
+      'Maximaal één gebeurtenis zonder cookie per paginaweergave, beperkt tot de landingspagina zonder parameters en de taal. Deze beperkte meting kan afzonderlijk worden uitgeschakeld in de cookievoorkeuren.',
+    minimalToggleLabel: 'Minimale bezoekersmeting na een weigering toestaan',
     toolLabel: 'Tool',
     currentStatusLabel: 'Gedetailleerde toestemming',
     statusLabels: {

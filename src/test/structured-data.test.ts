@@ -77,7 +77,6 @@ describe('structured data graph', () => {
     expect(asStringArray(asObject(organization.contactPoint).availableLanguage)).toEqual([
       'fr',
       'en',
-      'nl',
     ]);
     expect(asStringArray(organization.sameAs)).toEqual([
       ETOILYS_GOOGLE_MAPS_URL,
@@ -96,9 +95,7 @@ describe('structured data graph', () => {
 
     expect(asObject(website.publisher)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
     expect(asObject(service.provider)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
-    expect(service.areaServed).toBe(
-      'Dordogne, Gironde, Lot-et-Garonne et secteurs proches de Bergerac'
-    );
+    expect(service.areaServed).toBe('Dordogne, Gironde et Lot-et-Garonne');
     expect(service.offers).toBeUndefined();
 
     expect(certification.certificationIdentification).toBe('3-2394');

@@ -201,6 +201,18 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { name: /page not found/i })).toBeInTheDocument();
   });
 
+  it.each([
+    '/nl/simulators',
+    '/nl/actualites',
+    '/nl/recrutement',
+    '/nl/mentions-legales',
+    '/nl/classification-simulator',
+    '/nl/tourist-tax-simulator',
+  ])('keeps Dutch route outside the MVP unavailable: %s', (pathname) => {
+    renderAt(pathname);
+    expect(screen.getByRole('heading', { name: /pagina niet gevonden/i })).toBeInTheDocument();
+  });
+
   it('sets html lang and alternate links on completed English MVP routes', () => {
     renderAt('/en/benefits-of-furnished-tourist-accommodation-classification');
 
@@ -226,10 +238,15 @@ describe('routing', () => {
   it('sets html lang and alternate links on completed Dutch MVP routes', () => {
     renderAt('/nl/voordelen-classificatie-vakantiewoning');
 
+    expect(screen.getAllByText(/^Bron:/).length).toBeGreaterThan(0);
     expect(document.documentElement.lang).toBe('nl');
     expect(document.querySelector('meta[property="og:locale"]')).toHaveAttribute(
       'content',
       'nl_NL'
+    );
+    expect(document.querySelector('meta[property="og:image:alt"]')).toHaveAttribute(
+      'content',
+      'Etoilys - Classificatie van vakantiewoningen in Frankrijk'
     );
     expect(document.querySelector('link[hreflang="fr"]')).toHaveAttribute(
       'href',

@@ -275,6 +275,7 @@ export default function ContactForm({
           onTokenChange={handleTurnstileChange}
           error={errors.turnstileToken}
           resetKey={turnstileResetKey}
+          locale={locale}
           messages={content.turnstile}
         />
 

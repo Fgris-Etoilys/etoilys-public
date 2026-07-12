@@ -401,12 +401,9 @@ export const privacyPolicyContent = {
           <p className="mb-4">De verwerkingsverantwoordelijke is:</p>
           <div className="bg-primary-100 rounded-card p-6 text-sm space-y-0.5 mb-4">
             <p className="font-semibold text-gray-800">ETOILYS</p>
-            <p>SAS met maatschappelijk kapitaal van 2.000 euro</p>
+            <p>SAS met aandelenkapitaal van 2.000 euro</p>
             <p>RCS Bergerac 939 330 809</p>
-            <p>
-              Maatschappelijke zetel: 1345 route de Dautres, 24150 Mauzac-et-Grand-Castang,
-              Frankrijk
-            </p>
+            <p>Statutaire zetel: 1345 route de Dautres, 24150 Mauzac-et-Grand-Castang, Frankrijk</p>
             <p>
               E-mail:{' '}
               <a href="mailto:contact@etoilys.fr" className={linkClassName}>
@@ -466,7 +463,7 @@ export const privacyPolicyContent = {
               , wanneer dit mechanisme wordt gebruikt om formulierverzendingen te beveiligen;
             </li>
             <li>
-              <strong className={strongClassName}>gegevens voor publieksmeting</strong>:
+              <strong className={strongClassName}>gegevens voor bezoekersmeting</strong>:
               gedetailleerde trajecten, acquisitie en interacties uitsluitend na aanvaarding van
               analytics-toestemming; na een uitdrukkelijke weigering kan een optionele telling
               zonder cookie uitsluitend de landingspagina zonder parameters en de taal bevatten.
@@ -506,7 +503,7 @@ export const privacyPolicyContent = {
             </div>
             <div>
               <p className="font-medium text-gray-700 mb-1">
-                c) Administratieve en commerciële opvolging van de relatie
+                c) Administratieve en commerciële afhandeling van de relatie
               </p>
               <p className="text-sm">
                 <span className="font-medium">Rechtsgrond:</span> uitvoering van de overeenkomst,
@@ -576,9 +573,9 @@ export const privacyPolicyContent = {
               antibotbescherming van formulieren;
             </li>
             <li>
-              <strong className={strongClassName}>PostHog</strong> voor gedetailleerde publieks-,
-              acquisitie- en trajectanalyse na analytics-toestemming, of voor optionele minimale
-              meting zonder cookie na een uitdrukkelijke weigering.
+              <strong className={strongClassName}>PostHog</strong> voor gedetailleerde bezoekers-,
+              acquisitie- en analyse van gebruikersgedrag na analytics-toestemming, of voor
+              optionele minimale meting zonder cookie na een uitdrukkelijke weigering.
             </li>
           </ul>
           <p className="mb-3">
@@ -598,8 +595,8 @@ export const privacyPolicyContent = {
             verwerken.
           </p>
           <p className="mb-3">
-            Wanneer dergelijke doorgiften plaatsvinden, zorgt ETOILYS ervoor dat zij worden omkaderd
-            door passende waarborgen, bijvoorbeeld:
+            Wanneer dergelijke doorgiften plaatsvinden, zorgt ETOILYS ervoor dat zij worden
+            beschermd door passende waarborgen, bijvoorbeeld:
           </p>
           <ul className="list-disc list-inside space-y-1 pl-2">
             <li>standaardcontractbepalingen goedgekeurd door de Europese Commissie;</li>
@@ -622,7 +619,7 @@ export const privacyPolicyContent = {
               gegevens over een contactaanvraag of classificatieaanvraag zonder latere contractuele
               relatie worden bewaard zolang nodig is om de aanvraag te behandelen en kunnen
               vervolgens tot 3 jaar na het laatste contact van de betrokkene worden bewaard voor
-              commerciële opvolging of hernieuwd contact;
+              commerciële afhandeling of hernieuwd contact;
             </li>
             <li>
               bij een contractuele relatie worden de gegevens bewaard gedurende de relatie en daarna
@@ -631,8 +628,8 @@ export const privacyPolicyContent = {
             <li>contracten en commerciële correspondentie kunnen 5 jaar worden bewaard;</li>
             <li>facturen en boekhoudstukken worden 10 jaar bewaard;</li>
             <li>
-              informatie die nodig is om bezwaar tegen prospectie te beheren, kan 3 jaar worden
-              bewaard om met uw keuze rekening te houden.
+              informatie die nodig is om bezwaar tegen direct marketing te beheren, kan 3 jaar
+              worden bewaard om met uw keuze rekening te houden.
             </li>
           </ul>
         </div>
@@ -709,7 +706,7 @@ export const privacyPolicyContent = {
           <p className="mb-3">
             Zolang geen keuze is gemaakt, wordt de PostHog SDK niet geladen en wordt geen
             PostHog-gebeurtenis verzonden. Bij acceptatie kunnen persistente analytics bekeken
-            pagina’s, acquisitie, formulieren, contactlinks, simulators en conversies meten. De
+            pagina’s, acquisitie, formulieren, contactlinks, simulatoren en conversies meten. De
             keuze wordt maximaal 6 maanden bewaard.
           </p>
           <p className="mb-3">

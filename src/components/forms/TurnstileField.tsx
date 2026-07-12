@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type { Locale } from '../../i18n/locales';
 
 const TURNSTILE_SCRIPT_ID = 'turnstile-script';
 const TURNSTILE_SCRIPT_SRC =
@@ -11,6 +12,7 @@ interface TurnstileRenderOptions {
   'error-callback': () => void;
   size: TurnstileSize;
   theme: 'light' | 'dark' | 'auto';
+  language: Locale;
 }
 
 type TurnstileSize = 'normal' | 'flexible' | 'compact';
@@ -33,6 +35,7 @@ interface TurnstileFieldProps {
   onTokenChange: (token: string | null) => void;
   error?: string | undefined;
   resetKey: number;
+  locale: Locale;
   messages?: {
     missingConfig: string;
     expired: string;
@@ -50,6 +53,7 @@ export default function TurnstileField({
   onTokenChange,
   error,
   resetKey,
+  locale,
   messages = defaultMessages,
 }: TurnstileFieldProps) {
   const siteKey = import.meta.env?.VITE_TURNSTILE_SITE_KEY;
@@ -115,6 +119,7 @@ export default function TurnstileField({
         },
         size: widgetSize,
         theme: 'light',
+        language: locale,
       });
     };
 
@@ -144,7 +149,7 @@ export default function TurnstileField({
         widgetIdRef.current = null;
       }
     };
-  }, [siteKey, onTokenChange, messages, widgetSize]);
+  }, [siteKey, onTokenChange, messages, widgetSize, locale]);
 
   useEffect(() => {
     if (widgetIdRef.current && window.turnstile) {

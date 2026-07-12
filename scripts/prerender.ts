@@ -24,7 +24,7 @@ import {
   buildBreadcrumbStructuredData as buildBreadcrumbStructuredDataFromItems,
   buildPageStructuredData,
 } from '../src/content/structuredData.ts';
-import { EN_INDEXABLE_ROUTE_IDS } from '../src/i18n/contentReadiness.ts';
+import { EN_INDEXABLE_ROUTE_IDS, NL_INDEXABLE_ROUTE_IDS } from '../src/i18n/contentReadiness.ts';
 import { localizedRoutes } from '../src/i18n/localizedRoutes.ts';
 
 const NOT_FOUND_PRERENDER_PATH = '/404';
@@ -34,12 +34,19 @@ const NL_NOT_FOUND_RENDER_PATH = '/nl/route-inconnue';
 const NL_NOT_FOUND_OUTPUT_PATH = 'nl/404.html';
 const DYNAMIC_SIMULATION_RENDER_PATH = '/simulateur/seo-shell';
 const DYNAMIC_SIMULATION_SHELL_OUTPUT = 'simulation-noindex.html';
-const OG_IMAGE_ALT = 'Etoilys - Classement des meublés de tourisme';
+const OG_IMAGE_ALT_BY_LANG = {
+  fr: 'Etoilys - Classement des meublés de tourisme',
+  en: 'Etoilys - Furnished tourist accommodation classification',
+  nl: 'Etoilys - Classificatie van vakantiewoningen in Frankrijk',
+} as const;
 const ROOT_PLACEHOLDER_PATTERN = /<div id="root"><\/div>/i;
 const ROOT_CONTAINER_PATTERN = /<div id="root">[\s\S]*<\/div>\s*<\/body>/i;
 const ROOT_CONTENT_PATTERN = /<div id="root">([\s\S]*)<\/div>\s*<\/body>/i;
 const EN_MVP_PRERENDER_PATHS = new Set(
   EN_INDEXABLE_ROUTE_IDS.map((routeId) => localizedRoutes[routeId].en)
+);
+const NL_MVP_PRERENDER_PATHS = new Set(
+  NL_INDEXABLE_ROUTE_IDS.map((routeId) => localizedRoutes[routeId].nl)
 );
 const FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS = [
   /^\/actualites(?:\/|$)/,
@@ -57,6 +64,18 @@ const FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS = [
 ] as const;
 const FORBIDDEN_EN_MVP_VISIBLE_TEXT_PATTERN =
   /nos dernières actualités|actualités|latest news|news articles|zones d’intervention|service areas|recrutement|recruitment|mentions légales|legal notice/i;
+const FORBIDDEN_NL_MVP_INTERNAL_LINK_PATTERNS = [
+  /^\/nl\/actualites(?:\/|$)/,
+  /^\/nl\/simulateur(?:\/|-|$)/,
+  /^\/nl\/simulators(?:\/|$)/,
+  /^\/nl\/classification-simulator(?:\/|$)/,
+  /^\/nl\/tourist-tax-simulator(?:\/|$)/,
+  /^\/nl\/zones(?:\/|-|$)/,
+  /^\/nl\/recrutement(?:\/|$)/,
+  /^\/nl\/mentions-legales(?:\/|$)/,
+] as const;
+const FORBIDDEN_NL_MVP_VISIBLE_TEXT_PATTERN =
+  /actualités|nieuws|recrutement|werving|mentions légales|juridische vermeldingen/i;
 
 function normalizePath(pathname: string): string {
   if (!pathname) return '/';
@@ -133,6 +152,10 @@ function getOgImage(pathname: string): string {
   return defaultOgImage;
 }
 
+function getOgImageAlt(pathname: string): string {
+  return OG_IMAGE_ALT_BY_LANG[getHtmlLang(pathname)];
+}
+
 function stripSeoTags(html: string): string {
   const patterns = [
     /<title>[\s\S]*?<\/title>\s*/gi,
@@ -187,7 +210,7 @@ function buildSeoHead(pathname: string): string {
     `    <meta property="og:site_name" content="${escapeHtml(SITE_NAME)}">`,
     `    <meta property="og:locale" content="${escapeHtml(getOgLocale(pathname))}">`,
     `    <meta property="og:image" content="${escapeHtml(ogImage)}">`,
-    `    <meta property="og:image:alt" content="${escapeHtml(OG_IMAGE_ALT)}">`,
+    `    <meta property="og:image:alt" content="${escapeHtml(getOgImageAlt(pathname))}">`,
     '    <meta name="twitter:card" content="summary_large_image">',
     `    <meta name="twitter:title" content="${escapeHtml(title)}">`,
     `    <meta name="twitter:description" content="${escapeHtml(description)}">`,
@@ -294,6 +317,18 @@ function isForbiddenEnglishMvpInternalHref(href: string): boolean {
   return FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href));
 }
 
+function isForbiddenDutchMvpInternalHref(href: string): boolean {
+  return FORBIDDEN_NL_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href));
+}
+
+function getInternalHrefs(rootContent: string): string[] {
+  return [...rootContent.matchAll(/href="([^"]+)"/g)]
+    .map((match) => match[1])
+    .filter((href): href is string => href !== undefined)
+    .map(getInternalHrefPath)
+    .filter((href): href is string => href !== null);
+}
+
 function assertEnglishMvpPrerenderScope(
   pathname: string,
   rootContent: string,
@@ -303,11 +338,7 @@ function assertEnglishMvpPrerenderScope(
     return;
   }
 
-  const internalHrefs = [...rootContent.matchAll(/href="([^"]+)"/g)]
-    .map((match) => match[1])
-    .filter((href): href is string => href !== undefined)
-    .map(getInternalHrefPath)
-    .filter((href): href is string => href !== null);
+  const internalHrefs = getInternalHrefs(rootContent);
   const outOfScopeHrefs = internalHrefs.filter(
     (href) =>
       isForbiddenEnglishMvpInternalHref(href) ||
@@ -322,6 +353,33 @@ function assertEnglishMvpPrerenderScope(
 
   if (FORBIDDEN_EN_MVP_VISIBLE_TEXT_PATTERN.test(rootText)) {
     throw new Error(`${pathname} contains visible text from an out-of-scope English MVP block.`);
+  }
+}
+
+function assertDutchMvpPrerenderScope(
+  pathname: string,
+  rootContent: string,
+  rootText: string
+): void {
+  if (!pathname.startsWith('/nl')) {
+    return;
+  }
+
+  const internalHrefs = getInternalHrefs(rootContent);
+  const outOfScopeHrefs = internalHrefs.filter(
+    (href) =>
+      isForbiddenDutchMvpInternalHref(href) ||
+      (href.startsWith('/nl/') && !NL_MVP_PRERENDER_PATHS.has(href))
+  );
+
+  if (outOfScopeHrefs.length > 0) {
+    throw new Error(
+      `${pathname} contains out-of-scope Dutch MVP internal links: ${outOfScopeHrefs.join(', ')}.`
+    );
+  }
+
+  if (FORBIDDEN_NL_MVP_VISIBLE_TEXT_PATTERN.test(rootText)) {
+    throw new Error(`${pathname} contains visible text from an out-of-scope Dutch MVP block.`);
   }
 }
 
@@ -368,6 +426,7 @@ function assertPrerenderedHtml(pathname: string, html: string): void {
     throw new Error(`${pathname} prerendered body does not contain an h1.`);
   }
   assertEnglishMvpPrerenderScope(pathname, rootContent, rootText);
+  assertDutchMvpPrerenderScope(pathname, rootContent, rootText);
   if (!/<title>[\s\S]+<\/title>/i.test(html)) {
     throw new Error(`${pathname} is missing a title tag.`);
   }
