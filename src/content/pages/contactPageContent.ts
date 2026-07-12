@@ -58,7 +58,7 @@ export const contactPageContent = {
     hero: {
       title: 'Contact met Etoilys',
       description:
-        'Heeft u een vraag voordat u de officiële classificatie van uw vakantiewoning in Dordogne, Gironde of Lot-et-Garonne aanvraagt? Etoilys kan antwoorden en de volgende stappen toelichten.',
+        'Heeft u een vraag voordat u de officiële classificatie van uw vakantiewoning in Dordogne, Gironde of Lot-et-Garonne aanvraagt? Etoilys beantwoordt uw vraag en licht de volgende stappen toe.',
     },
     detailsTitle: 'Onze contactgegevens',
     contactLabels: {

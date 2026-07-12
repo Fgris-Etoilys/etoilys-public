@@ -573,9 +573,10 @@ export const privacyPolicyContent = {
               antibotbescherming van formulieren;
             </li>
             <li>
-              <strong className={strongClassName}>PostHog</strong> voor gedetailleerde bezoekers-,
-              acquisitie- en analyse van gebruikersgedrag na analytics-toestemming, of voor
-              optionele minimale meting zonder cookie na een uitdrukkelijke weigering.
+              <strong className={strongClassName}>PostHog</strong> voor gedetailleerde analyse van
+              bezoekersgedrag, de herkomst van bezoeken en gebruikersroutes na toestemming voor
+              analytics, of voor optionele minimale meting zonder cookie na een uitdrukkelijke
+              weigering.
             </li>
           </ul>
           <p className="mb-3">
@@ -719,9 +720,9 @@ export const privacyPolicyContent = {
           <p>
             Het intrekken van toestemming stopt gedetailleerde tracking en verzendt geen nieuwe
             gebeurtenis op het huidige document. Minimale meting kan bij de volgende paginaweergave
-            worden hervat, tenzij zij afzonderlijk is uitgeschakeld. Herladen vóór een keuze doet de
-            vluchtige acquisitiecontext verloren gaan en kan niet aan een latere conversie worden
-            gekoppeld.
+            worden hervat, tenzij zij afzonderlijk is uitgeschakeld. Bij herladen voordat een keuze
+            is gemaakt, gaat de tijdelijke acquisitiecontext verloren en kan deze niet aan een
+            latere conversie worden gekoppeld.
           </p>
         </div>
 
