@@ -6,11 +6,14 @@ import {
   hashText,
   insertSubmission,
   jsonResponse,
+  markCustomerConfirmationFailed,
+  markCustomerConfirmationSent,
   markSubmissionAsNotified,
   markSubmissionNotificationFailed,
   normalizeText,
   normalizePreferredLanguage,
   preflightResponse,
+  sendCustomerConfirmation,
   sendResendNotification,
   validateEmail,
   validatePhone,
@@ -20,6 +23,16 @@ import {
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null;
+
+const getEmailFailureMessage = (
+  result: PromiseSettledResult<{ success: boolean; error?: string }>
+): string | null => {
+  if (result.status === 'rejected') {
+    return result.reason instanceof Error ? result.reason.message : 'Erreur inconnue';
+  }
+
+  return result.value.success ? null : result.value.error || 'Erreur inconnue';
+};
 
 Deno.serve(async (req) => {
   const requestOrigin = req.headers.get('origin');
@@ -205,47 +218,60 @@ Deno.serve(async (req) => {
     );
   }
 
-  const notification = await sendResendNotification(
-    '[Etoilys] Nouvelle demande de classement',
-    [
-      `Submission ID: ${insertResult.submissionId}`,
-      `Langue préférée: ${formatPreferredLanguageLabel(preferredLanguage)}`,
-      `Nom: ${nom}`,
-      `Prenom: ${prenom}`,
-      `Email: ${email}`,
-      `Telephone: ${telephone}`,
-      `Adresse: ${adresse}`,
-      `Message:`,
-      message || '(non renseigne)',
-    ].join('\n'),
-    email
-  );
+  const submissionId = insertResult.submissionId;
+  const [notificationResult, customerConfirmationResult] = await Promise.allSettled([
+    sendResendNotification(
+      '[Etoilys] Nouvelle demande de classement',
+      [
+        `Submission ID: ${submissionId}`,
+        `Langue préférée: ${formatPreferredLanguageLabel(preferredLanguage)}`,
+        `Nom: ${nom}`,
+        `Prenom: ${prenom}`,
+        `Email: ${email}`,
+        `Telephone: ${telephone}`,
+        `Adresse: ${adresse}`,
+        `Message:`,
+        message || '(non renseigne)',
+      ].join('\n'),
+      email,
+      `classification-request:${submissionId}:internal`
+    ),
+    sendCustomerConfirmation(
+      'classification-request',
+      submissionId,
+      email,
+      preferredLanguage,
+      prenom
+    ),
+  ]);
 
-  if (!notification.success) {
-    await markSubmissionNotificationFailed(
-      adminClient,
-      insertResult.submissionId,
-      notification.error || 'Erreur inconnue'
-    );
-
-    return jsonResponse(
-      500,
-      {
-        success: false,
-        error: 'Demande enregistree mais notification indisponible. Merci de reessayer plus tard.',
-        errorCode: 'NOTIFICATION_FAILED',
-      },
-      requestOrigin
-    );
+  const notificationError = getEmailFailureMessage(notificationResult);
+  if (notificationError) {
+    console.error('[public-forms-classement] internal notification failed', {
+      submissionId,
+      error: notificationError,
+    });
+    await markSubmissionNotificationFailed(adminClient, submissionId, notificationError);
+  } else {
+    await markSubmissionAsNotified(adminClient, submissionId);
   }
 
-  await markSubmissionAsNotified(adminClient, insertResult.submissionId);
+  const customerConfirmationError = getEmailFailureMessage(customerConfirmationResult);
+  if (customerConfirmationError) {
+    console.error('[public-forms-classement] customer confirmation failed', {
+      submissionId,
+      error: customerConfirmationError,
+    });
+    await markCustomerConfirmationFailed(adminClient, submissionId, customerConfirmationError);
+  } else {
+    await markCustomerConfirmationSent(adminClient, submissionId);
+  }
 
   return jsonResponse(
     200,
     {
       success: true,
-      submissionId: insertResult.submissionId,
+      submissionId,
       message: 'Votre demande a ete envoyee avec succes.',
     },
     requestOrigin

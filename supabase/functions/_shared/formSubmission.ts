@@ -48,6 +48,23 @@ export interface SubmissionRecordInput {
   payload: Record<string, unknown>;
 }
 
+export type PublicFormKind = 'contact' | 'classification-request';
+
+interface ResendEmailInput {
+  to: string[];
+  replyToEmail: string;
+  subject: string;
+  textBody: string;
+  htmlBody?: string;
+  idempotencyKey: string;
+}
+
+interface CustomerConfirmationInput {
+  formKind: PublicFormKind;
+  preferredLanguage: PreferredLanguage;
+  firstName?: string;
+}
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
 
@@ -306,10 +323,227 @@ export const markSubmissionNotificationFailed = async (
     .eq('id', submissionId);
 };
 
+export const markCustomerConfirmationSent = async (
+  client: SupabaseClient,
+  submissionId: string
+): Promise<void> => {
+  await client
+    .from('form_submissions')
+    .update({
+      customer_confirmation_sent_at: new Date().toISOString(),
+      customer_confirmation_error: null,
+    })
+    .eq('id', submissionId);
+};
+
+export const markCustomerConfirmationFailed = async (
+  client: SupabaseClient,
+  submissionId: string,
+  error: string
+): Promise<void> => {
+  await client
+    .from('form_submissions')
+    .update({
+      customer_confirmation_error: error,
+    })
+    .eq('id', submissionId);
+};
+
+const sanitizeOperationalError = (value: string): string => {
+  const withoutEmails = value.replace(/[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+/g, '[email redacted]');
+  return withoutEmails.slice(0, 500);
+};
+
+const formatResendFromEmail = (fromEmail: string): string =>
+  fromEmail.includes('<') ? fromEmail : `Etoilys <${fromEmail}>`;
+
+const escapeHtml = (value: string): string =>
+  value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+const formatGreeting = (preferredLanguage: PreferredLanguage, firstName?: string): string => {
+  const normalizedFirstName = normalizeText(firstName);
+
+  if (preferredLanguage === 'en') {
+    return normalizedFirstName ? `Hello ${normalizedFirstName},` : 'Hello,';
+  }
+
+  if (preferredLanguage === 'nl') {
+    return normalizedFirstName ? `Hallo ${normalizedFirstName},` : 'Hallo,';
+  }
+
+  return normalizedFirstName ? `Bonjour ${normalizedFirstName},` : 'Bonjour,';
+};
+
+const renderTransactionalHtml = (textBody: string, htmlLang: PreferredLanguage): string => {
+  const paragraphs = textBody
+    .split('\n\n')
+    .map((paragraph) => paragraph.split('\n').map(escapeHtml).join('<br>'))
+    .map((paragraph) => `<p style="margin:0 0 16px;">${paragraph}</p>`)
+    .join('');
+
+  return [
+    '<!doctype html>',
+    `<html lang="${htmlLang}">`,
+    '<head>',
+    '<meta charset="utf-8">',
+    '<meta name="viewport" content="width=device-width, initial-scale=1">',
+    '<title>Etoilys</title>',
+    '</head>',
+    '<body style="margin:0;padding:0;background:#f7f8fb;color:#1f2937;font-family:Arial,sans-serif;">',
+    '<div style="max-width:640px;margin:0 auto;padding:32px 20px;">',
+    '<div style="background:#ffffff;border:1px solid #e5e7eb;border-radius:8px;padding:28px;">',
+    '<p style="margin:0 0 24px;font-size:18px;font-weight:700;color:#0132b0;">Etoilys</p>',
+    `<div style="font-size:16px;line-height:1.6;">${paragraphs}</div>`,
+    '</div>',
+    '</div>',
+    '</body>',
+    '</html>',
+  ].join('');
+};
+
+export const buildCustomerConfirmationEmail = ({
+  formKind,
+  preferredLanguage,
+  firstName,
+}: CustomerConfirmationInput): { subject: string; textBody: string; htmlBody: string } => {
+  const greeting = formatGreeting(preferredLanguage, firstName);
+
+  if (preferredLanguage === 'en') {
+    const subject =
+      formKind === 'classification-request'
+        ? 'We have received your classification request'
+        : 'We have received your message';
+    const textBody =
+      formKind === 'classification-request'
+        ? [
+            greeting,
+            'We have received your classification request.',
+            'A member of the Etoilys team will contact you within one business day to discuss your property and the next steps in the classification process.',
+            'Kind regards,',
+            'The Etoilys team',
+          ].join('\n\n')
+        : [
+            greeting,
+            'We have received your message.',
+            'A member of the Etoilys team will contact you within one business day.',
+            'Kind regards,',
+            'The Etoilys team',
+          ].join('\n\n');
+
+    return { subject, textBody, htmlBody: renderTransactionalHtml(textBody, preferredLanguage) };
+  }
+
+  if (preferredLanguage === 'nl') {
+    const subject =
+      formKind === 'classification-request'
+        ? 'We hebben uw classificatieaanvraag goed ontvangen'
+        : 'We hebben uw bericht goed ontvangen';
+    const textBody =
+      formKind === 'classification-request'
+        ? [
+            greeting,
+            'We hebben uw aanvraag voor de classificatie van uw vakantiewoning goed ontvangen.',
+            'Een medewerker van Etoilys neemt binnen één werkdag contact met u op om uw vakantiewoning en de volgende stappen van de classificatieprocedure te bespreken.',
+            'Met vriendelijke groet,',
+            'Het team van Etoilys',
+          ].join('\n\n')
+        : [
+            greeting,
+            'We hebben uw bericht goed ontvangen.',
+            'Een medewerker van Etoilys neemt binnen één werkdag contact met u op.',
+            'Met vriendelijke groet,',
+            'Het team van Etoilys',
+          ].join('\n\n');
+
+    return { subject, textBody, htmlBody: renderTransactionalHtml(textBody, preferredLanguage) };
+  }
+
+  const subject =
+    formKind === 'classification-request'
+      ? 'Nous avons bien reçu votre demande de classement'
+      : 'Nous avons bien reçu votre message';
+  const textBody =
+    formKind === 'classification-request'
+      ? [
+          greeting,
+          'Nous avons bien reçu votre demande de classement.',
+          "Un membre de l'équipe Etoilys vous recontactera sous 24 heures ouvrées afin d'échanger sur votre logement et d'organiser la suite de la démarche.",
+          'Bien cordialement,',
+          "L'équipe Etoilys",
+        ].join('\n\n')
+      : [
+          greeting,
+          'Nous avons bien reçu votre message.',
+          "Un membre de l'équipe Etoilys vous recontactera sous 24 heures ouvrées.",
+          'Bien cordialement,',
+          "L'équipe Etoilys",
+        ].join('\n\n');
+
+  return { subject, textBody, htmlBody: renderTransactionalHtml(textBody, preferredLanguage) };
+};
+
+export const sendResendEmail = async ({
+  to,
+  replyToEmail,
+  subject,
+  textBody,
+  htmlBody,
+  idempotencyKey,
+}: ResendEmailInput): Promise<{ success: boolean; error?: string }> => {
+  const apiKey = Deno.env.get('RESEND_API_KEY');
+  const fromEmail = Deno.env.get('RESEND_FROM_EMAIL');
+
+  if (!apiKey || !fromEmail) {
+    return { success: false, error: 'Configuration email incomplète (Resend).' };
+  }
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': idempotencyKey,
+      },
+      body: JSON.stringify({
+        from: formatResendFromEmail(fromEmail),
+        to,
+        reply_to: replyToEmail,
+        subject,
+        text: textBody,
+        ...(htmlBody ? { html: htmlBody } : {}),
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return {
+        success: false,
+        error: sanitizeOperationalError(
+          `Envoi email impossible (${response.status}): ${errorText}`
+        ),
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error: sanitizeOperationalError(error instanceof Error ? error.message : 'Erreur inconnue'),
+    };
+  }
+};
+
 export const sendResendNotification = async (
   subject: string,
   textBody: string,
-  replyToEmail: string
+  replyToEmail: string,
+  idempotencyKey: string
 ): Promise<{ success: boolean; error?: string }> => {
   const apiKey = Deno.env.get('RESEND_API_KEY');
   const fromEmail = Deno.env.get('RESEND_FROM_EMAIL');
@@ -324,9 +558,10 @@ export const sendResendNotification = async (
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
+      'Idempotency-Key': idempotencyKey,
     },
     body: JSON.stringify({
-      from: fromEmail,
+      from: formatResendFromEmail(fromEmail),
       to: [notifyTo],
       reply_to: replyToEmail,
       subject,
@@ -338,9 +573,37 @@ export const sendResendNotification = async (
     const errorText = await response.text();
     return {
       success: false,
-      error: `Envoi email impossible (${response.status}): ${errorText}`,
+      error: sanitizeOperationalError(`Envoi email impossible (${response.status}): ${errorText}`),
     };
   }
 
   return { success: true };
+};
+
+export const sendCustomerConfirmation = async (
+  formKind: PublicFormKind,
+  submissionId: string,
+  customerEmail: string,
+  preferredLanguage: PreferredLanguage,
+  firstName?: string
+): Promise<{ success: boolean; error?: string }> => {
+  const notifyTo = Deno.env.get('NOTIFY_TO_EMAIL');
+  if (!notifyTo) {
+    return { success: false, error: 'Configuration email incomplète (Resend).' };
+  }
+
+  const confirmationEmail = buildCustomerConfirmationEmail({
+    formKind,
+    preferredLanguage,
+    firstName,
+  });
+
+  return sendResendEmail({
+    to: [customerEmail],
+    replyToEmail: notifyTo,
+    subject: confirmationEmail.subject,
+    textBody: confirmationEmail.textBody,
+    htmlBody: confirmationEmail.htmlBody,
+    idempotencyKey: `${formKind}:${submissionId}:customer`,
+  });
 };

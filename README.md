@@ -119,6 +119,9 @@ npx supabase secrets set RESEND_FROM_EMAIL=...
 npx supabase secrets set NOTIFY_TO_EMAIL=...
 ```
 
+`RESEND_FROM_EMAIL` est réutilisé pour les notifications internes et les accusés de réception client.
+`NOTIFY_TO_EMAIL` reçoit les notifications internes et sert aussi d'adresse de réponse (`reply_to`) pour les confirmations envoyées aux clients.
+
 Secrets optionnels :
 
 - `ALLOWED_ORIGINS` (liste séparée par virgules)

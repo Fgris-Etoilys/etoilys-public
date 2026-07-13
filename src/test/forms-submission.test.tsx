@@ -31,6 +31,31 @@ const getLastFetchBody = (): Record<string, unknown> => {
   return JSON.parse(String(init?.body)) as Record<string, unknown>;
 };
 
+const createDeferredResponse = () => {
+  let resolve: (value: Response) => void = () => undefined;
+  const promise = new Promise<Response>((promiseResolve) => {
+    resolve = promiseResolve;
+  });
+
+  return {
+    promise,
+    resolveSuccess: () =>
+      resolve(
+        new Response(
+          JSON.stringify({
+            success: true,
+            submissionId: 'submission-id',
+            message: 'ok',
+          }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      ),
+  };
+};
+
 describe('localized form submissions', () => {
   beforeEach(() => {
     renderTurnstile.mockClear();
@@ -156,6 +181,37 @@ describe('localized form submissions', () => {
     });
   });
 
+  it('disables the contact submit button while the request is pending', async () => {
+    const deferred = createDeferredResponse();
+    vi.mocked(globalThis.fetch).mockReturnValueOnce(deferred.promise);
+
+    render(
+      <MemoryRouter>
+        <ContactForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Jane Doe');
+    fillInput(/^email/i, 'jane@example.com');
+    fillTextarea('message', 'Bonjour');
+    fireEvent.click(screen.getByRole('checkbox'));
+
+    const submitButton = screen.getByRole('button', { name: /envoyer mon message/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(submitButton).toBeDisabled());
+
+    await act(async () => {
+      deferred.resolveSuccess();
+      await deferred.promise;
+    });
+  });
+
   it('sends preferredLanguage en from the English classification request form', async () => {
     render(
       <MemoryRouter>
@@ -268,6 +324,40 @@ describe('localized form submissions', () => {
       turnstileToken: 'turnstile-token',
       consentVersion: 'privacy-v1',
       preferredLanguage: 'fr',
+    });
+  });
+
+  it('disables the classification request submit button while the request is pending', async () => {
+    const deferred = createDeferredResponse();
+    vi.mocked(globalThis.fetch).mockReturnValueOnce(deferred.promise);
+
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Doe');
+    fillInput(/^prénom/i, 'Jane');
+    fillInput(/^email/i, 'jane@example.com');
+    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
+    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
+    fillTextarea('message', 'Classement');
+    fireEvent.click(screen.getByRole('checkbox'));
+
+    const submitButton = screen.getByRole('button', { name: /envoyer ma demande/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(submitButton).toBeDisabled());
+
+    await act(async () => {
+      deferred.resolveSuccess();
+      await deferred.promise;
     });
   });
 });
