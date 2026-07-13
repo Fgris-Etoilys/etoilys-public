@@ -10,10 +10,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:seo": "npm run images:build && npm run typecheck && npm run seo:sitemap && vite build && npm run prerender",
+    "build:seo": "npm run images:check && npm run typecheck && npm run seo:sitemap && vite build && npm run prerender",
     "lint": "eslint .",
     "preview": "vite preview",
     "images:build": "node scripts/images-build.mjs",
+    "images:check": "node scripts/images-build.mjs --check",
     "dordogne:meubles": "tsx scripts/fetch-dordogne-meubles.ts",
     "lot-et-garonne:meubles": "tsx scripts/fetch-lot-et-garonne-meubles.ts",
     "taxe-sejour:data": "tsx scripts/build-taxe-sejour-dataset.ts",

@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { format } from 'prettier';
 import sharp from 'sharp';
@@ -7,10 +8,15 @@ const ROOT_DIR = process.cwd();
 const SOURCE_DIR = path.join(ROOT_DIR, 'src', 'assets', 'seo-images', 'source');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public', 'images', 'optimized');
 const MANIFEST_PATH = path.join(ROOT_DIR, 'src', 'content', 'imageManifest.ts');
+const INTEGRITY_PATH = path.resolve(
+  ROOT_DIR,
+  process.env.IMAGE_INTEGRITY_PATH ?? path.join('src', 'content', 'imageManifest.integrity.json')
+);
 const TARGET_WIDTHS = [480, 768, 1200, 1600, 1920];
 const DEFAULT_WIDTH = 1200;
 const OG_ASPECT_RATIO = 1200 / 630;
 const FORCE_REBUILD = process.argv.includes('--force');
+const CHECK_MODE = process.argv.includes('--check');
 const HERO_ASSET_KEYS = new Set(['homeHero', 'dordogneHero', 'girondeHero', 'lotEtGaronneHero']);
 
 const IMAGE_ASSETS = [
@@ -144,6 +150,230 @@ function getAvifQuality(asset, width) {
   return width <= 1200 ? 52 : 56;
 }
 
+function normalizeText(value) {
+  return value.replace(/\r\n/g, '\n');
+}
+
+function hashBuffer(buffer) {
+  return createHash('sha256').update(buffer).digest('hex');
+}
+
+function hashText(value) {
+  return hashBuffer(Buffer.from(normalizeText(value), 'utf8'));
+}
+
+async function hashFile(filePath) {
+  return hashBuffer(await fs.readFile(filePath));
+}
+
+function toPosixPath(filePath) {
+  return filePath.split(path.sep).join('/');
+}
+
+function toRelativePath(filePath) {
+  return toPosixPath(path.relative(ROOT_DIR, filePath));
+}
+
+function buildPipelineSignature() {
+  return hashText(
+    JSON.stringify(
+      {
+        targetWidths: TARGET_WIDTHS,
+        defaultWidth: DEFAULT_WIDTH,
+        ogAspectRatio: OG_ASPECT_RATIO,
+        heroAssetKeys: [...HERO_ASSET_KEYS].sort(),
+        imageAssets: IMAGE_ASSETS,
+        sharpVersions: sharp.versions,
+        formatSrcSet: formatSrcSet.toString(),
+        buildOgCompositionOverlay: buildOgCompositionOverlay.toString(),
+        getJpegQuality: getJpegQuality.toString(),
+        getWebpQuality: getWebpQuality.toString(),
+        getAvifQuality: getAvifQuality.toString(),
+        getOutputPaths: getOutputPaths.toString(),
+        shouldBuildAsset: shouldBuildAsset.toString(),
+        createAssetPlan: createAssetPlan.toString(),
+        buildAsset: buildAsset.toString(),
+        buildManifestEntry: buildManifestEntry.toString(),
+        buildManifest: buildManifest.toString(),
+      },
+      null,
+      2
+    )
+  );
+}
+
+function getManifestReferencedPaths(entries) {
+  const references = new Set();
+
+  for (const entry of entries) {
+    references.add(entry.src);
+
+    for (const srcSet of [entry.srcSetWebp, entry.srcSetAvif]) {
+      for (const candidate of srcSet.split(',')) {
+        const [url] = candidate.trim().split(/\s+/);
+        if (url) {
+          references.add(url);
+        }
+      }
+    }
+  }
+
+  return [...references].sort();
+}
+
+async function buildIntegrity(entries, manifest) {
+  const sources = await Promise.all(
+    IMAGE_ASSETS.map(async (asset) => {
+      const sourcePath = path.join(SOURCE_DIR, asset.fileName);
+      return {
+        key: asset.key,
+        path: toRelativePath(sourcePath),
+        sha256: await hashFile(sourcePath),
+      };
+    })
+  );
+
+  const outputs = await Promise.all(
+    getManifestReferencedPaths(entries).map(async (url) => {
+      const outputPath = path.join(ROOT_DIR, 'public', url.replace(/^\//, ''));
+      const stats = await fs.stat(outputPath);
+      return {
+        path: url,
+        bytes: stats.size,
+        sha256: await hashFile(outputPath),
+      };
+    })
+  );
+
+  return {
+    schemaVersion: 1,
+    pipelineSignature: buildPipelineSignature(),
+    manifest: {
+      path: toRelativePath(MANIFEST_PATH),
+      sha256: hashText(manifest),
+    },
+    sources,
+    outputs,
+  };
+}
+
+function sortIntegrity(integrity) {
+  return {
+    ...integrity,
+    sources: [...integrity.sources].sort((a, b) => a.path.localeCompare(b.path)),
+    outputs: [...integrity.outputs].sort((a, b) => a.path.localeCompare(b.path)),
+  };
+}
+
+async function writeIntegrity(integrity) {
+  await fs.writeFile(
+    INTEGRITY_PATH,
+    `${JSON.stringify(sortIntegrity(integrity), null, 2)}\n`,
+    'utf8'
+  );
+}
+
+async function readJson(filePath) {
+  return JSON.parse(await fs.readFile(filePath, 'utf8'));
+}
+
+async function readIntegrityIfExists() {
+  try {
+    return await readJson(INTEGRITY_PATH);
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      return null;
+    }
+    throw error;
+  }
+}
+
+function formatDiffMessage(actual, expected) {
+  return `expected ${expected}, received ${actual}`;
+}
+
+async function assertCheck(entries, manifest) {
+  const errors = [];
+  const actualManifest = normalizeText(await fs.readFile(MANIFEST_PATH, 'utf8'));
+  const expectedManifest = normalizeText(manifest);
+
+  if (actualManifest !== expectedManifest) {
+    errors.push(`${toRelativePath(MANIFEST_PATH)} does not match the generated manifest.`);
+  }
+
+  let expectedIntegrity;
+  try {
+    expectedIntegrity = sortIntegrity(await readJson(INTEGRITY_PATH));
+  } catch (error) {
+    if (error?.code === 'ENOENT') {
+      throw new Error(`${toRelativePath(INTEGRITY_PATH)} is missing. Run npm run images:build.`);
+    }
+    throw error;
+  }
+
+  const actualIntegrity = sortIntegrity(await buildIntegrity(entries, expectedManifest));
+
+  if (actualIntegrity.schemaVersion !== expectedIntegrity.schemaVersion) {
+    errors.push(
+      `${toRelativePath(INTEGRITY_PATH)} schemaVersion ${formatDiffMessage(
+        actualIntegrity.schemaVersion,
+        expectedIntegrity.schemaVersion
+      )}.`
+    );
+  }
+
+  if (actualIntegrity.pipelineSignature !== expectedIntegrity.pipelineSignature) {
+    errors.push('Image pipeline signature changed. Run npm run images:build.');
+  }
+
+  if (actualIntegrity.manifest.sha256 !== expectedIntegrity.manifest?.sha256) {
+    errors.push(`${toRelativePath(MANIFEST_PATH)} hash changed. Run npm run images:build.`);
+  }
+
+  const actualSources = new Map(actualIntegrity.sources.map((source) => [source.path, source]));
+  const expectedSources = new Map(expectedIntegrity.sources.map((source) => [source.path, source]));
+  for (const [sourcePath, source] of actualSources) {
+    const expectedSource = expectedSources.get(sourcePath);
+    if (!expectedSource) {
+      errors.push(`Source ${sourcePath} is missing from ${toRelativePath(INTEGRITY_PATH)}.`);
+      continue;
+    }
+    if (source.sha256 !== expectedSource.sha256) {
+      errors.push(`Source ${sourcePath} hash changed. Run npm run images:build.`);
+    }
+  }
+  for (const sourcePath of expectedSources.keys()) {
+    if (!actualSources.has(sourcePath)) {
+      errors.push(`Stale source ${sourcePath} remains in ${toRelativePath(INTEGRITY_PATH)}.`);
+    }
+  }
+
+  const actualOutputs = new Map(actualIntegrity.outputs.map((output) => [output.path, output]));
+  const expectedOutputs = new Map(expectedIntegrity.outputs.map((output) => [output.path, output]));
+  for (const [outputPath, output] of actualOutputs) {
+    const expectedOutput = expectedOutputs.get(outputPath);
+    if (!expectedOutput) {
+      errors.push(`Output ${outputPath} is missing from ${toRelativePath(INTEGRITY_PATH)}.`);
+      continue;
+    }
+    if (output.bytes !== expectedOutput.bytes) {
+      errors.push(`Output ${outputPath} size changed. Run npm run images:build.`);
+    }
+    if (output.sha256 !== expectedOutput.sha256) {
+      errors.push(`Output ${outputPath} hash changed. Run npm run images:build.`);
+    }
+  }
+  for (const outputPath of expectedOutputs.keys()) {
+    if (!actualOutputs.has(outputPath)) {
+      errors.push(`Stale output ${outputPath} remains in ${toRelativePath(INTEGRITY_PATH)}.`);
+    }
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`Image integrity check failed:\n- ${errors.join('\n- ')}`);
+  }
+}
+
 async function ensureDirs() {
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
 }
@@ -176,7 +406,7 @@ async function shouldBuildAsset(outputPaths, sourceMtimeMs) {
   return false;
 }
 
-async function createAssetPlan(asset) {
+async function createAssetPlan(asset, previousIntegrity, pipelineChanged) {
   const sourcePath = path.join(SOURCE_DIR, asset.fileName);
   const baseName = asset.outputName ?? asset.fileName.replace(/\.[a-zA-Z0-9]+$/, '');
   const sourceStats = await fs.stat(sourcePath);
@@ -193,7 +423,14 @@ async function createAssetPlan(asset) {
     ? Math.round(defaultWidth / OG_ASPECT_RATIO)
     : metadata.height;
   const outputPaths = getOutputPaths(baseName, widths);
-  const shouldBuild = await shouldBuildAsset(outputPaths, sourceStats.mtimeMs);
+  const sourceRelativePath = toRelativePath(sourcePath);
+  const previousSource = previousIntegrity?.sources?.find(
+    (source) => source.path === sourceRelativePath
+  );
+  const sourceChanged =
+    previousSource !== undefined && previousSource.sha256 !== (await hashFile(sourcePath));
+  const shouldBuild =
+    pipelineChanged || sourceChanged || (await shouldBuildAsset(outputPaths, sourceStats.mtimeMs));
 
   return {
     asset,
@@ -298,17 +535,23 @@ ${recordEntries}
 }
 
 async function main() {
-  await ensureDirs();
+  if (!CHECK_MODE) {
+    await ensureDirs();
+  }
+
+  const previousIntegrity = CHECK_MODE ? null : await readIntegrityIfExists();
+  const pipelineChanged =
+    previousIntegrity !== null && previousIntegrity.pipelineSignature !== buildPipelineSignature();
   const entries = [];
   let builtCount = 0;
   let skippedCount = 0;
 
   for (const asset of IMAGE_ASSETS) {
-    const plan = await createAssetPlan(asset);
-    if (plan.shouldBuild) {
+    const plan = await createAssetPlan(asset, previousIntegrity, pipelineChanged);
+    if (!CHECK_MODE && plan.shouldBuild) {
       await buildAsset(plan);
       builtCount += 1;
-    } else {
+    } else if (!CHECK_MODE) {
       skippedCount += 1;
     }
     entries.push(buildManifestEntry(plan));
@@ -318,7 +561,15 @@ async function main() {
     parser: 'typescript',
     singleQuote: true,
   });
+
+  if (CHECK_MODE) {
+    await assertCheck(entries, manifest);
+    console.log('SEO image assets are up to date.');
+    return;
+  }
+
   await fs.writeFile(MANIFEST_PATH, manifest, 'utf8');
+  await writeIntegrity(await buildIntegrity(entries, manifest));
 
   console.log(`Built ${builtCount} SEO image assets. Skipped ${skippedCount} unchanged assets.`);
 }

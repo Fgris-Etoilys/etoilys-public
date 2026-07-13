@@ -18,7 +18,7 @@ Le site n’est pas un outil de conseil personnalisé aux propriétaires. Les pa
 - Icônes : `lucide-react`.
 - Tests : Vitest, Testing Library, jsdom.
 - SEO/prerender : configuration centralisée dans `src/content/seoRoutes.ts`, génération sitemap, prerender Playwright.
-- Images SEO/CWV : pipeline local Sharp via `npm run images:build`, manifeste typé dans `src/content/imageManifest.ts`.
+- Images SEO/CWV : pipeline local Sharp via `npm run images:build`, manifeste typé dans `src/content/imageManifest.ts`, contrôle rapide via `npm run images:check`.
 - Analytics : PostHog via `src/utils/analytics.ts`, consentement cookies via le layout.
 - Backends publics :
   - Supabase Edge Functions pour les formulaires.
@@ -186,8 +186,9 @@ Les images critiques SEO/CWV doivent passer par `SmartImage` et le pipeline loca
 
 1. Ajouter la source dans `src/assets/seo-images/source/*`.
 2. Lancer `npm run images:build`.
-3. Utiliser la clé générée dans `src/content/imageManifest.ts`.
-4. Renseigner `ogImageKey` et, si pertinent, `lcpImageKey` dans `seoRoutes.ts`.
+3. Lancer `npm run images:check`.
+4. Utiliser la clé générée dans `src/content/imageManifest.ts`.
+5. Renseigner `ogImageKey` et, si pertinent, `lcpImageKey` dans `seoRoutes.ts`.
 
 Éviter les images externes pour les images critiques des routes actives. Ne pas utiliser de `background-image` pour les héros SEO critiques.
 
@@ -271,11 +272,13 @@ npm run build:seo
 
 Cette commande exécute :
 
-1. `npm run images:build`
+1. `npm run images:check`
 2. `npm run typecheck`
 3. `npm run seo:sitemap`
 4. `vite build`
 5. `npm run prerender`
+
+Vercel ne régénère pas les images optimisées. Les fichiers sous `public/images/optimized`, `src/content/imageManifest.ts` et `src/content/imageManifest.integrity.json` sont des artefacts versionnés. Après modification d'une source image, lancer `npm run images:build` puis `npm run images:check` avant commit.
 
 Le fichier `vercel.json` définit aussi les rewrites API et la route dynamique `/simulateur/:simulationId` vers `simulation-noindex.html`.
 
@@ -287,7 +290,7 @@ Avant de livrer une modification significative :
 - Vérifier les composants existants dans `src/components/ui` et `src/components/forms`.
 - Vérifier les helpers concernés dans `src/utils`.
 - Si une route est ajoutée/supprimée, mettre à jour `seoRoutes.ts` et régénérer le sitemap.
-- Si une image critique est ajoutée, passer par `SmartImage` et `npm run images:build`.
+- Si une image critique est ajoutée, passer par `SmartImage`, `npm run images:build` et `npm run images:check`.
 - Si du contenu juridique/fiscal est modifié, vérifier les sources documentaires.
 - Lancer `npm run typecheck` et corriger jusqu’à zéro erreur.
 - Vérifier les fichiers modifiés : UTF-8 sans BOM, accents français préservés, pas de marqueurs de mojibake.
