@@ -7,6 +7,7 @@ import {
   type ActualiteArticle,
 } from '../../content/actualitesArticles';
 import { formatFrenchDate } from '../../content/dateFormatting';
+import ArticleTableOfContents, { type ArticleTableOfContentsItem } from './ArticleTableOfContents';
 
 export type ArticleLayoutArticle = Omit<ActualiteArticle, 'date' | 'imageKey' | 'updatedDate'>;
 
@@ -14,6 +15,7 @@ interface ArticleLayoutProps {
   article: ArticleLayoutArticle;
   lede: ReactNode;
   keyTakeaways: ReactNode;
+  tableOfContents?: readonly ArticleTableOfContentsItem[];
   children: ReactNode;
   footerCta?: ReactNode;
   sources?: ReactNode;
@@ -34,6 +36,7 @@ export default function ArticleLayout({
   article,
   lede,
   keyTakeaways,
+  tableOfContents = [],
   children,
   footerCta,
   sources,
@@ -44,14 +47,16 @@ export default function ArticleLayout({
   const updatedAt =
     article.updatedAt && article.updatedAt !== article.publishedAt ? article.updatedAt : null;
   const hasFooter = Boolean(footerCta || sources || relatedArticles || authorBlock);
+  const shouldShowTableOfContents =
+    tableOfContents.length > 0 && (tableOfContents.length >= 5 || article.readingTimeMinutes >= 6);
 
   return (
     <article aria-labelledby={headingId}>
       <header>
         <section className="bg-gradient-to-br from-themePrimary-1 to-primary-300 pb-10 pt-14 text-white sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
           <div className="container-adaptive">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
-              <div className="lg:col-start-2">
+            <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
+              <div className="mx-auto max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
                 <Link
                   to="/actualites"
                   className="group mb-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white no-underline transition-[background-color,border-color,color] duration-200 hover:border-white/35 hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-themePrimary-1 motion-reduce:transition-none"
@@ -93,12 +98,18 @@ export default function ArticleLayout({
 
       <section className={`bg-white pt-10 sm:pt-12 lg:pt-14 ${hasFooter ? 'pb-0' : 'pb-section'}`}>
         <div className="container-adaptive">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
-            <div className="lg:col-start-2">
+          <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
+            {shouldShowTableOfContents && (
+              <ArticleTableOfContents items={tableOfContents} variant="desktop" />
+            )}
+            <div className="mx-auto max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
               <div className="article-lede mb-10 space-y-6 text-xl leading-comfortable text-gray-700 sm:mb-12">
                 {lede}
               </div>
               {keyTakeaways}
+              {shouldShowTableOfContents && (
+                <ArticleTableOfContents items={tableOfContents} variant="mobile" />
+              )}
               {children}
             </div>
           </div>
@@ -108,8 +119,8 @@ export default function ArticleLayout({
       {hasFooter && (
         <footer className="bg-white pb-section pt-10 sm:pt-12">
           <div className="container-adaptive">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
-              <div className="article-footer-slots lg:col-start-2">
+            <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
+              <div className="article-footer-slots mx-auto max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
                 {footerCta}
                 {sources}
                 {relatedArticles}

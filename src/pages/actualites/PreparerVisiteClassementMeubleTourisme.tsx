@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
 
 const REFERENTIEL_URL =
@@ -88,12 +90,37 @@ function CriterionStatus({ status }: { status: 'optional' | 'required' }) {
   );
 }
 
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'comprendre-les-criteres-correspondant-a-la-categorie-demandee',
+    label: 'Comprendre les critères correspondant à la catégorie demandée',
+  },
+  {
+    id: 'adapter-les-equipements-a-la-capacite-du-logement',
+    label: 'Adapter les équipements à la capacité du logement',
+  },
+  {
+    id: 'preparer-les-informations-et-documents-destines-aux-voyageurs',
+    label: 'Préparer les informations et documents destinés aux voyageurs',
+  },
+  {
+    id: 'presenter-le-logement-dans-sa-configuration-reelle',
+    label: 'Présenter le logement dans sa configuration réelle',
+  },
+  { id: 'la-checklist-avant-la-visite', label: 'La checklist avant la visite' },
+  {
+    id: 'peut-on-transmettre-des-complements-apres-la-visite',
+    label: 'Peut-on transmettre des compléments après la visite ?',
+  },
+];
+
 const article = getActualiteArticleByHref('/actualites/preparer-visite-classement-meuble-tourisme');
 
 export default function ArticlePreparerVisiteClassementMeubleTourisme() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           <p className="text-xl leading-comfortable text-gray-700 mb-6">
@@ -193,7 +220,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
         </>
       }
     >
-      <h2 className="mt-12 mb-4">Comprendre les critères correspondant à la catégorie demandée</h2>
+      <ArticleSectionHeading id="comprendre-les-criteres-correspondant-a-la-categorie-demandee">
+        Comprendre les critères correspondant à la catégorie demandée
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Avant le début de la visite, vous indiquez la catégorie de classement demandée. L’inspecteur
         examine ensuite le logement en appliquant les critères correspondant à cette catégorie.
@@ -311,7 +340,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
         </Button>
       </div>
 
-      <h2 className="mt-12 mb-4">Adapter les équipements à la capacité du logement</h2>
+      <ArticleSectionHeading id="adapter-les-equipements-a-la-capacite-du-logement">
+        Adapter les équipements à la capacité du logement
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La capacité d’accueil déclarée ne détermine pas seulement le nombre de couchages. Elle
         modifie aussi les quantités de vaisselle, le nombre de places autour de la table et
@@ -379,7 +410,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
         critère ne pourra pas être validé. Cela ne bloque toutefois pas automatiquement le
         classement, qui dépend du résultat global de la grille.
       </p>
-      <h2 className="mt-12 mb-4">Préparer les informations et documents destinés aux voyageurs</h2>
+      <ArticleSectionHeading id="preparer-les-informations-et-documents-destines-aux-voyageurs">
+        Préparer les informations et documents destinés aux voyageurs
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Certains critères ne portent pas seulement sur la présence d’un équipement. Ils vérifient
         également les informations et les services réellement proposés aux voyageurs.
@@ -547,7 +580,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
         réduire l’impact environnemental du séjour.
       </p>
 
-      <h2 className="mt-12 mb-4">Présenter le logement dans sa configuration réelle</h2>
+      <ArticleSectionHeading id="presenter-le-logement-dans-sa-configuration-reelle">
+        Présenter le logement dans sa configuration réelle
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La visite porte sur le logement tel qu’il est réellement proposé aux voyageurs. Les pièces
         comprises dans la location doivent être accessibles, les couchages doivent être installés
@@ -564,7 +599,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
         et ses équipements doivent être propres et en bon état.
       </p>
 
-      <h2 className="mt-12 mb-4">La checklist avant la visite</h2>
+      <ArticleSectionHeading id="la-checklist-avant-la-visite">
+        La checklist avant la visite
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Avant le rendez-vous, vérifiez les points suivants :
       </p>
@@ -581,7 +618,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
           ))}
         </ul>
       </div>
-      <h2 className="mt-12 mb-4">Peut-on transmettre des compléments après la visite ?</h2>
+      <ArticleSectionHeading id="peut-on-transmettre-des-complements-apres-la-visite">
+        Peut-on transmettre des compléments après la visite ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le{' '}
         <strong>

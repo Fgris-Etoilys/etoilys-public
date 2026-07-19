@@ -1,7 +1,35 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'le-vrai-changement-tout-le-monde-devra-declarer-son-meuble',
+    label: 'Le vrai changement : tout le monde devra déclarer son meublé',
+  },
+  { id: 'api-meubles-c-est-quoi-exactement', label: "API Meublés, c'est quoi exactement ?" },
+  { id: 'ce-qui-a-change-depuis-le-20-mai-2026', label: 'Ce qui a changé depuis le 20 mai 2026' },
+  { id: 'que-faire-pendant-la-transition', label: 'Que faire pendant la transition ?' },
+  {
+    id: 'comment-devrait-fonctionner-la-declaration-via-api-meubles',
+    label: 'Comment devrait fonctionner la déclaration via API Meublés ?',
+  },
+  {
+    id: 'que-deviennent-les-anciens-numeros-d-enregistrement',
+    label: "Que deviennent les anciens numéros d'enregistrement ?",
+  },
+  {
+    id: 'quelles-sanctions-si-le-meuble-n-est-pas-declare',
+    label: "Quelles sanctions si le meublé n'est pas déclaré ?",
+  },
+  {
+    id: 'que-faire-concretement-pendant-la-periode-de-transition',
+    label: 'Que faire concrètement pendant la période de transition ?',
+  },
+];
 
 const article = getActualiteArticleByHref('/actualites/api-meubles-declaration-meuble-tourisme');
 
@@ -9,6 +37,7 @@ export default function ArticleApiMeubles() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -174,7 +203,9 @@ export default function ArticleApiMeubles() {
       }
     >
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">Le vrai changement : tout le monde devra déclarer son meublé</h2>
+      <ArticleSectionHeading id="le-vrai-changement-tout-le-monde-devra-declarer-son-meuble">
+        Le vrai changement : tout le monde devra déclarer son meublé
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le changement important n&apos;est pas seulement technique. Il ne s&apos;agit pas juste de
         remplacer un formulaire par un autre, avec un joli nom numérique pour faire moderne.
@@ -226,7 +257,9 @@ export default function ArticleApiMeubles() {
       </div>
 
       {/* Section 2 */}
-      <h2 className="mt-12 mb-4">API Meublés, c&apos;est quoi exactement ?</h2>
+      <ArticleSectionHeading id="api-meubles-c-est-quoi-exactement">
+        API Meublés, c&apos;est quoi exactement ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         <strong>API Meublés</strong> est la nouvelle plateforme nationale qui doit centraliser les
         données liées aux meublés de tourisme.
@@ -276,7 +309,9 @@ export default function ArticleApiMeubles() {
       </p>
 
       {/* Section 3 - tableau */}
-      <h2 className="mt-12 mb-4">Ce qui a changé depuis le 20 mai 2026</h2>
+      <ArticleSectionHeading id="ce-qui-a-change-depuis-le-20-mai-2026">
+        Ce qui a changé depuis le 20 mai 2026
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Depuis le <strong>20 mai 2026</strong>, le code du tourisme prévoit une déclaration des
         meublés de tourisme via un téléservice national. Cette déclaration doit permettre la
@@ -337,7 +372,9 @@ export default function ArticleApiMeubles() {
       </p>
 
       {/* Section 4 */}
-      <h2 className="mt-12 mb-4">Que faire pendant la transition ?</h2>
+      <ArticleSectionHeading id="que-faire-pendant-la-transition">
+        Que faire pendant la transition ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La démarche en ligne de déclaration d&apos;hébergement touristique sur Service-Public
         s&apos;est arrêtée le <strong>20 mai 2026</strong>. Les déclarations déposées avant cette
@@ -378,7 +415,9 @@ export default function ArticleApiMeubles() {
       </div>
 
       {/* Section 5 */}
-      <h2 className="mt-12 mb-4">Comment devrait fonctionner la déclaration via API Meublés ?</h2>
+      <ArticleSectionHeading id="comment-devrait-fonctionner-la-declaration-via-api-meubles">
+        Comment devrait fonctionner la déclaration via API Meublés ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Lorsque le téléservice final sera ouvert, le propriétaire devra demander un numéro
         d&apos;enregistrement pour <strong>chaque meublé de tourisme mis en location</strong>.
@@ -419,7 +458,9 @@ export default function ArticleApiMeubles() {
       </p>
 
       {/* Section 6 */}
-      <h2 className="mt-12 mb-4">Que deviennent les anciens numéros d&apos;enregistrement ?</h2>
+      <ArticleSectionHeading id="que-deviennent-les-anciens-numeros-d-enregistrement">
+        Que deviennent les anciens numéros d&apos;enregistrement ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         C&apos;est l&apos;une des questions les plus importantes pour les propriétaires qui ont déjà
         fait une déclaration dans leur commune.
@@ -445,7 +486,9 @@ export default function ArticleApiMeubles() {
       </div>
 
       {/* Section 7 */}
-      <h2 className="mt-12 mb-4">Quelles sanctions si le meublé n&apos;est pas déclaré ?</h2>
+      <ArticleSectionHeading id="quelles-sanctions-si-le-meuble-n-est-pas-declare">
+        Quelles sanctions si le meublé n&apos;est pas déclaré ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le nouveau cadre prévoit des sanctions plus nettes.
       </p>
@@ -464,7 +507,9 @@ export default function ArticleApiMeubles() {
       </p>
 
       {/* Section 8 */}
-      <h2 className="mt-12 mb-4">Que faire concrètement pendant la période de transition ?</h2>
+      <ArticleSectionHeading id="que-faire-concretement-pendant-la-periode-de-transition">
+        Que faire concrètement pendant la période de transition ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Tant que le téléservice final national n&apos;est pas ouvert, le bon réflexe reste le même :
         vérifier la procédure applicable auprès de la mairie du logement. Selon la commune, la

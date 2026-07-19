@@ -1,7 +1,27 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'la-reponse-courte-non-ce-n-est-pas-une-lecture-tout-ou-rien',
+    label: "La réponse courte : non, ce n'est pas une lecture « tout ou rien »",
+  },
+  {
+    id: 'ce-que-montrent-les-sources-officielles',
+    label: 'Ce que montrent les sources officielles',
+  },
+  {
+    id: 'ce-que-cela-veut-dire-concretement-si-vous-avez-plusieurs-logements',
+    label: 'Ce que cela veut dire concrètement si vous avez plusieurs logements',
+  },
+  { id: 'et-pour-les-abattements', label: 'Et pour les abattements ?' },
+  { id: 'la-prudence-a-garder', label: 'La prudence à garder' },
+  { id: 'conclusion', label: 'Conclusion' },
+];
 
 const article = getActualiteArticleByHref('/actualites/meuble-classe-non-classe-seuils-micro-bic');
 
@@ -9,6 +29,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -154,9 +175,9 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       }
     >
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="la-reponse-courte-non-ce-n-est-pas-une-lecture-tout-ou-rien">
         La réponse courte : non, ce n'est pas une lecture « tout ou rien »
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Si vous avez un logement <strong>classé</strong> et un autre <strong>non classé</strong>, la
         lecture la plus solide des sources officielles n'est ni :
@@ -189,7 +210,9 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       </p>
 
       {/* Section 2 – sources + tableau */}
-      <h2 className="mt-12 mb-4">Ce que montrent les sources officielles</h2>
+      <ArticleSectionHeading id="ce-que-montrent-les-sources-officielles">
+        Ce que montrent les sources officielles
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Trois indices officiels vont dans le même sens :
       </p>
@@ -305,9 +328,9 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       </p>
 
       {/* Section 3 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="ce-que-cela-veut-dire-concretement-si-vous-avez-plusieurs-logements">
         Ce que cela veut dire concrètement si vous avez plusieurs logements
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">Si vous avez :</p>
       <ul className="space-y-2 mb-6 text-gray-700">
         <li className="flex gap-3">
@@ -370,7 +393,9 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       </p>
 
       {/* Section 4 */}
-      <h2 className="mt-12 mb-4">Et pour les abattements ?</h2>
+      <ArticleSectionHeading id="et-pour-les-abattements">
+        Et pour les abattements ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Sur ce point, les sources officielles sont plus nettes que beaucoup de contenus publiés en
         ligne.
@@ -417,7 +442,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       </p>
 
       {/* Section 5 */}
-      <h2 className="mt-12 mb-4">La prudence à garder</h2>
+      <ArticleSectionHeading id="la-prudence-a-garder">La prudence à garder</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Ce sujet est assez clair dans les{' '}
         <strong>sources officielles sur le micro-fiscal / activité mixte</strong>. Mais quelques
@@ -456,7 +481,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       </div>
 
       {/* Conclusion */}
-      <h2 className="mt-12 mb-4">Conclusion</h2>
+      <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Si vous avez un meublé classé et un non classé, la bonne approche n'est ni de tout mélanger,
         ni de raisonner logement par logement sans cadre global.

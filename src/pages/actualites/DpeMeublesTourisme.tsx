@@ -1,6 +1,37 @@
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'faut-il-deja-un-dpe-pour-louer-un-meuble-de-tourisme',
+    label: 'Faut-il déjà un DPE pour louer un meublé de tourisme ?',
+  },
+  {
+    id: 'ce-qui-s-applique-deja-le-dpe-dans-certains-cas-de-changement-d-usage',
+    label: "Ce qui s'applique déjà : le DPE dans certains cas de changement d'usage",
+  },
+  {
+    id: 'changement-d-usage-de-quoi-parle-t-on-concretement',
+    label: "Changement d'usage : de quoi parle-t-on concrètement ?",
+  },
+  {
+    id: 'residence-principale-residence-secondaire-changement-d-usage-le-tableau-pour-s-y-retrouver',
+    label:
+      "Résidence principale, résidence secondaire, changement d'usage : le tableau pour s'y retrouver",
+  },
+  {
+    id: 'ce-qui-changera-en-2034-pour-les-meubles-hors-residence-principale',
+    label: 'Ce qui changera en 2034 pour les meublés hors résidence principale',
+  },
+  {
+    id: 'comment-savoir-si-votre-commune-est-concernee',
+    label: 'Comment savoir si votre commune est concernée ?',
+  },
+  { id: 'que-verifier-avant-de-louer', label: 'Que vérifier avant de louer ?' },
+];
 
 const article = getActualiteArticleByHref('/actualites/dpe-meubles-tourisme-2026-2034');
 
@@ -8,6 +39,7 @@ export default function ArticleDpeMeublesTourisme() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -164,7 +196,9 @@ export default function ArticleDpeMeublesTourisme() {
       }
     >
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">Faut-il déjà un DPE pour louer un meublé de tourisme ?</h2>
+      <ArticleSectionHeading id="faut-il-deja-un-dpe-pour-louer-un-meuble-de-tourisme">
+        Faut-il déjà un DPE pour louer un meublé de tourisme ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le point important est simple : il n&apos;existe pas, en 2026, une obligation générale de
         DPE qui s&apos;appliquerait automatiquement à tous les meublés de tourisme, partout en
@@ -218,9 +252,9 @@ export default function ArticleDpeMeublesTourisme() {
       </ul>
 
       {/* Section 2 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="ce-qui-s-applique-deja-le-dpe-dans-certains-cas-de-changement-d-usage">
         Ce qui s&apos;applique déjà : le DPE dans certains cas de changement d&apos;usage
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le texte central se trouve dans le <strong>CCH</strong>, c&apos;est-à-dire le{' '}
         <strong>code de la construction et de l&apos;habitation</strong>.
@@ -262,7 +296,9 @@ export default function ArticleDpeMeublesTourisme() {
       </div>
 
       {/* Section 3 */}
-      <h2 className="mt-12 mb-4">Changement d&apos;usage : de quoi parle-t-on concrètement ?</h2>
+      <ArticleSectionHeading id="changement-d-usage-de-quoi-parle-t-on-concretement">
+        Changement d&apos;usage : de quoi parle-t-on concrètement ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le changement d&apos;usage correspond au fait de prendre un logement normalement destiné à
         l&apos;habitation et de l&apos;utiliser, de manière répétée, pour des locations de courte
@@ -314,10 +350,10 @@ export default function ArticleDpeMeublesTourisme() {
       </p>
 
       {/* Section 4 - tableau */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="residence-principale-residence-secondaire-changement-d-usage-le-tableau-pour-s-y-retrouver">
         Résidence principale, résidence secondaire, changement d&apos;usage : le tableau pour
         s&apos;y retrouver
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         Le bon réflexe n&apos;est pas de demander si{' '}
         <em>le DPE s&apos;applique aux meublés de tourisme</em> en général, mais de regarder dans
@@ -381,9 +417,9 @@ export default function ArticleDpeMeublesTourisme() {
       </div>
 
       {/* Section 5 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="ce-qui-changera-en-2034-pour-les-meubles-hors-residence-principale">
         Ce qui changera en 2034 pour les meublés hors résidence principale
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La règle plus large se trouve dans l&apos;article{' '}
         <strong>L.&nbsp;324-2-2 du code du tourisme</strong>.
@@ -405,7 +441,9 @@ export default function ArticleDpeMeublesTourisme() {
       </p>
 
       {/* Section 6 */}
-      <h2 className="mt-12 mb-4">Comment savoir si votre commune est concernée ?</h2>
+      <ArticleSectionHeading id="comment-savoir-si-votre-commune-est-concernee">
+        Comment savoir si votre commune est concernée ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Il n&apos;existe pas, à ce stade, de carte nationale unique permettant de savoir
         instantanément si chaque commune applique une procédure de changement d&apos;usage.
@@ -502,7 +540,9 @@ export default function ArticleDpeMeublesTourisme() {
       </ul>
 
       {/* Section 7 */}
-      <h2 className="mt-12 mb-4">Que vérifier avant de louer ?</h2>
+      <ArticleSectionHeading id="que-verifier-avant-de-louer">
+        Que vérifier avant de louer ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le sujet DPE n&apos;est pas une règle unique applicable partout, mais une vérification à
         faire selon la situation du logement et la commune.

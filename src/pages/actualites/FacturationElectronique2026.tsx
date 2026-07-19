@@ -1,6 +1,30 @@
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'oui-vous-etes-concernes-meme-si-vous-ne-collectez-pas-la-tva-sur-vos-sejours',
+    label: 'Oui, vous êtes concernés, même si vous ne collectez pas la TVA sur vos séjours',
+  },
+  {
+    id: 'ce-qui-s-applique-a-un-loueur-en-meuble-classique',
+    label: "Ce qui s'applique à un loueur en meublé classique",
+  },
+  {
+    id: 'quand-les-obligations-deviennent-plus-larges',
+    label: 'Quand les obligations deviennent plus larges',
+  },
+  { id: 'le-calendrier-precis-a-retenir', label: 'Le calendrier précis à retenir' },
+  { id: 'les-sanctions-a-connaitre', label: 'Les sanctions à connaître' },
+  {
+    id: 'comment-se-mettre-en-conformite-concretement',
+    label: 'Comment se mettre en conformité concrètement',
+  },
+  { id: 'en-resume', label: 'En résumé' },
+];
 
 const article = getActualiteArticleByHref(
   '/actualites/facturation-electronique-2026-proprietaires-meubles'
@@ -10,6 +34,7 @@ export default function ArticleFacturationElectronique2026() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -184,9 +209,9 @@ export default function ArticleFacturationElectronique2026() {
       }
     >
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="oui-vous-etes-concernes-meme-si-vous-ne-collectez-pas-la-tva-sur-vos-sejours">
         Oui, vous êtes concernés, même si vous ne collectez pas la TVA sur vos séjours
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         C'est le point le plus important à expliquer clairement.
       </p>
@@ -231,7 +256,9 @@ export default function ArticleFacturationElectronique2026() {
       </ul>
 
       {/* Section 2 */}
-      <h2 className="mt-12 mb-4">Ce qui s'applique à un loueur en meublé classique</h2>
+      <ArticleSectionHeading id="ce-qui-s-applique-a-un-loueur-en-meuble-classique">
+        Ce qui s'applique à un loueur en meublé classique
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Pour un loueur en meublé de tourisme classique — c'est-à-dire hors activité taxable de type
         para-hôtelière — il faut distinguer trois sujets.
@@ -285,7 +312,9 @@ export default function ArticleFacturationElectronique2026() {
       </div>
 
       {/* Section 3 */}
-      <h2 className="mt-12 mb-4">Quand les obligations deviennent plus larges</h2>
+      <ArticleSectionHeading id="quand-les-obligations-deviennent-plus-larges">
+        Quand les obligations deviennent plus larges
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Les obligations s'élargissent si l'activité entre dans le champ des{' '}
         <strong>opérations taxables à la TVA</strong>.
@@ -396,7 +425,9 @@ export default function ArticleFacturationElectronique2026() {
       </div>
 
       {/* Section 4 */}
-      <h2 className="mt-12 mb-4">Le calendrier précis à retenir</h2>
+      <ArticleSectionHeading id="le-calendrier-precis-a-retenir">
+        Le calendrier précis à retenir
+      </ArticleSectionHeading>
 
       <h3 className="mt-6 mb-3">Réception</h3>
       <p className="text-gray-700 leading-comfortable mb-4">
@@ -439,7 +470,9 @@ export default function ArticleFacturationElectronique2026() {
       </p>
 
       {/* Section 5 */}
-      <h2 className="mt-12 mb-4">Les sanctions à connaître</h2>
+      <ArticleSectionHeading id="les-sanctions-a-connaitre">
+        Les sanctions à connaître
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         D'après la FAQ dédiée sur impots.gouv.fr et les textes codifiés&nbsp;:
       </p>
@@ -470,7 +503,9 @@ export default function ArticleFacturationElectronique2026() {
       </ul>
 
       {/* Section 6 */}
-      <h2 className="mt-12 mb-4">Comment se mettre en conformité concrètement</h2>
+      <ArticleSectionHeading id="comment-se-mettre-en-conformite-concretement">
+        Comment se mettre en conformité concrètement
+      </ArticleSectionHeading>
 
       <h3 className="mt-6 mb-3">Option 1 — Le minimum indispensable pour un loueur exonéré</h3>
       <p className="text-gray-700 leading-comfortable mb-4">
@@ -521,7 +556,7 @@ export default function ArticleFacturationElectronique2026() {
       </p>
 
       {/* Conclusion */}
-      <h2 className="mt-12 mb-4">En résumé</h2>
+      <ArticleSectionHeading id="en-resume">En résumé</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La bonne réponse n'est donc pas <em>je suis concerné seulement si je collecte la TVA</em>.
       </p>

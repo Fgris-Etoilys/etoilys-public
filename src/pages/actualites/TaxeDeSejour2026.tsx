@@ -1,7 +1,35 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'la-vraie-difference-classe-tarif-fixe-non-classe-taux-proportionnel',
+    label: 'La vraie différence : classé = tarif fixe, non classé = taux proportionnel',
+  },
+  {
+    id: 'pourquoi-le-classement-change-concretement-la-donne',
+    label: 'Pourquoi le classement change concrètement la donne',
+  },
+  {
+    id: 'le-bareme-2026-a-retenir-pour-les-meubles-classes',
+    label: 'Le barème 2026 à retenir pour les meublés classés',
+  },
+  {
+    id: 'les-taxes-additionnelles-le-detail-qu-il-ne-faut-surtout-pas-oublier',
+    label: "Les taxes additionnelles : le détail qu'il ne faut surtout pas oublier",
+  },
+  { id: 'exemples-concrets', label: 'Exemples concrets' },
+  {
+    id: 'le-bon-reflexe-avant-de-comparer-deux-biens',
+    label: 'Le bon réflexe avant de comparer deux biens',
+  },
+  { id: 'le-lien-avec-le-classement-etoilys', label: 'Le lien avec le classement Etoilys' },
+  { id: 'conclusion', label: 'Conclusion' },
+];
 
 const article = getActualiteArticleByHref(
   '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne'
@@ -11,6 +39,7 @@ export default function ArticleTaxeDeSejour2026() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -174,9 +203,9 @@ export default function ArticleTaxeDeSejour2026() {
       </div>
 
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="la-vraie-difference-classe-tarif-fixe-non-classe-taux-proportionnel">
         La vraie différence : classé = tarif fixe, non classé = taux proportionnel
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         En 2026, le classement change d'abord <strong>la manière de calculer</strong> la taxe de
         séjour.
@@ -217,7 +246,9 @@ export default function ArticleTaxeDeSejour2026() {
       </p>
 
       {/* Section 2 */}
-      <h2 className="mt-12 mb-4">Pourquoi le classement change concrètement la donne</h2>
+      <ArticleSectionHeading id="pourquoi-le-classement-change-concretement-la-donne">
+        Pourquoi le classement change concrètement la donne
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le classement ne signifie pas que le bien sera <strong>toujours moins taxé</strong>. Ce
         serait trop simpliste et parfois inexact.
@@ -283,7 +314,9 @@ export default function ArticleTaxeDeSejour2026() {
       </p>
 
       {/* Section 3 */}
-      <h2 className="mt-12 mb-4">Le barème 2026 à retenir pour les meublés classés</h2>
+      <ArticleSectionHeading id="le-bareme-2026-a-retenir-pour-les-meubles-classes">
+        Le barème 2026 à retenir pour les meublés classés
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Les bornes nationales 2026 pour les <strong>meublés de tourisme classés</strong> sont les
         suivantes (source :{' '}
@@ -343,9 +376,9 @@ export default function ArticleTaxeDeSejour2026() {
       </blockquote>
 
       {/* Section 4 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="les-taxes-additionnelles-le-detail-qu-il-ne-faut-surtout-pas-oublier">
         Les taxes additionnelles : le détail qu'il ne faut surtout pas oublier
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La taxe de séjour ne se limite pas au seul tarif de base de la commune. Selon le territoire,
         des <strong>taxes additionnelles</strong> peuvent s'y ajouter.
@@ -431,7 +464,7 @@ export default function ArticleTaxeDeSejour2026() {
       </blockquote>
 
       {/* Section 5 – Tableau */}
-      <h2 className="mt-12 mb-4">Exemples concrets</h2>
+      <ArticleSectionHeading id="exemples-concrets">Exemples concrets</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         Le tableau suivant illustre comment le classement, le tarif local et les majorations
         éventuelles se combinent. Les exemples 1 et 2 sont{' '}
@@ -556,7 +589,9 @@ export default function ArticleTaxeDeSejour2026() {
       </blockquote>
 
       {/* Section 6 – Checklist */}
-      <h2 className="mt-12 mb-4">Le bon réflexe avant de comparer deux biens</h2>
+      <ArticleSectionHeading id="le-bon-reflexe-avant-de-comparer-deux-biens">
+        Le bon réflexe avant de comparer deux biens
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         Pour évaluer l'impact du classement sur la taxe de séjour dans un cas précis, il faut
         vérifier dans cet ordre :
@@ -621,7 +656,9 @@ export default function ArticleTaxeDeSejour2026() {
       </p>
 
       {/* Section 7 */}
-      <h2 className="mt-12 mb-4">Le lien avec le classement Etoilys</h2>
+      <ArticleSectionHeading id="le-lien-avec-le-classement-etoilys">
+        Le lien avec le classement Etoilys
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le classement ne change pas seulement le calcul de la taxe de séjour. Il conserve aussi un
         effet distinct sur le micro-BIC, détaillé dans{' '}
@@ -652,7 +689,7 @@ export default function ArticleTaxeDeSejour2026() {
       </p>
 
       {/* Conclusion */}
-      <h2 className="mt-12 mb-4">Conclusion</h2>
+      <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         En 2026, le classement change bien la donne sur la taxe de séjour, parce qu'il fait passer
         le bien d'un calcul proportionnel à un barème fixe. Mais pour connaître l'impact réel, il

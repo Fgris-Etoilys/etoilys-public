@@ -2,7 +2,38 @@ import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'la-reponse-courte-non-tout-le-monde-n-est-pas-limite-a-90-jours',
+    label: "La réponse courte : non, tout le monde n'est pas limité à 90 jours",
+  },
+  { id: 'qui-est-concerne-par-cette-limite', label: 'Qui est concerné par cette limite ?' },
+  {
+    id: 'ce-que-la-commune-peut-faire-depuis-la-reforme',
+    label: 'Ce que la commune peut faire depuis la réforme',
+  },
+  {
+    id: 'le-piege-des-90-jours-il-y-a-en-realite-plusieurs-regles-differentes',
+    label: 'Le piège des "90 jours" : il y a en réalité plusieurs règles différentes',
+  },
+  {
+    id: 'depasser-le-plafond-dans-une-commune-qui-l-a-abaisse-qu-est-ce-que-cela-change',
+    label: "Dépasser le plafond dans une commune qui l'a abaissé : qu'est-ce que cela change ?",
+  },
+  {
+    id: 'le-classement-change-t-il-quelque-chose-a-cette-limite',
+    label: 'Le classement change-t-il quelque chose à cette limite ?',
+  },
+  {
+    id: 'ce-qu-un-proprietaire-doit-verifier-avant-de-louer',
+    label: "Ce qu'un propriétaire doit vérifier avant de louer",
+  },
+  { id: 'conclusion', label: 'Conclusion' },
+];
 
 const article = getActualiteArticleByHref(
   '/actualites/airbnb-residence-principale-limite-90-jours'
@@ -12,6 +43,7 @@ export default function ArticleResidencePrincipale90Jours() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -179,9 +211,9 @@ export default function ArticleResidencePrincipale90Jours() {
       }
     >
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="la-reponse-courte-non-tout-le-monde-n-est-pas-limite-a-90-jours">
         La réponse courte : non, tout le monde n'est pas limité à 90 jours
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         C'est probablement la confusion la plus fréquente depuis la réforme de 2024.
       </p>
@@ -246,7 +278,9 @@ export default function ArticleResidencePrincipale90Jours() {
       </ul>
 
       {/* Section 2 */}
-      <h2 className="mt-12 mb-4">Qui est concerné par cette limite ?</h2>
+      <ArticleSectionHeading id="qui-est-concerne-par-cette-limite">
+        Qui est concerné par cette limite ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Cette limite concerne les logements qui sont{' '}
         <strong>vraiment la résidence principale</strong> du loueur. La résidence principale est
@@ -283,7 +317,9 @@ export default function ArticleResidencePrincipale90Jours() {
       </p>
 
       {/* Section 3 */}
-      <h2 className="mt-12 mb-4">Ce que la commune peut faire depuis la réforme</h2>
+      <ArticleSectionHeading id="ce-que-la-commune-peut-faire-depuis-la-reforme">
+        Ce que la commune peut faire depuis la réforme
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La{' '}
         <a
@@ -368,9 +404,9 @@ export default function ArticleResidencePrincipale90Jours() {
       </blockquote>
 
       {/* Section 4 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="le-piege-des-90-jours-il-y-a-en-realite-plusieurs-regles-differentes">
         Le piège des "90 jours" : il y a en réalité plusieurs règles différentes
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         C'est la partie la plus importante. Quand vous lisez "90 jours", cela peut désigner au moins{' '}
         <strong>trois choses différentes</strong>.
@@ -446,9 +482,9 @@ export default function ArticleResidencePrincipale90Jours() {
       </p>
 
       {/* Section 5 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="depasser-le-plafond-dans-une-commune-qui-l-a-abaisse-qu-est-ce-que-cela-change">
         Dépasser le plafond dans une commune qui l'a abaissé : qu'est-ce que cela change ?
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Lorsqu'une commune a abaissé le plafond, un logement loué au-delà du nombre de jours
         autorisé peut exposer le loueur à une <strong>sanction</strong>. Le code du tourisme prévoit
@@ -505,7 +541,9 @@ export default function ArticleResidencePrincipale90Jours() {
       </div>
 
       {/* Section 6 */}
-      <h2 className="mt-12 mb-4">Le classement change-t-il quelque chose à cette limite ?</h2>
+      <ArticleSectionHeading id="le-classement-change-t-il-quelque-chose-a-cette-limite">
+        Le classement change-t-il quelque chose à cette limite ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">Non.</p>
       <p className="text-gray-700 leading-comfortable mb-4">
         Un meublé de tourisme <strong>classé</strong> peut tout à fait être une résidence
@@ -549,7 +587,9 @@ export default function ArticleResidencePrincipale90Jours() {
       </p>
 
       {/* Section 7 */}
-      <h2 className="mt-12 mb-4">Ce qu'un propriétaire doit vérifier avant de louer</h2>
+      <ArticleSectionHeading id="ce-qu-un-proprietaire-doit-verifier-avant-de-louer">
+        Ce qu'un propriétaire doit vérifier avant de louer
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         Avant de louer votre résidence principale en meublé de tourisme, voici ce qu'il faut
         vérifier au minimum :
@@ -623,7 +663,7 @@ export default function ArticleResidencePrincipale90Jours() {
       </p>
 
       {/* Conclusion */}
-      <h2 className="mt-12 mb-4">Conclusion</h2>
+      <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La limite des <strong>90 jours</strong> n'est pas une règle automatique qui s'applique
         partout à toutes les résidences principales. En pratique, il faut distinguer la règle

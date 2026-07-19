@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
 
 const keyTakeaways = [
@@ -111,12 +113,40 @@ const officialSources = [
   },
 ];
 
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'affichez-la-decision-de-classement-dans-le-logement',
+    label: 'Affichez la décision de classement dans le logement',
+  },
+  {
+    id: 'actualisez-la-declaration-ou-l-enregistrement-du-meuble',
+    label: 'Actualisez la déclaration ou l’enregistrement du meublé',
+  },
+  {
+    id: 'verifiez-la-mise-a-jour-de-votre-taxe-de-sejour',
+    label: 'Vérifiez la mise à jour de votre taxe de séjour',
+  },
+  {
+    id: 'renseignez-votre-classement-sur-les-plateformes-de-reservation',
+    label: 'Renseignez votre classement sur les plateformes de réservation',
+  },
+  {
+    id: 'conservez-vos-documents-et-anticipez-le-renouvellement',
+    label: 'Conservez vos documents et anticipez le renouvellement',
+  },
+  {
+    id: 'une-demarche-facultative-accepter-les-cheques-vacances',
+    label: 'Une démarche facultative : accepter les Chèques-Vacances',
+  },
+];
+
 const article = getActualiteArticleByHref('/actualites/que-faire-apres-classement-meuble-tourisme');
 
 export default function ArticleQueFaireApresClassementMeubleTourisme() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           <p className="text-xl leading-comfortable text-gray-700 mb-10">
@@ -190,7 +220,9 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
         </>
       }
     >
-      <h2 className="mt-12 mb-4">Affichez la décision de classement dans le logement</h2>
+      <ArticleSectionHeading id="affichez-la-decision-de-classement-dans-le-logement">
+        Affichez la décision de classement dans le logement
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le Code du tourisme distingue deux éléments. La décision de classement doit être affichée de
         manière visible à l’intérieur du meublé. Le panonceau extérieur, lui, permet de signaler le
@@ -225,7 +257,9 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
         dans sa page dédiée aux documents de classement.
       </p>
 
-      <h2 className="mt-12 mb-4">Actualisez la déclaration ou l’enregistrement du meublé</h2>
+      <ArticleSectionHeading id="actualisez-la-declaration-ou-l-enregistrement-du-meuble">
+        Actualisez la déclaration ou l’enregistrement du meublé
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La date de la décision et la catégorie de classement font partie des informations déclarées
         pour un meublé de tourisme. Après obtention du classement, vérifiez donc si la déclaration
@@ -269,7 +303,9 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
         </p>
       </div>
 
-      <h2 className="mt-12 mb-4">Vérifiez la mise à jour de votre taxe de séjour</h2>
+      <ArticleSectionHeading id="verifiez-la-mise-a-jour-de-votre-taxe-de-sejour">
+        Vérifiez la mise à jour de votre taxe de séjour
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Etoilys transmet la décision de classement à l’office de tourisme du secteur. Vous n’avez
         donc pas à renvoyer systématiquement la décision à ce même office de tourisme.
@@ -299,7 +335,9 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
         .
       </p>
 
-      <h2 className="mt-12 mb-4">Renseignez votre classement sur les plateformes de réservation</h2>
+      <ArticleSectionHeading id="renseignez-votre-classement-sur-les-plateformes-de-reservation">
+        Renseignez votre classement sur les plateformes de réservation
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Les intitulés peuvent varier selon la version de l’application, le type de compte et les
         évolutions de chaque plateforme.
@@ -359,7 +397,9 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
         classement et le tarif de taxe de séjour affiché.
       </p>
 
-      <h2 className="mt-12 mb-4">Conservez vos documents et anticipez le renouvellement</h2>
+      <ArticleSectionHeading id="conservez-vos-documents-et-anticipez-le-renouvellement">
+        Conservez vos documents et anticipez le renouvellement
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Conservez ces documents dans un même dossier pendant toute la durée du classement : décision
         de classement, rapport de contrôle, grille de contrôle, accusé de réception de la
@@ -387,7 +427,9 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
         </ul>
       </div>
 
-      <h2 className="mt-12 mb-4">Une démarche facultative : accepter les Chèques-Vacances</h2>
+      <ArticleSectionHeading id="une-demarche-facultative-accepter-les-cheques-vacances">
+        Une démarche facultative : accepter les Chèques-Vacances
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le classement permet à un propriétaire de location meublée de déposer une demande de
         conventionnement auprès de l’ANCV. Ce conventionnement est nécessaire pour accepter les

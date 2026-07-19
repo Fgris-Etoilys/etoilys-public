@@ -2,7 +2,41 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'la-vraie-question-en-2026-le-classement-garde-t-il-encore-un-avantage-fiscal',
+    label: 'La vraie question en 2026 : le classement garde-t-il encore un avantage fiscal ?',
+  },
+  {
+    id: 'seuils-et-abattements-micro-bic-le-detail-par-annee',
+    label: 'Seuils et abattements micro-BIC : le détail par année',
+  },
+  {
+    id: 'pourquoi-cet-ecart-fiscal-change-vraiment-la-donne-pour-un-proprietaire',
+    label: 'Pourquoi cet écart fiscal change vraiment la donne pour un propriétaire',
+  },
+  {
+    id: 'le-point-que-beaucoup-confondent-micro-bic-micro-entreprise-et-regime-reel',
+    label: 'Le point que beaucoup confondent : micro-BIC, micro-entreprise et régime réel',
+  },
+  {
+    id: 'les-erreurs-frequentes-a-eviter-sur-le-micro-bic-2026',
+    label: 'Les erreurs fréquentes à éviter sur le micro-BIC 2026',
+  },
+  {
+    id: 'concretement-que-doit-verifier-un-proprietaire-en-2026',
+    label: 'Concrètement, que doit vérifier un propriétaire en 2026 ?',
+  },
+  {
+    id: 'pourquoi-le-classement-reste-pertinent-dans-ce-contexte',
+    label: 'Pourquoi le classement reste pertinent dans ce contexte',
+  },
+  { id: 'conclusion', label: 'Conclusion' },
+];
 
 const article = getActualiteArticleByHref('/actualites/micro-bic-2026-meuble-classe-vs-non-classe');
 
@@ -10,6 +44,7 @@ export default function ArticleMicroBic2026() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -230,9 +265,9 @@ export default function ArticleMicroBic2026() {
       }
     >
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="la-vraie-question-en-2026-le-classement-garde-t-il-encore-un-avantage-fiscal">
         La vraie question en 2026 : le classement garde-t-il encore un avantage fiscal ?
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">Oui, clairement.</p>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le classement d'un meublé de tourisme n'est pas qu'un repère commercial ou administratif. En
@@ -255,7 +290,9 @@ export default function ArticleMicroBic2026() {
       </p>
 
       {/* Section 2+3 fusionnées */}
-      <h2 className="mt-12 mb-4">Seuils et abattements micro-BIC : le détail par année</h2>
+      <ArticleSectionHeading id="seuils-et-abattements-micro-bic-le-detail-par-annee">
+        Seuils et abattements micro-BIC : le détail par année
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         Depuis la réforme issue de la{' '}
         <a
@@ -432,9 +469,9 @@ export default function ArticleMicroBic2026() {
       </p>
 
       {/* Section 4 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="pourquoi-cet-ecart-fiscal-change-vraiment-la-donne-pour-un-proprietaire">
         Pourquoi cet écart fiscal change vraiment la donne pour un propriétaire
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         En pratique, le classement peut permettre à un propriétaire :
       </p>
@@ -492,9 +529,9 @@ export default function ArticleMicroBic2026() {
       </p>
 
       {/* Section 5 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="le-point-que-beaucoup-confondent-micro-bic-micro-entreprise-et-regime-reel">
         Le point que beaucoup confondent : micro-BIC, micro-entreprise et régime réel
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         C'est probablement la partie la plus importante pédagogiquement.
       </p>
@@ -616,7 +653,9 @@ export default function ArticleMicroBic2026() {
       </p>
 
       {/* Section 6 */}
-      <h2 className="mt-12 mb-4">Les erreurs fréquentes à éviter sur le micro-BIC 2026</h2>
+      <ArticleSectionHeading id="les-erreurs-frequentes-a-eviter-sur-le-micro-bic-2026">
+        Les erreurs fréquentes à éviter sur le micro-BIC 2026
+      </ArticleSectionHeading>
 
       <div className="space-y-6 mb-8">
         {(
@@ -656,7 +695,9 @@ export default function ArticleMicroBic2026() {
       </div>
 
       {/* Section 7 */}
-      <h2 className="mt-12 mb-4">Concrètement, que doit vérifier un propriétaire en 2026 ?</h2>
+      <ArticleSectionHeading id="concretement-que-doit-verifier-un-proprietaire-en-2026">
+        Concrètement, que doit vérifier un propriétaire en 2026 ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">En pratique, il faut vérifier :</p>
       <div className="space-y-6 mb-8">
         {(
@@ -708,7 +749,9 @@ export default function ArticleMicroBic2026() {
       </p>
 
       {/* Section 8 */}
-      <h2 className="mt-12 mb-4">Pourquoi le classement reste pertinent dans ce contexte</h2>
+      <ArticleSectionHeading id="pourquoi-le-classement-reste-pertinent-dans-ce-contexte">
+        Pourquoi le classement reste pertinent dans ce contexte
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Dans un environnement devenu plus strict, le classement garde un intérêt concret pour les
         propriétaires qui veulent structurer leur activité proprement.
@@ -727,7 +770,7 @@ export default function ArticleMicroBic2026() {
       </p>
 
       {/* Conclusion */}
-      <h2 className="mt-12 mb-4">Conclusion</h2>
+      <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         En 2026, la bonne question n'est plus seulement «micro ou réel ?», mais aussi «classé ou non
         classé ?». C'est cette distinction qui structure désormais une grande partie de l'écart

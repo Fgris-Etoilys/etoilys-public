@@ -240,6 +240,32 @@ npm run prerender
 **Priorité : P1**
 **Dépendance : Ticket 1**
 
+**Statut : terminé le 2026-07-19**
+
+## Avancement du ticket 2 — 2026-07-19
+
+Terminé :
+
+- composant partagé `ArticleTableOfContents` ajouté avec navigation desktop sticky et version mobile/tablette repliable ;
+- composant partagé `ArticleSectionHeading` ajouté pour les H2 éditoriaux ciblés, avec `scroll-margin-top` responsive ;
+- `ArticleLayout` accepte désormais `tableOfContents` et applique la règle d’affichage `5 sections H2 ou 6 min de lecture` ;
+- le sommaire desktop démarre à `xl`, la version repliable reste utilisée à 1024 px ;
+- l’état actif est géré par `IntersectionObserver`, avec fallback sur le fragment d’URL ou la dernière section cliquée, sans section active inventée ;
+- le scroll global du layout ne remet plus la page en haut lorsqu’un `location.hash` est présent ;
+- les 12 articles Actualités actifs possèdent un sommaire explicite et des H2 éditoriaux avec ids stables ;
+- les H2 de `À retenir`, CTA, sources et encarts internes ne sont pas inclus dans le sommaire ;
+- le `<details>` mobile/tablette se ferme automatiquement après clic sur une entrée ;
+- les variantes responsive utilisent `hidden`/`xl:*`, donc la variante masquée est en `display: none`.
+
+Validations exécutées :
+
+- `npm run typecheck` : OK ;
+- `npm run lint` : OK, avec le warning préexistant dans `src/pages/SimulationClassement.tsx` sur `react-hooks/exhaustive-deps` ;
+- `npm run test:run` : OK, 38 fichiers de tests et 352 tests passés ;
+- `npm run build` : OK, avec le warning Vite existant sur des chunks supérieurs à 500 kB ;
+- `npm run prerender` : OK, relancé séquentiellement après le build pour garantir l’état final de `dist` ;
+- vérification Playwright sur le build prerenderé à 390, 768, 1024 et 1440 px : H1 unique, absence de débordement horizontal, version repliable à 390/768/1024 px, version latérale à 1440 px, fermeture du `<details>` après clic et hash d’ancre corrects.
+
 ## Objectif
 
 Permettre au lecteur d’accéder directement à la section qui l’intéresse sans faire défiler huit minutes de fiscalité pour retrouver une phrase.

@@ -1,7 +1,42 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'la-reponse-courte-oui-le-cadre-a-change-mais-pas-dans-le-sens-d-une-interdiction-automatique-partout',
+    label:
+      "La réponse courte : oui, le cadre a changé, mais pas dans le sens d'une interdiction automatique partout",
+  },
+  {
+    id: 'ce-qui-change-depuis-le-21-novembre-2024',
+    label: 'Ce qui change depuis le 21 novembre 2024',
+  },
+  {
+    id: 'reglement-recent-reglement-existant-ce-n-est-pas-la-meme-logique',
+    label: "Règlement récent, règlement existant : ce n'est pas la même logique",
+  },
+  {
+    id: 'le-vote-aux-deux-tiers-ce-qu-il-permet-vraiment-et-ce-qu-il-ne-permet-pas',
+    label: "Le vote aux deux tiers : ce qu'il permet vraiment, et ce qu'il ne permet pas",
+  },
+  {
+    id: 'louer-en-copropriete-ce-que-vous-devez-desormais-au-syndic',
+    label: 'Louer en copropriété : ce que vous devez désormais au syndic',
+  },
+  {
+    id: 'le-classement-change-t-il-quelque-chose-au-reglement-de-copropriete',
+    label: 'Le classement change-t-il quelque chose au règlement de copropriété ?',
+  },
+  {
+    id: 'ce-que-vous-devez-verifier-concretement-avant-de-louer-un-lot-en-copropriete',
+    label: 'Ce que vous devez vérifier concrètement avant de louer un lot en copropriété',
+  },
+  { id: 'conclusion', label: 'Conclusion' },
+];
 
 const article = getActualiteArticleByHref('/actualites/copropriete-location-touristique-reglement');
 
@@ -9,6 +44,7 @@ export default function ArticleCoproprieteLocationTouristique() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -165,10 +201,10 @@ export default function ArticleCoproprieteLocationTouristique() {
       }
     >
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="la-reponse-courte-oui-le-cadre-a-change-mais-pas-dans-le-sens-d-une-interdiction-automatique-partout">
         La réponse courte : oui, le cadre a changé, mais pas dans le sens d'une interdiction
         automatique partout
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Beaucoup de propriétaires ont retenu une version trop simplifiée de la réforme : "la
         copropriété peut maintenant interdire Airbnb plus facilement".
@@ -216,7 +252,9 @@ export default function ArticleCoproprieteLocationTouristique() {
       </ul>
 
       {/* Section 2 */}
-      <h2 className="mt-12 mb-4">Ce qui change depuis le 21 novembre 2024</h2>
+      <ArticleSectionHeading id="ce-qui-change-depuis-le-21-novembre-2024">
+        Ce qui change depuis le 21 novembre 2024
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         La première nouveauté est simple : les règlements de copropriété{' '}
         <strong>établis à compter du 21 novembre 2024</strong> doivent mentionner de manière
@@ -243,9 +281,9 @@ export default function ArticleCoproprieteLocationTouristique() {
       </p>
 
       {/* Section 3 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="reglement-recent-reglement-existant-ce-n-est-pas-la-meme-logique">
         Règlement récent, règlement existant : ce n'est pas la même logique
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         C'est probablement la distinction la plus utile de cet article. Le tableau suivant résume
         les quatre situations à distinguer.
@@ -321,9 +359,9 @@ export default function ArticleCoproprieteLocationTouristique() {
       </p>
 
       {/* Section 4 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="le-vote-aux-deux-tiers-ce-qu-il-permet-vraiment-et-ce-qu-il-ne-permet-pas">
         Le vote aux deux tiers : ce qu'il permet vraiment, et ce qu'il ne permet pas
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         C'est le point sur lequel il faut être le plus précis.
       </p>
@@ -394,7 +432,9 @@ export default function ArticleCoproprieteLocationTouristique() {
       </p>
 
       {/* Section 5 */}
-      <h2 className="mt-12 mb-4">Louer en copropriété : ce que vous devez désormais au syndic</h2>
+      <ArticleSectionHeading id="louer-en-copropriete-ce-que-vous-devez-desormais-au-syndic">
+        Louer en copropriété : ce que vous devez désormais au syndic
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Autre nouveauté importante : lorsqu'un lot de copropriété fait l'objet de la{' '}
         <strong>déclaration prévue par le code du tourisme</strong>, le copropriétaire — ou, par son
@@ -424,9 +464,9 @@ export default function ArticleCoproprieteLocationTouristique() {
       </p>
 
       {/* Section 6 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="le-classement-change-t-il-quelque-chose-au-reglement-de-copropriete">
         Le classement change-t-il quelque chose au règlement de copropriété ?
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">Non.</p>
       <p className="text-gray-700 leading-comfortable mb-4">
         Un meublé de tourisme <strong>classé</strong> reste soumis à toutes les règles de l'immeuble
@@ -475,9 +515,9 @@ export default function ArticleCoproprieteLocationTouristique() {
       </p>
 
       {/* Section 7 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="ce-que-vous-devez-verifier-concretement-avant-de-louer-un-lot-en-copropriete">
         Ce que vous devez vérifier concrètement avant de louer un lot en copropriété
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         Avant de proposer un logement en location touristique dans une copropriété, voici ce qu'il
         faut vérifier au minimum :
@@ -550,7 +590,7 @@ export default function ArticleCoproprieteLocationTouristique() {
       </p>
 
       {/* Conclusion */}
-      <h2 className="mt-12 mb-4">Conclusion</h2>
+      <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         En copropriété, la réforme de <strong>fin 2024</strong> n'a pas créé une interdiction
         automatique de la location touristique. Elle a surtout rendu le cadre plus explicite et,

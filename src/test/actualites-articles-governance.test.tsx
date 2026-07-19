@@ -50,4 +50,36 @@ describe('actualites article governance', () => {
 
     expect(pageSources.some((source) => source.includes('ArticleHeaderMeta'))).toBe(false);
   });
+
+  it('renders a table of contents on every active article page', () => {
+    actualitesArticlesByRecency.forEach((article) => {
+      const { unmount } = renderAt(article.href);
+
+      expect(
+        screen.getAllByRole('navigation', { name: 'Sommaire de l’article' }).length
+      ).toBeGreaterThan(0);
+
+      unmount();
+    });
+  });
+
+  it('keeps table of contents entries aligned with stable article section ids', () => {
+    const pagesDir = path.resolve(process.cwd(), 'src', 'pages', 'actualites');
+
+    readdirSync(pagesDir)
+      .filter((fileName) => fileName.endsWith('.tsx'))
+      .forEach((fileName) => {
+        const source = readFileSync(path.join(pagesDir, fileName), 'utf8');
+        const tableOfContentsIds = [...source.matchAll(/id:\s*'([^']+)'/g)].map(
+          (match) => match[1]
+        );
+        const sectionHeadingIds = [...source.matchAll(/<ArticleSectionHeading id="([^"]+)"/g)].map(
+          (match) => match[1]
+        );
+
+        expect(source).not.toContain('<h2 className="mt-12 mb-4">');
+        expect(tableOfContentsIds).toHaveLength(sectionHeadingIds.length);
+        expect(new Set(tableOfContentsIds)).toEqual(new Set(sectionHeadingIds));
+      });
+  });
 });

@@ -14,6 +14,14 @@ const baseArticle: ArticleLayoutArticle = {
   publishedAt: '2026-07-19',
 };
 
+const tableOfContents = [
+  { id: 'section-1', label: 'Section 1' },
+  { id: 'section-2', label: 'Section 2' },
+  { id: 'section-3', label: 'Section 3' },
+  { id: 'section-4', label: 'Section 4' },
+  { id: 'section-5', label: 'Section 5' },
+];
+
 type ArticleLayoutInput = ArticleLayoutArticle & { imageKey?: string };
 
 function renderLayout(
@@ -23,7 +31,8 @@ function renderLayout(
     sources?: ReactNode;
     relatedArticles?: ReactNode;
     authorBlock?: ReactNode;
-  } = {}
+  } = {},
+  layoutTableOfContents: typeof tableOfContents = []
 ) {
   return render(
     <MemoryRouter>
@@ -36,6 +45,7 @@ function renderLayout(
             <p>Point clé</p>
           </div>
         }
+        tableOfContents={layoutTableOfContents}
         footerCta={slots.footerCta}
         sources={slots.sources}
         relatedArticles={slots.relatedArticles}
@@ -157,5 +167,29 @@ describe('ArticleLayout', () => {
       expect(currentIndex).toBeGreaterThan(previousIndex);
       return currentIndex;
     }, -1);
+  });
+
+  it('does not render the table of contents for a short article with fewer than five sections', () => {
+    const { container } = renderLayout(baseArticle, {}, tableOfContents.slice(0, 4));
+
+    expect(
+      container.querySelector('nav[aria-label="Sommaire de l’article"]')
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the table of contents when the article has at least five sections', () => {
+    const { container } = renderLayout(baseArticle, {}, tableOfContents);
+
+    expect(container.querySelectorAll('nav[aria-label="Sommaire de l’article"]')).toHaveLength(2);
+  });
+
+  it('renders the table of contents when reading time is six minutes or more', () => {
+    const { container } = renderLayout(
+      { ...baseArticle, readingTimeMinutes: 6 },
+      {},
+      tableOfContents.slice(0, 1)
+    );
+
+    expect(container.querySelectorAll('nav[aria-label="Sommaire de l’article"]')).toHaveLength(2);
   });
 });

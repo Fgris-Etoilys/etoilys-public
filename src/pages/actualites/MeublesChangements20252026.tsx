@@ -1,7 +1,46 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'la-vraie-rupture-2025-2026-ne-concerne-pas-la-grille-de-classement',
+    label: 'La vraie rupture 2025-2026 ne concerne pas la grille de classement',
+  },
+  {
+    id: 'fiscalite-le-vrai-choc-concerne-le-micro-bic',
+    label: 'Fiscalité : le vrai choc concerne le micro-BIC',
+  },
+  {
+    id: 'les-communes-ont-desormais-plus-de-pouvoir-sur-les-locations-touristiques',
+    label: 'Les communes ont désormais plus de pouvoir sur les locations touristiques',
+  },
+  {
+    id: 'dpe-ce-qui-s-applique-deja-et-ce-qui-ne-s-appliquera-qu-en-2034',
+    label: "DPE : ce qui s'applique déjà, et ce qui ne s'appliquera qu'en 2034",
+  },
+  {
+    id: 'copropriete-un-point-desormais-impossible-a-negliger',
+    label: 'Copropriété : un point désormais impossible à négliger',
+  },
+  {
+    id: 'enregistrement-national-le-cadre-legal-est-en-vigueur-mais-le-deploiement-reste-transitoire',
+    label:
+      'Enregistrement national : le cadre légal est en vigueur, mais le déploiement reste transitoire',
+  },
+  {
+    id: 'concretement-qu-est-ce-que-cela-change-pour-un-proprietaire-en-2026',
+    label: "Concrètement, qu'est-ce que cela change pour un propriétaire en 2026 ?",
+  },
+  {
+    id: 'pourquoi-le-classement-reste-pertinent-malgre-les-nouvelles-contraintes',
+    label: 'Pourquoi le classement reste pertinent malgré les nouvelles contraintes',
+  },
+  { id: 'conclusion', label: 'Conclusion' },
+];
 
 const article = getActualiteArticleByHref(
   '/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026'
@@ -11,6 +50,7 @@ export default function ArticleMeubles20252026() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           {/* Chapô */}
@@ -187,9 +227,9 @@ export default function ArticleMeubles20252026() {
       }
     >
       {/* Section 1 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="la-vraie-rupture-2025-2026-ne-concerne-pas-la-grille-de-classement">
         La vraie rupture 2025-2026 ne concerne pas la grille de classement
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Quand on parle des changements 2025-2026, beaucoup de propriétaires pensent d'abord au
         classement en étoiles. En réalité, le plus gros bouleversement ne vient pas de la grille de
@@ -228,7 +268,9 @@ export default function ArticleMeubles20252026() {
       </p>
 
       {/* Section 2 */}
-      <h2 className="mt-12 mb-4">Fiscalité : le vrai choc concerne le micro-BIC</h2>
+      <ArticleSectionHeading id="fiscalite-le-vrai-choc-concerne-le-micro-bic">
+        Fiscalité : le vrai choc concerne le micro-BIC
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le changement le plus visible pour les propriétaires est fiscal.
       </p>
@@ -290,9 +332,9 @@ export default function ArticleMeubles20252026() {
       </p>
 
       {/* Section 3 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="les-communes-ont-desormais-plus-de-pouvoir-sur-les-locations-touristiques">
         Les communes ont désormais plus de pouvoir sur les locations touristiques
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le deuxième changement majeur est local.
       </p>
@@ -357,9 +399,9 @@ export default function ArticleMeubles20252026() {
       </p>
 
       {/* Section 4 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="dpe-ce-qui-s-applique-deja-et-ce-qui-ne-s-appliquera-qu-en-2034">
         DPE : ce qui s'applique déjà, et ce qui ne s'appliquera qu'en 2034
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le sujet du DPE est souvent mal présenté. Il faut distinguer deux niveaux de règles.
       </p>
@@ -403,7 +445,9 @@ export default function ArticleMeubles20252026() {
       </p>
 
       {/* Section 5 */}
-      <h2 className="mt-12 mb-4">Copropriété : un point désormais impossible à négliger</h2>
+      <ArticleSectionHeading id="copropriete-un-point-desormais-impossible-a-negliger">
+        Copropriété : un point désormais impossible à négliger
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Autre évolution importante depuis le 21 novembre 2024 : les{' '}
         <a
@@ -439,10 +483,10 @@ export default function ArticleMeubles20252026() {
       </p>
 
       {/* Section 6 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="enregistrement-national-le-cadre-legal-est-en-vigueur-mais-le-deploiement-reste-transitoire">
         Enregistrement national : le cadre légal est en vigueur, mais le déploiement reste
         transitoire
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Depuis le <strong>20 mai 2026</strong>, l'
         <a
@@ -488,9 +532,9 @@ export default function ArticleMeubles20252026() {
       </p>
 
       {/* Section 7 - Checklist */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="concretement-qu-est-ce-que-cela-change-pour-un-proprietaire-en-2026">
         Concrètement, qu'est-ce que cela change pour un propriétaire en 2026 ?
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         En pratique, un propriétaire de meublé de tourisme doit désormais vérifier au moins six
         points :
@@ -542,9 +586,9 @@ export default function ArticleMeubles20252026() {
       </div>
 
       {/* Section 8 */}
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="pourquoi-le-classement-reste-pertinent-malgre-les-nouvelles-contraintes">
         Pourquoi le classement reste pertinent malgré les nouvelles contraintes
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le classement ne remplace pas les obligations locales, fiscales ou énergétiques. En
         revanche, dans un cadre devenu plus encadré et plus technique, il reste un outil utile pour
@@ -568,7 +612,7 @@ export default function ArticleMeubles20252026() {
       </p>
 
       {/* Conclusion */}
-      <h2 className="mt-12 mb-4">Conclusion</h2>
+      <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Entre 2025 et 2026, le propriétaire de meublé de tourisme doit moins se demander si «une
         seule règle nationale a tout changé» que comprendre comment plusieurs couches de règles

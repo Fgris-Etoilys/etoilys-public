@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
+import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref } from '../../content/actualitesArticles';
 
 const transmittedDataColumns = [
@@ -76,6 +78,32 @@ const transmittedDataRows = [
   },
 ];
 
+const tableOfContents: readonly ArticleTableOfContentsItem[] = [
+  {
+    id: 'pourquoi-les-donnees-des-plateformes-remontent-elles-aux-communes',
+    label: 'Pourquoi les données des plateformes remontent-elles aux communes ?',
+  },
+  { id: 'quelles-plateformes-sont-concernees', label: 'Quelles plateformes sont concernées ?' },
+  { id: 'quelles-donnees-sont-transmises', label: 'Quelles données sont transmises ?' },
+  {
+    id: 'est-ce-que-les-communes-verront-aussi-vos-revenus-vos-paiements-ou-la-taxe-de-sejour',
+    label:
+      'Est-ce que les communes verront aussi vos revenus, vos paiements ou la taxe de séjour ?',
+  },
+  {
+    id: 'depuis-quand-et-a-quel-rythme-les-donnees-sont-elles-transmises',
+    label: 'Depuis quand et à quel rythme les données sont-elles transmises ?',
+  },
+  {
+    id: 'ce-que-cela-change-pour-les-logements-non-declares-ou-mal-declares',
+    label: 'Ce que cela change pour les logements non déclarés ou mal déclarés',
+  },
+  {
+    id: 'ce-que-cela-change-concretement-pour-un-proprietaire',
+    label: 'Ce que cela change concrètement pour un propriétaire',
+  },
+];
+
 const article = getActualiteArticleByHref(
   '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles'
 );
@@ -84,6 +112,7 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
   return (
     <ArticleLayout
       article={article}
+      tableOfContents={tableOfContents}
       lede={
         <>
           <p className="text-xl leading-comfortable text-gray-700 mb-10">
@@ -205,9 +234,9 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
         </>
       }
     >
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="pourquoi-les-donnees-des-plateformes-remontent-elles-aux-communes">
         Pourquoi les données des plateformes remontent-elles aux communes ?
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le développement des plateformes de réservation a rendu le contrôle local plus complexe. Une
         même location peut être publiée sur plusieurs sites, avec des annonces, des calendriers et
@@ -235,7 +264,9 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
         </p>
       </div>
 
-      <h2 className="mt-12 mb-4">Quelles plateformes sont concernées ?</h2>
+      <ArticleSectionHeading id="quelles-plateformes-sont-concernees">
+        Quelles plateformes sont concernées ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Le texte ne vise pas seulement Airbnb. Il concerne plus largement les intermédiaires qui
         prêtent leur concours à la mise en location d&apos;un meublé de tourisme. En pratique, cela
@@ -255,7 +286,9 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
         demander au loueur un décompte des jours pendant lesquels le meublé a été loué.
       </p>
 
-      <h2 className="mt-12 mb-4">Quelles données sont transmises ?</h2>
+      <ArticleSectionHeading id="quelles-donnees-sont-transmises">
+        Quelles données sont transmises ?
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         Le décret du 19 mars 2026 distingue les données que l&apos;intermédiaire doit transmettre
         pour chaque meublé loué et celles qu&apos;il transmet seulement s&apos;il les connaît.
@@ -287,9 +320,9 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
         transmettre, ce qui facilite les contrôles de cohérence.
       </p>
 
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="est-ce-que-les-communes-verront-aussi-vos-revenus-vos-paiements-ou-la-taxe-de-sejour">
         Est-ce que les communes verront aussi vos revenus, vos paiements ou la taxe de séjour ?
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         <strong>
           Non, l&apos;API Meublés n&apos;est pas un outil de suivi des revenus locatifs.
@@ -318,9 +351,9 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
         </p>
       </div>
 
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="depuis-quand-et-a-quel-rythme-les-donnees-sont-elles-transmises">
         Depuis quand et à quel rythme les données sont-elles transmises ?
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Les décrets n° 2026-196 et n° 2026-197 du <strong>19 mars 2026</strong> ont précisé le cadre
         de transmission et créé le traitement de données API Meublés. La version bêta, destinée aux
@@ -352,9 +385,9 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
         et le calendrier annoncé pour le nouveau numéro national.
       </p>
 
-      <h2 className="mt-12 mb-4">
+      <ArticleSectionHeading id="ce-que-cela-change-pour-les-logements-non-declares-ou-mal-declares">
         Ce que cela change pour les logements non déclarés ou mal déclarés
-      </h2>
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         L&apos;API Meublés ne crée pas toutes les obligations applicables aux locations
         touristiques. La déclaration, l&apos;enregistrement dans certaines communes et les plafonds
@@ -381,7 +414,9 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
         communes dans le cadre de leurs contrôles et de leurs contentieux.
       </p>
 
-      <h2 className="mt-12 mb-4">Ce que cela change concrètement pour un propriétaire</h2>
+      <ArticleSectionHeading id="ce-que-cela-change-concretement-pour-un-proprietaire">
+        Ce que cela change concrètement pour un propriétaire
+      </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-6">
         Le point pratique est la cohérence entre la déclaration du logement, les annonces publiées
         et l&apos;activité réelle. Les vérifications suivantes permettent d&apos;identifier les

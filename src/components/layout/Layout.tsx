@@ -39,8 +39,18 @@ export default function Layout() {
   const shouldRenderStructuredData = seoConfig.includeStructuredData !== false;
 
   useEffect(() => {
+    if (location.hash) {
+      try {
+        const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+        target?.scrollIntoView();
+      } catch {
+        // Ignore malformed URL fragments and preserve the current scroll position.
+      }
+      return;
+    }
+
     window.scrollTo(0, 0);
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
   return (
     <div className="min-h-screen flex flex-col">
