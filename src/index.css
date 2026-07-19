@@ -58,6 +58,14 @@
     @apply rounded-sm font-medium text-primary-400 underline decoration-primary-300 underline-offset-2 transition-colors hover:text-primary-500 hover:decoration-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2;
   }
 
+  .article-lede > :last-child {
+    margin-bottom: 0;
+  }
+
+  .article-footer-slots > :first-child {
+    margin-top: 0;
+  }
+
   .simulator-ui h1,
   .simulator-ui h2,
   .simulator-ui h3,
