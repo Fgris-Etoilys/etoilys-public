@@ -136,7 +136,7 @@ describe('seo governance', () => {
     const articlePath = '/actualites/micro-bic-2026-meuble-classe-vs-non-classe';
     const article = getArticleStructuredData(articlePath);
     expect(lastmods.get(getCanonicalUrl(articlePath))).toBe(article?.dateModified);
-    expect(lastmods.get(getCanonicalUrl('/actualites'))).toBe('2026-07-08');
+    expect(lastmods.get(getCanonicalUrl('/actualites'))).toBe('2026-07-19');
   });
 
   it('keeps prerender paths aligned with indexable routes', () => {

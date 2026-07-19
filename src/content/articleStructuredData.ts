@@ -12,6 +12,16 @@ export interface ArticleStructuredDataConfig {
 
 export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   {
+    path: '/actualites/preparer-visite-classement-meuble-tourisme',
+    headline: 'Comment préparer la visite de classement de votre meublé de tourisme ?',
+    description:
+      '133 critères, vaisselle, équipements, documents et informations clients : les points à vérifier avant la visite de classement de votre meublé.',
+    datePublished: '2026-07-19',
+    dateModified: '2026-07-19',
+    imageKey: 'articlePreparerVisiteClassement',
+    authorName: 'Florian Grisorio',
+  },
+  {
     path: '/actualites/que-faire-apres-classement-meuble-tourisme',
     headline: 'Meublé de tourisme classé : que faire après la décision de classement ?',
     description:

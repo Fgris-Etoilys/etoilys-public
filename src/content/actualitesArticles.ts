@@ -24,6 +24,13 @@ type ActualiteArticleContent = Omit<
 
 const articleContent: ActualiteArticleContent[] = [
   {
+    title: 'Comment préparer la visite de classement de votre meublé de tourisme ?',
+    excerpt:
+      'Comment fonctionne la grille des 133 critères et quels équipements, quantités et informations vérifier avant la visite de classement ?',
+    imageKey: 'articlePreparerVisiteClassement',
+    href: '/actualites/preparer-visite-classement-meuble-tourisme',
+  },
+  {
     title: 'Meublé de tourisme classé : que faire après la décision de classement ?',
     excerpt:
       'Affichage, déclaration, taxe de séjour et plateformes : les démarches à effectuer après le classement de votre meublé de tourisme.',

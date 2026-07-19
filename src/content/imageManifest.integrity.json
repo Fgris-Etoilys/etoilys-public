@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "11627a300c6d09245a483effeb01c29a29bcb7ae832226f3be5372ae73c25c20",
+  "pipelineSignature": "90b3ce2fbcf199e7a67f3e34332bf084a2e3e4abecd52840ec4905b3ad95f3d7",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "c78b5fcb03141df666edba547deb8bc58bc8593f0214c4b118d4dc41a4fbbda3"
+    "sha256": "8483a6f52855e207b0eb6380827b06c2c5ae31e33a4870a298b10512b5493ee5"
   },
   "sources": [
     {
@@ -55,6 +55,11 @@
       "key": "articleMicroBic2026",
       "path": "src/assets/seo-images/source/article-micro-bic-2026.jpg",
       "sha256": "ac0eb19d8ec16521ccdfcfeca3b6423982876a3e86bcad02df54edf9e71d712e"
+    },
+    {
+      "key": "articlePreparerVisiteClassement",
+      "path": "src/assets/seo-images/source/article-preparer-visite-classement.png",
+      "sha256": "b93ad8a5e1d62ee8983426cc8968b820ca46b0541d636fa57bcef175071bd698"
     },
     {
       "key": "articleResidence90Jours",
@@ -582,6 +587,51 @@
       "path": "/images/optimized/article-micro-bic-2026-768.webp",
       "bytes": 29836,
       "sha256": "2d040d04dea8253817ac4911e22303d354c80c31b0b0da9ba66e4663a0d44c76"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-1200.avif",
+      "bytes": 73326,
+      "sha256": "86b42dc2f1501e44ed971f64ceb7e2a20ec0e4803f317bb77f0bfd3be1cf73f8"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-1200.jpg",
+      "bytes": 107188,
+      "sha256": "75daeb0d1460ed0bb3691ed3e4f72379263c90206f3ede2df92c87c279a2be95"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-1200.webp",
+      "bytes": 84884,
+      "sha256": "8f1802b3cdc7b643b05305a40e3dea442e346c8e3e1605fc5d470ac67de98cf4"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-1600.avif",
+      "bytes": 97907,
+      "sha256": "eefccab0ebff2928c472ccb466d5a6d47789a76d9a740cb9e471c06a4da19e72"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-1600.webp",
+      "bytes": 121296,
+      "sha256": "fbdac9f92af2e0026a371c36882db87b02e558d886415dc9c957c5ff65c00dd7"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-480.avif",
+      "bytes": 23351,
+      "sha256": "65ee329e4a8470a553aa8a7c352f85c50d0846442106859bda1c7f60ee96ded5"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-480.webp",
+      "bytes": 23508,
+      "sha256": "9e68dd6b38435251d5cf1b3890922a6aa5f16335840f65b948ac7ab1c5e8a567"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-768.avif",
+      "bytes": 42819,
+      "sha256": "3792a21166377df6b87edb8719b3d065dae15883f9f60a75d6dcfc3b691c2095"
+    },
+    {
+      "path": "/images/optimized/article-preparer-visite-classement-768.webp",
+      "bytes": 47242,
+      "sha256": "b268044d1f15e97cfe8ad00d5bb8d02877c7ddd029587f26e1d66285d805876c"
     },
     {
       "path": "/images/optimized/article-residence-90-jours-1200.avif",

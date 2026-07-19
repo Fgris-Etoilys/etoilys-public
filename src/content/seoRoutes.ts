@@ -276,6 +276,14 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Après la décision de classement',
     ogImageKey: 'articleApresClassement',
   },
+  '/actualites/preparer-visite-classement-meuble-tourisme': {
+    lastModified: '2026-07-19',
+    title: 'Préparer la visite de classement de son meublé',
+    description:
+      '133 critères, vaisselle, équipements, documents et informations clients : les points à vérifier avant la visite de classement de votre meublé.',
+    breadcrumbLabel: 'Préparer la visite de classement',
+    ogImageKey: 'articlePreparerVisiteClassement',
+  },
   '/recrutement': {
     lastModified: '2026-07-10',
     title: 'Recrutement consultant classement meublés de tourisme',

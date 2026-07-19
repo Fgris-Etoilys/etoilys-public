@@ -17,6 +17,7 @@ export type ImageAssetKey =
   | 'articleApiMeubles'
   | 'articleTransmissionDonnees'
   | 'articleApresClassement'
+  | 'articlePreparerVisiteClassement'
   | 'dordogneHero'
   | 'dordogneInterior'
   | 'dordogneLandscape'
@@ -197,6 +198,15 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/article-apres-classement-480.webp 480w, /images/optimized/article-apres-classement-768.webp 768w, /images/optimized/article-apres-classement-1200.webp 1200w, /images/optimized/article-apres-classement-1600.webp 1600w, /images/optimized/article-apres-classement-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/article-apres-classement-480.avif 480w, /images/optimized/article-apres-classement-768.avif 768w, /images/optimized/article-apres-classement-1200.avif 1200w, /images/optimized/article-apres-classement-1600.avif 1600w, /images/optimized/article-apres-classement-1920.avif 1920w',
+  },
+  articlePreparerVisiteClassement: {
+    width: 1672,
+    height: 941,
+    src: '/images/optimized/article-preparer-visite-classement-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/article-preparer-visite-classement-480.webp 480w, /images/optimized/article-preparer-visite-classement-768.webp 768w, /images/optimized/article-preparer-visite-classement-1200.webp 1200w, /images/optimized/article-preparer-visite-classement-1600.webp 1600w',
+    srcSetAvif:
+      '/images/optimized/article-preparer-visite-classement-480.avif 480w, /images/optimized/article-preparer-visite-classement-768.avif 768w, /images/optimized/article-preparer-visite-classement-1200.avif 1200w, /images/optimized/article-preparer-visite-classement-1600.avif 1600w',
   },
   dordogneHero: {
     width: 5120,
