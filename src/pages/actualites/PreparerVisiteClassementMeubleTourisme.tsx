@@ -8,13 +8,6 @@ const REFERENTIEL_URL =
 const GUIDE_CONTROLE_URL =
   'https://www.atout-france.fr/sites/default/files/2026-01/Guide%20de%20contr%C3%B4le%20-%20Meubl%C3%A9%20de%20tourisme.pdf';
 
-const keyTakeaways = [
-  'Les 133 critères ne sont pas tous obligatoires pour toutes les catégories.',
-  'La catégorie demandée et la capacité d’accueil déterminent une partie des exigences applicables.',
-  'Il faut atteindre au moins 95 % des points obligatoires, ainsi qu’un quota de points à la carte.',
-  'Certains critères obligatoires non compensables doivent impérativement être validés.',
-];
-
 const dishes = [
   '2 verres à eau ;',
   '1 verre à vin ;',
@@ -78,6 +71,22 @@ function ArticleBulletList({ items }: { items: string[] }) {
   );
 }
 
+function CriterionStatus({ status }: { status: 'optional' | 'required' }) {
+  const label = status === 'optional' ? 'À la carte' : 'Obligatoire';
+  const classes =
+    status === 'optional'
+      ? 'border-primary-200 bg-primary-100 text-primary-500'
+      : 'border-alert-200 bg-alert-100 text-alert-500';
+
+  return (
+    <span
+      className={`inline-flex min-w-[6.75rem] justify-center rounded-full border px-3 py-1 text-xs font-semibold ${classes}`}
+    >
+      {label}
+    </span>
+  );
+}
+
 export default function ArticlePreparerVisiteClassementMeubleTourisme() {
   return (
     <>
@@ -111,36 +120,39 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
               . Certains critères sont obligatoires, d’autres sont « à la carte », et leur
               répartition change selon la catégorie demandée. Pour obtenir le classement visé, votre
               logement doit atteindre au moins <strong>95 % des points obligatoires</strong>, ainsi
-              qu’un quota de points à la carte. Certains critères obligatoires non compensables
-              doivent, eux, être validés dans tous les cas.
+              qu’un quota de points à la carte. Les critères portant sur la propreté et le bon état
+              sont, eux, non compensables et doivent tous être validés.
             </p>
             <p className="text-xl leading-comfortable text-gray-700 mb-8">
-              Cela ne signifie pas que votre logement doit être parfait. En revanche, certains
-              critères reposent sur des éléments très simples auxquels on pense rarement : une
-              quantité précise de vaisselle, une information écrite dans l’annonce ou un petit
-              équipement manquant. Cet article fait le point sur les éléments les plus souvent
-              oubliés ou bloquants, afin d’éviter les mauvaises surprises le jour de la visite.
+              Certains critères reposent sur des éléments très simples auxquels on pense rarement :
+              une quantité précise de vaisselle, une information écrite dans l’annonce ou un petit
+              équipement manquant. Ces détails peuvent pourtant faire la différence au moment du
+              contrôle. Cet article fait le point sur les éléments les plus souvent oubliés ou
+              bloquants, afin d’éviter les mauvaises surprises le jour de la visite.
             </p>
 
             <div className="rounded-card border border-primary-200 bg-primary-100 p-5 mb-12">
               <p className="text-gray-700 leading-comfortable">
-                Les exemples ci-dessous reprennent les règles générales du référentiel. Ils ne
-                constituent ni une évaluation préalable de votre logement, ni un conseil
-                personnalisé sur les équipements à ajouter, ni une garantie d’obtenir la catégorie
-                demandée.
+                Les exemples ci-dessous illustrent les règles générales du référentiel. Seule la
+                visite permet de confirmer le classement du logement.
               </p>
             </div>
 
             <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
               <h2 className="text-h4 mb-4">À retenir</h2>
-              <ArticleBulletList items={keyTakeaways} />
+              <p className="text-gray-700 leading-comfortable mb-4">
+                Avant la visite, vérifiez en priorité la catégorie demandée, les exigences liées à
+                la capacité d’accueil et les équipements qui devront pouvoir être contrôlés sur
+                place.
+              </p>
+              <p className="text-gray-700 leading-comfortable mb-4">
+                Préparez également les documents et supports présentant les informations et services
+                proposés aux voyageurs. Une simple déclaration orale ne permet pas de valider un
+                critère qui doit être vérifié sur un support.
+              </p>
               <p className="text-gray-700 leading-comfortable">
-                Le{' '}
-                <Link to="/simulateur" className="article-inline-link font-semibold">
-                  simulateur de classement Etoilys
-                </Link>{' '}
-                permet de parcourir tous les critères et d’estimer la catégorie à laquelle votre
-                logement peut prétendre.
+                Enfin, assurez-vous que le logement, ses équipements, son mobilier et sa literie
+                sont propres et en bon état.
               </p>
             </div>
 
@@ -210,11 +222,11 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
                   rowClassName: 'bg-white border-b border-gray-100',
                   cells: {
                     critere: 'Bouilloire',
-                    one: 'À la carte',
-                    two: 'Obligatoire',
-                    three: 'Obligatoire',
-                    four: 'Obligatoire',
-                    five: 'Obligatoire',
+                    one: <CriterionStatus status="optional" />,
+                    two: <CriterionStatus status="required" />,
+                    three: <CriterionStatus status="required" />,
+                    four: <CriterionStatus status="required" />,
+                    five: <CriterionStatus status="required" />,
                   },
                 },
                 {
@@ -222,11 +234,11 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
                   rowClassName: 'bg-gray-50 border-b border-gray-100',
                   cells: {
                     critere: 'Produits d’accueil dans la salle d’eau',
-                    one: 'À la carte',
-                    two: 'À la carte',
-                    three: 'Obligatoire',
-                    four: 'Obligatoire',
-                    five: 'Obligatoire',
+                    one: <CriterionStatus status="optional" />,
+                    two: <CriterionStatus status="optional" />,
+                    three: <CriterionStatus status="required" />,
+                    four: <CriterionStatus status="required" />,
+                    five: <CriterionStatus status="required" />,
                   },
                 },
                 {
@@ -234,11 +246,11 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
                   rowClassName: 'bg-white',
                   cells: {
                     critere: 'Machine à expresso',
-                    one: 'À la carte',
-                    two: 'À la carte',
-                    three: 'À la carte',
-                    four: 'Obligatoire',
-                    five: 'Obligatoire',
+                    one: <CriterionStatus status="optional" />,
+                    two: <CriterionStatus status="optional" />,
+                    three: <CriterionStatus status="optional" />,
+                    four: <CriterionStatus status="required" />,
+                    five: <CriterionStatus status="required" />,
                   },
                 },
               ]}
@@ -249,31 +261,20 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
             />
 
             <p className="text-gray-700 leading-comfortable mb-4">
-              Les produits d’accueil correspondent au minimum à du savon ou du gel douche et du
-              shampoing dans chaque salle d’eau. Un produit combiné shampoing-douche est également
-              accepté.
-            </p>
-            <p className="text-gray-700 leading-comfortable mb-4">
               Pour obtenir la catégorie demandée, le logement doit atteindre au moins 95 % des
               points obligatoires et le quota de points à la carte prévu pour cette catégorie. Un
               critère obligatoire manquant n’empêche donc pas systématiquement d’obtenir le
-              classement. En revanche, les critères obligatoires non compensables doivent tous être
-              validés.
+              classement.
             </p>
 
-            <h3 className="mt-8 mb-3">Vous ne savez pas quelle catégorie demander ?</h3>
-            <p className="text-gray-700 leading-comfortable mb-6">
-              Le{' '}
-              <Link to="/simulateur" className="article-inline-link font-semibold">
-                simulateur de classement Etoilys
-              </Link>{' '}
-              reprend les 133 critères et adapte l’évaluation à la catégorie envisagée et à la
-              capacité de votre logement. Il permet de réaliser une première auto-évaluation avant
-              la visite.
-            </p>
-            <div className="mb-12">
-              <Button href="/simulateur" variant="primary">
-                Tester mon logement avec le simulateur
+            <div className="mt-8 mb-12 rounded-card border border-primary-200 bg-primary-100/60 p-6">
+              <h3 className="mb-3 text-h4">Vous hésitez sur la catégorie à demander ?</h3>
+              <p className="text-gray-700 leading-comfortable mb-5">
+                Le simulateur Etoilys adapte les 133 critères à la capacité de votre logement et
+                vous permet de réaliser une première auto-évaluation avant la visite.
+              </p>
+              <Button href="/simulateur" variant="secondary" size="sm">
+                Tester mon logement
               </Button>
             </div>
 
@@ -338,26 +339,21 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
               Si votre logement accueille 6 personnes mais que le salon ne propose que 5 assises, le
               critère correspondant ne pourra pas être validé. Cela ne signifie pas automatiquement
               que le classement sera refusé : le logement doit atteindre au moins 95 % des points
-              obligatoires. Tous les critères manquants n’ont donc pas le même caractère bloquant.
+              obligatoires. Un critère obligatoire non validé n’est donc pas forcément rédhibitoire.
             </p>
-            <p className="text-gray-700 leading-comfortable mb-4">
-              D’autres exigences varient selon la capacité, notamment le nombre de couchages, la
-              capacité du réfrigérateur, le nombre de foyers de cuisson ou certains équipements
-              sanitaires. Le{' '}
-              <Link to="/simulateur" className="article-inline-link font-semibold">
-                simulateur de classement Etoilys
-              </Link>{' '}
-              adapte automatiquement ces exigences à la capacité renseignée.
-            </p>
-
             <h2 className="mt-12 mb-4">
-              Préparer les documents et les informations destinées aux voyageurs
+              Préparer les informations et documents destinés aux voyageurs
             </h2>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Certains critères ne reposent pas seulement sur la présence d’un équipement. Ils
-              vérifient aussi les informations réellement mises à la disposition des voyageurs. Une
-              déclaration orale faite le jour de la visite ne suffit pas toujours : l’information
-              doit pouvoir être retrouvée sur un support vérifiable.
+              Certains critères ne portent pas seulement sur la présence d’un équipement. Ils
+              vérifient également les informations et les services réellement proposés aux
+              voyageurs.
+            </p>
+            <p className="text-gray-700 leading-comfortable mb-4">
+              Lorsqu’un critère porte sur une information ou un service, celui-ci doit pouvoir être
+              vérifié sur un support : annonce, livret d’accueil, site internet, e-mail, brochure ou
+              affichage. Une simple déclaration orale le jour de la visite ne permet pas de valider
+              le critère.
             </p>
 
             <h3 className="mt-8 mb-3">
@@ -470,11 +466,6 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
               affichage dans le logement.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Dire simplement à l’inspecteur que les lits sont toujours faits ou que le ménage est
-              toujours proposé ne permet pas, à lui seul, de valider le critère. Il faut que cette
-              information soit effectivement communiquée aux voyageurs.
-            </p>
-            <p className="text-gray-700 leading-comfortable mb-4">
               Attention également à ne pas confondre deux services différents :{' '}
               <strong>proposer les draps</strong> et{' '}
               <strong>proposer que les lits soient faits à l’arrivée</strong> correspondent à deux
@@ -540,14 +531,12 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
               présents, accessibles et fonctionnels.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Les appareils, les télécommandes, l’accès au Wi-Fi et les documents présentés comme
-              des services du logement doivent pouvoir être vérifiés pendant la visite.
+              Les appareils et télécommandes doivent fonctionner, l’accès au Wi-Fi doit pouvoir être
+              testé et les documents annoncés aux voyageurs doivent être disponibles.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Le logement doit également être propre et correctement entretenu. Les sanitaires, les
-              sols, les murs et plafonds, le mobilier, la literie ainsi que la cuisine et ses
-              équipements font l’objet de cinq critères obligatoires non compensables : ils doivent
-              tous être validés.
+              Les sanitaires, les sols, les murs et plafonds, le mobilier, la literie ainsi que la
+              cuisine et ses équipements doivent être propres et en bon état.
             </p>
 
             <h2 className="mt-12 mb-4">La checklist avant la visite</h2>
@@ -567,12 +556,6 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
                 ))}
               </ul>
             </div>
-            <div className="mb-12">
-              <Button href="/simulateur" variant="primary">
-                Faire l’auto-évaluation complète de mon logement
-              </Button>
-            </div>
-
             <h2 className="mt-12 mb-4">Peut-on transmettre des compléments après la visite ?</h2>
             <p className="text-gray-700 leading-comfortable mb-4">
               Le{' '}
@@ -587,8 +570,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
                 </a>
               </strong>{' '}
               permet de transmettre certains éléments factuels dans un délai maximal de{' '}
-              <strong>15 jours ouvrés après la visite</strong>. Il peut notamment s’agir de
-              documents, d’un affichage, d’un guide d’accueil ou de certains petits équipements.
+              <strong>15 jours ouvrés après la visite</strong>. Il peut notamment s’agir d’un
+              document, d’un affichage, d’un guide d’accueil ou d’un justificatif relatif à un petit
+              équipement.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Cette possibilité n’est toutefois ni automatique, ni destinée à remplacer la
@@ -602,14 +586,30 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
               pas présent lors de la visite.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Etoilys vérifie au cas par cas si les éléments transmis permettent de constater
-              valablement le respect du critère concerné. Pour comprendre l’ensemble des étapes et
-              des délais, vous pouvez également{' '}
+              Etoilys vous indique, selon le critère concerné, si le complément transmis peut être
+              pris en compte. Pour comprendre l’ensemble des étapes et des délais, vous pouvez
+              également{' '}
               <Link to="/procedure" className="article-inline-link font-semibold">
                 comprendre la procédure de classement
               </Link>
               .
             </p>
+
+            <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+              <h2 className="text-h4 mb-3">Faire le point avant la visite</h2>
+              <p className="text-gray-700 leading-comfortable mb-4">
+                Avant le rendez-vous, vérifiez que la catégorie demandée est cohérente, que les
+                exigences liées à la capacité sont respectées et que les équipements, informations
+                et services pourront être contrôlés le jour de la visite.
+              </p>
+              <p className="text-gray-700 leading-comfortable mb-6">
+                Le simulateur Etoilys vous permet de parcourir les 133 critères et d’identifier les
+                derniers points à vérifier.
+              </p>
+              <Button href="/simulateur" variant="primary">
+                Tester mon logement avec le simulateur
+              </Button>
+            </div>
 
             <div className="mt-12 pt-8 border-t border-gray-200">
               <h2 className="text-h4 mb-6">Sources officielles</h2>
@@ -628,53 +628,6 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
                   </li>
                 ))}
               </ol>
-            </div>
-
-            <h2 className="mt-12 mb-4">
-              Bien préparer la visite, sans chercher à rendre chaque critère parfait
-            </h2>
-            <p className="text-gray-700 leading-comfortable mb-4">
-              Préparer la visite ne consiste pas à rendre chaque critère parfait. Il s’agit surtout
-              de choisir une catégorie cohérente, de vérifier les quantités qui dépendent de la
-              capacité et de rendre accessibles les équipements, documents et informations
-              réellement proposés aux voyageurs.
-            </p>
-            <p className="text-gray-700 leading-comfortable mb-6">
-              Le moyen le plus simple de faire le point avant la visite reste de parcourir les 133
-              critères dans le{' '}
-              <Link to="/simulateur" className="article-inline-link font-semibold">
-                simulateur de classement Etoilys
-              </Link>
-              . Vous pouvez ensuite{' '}
-              <Link to="/prerequis-au-classement" className="article-inline-link font-semibold">
-                consulter les prérequis au classement
-              </Link>{' '}
-              ou{' '}
-              <Link to="/demande-classement" className="article-inline-link font-semibold">
-                faire une demande de classement
-              </Link>{' '}
-              lorsque votre projet est prêt.
-            </p>
-
-            <div className="mt-12 mb-8 p-8 bg-primary-100 rounded-card border border-primary-200">
-              <h2 className="text-h4 mb-3">Faire le point avant la visite</h2>
-              <p className="text-gray-700 mb-6">
-                Parcourez les critères du référentiel et estimez la catégorie possible de votre
-                logement avec l’outil Etoilys.
-              </p>
-              <Button href="/simulateur" variant="primary">
-                Tester mon logement avec le simulateur de classement
-              </Button>
-            </div>
-
-            <div className="rounded-card border border-gray-200 bg-gray-50 p-6">
-              <h2 className="text-h4 mb-3">À lire aussi</h2>
-              <Link
-                to="/actualites/micro-bic-2026-meuble-classe-vs-non-classe"
-                className="article-inline-link font-semibold"
-              >
-                Micro-BIC 2026 : meublé classé vs non classé, l’écart se creuse
-              </Link>
             </div>
           </div>
         </div>
