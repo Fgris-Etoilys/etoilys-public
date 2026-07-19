@@ -141,18 +141,16 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
             <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
               <h2 className="text-h4 mb-4">À retenir</h2>
               <p className="text-gray-700 leading-comfortable mb-4">
-                Avant la visite, vérifiez en priorité la catégorie demandée, les exigences liées à
-                la capacité d’accueil et les équipements qui devront pouvoir être contrôlés sur
-                place.
+                La catégorie demandée et la capacité du logement déterminent une partie des
+                équipements et des quantités à prévoir.
               </p>
               <p className="text-gray-700 leading-comfortable mb-4">
-                Préparez également les documents et supports présentant les informations et services
-                proposés aux voyageurs. Une simple déclaration orale ne permet pas de valider un
-                critère qui doit être vérifié sur un support.
+                Certains critères regroupent plusieurs éléments : un seul équipement manquant peut
+                suffire à invalider tout le critère.
               </p>
               <p className="text-gray-700 leading-comfortable">
-                Enfin, assurez-vous que le logement, ses équipements, son mobilier et sa literie
-                sont propres et en bon état.
+                Les informations et services doivent pouvoir être vérifiés sur un support, tandis
+                que les critères de propreté et de bon état doivent tous être validés.
               </p>
             </div>
 
@@ -278,9 +276,7 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
               </Button>
             </div>
 
-            <h2 className="mt-12 mb-4">
-              Vérifier les équipements et les quantités correspondant à la capacité
-            </h2>
+            <h2 className="mt-12 mb-4">Adapter les équipements à la capacité du logement</h2>
             <p className="text-gray-700 leading-comfortable mb-4">
               La capacité d’accueil déclarée ne détermine pas seulement le nombre de couchages. Elle
               modifie aussi les quantités de vaisselle, le nombre de places autour de la table et
@@ -311,16 +307,26 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
 
             <h3 className="mt-8 mb-3">Critère 65 : vérifier la liste complète</h3>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Le critère 65 exige l’équipement minimum suivant pour la préparation des repas :
+              Pour valider ce critère, le logement doit disposer de l’ensemble des éléments suivants
+              :
             </p>
             <div className="rounded-card border border-primary-200 bg-primary-100 p-5 mb-6">
-              <p className="text-gray-700 leading-comfortable">
-                1 saladier, 1 plat allant au four, 2 casseroles, 1 poêle, 1 fait-tout, 1
-                tire-bouchon, 1 décapsuleur, 1 paire de ciseaux, 1 planche à découper, 1 couteau à
-                pain, 1 passoire, 1 couvercle, 1 essoreuse à salade, 1 moule à tarte et/ou moule à
-                gâteau, 1 ouvre-boîte, 1 économe, 1 dessous de plat, 1 verre doseur, 1 louche, 1
-                écumoire, 1 spatule et 1 fouet.
-              </p>
+              <ul className="space-y-3 text-gray-700">
+                <li>
+                  <strong>Pour la cuisson :</strong> 1 plat allant au four, 2 casseroles, 1 poêle, 1
+                  fait-tout et 1 couvercle ;
+                </li>
+                <li>
+                  <strong>Pour la préparation :</strong> 1 saladier, 1 planche à découper, 1 couteau
+                  à pain, 1 passoire, 1 essoreuse à salade, 1 moule à tarte et/ou à gâteau, 1
+                  économe et 1 verre doseur ;
+                </li>
+                <li>
+                  <strong>Pour les petits ustensiles :</strong> 1 tire-bouchon, 1 décapsuleur, 1
+                  paire de ciseaux, 1 ouvre-boîte, 1 dessous de plat, 1 louche, 1 écumoire, 1
+                  spatule et 1 fouet.
+                </li>
+              </ul>
             </div>
             <p className="text-gray-700 leading-comfortable mb-4">
               Tous ces éléments appartiennent au même critère.{' '}
@@ -336,10 +342,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
               pas besoin de proposer 10 assises dans son salon pour valider ce critère.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Si votre logement accueille 6 personnes mais que le salon ne propose que 5 assises, le
-              critère correspondant ne pourra pas être validé. Cela ne signifie pas automatiquement
-              que le classement sera refusé : le logement doit atteindre au moins 95 % des points
-              obligatoires. Un critère obligatoire non validé n’est donc pas forcément rédhibitoire.
+              Si votre logement accueille 6 personnes mais que le salon ne propose que 5 assises, ce
+              critère ne pourra pas être validé. Cela ne bloque toutefois pas automatiquement le
+              classement, qui dépend du résultat global de la grille.
             </p>
             <h2 className="mt-12 mb-4">
               Préparer les informations et documents destinés aux voyageurs
@@ -531,8 +536,9 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
               présents, accessibles et fonctionnels.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
-              Les appareils et télécommandes doivent fonctionner, l’accès au Wi-Fi doit pouvoir être
-              testé et les documents annoncés aux voyageurs doivent être disponibles.
+              Les appareils et télécommandes présents doivent fonctionner. Si le logement propose le
+              Wi-Fi, son accès doit pouvoir être testé. Les documents annoncés aux voyageurs doivent
+              également être disponibles.
             </p>
             <p className="text-gray-700 leading-comfortable mb-4">
               Les sanitaires, les sols, les murs et plafonds, le mobilier, la literie ainsi que la
@@ -596,15 +602,16 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
             </p>
 
             <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
-              <h2 className="text-h4 mb-3">Faire le point avant la visite</h2>
+              <h2 className="text-h4 mb-3">Dernière vérification avant le rendez-vous</h2>
               <p className="text-gray-700 leading-comfortable mb-4">
-                Avant le rendez-vous, vérifiez que la catégorie demandée est cohérente, que les
-                exigences liées à la capacité sont respectées et que les équipements, informations
-                et services pourront être contrôlés le jour de la visite.
+                Vous n’avez pas besoin de retenir les 133 critères par cœur. L’essentiel est
+                d’identifier les exigences correspondant à la catégorie et à la capacité de votre
+                logement, puis de vérifier que tout ce qui doit être constaté ou présenté sera
+                disponible le jour de la visite.
               </p>
               <p className="text-gray-700 leading-comfortable mb-6">
-                Le simulateur Etoilys vous permet de parcourir les 133 critères et d’identifier les
-                derniers points à vérifier.
+                Le simulateur Etoilys vous aide à parcourir la grille et à repérer les derniers
+                oublis avant le rendez-vous.
               </p>
               <Button href="/simulateur" variant="primary">
                 Tester mon logement avec le simulateur
