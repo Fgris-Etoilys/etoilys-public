@@ -51,6 +51,26 @@ describe('actualites article governance', () => {
     expect(pageSources.some((source) => source.includes('ArticleHeaderMeta'))).toBe(false);
   });
 
+  it('keeps article takeaways and official sources on shared components', () => {
+    const pagesDir = path.resolve(process.cwd(), 'src', 'pages', 'actualites');
+
+    readdirSync(pagesDir)
+      .filter((fileName) => fileName.endsWith('.tsx'))
+      .forEach((fileName) => {
+        const source = readFileSync(path.join(pagesDir, fileName), 'utf8');
+
+        expect(source, fileName).toContain("from '../../components/ui/KeyTakeaways'");
+        expect(source, fileName).toContain("from '../../components/ui/ArticleSources'");
+        expect(source, fileName).toContain('<KeyTakeaways');
+        expect(source, fileName).toContain('<ArticleSources');
+        expect(source, fileName).not.toContain('bg-primary-100 border-l-4');
+        expect(source, fileName).not.toContain('<h2 className="text-h4 mb-4">À retenir</h2>');
+        expect(source, fileName).not.toContain(
+          '<h2 className="text-h4 mb-6">Sources officielles</h2>'
+        );
+      });
+  });
+
   it('renders a table of contents on every active article page', () => {
     actualitesArticlesByRecency.forEach((article) => {
       const { unmount } = renderAt(article.href);
@@ -70,14 +90,18 @@ describe('actualites article governance', () => {
       .filter((fileName) => fileName.endsWith('.tsx'))
       .forEach((fileName) => {
         const source = readFileSync(path.join(pagesDir, fileName), 'utf8');
-        const tableOfContentsIds = [...source.matchAll(/id:\s*'([^']+)'/g)].map(
-          (match) => match[1]
-        );
+        const tableOfContentsSource = source.match(
+          /const tableOfContents: readonly ArticleTableOfContentsItem\[\] = \[([\s\S]*?)\];/
+        )?.[1];
+        const tableOfContentsIds = [...(tableOfContentsSource ?? '').matchAll(/id:\s*'([^']+)'/g)]
+          .map((match) => match[1])
+          .filter(Boolean);
         const sectionHeadingIds = [...source.matchAll(/<ArticleSectionHeading id="([^"]+)"/g)].map(
           (match) => match[1]
         );
 
         expect(source).not.toContain('<h2 className="mt-12 mb-4">');
+        expect(tableOfContentsSource, fileName).toBeDefined();
         expect(tableOfContentsIds).toHaveLength(sectionHeadingIds.length);
         expect(new Set(tableOfContentsIds)).toEqual(new Set(sectionHeadingIds));
       });

@@ -242,6 +242,41 @@ npm run prerender
 
 **Statut : terminé le 2026-07-19**
 
+## Avancement du ticket 3 - 2026-07-19
+
+Terminé :
+
+- création de `src/components/ui/KeyTakeaways.tsx` avec API discriminée `bullets`, `metrics`, `comparison` et `warning` ;
+- sémantique HTML explicite : `ul/li` pour `bullets`, `dl/dt/dd` pour `metrics`, réutilisation de `ResponsiveComparisonTable` pour `comparison`, `aside` identifiable pour `warning` ;
+- validation explicite en développement : maximum 5 items textuels/metrics/compléments et 2 ou 3 lignes comparées pour `comparison`, sans troncature silencieuse ;
+- création de `src/components/ui/ArticleSources.tsx` avec section autonome, H2 exact `Sources officielles`, id stable `sources-officielles`, liste sémantique, `details/summary` au-delà de 3 sources et indication accessible d'ouverture dans un nouvel onglet ;
+- migration des 12 articles Actualités vers `KeyTakeaways` et `ArticleSources`, avec données conservées localement dans chaque fichier article près du `tableOfContents` ;
+- aucun cas de contenu complémentaire hors composant n'a été nécessaire : les blocs existants rentrent dans l'API sans perte ;
+- les cas comparatifs Micro-BIC et résidence principale 90 jours utilisent `ResponsiveComparisonTable`, sans nouveau système concurrent ;
+- correction documentaire de `CLAUDE.md` : React 19 au lieu de React 18.
+
+Validations exécutées :
+
+- `npm run typecheck` : OK ;
+- `npm run lint` : OK, avec une warning préexistante hors ticket dans `src/pages/SimulationClassement.tsx` sur `gridProgressSummary` ;
+- `npm run test:run` : OK, 40 fichiers de tests, 365 tests ;
+- `npm run build` : OK, avec warning Vite existant sur la taille d'un chunk ;
+- `npm run prerender` : OK, articles Actualités inclus ;
+- vérification UTF-8 sans BOM et absence de marqueurs de mojibake sur les 19 fichiers touchés : OK.
+
+Vérification responsive documentée :
+
+- Playwright sur build `dist`, serveur statique éphémère, viewports 390, 768, 1024 et 1440 px ;
+- pages testées : Micro-BIC 2026, résidence principale 90 jours, Que faire après classement ;
+- contrôles : absence d'overflow horizontal, présence des tableaux comparatifs, longues URLs de sources contenues, section sources présente, bloc repliable présent quand plus de 3 sources.
+
+Limites restantes :
+
+- warning lint préexistante dans `SimulationClassement.tsx`, non traitée dans ce ticket ;
+- warning Vite de taille de chunk au build, non liée à la standardisation des articles.
+
+**Statut : terminé le 2026-07-19**
+
 ## Avancement du ticket 2 — 2026-07-19
 
 Terminé :

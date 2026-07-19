@@ -1,4 +1,6 @@
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -25,6 +27,135 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   },
   { id: 'en-resume', label: 'En résumé' },
 ];
+
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      {
+        id: 'facturationelectronique2026-takeaway-1',
+        content: (
+          <>
+            Un <strong>loueur en meublé classique exonéré</strong> n'a pas d'obligation d'
+            <strong>émission</strong> de facture électronique pour ses séjours exonérés de TVA.
+          </>
+        ),
+      },
+      {
+        id: 'facturationelectronique2026-takeaway-2',
+        content: (
+          <>
+            En revanche, il doit <strong>recevoir</strong> les factures électroniques de ses
+            fournisseurs à partir du <strong>1er septembre 2026</strong>, sous réserve de disposer
+            d'un <strong>SIREN</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'facturationelectronique2026-takeaway-3',
+        content: (
+          <>
+            La bonne question n'est donc pas seulement <em>est-ce que je facture la TVA&nbsp;?</em>,
+            mais aussi{' '}
+            <em>
+              suis-je un assujetti établi en France qui doit recevoir des factures
+              fournisseurs&nbsp;?
+            </em>
+          </>
+        ),
+      },
+      {
+        id: 'facturationelectronique2026-takeaway-4',
+        content: (
+          <>
+            Si votre activité devient <strong>taxable à la TVA</strong> — par exemple dans certains
+            cas de <strong>para-hôtellerie</strong> — les obligations deviennent plus larges&nbsp;:{' '}
+            <strong>émission</strong>, et selon les cas <strong>e-reporting</strong> et{' '}
+            <strong>données de paiement</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'facturationelectronique2026-takeaway-5',
+        content: (
+          <>
+            En pratique, le minimum à anticiper dès maintenant est simple&nbsp;:{' '}
+            <strong>choisir une plateforme de réception</strong> et organiser votre circuit
+            fournisseurs.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'impots-gouv-fr-facturation-electronique-je-suis-un-loueur-en-meuble-1',
+        organization: 'impots.gouv.fr',
+        title: 'Facturation électronique : je suis un loueur en meublé',
+        url: 'https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/fiches_reforme/fiche-loueurmeuble.pdf',
+      },
+      {
+        id: 'service-public-entreprendre-tout-savoir-sur-la-facturation-2',
+        organization: 'Service Public Entreprendre',
+        title: 'Tout savoir sur la facturation',
+        url: 'https://entreprendre.service-public.fr/vosdroits/F23208',
+      },
+      {
+        id: 'impots-gouv-fr-je-n-emets-pas-de-facture-ou-je-facture-sans-tva-suis-je-concern-3',
+        organization: 'impots.gouv.fr',
+        title:
+          "Je n'émets pas de facture, ou je facture sans TVA. Suis-je concerné par la réforme ?",
+        url: 'https://www.impots.gouv.fr/professionnel/questions/je-nemets-pas-de-facture-ou-je-facture-sans-tva-suis-je-concerne-par-la',
+      },
+      {
+        id: 'impots-gouv-fr-foire-aux-questions-je-decouvre-la-facturation-electronique-4',
+        organization: 'impots.gouv.fr',
+        title: 'Foire aux questions : Je découvre la facturation électronique',
+        url: 'https://www.impots.gouv.fr/foire-aux-questions-je-decouvre-la-facturation-electronique',
+      },
+      {
+        id: 'impots-gouv-fr-foire-aux-questions-j-approfondis-la-facturation-electronique-5',
+        organization: 'impots.gouv.fr',
+        title: "Foire aux questions : J'approfondis la facturation électronique",
+        url: 'https://www.impots.gouv.fr/foire-aux-questions-japprofondis-la-facturation-electronique',
+      },
+      {
+        id: 'impots-gouv-fr-la-facturation-electronique-qu-est-ce-que-ca-change-pour-moi-6',
+        organization: 'impots.gouv.fr',
+        title: "La facturation électronique, qu'est-ce que ça change pour moi ?",
+        url: 'https://www.impots.gouv.fr/facturation-electronique-qu-est-ce-que-ca-change-pour-moi',
+      },
+      {
+        id: 'legifrance-article-261-d-du-cgi-7',
+        organization: 'Légifrance',
+        title: 'Article 261 D du CGI',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006305347',
+      },
+      {
+        id: 'legifrance-code-general-des-impots-article-289-bis-8',
+        organization: 'Légifrance',
+        title: 'Code général des impôts, article 289 bis',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000053546660',
+      },
+      {
+        id: 'legifrance-article-290-du-cgi-9',
+        organization: 'Légifrance',
+        title: 'Article 290 du CGI',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000046195617',
+      },
+      {
+        id: 'legifrance-article-1737-du-cgi-10',
+        organization: 'Légifrance',
+        title: 'Article 1737 du CGI',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000046869201',
+      },
+    ]}
+  />
+);
 
 const article = getActualiteArticleByHref(
   '/actualites/facturation-electronique-2026-proprietaires-meubles'
@@ -54,70 +185,7 @@ export default function ArticleFacturationElectronique2026() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Un <strong>loueur en meublé classique exonéré</strong> n'a pas d'obligation d'
-                  <strong>émission</strong> de facture électronique pour ses séjours exonérés de
-                  TVA.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  En revanche, il doit <strong>recevoir</strong> les factures électroniques de ses
-                  fournisseurs à partir du <strong>1er septembre 2026</strong>, sous réserve de
-                  disposer d'un <strong>SIREN</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  La bonne question n'est donc pas seulement{' '}
-                  <em>est-ce que je facture la TVA&nbsp;?</em>, mais aussi{' '}
-                  <em>
-                    suis-je un assujetti établi en France qui doit recevoir des factures
-                    fournisseurs&nbsp;?
-                  </em>
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Si votre activité devient <strong>taxable à la TVA</strong> — par exemple dans
-                  certains cas de <strong>para-hôtellerie</strong> — les obligations deviennent plus
-                  larges&nbsp;: <strong>émission</strong>, et selon les cas{' '}
-                  <strong>e-reporting</strong> et <strong>données de paiement</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  En pratique, le minimum à anticiper dès maintenant est simple&nbsp;:{' '}
-                  <strong>choisir une plateforme de réception</strong> et organiser votre circuit
-                  fournisseurs.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -138,75 +206,7 @@ export default function ArticleFacturationElectronique2026() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-6">Sources officielles</h2>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label:
-                    'impots.gouv.fr — Facturation électronique\u00a0: je suis un loueur en meublé',
-                  url: 'https://www.impots.gouv.fr/sites/default/files/media/1_metier/2_professionnel/EV/2_gestion/290_facturation_electronique/fiches_reforme/fiche-loueurmeuble.pdf',
-                },
-                {
-                  label: 'Service Public Entreprendre — Tout savoir sur la facturation',
-                  url: 'https://entreprendre.service-public.fr/vosdroits/F23208',
-                },
-                {
-                  label:
-                    "impots.gouv.fr — Je n'émets pas de facture, ou je facture sans TVA. Suis-je concerné par la réforme\u00a0?",
-                  url: 'https://www.impots.gouv.fr/professionnel/questions/je-nemets-pas-de-facture-ou-je-facture-sans-tva-suis-je-concerne-par-la',
-                },
-                {
-                  label:
-                    'impots.gouv.fr — Foire aux questions\u00a0: Je découvre la facturation électronique',
-                  url: 'https://www.impots.gouv.fr/foire-aux-questions-je-decouvre-la-facturation-electronique',
-                },
-                {
-                  label:
-                    "impots.gouv.fr — Foire aux questions\u00a0: J'approfondis la facturation électronique",
-                  url: 'https://www.impots.gouv.fr/foire-aux-questions-japprofondis-la-facturation-electronique',
-                },
-                {
-                  label:
-                    "impots.gouv.fr — La facturation électronique, qu'est-ce que ça change pour moi\u00a0?",
-                  url: 'https://www.impots.gouv.fr/facturation-electronique-qu-est-ce-que-ca-change-pour-moi',
-                },
-                {
-                  label: 'Légifrance — Article 261 D du CGI',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006305347',
-                },
-                {
-                  label: 'Légifrance — Code général des impôts, article 289 bis',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000053546660',
-                },
-                {
-                  label: 'Légifrance — Article 290 du CGI',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000046195617',
-                },
-                {
-                  label: 'Légifrance — Article 1737 du CGI',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000046869201',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="break-words hover:text-primary-400 transition-colors"
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="oui-vous-etes-concernes-meme-si-vous-ne-collectez-pas-la-tva-sur-vos-sejours">

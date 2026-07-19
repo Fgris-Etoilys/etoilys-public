@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -38,6 +40,119 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   { id: 'conclusion', label: 'Conclusion' },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      {
+        id: 'coproprietelocationtouristique-takeaway-1',
+        content: (
+          <>
+            Depuis le <strong>21 novembre 2024</strong>, les{' '}
+            <strong>nouveaux règlements de copropriété</strong> doivent mentionner explicitement
+            l'autorisation ou l'interdiction des meublés de tourisme.
+          </>
+        ),
+      },
+      {
+        id: 'coproprietelocationtouristique-takeaway-2',
+        content: (
+          <>
+            Dans certaines copropriétés, un <strong>règlement existant</strong> peut être modifié à
+            la{' '}
+            <strong>
+              majorité des membres du syndicat représentant au moins les deux tiers des voix
+            </strong>{' '}
+            pour interdire certains meublés de tourisme.
+          </>
+        ),
+      },
+      {
+        id: 'coproprietelocationtouristique-takeaway-3',
+        content: (
+          <>
+            Cette possibilité ne vise pas tous les cas : elle concerne les{' '}
+            <strong>
+              lots à usage d'habitation autres que ceux constituant une résidence principale
+            </strong>
+            , et suppose que le règlement interdise déjà toute activité commerciale dans les lots
+            non commerciaux.
+          </>
+        ),
+      },
+      {
+        id: 'coproprietelocationtouristique-takeaway-4',
+        content: (
+          <>
+            Lorsqu'un lot fait l'objet de la <strong>déclaration</strong> prévue par le code du
+            tourisme, le copropriétaire — ou son locataire autorisé — doit{' '}
+            <strong>informer le syndic</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'coproprietelocationtouristique-takeaway-5',
+        content: (
+          <>
+            Le <strong>classement</strong> du meublé ne permet pas d'écarter le règlement de
+            copropriété.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'service-public-reglement-de-copropriete-1',
+        organization: 'Service-Public',
+        title: 'Règlement de copropriété',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/F2589',
+      },
+      {
+        id: 'legifrance-loi-du-10-juillet-1965-article-8-1-1-2',
+        organization: 'Légifrance',
+        title: 'Loi du 10 juillet 1965, article 8-1-1',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050617303',
+      },
+      {
+        id: 'legifrance-loi-du-10-juillet-1965-article-26-3',
+        organization: 'Légifrance',
+        title: 'Loi du 10 juillet 1965, article 26',
+        url: 'https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000050623612',
+      },
+      {
+        id: 'legifrance-loi-du-10-juillet-1965-article-9-2-4',
+        organization: 'Légifrance',
+        title: 'Loi du 10 juillet 1965, article 9-2',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050618105',
+      },
+      {
+        id: 'vie-publique-fr-loi-du-19-novembre-2024-visant-a-renforcer-les-outils-de-regulat-5',
+        organization: 'vie-publique.fr',
+        title:
+          "Loi du 19 novembre 2024 visant à renforcer les outils de régulation des meublés de tourisme à l'échelle locale",
+        url: 'https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur',
+      },
+      {
+        id: 'anil-renforcer-les-outils-de-regulation-des-meubles-de-tourisme-6',
+        organization: 'ANIL',
+        title: 'Renforcer les outils de régulation des meublés de tourisme',
+        url: 'https://www.anil.org/aj-renforcer-outils-regulation-meubles-tourisme/',
+      },
+      {
+        id: 'legifrance-decision-n-2025-1186-qpc-du-19-mars-2026-7',
+        organization: 'Légifrance',
+        title: 'Décision n° 2025-1186 QPC du 19 mars 2026',
+        url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053704054',
+      },
+    ]}
+  />
+);
+
 const article = getActualiteArticleByHref('/actualites/copropriete-location-touristique-reglement');
 
 export default function ArticleCoproprieteLocationTouristique() {
@@ -60,71 +175,7 @@ export default function ArticleCoproprieteLocationTouristique() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Depuis le <strong>21 novembre 2024</strong>, les{' '}
-                  <strong>nouveaux règlements de copropriété</strong> doivent mentionner
-                  explicitement l'autorisation ou l'interdiction des meublés de tourisme.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Dans certaines copropriétés, un <strong>règlement existant</strong> peut être
-                  modifié à la{' '}
-                  <strong>
-                    majorité des membres du syndicat représentant au moins les deux tiers des voix
-                  </strong>{' '}
-                  pour interdire certains meublés de tourisme.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Cette possibilité ne vise pas tous les cas : elle concerne les{' '}
-                  <strong>
-                    lots à usage d'habitation autres que ceux constituant une résidence principale
-                  </strong>
-                  , et suppose que le règlement interdise déjà toute activité commerciale dans les
-                  lots non commerciaux.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Lorsqu'un lot fait l'objet de la <strong>déclaration</strong> prévue par le code
-                  du tourisme, le copropriétaire — ou son locataire autorisé — doit{' '}
-                  <strong>informer le syndic</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Le <strong>classement</strong> du meublé ne permet pas d'écarter le règlement de
-                  copropriété.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -151,54 +202,7 @@ export default function ArticleCoproprieteLocationTouristique() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-6">Sources officielles</h2>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label: 'Service-Public — Règlement de copropriété',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/F2589',
-                },
-                {
-                  label: 'Légifrance — Loi du 10 juillet 1965, article 8-1-1',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050617303',
-                },
-                {
-                  label: 'Légifrance — Loi du 10 juillet 1965, article 26',
-                  url: 'https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000050623612',
-                },
-                {
-                  label: 'Légifrance — Loi du 10 juillet 1965, article 9-2',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050618105',
-                },
-                {
-                  label:
-                    "vie-publique.fr — Loi du 19 novembre 2024 visant à renforcer les outils de régulation des meublés de tourisme à l'échelle locale",
-                  url: 'https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur',
-                },
-                {
-                  label: 'ANIL — Renforcer les outils de régulation des meublés de tourisme',
-                  url: 'https://www.anil.org/aj-renforcer-outils-regulation-meubles-tourisme/',
-                },
-                {
-                  label: 'Légifrance — Décision n° 2025-1186 QPC du 19 mars 2026',
-                  url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053704054',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="break-words">
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="la-reponse-courte-oui-le-cadre-a-change-mais-pas-dans-le-sens-d-une-interdiction-automatique-partout">

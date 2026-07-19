@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -31,6 +33,114 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   { id: 'conclusion', label: 'Conclusion' },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      {
+        id: 'taxedesejour2026-takeaway-1',
+        content: (
+          <>
+            En <strong>2026</strong>, un <strong>meublé classé</strong> relève d'un{' '}
+            <strong>barème fixe</strong> par personne et par nuitée, décidé localement dans les
+            bornes prévues par le barème national.
+          </>
+        ),
+      },
+      {
+        id: 'taxedesejour2026-takeaway-2',
+        content: (
+          <>
+            En <strong>2026</strong>, un{' '}
+            <strong>meublé non classé ou en attente de classement</strong> relève en principe d'un{' '}
+            <strong>taux entre 1 % et 5 %</strong> du coût par personne de la nuitée{' '}
+            <strong>HT</strong>, dans la limite du tarif le plus élevé adopté par la collectivité.
+          </>
+        ),
+      },
+      {
+        id: 'taxedesejour2026-takeaway-3',
+        content: (
+          <>
+            Le classement ne rend pas toujours la taxe plus faible dans l'absolu, mais il rend son
+            calcul <strong>plus lisible et plus prévisible</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'taxedesejour2026-takeaway-4',
+        content: (
+          <>
+            Le montant final peut être augmenté par des <strong>taxes additionnelles</strong> :{' '}
+            <strong>10 %</strong> dans certains départements, <strong>15 %</strong> et{' '}
+            <strong>200 %</strong> en Île-de-France, et <strong>34 %</strong> dans certains
+            départements visés par le CGCT.
+          </>
+        ),
+      },
+      {
+        id: 'taxedesejour2026-takeaway-5',
+        content: (
+          <>
+            Avant de raisonner « à la louche », il faut vérifier le <strong>barème local</strong> et
+            les <strong>majorations applicables</strong> dans la commune du bien.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'service-public-entreprendre-bareme-2026-de-la-taxe-de-sejour-1',
+        organization: 'Service-Public Entreprendre',
+        title: 'barème 2026 de la taxe de séjour',
+        url: 'https://entreprendre.service-public.fr/vosdroits/F31635',
+      },
+      {
+        id: 'service-public-entreprendre-taxe-de-sejour-sur-les-hebergements-touristiques-2',
+        organization: 'Service-Public Entreprendre',
+        title: 'taxe de séjour sur les hébergements touristiques',
+        url: 'https://entreprendre.service-public.fr/vosdroits/F743',
+      },
+      {
+        id: 'legifrance-article-l3333-1-du-cgct-taxe-additionnelle-departementale-de-10-3',
+        organization: 'Légifrance',
+        title: 'article L3333-1 du CGCT (taxe additionnelle départementale de 10 %)',
+        url: 'https://www.legifrance.gouv.fr/codes/id/LEGISCTA000006181112/',
+      },
+      {
+        id: 'legifrance-article-l2531-17-du-cgct-taxe-additionnelle-de-15-en-ile-de-fran-4',
+        organization: 'Légifrance',
+        title: 'article L2531-17 du CGCT (taxe additionnelle de 15 % en Île-de-France)',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048704475',
+      },
+      {
+        id: 'legifrance-article-l2531-18-du-cgct-taxe-additionnelle-de-200-en-ile-de-fra-5',
+        organization: 'Légifrance',
+        title: 'article L2531-18 du CGCT (taxe additionnelle de 200 % en Île-de-France)',
+        url: 'https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006070633/LEGISCTA000037960232/',
+      },
+      {
+        id: 'legifrance-articles-l4332-4-a-l4332-6-du-cgct-taxe-additionnelle-de-34-dans-6',
+        organization: 'Légifrance',
+        title:
+          'articles L4332-4 à L4332-6 du CGCT (taxe additionnelle de 34 % dans certains départements)',
+        url: 'https://www.legifrance.gouv.fr/codes/id/LEGISCTA000006164705',
+      },
+      {
+        id: 'service-public-actualite-officielle-sur-les-tarifs-2026-a-paris-7',
+        organization: 'Service-Public',
+        title: 'actualité officielle sur les tarifs 2026 à Paris',
+        url: 'https://www.service-public.fr/particuliers/actualites/A17929',
+      },
+    ]}
+  />
+);
+
 const article = getActualiteArticleByHref(
   '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne'
 );
@@ -56,68 +166,7 @@ export default function ArticleTaxeDeSejour2026() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  En <strong>2026</strong>, un <strong>meublé classé</strong> relève d'un{' '}
-                  <strong>barème fixe</strong> par personne et par nuitée, décidé localement dans
-                  les bornes prévues par le barème national.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  En <strong>2026</strong>, un{' '}
-                  <strong>meublé non classé ou en attente de classement</strong> relève en principe
-                  d'un <strong>taux entre 1 % et 5 %</strong> du coût par personne de la nuitée{' '}
-                  <strong>HT</strong>, dans la limite du tarif le plus élevé adopté par la
-                  collectivité.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Le classement ne rend pas toujours la taxe plus faible dans l'absolu, mais il rend
-                  son calcul <strong>plus lisible et plus prévisible</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Le montant final peut être augmenté par des <strong>taxes additionnelles</strong>{' '}
-                  : <strong>10 %</strong> dans certains départements, <strong>15 %</strong> et{' '}
-                  <strong>200 %</strong> en Île-de-France, et <strong>34 %</strong> dans certains
-                  départements visés par le CGCT.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Avant de raisonner « à la louche », il faut vérifier le{' '}
-                  <strong>barème local</strong> et les <strong>majorations applicables</strong> dans
-                  la commune du bien.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -138,58 +187,7 @@ export default function ArticleTaxeDeSejour2026() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-6">Sources officielles</h2>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label: 'Service-Public Entreprendre – barème 2026 de la taxe de séjour',
-                  url: 'https://entreprendre.service-public.fr/vosdroits/F31635',
-                },
-                {
-                  label:
-                    'Service-Public Entreprendre – taxe de séjour sur les hébergements touristiques',
-                  url: 'https://entreprendre.service-public.fr/vosdroits/F743',
-                },
-                {
-                  label:
-                    'Légifrance – article L3333-1 du CGCT (taxe additionnelle départementale de 10 %)',
-                  url: 'https://www.legifrance.gouv.fr/codes/id/LEGISCTA000006181112/',
-                },
-                {
-                  label:
-                    'Légifrance – article L2531-17 du CGCT (taxe additionnelle de 15 % en Île-de-France)',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048704475',
-                },
-                {
-                  label:
-                    'Légifrance – article L2531-18 du CGCT (taxe additionnelle de 200 % en Île-de-France)',
-                  url: 'https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006070633/LEGISCTA000037960232/',
-                },
-                {
-                  label:
-                    'Légifrance – articles L4332-4 à L4332-6 du CGCT (taxe additionnelle de 34 % dans certains départements)',
-                  url: 'https://www.legifrance.gouv.fr/codes/id/LEGISCTA000006164705',
-                },
-                {
-                  label: 'Service-Public – actualité officielle sur les tarifs 2026 à Paris',
-                  url: 'https://www.service-public.fr/particuliers/actualites/A17929',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="break-words">
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       <div className="bg-accent-1 rounded-card p-6 md:p-8 mb-12">
         <h2 className="text-h4 mb-3">Simulateur taxe de séjour</h2>

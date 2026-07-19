@@ -117,7 +117,7 @@ npm run preview
 
 ## Architecture Snapshot
 
-- Stack: React 18, TypeScript, Vite, React Router v7, Tailwind CSS, Lucide React.
+- Stack: React 19, TypeScript, Vite, React Router v7, Tailwind CSS, Lucide React.
 - App routing is defined in `src/App.tsx`, wrapped by layout components.
 - Shared UI lives in `src/components/ui`; forms in `src/components/forms`; helpers in `src/utils`.
 - Frontend API URLs use `VITE_API_BASE_URL` (usually `/api`) and are routed by Vite/Vercel.

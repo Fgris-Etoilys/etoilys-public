@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
@@ -38,6 +40,170 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   { id: 'conclusion', label: 'Conclusion' },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="comparison"
+    caption="Seuils et abattements micro-BIC selon la période et le classement"
+    columns={[
+      {
+        key: 'periode',
+        label: 'Période',
+        mobileLabel: 'Période',
+        align: 'center',
+        widthClassName: 'w-1/5',
+      },
+      {
+        key: 'nonClassePlafond',
+        label: 'Non classé : plafond',
+        mobileLabel: 'Non classé : plafond',
+        align: 'center',
+        widthClassName: 'w-1/5',
+      },
+      {
+        key: 'nonClasseAbattement',
+        label: 'Non classé : abattement',
+        mobileLabel: 'Non classé : abattement',
+        align: 'center',
+        widthClassName: 'w-1/5',
+      },
+      {
+        key: 'classePlafond',
+        label: 'Classé : plafond',
+        mobileLabel: 'Classé : plafond',
+        align: 'center',
+        widthClassName: 'w-1/5',
+      },
+      {
+        key: 'classeAbattement',
+        label: 'Classé : abattement',
+        mobileLabel: 'Classé : abattement',
+        align: 'center',
+        widthClassName: 'w-1/5',
+      },
+    ]}
+    rows={[
+      {
+        key: '2025',
+        rowClassName: 'border-b border-primary-200 bg-white',
+        cells: {
+          periode: (
+            <>
+              Revenus 2025
+              <br />
+              (déclarés en 2026)
+            </>
+          ),
+          nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
+          nonClasseAbattement: '30 %',
+          classePlafond: (
+            <span className="font-semibold text-primary-400">
+              77 700 €<span className="sr-only"> pour les revenus 2025 déclarés en 2026</span>
+            </span>
+          ),
+          classeAbattement: '50 %',
+        },
+      },
+      {
+        key: '2026',
+        rowClassName: 'bg-primary-100',
+        cells: {
+          periode: (
+            <>
+              Revenus 2026
+              <br />
+              (déclarés en 2027)
+            </>
+          ),
+          nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
+          nonClasseAbattement: '30 %',
+          classePlafond: (
+            <span className="font-semibold text-primary-400">
+              83 600 €<span className="sr-only"> pour les revenus 2026 déclarés en 2027</span>
+            </span>
+          ),
+          classeAbattement: '50 %',
+        },
+      },
+    ]}
+    items={[
+      {
+        id: 'micro-bic-classement-interet-fiscal',
+        content: (
+          <>
+            Le <strong>classement ne supprime pas les autres obligations</strong>, mais il conserve
+            un intérêt fiscal concret pour les propriétaires qui restent au micro-BIC.
+          </>
+        ),
+      },
+      {
+        id: 'micro-bic-ne-pas-confondre-regimes',
+        content: (
+          <>
+            Il ne faut pas confondre le <strong>micro-BIC fiscal</strong> avec la{' '}
+            <strong>micro-entreprise</strong> : le cadre devient beaucoup plus contraignant pour les
+            meublés non classés.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'dgfip-faq-fiscale-mise-a-jour-le-18-mars-2026-1',
+        organization: 'DGFiP',
+        title: 'FAQ fiscale mise à jour le 18 mars 2026',
+        url: 'https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau',
+      },
+      {
+        id: 'service-public-entreprendre-hebergement-touristique-et-micro-entreprise-2',
+        organization: 'Service-Public Entreprendre',
+        title: 'hébergement touristique et micro-entreprise',
+        url: 'https://entreprendre.service-public.fr/vosdroits/F39451',
+      },
+      {
+        id: 'economie-gouv-fr-location-meublee-de-tourisme-ce-qui-change-en-2026-3',
+        organization: 'economie.gouv.fr',
+        title: 'location meublée de tourisme/ce qui change en 2026',
+        url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence',
+      },
+      {
+        id: 'service-public-entreprendre-regime-fiscal-de-la-micro-entreprise-4',
+        organization: 'Service-Public Entreprendre',
+        title: 'régime fiscal de la micro-entreprise',
+        url: 'https://entreprendre.service-public.fr/vosdroits/F23267',
+      },
+      {
+        id: 'economie-gouv-fr-micro-entrepreneurs-declarer-ses-revenus-5',
+        organization: 'economie.gouv.fr',
+        title: 'micro-entrepreneurs/déclarer ses revenus',
+        url: 'https://www.economie.gouv.fr/entreprises/gerer-sa-micro-entreprise/micro-entrepreneurs-comment-declarer-vos-revenus',
+      },
+      {
+        id: 'economie-gouv-fr-impot-sur-le-revenu-bic-bnc-6',
+        organization: 'economie.gouv.fr',
+        title: 'impôt sur le revenu : BIC, BNC',
+        url: 'https://www.economie.gouv.fr/entreprises/gerer-sa-fiscalite-et-ses-impots/limpot-sur-les-benefices-ir-et/impot-sur-le-revenu-bic-bnc-comment-ca-marche',
+      },
+      {
+        id: 'loi-du-19-novembre-2024-synthese-vie-publique-7',
+        organization: 'Loi du 19 novembre 2024',
+        title: 'synthèse Vie publique',
+        url: 'https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur',
+      },
+      {
+        id: 'legifrance-article-50-0-du-cgi-base-legale-des-seuils-8',
+        organization: 'Légifrance',
+        title: 'article 50-0 du CGI (base légale des seuils)',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048844097/2023-12-31',
+      },
+    ]}
+  />
+);
+
 const article = getActualiteArticleByHref('/actualites/micro-bic-2026-meuble-classe-vs-non-classe');
 
 export default function ArticleMicroBic2026() {
@@ -58,136 +224,7 @@ export default function ArticleMicroBic2026() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-
-            {/* Tableau comparatif */}
-            <ResponsiveComparisonTable
-              className="mb-6"
-              primaryColumnKey="periode"
-              columns={[
-                {
-                  key: 'periode',
-                  label: 'Période',
-                  mobileLabel: 'Période',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-                {
-                  key: 'nonClassePlafond',
-                  label: 'Non classé — plafond',
-                  mobileLabel: 'Non classé — plafond',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-                {
-                  key: 'nonClasseAbattement',
-                  label: 'Non classé — abattement',
-                  mobileLabel: 'Non classé — abattement',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-                {
-                  key: 'classePlafond',
-                  label: 'Classé — plafond',
-                  mobileLabel: 'Classé — plafond',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-                {
-                  key: 'classeAbattement',
-                  label: 'Classé — abattement',
-                  mobileLabel: 'Classé — abattement',
-                  align: 'center',
-                  widthClassName: 'w-1/5',
-                },
-              ]}
-              rows={[
-                {
-                  key: '2025',
-                  rowClassName: 'bg-white border-b border-primary-200',
-                  cells: {
-                    periode: (
-                      <>
-                        Revenus 2025
-                        <br />
-                        (déclarés en 2026)
-                      </>
-                    ),
-                    nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
-                    nonClasseAbattement: '30 %',
-                    classePlafond: (
-                      <span className="font-semibold text-primary-400">
-                        77 700 €
-                        <span className="sr-only"> pour les revenus 2025 déclarés en 2026</span>
-                      </span>
-                    ),
-                    classeAbattement: '50 %',
-                  },
-                },
-                {
-                  key: '2026',
-                  rowClassName: 'bg-primary-100',
-                  cells: {
-                    periode: (
-                      <>
-                        Revenus 2026
-                        <br />
-                        (déclarés en 2027)
-                      </>
-                    ),
-                    nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
-                    nonClasseAbattement: '30 %',
-                    classePlafond: (
-                      <span className="font-semibold text-primary-400">
-                        83 600 €
-                        <span className="sr-only"> pour les revenus 2026 déclarés en 2027</span>
-                      </span>
-                    ),
-                    classeAbattement: '50 %',
-                  },
-                },
-              ]}
-              tableClassName="w-full text-sm border-collapse"
-              desktopWrapperClassName="hidden md:block"
-              headerRowClassName="bg-primary-300 text-white"
-              headerCellClassName="p-3 font-semibold"
-              cellClassName="p-3"
-              mobileContainerClassName="md:hidden space-y-3"
-              mobileCardClassName="rounded-card border border-primary-200 bg-white p-4 shadow-sm"
-              mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
-              mobileLabelClassName="text-xs font-medium text-gray-600"
-              mobileValueClassName="text-sm text-gray-900 text-right"
-            />
-
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Le <strong>classement ne supprime pas les autres obligations</strong>, mais il
-                  conserve un intérêt fiscal concret pour les propriétaires qui restent au
-                  micro-BIC.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Il ne faut pas confondre le <strong>micro-BIC fiscal</strong> avec la{' '}
-                  <strong>micro-entreprise</strong> : le cadre devient beaucoup plus contraignant
-                  pour les meublés non classés.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -211,58 +248,7 @@ export default function ArticleMicroBic2026() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-6">Sources officielles</h2>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label: 'FAQ fiscale DGFiP mise à jour le 18 mars 2026',
-                  url: 'https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau',
-                },
-                {
-                  label:
-                    'Service-Public Entreprendre / hébergement touristique et micro-entreprise',
-                  url: 'https://entreprendre.service-public.fr/vosdroits/F39451',
-                },
-                {
-                  label: 'economie.gouv.fr / location meublée de tourisme / ce qui change en 2026',
-                  url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence',
-                },
-                {
-                  label: 'Service-Public Entreprendre / régime fiscal de la micro-entreprise',
-                  url: 'https://entreprendre.service-public.fr/vosdroits/F23267',
-                },
-                {
-                  label: 'economie.gouv.fr / micro-entrepreneurs / déclarer ses revenus',
-                  url: 'https://www.economie.gouv.fr/entreprises/gerer-sa-micro-entreprise/micro-entrepreneurs-comment-declarer-vos-revenus',
-                },
-                {
-                  label: 'economie.gouv.fr / impôt sur le revenu : BIC, BNC',
-                  url: 'https://www.economie.gouv.fr/entreprises/gerer-sa-fiscalite-et-ses-impots/limpot-sur-les-benefices-ir-et/impot-sur-le-revenu-bic-bnc-comment-ca-marche',
-                },
-                {
-                  label: 'Loi du 19 novembre 2024 / synthèse Vie publique',
-                  url: 'https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur',
-                },
-                {
-                  label: 'Légifrance / article 50-0 du CGI (base légale des seuils)',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048844097/2023-12-31',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="break-words">
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="la-vraie-question-en-2026-le-classement-garde-t-il-encore-un-avantage-fiscal">

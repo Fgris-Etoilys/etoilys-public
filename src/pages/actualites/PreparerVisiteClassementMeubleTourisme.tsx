@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
@@ -42,19 +44,27 @@ const checklist = [
 
 const officialSources = [
   {
-    label: 'Atout France — Meublé de tourisme',
+    id: 'atout-france-meuble-de-tourisme-1',
+    organization: 'Atout France',
+    title: 'Meublé de tourisme',
     url: 'https://www.atout-france.fr/fr/classement/meuble-de-tourisme',
   },
   {
-    label: 'Atout France — Référentiel de classement des meublés de tourisme 2022',
+    id: 'atout-france-referentiel-de-classement-des-meubles-de-tourisme-2022-2',
+    organization: 'Atout France',
+    title: 'Référentiel de classement des meublés de tourisme 2022',
     url: REFERENTIEL_URL,
   },
   {
-    label: 'Atout France — Guide de contrôle du classement des meublés de tourisme',
+    id: 'atout-france-guide-de-controle-du-classement-des-meubles-de-tourisme-3',
+    organization: 'Atout France',
+    title: 'Guide de contrôle du classement des meublés de tourisme',
     url: GUIDE_CONTROLE_URL,
   },
   {
-    label: 'Atout France — FAQ Meublé de tourisme',
+    id: 'atout-france-faq-meuble-de-tourisme-4',
+    organization: 'Atout France',
+    title: 'FAQ Meublé de tourisme',
     url: 'https://www.atout-france.fr/fr/classement/faq-meuble-de-tourisme',
   },
 ];
@@ -114,6 +124,43 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      {
+        id: 'preparervisiteclassementmeubletourisme-takeaway-1',
+        content: (
+          <>
+            La catégorie demandée et la capacité du logement déterminent une partie des équipements
+            et des quantités à prévoir.
+          </>
+        ),
+      },
+      {
+        id: 'preparervisiteclassementmeubletourisme-takeaway-2',
+        content: (
+          <>
+            Certains critères regroupent plusieurs éléments : un seul équipement manquant peut
+            suffire à invalider tout le critère.
+          </>
+        ),
+      },
+      {
+        id: 'preparervisiteclassementmeubletourisme-takeaway-3',
+        content: (
+          <>
+            Les informations et services doivent pouvoir être vérifiés sur un support, tandis que
+            les critères de propreté et de bon état doivent tous être validés.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = <ArticleSources sources={officialSources} />;
+
 const article = getActualiteArticleByHref('/actualites/preparer-visite-classement-meuble-tourisme');
 
 export default function ArticlePreparerVisiteClassementMeubleTourisme() {
@@ -150,33 +197,15 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
             bloquants, afin d’éviter les mauvaises surprises le jour de la visite.
           </p>
 
-          <div className="rounded-card border border-primary-200 bg-primary-100 p-5 mb-12">
-            <p className="text-gray-700 leading-comfortable">
+          <div className="rounded-card border border-primary-200 bg-primary-100 p-5 mb-12 text-base">
+            <p className="text-base leading-comfortable text-gray-700">
               Les exemples ci-dessous illustrent les règles générales du référentiel. Seule la
               visite permet de confirmer le classement du logement.
             </p>
           </div>
         </>
       }
-      keyTakeaways={
-        <>
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <p className="text-gray-700 leading-comfortable mb-4">
-              La catégorie demandée et la capacité du logement déterminent une partie des
-              équipements et des quantités à prévoir.
-            </p>
-            <p className="text-gray-700 leading-comfortable mb-4">
-              Certains critères regroupent plusieurs éléments : un seul équipement manquant peut
-              suffire à invalider tout le critère.
-            </p>
-            <p className="text-gray-700 leading-comfortable">
-              Les informations et services doivent pouvoir être vérifiés sur un support, tandis que
-              les critères de propreté et de bon état doivent tous être validés.
-            </p>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
@@ -197,28 +226,7 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
           </div>
         </>
       }
-      sources={
-        <>
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-6">Sources officielles</h2>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {officialSources.map(({ label, url }, index) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{index + 1}.</span>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="break-words hover:text-primary-400 transition-colors"
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       <ArticleSectionHeading id="comprendre-les-criteres-correspondant-a-la-categorie-demandee">
         Comprendre les critères correspondant à la catégorie demandée

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -23,6 +25,108 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   { id: 'conclusion', label: 'Conclusion' },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      {
+        id: 'meubleclassenonclasseseuils-takeaway-1',
+        content: (
+          <>
+            Les recettes de <strong>meublés classés</strong> et de{' '}
+            <strong>meublés non classés</strong> sont distinguées par l'administration fiscale, avec
+            des <strong>cases séparées</strong> dans la déclaration 2042 C PRO.
+          </>
+        ),
+      },
+      {
+        id: 'meubleclassenonclasseseuils-takeaway-2',
+        content: (
+          <>
+            En <strong>activité mixte</strong>, Service-Public Entreprendre indique qu'il faut
+            respecter un <strong>seuil global de chiffre d'affaires</strong> et le{' '}
+            <strong>seuil propre à chaque activité</strong>, en citant explicitement la location
+            meublée classée ou non classée.
+          </>
+        ),
+      },
+      {
+        id: 'meubleclassenonclasseseuils-takeaway-3',
+        content: (
+          <>
+            Les <strong>abattements</strong> s'appliquent sur la{' '}
+            <strong>fraction de chiffre d'affaires correspondant à chaque activité</strong> :
+            50&nbsp;% pour les classés, 30&nbsp;% pour les non classés (revenus 2025 déclarés en
+            2026).
+          </>
+        ),
+      },
+      {
+        id: 'meubleclassenonclasseseuils-takeaway-4',
+        content: (
+          <>
+            Cet article traite de la <strong>logique micro-fiscale / micro-BIC</strong>. Il n'a pas
+            vocation à couvrir tous les cas complexes de structuration juridique.
+          </>
+        ),
+      },
+      {
+        id: 'meubleclassenonclasseseuils-takeaway-5',
+        content: (
+          <>
+            Si vos recettes deviennent significatives, il faut examiner le{' '}
+            <strong>régime réel</strong> et, si nécessaire, faire confirmer le montage par un
+            professionnel du chiffre.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'service-public-entreprendre-regime-fiscal-de-la-micro-entreprise-activite-mixte-1',
+        organization: 'Service-Public Entreprendre',
+        title: 'Régime fiscal de la micro-entreprise (activité mixte)',
+        url: 'https://entreprendre.service-public.fr/vosdroits/F23267',
+      },
+      {
+        id: 'service-public-impot-sur-le-revenu-revenus-d-une-location-meublee-2',
+        organization: 'Service-Public',
+        title: "Impôt sur le revenu : revenus d'une location meublée",
+        url: 'https://www.service-public.fr/particuliers/vosdroits/F32744',
+      },
+      {
+        id: 'impots-gouv-fr-faq-fiscale-sur-les-meubles-de-tourisme-3',
+        organization: 'impots.gouv.fr',
+        title: 'FAQ fiscale sur les meublés de tourisme',
+        url: 'https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau',
+      },
+      {
+        id: 'economie-gouv-fr-location-meublee-de-tourisme-regles-fiscales-pour-la-residence-p-4',
+        organization: 'economie.gouv.fr',
+        title: 'Location meublée de tourisme : règles fiscales pour la résidence principale',
+        url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence',
+      },
+      {
+        id: 'legifrance-cgi-article-50-0-5',
+        organization: 'Légifrance',
+        title: 'CGI, article 50-0',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042159220/',
+      },
+      {
+        id: 'impots-gouv-fr-brochure-pratique-ir-2026-2042-c-pro-declaration-des-revenus-202-6',
+        organization: 'impots.gouv.fr',
+        title: 'Brochure pratique IR 2026 / 2042 C PRO (déclaration des revenus 2025)',
+        url: 'https://www.impots.gouv.fr/www2/fichiers/documentation/brochure/ir_2026/pdf_integral/Brochure-IR-2026.pdf',
+      },
+    ]}
+  />
+);
+
 const article = getActualiteArticleByHref('/actualites/meuble-classe-non-classe-seuils-micro-bic');
 
 export default function ArticleMeubleClasseNonClasseSeuils() {
@@ -44,67 +148,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Les recettes de <strong>meublés classés</strong> et de{' '}
-                  <strong>meublés non classés</strong> sont distinguées par l'administration
-                  fiscale, avec des <strong>cases séparées</strong> dans la déclaration 2042 C PRO.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  En <strong>activité mixte</strong>, Service-Public Entreprendre indique qu'il faut
-                  respecter un <strong>seuil global de chiffre d'affaires</strong> et le{' '}
-                  <strong>seuil propre à chaque activité</strong>, en citant explicitement la
-                  location meublée classée ou non classée.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Les <strong>abattements</strong> s'appliquent sur la{' '}
-                  <strong>fraction de chiffre d'affaires correspondant à chaque activité</strong> :
-                  50&nbsp;% pour les classés, 30&nbsp;% pour les non classés (revenus 2025 déclarés
-                  en 2026).
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Cet article traite de la <strong>logique micro-fiscale / micro-BIC</strong>. Il
-                  n'a pas vocation à couvrir tous les cas complexes de structuration juridique.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Si vos recettes deviennent significatives, il faut examiner le{' '}
-                  <strong>régime réel</strong> et, si nécessaire, faire confirmer le montage par un
-                  professionnel du chiffre.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -127,52 +171,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-6">Sources officielles</h2>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label:
-                    'Service-Public Entreprendre – Régime fiscal de la micro-entreprise (activité mixte)',
-                  url: 'https://entreprendre.service-public.fr/vosdroits/F23267',
-                },
-                {
-                  label: "Service-Public – Impôt sur le revenu : revenus d'une location meublée",
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/F32744',
-                },
-                {
-                  label: 'impots.gouv.fr – FAQ fiscale sur les meublés de tourisme',
-                  url: 'https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau',
-                },
-                {
-                  label:
-                    'economie.gouv.fr – Location meublée de tourisme : règles fiscales pour la résidence principale',
-                  url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence',
-                },
-                {
-                  label: 'Légifrance – CGI, article 50-0',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042159220/',
-                },
-                {
-                  label:
-                    'impots.gouv.fr – Brochure pratique IR 2026 / 2042 C PRO (déclaration des revenus 2025)',
-                  url: 'https://www.impots.gouv.fr/www2/fichiers/documentation/brochure/ir_2026/pdf_integral/Brochure-IR-2026.pdf',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="break-words">
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="la-reponse-courte-non-ce-n-est-pas-une-lecture-tout-ou-rien">

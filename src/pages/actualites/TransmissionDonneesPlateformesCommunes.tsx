@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
@@ -104,6 +106,76 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      "Lorsqu'un meublé est loué via Airbnb, Booking, Abritel ou une autre plateforme, l'intermédiaire transmet des données d'activité dans le cadre prévu par l'API Meublés, lorsque la commune ou l'intercommunalité utilise le dispositif.",
+      "Les données principales concernent le numéro d'enregistrement, l'adresse du logement, les URL d'annonces et le nombre de jours loués.",
+      "Les communes et les intercommunalités, c'est-à-dire les regroupements de communes compétents sur certains sujets comme le tourisme, utilisent ces données pour contrôler les obligations applicables aux meublés.",
+      "L'API Meublés rend plus visibles certaines incohérences : faux numéro, ancien numéro devenu invalide, adresse incohérente ou dépassement du plafond de jours pour une résidence principale.",
+      "L'API Meublés ne sert pas au suivi des paiements de taxe de séjour, qui relève d'un autre dispositif.",
+    ].map((item) => ({ id: item, content: item }))}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'direction-generale-des-entreprises-api-meubles-guichet-unique-de-centralisation-des-donnees-d-activ-1',
+        organization: 'Direction générale des Entreprises',
+        title:
+          "API Meublés, guichet unique de centralisation des données d'activité des intermédiaires",
+        url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
+      },
+      {
+        id: 'legifrance-code-du-tourisme-article-l-324-2-1-2',
+        organization: 'Légifrance',
+        title: 'Code du tourisme, article L. 324-2-1',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650350/2026-05-21',
+      },
+      {
+        id: 'legifrance-code-du-tourisme-article-r-324-2-1-3',
+        organization: 'Légifrance',
+        title: 'Code du tourisme, article R. 324-2-1',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000053704515/2026-05-19',
+      },
+      {
+        id: 'legifrance-decret-n-2026-196-du-19-mars-2026-relatif-a-la-location-de-meubl-4',
+        organization: 'Légifrance',
+        title: 'Décret n° 2026-196 du 19 mars 2026 relatif à la location de meublés de tourisme',
+        url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703509',
+      },
+      {
+        id: 'legifrance-decret-n-2026-197-du-19-mars-2026-portant-creation-du-traitement-5',
+        organization: 'Légifrance',
+        title: 'Décret n° 2026-197 du 19 mars 2026 portant création du traitement API Meublés',
+        url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703549',
+      },
+      {
+        id: 'service-public-mettre-en-location-sa-residence-principale-6',
+        organization: 'Service-Public',
+        title: 'Mettre en location sa résidence principale',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/F33175',
+      },
+      {
+        id: 'service-public-mettre-en-location-sa-residence-secondaire-7',
+        organization: 'Service-Public',
+        title: 'Mettre en location sa résidence secondaire',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/F2043',
+      },
+      {
+        id: 'ministere-de-l-economie-economie-collaborative-comment-declarer-vos-revenus-8',
+        organization: 'Ministère de l’Économie',
+        title: 'Économie collaborative : comment déclarer vos revenus ?',
+        url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/economie-collaborative-comment-declarer-vos-revenus',
+      },
+    ]}
+    description={<>Cet article s&apos;appuie sur les textes et ressources officiels suivants.</>}
+  />
+);
+
 const article = getActualiteArticleByHref(
   '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles'
 );
@@ -127,29 +199,7 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              {[
-                "Lorsqu'un meublé est loué via Airbnb, Booking, Abritel ou une autre plateforme, l'intermédiaire transmet des données d'activité dans le cadre prévu par l'API Meublés, lorsque la commune ou l'intercommunalité utilise le dispositif.",
-                "Les données principales concernent le numéro d'enregistrement, l'adresse du logement, les URL d'annonces et le nombre de jours loués.",
-                "Les communes et les intercommunalités, c'est-à-dire les regroupements de communes compétents sur certains sujets comme le tourisme, utilisent ces données pour contrôler les obligations applicables aux meublés.",
-                "L'API Meublés rend plus visibles certaines incohérences : faux numéro, ancien numéro devenu invalide, adresse incohérente ou dépassement du plafond de jours pour une résidence principale.",
-                "L'API Meublés ne sert pas au suivi des paiements de taxe de séjour, qui relève d'un autre dispositif.",
-              ].map((item) => (
-                <li key={item} className="flex gap-3">
-                  <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                    •
-                  </span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
@@ -171,68 +221,7 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
           </div>
         </>
       }
-      sources={
-        <>
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-3">Sources officielles</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Cet article s&apos;appuie sur les textes et ressources officiels suivants.
-            </p>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label:
-                    "Direction générale des Entreprises — API Meublés, guichet unique de centralisation des données d'activité des intermédiaires",
-                  url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
-                },
-                {
-                  label: 'Légifrance — Code du tourisme, article L. 324-2-1',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650350/2026-05-21',
-                },
-                {
-                  label: 'Légifrance — Code du tourisme, article R. 324-2-1',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000053704515/2026-05-19',
-                },
-                {
-                  label:
-                    'Légifrance — Décret n° 2026-196 du 19 mars 2026 relatif à la location de meublés de tourisme',
-                  url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703509',
-                },
-                {
-                  label:
-                    'Légifrance — Décret n° 2026-197 du 19 mars 2026 portant création du traitement API Meublés',
-                  url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703549',
-                },
-                {
-                  label: 'Service-Public — Mettre en location sa résidence principale',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/F33175',
-                },
-                {
-                  label: 'Service-Public — Mettre en location sa résidence secondaire',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/F2043',
-                },
-                {
-                  label:
-                    'Ministère de l’Économie — Économie collaborative : comment déclarer vos revenus ?',
-                  url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/economie-collaborative-comment-declarer-vos-revenus',
-                },
-              ].map(({ label, url }, index) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{index + 1}.</span>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="break-words hover:text-primary-400 transition-colors"
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       <ArticleSectionHeading id="pourquoi-les-donnees-des-plateformes-remontent-elles-aux-communes">
         Pourquoi les données des plateformes remontent-elles aux communes ?

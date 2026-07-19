@@ -138,6 +138,7 @@ export default function ResponsiveComparisonTable({
                 return (
                   <th
                     key={column.key}
+                    scope="col"
                     className={`${headerCellClassName} ${alignment.header} ${column.headerClassName ?? ''}`}
                   >
                     {column.label}
@@ -151,12 +152,20 @@ export default function ResponsiveComparisonTable({
               <tr key={row.key} className={row.rowClassName}>
                 {columns.map((column) => {
                   const alignment = ALIGNMENT_CLASSES[column.align ?? 'left'];
+                  const className = `${cellClassName} ${alignment.cell} ${column.cellClassName ?? ''}`;
+                  const cellContent = row.cells[column.key];
+
+                  if (column.key === primaryColumnKey) {
+                    return (
+                      <th key={`${row.key}-${column.key}`} scope="row" className={className}>
+                        {cellContent}
+                      </th>
+                    );
+                  }
+
                   return (
-                    <td
-                      key={`${row.key}-${column.key}`}
-                      className={`${cellClassName} ${alignment.cell} ${column.cellClassName ?? ''}`}
-                    >
-                      {row.cells[column.key]}
+                    <td key={`${row.key}-${column.key}`} className={className}>
+                      {cellContent}
                     </td>
                   );
                 })}

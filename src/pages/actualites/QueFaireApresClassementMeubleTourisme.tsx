@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -56,59 +58,87 @@ const finalChecklist = [
 
 const officialSources = [
   {
-    label: 'Légifrance — Code du tourisme, article D. 324-6',
+    id: 'legifrance-code-du-tourisme-article-d-324-6-1',
+    organization: 'Légifrance',
+    title: 'Code du tourisme, article D. 324-6',
     url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000025846054',
   },
   {
-    label: 'Légifrance — Code du tourisme, sous-section consacrée au classement',
+    id: 'legifrance-code-du-tourisme-sous-section-consacree-au-classement-2',
+    organization: 'Légifrance',
+    title: 'Code du tourisme, sous-section consacrée au classement',
     url: 'https://www.legifrance.gouv.fr/codes/id/LEGISCTA000006175549',
   },
   {
-    label: 'Légifrance — informations comprises dans la déclaration du meublé',
+    id: 'legifrance-informations-comprises-dans-la-declaration-du-meuble-3',
+    organization: 'Légifrance',
+    title: 'informations comprises dans la déclaration du meublé',
     url: 'https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006074073/LEGISCTA000006158429/',
   },
   {
-    label: 'Service-Public — déclaration en mairie des meublés de tourisme',
+    id: 'service-public-declaration-en-mairie-des-meubles-de-tourisme-4',
+    organization: 'Service-Public',
+    title: 'déclaration en mairie des meublés de tourisme',
     url: 'https://www.service-public.fr/particuliers/vosdroits/R14321',
   },
   {
-    label: 'Service-Public — Cerfa 14004',
+    id: 'service-public-cerfa-14004-5',
+    organization: 'Service-Public',
+    title: 'Cerfa 14004',
     url: 'https://www.formulaires.service-public.fr/gf/cerfa_14004.do',
   },
   {
-    label: 'DGE — API Meublés et téléservice national',
+    id: 'dge-api-meubles-et-teleservice-national-6',
+    organization: 'DGE',
+    title: 'API Meublés et téléservice national',
     url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
   },
   {
-    label: 'Service-Public Entreprendre — barème 2026 de la taxe de séjour',
+    id: 'service-public-entreprendre-bareme-2026-de-la-taxe-de-sejour-7',
+    organization: 'Service-Public Entreprendre',
+    title: 'barème 2026 de la taxe de séjour',
     url: 'https://entreprendre.service-public.fr/vosdroits/F31635',
   },
   {
-    label: 'Service-Public Entreprendre — fonctionnement général de la taxe de séjour',
+    id: 'service-public-entreprendre-fonctionnement-general-de-la-taxe-de-sejour-8',
+    organization: 'Service-Public Entreprendre',
+    title: 'fonctionnement général de la taxe de séjour',
     url: 'https://entreprendre.service-public.fr/vosdroits/F743',
   },
   {
-    label: 'Airbnb — collecte et versement de la taxe de séjour en France',
+    id: 'airbnb-collecte-et-versement-de-la-taxe-de-sejour-en-france-9',
+    organization: 'Airbnb',
+    title: 'collecte et versement de la taxe de séjour en France',
     url: 'https://www.airbnb.fr/help/article/2284',
   },
   {
-    label: 'Abritel — perception de la taxe de séjour et mise à jour du classement',
+    id: 'abritel-perception-de-la-taxe-de-sejour-et-mise-a-jour-du-classement-10',
+    organization: 'Abritel',
+    title: 'perception de la taxe de séjour et mise à jour du classement',
     url: 'https://aide.abritel.fr/articles/En-France-quelles-sont-les-villes-ou-Abritel-HomeAway-se-charge-de-la-perception-et-du-versement-des-taxes',
   },
   {
-    label: 'Booking.com — taxe de séjour en France',
+    id: 'booking-com-taxe-de-sejour-en-france-11',
+    organization: 'Booking.com',
+    title: 'taxe de séjour en France',
     url: 'https://partner.booking.com/fr/aide/commission-factures-et-taxes/taxes-locales/taxe-de-s%C3%A9jour-en-france%C2%A0-questions-fr%C3%A9quentes',
   },
   {
-    label: 'Booking.com — comprendre les taxes locales',
+    id: 'booking-com-comprendre-les-taxes-locales-12',
+    organization: 'Booking.com',
+    title: 'comprendre les taxes locales',
     url: 'https://partner.booking.com/fr/aide/commission-factures-et-taxes/taxes-locales/comprendre-la-tva-et-les-taxes-locales',
   },
   {
-    label: 'ANCV — conventionnement Chèque-Vacances',
+    id: 'ancv-conventionnement-cheque-vacances-13',
+    organization: 'ANCV',
+    title: 'conventionnement Chèque-Vacances',
     url: 'https://static.ancv.com/ddmc/connect/PTL/PAP_PTL_Se_conventionner_Ch%C3%A8que-Vacances.pdf',
   },
   {
-    label: 'Atout France — panonceaux des meublés de tourisme',
+    id: 'atout-france-panonceaux-des-meubles-de-tourisme-14',
+    organization: 'Atout France',
+    title: 'panonceaux des meublés de tourisme',
     url: 'https://www.atout-france.fr/fr/classement/meuble-de-tourisme',
   },
 ];
@@ -140,6 +170,20 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={keyTakeaways.map((item) => ({ id: item, content: item }))}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={officialSources}
+    description={<>Cet article s’appuie sur les textes officiels et centres d’aide suivants.</>}
+  />
+);
+
 const article = getActualiteArticleByHref('/actualites/que-faire-apres-classement-meuble-tourisme');
 
 export default function ArticleQueFaireApresClassementMeubleTourisme() {
@@ -157,23 +201,7 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              {keyTakeaways.map((item) => (
-                <li key={item} className="flex gap-3">
-                  <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                    •
-                  </span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
@@ -194,31 +222,7 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
           </div>
         </>
       }
-      sources={
-        <>
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-3">Sources officielles</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Cet article s’appuie sur les textes officiels et centres d’aide suivants.
-            </p>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {officialSources.map(({ label, url }, index) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{index + 1}.</span>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="break-words hover:text-primary-400 transition-colors"
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       <ArticleSectionHeading id="affichez-la-decision-de-classement-dans-le-logement">
         Affichez la décision de classement dans le logement

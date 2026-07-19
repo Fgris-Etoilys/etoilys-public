@@ -1,4 +1,6 @@
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -33,6 +35,118 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   { id: 'que-verifier-avant-de-louer', label: 'Que vérifier avant de louer ?' },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      {
+        id: 'dpemeublestourisme-takeaway-1',
+        content: (
+          <>
+            En 2026, un DPE est déjà requis pour certaines demandes d&apos;
+            <strong>autorisation préalable de changement d&apos;usage</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'dpemeublestourisme-takeaway-2',
+        content: (
+          <>
+            Cette règle ne concerne <strong>pas tous les meublés de tourisme</strong> : elle dépend
+            notamment de la commune et de la situation du logement.
+          </>
+        ),
+      },
+      {
+        id: 'dpemeublestourisme-takeaway-3',
+        content: (
+          <>
+            À partir du <strong>1er janvier 2034</strong>, les meublés de tourisme qui ne
+            constituent pas la <strong>résidence principale du loueur</strong> devront respecter les
+            niveaux de performance énergétique d&apos;un logement décent.
+          </>
+        ),
+      },
+      {
+        id: 'dpemeublestourisme-takeaway-4',
+        content: (
+          <>
+            Le changement d&apos;usage peut exister <strong>même sans travaux</strong> : c&apos;est
+            l&apos;utilisation réelle du logement qui compte.
+          </>
+        ),
+      },
+      {
+        id: 'dpemeublestourisme-takeaway-5',
+        content: (
+          <>
+            Avant de louer, la bonne vérification consiste à regarder la situation du bien, les
+            règles locales et l&apos;existence éventuelle d&apos;une autorisation préalable.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'legifrance-code-de-la-construction-et-de-l-habitation-article-l-631-10-dpe--1',
+        organization: 'Légifrance',
+        title:
+          'Code de la construction et de l’habitation, article L. 631-10 : DPE requis pour certaines autorisations de changement d’usage en meublé de tourisme',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623427/2026-03-16',
+      },
+      {
+        id: 'legifrance-code-du-tourisme-article-l-324-2-2-exigence-de-decence-energetiq-2',
+        organization: 'Légifrance',
+        title:
+          'Code du tourisme, article L. 324-2-2 : exigence de décence énergétique applicable à partir du 1er janvier 2034 aux meublés de tourisme qui ne constituent pas la résidence principale du loueur',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050614567/2034-01-01',
+      },
+      {
+        id: 'legifrance-loi-du-19-novembre-2024-3',
+        organization: 'Légifrance',
+        title: 'Loi du 19 novembre 2024',
+        url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000050612711',
+      },
+      {
+        id: 'ministere-de-la-transition-ecologique-guide-pratique-2025-de-la-reglementation-des-meubles-de-tourisme-4',
+        organization: 'Ministère de la Transition écologique',
+        title: 'Guide pratique 2025 de la réglementation des meublés de tourisme',
+        url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/25113_GuidePratique2025MeubleTourisme.pdf',
+      },
+      {
+        id: 'ministere-de-la-transition-ecologique-la-location-touristique-meublee-5',
+        organization: 'Ministère de la Transition écologique',
+        title: 'La location touristique meublée',
+        url: 'https://www.ecologie.gouv.fr/politiques-publiques/location-touristique-meublee',
+      },
+      {
+        id: 'direction-generale-des-entreprises-les-meubles-de-tourisme-6',
+        organization: 'Direction générale des Entreprises',
+        title: 'Les meublés de tourisme',
+        url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme',
+      },
+      {
+        id: 'service-public-mettre-en-location-sa-residence-secondaire-en-faire-un-meuble-de-7',
+        organization: 'Service-Public',
+        title: 'Mettre en location sa résidence secondaire (en faire un meublé de tourisme)',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/F2043',
+      },
+      {
+        id: 'annuaire-officiel-de-l-administration-mairie-service-public-8',
+        organization: 'Annuaire officiel de l’administration',
+        title: 'Mairie (Service Public)',
+        url: 'https://lannuaire.service-public.fr/',
+      },
+    ]}
+    description={<>Cet article s&apos;appuie sur les textes et ressources officiels suivants.</>}
+  />
+);
+
 const article = getActualiteArticleByHref('/actualites/dpe-meubles-tourisme-2026-2034');
 
 export default function ArticleDpeMeublesTourisme() {
@@ -54,63 +168,7 @@ export default function ArticleDpeMeublesTourisme() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  En 2026, un DPE est déjà requis pour certaines demandes d&apos;
-                  <strong>autorisation préalable de changement d&apos;usage</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Cette règle ne concerne <strong>pas tous les meublés de tourisme</strong> : elle
-                  dépend notamment de la commune et de la situation du logement.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  À partir du <strong>1er janvier 2034</strong>, les meublés de tourisme qui ne
-                  constituent pas la <strong>résidence principale du loueur</strong> devront
-                  respecter les niveaux de performance énergétique d&apos;un logement décent.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Le changement d&apos;usage peut exister <strong>même sans travaux</strong> :
-                  c&apos;est l&apos;utilisation réelle du logement qui compte.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Avant de louer, la bonne vérification consiste à regarder la situation du bien,
-                  les règles locales et l&apos;existence éventuelle d&apos;une autorisation
-                  préalable.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -131,69 +189,7 @@ export default function ArticleDpeMeublesTourisme() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-3">Sources officielles</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Cet article s&apos;appuie sur les textes et ressources officiels suivants.
-            </p>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label:
-                    'Légifrance \u2014 Code de la construction et de l\u2019habitation, article L.\u00a0631-10 : DPE requis pour certaines autorisations de changement d\u2019usage en meublé de tourisme',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623427/2026-03-16',
-                },
-                {
-                  label:
-                    'Légifrance \u2014 Code du tourisme, article L.\u00a0324-2-2 : exigence de décence énergétique applicable à partir du 1er janvier 2034 aux meublés de tourisme qui ne constituent pas la résidence principale du loueur',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050614567/2034-01-01',
-                },
-                {
-                  label: 'Légifrance — Loi du 19 novembre 2024',
-                  url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000050612711',
-                },
-                {
-                  label:
-                    'Ministère de la Transition écologique — Guide pratique 2025 de la réglementation des meublés de tourisme',
-                  url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/25113_GuidePratique2025MeubleTourisme.pdf',
-                },
-                {
-                  label: 'Ministère de la Transition écologique — La location touristique meublée',
-                  url: 'https://www.ecologie.gouv.fr/politiques-publiques/location-touristique-meublee',
-                },
-                {
-                  label: 'Direction générale des Entreprises — Les meublés de tourisme',
-                  url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme',
-                },
-                {
-                  label:
-                    'Service-Public — Mettre en location sa résidence secondaire (en faire un meublé de tourisme)',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/F2043',
-                },
-                {
-                  label: 'Annuaire officiel de l’administration — Mairie (Service Public)',
-                  url: 'https://lannuaire.service-public.fr/',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="break-words hover:text-primary-400 transition-colors"
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="faut-il-deja-un-dpe-pour-louer-un-meuble-de-tourisme">

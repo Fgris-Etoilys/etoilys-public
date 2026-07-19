@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -42,6 +44,156 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   { id: 'conclusion', label: 'Conclusion' },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      {
+        id: 'meubleschangements20252026-takeaway-1',
+        content: (
+          <>
+            Pour les <strong>revenus 2025 déclarés en 2026</strong>, le micro-BIC a été fortement
+            durci : <strong>15 000 € de plafond et 30 % d’abattement</strong> pour les meublés de
+            tourisme non classés, contre <strong>77 700 € et 50 %</strong> pour les meublés classés.
+          </>
+        ),
+      },
+      {
+        id: 'meubleschangements20252026-takeaway-2',
+        content: (
+          <>
+            Pour les <strong>revenus 2026 déclarés en 2027</strong>, le plafond micro des meublés
+            classés passe à <strong>83 600 €</strong>, tandis que le seuil des meublés non classés
+            reste à <strong>15 000 €</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'meubleschangements20252026-takeaway-3',
+        content: (
+          <>
+            Depuis 2025, certaines communes peuvent ramener la limite de location de la résidence
+            principale de <strong>120 jours à 90 jours</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'meubleschangements20252026-takeaway-4',
+        content: (
+          <>
+            Le <strong>DPE</strong> entre déjà en jeu dans certains cas de changement d'usage, mais
+            l'obligation de décence énergétique généralisée pour les meublés qui ne sont pas la
+            résidence principale n'entre en vigueur qu'en <strong>2034</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'meubleschangements20252026-takeaway-5',
+        content: (
+          <>
+            Depuis le <strong>20 mai 2026</strong>, le Code du tourisme prévoit une déclaration
+            soumise à enregistrement auprès d'un téléservice national, mais la DGE décrit encore un
+            déploiement opérationnel en deux temps avec une version finale annoncée pour le second
+            semestre 2026.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'loi-du-19-novembre-2024-synthese-vie-publique-1',
+        organization: 'Loi du 19 novembre 2024',
+        title: 'synthèse Vie publique',
+        url: 'https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur',
+      },
+      {
+        id: 'dgfip-faq-fiscale-mise-a-jour-le-18-mars-2026-2',
+        organization: 'DGFiP',
+        title: 'FAQ fiscale mise à jour le 18 mars 2026',
+        url: 'https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau',
+      },
+      {
+        id: 'service-public-hebergement-touristique-et-micro-entreprise-3',
+        organization: 'Service-Public',
+        title: 'hébergement touristique et micro-entreprise',
+        url: 'https://www.service-public.fr/professionnels-entreprises/vosdroits/F39451',
+      },
+      {
+        id: 'ministere-de-la-transition-ecologique-guide-pratique-2025-de-la-reglementation-des-meubles-de-tourisme-4',
+        organization: 'Ministère de la Transition écologique',
+        title:
+          'Guide pratique 2025 de la réglementation des meublés de tourisme (Ministère de la Transition écologique)',
+        url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/25113_GuidePratique2025MeubleTourisme.pdf',
+      },
+      {
+        id: 'ministere-de-la-transition-ecologique-ce-qui-change-avec-la-loi-du-19-novembre-2024-ministere-5',
+        organization: 'Ministère de la Transition écologique',
+        title: 'Ce qui change avec la loi du 19 novembre 2024 (Ministère)',
+        url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/Regulation-meubles-touristiques_2025_VF.pdf',
+      },
+      {
+        id: 'api-meubles-dge-5-mars-2026-6',
+        organization: 'API Meublés',
+        title: 'DGE/5 mars 2026',
+        url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
+      },
+      {
+        id: 'service-public-declaration-et-enregistrement-des-meubles-de-tourisme-7',
+        organization: 'Service-Public',
+        title: 'déclaration et enregistrement des meublés de tourisme',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/R14321',
+      },
+      {
+        id: 'service-public-reglement-de-copropriete-8',
+        organization: 'Service-Public',
+        title: 'règlement de copropriété',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/F2589',
+      },
+      {
+        id: 'legifrance-dpe-et-changement-d-usage-article-l631-10-cch-9',
+        organization: 'Légifrance',
+        title: "DPE et changement d'usage/article L631-10 CCH",
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623427',
+      },
+      {
+        id: 'service-public-entreprendre-taxe-de-sejour-2026-10',
+        organization: 'Service-Public Entreprendre',
+        title: 'taxe de séjour 2026',
+        url: 'https://entreprendre.service-public.fr/vosdroits/F31635',
+      },
+      {
+        id: 'atout-france-note-de-clarification-septembre-2025-11',
+        organization: 'Atout France',
+        title: 'note de clarification septembre 2025',
+        url: 'https://www.classement.atout-france.fr/documents/20142/1515299/Note%2Bde%2Bclarification%2B-%2BMeubl%C3%A9s%2Bde%2Btourisme%2B-%2BSeptembre%2B2025.pdf/0e816e66-0a27-dd43-12db-a4a607aea165?download=true&version=2.4',
+      },
+      {
+        id: 'legifrance-decret-du-20-fevrier-2026-legifrance-12',
+        organization: 'Légifrance',
+        title: 'Décret du 20 février 2026 (Légifrance)',
+        url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053525578',
+      },
+      {
+        id: 'legifrance-code-du-tourisme-article-l324-1-1-version-en-vigueur-depuis-le-20-mai-2026-13',
+        organization: 'Légifrance / Code du tourisme, article L324-1-1',
+        title: 'version en vigueur depuis le 20 mai 2026',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650414',
+      },
+      {
+        id: 'legifrance-decret-n-2026-196-du-19-mars-2026-relatif-a-la-location-de-meubl-14',
+        organization: 'Légifrance',
+        title: 'Décret n° 2026-196 du 19 mars 2026 relatif à la location de meublés de tourisme',
+        url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703509',
+      },
+    ]}
+  />
+);
+
 const article = getActualiteArticleByHref(
   '/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026'
 );
@@ -63,67 +215,7 @@ export default function ArticleMeubles20252026() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Pour les <strong>revenus 2025 déclarés en 2026</strong>, le micro-BIC a été
-                  fortement durci : <strong>15 000 € de plafond et 30 % d’abattement</strong> pour
-                  les meublés de tourisme non classés, contre <strong>77 700 € et 50 %</strong> pour
-                  les meublés classés.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Pour les <strong>revenus 2026 déclarés en 2027</strong>, le plafond micro des
-                  meublés classés passe à <strong>83 600 €</strong>, tandis que le seuil des meublés
-                  non classés reste à <strong>15 000 €</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Depuis 2025, certaines communes peuvent ramener la limite de location de la
-                  résidence principale de <strong>120 jours à 90 jours</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Le <strong>DPE</strong> entre déjà en jeu dans certains cas de changement d'usage,
-                  mais l'obligation de décence énergétique généralisée pour les meublés qui ne sont
-                  pas la résidence principale n'entre en vigueur qu'en <strong>2034</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Depuis le <strong>20 mai 2026</strong>, le Code du tourisme prévoit une
-                  déclaration soumise à enregistrement auprès d'un téléservice national, mais la DGE
-                  décrit encore un déploiement opérationnel en deux temps avec une version finale
-                  annoncée pour le second semestre 2026.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -147,84 +239,7 @@ export default function ArticleMeubles20252026() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-6">Sources officielles</h2>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label: 'Loi du 19 novembre 2024 / synthèse Vie publique',
-                  url: 'https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur',
-                },
-                {
-                  label: 'FAQ fiscale DGFiP mise à jour le 18 mars 2026',
-                  url: 'https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau',
-                },
-                {
-                  label: 'Service-Public / hébergement touristique et micro-entreprise',
-                  url: 'https://www.service-public.fr/professionnels-entreprises/vosdroits/F39451',
-                },
-                {
-                  label:
-                    'Guide pratique 2025 de la réglementation des meublés de tourisme (Ministère de la Transition écologique)',
-                  url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/25113_GuidePratique2025MeubleTourisme.pdf',
-                },
-                {
-                  label: 'Ce qui change avec la loi du 19 novembre 2024 (Ministère)',
-                  url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/Regulation-meubles-touristiques_2025_VF.pdf',
-                },
-                {
-                  label: 'API Meublés / DGE / 5 mars 2026',
-                  url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
-                },
-                {
-                  label: 'Service-Public / déclaration et enregistrement des meublés de tourisme',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/R14321',
-                },
-                {
-                  label: 'Service-Public / règlement de copropriété',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/F2589',
-                },
-                {
-                  label: "Légifrance / DPE et changement d'usage / article L631-10 CCH",
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623427',
-                },
-                {
-                  label: 'Service-Public Entreprendre / taxe de séjour 2026',
-                  url: 'https://entreprendre.service-public.fr/vosdroits/F31635',
-                },
-                {
-                  label: 'Atout France / note de clarification septembre 2025',
-                  url: 'https://www.classement.atout-france.fr/documents/20142/1515299/Note%2Bde%2Bclarification%2B-%2BMeubl%C3%A9s%2Bde%2Btourisme%2B-%2BSeptembre%2B2025.pdf/0e816e66-0a27-dd43-12db-a4a607aea165?download=true&version=2.4',
-                },
-                {
-                  label: 'Décret du 20 février 2026 (Légifrance)',
-                  url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053525578',
-                },
-                {
-                  label:
-                    'Légifrance / Code du tourisme, article L324-1-1 — version en vigueur depuis le 20 mai 2026',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650414',
-                },
-                {
-                  label:
-                    'Légifrance / Décret n° 2026-196 du 19 mars 2026 relatif à la location de meublés de tourisme',
-                  url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703509',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="break-words">
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="la-vraie-rupture-2025-2026-ne-concerne-pas-la-grille-de-classement">

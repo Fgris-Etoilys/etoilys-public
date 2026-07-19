@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -35,6 +37,143 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   { id: 'conclusion', label: 'Conclusion' },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="comparison"
+    caption="Règles de durée à distinguer pour une résidence principale louée en meublé de tourisme"
+    columns={[
+      {
+        key: 'regle',
+        label: 'Règle',
+        mobileLabel: 'Règle',
+        widthClassName: 'w-1/3',
+      },
+      {
+        key: 'portee',
+        label: 'Portée',
+        mobileLabel: 'Portée',
+        widthClassName: 'w-1/3',
+      },
+      {
+        key: 'signification',
+        label: 'Ce que cela signifie',
+        mobileLabel: 'Ce que cela signifie',
+        widthClassName: 'w-1/3',
+      },
+    ]}
+    rows={[
+      {
+        key: '120-jours',
+        rowClassName: 'border-b border-primary-200 bg-white',
+        cells: {
+          regle: <span className="font-semibold text-primary-400">120 jours / an</span>,
+          portee: 'Règle nationale',
+          signification:
+            'Plafond de base pour toute résidence principale louée en meublé de tourisme',
+        },
+      },
+      {
+        key: '90-119-jours',
+        rowClassName: 'border-b border-primary-200 bg-primary-100',
+        cells: {
+          regle: <span className="font-semibold text-gray-900">90 à 119 jours / an</span>,
+          portee: 'Règle locale (si délibération)',
+          signification: 'La commune peut abaisser le plafond annuel par délibération motivée',
+        },
+      },
+      {
+        key: '90-jours-consecutifs',
+        rowClassName: 'bg-white',
+        cells: {
+          regle: <span className="font-semibold text-gray-900">90 jours consécutifs</span>,
+          portee: 'Autre règle (différente)',
+          signification:
+            "Durée maximale d'une même location à un même client : ne se confond pas avec le plafond annuel",
+        },
+      },
+    ]}
+    items={[
+      {
+        id: 'residence-principale-limite-concerne',
+        content: (
+          <>
+            Cette limite concerne les <strong>résidences principales</strong>, pas les résidences
+            secondaires (qui obéissent à un cadre différent et souvent plus contraignant).
+          </>
+        ),
+      },
+      {
+        id: 'residence-principale-classement-plafond',
+        content: (
+          <>
+            Le <strong>classement</strong> du meublé ne permet pas de dépasser ce plafond : un
+            meublé classé reste soumis aux mêmes limites de durée.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'legifrance-article-l-324-1-1-du-code-du-tourisme-1',
+        organization: 'Légifrance',
+        title: 'article L. 324-1-1 du code du tourisme',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623378/2026-05-20',
+      },
+      {
+        id: 'service-public-mettre-en-location-sa-residence-principale-en-faire-un-meuble-de-2',
+        organization: 'Service-Public',
+        title: 'Mettre en location sa résidence principale (en faire un meublé de tourisme)',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/F33175',
+      },
+      {
+        id: 'vie-publique-fr-loi-du-19-novembre-2024-visant-a-renforcer-les-outils-de-regulat-3',
+        organization: 'Vie-publique.fr',
+        title:
+          "Loi du 19 novembre 2024 visant à renforcer les outils de régulation des meublés de tourisme à l'échelle locale",
+        url: 'https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur',
+      },
+      {
+        id: 'ministere-de-la-transition-ecologique-guide-pratique-2025-de-la-reglementation-des-meubles-de-tourisme-4',
+        organization: 'Ministère de la Transition écologique',
+        title: 'Guide pratique 2025 de la réglementation des meublés de tourisme',
+        url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/25113_GuidePratique2025MeubleTourisme.pdf',
+      },
+      {
+        id: 'ministere-de-la-transition-ecologique-faq-sur-l-application-dans-le-temps-de-la-preuve-de-l-usage-a-la-5',
+        organization: 'Ministère de la Transition écologique',
+        title:
+          "FAQ sur l'application dans le temps de la preuve de l'usage à la suite de la loi du 19 novembre 2024",
+        url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/FAQ%20sur%20l%27application%20dans%20le%20temps%20de%20la%20preuve%20de%20l%27usage%20%C3%A0%20la%20suite%20de%20la%20loi%20n%C2%B0%202024-1039%20du%2019%20novembre%202024_0.pdf',
+      },
+      {
+        id: 'economie-gouv-fr-location-meublee-de-tourisme-quelles-sont-les-regles-a-respecter-6',
+        organization: 'economie.gouv.fr',
+        title:
+          'Location meublée de tourisme : quelles sont les règles à respecter pour sa résidence principale ?',
+        url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence',
+      },
+      {
+        id: 'entreprises-gouv-fr-les-meubles-de-tourisme-7',
+        organization: 'entreprises.gouv.fr',
+        title: 'Les meublés de tourisme',
+        url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme',
+      },
+      {
+        id: 'direction-generale-des-entreprises-api-meubles-guichet-unique-de-centralisation-des-donnees-d-activ-8',
+        organization: 'Direction générale des Entreprises',
+        title:
+          "API Meublés, guichet unique de centralisation des données d'activité des intermédiaires de meublés de tourisme—publié le 5 mars 2026, mis à jour le 25 mars 2026",
+        url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
+      },
+    ]}
+  />
+);
+
 const article = getActualiteArticleByHref(
   '/actualites/airbnb-residence-principale-limite-90-jours'
 );
@@ -59,73 +198,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-
-            {/* Tableau comparatif des règles */}
-            <div className="overflow-x-auto mb-6">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="bg-primary-300 text-white">
-                    <th className="p-3 text-left font-semibold">Règle</th>
-                    <th className="p-3 text-left font-semibold">Portée</th>
-                    <th className="p-3 text-left font-semibold">Ce que cela signifie</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="bg-white border-b border-primary-200">
-                    <td className="p-3 font-semibold text-primary-400">120 jours / an</td>
-                    <td className="p-3 text-gray-700">Règle nationale</td>
-                    <td className="p-3 text-gray-700">
-                      Plafond de base pour toute résidence principale louée en meublé de tourisme
-                    </td>
-                  </tr>
-                  <tr className="bg-primary-100 border-b border-primary-200">
-                    <td className="p-3 font-semibold text-gray-900">90 à 119 jours / an</td>
-                    <td className="p-3 text-gray-700">Règle locale (si délibération)</td>
-                    <td className="p-3 text-gray-700">
-                      La commune peut abaisser le plafond annuel par délibération motivée
-                    </td>
-                  </tr>
-                  <tr className="bg-white">
-                    <td className="p-3 font-semibold text-gray-900">90 jours consécutifs</td>
-                    <td className="p-3 text-gray-700">Autre règle (différente)</td>
-                    <td className="p-3 text-gray-700">
-                      Durée maximale d'une même location à un même client — ne se confond pas avec
-                      le plafond annuel
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Cette limite concerne les <strong>résidences principales</strong>, pas les
-                  résidences secondaires (qui obéissent à un cadre différent et souvent plus
-                  contraignant).
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Le <strong>classement</strong> du meublé ne permet pas de dépasser ce plafond : un
-                  meublé classé reste soumis aux mêmes limites de durée.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -152,63 +225,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-6">Sources officielles</h2>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label: 'Légifrance — article L. 324-1-1 du code du tourisme',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623378/2026-05-20',
-                },
-                {
-                  label:
-                    'Service-Public — Mettre en location sa résidence principale (en faire un meublé de tourisme)',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/F33175',
-                },
-                {
-                  label:
-                    "Vie-publique.fr — Loi du 19 novembre 2024 visant à renforcer les outils de régulation des meublés de tourisme à l'échelle locale",
-                  url: 'https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur',
-                },
-                {
-                  label:
-                    'Ministère de la Transition écologique — Guide pratique 2025 de la réglementation des meublés de tourisme',
-                  url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/25113_GuidePratique2025MeubleTourisme.pdf',
-                },
-                {
-                  label:
-                    "Ministère de la Transition écologique — FAQ sur l'application dans le temps de la preuve de l'usage à la suite de la loi du 19 novembre 2024",
-                  url: 'https://www.ecologie.gouv.fr/sites/default/files/documents/FAQ%20sur%20l%27application%20dans%20le%20temps%20de%20la%20preuve%20de%20l%27usage%20%C3%A0%20la%20suite%20de%20la%20loi%20n%C2%B0%202024-1039%20du%2019%20novembre%202024_0.pdf',
-                },
-                {
-                  label:
-                    'economie.gouv.fr — Location meublée de tourisme : quelles sont les règles à respecter pour sa résidence principale ?',
-                  url: 'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence',
-                },
-                {
-                  label: 'entreprises.gouv.fr — Les meublés de tourisme',
-                  url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme',
-                },
-                {
-                  label:
-                    "Direction générale des Entreprises — API Meublés, guichet unique de centralisation des données d'activité des intermédiaires de meublés de tourisme — publié le 5 mars 2026, mis à jour le 25 mars 2026",
-                  url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a href={url} target="_blank" rel="noopener noreferrer" className="break-words">
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="la-reponse-courte-non-tout-le-monde-n-est-pas-limite-a-90-jours">

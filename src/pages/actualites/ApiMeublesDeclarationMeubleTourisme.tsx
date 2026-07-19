@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import KeyTakeaways from '../../components/ui/KeyTakeaways';
+import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -31,6 +33,126 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   },
 ];
 
+const keyTakeawaysBlock = (
+  <KeyTakeaways
+    variant="bullets"
+    items={[
+      {
+        id: 'apimeublesdeclarationmeubletourisme-takeaway-1',
+        content: (
+          <>
+            Jusqu&apos;ici, certains loueurs n&apos;étaient pas concernés par une déclaration
+            systématique, notamment lorsque le logement loué était leur{' '}
+            <strong>résidence principale</strong>, sauf dans certaines communes.
+          </>
+        ),
+      },
+      {
+        id: 'apimeublesdeclarationmeubletourisme-takeaway-2',
+        content: (
+          <>
+            Avec API Meublés,{' '}
+            <strong>
+              tous les loueurs de meublés de tourisme devront demander ou redemander un numéro
+              d&apos;enregistrement national
+            </strong>{' '}
+            pour chaque logement mis en location.
+          </>
+        ),
+      },
+      {
+        id: 'apimeublesdeclarationmeubletourisme-takeaway-3',
+        content: (
+          <>
+            Le cadre légal a basculé depuis le <strong>20 mai 2026</strong>, mais la DGE indique que
+            le téléservice final destiné aux loueurs doit ouvrir au{' '}
+            <strong>second semestre 2026</strong>.
+          </>
+        ),
+      },
+      {
+        id: 'apimeublesdeclarationmeubletourisme-takeaway-4',
+        content: (
+          <>
+            Depuis le 20 mai 2026, la démarche en ligne de Service-Public n&apos;est plus
+            disponible. Service-Public renvoie désormais vers le <strong>Cerfa n°14004</strong> ou
+            les modalités prévues par la mairie.
+          </>
+        ),
+      },
+      {
+        id: 'apimeublesdeclarationmeubletourisme-takeaway-5',
+        content: (
+          <>
+            Ne pas déclarer son meublé, faire une fausse déclaration ou utiliser un faux numéro
+            pourra entraîner des sanctions.
+          </>
+        ),
+      },
+    ]}
+  />
+);
+
+const articleSources = (
+  <ArticleSources
+    sources={[
+      {
+        id: 'direction-generale-des-entreprises-api-meubles-guichet-unique-de-centralisation-des-donnees-d-activ-1',
+        organization: 'Direction générale des Entreprises',
+        title:
+          'API Meublés, guichet unique de centralisation des données d’activité des intermédiaires de meublés de tourisme',
+        url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
+      },
+      {
+        id: 'legifrance-code-du-tourisme-article-l-324-1-1-version-applicable-a-partir-d-2',
+        organization: 'Légifrance',
+        title: 'Code du tourisme, article L.324-1-1, version applicable à partir du 20 mai 2026',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623378/2026-05-20',
+      },
+      {
+        id: 'legifrance-code-du-tourisme-article-l-324-1-1-version-en-vigueur-jusqu-au-2-3',
+        organization: 'Légifrance',
+        title: 'Code du tourisme, article L.324-1-1, version en vigueur jusqu’au 20 mai 2026',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650414',
+      },
+      {
+        id: 'service-public-declarer-en-mairie-un-meuble-de-tourisme-4',
+        organization: 'Service-Public',
+        title: 'Déclarer en mairie un meublé de tourisme',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/R14321',
+      },
+      {
+        id: 'service-public-formulaire-cerfa-n-14004-declaration-en-mairie-des-meubles-de-to-5',
+        organization: 'Service-Public',
+        title: 'Formulaire Cerfa n°14004, déclaration en mairie des meublés de tourisme',
+        url: 'https://www.service-public.fr/particuliers/vosdroits/R76417',
+      },
+      {
+        id: 'legifrance-code-du-tourisme-article-l-324-1-1-version-en-vigueur-depuis-le--6',
+        organization: 'Légifrance',
+        title:
+          'Code du tourisme, article L.324-1-1, version en vigueur depuis le 20 mai 2026 : déclaration des meublés de tourisme, téléservice national, numéro de déclaration et sanctions',
+        url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042070525/2026-05-23',
+      },
+      {
+        id: 'legifrance-decret-n-2026-196-du-19-mars-2026-relatif-a-la-transmission-des--7',
+        organization: 'Légifrance',
+        title:
+          'Décret n° 2026-196 du 19 mars 2026 relatif à la transmission des données par les intermédiaires aux communes et EPCI',
+        url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703509',
+      },
+      {
+        id: 'legifrance-decret-n-2026-197-du-19-mars-2026-portant-creation-du-traitement-8',
+        organization: 'Légifrance',
+        title:
+          'Décret n° 2026-197 du 19 mars 2026 portant création du traitement automatisé API Meublés',
+        url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703549',
+      },
+    ]}
+    description={<>Cet article s&apos;appuie sur les textes et ressources officiels suivants.</>}
+  />
+);
+
 const article = getActualiteArticleByHref('/actualites/api-meubles-declaration-meuble-tourisme');
 
 export default function ArticleApiMeubles() {
@@ -53,68 +175,7 @@ export default function ArticleApiMeubles() {
           </p>
         </>
       }
-      keyTakeaways={
-        <>
-          {/* À retenir */}
-          <div className="bg-primary-100 border-l-4 border-primary-300 rounded-card p-6 mb-12">
-            <h2 className="text-h4 mb-4">À retenir</h2>
-            <ul className="space-y-3 text-gray-700">
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Jusqu&apos;ici, certains loueurs n&apos;étaient pas concernés par une déclaration
-                  systématique, notamment lorsque le logement loué était leur{' '}
-                  <strong>résidence principale</strong>, sauf dans certaines communes.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Avec API Meublés,{' '}
-                  <strong>
-                    tous les loueurs de meublés de tourisme devront demander ou redemander un numéro
-                    d&apos;enregistrement national
-                  </strong>{' '}
-                  pour chaque logement mis en location.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Le cadre légal a basculé depuis le <strong>20 mai 2026</strong>, mais la DGE
-                  indique que le téléservice final destiné aux loueurs doit ouvrir au{' '}
-                  <strong>second semestre 2026</strong>.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Depuis le 20 mai 2026, la démarche en ligne de Service-Public n&apos;est plus
-                  disponible. Service-Public renvoie désormais vers le{' '}
-                  <strong>Cerfa n°14004</strong> ou les modalités prévues par la mairie.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
-                  •
-                </span>
-                <span>
-                  Ne pas déclarer son meublé, faire une fausse déclaration ou utiliser un faux
-                  numéro pourra entraîner des sanctions.
-                </span>
-              </li>
-            </ul>
-          </div>
-        </>
-      }
+      keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
           {/* CTA */}
@@ -135,72 +196,7 @@ export default function ArticleApiMeubles() {
           </div>
         </>
       }
-      sources={
-        <>
-          {/* Sources officielles */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <h2 className="text-h4 mb-3">Sources officielles</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Cet article s&apos;appuie sur les textes et ressources officiels suivants.
-            </p>
-            <ol className="space-y-3 text-sm text-gray-600">
-              {[
-                {
-                  label:
-                    'Direction générale des Entreprises — API Meublés, guichet unique de centralisation des données d\u2019activité des intermédiaires de meublés de tourisme',
-                  url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
-                },
-                {
-                  label:
-                    'Légifrance — Code du tourisme, article L.324-1-1, version applicable à partir du 20 mai 2026',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623378/2026-05-20',
-                },
-                {
-                  label:
-                    'Légifrance — Code du tourisme, article L.324-1-1, version en vigueur jusqu\u2019au 20 mai 2026',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650414',
-                },
-                {
-                  label: 'Service-Public — Déclarer en mairie un meublé de tourisme',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/R14321',
-                },
-                {
-                  label:
-                    'Service-Public — Formulaire Cerfa n°14004, déclaration en mairie des meublés de tourisme',
-                  url: 'https://www.service-public.fr/particuliers/vosdroits/R76417',
-                },
-                {
-                  label:
-                    'Légifrance — Code du tourisme, article L.324-1-1, version en vigueur depuis le 20 mai 2026 : déclaration des meublés de tourisme, téléservice national, numéro de déclaration et sanctions',
-                  url: 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042070525/2026-05-23',
-                },
-                {
-                  label:
-                    'Légifrance — Décret n° 2026-196 du 19 mars 2026 relatif à la transmission des données par les intermédiaires aux communes et EPCI',
-                  url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703509',
-                },
-                {
-                  label:
-                    'Légifrance — Décret n° 2026-197 du 19 mars 2026 portant création du traitement automatisé API Meublés',
-                  url: 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053703549',
-                },
-              ].map(({ label, url }, i) => (
-                <li key={url} className="flex gap-2">
-                  <span className="text-primary-400 font-medium shrink-0">{i + 1}.</span>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="break-words hover:text-primary-400 transition-colors"
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </>
-      }
+      sources={articleSources}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="le-vrai-changement-tout-le-monde-devra-declarer-son-meuble">
