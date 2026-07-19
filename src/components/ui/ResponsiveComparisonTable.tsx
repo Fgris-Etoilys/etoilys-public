@@ -104,10 +104,14 @@ export default function ResponsiveComparisonTable({
                   return (
                     <div
                       key={`${row.key}-${column.key}`}
-                      className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3"
+                      className="grid grid-cols-[minmax(0,8.5rem)_minmax(0,1fr)] items-start gap-3"
                     >
-                      <dt className={mobileLabelClassName}>{column.mobileLabel ?? column.label}</dt>
-                      <dd className={`${mobileValueClassName} ${alignment.mobileValue}`}>
+                      <dt className={`min-w-0 break-words ${mobileLabelClassName}`}>
+                        {column.mobileLabel ?? column.label}
+                      </dt>
+                      <dd
+                        className={`min-w-0 break-words ${mobileValueClassName} ${alignment.mobileValue}`}
+                      >
                         {value}
                       </dd>
                     </div>
