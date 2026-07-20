@@ -855,7 +855,9 @@ describe('SimulationClassement', () => {
       screen.queryByRole('heading', { name: /résultat à recalculer/i })
     ).not.toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /résultat/i })).not.toBeDisabled();
-    expect(scrollToMock).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    await waitFor(() => {
+      expect(scrollToMock).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' });
+    });
   }, 15_000);
 
   it('recharge le modèle de grille du nouveau classement avant un recalcul automatique', async () => {
