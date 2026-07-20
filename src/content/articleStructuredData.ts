@@ -64,7 +64,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
   },
   {
     path: '/actualites/airbnb-residence-principale-limite-90-jours',
-    headline: 'Airbnb en résidence principale : qui est concerné par la limite des 90 jours',
+    headline: 'Airbnb en résidence principale : la limite des 90 jours, qui est concerné ?',
     description:
       "La limite des 90 jours ne s'applique pas partout automatiquement. Points de contexte et conditions locales.",
     datePublished: '2026-03-27',

@@ -1205,6 +1205,12 @@ Couvrir :
 **Priorité : P3**
 **Dépendances : Tickets 2, 4, 5 et 7**
 
+**Statut : reporté à une phase ultérieure par décision utilisateur.**
+
+Le ticket 8 n'est pas marqué terminé. La QA finale du ticket 9 peut être clôturée sans cette
+instrumentation ; les contrôles PostHog propres à l'expérience Actualités sont donc non
+applicables tant que ce ticket reste reporté.
+
 ## Objectif
 
 Mesurer si les nouvelles fonctions améliorent réellement la navigation, au lieu de conclure qu’elles sont formidables parce qu’elles ont de jolies bordures arrondies.
@@ -1348,6 +1354,27 @@ Mocker l’utilitaire analytics et vérifier :
 
 **Priorité : P1 pour la mise en production**
 **Dépendances : Tickets 1 à 8**
+
+Note de clôture : par décision utilisateur, le ticket 8 est reporté et ne bloque pas la clôture du
+ticket 9. La fonction « Copier le lien », retirée volontairement du ticket 7, est également non
+applicable et son absence ne constitue pas une régression.
+
+## QA finale du 20 juillet 2026
+
+- Contrôle local des 12 articles actifs et de `/actualites` sur le HTML prerenderé : H1 unique,
+  headings, IDs, ancres de sommaire, sources, liens internes, canonical, robots, Open Graph,
+  sitemap, breadcrumbs et `BlogPosting`.
+- Contrôle Playwright local aux largeurs 390, 768, 1024 et 1440 px : aucun overflow horizontal,
+  une seule variante visible du sommaire, variantes responsive masquées sans élément focusable
+  actif.
+- Smoke test live effectué pour statuts HTTP, canonicals, `X-Robots-Tag`, `robots.txt` et
+  `sitemap.xml`.
+- Corrections appliquées : alignement du `headline` JSON-LD de l'article résidence principale avec
+  son H1 visible, et distinction explicite de `OAI-SearchBot` et `GPTBot` dans `robots.txt`.
+- Non applicable : instrumentation PostHog Actualités du ticket 8 et QA de la fonction « Copier le
+  lien ».
+- Commandes finales exécutées : `npm run typecheck`, `npm run lint`, `npm run test:run`,
+  `npm run build`, `npm run build:seo`, `npm run seo:sitemap`, `npm run prerender`.
 
 ## Objectif
 
