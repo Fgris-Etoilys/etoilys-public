@@ -62,12 +62,12 @@ export default function ResponsiveComparisonTable({
   showPrimaryColumnInMobileDetails = false,
   className = '',
   caption,
-  tableClassName = 'w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm',
+  tableClassName = 'w-full table-fixed text-sm border-collapse rounded-card overflow-hidden shadow-sm',
   desktopWrapperClassName = 'hidden md:block overflow-x-auto',
   headerRowClassName = 'bg-primary-300 text-white',
-  headerCellClassName = 'p-3 font-semibold',
+  headerCellClassName = 'p-3 font-semibold break-words',
   bodyClassName = '',
-  cellClassName = 'p-3',
+  cellClassName = 'p-3 align-top break-words',
   mobileContainerClassName = 'md:hidden space-y-3',
   mobileCardClassName = 'rounded-card border border-gray-200 bg-white p-4 shadow-sm',
   mobileTitleClassName = 'text-sm font-semibold text-gray-900 mb-3',
@@ -84,7 +84,7 @@ export default function ResponsiveComparisonTable({
 
   return (
     <div className={className}>
-      <div className={mobileContainerClassName}>
+      <div className={mobileContainerClassName} data-responsive-comparison-variant="mobile">
         {rows.map((row) => {
           const primaryContent = primaryColumnKey ? row.cells[primaryColumnKey] : null;
           return (
@@ -123,7 +123,7 @@ export default function ResponsiveComparisonTable({
         })}
       </div>
 
-      <div className={desktopWrapperClassName}>
+      <div className={desktopWrapperClassName} data-responsive-comparison-variant="desktop">
         <table className={tableClassName}>
           {caption && <caption className="sr-only">{caption}</caption>}
           <colgroup>

@@ -85,6 +85,38 @@ Passe corrective sans photo dans le shell :
 - espacement entre la fin du corps et le CTA corrigé : suppression du `pb-section` du corps lorsqu’un footer existe, padding haut contrôlé sur le footer, et marge haute du premier slot neutralisée avec `.article-footer-slots` ;
 - validations simples : `npm run typecheck` OK, tests `ArticleLayout` + gouvernance articles OK, lint ciblé TS/TSX OK.
 
+**Statut : terminé le 2026-07-20**
+
+## Avancement du ticket 6 — 2026-07-20
+
+Terminé :
+
+- intégration axe à Vitest via `@chialab/vitest-axe` et `axe-core`, sans dépendance Jest ;
+- ajout de smoke tests axe sur `/actualites` et un article riche, sans désactivation de règle axe ;
+- audit de hiérarchie des titres des articles : H1 unique et succession H2/H3 cohérente ;
+- renforcement de `ResponsiveComparisonTable` : captions, `scope`, classes anti-débordement, marqueurs de variantes responsive ;
+- corrections des tableaux locaux d’articles : captions `sr-only`, `scope="col"`, `scope="row"` ;
+- captions localisées et classes robustes pour les usages simulateurs du tableau partagé ;
+- corrections responsive : `min-w-0` dans `ArticleLayout`, cibles tactiles sur sources/sommaire et bouton cookies, photo auteur décorative `alt=""` ;
+- prise en compte `prefers-reduced-motion` sur scroll du sommaire et rotations d’icônes.
+
+Validations exécutées :
+
+- `npm run typecheck` : OK ;
+- `npm run lint` : OK, avec warning préexistant dans `src/pages/SimulationClassement.tsx` sur `react-hooks/exhaustive-deps` ;
+- `npm run test:run` : OK, 45 fichiers et 390 tests passés ; axe émet en stderr l’avertissement jsdom `HTMLCanvasElement.getContext()` sans règle désactivée ;
+- `npm run build` : OK, avec warning Vite préexistant sur chunks > 500 kB ;
+- `npm run prerender` : OK ;
+- Playwright sur build prerenderé aux largeurs 390, 768, 1024 et 1440 px : `/actualites`, articles DPE/taxe de séjour/préparer visite, simulateurs avant et après calcul ciblé autour des tableaux ; pas d’overflow global, pas d’ID dupliqué, variantes responsive du tableau correctement masquées/affichées et non focusables quand masquées.
+
+Limites restantes :
+
+- warning lint préexistant `SimulationClassement.tsx`, non traité ;
+- warning Vite de taille de chunk, non traité ;
+- avertissement jsdom `canvas.getContext()` pendant les tests axe, non masqué pour éviter de désactiver une règle ;
+- `npm install` signale 1 vulnérabilité low severity, non traitée dans ce ticket ;
+- audit global des formulaires et parcours simulateurs hors `ResponsiveComparisonTable` non inclus conformément au périmètre.
+
 ## Objectif
 
 Uniformiser la structure du haut et du bas de tous les articles en créant ou en consolidant un composant de mise en page partagé.

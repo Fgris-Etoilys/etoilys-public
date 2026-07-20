@@ -61,6 +61,8 @@ describe('ArticleSources', () => {
     expect(summary).toHaveTextContent("Afficher l'autre source");
     expect(summary).toHaveTextContent('Masquer les sources supplémentaires');
     expect(summary?.tagName).toBe('SUMMARY');
+    expect(summary).toHaveClass('min-h-11');
+    expect(summary?.querySelector('svg')).toHaveClass('motion-reduce:transition-none');
 
     summary?.focus();
     expect(document.activeElement).toBe(summary);

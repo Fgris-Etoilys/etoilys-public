@@ -80,10 +80,13 @@ export default function ArticleSources({
       <SourceList sources={visibleSources} />
       {hiddenCount > 0 && (
         <details className="group mt-4 rounded-card border border-gray-200 bg-gray-50 px-4 py-3">
-          <summary className="flex min-h-8 cursor-pointer list-none items-center justify-between gap-3 rounded-lg text-sm font-semibold text-themePrimary-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 [&::-webkit-details-marker]:hidden">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-lg text-sm font-semibold text-themePrimary-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 [&::-webkit-details-marker]:hidden">
             <span className="group-open:hidden">{closedSummaryLabel}</span>
             <span className="hidden group-open:inline">Masquer les sources supplémentaires</span>
-            <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
+            <ChevronDown
+              aria-hidden="true"
+              className="h-5 w-5 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
+            />
           </summary>
           <div className="mt-3 border-t border-gray-200 pt-3">
             <SourceList sources={hiddenSources} startIndex={VISIBLE_SOURCE_COUNT} />

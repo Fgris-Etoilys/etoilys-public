@@ -382,6 +382,9 @@ export default function ArticleFacturationElectronique2026() {
       </p>
       <div className="overflow-x-auto mb-8">
         <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+          <caption className="sr-only">
+            Obligations de facturation électronique selon la situation du loueur
+          </caption>
           <colgroup>
             <col className="w-[28%]" />
             <col className="w-[18%]" />
@@ -391,16 +394,28 @@ export default function ArticleFacturationElectronique2026() {
           </colgroup>
           <thead>
             <tr className="bg-primary-300 text-white">
-              <th className="p-3 text-left font-semibold">Situation</th>
-              <th className="p-3 text-center font-semibold">Réception à partir du 01/09/2026</th>
-              <th className="p-3 text-center font-semibold">Émission</th>
-              <th className="p-3 text-center font-semibold">E-reporting</th>
-              <th className="p-3 text-left font-semibold">Ce que vous devez faire</th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Situation
+              </th>
+              <th scope="col" className="p-3 text-center font-semibold">
+                Réception à partir du 01/09/2026
+              </th>
+              <th scope="col" className="p-3 text-center font-semibold">
+                Émission
+              </th>
+              <th scope="col" className="p-3 text-center font-semibold">
+                E-reporting
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Ce que vous devez faire
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr className="bg-white border-b border-gray-100">
-              <td className="p-3 text-gray-700 font-medium">Loueur en meublé classique exonéré</td>
+              <th scope="row" className="p-3 text-gray-700 font-medium">
+                Loueur en meublé classique exonéré
+              </th>
               <td className="p-3 text-center text-gray-600">Oui, si vous avez un SIREN</td>
               <td className="p-3 text-center text-gray-500">Non pour les séjours exonérés</td>
               <td className="p-3 text-center text-gray-500">Non pour ces opérations exonérées</td>
@@ -410,9 +425,9 @@ export default function ArticleFacturationElectronique2026() {
               </td>
             </tr>
             <tr className="bg-gray-50">
-              <td className="p-3 text-gray-700 font-medium">
+              <th scope="row" className="p-3 text-gray-700 font-medium">
                 Loueur avec activité taxable à la TVA
-              </td>
+              </th>
               <td className="p-3 text-center text-gray-600">Oui</td>
               <td className="p-3 text-center text-gray-600">
                 Oui selon le calendrier de taille d'entreprise

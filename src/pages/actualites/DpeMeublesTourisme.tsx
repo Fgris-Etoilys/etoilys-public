@@ -360,6 +360,9 @@ export default function ArticleDpeMeublesTourisme() {
       </p>
       <div className="overflow-x-auto mb-6">
         <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+          <caption className="sr-only">
+            Règles DPE selon la situation du logement en 2026 et à partir de 2034
+          </caption>
           <colgroup>
             <col className="w-[30%]" />
             <col className="w-[35%]" />
@@ -367,16 +370,22 @@ export default function ArticleDpeMeublesTourisme() {
           </colgroup>
           <thead>
             <tr className="bg-primary-300 text-white">
-              <th className="p-3 text-left font-semibold">Situation</th>
-              <th className="p-3 text-left font-semibold">En 2026</th>
-              <th className="p-3 text-left font-semibold">À partir du 1er janvier 2034</th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Situation
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                En 2026
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                À partir du 1er janvier 2034
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr className="bg-white border-b border-gray-100">
-              <td className="p-3 text-gray-700 font-medium">
+              <th scope="row" className="p-3 text-gray-700 font-medium">
                 Résidence principale louée occasionnellement
-              </td>
+              </th>
               <td className="p-3 text-gray-600">
                 Pas d&apos;obligation générale de DPE liée au seul fait de louer en meublé de
                 tourisme. Il faut vérifier les règles locales applicables.
@@ -387,9 +396,9 @@ export default function ArticleDpeMeublesTourisme() {
               </td>
             </tr>
             <tr className="bg-gray-50 border-b border-gray-100">
-              <td className="p-3 text-gray-700 font-medium">
+              <th scope="row" className="p-3 text-gray-700 font-medium">
                 Logement soumis à autorisation préalable de changement d&apos;usage
-              </td>
+              </th>
               <td className="p-3 text-gray-600">
                 DPE à présenter pour obtenir l&apos;autorisation. En métropole, le niveau exigé est
                 compris entre A et E.
@@ -399,9 +408,9 @@ export default function ArticleDpeMeublesTourisme() {
               </td>
             </tr>
             <tr className="bg-white">
-              <td className="p-3 text-gray-700 font-medium">
+              <th scope="row" className="p-3 text-gray-700 font-medium">
                 Meublé de tourisme qui n&apos;est pas la résidence principale du loueur
-              </td>
+              </th>
               <td className="p-3 text-gray-600">
                 Pas encore soumis à la règle générale de décence énergétique du code du tourisme.
                 Attention toutefois aux règles locales et au changement d&apos;usage.

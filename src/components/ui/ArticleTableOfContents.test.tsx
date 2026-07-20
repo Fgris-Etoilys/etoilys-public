@@ -38,7 +38,10 @@ describe('ArticleTableOfContents', () => {
 
     const details = container.querySelector('details');
     expect(details).toHaveClass('xl:hidden');
+    expect(details).toHaveClass('group');
     expect(screen.getByText('Dans cet article')).toBeInTheDocument();
+    expect(details?.querySelector('summary')).toHaveClass('min-h-11');
+    expect(details?.querySelector('svg')).toHaveClass('motion-reduce:transition-none');
 
     details?.setAttribute('open', '');
     const link = screen.getByRole('link', { name: 'Deuxième section' });
@@ -47,6 +50,33 @@ describe('ArticleTableOfContents', () => {
 
     expect(details).not.toHaveAttribute('open');
     expect(link).toHaveAttribute('aria-current', 'location');
+  });
+
+  it('disables smooth scroll when the user prefers reduced motion', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query === '(prefers-reduced-motion: reduce)',
+      media: query,
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    render(
+      <>
+        <ArticleTableOfContents items={tableOfContents} variant="desktop" />
+        <ArticleSectionHeading id="section-one">Section one</ArticleSectionHeading>
+      </>
+    );
+
+    fireEvent.click(screen.getByRole('link', { name: 'Première section' }));
+
+    expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalledWith({
+      behavior: 'auto',
+      block: 'start',
+    });
   });
 
   it('uses the URL fragment as the active section when available', () => {

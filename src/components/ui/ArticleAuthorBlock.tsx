@@ -10,7 +10,7 @@ export default function ArticleAuthorBlock({ author }: ArticleAuthorBlockProps) 
       <div className="flex gap-4 rounded-card border border-gray-200 bg-primary-100/40 px-5 py-4">
         <img
           src={author.imageSrc}
-          alt={author.imageAlt}
+          alt=""
           width="320"
           height="320"
           loading="lazy"

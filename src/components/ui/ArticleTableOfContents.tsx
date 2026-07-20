@@ -154,11 +154,14 @@ export default function ArticleTableOfContents({ items, variant }: ArticleTableO
   return (
     <details
       ref={mobileDetailsRef}
-      className="mb-10 rounded-card border border-primary-200 bg-primary-100/60 p-4 xl:hidden"
+      className="group mb-10 rounded-card border border-primary-200 bg-primary-100/60 p-4 xl:hidden"
     >
       <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-lg text-base font-semibold text-themePrimary-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 [&::-webkit-details-marker]:hidden">
         <span>Dans cet article</span>
-        <ChevronDown aria-hidden="true" className="h-5 w-5 shrink-0" />
+        <ChevronDown
+          aria-hidden="true"
+          className="h-5 w-5 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
+        />
       </summary>
       <nav aria-label="Sommaire de l’article" className="mt-3 border-t border-primary-200 pt-3">
         {links}

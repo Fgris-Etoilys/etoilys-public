@@ -286,6 +286,9 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
 
       <div className="overflow-x-auto mb-4">
         <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+          <caption className="sr-only">
+            Seuils et abattements micro-BIC applicables selon la catégorie de recettes
+          </caption>
           <colgroup>
             <col className="w-2/5" />
             <col className="w-1/5" />
@@ -294,29 +297,37 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </colgroup>
           <thead>
             <tr className="bg-primary-300 text-white">
-              <th className="p-3 text-left font-semibold">Catégorie de recettes</th>
-              <th className="p-3 text-center font-semibold">
+              <th scope="col" className="p-3 text-left font-semibold">
+                Catégorie de recettes
+              </th>
+              <th scope="col" className="p-3 text-center font-semibold">
                 Revenus 2025
                 <br />
                 <span className="font-normal text-xs">(déclarés en 2026)</span>
               </th>
-              <th className="p-3 text-center font-semibold">
+              <th scope="col" className="p-3 text-center font-semibold">
                 Revenus 2026
                 <br />
                 <span className="font-normal text-xs">(déclarés en 2027)</span>
               </th>
-              <th className="p-3 text-center font-semibold">Abattement micro</th>
+              <th scope="col" className="p-3 text-center font-semibold">
+                Abattement micro
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr className="bg-white border-b border-gray-100">
-              <td className="p-3 text-gray-700 font-medium">Meublés de tourisme non classés</td>
+              <th scope="row" className="p-3 text-gray-700 font-medium">
+                Meublés de tourisme non classés
+              </th>
               <td className="p-3 text-center text-gray-600">15&nbsp;000&nbsp;€</td>
               <td className="p-3 text-center text-gray-600">15&nbsp;000&nbsp;€</td>
               <td className="p-3 text-center font-semibold text-gray-700">30&nbsp;%</td>
             </tr>
             <tr className="bg-gray-50">
-              <td className="p-3 text-gray-700 font-medium">Meublés de tourisme classés</td>
+              <th scope="row" className="p-3 text-gray-700 font-medium">
+                Meublés de tourisme classés
+              </th>
               <td className="p-3 text-center text-gray-600">77&nbsp;700&nbsp;€</td>
               <td className="p-3 text-center font-semibold text-primary-400">83&nbsp;600&nbsp;€</td>
               <td className="p-3 text-center font-semibold text-gray-700">50&nbsp;%</td>

@@ -299,21 +299,30 @@ export default function ArticleCoproprieteLocationTouristique() {
       {/* Tableau */}
       <div className="overflow-x-auto mb-8">
         <table className="w-full text-sm border-collapse">
+          <caption className="sr-only">
+            Règles de copropriété applicables aux meublés de tourisme selon la situation
+          </caption>
           <thead>
             <tr className="bg-primary-300 text-white">
-              <th className="p-3 text-left font-semibold">Situation</th>
-              <th className="p-3 text-left font-semibold">
+              <th scope="col" className="p-3 text-left font-semibold">
+                Situation
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
                 Ce que le règlement / la copro peut faire
               </th>
-              <th className="p-3 text-left font-semibold">Condition ou majorité</th>
-              <th className="p-3 text-left font-semibold">Ce que cela change pour vous</th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Condition ou majorité
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Ce que cela change pour vous
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr className="bg-white border-b border-primary-200">
-              <td className="p-3 font-semibold text-primary-400">
+              <th scope="row" className="p-3 font-semibold text-primary-400">
                 Règlement établi depuis le 21 novembre 2024
-              </td>
+              </th>
               <td className="p-3 text-gray-700">
                 Doit mentionner explicitement l'autorisation ou l'interdiction des meublés de
                 tourisme
@@ -324,7 +333,9 @@ export default function ArticleCoproprieteLocationTouristique() {
               </td>
             </tr>
             <tr className="bg-primary-100 border-b border-primary-200">
-              <td className="p-3 font-semibold text-gray-900">Règlement plus ancien</td>
+              <th scope="row" className="p-3 font-semibold text-gray-900">
+                Règlement plus ancien
+              </th>
               <td className="p-3 text-gray-700">
                 Peut déjà contenir des clauses liées à la destination de l'immeuble ou à
                 l'interdiction d'activités commerciales
@@ -335,9 +346,9 @@ export default function ArticleCoproprieteLocationTouristique() {
               </td>
             </tr>
             <tr className="bg-white border-b border-primary-200">
-              <td className="p-3 font-semibold text-gray-900">
+              <th scope="row" className="p-3 font-semibold text-gray-900">
                 Modification du règlement existant
-              </td>
+              </th>
               <td className="p-3 text-gray-700">
                 Peut, dans certains cas, interdire certains meublés de tourisme (lots d'habitation
                 hors résidence principale, si le règlement interdit déjà toute activité commerciale)
@@ -348,7 +359,9 @@ export default function ArticleCoproprieteLocationTouristique() {
               </td>
             </tr>
             <tr className="bg-primary-100">
-              <td className="p-3 font-semibold text-gray-900">Lot déclaré en meublé de tourisme</td>
+              <th scope="row" className="p-3 font-semibold text-gray-900">
+                Lot déclaré en meublé de tourisme
+              </th>
               <td className="p-3 text-gray-700">Obligation d'information du syndic</td>
               <td className="p-3 text-gray-700">Déclaration du lot au titre du code du tourisme</td>
               <td className="p-3 text-gray-700">

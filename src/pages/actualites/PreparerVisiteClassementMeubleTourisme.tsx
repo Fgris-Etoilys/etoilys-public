@@ -329,8 +329,8 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
           },
         ]}
         caption="Exemples de critères selon la catégorie de classement demandée"
-        tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
-        cellClassName="p-3 align-middle"
+        tableClassName="w-full table-fixed text-sm border-collapse rounded-card overflow-hidden shadow-sm"
+        cellClassName="p-3 align-middle break-words"
         mobileValueClassName="text-sm text-gray-900 text-right"
       />
 
@@ -530,8 +530,8 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
           },
         ]}
         caption="Services proposés aux voyageurs à rendre vérifiables par écrit"
-        tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
-        cellClassName="p-3 align-middle"
+        tableClassName="w-full table-fixed text-sm border-collapse rounded-card overflow-hidden shadow-sm"
+        cellClassName="p-3 align-middle break-words"
       />
       <p className="text-gray-700 leading-comfortable mb-4">
         Ces prestations peuvent être gratuites ou payantes. L’important est qu’elles soient

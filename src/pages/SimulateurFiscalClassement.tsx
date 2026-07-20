@@ -1282,15 +1282,20 @@ export default function SimulateurFiscalClassement() {
                     )}
 
                     <ResponsiveComparisonTable
+                      caption={
+                        locale === 'en'
+                          ? 'Tax comparison between classified and unclassified furnished tourist accommodation'
+                          : 'Comparatif fiscal entre meublé classé et non classé'
+                      }
                       columns={tableColumns}
                       rows={tableRows}
                       primaryColumnKey="metric"
                       showPrimaryColumnInMobileDetails={false}
-                      tableClassName="w-full border-collapse rounded-card text-sm shadow-sm"
+                      tableClassName="w-full table-fixed border-collapse rounded-card text-sm shadow-sm"
                       desktopWrapperClassName="hidden overflow-x-auto md:block"
                       headerRowClassName="bg-primary-300 text-white"
-                      headerCellClassName="p-3 font-semibold"
-                      cellClassName="p-3"
+                      headerCellClassName="p-3 font-semibold break-words"
+                      cellClassName="p-3 align-top break-words"
                       mobileContainerClassName="space-y-3 md:hidden"
                       mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
                       mobileTitleClassName="mb-3 text-sm font-semibold text-gray-900"

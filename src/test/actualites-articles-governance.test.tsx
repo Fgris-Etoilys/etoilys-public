@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import App from '../App';
 import {
@@ -15,6 +15,10 @@ import { getArticleStructuredData } from '../content/articleStructuredData';
 function renderAt(pathname: string) {
   window.history.pushState({}, 'Article test', pathname);
   return render(<App />);
+}
+
+function getHeadingLevel(heading: Element): number {
+  return Number(heading.tagName.replace(/^H/i, ''));
 }
 
 describe('actualites article governance', () => {
@@ -37,15 +41,57 @@ describe('actualites article governance', () => {
     actualitesArticlesByRecency.forEach((article) => {
       const { unmount } = renderAt(article.href);
       const headings = screen.getAllByRole('heading', { level: 1 });
+      const articleElement = screen.getByRole('article', { name: article.title });
 
       expect(headings).toHaveLength(1);
       expect(headings[0]).toHaveTextContent(article.title);
-      expect(screen.getByRole('article', { name: article.title })).toBeInTheDocument();
+      expect(articleElement).toBeInTheDocument();
       expect(screen.getByRole('heading', { level: 2, name: 'À lire aussi' })).toBeInTheDocument();
       expect(
         screen.getByRole('heading', { level: 2, name: 'Florian Grisorio' })
       ).toBeInTheDocument();
       expect(screen.queryByText('Lire plus')).not.toBeInTheDocument();
+
+      const articleHeadings = Array.from(articleElement.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+
+      expect(articleHeadings[0]).toHaveTextContent(article.title);
+      articleHeadings.reduce((previousLevel, heading) => {
+        const currentLevel = getHeadingLevel(heading);
+
+        expect(currentLevel, `${article.href}: ${heading.textContent}`).toBeLessThanOrEqual(
+          previousLevel + 1
+        );
+
+        return currentLevel;
+      }, 0);
+
+      unmount();
+    });
+  }, 10000);
+
+  it('keeps rendered article tables named and associated with column and row headers', () => {
+    actualitesArticlesByRecency.forEach((article) => {
+      const { unmount } = renderAt(article.href);
+      const articleElement = screen.getByRole('article', { name: article.title });
+      const tables = within(articleElement).queryAllByRole('table');
+
+      tables.forEach((table) => {
+        expect(table, article.href).toHaveAccessibleName();
+        expect(within(table).getAllByRole('columnheader').length, article.href).toBeGreaterThan(0);
+        expect(within(table).getAllByRole('rowheader').length, article.href).toBeGreaterThan(0);
+
+        within(table)
+          .getAllByRole('columnheader')
+          .forEach((header) => {
+            expect(header).toHaveAttribute('scope', 'col');
+          });
+
+        within(table)
+          .getAllByRole('rowheader')
+          .forEach((header) => {
+            expect(header).toHaveAttribute('scope', 'row');
+          });
+      });
 
       unmount();
     });

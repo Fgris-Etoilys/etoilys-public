@@ -60,10 +60,13 @@ describe('Actualites page', () => {
     expect(screen.queryByRole('button', { name: 'Classement' })).not.toBeInTheDocument();
 
     ACTUALITES_CATEGORY_FILTERS.forEach((filter) => {
-      expect(getFilterButton(filter.value)).toHaveAttribute(
+      const button = getFilterButton(filter.value);
+
+      expect(button).toHaveAttribute(
         'aria-pressed',
         filter.value === 'fiscalite' ? 'true' : 'false'
       );
+      expect(button).toHaveClass('min-h-11', 'motion-reduce:transition-none');
     });
   });
 

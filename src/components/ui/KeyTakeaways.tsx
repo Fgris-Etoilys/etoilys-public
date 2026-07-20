@@ -106,11 +106,11 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
           columns={[...props.columns]}
           rows={[...props.rows]}
           caption={props.caption}
-          tableClassName="w-full border-collapse text-sm"
+          tableClassName="w-full table-fixed border-collapse text-sm"
           desktopWrapperClassName="hidden overflow-x-auto md:block"
           headerRowClassName="bg-primary-300 text-white"
-          headerCellClassName="p-3 font-semibold"
-          cellClassName="p-3"
+          headerCellClassName="p-3 font-semibold break-words"
+          cellClassName="p-3 align-top break-words"
           mobileContainerClassName="space-y-3 md:hidden"
           mobileCardClassName="rounded-card border border-primary-200 bg-white p-4 shadow-sm"
           mobileTitleClassName="mb-3 text-sm font-semibold text-gray-900"

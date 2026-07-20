@@ -332,6 +332,9 @@ export default function ArticleTaxeDeSejour2026() {
       </p>
       <div className="overflow-x-auto mb-6">
         <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+          <caption className="sr-only">
+            Fourchettes nationales 2026 de taxe de séjour pour les meublés classés
+          </caption>
           <colgroup>
             <col className="w-1/3" />
             <col className="w-1/3" />
@@ -339,9 +342,15 @@ export default function ArticleTaxeDeSejour2026() {
           </colgroup>
           <thead>
             <tr className="bg-primary-300 text-white">
-              <th className="p-3 text-center font-semibold">Catégorie</th>
-              <th className="p-3 text-center font-semibold">Minimum national</th>
-              <th className="p-3 text-center font-semibold">Maximum national</th>
+              <th scope="col" className="p-3 text-center font-semibold">
+                Catégorie
+              </th>
+              <th scope="col" className="p-3 text-center font-semibold">
+                Minimum national
+              </th>
+              <th scope="col" className="p-3 text-center font-semibold">
+                Maximum national
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -358,7 +367,9 @@ export default function ArticleTaxeDeSejour2026() {
                 key={cat}
                 className={i % 2 === 0 ? 'bg-white border-b border-gray-100' : 'bg-gray-50'}
               >
-                <td className="p-3 text-center text-gray-700 font-medium">{cat}</td>
+                <th scope="row" className="p-3 text-center text-gray-700 font-medium">
+                  {cat}
+                </th>
                 <td className="p-3 text-center text-gray-600">{min}</td>
                 <td className="p-3 text-center font-semibold text-primary-400">{max}</td>
               </tr>
@@ -481,24 +492,37 @@ export default function ArticleTaxeDeSejour2026() {
       </p>
       <div className="overflow-x-auto mb-6">
         <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+          <caption className="sr-only">
+            Exemples de calcul de taxe de séjour pour un meublé classé et non classé
+          </caption>
           <thead>
             <tr className="bg-primary-300 text-white">
-              <th className="p-3 text-left font-semibold">Situation</th>
-              <th className="p-3 text-left font-semibold">Hypothèses</th>
-              <th className="p-3 text-left font-semibold">Calcul</th>
-              <th className="p-3 text-center font-semibold">Montant</th>
-              <th className="p-3 text-left font-semibold">Ce que ça montre</th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Situation
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Hypothèses
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Calcul
+              </th>
+              <th scope="col" className="p-3 text-center font-semibold">
+                Montant
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
+                Ce que ça montre
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr className="bg-white border-b border-gray-100 align-top">
-              <td className="p-3 text-gray-700 font-medium">
+              <th scope="row" className="p-3 text-gray-700 font-medium">
                 Meublé classé 3★
                 <br />
                 <span className="text-gray-500 font-normal text-xs">
                   (hypothétique, hors taxes additionnelles)
                 </span>
-              </td>
+              </th>
               <td className="p-3 text-gray-600">
                 Commune hors Île-de-France, sans taxe additionnelle. Tarif local voté : 1,20 € par
                 adulte et par nuitée. Séjour de 2 adultes pendant 2 nuits.
@@ -512,13 +536,13 @@ export default function ArticleTaxeDeSejour2026() {
               </td>
             </tr>
             <tr className="bg-gray-50 border-b border-gray-100 align-top">
-              <td className="p-3 text-gray-700 font-medium">
+              <th scope="row" className="p-3 text-gray-700 font-medium">
                 Meublé non classé
                 <br />
                 <span className="text-gray-500 font-normal text-xs">
                   (hypothétique, même commune)
                 </span>
-              </td>
+              </th>
               <td className="p-3 text-gray-600">
                 Séjour à 240 € HT pour 2 adultes pendant 2 nuits. Coût par personne et par nuitée :
                 60 €. Taux voté : 5 %. Plafond local maximal : 2,60 €.
@@ -536,11 +560,11 @@ export default function ArticleTaxeDeSejour2026() {
               </td>
             </tr>
             <tr className="bg-white border-b border-gray-100 align-top">
-              <td className="p-3 text-gray-700 font-medium">
+              <th scope="row" className="p-3 text-gray-700 font-medium">
                 Paris 2026, meublé classé 3★
                 <br />
                 <span className="text-gray-500 font-normal text-xs">(exemple officiel)</span>
-              </td>
+              </th>
               <td className="p-3 text-gray-600">
                 Tarif de base : 1,70 €. Taxe additionnelle départementale (10 %) : 0,17 €.
                 Majoration régionale 15 % : 0,26 €. Majoration 200 % : 3,40 €.
@@ -557,13 +581,13 @@ export default function ArticleTaxeDeSejour2026() {
               </td>
             </tr>
             <tr className="bg-gray-50 align-top">
-              <td className="p-3 text-gray-700 font-medium">
+              <th scope="row" className="p-3 text-gray-700 font-medium">
                 Paris 2026, meublé non classé
                 <br />
                 <span className="text-gray-500 font-normal text-xs">
                   (pédagogique, règles officielles Paris)
                 </span>
-              </td>
+              </th>
               <td className="p-3 text-gray-600">
                 2 adultes, 1 nuit, 200 € HT au total. Coût par personne/nuit : 100 €. Taux appliqué
                 : 5 %. Base théorique : 5 €/adulte/nuit.

@@ -1,5 +1,9 @@
 import '@testing-library/jest-dom/vitest';
-import { vi } from 'vitest';
+import axeMatchers from '@chialab/vitest-axe';
+import type {} from '@chialab/vitest-axe/matchers';
+import { expect, vi } from 'vitest';
+
+expect.extend(axeMatchers);
 
 Object.defineProperty(window, 'scrollTo', {
   writable: true,

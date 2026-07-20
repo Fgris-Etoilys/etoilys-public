@@ -7,10 +7,12 @@ describe('ArticleAuthorBlock', () => {
   it('renders the centralized author profile without a link', () => {
     const author = getArticleAuthor('florian-grisorio');
 
-    render(<ArticleAuthorBlock author={author} />);
+    const { container } = render(<ArticleAuthorBlock author={author} />);
 
     expect(screen.getByRole('heading', { level: 2, name: 'Florian Grisorio' })).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'Florian Grisorio' })).toHaveAttribute(
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(container.querySelector('img')).toHaveAttribute('alt', '');
+    expect(container.querySelector('img')).toHaveAttribute(
       'src',
       expect.stringContaining('florian-grisorio.jpg')
     );

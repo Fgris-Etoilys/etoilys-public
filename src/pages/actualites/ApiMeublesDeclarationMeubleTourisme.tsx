@@ -328,35 +328,46 @@ export default function ArticleApiMeubles() {
       </p>
       <div className="overflow-x-auto mb-6">
         <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+          <caption className="sr-only">
+            Calendrier de transition vers la déclaration nationale API Meublés
+          </caption>
           <colgroup>
             <col className="w-[30%]" />
             <col className="w-[70%]" />
           </colgroup>
           <thead>
             <tr className="bg-primary-300 text-white">
-              <th className="p-3 text-left font-semibold">Date ou période</th>
-              <th className="p-3 text-left font-semibold">
+              <th scope="col" className="p-3 text-left font-semibold">
+                Date ou période
+              </th>
+              <th scope="col" className="p-3 text-left font-semibold">
                 Ce que cela signifie pour le propriétaire
               </th>
             </tr>
           </thead>
           <tbody>
             <tr className="bg-white border-b border-gray-100">
-              <td className="p-3 text-gray-700 font-medium">Jusqu&apos;au 20 mai 2026</td>
+              <th scope="row" className="p-3 text-gray-700 font-medium">
+                Jusqu&apos;au 20 mai 2026
+              </th>
               <td className="p-3 text-gray-600">
                 La déclaration peut encore passer par la démarche en ligne actuelle de
                 Service-Public, par un formulaire ou par le service propre de certaines mairies.
               </td>
             </tr>
             <tr className="bg-gray-50 border-b border-gray-100">
-              <td className="p-3 text-gray-700 font-medium">Depuis le 20 mai 2026</td>
+              <th scope="row" className="p-3 text-gray-700 font-medium">
+                Depuis le 20 mai 2026
+              </th>
               <td className="p-3 text-gray-600">
                 Le nouveau cadre légal est en vigueur, mais le téléservice final API Meublés destiné
                 aux loueurs n&apos;est pas encore ouvert.
               </td>
             </tr>
             <tr className="bg-white">
-              <td className="p-3 text-gray-700 font-medium">Second semestre 2026</td>
+              <th scope="row" className="p-3 text-gray-700 font-medium">
+                Second semestre 2026
+              </th>
               <td className="p-3 text-gray-600">
                 Le téléservice national relié à API Meublés doit permettre aux loueurs de demander
                 leur nouveau numéro d&apos;enregistrement national.

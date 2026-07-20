@@ -12,7 +12,7 @@ export default function CookiePreferencesButton({
   return (
     <button
       type="button"
-      className={className}
+      className={`inline-flex min-h-11 items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2 motion-reduce:transition-none ${className}`}
       onClick={(event) => {
         onClick?.(event);
         if (!event.defaultPrevented) {

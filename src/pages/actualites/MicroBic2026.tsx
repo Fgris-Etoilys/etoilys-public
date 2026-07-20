@@ -314,6 +314,7 @@ export default function ArticleMicroBic2026() {
 
       <ResponsiveComparisonTable
         className="mb-8"
+        caption="Comparatif des seuils et abattements micro-BIC selon la période"
         primaryColumnKey="periode"
         columns={[
           {
@@ -420,11 +421,11 @@ export default function ArticleMicroBic2026() {
             },
           },
         ]}
-        tableClassName="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm"
+        tableClassName="w-full table-fixed text-sm border-collapse rounded-card overflow-hidden shadow-sm"
         desktopWrapperClassName="hidden md:block"
         headerRowClassName="bg-primary-300 text-white"
-        headerCellClassName="p-3 font-semibold"
-        cellClassName="p-3"
+        headerCellClassName="p-3 font-semibold break-words"
+        cellClassName="p-3 align-top break-words"
         mobileContainerClassName="md:hidden space-y-3"
         mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
         mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
