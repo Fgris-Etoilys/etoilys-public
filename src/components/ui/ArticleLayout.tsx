@@ -6,7 +6,10 @@ import {
   getArticleCategoryLabel,
   type ActualiteArticle,
 } from '../../content/actualitesArticles';
+import type { ArticleAuthor } from '../../content/articleAuthors';
 import { formatFrenchDate } from '../../content/dateFormatting';
+import ArticleAuthorBlock from './ArticleAuthorBlock';
+import ArticleRelatedArticles from './ArticleRelatedArticles';
 import ArticleTableOfContents, { type ArticleTableOfContentsItem } from './ArticleTableOfContents';
 
 export type ArticleLayoutArticle = Omit<ActualiteArticle, 'date' | 'imageKey' | 'updatedDate'>;
@@ -19,7 +22,9 @@ interface ArticleLayoutProps {
   children: ReactNode;
   footerCta?: ReactNode;
   sources?: ReactNode;
-  relatedArticles?: ReactNode;
+  relatedArticles?: readonly ActualiteArticle[];
+  relatedArticlesSlot?: ReactNode;
+  author?: ArticleAuthor;
   authorBlock?: ReactNode;
 }
 
@@ -41,12 +46,20 @@ export default function ArticleLayout({
   footerCta,
   sources,
   relatedArticles,
+  relatedArticlesSlot,
+  author,
   authorBlock,
 }: ArticleLayoutProps) {
   const headingId = buildHeadingId(article.href);
   const updatedAt =
     article.updatedAt && article.updatedAt !== article.publishedAt ? article.updatedAt : null;
-  const hasFooter = Boolean(footerCta || sources || relatedArticles || authorBlock);
+  const relatedArticlesNode =
+    relatedArticlesSlot ??
+    (relatedArticles && relatedArticles.length > 0 ? (
+      <ArticleRelatedArticles articles={relatedArticles} />
+    ) : null);
+  const authorBlockNode = authorBlock ?? (author ? <ArticleAuthorBlock author={author} /> : null);
+  const hasFooter = Boolean(footerCta || sources || relatedArticlesNode || authorBlockNode);
   const shouldShowTableOfContents =
     tableOfContents.length > 0 && (tableOfContents.length >= 5 || article.readingTimeMinutes >= 6);
 
@@ -120,11 +133,11 @@ export default function ArticleLayout({
         <footer className="bg-white pb-section pt-10 sm:pt-12">
           <div className="container-adaptive">
             <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
-              <div className="article-footer-slots mx-auto max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
+              <div className="article-footer-slots mx-auto w-full min-w-0 max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
                 {footerCta}
                 {sources}
-                {relatedArticles}
-                {authorBlock}
+                {relatedArticlesNode}
+                {authorBlockNode}
               </div>
             </div>
           </div>

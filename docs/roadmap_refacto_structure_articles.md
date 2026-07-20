@@ -242,41 +242,6 @@ npm run prerender
 
 **Statut : terminé le 2026-07-19**
 
-## Avancement du ticket 3 - 2026-07-19
-
-Terminé :
-
-- création de `src/components/ui/KeyTakeaways.tsx` avec API discriminée `bullets`, `metrics`, `comparison` et `warning` ;
-- sémantique HTML explicite : `ul/li` pour `bullets`, `dl/dt/dd` pour `metrics`, réutilisation de `ResponsiveComparisonTable` pour `comparison`, `aside` identifiable pour `warning` ;
-- validation explicite en développement : maximum 5 items textuels/metrics/compléments et 2 ou 3 lignes comparées pour `comparison`, sans troncature silencieuse ;
-- création de `src/components/ui/ArticleSources.tsx` avec section autonome, H2 exact `Sources officielles`, id stable `sources-officielles`, liste sémantique, `details/summary` au-delà de 3 sources et indication accessible d'ouverture dans un nouvel onglet ;
-- migration des 12 articles Actualités vers `KeyTakeaways` et `ArticleSources`, avec données conservées localement dans chaque fichier article près du `tableOfContents` ;
-- aucun cas de contenu complémentaire hors composant n'a été nécessaire : les blocs existants rentrent dans l'API sans perte ;
-- les cas comparatifs Micro-BIC et résidence principale 90 jours utilisent `ResponsiveComparisonTable`, sans nouveau système concurrent ;
-- correction documentaire de `CLAUDE.md` : React 19 au lieu de React 18.
-
-Validations exécutées :
-
-- `npm run typecheck` : OK ;
-- `npm run lint` : OK, avec une warning préexistante hors ticket dans `src/pages/SimulationClassement.tsx` sur `gridProgressSummary` ;
-- `npm run test:run` : OK, 40 fichiers de tests, 365 tests ;
-- `npm run build` : OK, avec warning Vite existant sur la taille d'un chunk ;
-- `npm run prerender` : OK, articles Actualités inclus ;
-- vérification UTF-8 sans BOM et absence de marqueurs de mojibake sur les 19 fichiers touchés : OK.
-
-Vérification responsive documentée :
-
-- Playwright sur build `dist`, serveur statique éphémère, viewports 390, 768, 1024 et 1440 px ;
-- pages testées : Micro-BIC 2026, résidence principale 90 jours, Que faire après classement ;
-- contrôles : absence d'overflow horizontal, présence des tableaux comparatifs, longues URLs de sources contenues, section sources présente, bloc repliable présent quand plus de 3 sources.
-
-Limites restantes :
-
-- warning lint préexistante dans `SimulationClassement.tsx`, non traitée dans ce ticket ;
-- warning Vite de taille de chunk au build, non liée à la standardisation des articles.
-
-**Statut : terminé le 2026-07-19**
-
 ## Avancement du ticket 2 — 2026-07-19
 
 Terminé :
@@ -408,6 +373,41 @@ Couvrir :
 **Priorité : P1**
 **Dépendance : Ticket 1**
 
+**Statut : terminé le 2026-07-19**
+
+## Avancement du ticket 3 — 2026-07-19
+
+Terminé :
+
+- création de `src/components/ui/KeyTakeaways.tsx` avec API discriminée `bullets`, `metrics`, `comparison` et `warning` ;
+- sémantique HTML explicite : `ul/li` pour `bullets`, `dl/dt/dd` pour `metrics`, réutilisation de `ResponsiveComparisonTable` pour `comparison`, `aside` identifiable pour `warning` ;
+- validation explicite en développement : maximum 5 items textuels/metrics/compléments et 2 ou 3 lignes comparées pour `comparison`, sans troncature silencieuse ;
+- création de `src/components/ui/ArticleSources.tsx` avec section autonome, H2 exact `Sources officielles`, id stable `sources-officielles`, liste sémantique, `details/summary` au-delà de 3 sources et indication accessible d'ouverture dans un nouvel onglet ;
+- migration des 12 articles Actualités vers `KeyTakeaways` et `ArticleSources`, avec données conservées localement dans chaque fichier article près du `tableOfContents` ;
+- aucun cas de contenu complémentaire hors composant n'a été nécessaire : les blocs existants rentrent dans l'API sans perte ;
+- les cas comparatifs Micro-BIC et résidence principale 90 jours utilisent `ResponsiveComparisonTable`, sans nouveau système concurrent ;
+- correction documentaire de `CLAUDE.md` : React 19 au lieu de React 18.
+
+Validations exécutées :
+
+- `npm run typecheck` : OK ;
+- `npm run lint` : OK, avec une warning préexistante hors ticket dans `src/pages/SimulationClassement.tsx` sur `gridProgressSummary` ;
+- `npm run test:run` : OK, 40 fichiers de tests, 365 tests ;
+- `npm run build` : OK, avec warning Vite existant sur la taille d'un chunk ;
+- `npm run prerender` : OK, articles Actualités inclus ;
+- vérification UTF-8 sans BOM et absence de marqueurs de mojibake sur les 19 fichiers touchés : OK.
+
+Vérification responsive documentée :
+
+- Playwright sur build `dist`, serveur statique éphémère, viewports 390, 768, 1024 et 1440 px ;
+- pages testées : Micro-BIC 2026, résidence principale 90 jours, Que faire après classement ;
+- contrôles : absence d'overflow horizontal, présence des tableaux comparatifs, longues URLs de sources contenues, section sources présente, bloc repliable présent quand plus de 3 sources.
+
+Limites restantes :
+
+- warning lint préexistante dans `SimulationClassement.tsx`, non traitée dans ce ticket ;
+- warning Vite de taille de chunk au build, non liée à la standardisation des articles.
+
 ## Objectif
 
 Créer deux composants partagés qui conservent la souplesse des articles tout en donnant au lecteur des repères visuels constants.
@@ -534,6 +534,56 @@ Couvrir :
 
 **Priorité : P1**
 **Dépendances : Tickets 1 et 3**
+
+**Statut : terminé le 2026-07-20**
+
+## Avancement du ticket 4 — 2026-07-20
+
+Terminé :
+
+- ajout d'un registre central `src/content/articleAuthors.ts`, identifié par `authorId`, utilisé par les métadonnées visibles, le bloc auteur et les données structurées ;
+- bascule des données structurées d'article vers `authorId`, avec mise à jour du layout global et du prerender SEO ;
+- ajout de `relatedArticleSlugs` dans les métadonnées centrales des 12 articles, avec le mapping éditorial validé et l'ajustement API Meublés vers l'article général 2025-2026 ;
+- ajout de `getRelatedArticles(article)` avec sélection manuelle autoritative, fallback uniquement en absence de sélection, exclusion de l'article courant, déduplication et limite à 3 articles ;
+- validation des configurations de contenus connexes en test, développement et prerender, avec rendu production tolérant pour éviter une exception visible visiteur ;
+- création de `ArticleRelatedArticles` avec structure `section` + `h2` + `ul/li`, liens accessibles, dates `Publié le` / `Mis à jour le`, rail mobile natif sans rotation automatique et grille desktop ;
+- création de `ArticleAuthorBlock` compact sans lien auteur, avec monogramme `FG` ;
+- branchement des 12 pages d'articles via props typées `relatedArticles` et `author`, sans logique éditoriale implicite dans `ArticleLayout` ;
+- conservation de l'ordre de fin d'article : CTA, sources, articles connexes, bloc auteur.
+
+Validations exécutées :
+
+- `npm run typecheck` : OK ;
+- `npm run lint` : OK, avec le warning préexistant dans `src/pages/SimulationClassement.tsx` sur `react-hooks/exhaustive-deps` ;
+- `npm run test:run` : OK, 43 fichiers de tests et 374 tests passés ;
+- `npm run build` : OK, avec le warning Vite existant sur des chunks supérieurs à 500 kB ;
+- `npm run prerender` : OK, toutes les routes d'articles Actualités ont été générées ;
+- vérification UTF-8 sans BOM et absence de marqueurs de mojibake sur les fichiers touchés : OK.
+
+Limites restantes :
+
+- warning lint préexistante dans `SimulationClassement.tsx`, non traitée dans ce ticket ;
+- warning Vite de taille de chunk au build, non lié aux contenus connexes ni au bloc auteur ;
+- refonte globale de la page `/actualites`, de `ArticleCard` et du libellé `Lire plus` conservée pour le ticket 5.
+
+Passe de finition du ticket 4 — 2026-07-20 :
+
+- ajout de `relatedSummary` sur les 12 articles avec les phrases courtes validées pour les cartes connexes ;
+- les cartes connexes utilisent désormais `relatedSummary`, sans troncature par ellipse ni reprise des résumés longs de liste ;
+- padding et typographie des cartes ajustés pour garder des hauteurs homogènes et les CTA alignés ;
+- rail mobile corrigé pour conserver une partie de la carte suivante visible sans créer d'overflow horizontal global ;
+- bloc auteur compacté, contraste de la biographie renforcé, largeur de lecture limitée sur desktop ;
+- photo de Florian Grisorio recadrée proprement depuis la source validée et servie depuis `public/images/authors/florian-grisorio.jpg` ;
+- bio auteur mise à jour sans mention du numéro Cofrac.
+
+Validations de la passe de finition :
+
+- `npm run typecheck` : OK ;
+- `npm run lint` : OK, avec le warning préexistant dans `src/pages/SimulationClassement.tsx` sur `react-hooks/exhaustive-deps` ;
+- `npm run test:run` : OK, 43 fichiers de tests et 374 tests passés ;
+- `npm run build` : OK, avec le warning Vite existant sur des chunks supérieurs à 500 kB ;
+- `npm run prerender` : OK ;
+- vérification Playwright sur build à 390, 1024 et 1440 px : cartes équilibrées, CTA alignés, résumés en 2 à 3 lignes réelles, absence d'overflow horizontal global, carte suivante visible sur mobile.
 
 ## Objectif
 

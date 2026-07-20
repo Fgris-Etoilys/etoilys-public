@@ -6,7 +6,8 @@ import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonT
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
-import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
+import { getArticleAuthor } from '../../content/articleAuthors';
 
 const transmittedDataColumns = [
   {
@@ -222,6 +223,8 @@ export default function ArticleTransmissionDonneesPlateformesCommunes() {
         </>
       }
       sources={articleSources}
+      relatedArticles={getRelatedArticles(article)}
+      author={getArticleAuthor(article.authorId)}
     >
       <ArticleSectionHeading id="pourquoi-les-donnees-des-plateformes-remontent-elles-aux-communes">
         Pourquoi les données des plateformes remontent-elles aux communes ?

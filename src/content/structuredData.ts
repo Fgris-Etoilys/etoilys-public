@@ -1,5 +1,6 @@
 import { IMAGE_MANIFEST } from './imageManifest';
 import { SITE_URL, type BreadcrumbItem } from './seoRoutes';
+import { getArticleAuthor, type ArticleAuthorId } from './articleAuthors';
 
 export type JsonLdObject = Record<string, unknown>;
 
@@ -10,7 +11,7 @@ export interface ArticleStructuredDataInput {
   datePublished: string;
   dateModified: string;
   image: string;
-  authorName: string;
+  authorId: ArticleAuthorId;
 }
 
 export const STRUCTURED_DATA_IDS = {
@@ -18,7 +19,6 @@ export const STRUCTURED_DATA_IDS = {
   website: `${SITE_URL}/#website`,
   serviceClassification: `${SITE_URL}/#service-classement-meubles-tourisme`,
   cofracAccreditation: `${SITE_URL}/#cofrac-accreditation-3-2394`,
-  florianGrisorio: `${SITE_URL}/#person-florian-grisorio`,
 } as const;
 
 export const ETOILYS_LOGO_URL = `${SITE_URL}/logo-etoilys.svg`;
@@ -67,13 +67,6 @@ const ORGANIZATION_COMPACT_GRAPH_PATHS = new Set([
   '/en/privacy-policy',
   '/nl/privacybeleid',
 ]);
-
-const STRUCTURED_DATA_AUTHORS = {
-  'Florian Grisorio': {
-    id: STRUCTURED_DATA_IDS.florianGrisorio,
-    name: 'Florian Grisorio',
-  },
-} as const;
 
 function normalizePath(pathname: string): string {
   if (!pathname) return '/';
@@ -207,25 +200,17 @@ function buildClassificationService(): JsonLdObject {
   };
 }
 
-function buildPerson(authorName: string): JsonLdObject {
-  const author = STRUCTURED_DATA_AUTHORS[authorName as keyof typeof STRUCTURED_DATA_AUTHORS];
-
-  if (author) {
-    return {
-      '@id': author.id,
-      '@type': 'Person',
-      name: author.name,
-    };
-  }
-
+function buildPerson(authorId: ArticleAuthorId): JsonLdObject {
+  const author = getArticleAuthor(authorId);
   return {
+    '@id': `${SITE_URL}${author.structuredDataId}`,
     '@type': 'Person',
-    name: authorName,
+    name: author.name,
   };
 }
 
-function getAuthorId(authorName: string): string | null {
-  return STRUCTURED_DATA_AUTHORS[authorName as keyof typeof STRUCTURED_DATA_AUTHORS]?.id ?? null;
+function getStructuredAuthorId(authorId: ArticleAuthorId): string {
+  return `${SITE_URL}${getArticleAuthor(authorId).structuredDataId}`;
 }
 
 function graphData(nodes: JsonLdObject[]): JsonLdObject {
@@ -292,9 +277,8 @@ export function buildBreadcrumbStructuredData(items: BreadcrumbItem[]): JsonLdOb
 }
 
 export function buildArticleStructuredData(input: ArticleStructuredDataInput): JsonLdObject {
-  const authorId = getAuthorId(input.authorName);
-  const authorNode = buildPerson(input.authorName);
-  const authorReference = authorId ? idReference(authorId) : authorNode;
+  const authorNode = buildPerson(input.authorId);
+  const authorReference = idReference(getStructuredAuthorId(input.authorId));
 
   return graphData([
     {

@@ -7,7 +7,9 @@ import {
   actualitesArticlesByRecency,
   formatReadingTime,
   getArticleCategoryLabel,
+  getRelatedArticles,
 } from '../content/actualitesArticles';
+import { getArticleAuthor } from '../content/articleAuthors';
 import { getArticleStructuredData } from '../content/articleStructuredData';
 
 function renderAt(pathname: string) {
@@ -26,6 +28,8 @@ describe('actualites article governance', () => {
       expect(article.readingTimeMinutes).toBeGreaterThan(0);
       expect(formatReadingTime(article.readingTimeMinutes)).toMatch(/min de lecture$/);
       expect(getArticleStructuredData(article.href)).not.toBeNull();
+      expect(getArticleAuthor(article.authorId).name).toBe(article.authorName);
+      expect(getRelatedArticles(article)).toHaveLength(3);
     });
   });
 
@@ -37,10 +41,15 @@ describe('actualites article governance', () => {
       expect(headings).toHaveLength(1);
       expect(headings[0]).toHaveTextContent(article.title);
       expect(screen.getByRole('article', { name: article.title })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 2, name: 'À lire aussi' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { level: 2, name: 'Florian Grisorio' })
+      ).toBeInTheDocument();
+      expect(screen.queryByText('Lire plus')).not.toBeInTheDocument();
 
       unmount();
     });
-  });
+  }, 10000);
 
   it('keeps article pages off the legacy ArticleHeaderMeta component', () => {
     const pagesDir = path.resolve(process.cwd(), 'src', 'pages', 'actualites');

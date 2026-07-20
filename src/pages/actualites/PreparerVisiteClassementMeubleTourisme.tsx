@@ -6,7 +6,8 @@ import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonT
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
-import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
+import { getArticleAuthor } from '../../content/articleAuthors';
 
 const REFERENTIEL_URL =
   'https://www.atout-france.fr/sites/default/files/2025-12/R%C3%A9f%C3%A9rentiel%20de%20classement%20des%20meubl%C3%A9s%20de%20tourisme%202022%20V2.pdf';
@@ -227,6 +228,8 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
         </>
       }
       sources={articleSources}
+      relatedArticles={getRelatedArticles(article)}
+      author={getArticleAuthor(article.authorId)}
     >
       <ArticleSectionHeading id="comprendre-les-criteres-correspondant-a-la-categorie-demandee">
         Comprendre les critères correspondant à la catégorie demandée

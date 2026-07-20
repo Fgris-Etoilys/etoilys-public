@@ -6,7 +6,8 @@ import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonT
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
-import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
+import { getArticleAuthor } from '../../content/articleAuthors';
 
 const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   {
@@ -249,6 +250,8 @@ export default function ArticleMicroBic2026() {
         </>
       }
       sources={articleSources}
+      relatedArticles={getRelatedArticles(article)}
+      author={getArticleAuthor(article.authorId)}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="la-vraie-question-en-2026-le-classement-garde-t-il-encore-un-avantage-fiscal">

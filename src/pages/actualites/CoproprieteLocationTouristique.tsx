@@ -5,7 +5,8 @@ import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
-import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
+import { getArticleAuthor } from '../../content/articleAuthors';
 
 const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   {
@@ -203,6 +204,8 @@ export default function ArticleCoproprieteLocationTouristique() {
         </>
       }
       sources={articleSources}
+      relatedArticles={getRelatedArticles(article)}
+      author={getArticleAuthor(article.authorId)}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="la-reponse-courte-oui-le-cadre-a-change-mais-pas-dans-le-sens-d-une-interdiction-automatique-partout">

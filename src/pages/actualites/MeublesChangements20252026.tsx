@@ -5,7 +5,8 @@ import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
-import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
+import { getArticleAuthor } from '../../content/articleAuthors';
 
 const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   {
@@ -240,6 +241,8 @@ export default function ArticleMeubles20252026() {
         </>
       }
       sources={articleSources}
+      relatedArticles={getRelatedArticles(article)}
+      author={getArticleAuthor(article.authorId)}
     >
       {/* Section 1 */}
       <ArticleSectionHeading id="la-vraie-rupture-2025-2026-ne-concerne-pas-la-grille-de-classement">

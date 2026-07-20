@@ -10,6 +10,7 @@ import {
   buildPageStructuredData,
   type JsonLdObject,
 } from '../content/structuredData';
+import { getArticleAuthor } from '../content/articleAuthors';
 
 function getGraph(data: JsonLdObject | null): JsonLdObject[] {
   expect(data).not.toBeNull();
@@ -151,6 +152,8 @@ describe('structured data graph', () => {
   });
 
   it('defines canonical article author and publisher nodes on article pages', () => {
+    const author = getArticleAuthor('florian-grisorio');
+    const authorStructuredDataId = `https://www.etoilys.fr${author.structuredDataId}`;
     const graph = getGraph(
       buildArticleStructuredData({
         url: 'https://www.etoilys.fr/actualites/example',
@@ -159,21 +162,21 @@ describe('structured data graph', () => {
         datePublished: '2026-07-10',
         dateModified: '2026-07-10',
         image: 'https://www.etoilys.fr/images/optimized/article-apres-classement-1200.jpg',
-        authorName: 'Florian Grisorio',
+        authorId: author.id,
       })
     );
     const article = findNodeByType(graph, 'BlogPosting');
-    const author = findNodeById(graph, STRUCTURED_DATA_IDS.florianGrisorio);
+    const authorNode = findNodeById(graph, authorStructuredDataId);
     const publisher = findNodeById(graph, STRUCTURED_DATA_IDS.organization);
 
     expect(buildPageStructuredData('/actualites/example')).toBeNull();
-    expect(countNodesById(graph, STRUCTURED_DATA_IDS.florianGrisorio)).toBe(1);
+    expect(countNodesById(graph, authorStructuredDataId)).toBe(1);
     expect(countNodesById(graph, STRUCTURED_DATA_IDS.organization)).toBe(1);
-    expect(author['@type']).toBe('Person');
-    expect(author.name).toBe('Florian Grisorio');
+    expect(authorNode['@type']).toBe('Person');
+    expect(authorNode.name).toBe('Florian Grisorio');
     expect(publisher['@type']).toBe('Organization');
     expect(publisher.name).toBe('Etoilys');
-    expect(asObject(article.author)['@id']).toBe(STRUCTURED_DATA_IDS.florianGrisorio);
+    expect(asObject(article.author)['@id']).toBe(authorStructuredDataId);
     expect(asObject(article.publisher)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
   });
 

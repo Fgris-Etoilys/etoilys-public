@@ -77,7 +77,7 @@ export default function Layout() {
           datePublished={articleData.datePublished}
           dateModified={articleData.dateModified}
           image={`${SITE_URL}${IMAGE_MANIFEST[articleData.imageKey].src}`}
-          authorName={articleData.authorName}
+          authorId={articleData.authorId}
         />
       )}
       <ToastProvider>

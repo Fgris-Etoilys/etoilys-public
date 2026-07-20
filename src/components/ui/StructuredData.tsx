@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import type { ArticleAuthorId } from '../../content/articleAuthors';
 import type { BreadcrumbItem } from '../../content/seoRoutes';
 import {
   buildArticleStructuredData,
@@ -18,7 +19,7 @@ export interface ArticleStructuredDataProps {
   datePublished: string;
   dateModified: string;
   image: string;
-  authorName: string;
+  authorId: ArticleAuthorId;
 }
 
 function JsonLdScript({ id, data }: JsonLdScriptProps) {
@@ -78,7 +79,7 @@ export function ArticleStructuredData({
   datePublished,
   dateModified,
   image,
-  authorName,
+  authorId,
 }: ArticleStructuredDataProps) {
   const data = buildArticleStructuredData({
     url,
@@ -87,7 +88,7 @@ export function ArticleStructuredData({
     datePublished,
     dateModified,
     image,
-    authorName,
+    authorId,
   });
 
   return <JsonLdScript id="structured-data-article" data={data} />;

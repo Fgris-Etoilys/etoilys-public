@@ -132,7 +132,7 @@ function buildArticleStructuredDataForPath(pathname: string): Record<string, unk
     datePublished: article.datePublished,
     dateModified: article.dateModified,
     image: `${SITE_URL}${IMAGE_MANIFEST[article.imageKey].src}`,
-    authorName: article.authorName,
+    authorId: article.authorId,
   });
 }
 

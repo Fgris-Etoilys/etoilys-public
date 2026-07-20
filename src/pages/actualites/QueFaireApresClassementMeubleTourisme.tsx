@@ -5,7 +5,8 @@ import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
-import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
+import { getArticleAuthor } from '../../content/articleAuthors';
 
 const keyTakeaways = [
   'La décision de classement doit être affichée de manière visible à l’intérieur du logement.',
@@ -223,6 +224,8 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
         </>
       }
       sources={articleSources}
+      relatedArticles={getRelatedArticles(article)}
+      author={getArticleAuthor(article.authorId)}
     >
       <ArticleSectionHeading id="affichez-la-decision-de-classement-dans-le-logement">
         Affichez la décision de classement dans le logement

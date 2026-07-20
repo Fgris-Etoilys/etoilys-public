@@ -5,11 +5,14 @@ import { afterEach, describe, expect, it } from 'vitest';
 import ArticleLayout, { type ArticleLayoutArticle } from './ArticleLayout';
 
 const baseArticle: ArticleLayoutArticle = {
+  slug: 'article-test',
   title: 'Titre article test',
   excerpt: 'Résumé article test',
+  relatedSummary: 'Résumé connexe test.',
   href: '/actualites/article-test',
   category: 'classement',
   readingTimeMinutes: 5,
+  authorId: 'florian-grisorio',
   authorName: 'Florian Grisorio',
   publishedAt: '2026-07-19',
 };
@@ -29,7 +32,7 @@ function renderLayout(
   slots: {
     footerCta?: ReactNode;
     sources?: ReactNode;
-    relatedArticles?: ReactNode;
+    relatedArticlesSlot?: ReactNode;
     authorBlock?: ReactNode;
   } = {},
   layoutTableOfContents: typeof tableOfContents = []
@@ -48,7 +51,7 @@ function renderLayout(
         tableOfContents={layoutTableOfContents}
         footerCta={slots.footerCta}
         sources={slots.sources}
-        relatedArticles={slots.relatedArticles}
+        relatedArticlesSlot={slots.relatedArticlesSlot}
         authorBlock={slots.authorBlock}
       >
         <h2>Corps de l’article</h2>
@@ -152,7 +155,7 @@ describe('ArticleLayout', () => {
     renderLayout(baseArticle, {
       footerCta: <section>CTA final</section>,
       sources: <section>Sources officielles</section>,
-      relatedArticles: <section>À lire aussi</section>,
+      relatedArticlesSlot: <section>À lire aussi</section>,
       authorBlock: <section>Florian Grisorio</section>,
     });
 

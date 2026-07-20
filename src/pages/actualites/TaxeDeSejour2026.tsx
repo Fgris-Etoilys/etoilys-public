@@ -5,7 +5,8 @@ import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
-import { getActualiteArticleByHref } from '../../content/actualitesArticles';
+import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
+import { getArticleAuthor } from '../../content/articleAuthors';
 
 const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   {
@@ -188,6 +189,8 @@ export default function ArticleTaxeDeSejour2026() {
         </>
       }
       sources={articleSources}
+      relatedArticles={getRelatedArticles(article)}
+      author={getArticleAuthor(article.authorId)}
     >
       <div className="bg-accent-1 rounded-card p-6 md:p-8 mb-12">
         <h2 className="text-h4 mb-3">Simulateur taxe de séjour</h2>

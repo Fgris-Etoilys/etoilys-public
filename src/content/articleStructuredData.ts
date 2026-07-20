@@ -1,4 +1,5 @@
 import type { ImageAssetKey } from './imageManifest';
+import type { ArticleAuthorId } from './articleAuthors';
 
 export interface ArticleStructuredDataConfig {
   path: string;
@@ -7,7 +8,7 @@ export interface ArticleStructuredDataConfig {
   datePublished: string;
   dateModified: string;
   imageKey: ImageAssetKey;
-  authorName: string;
+  authorId: ArticleAuthorId;
 }
 
 export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
@@ -19,7 +20,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-07-19',
     dateModified: '2026-07-19',
     imageKey: 'articlePreparerVisiteClassement',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/que-faire-apres-classement-meuble-tourisme',
@@ -29,7 +30,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-07-08',
     dateModified: '2026-07-08',
     imageKey: 'articleApresClassement',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles',
@@ -39,7 +40,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-06-14',
     dateModified: '2026-06-14',
     imageKey: 'articleTransmissionDonnees',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
@@ -49,7 +50,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-03-03',
     dateModified: '2026-06-07',
     imageKey: 'articleMeubles20252026',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/micro-bic-2026-meuble-classe-vs-non-classe',
@@ -59,7 +60,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-03-12',
     dateModified: '2026-06-07',
     imageKey: 'articleMicroBic2026',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/airbnb-residence-principale-limite-90-jours',
@@ -69,7 +70,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-03-27',
     dateModified: '2026-06-07',
     imageKey: 'articleResidence90Jours',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/copropriete-location-touristique-reglement',
@@ -79,7 +80,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-03-23',
     dateModified: '2026-03-23',
     imageKey: 'articleCoproprieteReglement',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne',
@@ -89,7 +90,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-04-17',
     dateModified: '2026-04-17',
     imageKey: 'articleTaxeDeSejour2026',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/meuble-classe-non-classe-seuils-micro-bic',
@@ -99,7 +100,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-04-08',
     dateModified: '2026-04-08',
     imageKey: 'articleMeubleClasseNonClasse',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/facturation-electronique-2026-proprietaires-meubles',
@@ -109,7 +110,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-05-04',
     dateModified: '2026-05-04',
     imageKey: 'articleFacturationElectronique2026',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/dpe-meubles-tourisme-2026-2034',
@@ -119,7 +120,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-05-14',
     dateModified: '2026-06-07',
     imageKey: 'articleDpeMeublesTourisme',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
   {
     path: '/actualites/api-meubles-declaration-meuble-tourisme',
@@ -129,7 +130,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     datePublished: '2026-05-18',
     dateModified: '2026-06-07',
     imageKey: 'articleApiMeubles',
-    authorName: 'Florian Grisorio',
+    authorId: 'florian-grisorio',
   },
 ];
 
