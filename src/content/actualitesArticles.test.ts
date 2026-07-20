@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   actualitesArticlesByRecency,
+  getFeaturedActualiteArticle,
   getRelatedArticles,
   validateRelatedArticleSlugs,
   type ActualiteArticle,
@@ -9,6 +10,8 @@ import {
 function makeArticle(input: {
   slug: string;
   category: ActualiteArticle['category'];
+  publishedAt?: string;
+  updatedAt?: string;
   relatedArticleSlugs?: readonly string[];
 }): ActualiteArticle {
   const article: ActualiteArticle = {
@@ -23,8 +26,13 @@ function makeArticle(input: {
     authorId: 'florian-grisorio',
     authorName: 'Florian Grisorio',
     date: '20 juillet 2026',
-    publishedAt: '2026-07-20',
+    publishedAt: input.publishedAt ?? '2026-07-20',
   };
+
+  if (input.updatedAt) {
+    article.updatedAt = input.updatedAt;
+    article.updatedDate = '21 juillet 2026';
+  }
 
   if (input.relatedArticleSlugs) {
     article.relatedArticleSlugs = input.relatedArticleSlugs;
@@ -34,6 +42,33 @@ function makeArticle(input: {
 }
 
 describe('actualites article related articles', () => {
+  it('selects the featured list article from the most recent publication date only', () => {
+    const oldestUpdated = makeArticle({
+      slug: 'oldest-updated',
+      category: 'reglementation',
+      publishedAt: '2026-01-01',
+      updatedAt: '2026-07-21',
+    });
+    const newestPublished = makeArticle({
+      slug: 'newest-published',
+      category: 'fiscalite',
+      publishedAt: '2026-07-20',
+    });
+    const middlePublished = makeArticle({
+      slug: 'middle-published',
+      category: 'obligations',
+      publishedAt: '2026-06-01',
+    });
+
+    expect(
+      getFeaturedActualiteArticle([oldestUpdated, middlePublished, newestPublished])?.slug
+    ).toBe('newest-published');
+  });
+
+  it('uses the first recency-sorted active article as the default featured article', () => {
+    expect(getFeaturedActualiteArticle()?.slug).toBe(actualitesArticlesByRecency[0]?.slug);
+  });
+
   it('uses manual selection as authoritative without completing it', () => {
     const current = makeArticle({
       slug: 'current',

@@ -713,6 +713,53 @@ Couvrir :
 
 **Priorité : P1**
 
+**Statut : terminé le 2026-07-20**
+
+## Avancement du ticket 5 — 2026-07-20
+
+Terminé :
+
+- refonte de `/actualites` avec un article principal affiché uniquement sur l'état `Tous` ;
+- sélection de l'article principal par date de publication décroissante, sans propriété `featured` et sans tenir compte de `updatedAt` ;
+- ajout de filtres typés `Tous`, `Classement`, `Fiscalité`, `Réglementation`, `Obligations` et `Guides pratiques`, synchronisés avec `?categorie=...` ;
+- normalisation des paramètres `categorie` inconnus vers `/actualites` avec navigation `replace` ;
+- conservation de la canonical `/actualites`, sans nouvelle route ni injection SEO locale ;
+- création de cartes dédiées à la page Actualités, sans modifier `ArticleCard` utilisé sur la home ;
+- cartes de liste et carte principale basées sur `excerpt`, pas sur `relatedSummary` ;
+- affichage d'une seule date par carte : `Mis à jour le` lorsque `updatedAt` diffère de `publishedAt`, sinon `Publié le` ;
+- remplacement de `Lire plus` par `Lire l’article` sur les nouvelles cartes Actualités, avec nom accessible incluant le titre ;
+- cartes non entièrement cliquables : titre lien réel et CTA séparé, sans liens imbriqués ;
+- état vide exact pour les catégories sans article, avec bouton `Voir toutes les actualités` ;
+- règles responsive intégrées : filtres flexibles sans scroll horizontal global attendu, carte principale en une colonne mobile, image à ratio stable, aucune colonne image vide, `priority` seulement sur l'image principale.
+
+Validations exécutées :
+
+- `npm run typecheck` : OK ;
+- tests ciblés `npx vitest run src/content/actualitesArticles.test.ts src/pages/Actualites.test.tsx` : OK, 14 tests passés ;
+- `npm run lint` : OK, avec le warning préexistant dans `src/pages/SimulationClassement.tsx` sur `react-hooks/exhaustive-deps` ;
+- `npm run test:run` : OK, 44 fichiers de tests et 383 tests passés ;
+- `npm run build` : OK, avec le warning Vite existant sur des chunks supérieurs à 500 kB ;
+- `npm run prerender` : OK, `/actualites` et les articles Actualités ont été générés ;
+- vérification UTF-8 sans BOM et absence de marqueurs de mojibake sur les fichiers touchés : OK.
+
+Limites restantes :
+
+- warning lint préexistant dans `SimulationClassement.tsx`, non traité dans ce ticket ;
+- warning Vite de taille de chunk au build, non lié à la refonte de `/actualites` ;
+- vérification visuelle Playwright aux largeurs 390, 768, 1024 et 1440 px non relancée dans ce ticket.
+
+Passe corrective haut de page — 2026-07-20 :
+
+- introduction sous le H1 remplacée par : `Décryptages, guides pratiques et informations utiles sur le classement et la réglementation des meublés de tourisme.` ;
+- hauteur du hero et espacement avant les filtres réduits pour faire remonter l'article principal dans le premier écran ;
+- ajout de l'intitulé discret `Explorer les actualités` au-dessus des filtres ;
+- suppression du filtre visible `Classement`, tout en conservant la gestion défensive d'une URL directe `?categorie=classement`.
+
+Validations de la passe corrective :
+
+- `npm run typecheck` : OK ;
+- tests ciblés `npx vitest run src/pages/Actualites.test.tsx src/content/actualitesArticles.test.ts` : OK, 14 tests passés.
+
 ## Objectif
 
 Donner plus de hiérarchie à la page liste sans ajouter un moteur de recherche, une pagination ou une usine à gaz destinée à douze articles.

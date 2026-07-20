@@ -40,6 +40,21 @@ export const ARTICLE_CATEGORY_LABELS: Record<ArticleCategory, string> = {
   'guides-pratiques': 'Guides pratiques',
 };
 
+export type ActualitesCategoryFilter = ArticleCategory | 'all';
+
+export interface ActualitesCategoryFilterOption {
+  value: ActualitesCategoryFilter;
+  label: string;
+}
+
+export const ACTUALITES_CATEGORY_FILTERS: readonly ActualitesCategoryFilterOption[] = [
+  { value: 'all', label: 'Tous' },
+  { value: 'fiscalite', label: ARTICLE_CATEGORY_LABELS.fiscalite },
+  { value: 'reglementation', label: ARTICLE_CATEGORY_LABELS.reglementation },
+  { value: 'obligations', label: ARTICLE_CATEGORY_LABELS.obligations },
+  { value: 'guides-pratiques', label: ARTICLE_CATEGORY_LABELS['guides-pratiques'] },
+];
+
 type ActualiteArticleContent = Omit<
   ActualiteArticle,
   'slug' | 'authorId' | 'authorName' | 'date' | 'publishedAt' | 'updatedDate' | 'updatedAt'
@@ -66,6 +81,11 @@ export function getArticleCategoryLabel(category: ArticleCategory): string {
 
 export function formatReadingTime(minutes: number): string {
   return `${minutes} min de lecture`;
+}
+
+export function isArticleCategory(value: string | null): value is ArticleCategory {
+  if (!value) return false;
+  return Object.prototype.hasOwnProperty.call(ARTICLE_CATEGORY_LABELS, value);
 }
 
 const articleContent: ActualiteArticleContent[] = [
@@ -338,6 +358,16 @@ getAllArticleStructuredData().forEach((article: ArticleStructuredDataConfig) => 
 export const actualitesArticlesByRecency = [...articles].sort(
   (left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime()
 );
+
+export function getFeaturedActualiteArticle(
+  articleList: readonly ActualiteArticle[] = actualitesArticlesByRecency
+): ActualiteArticle | null {
+  return (
+    [...articleList].sort(
+      (left, right) => new Date(right.publishedAt).getTime() - new Date(left.publishedAt).getTime()
+    )[0] ?? null
+  );
+}
 
 const articlesByHref = new Map(articles.map((article) => [normalizePath(article.href), article]));
 
