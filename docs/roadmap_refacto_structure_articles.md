@@ -109,6 +109,20 @@ Validations exécutées :
 - `npm run prerender` : OK ;
 - Playwright sur build prerenderé aux largeurs 390, 768, 1024 et 1440 px : `/actualites`, articles DPE/taxe de séjour/préparer visite, simulateurs avant et après calcul ciblé autour des tableaux ; pas d’overflow global, pas d’ID dupliqué, variantes responsive du tableau correctement masquées/affichées et non focusables quand masquées.
 
+Passe corrective barre desktop :
+
+- rail de progression rendu légèrement visible avec `bg-primary-100/60` ;
+- position desktop ajustée sous le header fixe (`xl:top-[5.25rem]`) pour éviter que le header masque la barre ;
+- vérification Playwright à 1440 px après scroll : barre sous le header, progression visible.
+
+Passe corrective barre desktop après retour visuel :
+
+- hauteur réelle du header exposée via `--etoilys-header-height`, mesurée dans `Header` avec `ResizeObserver` ;
+- barre strictement collée au bas du header via cette variable CSS, sans offset desktop codé en dur ;
+- barre masquée quand `scrollY` vaut 0 et affichée dès le début du scroll ;
+- remplissage passé d’un `transform: scaleX(...)` à une largeur explicite en pourcentage pour rendre l’évolution visible ;
+- vérification Playwright à 1440 px : opacity 0 en haut de page, barre collée au header après scroll, largeur passée de 9,9 % à 42,3 % entre deux positions de scroll.
+
 Limites restantes :
 
 - warning lint préexistant `SimulationClassement.tsx`, non traité ;
@@ -1072,15 +1086,49 @@ Compléter par une vérification manuelle aux largeurs :
 **Priorité : P3**
 **Dépendance : Ticket 1**
 
+**Statut : terminé le 2026-07-20**
+
+## Avancement du ticket 7 — 2026-07-20
+
+Terminé :
+
+- composant partagé `ArticleReadingUtilities` ajouté et intégré dans `ArticleLayout` uniquement ;
+- barre de progression fixe sous le header, décorative avec `aria-hidden="true"` ;
+- progression calculée depuis le H1 jusqu’à la fin de la zone éditoriale principale, en excluant CTA final, sources, articles connexes et bloc auteur ;
+- calcul borné entre 0 et 100 %, avec 100 % lorsque le viewport atteint la fin de la zone éditoriale ;
+- listeners `scroll` passifs, recalcul via `requestAnimationFrame`, `ResizeObserver` sur la zone mesurée et cleanup des listeners/observers/frames ;
+- bouton `Retour en haut de l’article` affiché sous `xl` seulement, après environ 800 px de scroll ;
+- retour en haut vers le H1 avec `tabIndex={-1}`, focus programmatique et `scroll-margin` pour éviter le masquage par le header fixe ;
+- respect de `prefers-reduced-motion` pour le scroll ;
+- offset de bannière cookies rendu dynamique via variable CSS `--etoilys-cookie-banner-offset`, mesurée avec `ResizeObserver` dans `CookieConsentManager` ;
+- retrait complet de la partie `Copier le lien` par arbitrage produit, y compris des références aval dans les tickets 8 et 9.
+
+Validations exécutées :
+
+- `npm run typecheck` : OK ;
+- tests ciblés `ArticleReadingUtilities`, `ArticleLayout` et `CookieConsentManager` : OK ;
+- `npm run lint` : OK, avec le warning préexistant dans `src/pages/SimulationClassement.tsx` sur `react-hooks/exhaustive-deps` ;
+- `npm run test:run` : OK, 46 fichiers et 400 tests passés ; axe émet en stderr l’avertissement jsdom `HTMLCanvasElement.getContext()` sans règle désactivée ;
+- `npm run build` : OK, avec warning Vite préexistant sur chunks > 500 kB ;
+- `npm run prerender` : OK ;
+- Playwright sur build prerenderé aux largeurs 390, 768, 1024 et 1440 px : article long `/actualites/preparer-visite-classement-meuble-tourisme` et page `/actualites`, pas d’overflow horizontal, barre présente uniquement sur article, bouton visible sous `xl`, absent à 1440 px, pas de chevauchement avec la bannière cookies, focus déplacé sur le H1 et H1 non masqué par le header fixe.
+
+Limites restantes :
+
+- warning lint préexistant `SimulationClassement.tsx`, non traité ;
+- warning Vite de taille de chunk, non traité ;
+- avertissement jsdom `canvas.getContext()` pendant les tests axe, non masqué.
+
 ## Objectif
 
-Ajouter trois aides discrètes :
+Ajouter deux aides discrètes :
 
 - progression de lecture ;
-- copie du lien ;
 - retour en haut.
 
 Ne pas ajouter de barre de partage social.
+
+La copie du lien est explicitement hors périmètre.
 
 ---
 
@@ -1091,7 +1139,8 @@ Ajouter une barre très discrète sous le header fixe.
 Règles :
 
 - uniquement sur les pages d’article ;
-- progression calculée à partir du contenu principal de l’article, pas du footer complet ;
+- progression calculée depuis le début du header éditorial, au minimum depuis le H1, jusqu’à la fin du corps éditorial ;
+- exclure le CTA final, les sources, les articles connexes et le bloc auteur ;
 - largeur de 0 à 100 % ;
 - pas de texte visible ;
 - composant purement décoratif avec `aria-hidden="true"` ;
@@ -1103,34 +1152,13 @@ Le calcul doit être performant :
 
 - listener passif ;
 - `requestAnimationFrame` si nécessaire ;
+- `ResizeObserver` sur la zone mesurée ;
 - aucun `setState` inutile à chaque pixel ;
 - nettoyage correct au démontage.
 
-## Partie B — Copier le lien
+## Partie B — Retour en haut
 
-Ajouter un bouton près des métadonnées ou au début de la zone de partage :
-
-```txt
-Copier le lien
-```
-
-Après succès :
-
-```txt
-Lien copié
-```
-
-Utiliser le composant `Toast` existant.
-
-Prévoir un fallback propre si `navigator.clipboard` n’est pas disponible.
-
-Le lien copié doit être l’URL canonique de l’article, sans paramètre de tracking inutile.
-
-Ne pas afficher l’URL brute.
-
-## Partie C — Retour en haut
-
-Sur mobile, afficher un bouton flottant après un seuil de défilement raisonnable, par exemple 800 px.
+Sous le breakpoint Tailwind `xl`, afficher un bouton flottant après un seuil de défilement raisonnable, par exemple 800 px.
 
 Règles :
 
@@ -1143,20 +1171,18 @@ Règles :
 Retour en haut de l’article
 ```
 
-- retour au début du contenu éditorial ou au H1 ;
+- retour au H1 ;
+- déplacer le focus vers le H1 après activation ;
 - respecter `prefers-reduced-motion`.
 
-Sur desktop, le bouton peut rester absent puisque le sommaire sticky offre déjà une navigation.
+Sur desktop `xl` et au-delà, le bouton reste absent puisque le sommaire sticky offre déjà une navigation.
 
 ## Critères d’acceptation
 
 - La barre n’apparaît que sur les articles.
-- Elle atteint 100 % à la fin du contenu principal.
+- Elle atteint 100 % lorsque le viewport atteint la fin de la zone éditoriale mesurée.
 - Elle ne mesure pas le footer comme du contenu éditorial.
-- Le bouton copie la bonne URL.
-- Un toast confirme l’action.
-- Le fallback clipboard ne provoque pas d’erreur.
-- Le bouton retour en haut est mobile uniquement.
+- Le bouton retour en haut est visible uniquement sous `xl`.
 - Aucun composant ne recouvre la bannière cookies.
 - Aucun décalage de mise en page n’est introduit.
 
@@ -1165,11 +1191,11 @@ Sur desktop, le bouton peut rester absent puisque le sommaire sticky offre déj�
 Couvrir :
 
 - le calcul de progression avec valeurs bornées ;
-- la copie réussie ;
-- l’échec clipboard ;
-- l’affichage du toast ;
 - le seuil du bouton retour en haut ;
 - son label accessible ;
+- les classes responsive qui délèguent la visibilité à Tailwind ;
+- le déplacement du focus vers le H1 ;
+- le respect de `prefers-reduced-motion` ;
 - l’absence des utilitaires sur les autres pages.
 
 ---
@@ -1274,17 +1300,6 @@ Propriétés :
 ```
 
 Ne pas déclencher au premier rendu si l’utilisateur n’a effectué aucune action, sauf décision déjà cohérente avec les conventions analytics du projet.
-
-### `article_copy_link_clicked`
-
-Propriétés :
-
-```ts
-{
-  article_slug: string;
-  success: boolean;
-}
-```
 
 ### `article_back_to_top_clicked`
 
@@ -1405,7 +1420,6 @@ Vérifier :
 - chaque filtre ;
 - le retour arrière navigateur ;
 - chaque article connexe ;
-- la copie du lien ;
 - le retour en haut ;
 - l’ouverture des sources ;
 - les événements analytics ;

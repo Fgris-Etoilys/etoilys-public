@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import {
@@ -9,6 +9,7 @@ import {
 import type { ArticleAuthor } from '../../content/articleAuthors';
 import { formatFrenchDate } from '../../content/dateFormatting';
 import ArticleAuthorBlock from './ArticleAuthorBlock';
+import ArticleReadingUtilities from './ArticleReadingUtilities';
 import ArticleRelatedArticles from './ArticleRelatedArticles';
 import ArticleTableOfContents, { type ArticleTableOfContentsItem } from './ArticleTableOfContents';
 
@@ -50,6 +51,8 @@ export default function ArticleLayout({
   author,
   authorBlock,
 }: ArticleLayoutProps) {
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const editorialContentRef = useRef<HTMLDivElement>(null);
   const headingId = buildHeadingId(article.href);
   const updatedAt =
     article.updatedAt && article.updatedAt !== article.publishedAt ? article.updatedAt : null;
@@ -65,6 +68,7 @@ export default function ArticleLayout({
 
   return (
     <article aria-labelledby={headingId}>
+      <ArticleReadingUtilities startRef={headingRef} endRef={editorialContentRef} />
       <header>
         <section className="bg-gradient-to-br from-themePrimary-1 to-primary-300 pb-10 pt-14 text-white sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
           <div className="container-adaptive">
@@ -85,7 +89,12 @@ export default function ArticleLayout({
                     {getArticleCategoryLabel(article.category)}
                   </span>
                 </div>
-                <h1 id={headingId} className="mb-5 text-white">
+                <h1
+                  ref={headingRef}
+                  id={headingId}
+                  tabIndex={-1}
+                  className="mb-5 scroll-mt-24 text-white focus:outline-none xl:scroll-mt-28"
+                >
                   {article.title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/80">
@@ -115,7 +124,10 @@ export default function ArticleLayout({
             {shouldShowTableOfContents && (
               <ArticleTableOfContents items={tableOfContents} variant="desktop" />
             )}
-            <div className="mx-auto w-full min-w-0 max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
+            <div
+              ref={editorialContentRef}
+              className="mx-auto w-full min-w-0 max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none"
+            >
               <div className="article-lede mb-10 space-y-6 text-xl leading-comfortable text-gray-700 sm:mb-12">
                 {lede}
               </div>

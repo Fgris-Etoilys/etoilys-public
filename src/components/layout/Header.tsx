@@ -14,6 +14,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const location = useLocation();
@@ -32,6 +33,27 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const updateHeaderHeight = () => {
+      const headerHeight = Math.ceil(headerRef.current?.getBoundingClientRect().height ?? 64);
+      document.documentElement.style.setProperty('--etoilys-header-height', `${headerHeight}px`);
+    };
+    const resizeObserver =
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateHeaderHeight);
+
+    updateHeaderHeight();
+    if (headerRef.current) {
+      resizeObserver?.observe(headerRef.current);
+    }
+    window.addEventListener('resize', updateHeaderHeight);
+
+    return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', updateHeaderHeight);
+      document.documentElement.style.removeProperty('--etoilys-header-height');
+    };
   }, []);
 
   useEffect(() => {
@@ -75,7 +97,7 @@ export default function Header() {
 
   return (
     <>
-      <header className={headerClasses}>
+      <header ref={headerRef} className={headerClasses}>
         <nav className="container-adaptive py-2">
           <div className="flex items-center justify-between">
             <Link to={content.homeHref} className="flex items-center">

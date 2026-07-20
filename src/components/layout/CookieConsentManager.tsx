@@ -139,6 +139,7 @@ export default function CookieConsentManager() {
     isCookielessAudienceMeasurementEnabled()
   );
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
+  const bannerRef = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const showInitialBanner = consentStatus === null && !isPreferencesOpen;
 
@@ -178,10 +179,36 @@ export default function CookieConsentManager() {
     if (!showInitialBanner) return undefined;
 
     const previousScrollPaddingBottom = document.documentElement.style.scrollPaddingBottom;
-    document.documentElement.style.scrollPaddingBottom = '220px';
+    const previousCookieBannerOffset = document.documentElement.style.getPropertyValue(
+      '--etoilys-cookie-banner-offset'
+    );
+    const updateCookieBannerOffset = () => {
+      const bannerHeight = Math.ceil(bannerRef.current?.getBoundingClientRect().height ?? 220);
+      const offset = `${bannerHeight}px`;
+      document.documentElement.style.scrollPaddingBottom = offset;
+      document.documentElement.style.setProperty('--etoilys-cookie-banner-offset', offset);
+    };
+    const resizeObserver =
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(updateCookieBannerOffset);
+
+    updateCookieBannerOffset();
+    if (bannerRef.current) {
+      resizeObserver?.observe(bannerRef.current);
+    }
+    window.addEventListener('resize', updateCookieBannerOffset);
 
     return () => {
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', updateCookieBannerOffset);
       document.documentElement.style.scrollPaddingBottom = previousScrollPaddingBottom;
+      if (previousCookieBannerOffset) {
+        document.documentElement.style.setProperty(
+          '--etoilys-cookie-banner-offset',
+          previousCookieBannerOffset
+        );
+      } else {
+        document.documentElement.style.removeProperty('--etoilys-cookie-banner-offset');
+      }
     };
   }, [showInitialBanner]);
 
@@ -204,6 +231,7 @@ export default function CookieConsentManager() {
     <>
       {showInitialBanner && (
         <section
+          ref={bannerRef}
           role="region"
           aria-label={content.bannerAriaLabel}
           className="fixed inset-x-0 bottom-0 z-[60] px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-6 sm:pb-6"
