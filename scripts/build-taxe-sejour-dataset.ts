@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 import { XMLParser } from 'fast-xml-parser';
 
 const ROOT_DIR = process.cwd();
-const INPUT_XML_PATH = path.join(ROOT_DIR, 'docs', 'taxe_sejour_donnees_deliberations.xml');
+const INPUT_XML_PATH = path.join(ROOT_DIR, 'docs', 'data', 'taxe_sejour_donnees_deliberations.xml');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public', 'data');
 const OUTPUT_JSON_PATH = path.join(OUTPUT_DIR, 'taxe-sejour-dataset.v1.json');
 

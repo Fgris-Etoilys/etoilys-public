@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const ROOT_DIR = process.cwd();
-const OUTPUT_PATH = path.join(ROOT_DIR, 'docs', 'lot-et-garonne-tourisme-meubles.json');
+const OUTPUT_PATH = path.join(ROOT_DIR, 'docs', 'data', 'lot-et-garonne-tourisme-meubles.json');
 const BASE_URL = 'https://www.tourisme-lotetgaronne.com';
 const LIST_URL = `${BASE_URL}/sejourner/locations-vacances/`;
 const USER_AGENT = 'Mozilla/5.0 (compatible; EtoilysDataCollection/1.0; +https://www.etoilys.fr)';

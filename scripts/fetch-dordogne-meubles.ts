@@ -2,7 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const ROOT_DIR = process.cwd();
-const OUTPUT_PATH = path.join(ROOT_DIR, 'docs', 'dordogne-tourisme-meubles.json');
+const OUTPUT_PATH = path.join(ROOT_DIR, 'docs', 'data', 'dordogne-tourisme-meubles.json');
 const BASE_URL = 'https://www.dordogne-perigord-tourisme.fr';
 const PLAYLIST_PATH = '/api/render/website_v2/dordogne-perigord/playlist/14474/fr_FR/json';
 const CONF_ID = '14474';

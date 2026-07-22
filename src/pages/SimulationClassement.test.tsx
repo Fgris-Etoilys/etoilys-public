@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
-import structureGrilleRaw from '../../docs/structureGrille.json?raw';
+import structureGrilleRaw from '../../docs/data/structureGrille.json?raw';
 
 vi.setConfig({ testTimeout: 15_000 });
 

@@ -2,7 +2,7 @@
 
 ## Source du contrat
 
-Le contrat local utilisé pour l’intégration est `docs/swagger.json`, généré pour l’API Starsmanager.
+Le contrat local utilisé pour l’intégration est `docs/data/swagger.json`, généré pour l’API Starsmanager.
 Le serveur indiqué par le Swagger est `http://api-dev.etoilys.fr`, mais le proxy frontend cible `https://api-dev.etoilys.fr` pour éviter une redirection HTTP vers HTTPS visible par le navigateur.
 
 ## Routage frontend

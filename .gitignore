@@ -36,12 +36,12 @@ Thumbs.db
 public/Panonceau 2026 - Meublé de tourisme - */
 
 # Local reference document (not used in app runtime)
-docs/Rapport Annaig le Meur.pdf
+docs/contenu/sources/Rapport Annaig le Meur.pdf
 
 # Local tourism data exports generated for analysis/prospecting
-docs/dordogne-tourisme-meubles.json
-docs/gironde-tourisme-hebergements-locatif.json
-docs/lot-et-garonne-tourisme-meubles.json
+docs/data/dordogne-tourisme-meubles.json
+docs/data/gironde-tourisme-hebergements-locatif.json
+docs/data/lot-et-garonne-tourisme-meubles.json
 
 .vercel
 .env*

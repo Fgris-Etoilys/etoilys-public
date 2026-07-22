@@ -31,12 +31,12 @@ Whenever you write code, apply this instruction:
 ## 2026 Content Sources (Meubles)
 
 - Keep and use both documents:
-  - `docs/sources_infos_search.pdf` = canonical fact base for legal/fiscal assertions (priority, official sources + URLs).
-  - `docs/sources_infos_gpt.pdf` = editorial page-by-page drafting guide (angles, structure, neutral wording).
+  - `docs/contenu/sources/sources_infos_search.pdf` = canonical fact base for legal/fiscal assertions (priority, official sources + URLs).
+  - `docs/contenu/sources/sources_infos_gpt.pdf` = editorial page-by-page drafting guide (angles, structure, neutral wording).
 - Method:
-  - Validate facts first with `sources_infos_search.pdf`.
-  - Use `sources_infos_gpt.pdf` to convert validated facts into page copy.
-  - If conflict exists, prioritize `sources_infos_search.pdf`, then primary official texts (Legifrance, impots.gouv, Service-Public, Atout France).
+  - Validate facts first with `docs/contenu/sources/sources_infos_search.pdf`.
+  - Use `docs/contenu/sources/sources_infos_gpt.pdf` to convert validated facts into page copy.
+  - If conflict exists, prioritize `docs/contenu/sources/sources_infos_search.pdf`, then primary official texts (Legifrance, impots.gouv, Service-Public, Atout France).
 
 ## Best-Practice Research (Context7)
 
@@ -103,7 +103,7 @@ Whenever you write code, apply this instruction:
 - Verify all active routes in `src/App.tsx` are covered by `src/content/seoRoutes.ts`.
 - Verify no duplicated JSON-LD scripts after SPA navigation.
 - Run `npm run typecheck` and fix errors until clean.
-- For any new page/article, follow `docs/seo-structurant-workflow.md`.
+- For any new page/article, follow `docs/tech/seo-structurant-workflow.md`.
 
 ## Development Commands
 

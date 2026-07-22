@@ -8,8 +8,8 @@ L’objectif n’est pas de me rendre une proposition de texte. Tu dois **modifi
 
 Avant toute modification :
 
-1. lis `docs/Etoilys_guide_redaction_articles_actualites_v3.md` ou le fichier équivalent réellement présent dans le repo ;
-2. lis `docs/contexte-projet-etoilys.md` ;
+1. lis `docs/contenu/Etoilys_guide_redaction_articles_actualites_v3.md` ou le fichier équivalent réellement présent dans le repo ;
+2. lis `docs/tech/contexte-projet-etoilys.md` ;
 3. inspecte deux ou trois articles récents dans `src/pages/actualites` afin de reprendre exactement les composants, la structure visuelle, la gestion des sources, les encadrés, les tableaux, les CTA et les métadonnées déjà utilisés ;
 4. inspecte les sources de vérité suivantes :
    - `src/AppRoutes.tsx` ;
@@ -17,7 +17,7 @@ Avant toute modification :
    - `src/content/seoRoutes.ts` ;
    - `src/content/articleStructuredData.ts` ;
    - les éventuels composants d’article partagés dans `src/components/ui` ou `src/components/actualites` ;
-   - le workflow SEO du repo s’il existe, notamment `docs/seo-structurant-workflow.md`.
+   - le workflow SEO du repo s’il existe, notamment `docs/tech/seo-structurant-workflow.md`.
 
 Réutilise strictement l’architecture existante. Ne crée pas un second système de blog, de SEO ou de données structurées.
 

@@ -1,14 +1,16 @@
 # Etoilys Public
 
+- [Index de la documentation](docs/README.md)
+
 Application web React + TypeScript + Vite pour la présentation des parcours de classement des meublés de tourisme.
 
 ## Gouvernance GEO / AEO
 
-- [Index de la documentation GEO / AEO](docs/geo-aeo/README.md)
-- [Roadmap GEO / AEO](docs/geo-aeo/roadmap-geo-aeo-site-public-etoilys.md)
-- [Baseline de juillet 2026](docs/geo-aeo/geo-aeo-baseline-2026-07.md)
-- [Panel de 20 requêtes ChatGPT](docs/geo-aeo/geo-aeo-query-panel.md)
-- [Résultats du 10 juillet 2026](docs/geo-aeo/tests/2026-07-10.md)
+- [Index de la documentation GEO / AEO](docs/seo/geo-aeo/README.md)
+- [Roadmap GEO / AEO](docs/seo/geo-aeo/roadmap-geo-aeo-site-public-etoilys.md)
+- [Baseline de juillet 2026](docs/seo/geo-aeo/geo-aeo-baseline-2026-07.md)
+- [Panel de 20 requêtes ChatGPT](docs/seo/geo-aeo/geo-aeo-query-panel.md)
+- [Résultats du 10 juillet 2026](docs/seo/geo-aeo/tests/2026-07-10.md)
 
 ChatGPT est le seul assistant testé activement. Les autres référents IA restent observés passivement lorsqu’ils apparaissent dans les données analytics.
 

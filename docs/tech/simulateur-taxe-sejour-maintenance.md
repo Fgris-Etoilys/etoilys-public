@@ -14,8 +14,8 @@ Le simulateur historique `/simulateur` n'est pas concerné.
 ## Fichiers clés
 
 - Sources de données:
-  - `docs/taxe_sejour_donnees_deliberations.xml`
-  - `docs/fiche_technique_taxe_sejour.pdf`
+  - `docs/data/taxe_sejour_donnees_deliberations.xml`
+  - `docs/contenu/sources/fiche_technique_taxe_sejour.pdf`
 - Script de build:
   - `scripts/build-taxe-sejour-dataset.ts`
 - Dataset généré:
@@ -67,8 +67,8 @@ Le script intègre aussi:
 ## Procédure de mise à jour des données
 
 1. Remplacer les fichiers sources:
-   - `docs/taxe_sejour_donnees_deliberations.xml`
-   - `docs/fiche_technique_taxe_sejour.pdf`
+   - `docs/data/taxe_sejour_donnees_deliberations.xml`
+   - `docs/contenu/sources/fiche_technique_taxe_sejour.pdf`
 2. Régénérer le dataset:
 
 ```bash

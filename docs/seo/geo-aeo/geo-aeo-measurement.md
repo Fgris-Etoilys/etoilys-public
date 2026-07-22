@@ -28,7 +28,7 @@ Aucun événement PostHog n’est envoyé en l’absence de choix. L’audience 
 | `form_submit_succeeded` | Acquisition consentie                 | Formulaire envoyé avec succès                           |
 | `simulator_started`     | Acquisition consentie                 | Démarrage utile d’un simulateur                         |
 
-Le dictionnaire complet est disponible dans le [contrat analytics v3](../analytics-tracking-contract.md).
+Le dictionnaire complet est disponible dans le [contrat analytics v3](../../tech/analytics-tracking-contract.md).
 
 ## Classification consentie
 

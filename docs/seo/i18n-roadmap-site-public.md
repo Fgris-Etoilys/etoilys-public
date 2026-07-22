@@ -2,7 +2,7 @@
 
 Document de suivi pour découper et implémenter progressivement la version anglaise du site public Etoilys.
 
-Source de vérité stratégique : `docs/etoilys-strategie-i18n-site-public.md`.
+Source de vérité stratégique : `docs/seo/etoilys-strategie-i18n-site-public.md`.
 
 ## État courant au 24 juin 2026
 
@@ -140,9 +140,9 @@ Constats déjà vérifiés dans le repo :
 
 Checklist à reprendre au début du Lot 0 :
 
-- [x] Relire `docs/etoilys-strategie-i18n-site-public.md`.
-- [x] Relire `docs/contexte-projet-etoilys.md`.
-- [x] Relire `docs/seo-structurant-workflow.md`.
+- [x] Relire `docs/seo/etoilys-strategie-i18n-site-public.md`.
+- [x] Relire `docs/tech/contexte-projet-etoilys.md`.
+- [x] Relire `docs/tech/seo-structurant-workflow.md`.
 - [x] Vérifier que la liste des routes actives n'a pas changé depuis cette roadmap.
 - [x] Vérifier que le sitemap est toujours généré depuis `src/content/seoRoutes.ts`.
 - [x] Vérifier que les contrats Supabase des formulaires n'ont pas évolué.
@@ -527,9 +527,9 @@ Dépendances : aucune.
 
 Fichiers probables à lire :
 
-- `docs/etoilys-strategie-i18n-site-public.md`
-- `docs/contexte-projet-etoilys.md`
-- `docs/seo-structurant-workflow.md`
+- `docs/seo/etoilys-strategie-i18n-site-public.md`
+- `docs/tech/contexte-projet-etoilys.md`
+- `docs/tech/seo-structurant-workflow.md`
 - `src/AppRoutes.tsx`
 - `src/content/seoRoutes.ts`
 - `src/components/layout/*`
@@ -816,9 +816,9 @@ Avant release :
 - `CLAUDE.md`
 - `tailwind.config.js`
 - `package.json`
-- `docs/etoilys-strategie-i18n-site-public.md`
-- `docs/contexte-projet-etoilys.md`
-- `docs/seo-structurant-workflow.md`
+- `docs/seo/etoilys-strategie-i18n-site-public.md`
+- `docs/tech/contexte-projet-etoilys.md`
+- `docs/tech/seo-structurant-workflow.md`
 - `src/App.tsx`
 - `src/AppRoutes.tsx`
 - `src/components/layout/Layout.tsx`

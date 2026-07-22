@@ -25,12 +25,12 @@ Quand tu dois écrire du code, applique cette instruction:
 ## Sources contenu 2026 (classement)
 
 - Conserver et utiliser les 2 documents:
-  - `docs/sources_infos_search.pdf` = source canonique pour les faits juridiques/fiscaux (prioritaire, sources officielles + URLs).
-  - `docs/sources_infos_gpt.pdf` = guide editorial page par page (angles, structure, reformulations neutres).
+  - `docs/contenu/sources/sources_infos_search.pdf` = source canonique pour les faits juridiques/fiscaux (prioritaire, sources officielles + URLs).
+  - `docs/contenu/sources/sources_infos_gpt.pdf` = guide editorial page par page (angles, structure, reformulations neutres).
 - Methode:
-  - Verifier d'abord les affirmations dans `sources_infos_search.pdf`.
-  - Utiliser `sources_infos_gpt.pdf` pour transformer ces faits en contenu de pages.
-  - En cas de conflit, prioriser `sources_infos_search.pdf`, puis les textes officiels cites (Legifrance, impots.gouv, Service-Public, Atout France).
+  - Verifier d'abord les affirmations dans `docs/contenu/sources/sources_infos_search.pdf`.
+  - Utiliser `docs/contenu/sources/sources_infos_gpt.pdf` pour transformer ces faits en contenu de pages.
+  - En cas de conflit, prioriser `docs/contenu/sources/sources_infos_search.pdf`, puis les textes officiels cites (Legifrance, impots.gouv, Service-Public, Atout France).
 
 ## Best practices (MCP context7)
 
@@ -95,7 +95,7 @@ Quand tu dois écrire du code, applique cette instruction:
 - Verifier que toutes les routes actives de `src/App.tsx` sont couvertes par `src/content/seoRoutes.ts`.
 - Verifier qu'il n'y a pas de scripts JSON-LD dupliques apres navigation SPA.
 - Exécuter `npm run typecheck` et corriger jusqu'à 0 erreur.
-- Pour toute creation de page/article, suivre `docs/seo-structurant-workflow.md`.
+- Pour toute creation de page/article, suivre `docs/tech/seo-structurant-workflow.md`.
 
 ## Règles UI (web)
 

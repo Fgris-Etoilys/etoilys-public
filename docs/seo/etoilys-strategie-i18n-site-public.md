@@ -2,7 +2,7 @@
 
 Date de référence : 24 juin 2026  
 Projet : site public Etoilys  
-Document destiné à être placé dans le repo, idéalement dans `docs/i18n-strategie-site-public.md`.
+Document destiné à être placé dans le repo, idéalement dans `docs/seo/etoilys-strategie-i18n-site-public.md`.
 
 ---
 

@@ -2,7 +2,29 @@
 
 Date de référence : 10 juillet 2026  
 Projet : site public Etoilys  
-Document de suivi destiné à être utilisé avec Codex et intégré dans le repo sous `docs/geo-aeo/roadmap-geo-aeo-site-public-etoilys.md`.
+Document de suivi destiné à être utilisé avec Codex et intégré dans le repo sous `docs/seo/geo-aeo/roadmap-geo-aeo-site-public-etoilys.md`.
+
+---
+
+## État courant au 22 juillet 2026
+
+Cette section réconcilie la roadmap avec l'état actuel du repo. Les cases détaillées plus bas peuvent encore contenir des sous-actions historiques, surtout lorsqu'elles concernent des preuves humaines ou des contrôles externes.
+
+| Lot          | Statut courant  | Lecture rapide                                                                                                                        |
+| ------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Lot 0        | Terminé         | Baseline, panel, résultats datés et métriques de suivi existent.                                                                      |
+| Lot 1        | Ouvert          | Les corrections Cofrac, profils externes et source canonique d'identité restent à verrouiller.                                        |
+| Lot 2        | Partiel         | L'instrumentation repo PostHog/IA est livrée ; les preuves Bing, GSC, PostHog production et vues externes restent humaines.           |
+| Lot 3        | Terminé         | Sitemap, `lastmod`, IndexNow, workflow et documentation sont en place.                                                                |
+| Lot 4        | Livré côté repo | Graphe structuré Organization/WebSite/Service/Certification/Person, tests et doc sont en place ; validation externe à archiver.       |
+| Lot 5        | Ouvert          | Pas de page institutionnelle dédiée identifiée dans le routing public.                                                                |
+| Lot 6        | Partiel         | Modèle auteur centralisé, bloc auteur et `BlogPosting -> Person` sont livrés ; pages auteur et politique éditoriale restent ouvertes. |
+| Lot 7        | Livré côté repo | Règles micro-BIC datées, contenus sensibles et snippets sont couverts par tests de gouvernance fiscale/temporelle.                    |
+| Lot 8        | Ouvert          | Profils locaux, avis et procédures associées restent principalement humains.                                                          |
+| Lots 9 à 12  | Ouverts         | Mentions partenaires, contenus propriétaires, page locale anglaise Dordogne et arbitrage tarifaire restent à décider ou produire.     |
+| Lots 13 à 14 | Ouverts         | QA GEO/AEO finale et routine mensuelle restent à formaliser après les lots précédents.                                                |
+
+Avancements connexes non prévus dans la version initiale de cette roadmap : les 9 routes MVP néerlandaises existent, les simulateurs fiscal et taxe de séjour ont des routes anglaises, et les 404 localisées EN/NL sont couvertes par le routing et le SEO centralisé.
 
 ---
 
@@ -83,7 +105,7 @@ Créer une base mesurable avant les modifications, éviter les actions dispersé
 
 ### Tâches
 
-- [x] **`[MIXTE]`** Créer dans le repo le document `docs/geo-aeo/roadmap-geo-aeo-site-public-etoilys.md` à partir de cette roadmap.
+- [x] **`[MIXTE]`** Créer dans le repo le document `docs/seo/geo-aeo/roadmap-geo-aeo-site-public-etoilys.md` à partir de cette roadmap.
 - [x] **`[CODEX]`** Ajouter une section GEO/AEO dans la documentation projet principale ou un lien vers cette roadmap.
 - [x] **`[CODEX]`** Inventorier les composants, fichiers et scripts concernés :
   - données structurées ;
@@ -95,7 +117,7 @@ Créer une base mesurable avant les modifications, éviter les actions dispersé
   - articles et auteurs ;
   - pages locales ;
   - pages anglaises.
-- [x] **`[MIXTE]`** Créer un fichier de baseline, par exemple `docs/geo-aeo/geo-aeo-baseline-2026-07.md`, contenant :
+- [x] **`[MIXTE]`** Créer un fichier de baseline, par exemple `docs/seo/geo-aeo/geo-aeo-baseline-2026-07.md`, contenant :
   - score initial 72/100 ;
   - nombre d’URLs indexables ;
   - nombre de pages locales ;
@@ -113,8 +135,8 @@ Créer une base mesurable avant les modifications, éviter les actions dispersé
   - Aucun test manuel d’un autre assistant n’est requis pour clôturer le lot 0.
 
 - [x] **`[CODEX]`** Stocker le panel et les résultats dans un format versionné, par exemple :
-  - `docs/geo-aeo/geo-aeo-query-panel.md`
-  - `docs/geo-aeo/tests/2026-07-10.md`
+  - `docs/seo/geo-aeo/geo-aeo-query-panel.md`
+  - `docs/seo/geo-aeo/tests/2026-07-10.md`
 
 - [x] **`[DÉCISION]`** Ne pas imposer de vérification manuelle dans les autres interfaces propriétaires pour le panel actif.
 - [x] **`[MIXTE]`** Définir les métriques de succès à suivre chaque mois :
@@ -192,7 +214,7 @@ Supprimer les contradictions entre les sources institutionnelles et empêcher un
   - annuaires partenaires ;
   - éventuelles pages de conciergeries ou agences.
 - [ ] **`[HUMAIN]`** Corriger les divergences identifiées.
-- [ ] **`[MIXTE]`** Créer un tableau de suivi des profils externes dans `docs/identite-publique-etoilys.md` avec :
+- [ ] **`[MIXTE]`** Créer un tableau de suivi des profils externes dans un futur document SEO dédié avec :
   - plateforme ;
   - URL ;
   - données affichées ;
@@ -224,7 +246,7 @@ Passer des impressions anecdotiques à une mesure exploitable, sans prétendre m
   - requêtes ou formulations associées ;
   - évolution temporelle ;
   - pays ou langues lorsque disponibles.
-- [ ] **`[MIXTE]`** Documenter les enseignements dans `docs/geo-aeo-measurement.md`.
+- [ ] **`[MIXTE]`** Documenter les enseignements dans `docs/seo/geo-aeo/geo-aeo-measurement.md`.
 
 ## 2.2 Google Search Console
 
@@ -257,7 +279,7 @@ Passer des impressions anecdotiques à une mesure exploitable, sans prétendre m
   - démarrage de simulateur, si pertinent.
 - [x] **`[CODEX]`** Implémenter `audience_landed` après refus explicite, limité à `landing_page` et `locale`, derrière `VITE_ENABLE_COOKIELESS_AUDIENCE=false`.
 - [x] **`[CODEX]`** Ajouter une opposition indépendante à la mesure minimale dans les préférences.
-- [x] **`[CODEX]`** Documenter la matrice des états, les deux ensembles de vues et les contrôles préalables dans `docs/geo-aeo/geo-aeo-measurement.md`.
+- [x] **`[CODEX]`** Documenter la matrice des états, les deux ensembles de vues et les contrôles préalables dans `docs/seo/geo-aeo/geo-aeo-measurement.md`.
 - [x] **`[CODEX]`** Ajouter des tests unitaires sur la classification, les domaines trompeurs, le consentement, le refus, l’opposition et le payload minimal.
 - [ ] **`[HUMAIN]`** Configurer et prouver l’hébergement UE, le DPA, la rétention, les intégrations et Cookieless Server Hash.
 - [ ] **`[HUMAIN]`** Valider les textes juridiques et documenter l’analyse interne des critères d’exemption.
@@ -396,13 +418,13 @@ Aider les moteurs à relier sans ambiguïté l’organisation, ses services, ses
 
 - [x] **`[CODEX]`** Ajouter des tests de structure et de cohérence.
 - [ ] **`[MIXTE]`** Vérifier les pages principales avec les validateurs adaptés.
-- [x] **`[CODEX]`** Documenter les choix dans `docs/structured-data-etoilys.md`.
+- [x] **`[CODEX]`** Documenter les choix dans `docs/tech/structured-data-etoilys.md`.
 
 ### Preuves
 
 - Source de vérité JSON-LD : `src/content/structuredData.ts`.
 - Injection React et prerender partagée : `src/components/ui/StructuredData.tsx` et `scripts/prerender.ts`.
-- Documentation : [`docs/structured-data-etoilys.md`](../structured-data-etoilys.md).
+- Documentation : [`docs/tech/structured-data-etoilys.md`](../../tech/structured-data-etoilys.md).
 - Tests ajoutés : `src/test/structured-data.test.ts`.
 - `npm run test:run` : 280 tests passés.
 - `npm run typecheck` : OK.
@@ -487,6 +509,8 @@ Fournir une page canonique qui explique clairement qui est Etoilys, pourquoi l�
 
 Relier les contenus à des personnes identifiables et rendre explicite la méthode de vérification des articles.
 
+État au 22 juillet 2026 : le modèle auteur centralisé, le bloc auteur visible et le lien JSON-LD `BlogPosting -> Person` sont livrés. Les pages auteur publiques et la politique éditoriale restent hors livraison à ce stade.
+
 ## 6.1 Modèle auteur
 
 - [ ] **`[DÉCISION]`** Valider la liste des auteurs réellement publiés :
@@ -494,7 +518,7 @@ Relier les contenus à des personnes identifiables et rendre explicite la métho
   - Rédaction Etoilys ;
   - autres auteurs ou relecteurs éventuels.
 - [ ] **`[DÉCISION]`** Décider si `Rédaction Etoilys` reste une entité éditoriale ou si les articles doivent être attribués à une personne.
-- [ ] **`[CODEX]`** Créer un modèle de données auteur typé et centralisé.
+- [x] **`[CODEX]`** Créer un modèle de données auteur typé et centralisé.
 - [ ] **`[CODEX]`** Ajouter pour chaque auteur les champs pertinents :
   - nom ;
   - fonction ;
@@ -507,11 +531,11 @@ Relier les contenus à des personnes identifiables et rendre explicite la métho
 
 ## 6.2 Page auteur Florian Grisorio
 
-- [ ] **`[MIXTE]`** Rédiger une biographie factuelle et vérifiable.
+- [x] **`[MIXTE]`** Rédiger une biographie factuelle et vérifiable.
 - [ ] **`[HUMAIN]`** Valider la fonction exacte, l’expérience mentionnée et les profils externes.
 - [ ] **`[CODEX]`** Créer la route et la page auteur.
 - [ ] **`[CODEX]`** Lister les articles de l’auteur.
-- [ ] **`[CODEX]`** Relier les `BlogPosting` à l’entité `Person`.
+- [x] **`[CODEX]`** Relier les `BlogPosting` à l’entité `Person`.
 - [ ] **`[CODEX]`** Ajouter canonical, sitemap, prerender et tests.
 
 ## 6.3 Politique éditoriale
@@ -529,20 +553,20 @@ Relier les contenus à des personnes identifiables et rendre explicite la métho
 
 ## 6.4 Migration des articles
 
-- [ ] **`[CODEX]`** Relier tous les articles existants à une entité auteur valide.
+- [x] **`[CODEX]`** Relier tous les articles existants à une entité auteur valide.
 - [ ] **`[CODEX]`** Vérifier la cohérence entre :
   - auteur visible ;
   - métadonnées ;
   - JSON-LD ;
   - page auteur.
-- [ ] **`[CODEX]`** Ajouter des tests empêchant un article indexable sans auteur valide.
+- [x] **`[CODEX]`** Ajouter des tests empêchant un article indexable sans auteur valide.
 
 ### Critères d’acceptation
 
-- [ ] Chaque article indexable pointe vers un auteur ou une entité éditoriale définie.
+- [x] Chaque article indexable pointe vers un auteur ou une entité éditoriale définie.
 - [ ] Une politique éditoriale publique est accessible.
 - [ ] Les dates de vérification affichées sont réelles.
-- [ ] Les données structurées correspondent au contenu visible.
+- [x] Les données structurées correspondent au contenu visible.
 
 ---
 
@@ -552,9 +576,11 @@ Relier les contenus à des personnes identifiables et rendre explicite la métho
 
 Éviter qu’un moteur prélève un chiffre juste dans un contexte et le restitue comme vérité générale.
 
+État au 22 juillet 2026 : le lot est considéré livré côté repo. Les règles micro-BIC courantes sont centralisées dans `src/content/microBicFiscalRules.ts` et les contenus publics sensibles sont couverts par `src/test/fiscal-temporal-governance.test.ts`.
+
 ## 7.1 Audit transversal
 
-- [ ] **`[CODEX]`** Rechercher dans le repo toutes les occurrences de :
+- [x] **`[CODEX]`** Rechercher dans le repo toutes les occurrences de :
   - `77 700` ;
   - `83 600` ;
   - `71 %` ;
@@ -565,7 +591,7 @@ Relier les contenus à des personnes identifiables et rendre explicite la métho
   - `2025` ;
   - `2026` ;
   - `2027`.
-- [ ] **`[MIXTE]`** Classer chaque occurrence :
+- [x] **`[MIXTE]`** Classer chaque occurrence :
   - correcte et datée ;
   - correcte mais ambiguë ;
   - obsolète ;
@@ -574,10 +600,10 @@ Relier les contenus à des personnes identifiables et rendre explicite la métho
 
 ## 7.2 Corrections
 
-- [ ] **`[CODEX]`** Remplacer les formulations ambiguës par des formulations explicitement datées, notamment :
+- [x] **`[CODEX]`** Remplacer les formulations ambiguës par des formulations explicitement datées, notamment :
   - revenus 2025 déclarés en 2026 ;
   - revenus 2026 déclarés en 2027.
-- [ ] **`[CODEX]`** Vérifier les pages :
+- [x] **`[CODEX]`** Vérifier les pages :
   - avantages du classement ;
   - simulateur fiscal ;
   - FAQ ;
@@ -585,16 +611,16 @@ Relier les contenus à des personnes identifiables et rendre explicite la métho
   - page classement ;
   - pages locales ;
   - contenus anglais concernés.
-- [ ] **`[CODEX]`** Aligner les tableaux, encadrés, FAQ, métadonnées et données structurées.
-- [ ] **`[CODEX]`** Ajouter des tests ou fixtures empêchant le retour d’anciens paramètres connus.
-- [ ] **`[CODEX]`** Vérifier que les snippets et résumés ne coupent pas l’information temporelle essentielle.
+- [x] **`[CODEX]`** Aligner les tableaux, encadrés, FAQ, métadonnées et données structurées.
+- [x] **`[CODEX]`** Ajouter des tests ou fixtures empêchant le retour d’anciens paramètres connus.
+- [x] **`[CODEX]`** Vérifier que les snippets et résumés ne coupent pas l’information temporelle essentielle.
 
 ### Critères d’acceptation
 
-- [ ] Chaque seuil fiscal sensible est accompagné de sa période d’application.
-- [ ] Aucun ancien abattement ou plafond n’est présenté comme actuel.
-- [ ] Les versions FR et EN ne se contredisent pas.
-- [ ] Les simulateurs et articles utilisent la même source de vérité lorsque cela est possible.
+- [x] Chaque seuil fiscal sensible est accompagné de sa période d’application.
+- [x] Aucun ancien abattement ou plafond n’est présenté comme actuel.
+- [x] Les versions FR et EN ne se contredisent pas.
+- [x] Les simulateurs et articles utilisent la même source de vérité lorsque cela est possible.
 
 ---
 
@@ -707,7 +733,7 @@ Faire confirmer par des tiers crédibles qu’Etoilys intervient réellement dan
   - zone d’intervention ;
   - accréditation ou statut ;
   - lien vers une page pertinente.
-- [ ] **`[MIXTE]`** Maintenir un registre `docs/mentions-partenaires.md` :
+- [ ] **`[MIXTE]`** Maintenir un registre SEO dédié aux mentions partenaires :
   - partenaire ;
   - URL ;
   - date ;
@@ -994,15 +1020,15 @@ Ces objectifs servent de repères, pas de garanties :
 
 ## Phase 1 — Urgent et fondation
 
-- [ ] Lot 0 — Baseline et gouvernance.
+- [x] Lot 0 — Baseline et gouvernance.
 - [ ] Lot 1 — Cohérence Cofrac et identité publique.
 - [ ] Lot 2 — Mesure des citations et conversions.
 - [x] Lot 3 — Sitemap, `lastmod` et IndexNow.
-- [ ] Lot 7 — Désambiguïsation fiscale et temporelle.
+- [x] Lot 7 — Désambiguïsation fiscale et temporelle.
 
 ## Phase 2 — Entité et confiance
 
-- [ ] Lot 4 — Données structurées.
+- [x] Lot 4 — Données structurées.
 - [ ] Lot 5 — Page institutionnelle.
 - [ ] Lot 6 — Pages auteur et politique éditoriale.
 - [ ] Lot 8 — Profils et avis.
@@ -1045,9 +1071,9 @@ Le chantier GEO/AEO peut être considéré comme correctement déployé lorsque 
 - [ ] les informations Cofrac et les principales sources externes sont cohérentes ;
 - [ ] le repo possède une source canonique pour l’identité Etoilys ;
 - [ ] une page institutionnelle et des pages auteur identifient clairement l’entité et les rédacteurs ;
-- [ ] les données structurées relient correctement organisation, services, auteurs et articles ;
-- [ ] les seuils et dates sensibles sont désambiguïsés sur tout le site ;
-- [ ] les mises à jour sont correctement reflétées dans le sitemap et IndexNow ;
+- [x] les données structurées relient correctement organisation, services, auteurs et articles ;
+- [x] les seuils et dates sensibles sont désambiguïsés sur tout le site ;
+- [x] les mises à jour sont correctement reflétées dans le sitemap et IndexNow ;
 - [ ] les référents IA et leurs conversions sont suivis lorsque la donnée est disponible ;
 - [ ] Google Business Profile et Bing Places sont propres ;
 - [ ] un processus de collecte d’avis authentiques est actif ;

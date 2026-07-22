@@ -178,7 +178,7 @@ Pour ajouter ou supprimer une route indexable :
 4. Régénérer le sitemap avec `npm run seo:sitemap`.
 5. Vérifier que les routes `noindex` et la 404 ne sont pas dans le sitemap.
 
-Le workflow détaillé pour les pages/articles est `docs/seo-structurant-workflow.md`.
+Le workflow détaillé pour les pages/articles est `docs/tech/seo-structurant-workflow.md`.
 
 ## Images
 
@@ -218,8 +218,8 @@ Fichiers principaux :
 - `src/pages/SimulationClassement.tsx` : parcours de simulation.
 - `src/utils/simulatorApi.ts` : client API typé avec `credentials: 'include'`.
 - `src/content/simulatorGrid.ts` : parsing et modèle de grille.
-- `docs/swagger.json` : contrat OpenAPI de référence du backend.
-- `docs/simulateur-backend-integration.md` : notes d’intégration.
+- `docs/data/swagger.json` : contrat OpenAPI de référence du backend.
+- `docs/tech/simulateur-backend-integration.md` : notes d’intégration.
 
 Les simulations publiques sont associées au navigateur par le backend. Ne pas remplacer ce contrat par un contournement frontend persistant.
 
@@ -227,9 +227,9 @@ Les simulations publiques sont associées au navigateur par le backend. Ne pas r
 
 Pour les contenus juridiques/fiscaux liés aux meublés de tourisme :
 
-1. Vérifier les faits dans `docs/sources_infos_search.pdf`.
-2. Utiliser `docs/sources_infos_gpt.pdf` pour l’angle éditorial et la structure.
-3. En cas de conflit, prioriser `sources_infos_search.pdf`, puis les sources officielles citées : Legifrance, impots.gouv, Service-Public, Atout France.
+1. Vérifier les faits dans `docs/contenu/sources/sources_infos_search.pdf`.
+2. Utiliser `docs/contenu/sources/sources_infos_gpt.pdf` pour l’angle éditorial et la structure.
+3. En cas de conflit, prioriser `docs/contenu/sources/sources_infos_search.pdf`, puis les sources officielles citées : Legifrance, impots.gouv, Service-Public, Atout France.
 
 Les fichiers `.txt` associés peuvent aider à rechercher rapidement, mais les PDF restent les sources conservées.
 
