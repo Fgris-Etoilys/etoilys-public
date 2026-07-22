@@ -5,6 +5,7 @@ import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import FeatureCard from '../../components/ui/FeatureCard';
 import SmartImage from '../../components/ui/SmartImage';
+import DepartmentLocalPages from '../../components/local/DepartmentLocalPages';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
 import {
   LOT_ET_GARONNE_FAQ,
@@ -12,6 +13,7 @@ import {
   LOT_ET_GARONNE_SERVICE_SECTORS,
   LOT_ET_GARONNE_SOURCES,
   LOT_ET_GARONNE_TOURISM_ROWS,
+  getDepartmentInterventionArea,
 } from '../../content/localServiceAreas';
 
 const localBenefits = [
@@ -42,6 +44,8 @@ const localBenefits = [
 ];
 
 export default function ClassementLotEtGaronne() {
+  const departmentArea = getDepartmentInterventionArea('lot-et-garonne');
+
   return (
     <>
       <section className="relative min-h-[720px] overflow-hidden py-section text-white">
@@ -284,6 +288,11 @@ export default function ClassementLotEtGaronne() {
           </div>
         </div>
       </section>
+
+      <DepartmentLocalPages
+        departmentName={departmentArea.name}
+        localPages={departmentArea.localPages}
+      />
 
       <section className="bg-primary-100 py-section">
         <div className="container-adaptive">

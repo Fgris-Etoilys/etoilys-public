@@ -1,10 +1,17 @@
-export type LocalAreaStatus = 'available' | 'comingSoon';
+export type DepartmentAreaId = 'dordogne' | 'gironde' | 'lot-et-garonne';
 
-export interface LocalArea {
+export interface LocalInterventionPage {
+  id: string;
+  label: string;
+  path: string;
+}
+
+export interface DepartmentInterventionArea {
+  id: DepartmentAreaId;
   name: string;
-  href?: string;
-  status: LocalAreaStatus;
+  path: string;
   description: string;
+  localPages: LocalInterventionPage[];
 }
 
 export interface LocalStatistic {
@@ -34,29 +41,42 @@ export interface LocalSource {
   href: string;
 }
 
-export const LOCAL_AREAS: LocalArea[] = [
+export const DEPARTMENT_INTERVENTION_AREAS: DepartmentInterventionArea[] = [
   {
+    id: 'dordogne',
     name: 'Dordogne',
-    href: '/classement-meuble-tourisme-dordogne',
-    status: 'available',
+    path: '/classement-meuble-tourisme-dordogne',
     description:
       'Classement des meublés de tourisme en Dordogne : informations locales, zones d’intervention, bénéfices du classement et demande en ligne.',
+    localPages: [],
   },
   {
+    id: 'gironde',
     name: 'Gironde',
-    href: '/classement-meuble-tourisme-gironde',
-    status: 'available',
+    path: '/classement-meuble-tourisme-gironde',
     description:
       'Classement des meublés de tourisme en Gironde : informations locales, secteurs d’intervention, bénéfices du classement et demande en ligne.',
+    localPages: [],
   },
   {
+    id: 'lot-et-garonne',
     name: 'Lot-et-Garonne',
-    href: '/classement-meuble-tourisme-lot-et-garonne',
-    status: 'available',
+    path: '/classement-meuble-tourisme-lot-et-garonne',
     description:
       'Classement de meublés de tourisme autour d’Agen, Villeneuve-sur-Lot, Marmande et des secteurs proches.',
+    localPages: [],
   },
 ];
+
+export function getDepartmentInterventionArea(id: DepartmentAreaId): DepartmentInterventionArea {
+  const area = DEPARTMENT_INTERVENTION_AREAS.find((departmentArea) => departmentArea.id === id);
+
+  if (!area) {
+    throw new Error(`Unknown department intervention area: ${id}`);
+  }
+
+  return area;
+}
 
 export const DORDOGNE_SERVICE_SECTORS = [
   {

@@ -12,7 +12,7 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
 
 ## Ajout d'une nouvelle page indexable
 
-1. Ajouter la route dans `src/App.tsx`.
+1. Ajouter la route dans `src/AppRoutes.tsx` (appelé par `src/App.tsx`).
 2. Ajouter la meta route dans `src/content/seoRoutes.ts` :
    - `title`
    - `description`
@@ -32,6 +32,22 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
 5. Vérifier :
    - `npm run test:run`
    - `npm run typecheck`
+
+## Ajout d'une page locale
+
+Une page locale correspond à une ville ou à un bassin rattaché à une page départementale.
+
+1. Créer le composant de page réel avec son contenu validé.
+2. Déclarer sa route publique dans `src/AppRoutes.tsx`.
+3. Ajouter sa configuration SEO dans `src/content/seoRoutes.ts` avec une route indexable et prerenderable.
+4. Régénérer le sitemap avec `npm run seo:sitemap`.
+5. Vérifier que la route est incluse dans le prerender avec `npm run prerender` après `npm run build`.
+6. Enregistrer la page dans `localPages` du département concerné dans `src/content/localServiceAreas.ts`.
+7. Ajouter ou adapter les tests de route, SEO, breadcrumbs, sitemap, prerender et maillage local.
+
+Ne jamais enregistrer une page locale dans `localPages` avant que sa route réelle, sa configuration
+SEO indexable et ses tests existent. Cette règle empêche le hub et les pages départementales de
+rendre un lien crawlable vers une page absente.
 
 ## Ajout d'un nouvel article
 

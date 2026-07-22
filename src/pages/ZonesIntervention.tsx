@@ -1,6 +1,6 @@
 import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
-import { LOCAL_AREAS } from '../content/localServiceAreas';
+import InterventionAreaCards from '../components/local/InterventionAreaCards';
+import { DEPARTMENT_INTERVENTION_AREAS } from '../content/localServiceAreas';
 
 const carteFranceExpansion = '/images/carte-france-expansion-card.webp';
 
@@ -43,35 +43,7 @@ export default function ZonesIntervention() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {LOCAL_AREAS.map((area) => (
-                <Card
-                  key={area.name}
-                  hover={area.status === 'available'}
-                  className="flex min-h-[320px] flex-col p-6"
-                >
-                  <div className="mb-5 flex items-start justify-between gap-4">
-                    <h3 className="text-2xl font-playfair font-semibold text-gray-900">
-                      {area.name}
-                    </h3>
-                  </div>
-                  <p className="mb-6 text-sm leading-comfortable text-textLight">
-                    {area.description}
-                  </p>
-                  <div className="mt-auto">
-                    {area.href ? (
-                      <Button href={area.href} variant="primary">
-                        Consulter la page {area.name}
-                      </Button>
-                    ) : (
-                      <Button href="/demande-classement" variant="secondary">
-                        Faire une demande
-                      </Button>
-                    )}
-                  </div>
-                </Card>
-              ))}
-            </div>
+            <InterventionAreaCards areas={DEPARTMENT_INTERVENTION_AREAS} />
 
             <div className="mt-10 overflow-hidden rounded-card border border-primary-200 bg-primary-100">
               <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.45fr)]">

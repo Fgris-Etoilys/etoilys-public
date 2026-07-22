@@ -5,6 +5,7 @@ import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
 import FeatureCard from '../../components/ui/FeatureCard';
 import SmartImage from '../../components/ui/SmartImage';
+import DepartmentLocalPages from '../../components/local/DepartmentLocalPages';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
 import {
   DORDOGNE_FAQ,
@@ -12,6 +13,7 @@ import {
   DORDOGNE_SERVICE_SECTORS,
   DORDOGNE_SOURCES,
   DORDOGNE_TOURISM_ROWS,
+  getDepartmentInterventionArea,
 } from '../../content/localServiceAreas';
 
 const localBenefits = [
@@ -42,6 +44,8 @@ const localBenefits = [
 ];
 
 export default function ClassementDordogne() {
+  const departmentArea = getDepartmentInterventionArea('dordogne');
+
   return (
     <>
       <section className="relative min-h-[720px] overflow-hidden py-section text-white">
@@ -272,6 +276,11 @@ export default function ClassementDordogne() {
           </div>
         </div>
       </section>
+
+      <DepartmentLocalPages
+        departmentName={departmentArea.name}
+        localPages={departmentArea.localPages}
+      />
 
       <section className="bg-primary-100 py-section">
         <div className="container-adaptive">
