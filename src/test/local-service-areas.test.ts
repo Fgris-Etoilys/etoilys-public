@@ -45,4 +45,20 @@ describe('local service areas data', () => {
       expect(indexablePaths.has(path), `${path} must be indexable in seoRoutes.ts`).toBe(true);
     });
   });
+
+  it('registers Bergerac as a Dordogne child page only', () => {
+    const dordogne = DEPARTMENT_INTERVENTION_AREAS.find((area) => area.id === 'dordogne');
+    const otherDepartments = DEPARTMENT_INTERVENTION_AREAS.filter((area) => area.id !== 'dordogne');
+
+    expect(dordogne?.localPages).toEqual([
+      {
+        id: 'bergerac',
+        label: 'Bergerac et le Bergeracois',
+        path: '/classement-meuble-tourisme-bergerac',
+      },
+    ]);
+    otherDepartments.forEach((area) => {
+      expect(area.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();
+    });
+  });
 });

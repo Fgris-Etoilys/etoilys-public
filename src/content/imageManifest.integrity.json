@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "90b3ce2fbcf199e7a67f3e34332bf084a2e3e4abecd52840ec4905b3ad95f3d7",
+  "pipelineSignature": "c4c422529bc0c465a6d5bed98d95c55f0820d73ee2b218358b0d8d6aeb961b47",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "8483a6f52855e207b0eb6380827b06c2c5ae31e33a4870a298b10512b5493ee5"
+    "sha256": "f3264b7d155cc939de7e04c45d984c1149621f85266244dc1fc25809e97ad593"
   },
   "sources": [
     {
@@ -80,6 +80,11 @@
       "key": "girondeCoast",
       "path": "src/assets/seo-images/source/benjamin-esteves-A_JaVydOsRk-unsplash.jpg",
       "sha256": "b088e60360c513993e56b84b5a2e2a5af6dabd24aac5636bf26d9c3a075ffe2f"
+    },
+    {
+      "key": "bergeracHero",
+      "path": "src/assets/seo-images/source/bergerac-view-late-afternoon.jpg",
+      "sha256": "5aab5b00d2ca69a89e1de233bbf2a2184175f08c7eeef8e3607a4f5896ae2a05"
     },
     {
       "key": "simulateurClassement",
@@ -907,6 +912,61 @@
       "path": "/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.webp",
       "bytes": 81170,
       "sha256": "f1cdc099e6eec431d8984d62a9955d3e7df1cbc2024e9fa6b6304db3591e176a"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-1200.avif",
+      "bytes": 48311,
+      "sha256": "c4b019dc0c112380e2e54398b429ed284fde64b7e18637bfb8ee9dcde304b145"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-1200.jpg",
+      "bytes": 80680,
+      "sha256": "88460fadfea07c4b5ec57655626f9a6e1f3e16309765cf67c31a704e76aa2320"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-1200.webp",
+      "bytes": 69878,
+      "sha256": "00e2ffc388a4bd41d4031a86aac8d65c63f51debf5bf5fb1daf1226b6c589cf9"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-1600.avif",
+      "bytes": 98121,
+      "sha256": "3df7aed2cdc373c1a94bc86be91f87b6a0f5602572a746726460856001ffd16f"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-1600.webp",
+      "bytes": 124040,
+      "sha256": "7630c89ac6169fd807bc629401c767d1646b9d52cd7050a53de4c749ae17250c"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-1920.avif",
+      "bytes": 135066,
+      "sha256": "47358d3dae11fb9df91b0e47681bd77ba97573fe1699714d1032326fde426c51"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-1920.webp",
+      "bytes": 176140,
+      "sha256": "53204b3cabe366b008184974a0e1e5f64cccaa53d00412140d40b0ccefa4d4d6"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-480.avif",
+      "bytes": 8455,
+      "sha256": "7e0e7089ce9b29c7e1341939626e16e97ce4cbf907f62bf663d1b6f8496c5710"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-480.webp",
+      "bytes": 10882,
+      "sha256": "4821b79bb92b364a7f847fbd2b7e523bb83e495bc1903c040fe9da0fee091288"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-768.avif",
+      "bytes": 17437,
+      "sha256": "016c6eadf59b31069e13c78d25561deaf9d0d1e94b7c2ef6e710abb86274fc84"
+    },
+    {
+      "path": "/images/optimized/bergerac-view-late-afternoon-768.webp",
+      "bytes": 25702,
+      "sha256": "f7336fa5d98420f466ee07370d541ff3efa3e5da10a15fb0e2b3d838bed9a2a1"
     },
     {
       "path": "/images/optimized/home-hero-1200.avif",

@@ -17,7 +17,13 @@ const DEFAULT_WIDTH = 1200;
 const OG_ASPECT_RATIO = 1200 / 630;
 const FORCE_REBUILD = process.argv.includes('--force');
 const CHECK_MODE = process.argv.includes('--check');
-const HERO_ASSET_KEYS = new Set(['homeHero', 'dordogneHero', 'girondeHero', 'lotEtGaronneHero']);
+const HERO_ASSET_KEYS = new Set([
+  'homeHero',
+  'dordogneHero',
+  'girondeHero',
+  'lotEtGaronneHero',
+  'bergeracHero',
+]);
 
 const IMAGE_ASSETS = [
   { key: 'homeHero', fileName: 'AdobeStock_70255363.jpeg', outputName: 'home-hero' },
@@ -83,6 +89,7 @@ const IMAGE_ASSETS = [
   { key: 'lotEtGaronneHero', fileName: 'AdobeStock_1364523535.jpeg' },
   { key: 'lotEtGaronneTerritory', fileName: 'pexels-d-goth-37724280.jpg' },
   { key: 'lotEtGaronneCanal', fileName: 'AdobeStock_919223785.jpeg' },
+  { key: 'bergeracHero', fileName: 'bergerac-view-late-afternoon.jpg' },
 ];
 
 function formatSrcSet(baseName, widths, format) {

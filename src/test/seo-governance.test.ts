@@ -3,6 +3,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   getAllKnownPaths,
+  getBreadcrumbItems,
   getCanonicalUrl,
   getHtmlLang,
   getIndexablePaths,
@@ -135,6 +136,15 @@ describe('seo governance', () => {
     });
   });
 
+  it('builds the Bergerac breadcrumb hierarchy from zones to Dordogne', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-bergerac')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Classement en Dordogne', url: `${SITE_URL}/classement-meuble-tourisme-dordogne` },
+      { name: 'Bergerac', url: `${SITE_URL}/classement-meuble-tourisme-bergerac` },
+    ]);
+  });
+
   it('keeps dynamic public simulations noindex and out of the sitemap', () => {
     const dynamicSimulationSeo = getSeoRouteConfig('/simulateur/simulation-id');
 
@@ -259,6 +269,7 @@ describe('seo governance', () => {
       '/simulateur',
       '/zones-intervention',
       '/classement-meuble-tourisme-dordogne',
+      '/classement-meuble-tourisme-bergerac',
       '/classement-meuble-tourisme-gironde',
       '/classement-meuble-tourisme-lot-et-garonne',
       '/recrutement',

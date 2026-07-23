@@ -94,11 +94,25 @@ describe('routing', () => {
   it('renders local service areas hub page', () => {
     renderAt('/zones-intervention');
     expectPageHeading(/zones d’intervention/i);
+    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bergerac'
+    );
   });
 
   it('renders Dordogne local landing page', () => {
     renderAt('/classement-meuble-tourisme-dordogne');
     expectPageHeading(/classement/i, /dordogne/i);
+    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bergerac'
+    );
+  });
+
+  it('renders Bergerac city local landing page', () => {
+    renderAt('/classement-meuble-tourisme-bergerac');
+    expectPageHeading(/classement/i, /bergerac/i, /bergeracois/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
   });
 
   it('renders Gironde local landing page', () => {
@@ -137,6 +151,8 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-lot-et-garonne'
     );
+
+    expect(screen.queryByRole('link', { name: /bergerac et le bergeracois/i })).toBeNull();
   });
 
   it('renders not found page for unknown route', () => {

@@ -14,6 +14,7 @@ export interface SeoRouteConfig {
   lastModified?: string;
   robots?: string;
   breadcrumbLabel?: string;
+  breadcrumbParentPaths?: string[];
   ogImageKey?: ImageAssetKey;
   indexable?: boolean;
   prerender?: boolean;
@@ -135,6 +136,16 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Classement en Dordogne',
     ogImageKey: 'dordogneHero',
     lcpImageKey: 'dordogneHero',
+  },
+  '/classement-meuble-tourisme-bergerac': {
+    lastModified: '2026-07-23',
+    title: 'Classement meublé de tourisme à Bergerac',
+    description:
+      'Faites classer votre meublé de tourisme à Bergerac et dans le Bergeracois. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
+    breadcrumbLabel: 'Bergerac',
+    breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-dordogne'],
+    ogImageKey: 'bergeracHero',
+    lcpImageKey: 'bergeracHero',
   },
   '/classement-meuble-tourisme-gironde': {
     lastModified: '2026-06-07',
@@ -696,6 +707,23 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
     return [
       home,
       { name: 'Actualités', url: `${SITE_URL}/actualites` },
+      {
+        name: route.breadcrumbLabel ?? route.title,
+        url: getCanonicalUrl(normalizedPath),
+      },
+    ];
+  }
+
+  if (route.breadcrumbParentPaths !== undefined && route.breadcrumbParentPaths.length > 0) {
+    return [
+      home,
+      ...route.breadcrumbParentPaths.map((parentPath) => {
+        const parentConfig = getSeoRouteConfig(parentPath);
+        return {
+          name: parentConfig.breadcrumbLabel ?? parentConfig.title,
+          url: getCanonicalUrl(parentPath),
+        };
+      }),
       {
         name: route.breadcrumbLabel ?? route.title,
         url: getCanonicalUrl(normalizedPath),

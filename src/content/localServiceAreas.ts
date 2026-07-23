@@ -48,7 +48,13 @@ export const DEPARTMENT_INTERVENTION_AREAS: DepartmentInterventionArea[] = [
     path: '/classement-meuble-tourisme-dordogne',
     description:
       'Classement des meublés de tourisme en Dordogne : informations locales, zones d’intervention, bénéfices du classement et demande en ligne.',
-    localPages: [],
+    localPages: [
+      {
+        id: 'bergerac',
+        label: 'Bergerac et le Bergeracois',
+        path: '/classement-meuble-tourisme-bergerac',
+      },
+    ],
   },
   {
     id: 'gironde',
@@ -950,5 +956,75 @@ export const DORDOGNE_SOURCES: LocalSource[] = [
     label:
       'Comité départemental du tourisme de la Dordogne — Plaquette classement des meublés de tourisme en Dordogne 2025',
     href: 'https://www.dordogne-perigord-tourisme.fr/app/uploads/dordogne-perigord/2025/10/Plaquette-classement-meubles-de-tourisme-Dordogne-2025.pdf',
+  },
+];
+
+export const BERGERAC_SERVICE_COMMUNES = [
+  'Bergerac',
+  'Creysse',
+  'Prigonrieux',
+  'Monbazillac',
+  'Cours-de-Pile',
+  'Lembras',
+  'Mouleydier',
+  'La Force',
+  'Gardonne',
+  'Sigoulès-et-Flaugeac',
+  'Issigeac',
+  'Eymet',
+  'Lalinde',
+];
+
+export const BERGERAC_PROCEDURE_STEPS: LocalProcedureStep[] = [
+  {
+    number: 1,
+    title: 'Vous envoyez votre demande',
+    description:
+      'Indiquez l’adresse du logement, sa capacité d’accueil et la catégorie que vous souhaitez viser si vous l’avez déjà déterminée.',
+  },
+  {
+    number: 2,
+    title: 'Nous organisons la visite',
+    description:
+      'Etoilys confirme le tarif et vous propose une date d’intervention dans le secteur de Bergerac.',
+  },
+  {
+    number: 3,
+    title: 'Nous réalisons le classement',
+    description:
+      'La visite est effectuée sur place selon le référentiel officiel. Vous recevez ensuite les documents correspondant au classement obtenu.',
+  },
+];
+
+export const BERGERAC_FAQ: LocalFaqItem[] = [
+  {
+    question: 'Etoilys intervient-il dans les communes autour de Bergerac ?',
+    answer:
+      'Oui. Etoilys organise notamment des visites à Creysse, Prigonrieux, Monbazillac, Cours-de-Pile, Lembras, Mouleydier, La Force, Gardonne, Sigoulès-et-Flaugeac, Issigeac, Eymet et Lalinde. Si votre commune n’est pas citée, transmettez-nous l’adresse du logement pour vérifier les possibilités d’intervention.',
+  },
+  {
+    question: 'Sous quel délai une visite peut-elle être organisée ?',
+    answer:
+      'Nous intervenons généralement sous deux semaines et toujours dans un délai maximal d’un mois après votre demande. La date exacte dépend de l’organisation des tournées et de vos disponibilités.',
+  },
+  {
+    question: 'Combien coûte le classement d’un meublé à Bergerac ?',
+    answer:
+      'Pour une visite de classement à Bergerac, le tarif se situe généralement entre 150 € et 250 € TTC. Un tarif préférentiel peut s’appliquer pour les clients adhérents aux offices de tourisme partenaires, comme l’OT de Bergerac. Un tarif dégressif peut aussi être proposé lorsque plusieurs meublés sont à classer dans le même secteur.',
+  },
+  {
+    question: 'Peut-on regrouper la visite de plusieurs gîtes ?',
+    answer:
+      'Oui. Chaque logement doit être visité séparément, mais plusieurs visites peuvent être organisées le même jour. Indiquez toutes les adresses dans votre demande afin que nous puissions confirmer l’organisation et le tarif applicables.',
+  },
+  {
+    question: 'Comment savoir quelle catégorie viser ?',
+    answer:
+      'Vous pouvez utiliser le simulateur Etoilys pour obtenir une première estimation. Lors de la préparation de la visite, nous pouvons également vous aider à identifier les critères importants pour la catégorie souhaitée.',
+  },
+  {
+    question: 'Que se passe-t-il s’il manque quelques critères après la visite ?',
+    answer:
+      'Selon la nature du critère, certains justificatifs ou petits compléments peuvent être pris en compte après la visite lorsque le référentiel le permet. Etoilys vous indique précisément ce qui peut encore être transmis, sans garantir une catégorie qui ne serait pas atteinte.',
   },
 ];
