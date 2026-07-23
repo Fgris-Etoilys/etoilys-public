@@ -133,7 +133,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     title: 'Classement gîte, Airbnb et meublé de tourisme en Dordogne',
     description:
       'Etoilys accompagne les propriétaires de gîtes et locations saisonnières en Dordogne pour le classement officiel de leur meublé de tourisme.',
-    breadcrumbLabel: 'Classement en Dordogne',
+    breadcrumbLabel: 'Dordogne',
     ogImageKey: 'dordogneHero',
     lcpImageKey: 'dordogneHero',
   },
@@ -142,7 +142,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     title: 'Classement meublé de tourisme à Bergerac',
     description:
       'Faites classer votre meublé de tourisme à Bergerac et dans le Bergeracois. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
-    breadcrumbLabel: 'Bergerac',
+    breadcrumbLabel: 'Bergerac et le Bergeracois',
     breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-dordogne'],
     ogImageKey: 'bergeracHero',
     lcpImageKey: 'bergeracHero',

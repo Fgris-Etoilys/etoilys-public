@@ -87,6 +87,7 @@ Quand tu dois écrire du code, applique cette instruction:
   - cle publique versionnee: `public/a4f9bc0d1e4b47b9b0e2b438d9d8f2aa.txt`
   - soumission locale: `npm run indexnow:submit` (dry-run possible avec `INDEXNOW_DRY_RUN=1`)
   - workflow CI: `.github/workflows/indexnow.yml` (push `main`)
+  - toute nouvelle page routée doit être ajoutée au mapping fichier -> route de `scripts/indexnow-submit.ts` lorsque ce fichier peut être modifié seul et doit déclencher une soumission IndexNow.
 
 ### Checklist obligatoire avant livraison (SEO)
 

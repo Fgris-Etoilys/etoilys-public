@@ -240,6 +240,7 @@ function staticRoutesFromPage(filePath: string): string[] {
     'src/pages/Prerequis.tsx': ['/prerequis-au-classement', '/en/classification-requirements'],
     'src/pages/Procedure.tsx': ['/procedure', '/en/classification-process'],
     'src/pages/ZonesIntervention.tsx': ['/zones-intervention'],
+    'src/pages/locales/ClassementBergerac.tsx': ['/classement-meuble-tourisme-bergerac'],
     'src/pages/locales/ClassementDordogne.tsx': ['/classement-meuble-tourisme-dordogne'],
     'src/pages/locales/ClassementGironde.tsx': ['/classement-meuble-tourisme-gironde'],
     'src/pages/locales/ClassementLotEtGaronne.tsx': ['/classement-meuble-tourisme-lot-et-garonne'],

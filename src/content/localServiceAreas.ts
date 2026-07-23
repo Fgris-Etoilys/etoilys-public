@@ -998,19 +998,14 @@ export const BERGERAC_PROCEDURE_STEPS: LocalProcedureStep[] = [
 
 export const BERGERAC_FAQ: LocalFaqItem[] = [
   {
-    question: 'Etoilys intervient-il dans les communes autour de Bergerac ?',
+    question: 'Comment savoir quelle catégorie viser ?',
     answer:
-      'Oui. Etoilys organise notamment des visites à Creysse, Prigonrieux, Monbazillac, Cours-de-Pile, Lembras, Mouleydier, La Force, Gardonne, Sigoulès-et-Flaugeac, Issigeac, Eymet et Lalinde. Si votre commune n’est pas citée, transmettez-nous l’adresse du logement pour vérifier les possibilités d’intervention.',
+      'Le [simulateur Etoilys](/simulateur) permet d’obtenir une première estimation à partir des caractéristiques du logement. Il aide à situer la catégorie visée avant la visite officielle.',
   },
   {
-    question: 'Sous quel délai une visite peut-elle être organisée ?',
+    question: 'Quels sont les effets du classement sur la fiscalité ?',
     answer:
-      'Nous intervenons généralement sous deux semaines et toujours dans un délai maximal d’un mois après votre demande. La date exacte dépend de l’organisation des tournées et de vos disponibilités.',
-  },
-  {
-    question: 'Combien coûte le classement d’un meublé à Bergerac ?',
-    answer:
-      'Le tarif public est de 240 € TTC par logement. Il est de 200 € TTC pour les propriétaires adhérents à un office de tourisme partenaire. Pour plusieurs logements, le tarif est dégressif : 240 € TTC pour le premier, 160 € TTC pour le deuxième, puis 100 € TTC par logement à partir du troisième. Aucun frais de déplacement n’est facturé.',
+      'Le classement peut ouvrir un cadre fiscal plus favorable pour les meublés de tourisme, notamment en micro-BIC. Vous pouvez estimer l’impact avec le [simulateur fiscal](/simulateur-fiscal-classement).',
   },
   {
     question: 'Peut-on regrouper la visite de plusieurs gîtes ?',
@@ -1018,9 +1013,14 @@ export const BERGERAC_FAQ: LocalFaqItem[] = [
       'Oui. Chaque logement doit être visité séparément, mais plusieurs visites peuvent être organisées le même jour. Indiquez toutes les adresses dans votre demande afin que nous puissions confirmer l’organisation et le tarif applicables.',
   },
   {
-    question: 'Comment savoir quelle catégorie viser ?',
+    question: 'Une visite peut-elle être organisée en urgence ?',
     answer:
-      'Vous pouvez utiliser le simulateur Etoilys pour obtenir une première estimation. Lors de la préparation de la visite, nous pouvons également vous aider à identifier les critères importants pour la catégorie souhaitée.',
+      'Oui. Une visite prioritaire peut être organisée lorsqu’un inspecteur se déplace spécifiquement pour votre logement. Ce déplacement dédié entraîne un tarif plus élevé que les tarifs standards ou groupés ; le montant est toujours confirmé avant validation.',
+  },
+  {
+    question: 'Sous quel délai obtient-on le classement après la visite ?',
+    answer:
+      'Les documents officiels sont délivrés sous 7 jours après la visite, si aucun élément complémentaire n’est requis à l’issue de la visite pour valider le classement demandé.',
   },
   {
     question: 'Que se passe-t-il s’il manque quelques critères après la visite ?',

@@ -140,8 +140,11 @@ describe('seo governance', () => {
     expect(getBreadcrumbItems('/classement-meuble-tourisme-bergerac')).toEqual([
       { name: 'Accueil', url: `${SITE_URL}/` },
       { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
-      { name: 'Classement en Dordogne', url: `${SITE_URL}/classement-meuble-tourisme-dordogne` },
-      { name: 'Bergerac', url: `${SITE_URL}/classement-meuble-tourisme-bergerac` },
+      { name: 'Dordogne', url: `${SITE_URL}/classement-meuble-tourisme-dordogne` },
+      {
+        name: 'Bergerac et le Bergeracois',
+        url: `${SITE_URL}/classement-meuble-tourisme-bergerac`,
+      },
     ]);
   });
 

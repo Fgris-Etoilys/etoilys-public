@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Award,
@@ -121,6 +122,54 @@ const etoilysSecondaryReasons = [
     ),
   },
 ];
+
+function renderFaqAnswer(answer: string): ReactNode {
+  const linkPattern = /\[([^\]]+)\]\((\/[^)]+)\)/g;
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let match = linkPattern.exec(answer);
+
+  while (match !== null) {
+    const [rawMatch, label, href] = match;
+
+    if (label === undefined || href === undefined) {
+      match = linkPattern.exec(answer);
+      continue;
+    }
+
+    if (match.index > lastIndex) {
+      parts.push(answer.slice(lastIndex, match.index));
+    }
+
+    parts.push(
+      <Link
+        key={`${href}-${match.index}`}
+        to={href}
+        className="font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400"
+      >
+        {label}
+      </Link>
+    );
+
+    lastIndex = match.index + rawMatch.length;
+    match = linkPattern.exec(answer);
+  }
+
+  if (parts.length === 0) {
+    return answer;
+  }
+
+  if (lastIndex < answer.length) {
+    parts.push(answer.slice(lastIndex));
+  }
+
+  return <>{parts}</>;
+}
+
+const bergeracFaqItems = BERGERAC_FAQ.map((item) => ({
+  ...item,
+  answer: renderFaqAnswer(item.answer),
+}));
 
 export default function ClassementBergerac() {
   const PrimaryReasonIcon = etoilysPrimaryReason.icon;
@@ -379,7 +428,7 @@ export default function ClassementBergerac() {
             </div>
             <div className="mt-8">
               <h3 className="mb-4 text-2xl font-playfair font-semibold text-gray-900">
-                Tarifs dégressifs pour plusieurs logements
+                Tarifs dégressifs pour plusieurs logements sur le même secteur
               </h3>
               <ResponsiveComparisonTable
                 columns={multiPropertyTariffColumns}
@@ -447,7 +496,7 @@ export default function ClassementBergerac() {
         <div className="container-adaptive">
           <div className="mx-auto max-w-4xl">
             <h2 className="mb-8 text-center">Questions fréquentes sur le classement à Bergerac</h2>
-            <Accordion items={BERGERAC_FAQ} />
+            <Accordion items={bergeracFaqItems} />
             <div className="mt-8 text-center">
               <Button href="/faq" variant="secondary">
                 Consulter toutes les questions fréquentes

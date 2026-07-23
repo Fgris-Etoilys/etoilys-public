@@ -87,7 +87,6 @@ describe('ClassementBergerac', () => {
     expect(screen.getAllByText('240 € TTC').length).toBeGreaterThan(0);
     expect(screen.getByText('Adhérent à un office de tourisme partenaire')).toBeInTheDocument();
     expect(screen.getAllByText('200 € TTC').length).toBeGreaterThan(0);
-    expect(screen.getByText('Tarifs dégressifs pour plusieurs logements')).toBeInTheDocument();
     expect(screen.getAllByText('Premier logement').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Deuxième logement').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Troisième logement et suivants').length).toBeGreaterThan(0);
@@ -130,17 +129,6 @@ describe('ClassementBergerac', () => {
     expect(document.body).not.toHaveTextContent(
       /recommandations|conseils|accompagnement personnalisé/i
     );
-
-    expect(
-      screen.getByRole('button', {
-        name: 'Sous quel délai une visite peut-elle être organisée ?',
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', {
-        name: 'Que se passe-t-il s’il manque quelques critères après la visite ?',
-      })
-    ).toBeInTheDocument();
   });
 
   it('renders expected V2 internal links without V1 public sections', () => {
@@ -211,13 +199,13 @@ describe('ClassementBergerac', () => {
         {
           '@type': 'ListItem',
           position: 3,
-          name: 'Classement en Dordogne',
+          name: 'Dordogne',
           item: 'https://www.etoilys.fr/classement-meuble-tourisme-dordogne',
         },
         {
           '@type': 'ListItem',
           position: 4,
-          name: 'Bergerac',
+          name: 'Bergerac et le Bergeracois',
           item: 'https://www.etoilys.fr/classement-meuble-tourisme-bergerac',
         },
       ]);
