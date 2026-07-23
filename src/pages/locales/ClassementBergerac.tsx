@@ -276,44 +276,53 @@ export default function ClassementBergerac() {
                   étoiles permet par exemple de réduire la taxe de séjour de 3,48 € par nuit.
                 </p>
               </div>
-              <Button href="/simulateur-taxe-sejour" variant="primary" className="mt-6">
+              <Button
+                href="/simulateur-taxe-sejour"
+                variant="primary"
+                className="mt-6 hidden lg:inline-flex"
+              >
                 Comparer la taxe de séjour de mon logement
               </Button>
             </div>
 
-            <Card hover={false} className="overflow-hidden">
-              <div className="bg-primary-400 p-6 text-white">
-                <p className="text-sm font-semibold uppercase tracking-wide text-white/75">
-                  Exemple à Bergerac
-                </p>
-                <p className="mt-2 text-2xl font-playfair font-semibold">
-                  150 € la nuit · 4 adultes
-                </p>
-              </div>
-              <div className="space-y-4 p-6">
-                {taxComparison.map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex flex-col gap-1 rounded-card border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between"
-                  >
-                    <p className="font-medium text-gray-900">{item.label}</p>
-                    <p className="text-xl font-bold text-primary-400">{item.value}</p>
-                  </div>
-                ))}
-                <div className="rounded-card border border-success-200 bg-success-100 p-5">
-                  <p className="text-2xl font-bold text-success-500">
-                    3,48 € de moins par nuit · soit environ –53 %
+            <div>
+              <Card hover={false} className="overflow-hidden">
+                <div className="bg-primary-400 p-6 text-white">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-white/75">
+                    Exemple à Bergerac
                   </p>
-                  <p className="mt-2 text-sm font-medium text-gray-900">
-                    Pour les voyageurs, cela représente 24,36 € de taxe de séjour en moins sur une
-                    semaine.
+                  <p className="mt-2 text-2xl font-playfair font-semibold">
+                    150 € la nuit · 4 adultes
                   </p>
                 </div>
-                <p className="text-xs leading-comfortable text-gray-500">
-                  Tarifs 2026 de la Communauté d’agglomération Bergeracoise.
-                </p>
-              </div>
-            </Card>
+                <div className="space-y-4 p-6">
+                  {taxComparison.map((item) => (
+                    <div
+                      key={item.label}
+                      className="flex flex-col gap-1 rounded-card border border-gray-200 bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <p className="font-medium text-gray-900">{item.label}</p>
+                      <p className="text-xl font-bold text-primary-400">{item.value}</p>
+                    </div>
+                  ))}
+                  <div className="rounded-card border border-success-200 bg-success-100 p-5">
+                    <p className="text-2xl font-bold text-success-500">
+                      3,48 € de moins par nuit · soit environ –53 %
+                    </p>
+                    <p className="mt-2 text-sm font-medium text-gray-900">
+                      Pour les voyageurs, cela représente 24,36 € de taxe de séjour en moins sur une
+                      semaine.
+                    </p>
+                  </div>
+                  <p className="text-xs leading-comfortable text-gray-500">
+                    Tarifs 2026 de la Communauté d’agglomération Bergeracoise.
+                  </p>
+                </div>
+              </Card>
+              <Button href="/simulateur-taxe-sejour" variant="primary" className="mt-6 lg:hidden">
+                Comparer la taxe de séjour de mon logement
+              </Button>
+            </div>
           </div>
         </div>
       </section>

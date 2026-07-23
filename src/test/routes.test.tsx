@@ -94,7 +94,7 @@ describe('routing', () => {
   it('renders local service areas hub page', () => {
     renderAt('/zones-intervention');
     expectPageHeading(/zones d’intervention/i);
-    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
     );

@@ -115,6 +115,14 @@ Quand tu dois écrire du code, applique cette instruction:
 - Interdire `@ts-ignore` et `@ts-expect-error` sans justification explicite.
 - Éviter les casts larges (`as any`, `unknown as X`) non justifiés; choisir le type le plus précis possible.
 
+## Tests de contenu
+
+- Ne crée pas de tests qui vérifient la présence exacte de phrases, paragraphes ou mots dans la copy éditoriale.
+- Pour les pages de contenu, limite les tests au strict nécessaire: comportement, routes, liens, structure sémantique, accessibilité, SEO technique et données métier critiques.
+- Une assertion textuelle n'est acceptable que pour une mention légale, réglementaire, contractuelle ou fonctionnelle réellement obligatoire.
+- Si un test existant échoue uniquement parce qu'il vérifie une copy éditoriale exacte sans valeur fonctionnelle ou réglementaire, supprime ce test ou remplace-le par une assertion réellement utile; ne le répare pas en figeant une nouvelle phrase exacte.
+- Ne remplace pas les tests de copy supprimés par d'autres tests sans valeur équivalente.
+
 ## Frontend vs Backend ownership
 
 - Ne pas implémenter un contournement frontend permanent pour masquer un contrat backend manquant ou incorrect.

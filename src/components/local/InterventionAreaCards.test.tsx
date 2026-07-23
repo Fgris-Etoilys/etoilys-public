@@ -42,6 +42,16 @@ const lotEtGaronneArea: DepartmentInterventionArea = {
       label: 'Villeneuve-sur-Lot et le Villeneuvois',
       path: '/classement-meuble-tourisme-villeneuve-sur-lot',
     },
+    {
+      id: 'marmandais',
+      label: 'Marmande et le Marmandais',
+      path: '/classement-meuble-tourisme-marmande',
+    },
+    {
+      id: 'albret',
+      label: 'Nérac et l’Albret',
+      path: '/classement-meuble-tourisme-nerac',
+    },
   ],
 };
 
@@ -64,41 +74,45 @@ describe('InterventionAreaCards', () => {
     renderCards([girondeArea]);
 
     expect(screen.getByRole('heading', { name: 'Gironde' })).toBeInTheDocument();
-    expect(screen.queryByText('Pages locales dédiées')).not.toBeInTheDocument();
+    expect(screen.queryByText('Pages locales')).not.toBeInTheDocument();
     expect(
       screen.queryByRole('link', { name: /agen|bergerac|villeneuve/i })
     ).not.toBeInTheDocument();
   });
 
-  it('renders exactly one child link with the expected path', () => {
+  it('renders a single local page link directly without subtitle', () => {
     renderCards([dordogneArea]);
 
-    const link = screen.getByRole('link', { name: 'Bergerac et le Bergeracois' });
+    const link = screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' });
 
-    expect(screen.getByText('Pages locales dédiées')).toBeInTheDocument();
+    expect(screen.queryByText('Pages locales')).not.toBeInTheDocument();
     expect(link).toHaveAttribute('href', '/classement-meuble-tourisme-bergerac');
   });
 
-  it('keeps departments without children unchanged when another department has children', () => {
+  it('renders a subtitle for multiple local pages and limits links to three', () => {
     renderCards(fixtureAreas);
 
     const girondeHeading = screen.getByRole('heading', { name: 'Gironde' });
     const girondeCard = girondeHeading.parentElement?.parentElement;
 
-    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
-    expect(screen.getByRole('link', { name: 'Agen et l’Agenais' })).toHaveAttribute(
+    expect(screen.getByText('Pages locales')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Agen et l’Agenais →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-agen'
     );
     expect(
-      screen.getByRole('link', { name: 'Villeneuve-sur-Lot et le Villeneuvois' })
+      screen.getByRole('link', { name: 'Villeneuve-sur-Lot et le Villeneuvois →' })
     ).toHaveAttribute('href', '/classement-meuble-tourisme-villeneuve-sur-lot');
+    expect(screen.getByRole('link', { name: 'Marmande et le Marmandais →' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-marmande'
+    );
+    expect(screen.queryByRole('link', { name: 'Nérac et l’Albret →' })).not.toBeInTheDocument();
     expect(girondeCard).toBeDefined();
-    expect(
-      within(girondeCard as HTMLElement).queryByText('Pages locales dédiées')
-    ).not.toBeInTheDocument();
+    expect(within(girondeCard as HTMLElement).queryByText('Pages locales')).not.toBeInTheDocument();
   });
 });

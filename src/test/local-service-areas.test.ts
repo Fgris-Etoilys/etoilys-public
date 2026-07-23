@@ -32,6 +32,14 @@ describe('local service areas data', () => {
     });
   });
 
+  it('uses specific department descriptions for the intervention hub', () => {
+    expect(DEPARTMENT_INTERVENTION_AREAS.map((area) => area.description)).toEqual([
+      'Etoilys intervient dans une large partie du département, notamment dans le Bergeracois, le Périgord Noir, le Grand Périgueux et les vallées de la Dordogne et de la Vézère.',
+      'Les visites sont organisées notamment autour de Bordeaux, du Libournais, de l’Entre-deux-Mers, de la Haute-Gironde et de la vallée de la Garonne.',
+      'Etoilys intervient autour d’Agen, Villeneuve-sur-Lot, Marmande et dans les principaux secteurs touristiques du département.',
+    ]);
+  });
+
   it('keeps local page paths unique and backed by public indexable routes when declared', () => {
     const activeAppPaths = new Set(extractActiveAppPaths());
     const indexablePaths = new Set(getIndexablePaths());

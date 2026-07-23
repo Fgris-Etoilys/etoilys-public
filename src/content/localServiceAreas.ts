@@ -47,7 +47,7 @@ export const DEPARTMENT_INTERVENTION_AREAS: DepartmentInterventionArea[] = [
     name: 'Dordogne',
     path: '/classement-meuble-tourisme-dordogne',
     description:
-      'Classement des meublés de tourisme en Dordogne : informations locales, zones d’intervention, bénéfices du classement et demande en ligne.',
+      'Etoilys intervient dans une large partie du département, notamment dans le Bergeracois, le Périgord Noir, le Grand Périgueux et les vallées de la Dordogne et de la Vézère.',
     localPages: [
       {
         id: 'bergerac',
@@ -61,7 +61,7 @@ export const DEPARTMENT_INTERVENTION_AREAS: DepartmentInterventionArea[] = [
     name: 'Gironde',
     path: '/classement-meuble-tourisme-gironde',
     description:
-      'Classement des meublés de tourisme en Gironde : informations locales, secteurs d’intervention, bénéfices du classement et demande en ligne.',
+      'Les visites sont organisées notamment autour de Bordeaux, du Libournais, de l’Entre-deux-Mers, de la Haute-Gironde et de la vallée de la Garonne.',
     localPages: [],
   },
   {
@@ -69,7 +69,7 @@ export const DEPARTMENT_INTERVENTION_AREAS: DepartmentInterventionArea[] = [
     name: 'Lot-et-Garonne',
     path: '/classement-meuble-tourisme-lot-et-garonne',
     description:
-      'Classement de meublés de tourisme autour d’Agen, Villeneuve-sur-Lot, Marmande et des secteurs proches.',
+      'Etoilys intervient autour d’Agen, Villeneuve-sur-Lot, Marmande et dans les principaux secteurs touristiques du département.',
     localPages: [],
   },
 ];
