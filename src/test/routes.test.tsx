@@ -107,6 +107,11 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
+    expect(screen.getByRole('link', { name: 'Voir la page Bergerac →' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bergerac'
+    );
+    expect(screen.queryByText(/Une page dédiée présente aussi/i)).toBeNull();
   });
 
   it('renders Bergerac city local landing page', () => {

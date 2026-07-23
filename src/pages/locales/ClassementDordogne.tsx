@@ -255,6 +255,14 @@ export default function ClassementDordogne() {
                   <p className="text-sm text-textLight leading-comfortable">
                     {sector.communes.join(', ')}.
                   </p>
+                  {sector.name === 'Bergeracois et sud Dordogne' && (
+                    <Link
+                      to="/classement-meuble-tourisme-bergerac"
+                      className="mt-4 inline-flex text-sm font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400"
+                    >
+                      Voir la page Bergerac →
+                    </Link>
+                  )}
                 </Card>
               ))}
             </div>

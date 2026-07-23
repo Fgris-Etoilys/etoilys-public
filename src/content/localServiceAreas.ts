@@ -980,7 +980,7 @@ export const BERGERAC_PROCEDURE_STEPS: LocalProcedureStep[] = [
     number: 1,
     title: 'Vous envoyez votre demande',
     description:
-      'Indiquez l’adresse du logement, sa capacité d’accueil et la catégorie que vous souhaitez viser si vous l’avez déjà déterminée.',
+      'Remplissez le formulaire en 30 secondes. Un inspecteur proche de chez vous vous recontacte sous 24h ouvrées.',
   },
   {
     number: 2,
@@ -1010,7 +1010,7 @@ export const BERGERAC_FAQ: LocalFaqItem[] = [
   {
     question: 'Combien coûte le classement d’un meublé à Bergerac ?',
     answer:
-      'Pour une visite de classement à Bergerac, le tarif se situe généralement entre 150 € et 250 € TTC. Un tarif préférentiel peut s’appliquer pour les clients adhérents aux offices de tourisme partenaires, comme l’OT de Bergerac. Un tarif dégressif peut aussi être proposé lorsque plusieurs meublés sont à classer dans le même secteur.',
+      'Le tarif public est de 240 € TTC par logement. Il est de 200 € TTC pour les propriétaires adhérents à un office de tourisme partenaire. Pour plusieurs logements, le tarif est dégressif : 240 € TTC pour le premier, 160 € TTC pour le deuxième, puis 100 € TTC par logement à partir du troisième. Aucun frais de déplacement n’est facturé.',
   },
   {
     question: 'Peut-on regrouper la visite de plusieurs gîtes ?',

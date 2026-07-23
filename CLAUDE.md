@@ -162,37 +162,6 @@ npm run preview
 - Prefer patch-based edits or explicit UTF-8-no-BOM writers.
 - Before finishing, check touched files for BOM and mojibake markers (examples: `\u00C3`, `\u00C2`, `\u00E2\u20AC\u2122`, `\u00E2\u20AC\u0153`, `\u00E2\u20AC`, `\uFFFD`).
 
-## Content Compliance (CRITICAL)
-
-**Etoilys must not provide consulting/advisory wording to property owners.**
-
-### Scope
-
-These rules apply only to content the agent creates or rewrites in the current task.
-Do not modify existing, generated, user-provided, or user-approved copy solely to satisfy these
-rules unless the user explicitly asks for a rewrite or compliance edit.
-
-These compliance rules do not apply to blog articles or `Actualites` editorial content. Blog
-articles may use practical, reader-facing wording when it serves the article's editorial intent.
-They still apply to service pages, forms, commercial CTAs, simulators, and non-blog business copy.
-
-### Forbidden
-
-- Imperative action language ("Valorisez", "Optimisez", "Améliorez", "Profitez").
-- Business-outcome promises (higher bookings, increased revenue, etc.).
-- Recommendation wording ("nous vous conseillons", "vous devriez", "il est recommandé de").
-- Superlative benefit claims ("maximisez vos profits", etc.).
-
-### Allowed
-
-- Factual and neutral statements.
-- Objective legal information (including fiscal benefits defined by law).
-- Clear service description without performance promises.
-
-### If in doubt
-
-- Rewrite as objective information, with no injunction and no promise.
-
 ## Environment Variables
 
 - `VITE_API_BASE_URL` (usually `/api`, same-origin frontend API prefix)

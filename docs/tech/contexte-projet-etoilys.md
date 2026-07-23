@@ -8,7 +8,7 @@ Ce document sert de point d’entrée pour une personne ou un agent qui doit int
 
 Etoilys est le site public d’un service spécialisé dans le classement officiel des meublés de tourisme. Le site informe sur le cadre du classement, présente les démarches, propose des outils de simulation et permet de contacter Etoilys ou de déposer une demande de classement.
 
-Le site n’est pas un outil de conseil personnalisé aux propriétaires. Les pages de service, formulaires, CTA commerciaux, simulateurs et contenus métier hors blog doivent rester factuels, neutres et descriptifs. Les articles d’Actualités ont une liberté éditoriale plus pratique, mais les affirmations juridiques et fiscales doivent rester sourcées.
+Les affirmations juridiques et fiscales doivent rester sourcées.
 
 ## Stack actuelle
 

@@ -19,7 +19,7 @@ export default function InterventionAreaCards({ areas }: InterventionAreaCardsPr
 
           {area.localPages.length > 0 && (
             <div className="mb-6 border-t border-gray-200 pt-5">
-              <p className="mb-3 text-sm font-semibold text-gray-900">Secteurs locaux</p>
+              <p className="mb-3 text-sm font-semibold text-gray-900">Pages locales dédiées</p>
               <ul className="space-y-2">
                 {area.localPages.map((localPage) => (
                   <li key={localPage.id}>

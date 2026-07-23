@@ -1,11 +1,25 @@
 import { Link } from 'react-router-dom';
-import { Award, CalendarDays, Euro, FileCheck, MapPin, ShieldCheck, Sparkles } from 'lucide-react';
+import {
+  Award,
+  CalendarDays,
+  CheckCircle2,
+  Euro,
+  FileCheck,
+  MapPin,
+  ShieldCheck,
+  Sparkles,
+} from 'lucide-react';
 import Accordion from '../../components/ui/Accordion';
 import Button from '../../components/ui/Button';
 import Card from '../../components/ui/Card';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import SmartImage from '../../components/ui/SmartImage';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
-import { BERGERAC_FAQ, BERGERAC_PROCEDURE_STEPS } from '../../content/localServiceAreas';
+import {
+  BERGERAC_FAQ,
+  BERGERAC_PROCEDURE_STEPS,
+  BERGERAC_SERVICE_COMMUNES,
+} from '../../content/localServiceAreas';
 
 const taxComparison = [
   { label: 'Meublé non classé', value: '6,60 € par nuit' },
@@ -14,71 +28,103 @@ const taxComparison = [
 
 const tariffCards = [
   {
-    title: 'Tarif habituel',
-    price: '150 € à 250 € TTC',
-    description:
-      'Pour une visite de classement dans le secteur de Bergerac, selon le logement et les modalités d’intervention.',
+    title: 'Tarif public',
+    price: '240 € TTC',
   },
   {
-    title: 'Adhérents OT partenaires',
-    price: 'Tarif préférentiel',
-    description:
-      'Un tarif préférentiel peut s’appliquer pour les clients adhérents aux offices de tourisme partenaires, comme l’OT de Bergerac.',
-  },
-  {
-    title: 'Plusieurs meublés',
-    price: 'Tarif dégressif',
-    description:
-      'Un tarif dégressif peut être proposé lorsque plusieurs meublés sont à classer dans le même secteur.',
+    title: 'Adhérent à un office de tourisme partenaire',
+    price: '200 € TTC',
   },
 ];
 
-const etoilysReasons = [
+const multiPropertyTariffColumns = [
+  {
+    key: 'logement',
+    label: 'Logement visité',
+    widthClassName: 'w-3/5',
+  },
+  {
+    key: 'tarif',
+    label: 'Tarif TTC',
+    widthClassName: 'w-2/5',
+    align: 'right' as const,
+  },
+];
+
+const multiPropertyTariffRows = [
+  {
+    key: 'first',
+    cells: {
+      logement: 'Premier logement',
+      tarif: '240 €',
+    },
+  },
+  {
+    key: 'second',
+    cells: {
+      logement: 'Deuxième logement',
+      tarif: '160 €',
+    },
+  },
+  {
+    key: 'third-and-next',
+    cells: {
+      logement: 'Troisième logement et suivants',
+      tarif: '100 € par logement',
+    },
+  },
+];
+
+const etoilysPrimaryReason = {
+  icon: Sparkles,
+  title: 'Des outils pour atteindre plus facilement la catégorie visée',
+  description:
+    'Avant la visite, le simulateur Etoilys vous indique précisément les critères à compléter pour la catégorie demandée. Pendant le contrôle, l’inspecteur vous explique les éventuels points bloquants, puis son compte rendu détaille les équipements, ajustements ou justificatifs encore utiles pour atteindre le classement visé.',
+};
+
+const etoilysSecondaryReasons = [
+  {
+    icon: FileCheck,
+    title: 'Une demande en 30 secondes, sans dossier complexe',
+    description:
+      'Quelques informations essentielles suffisent pour lancer votre demande. Vous n’avez aucun dossier technique à constituer ni relevé détaillé du logement à préparer : Etoilys organise la visite et prend en charge les documents et démarches administratives du classement.',
+  },
+  {
+    icon: CalendarDays,
+    title: 'Une intervention rapide',
+    description:
+      'La visite est organisée en moyenne sous deux semaines et toujours sous un mois après votre demande. La date d’intervention est fixée directement avec vous selon vos disponibilités.',
+  },
   {
     icon: Award,
-    title: 'Des spécialistes du classement',
+    title: '100 % spécialisés dans le classement',
     description:
-      'Le classement des meublés de tourisme est notre spécialité. Nous maîtrisons précisément le référentiel et vous aidons à comprendre les critères de la catégorie visée.',
+      'Etoilys se consacre exclusivement au classement des meublés de tourisme. Nos inspecteurs connaissent en profondeur la réglementation, la grille officielle et les points qui font réellement la différence pour atteindre la catégorie visée.',
   },
   {
     icon: ShieldCheck,
     title: 'Un organisme accrédité',
     description: (
       <>
-        Organisme accrédité Cofrac Inspection n°3-2394 – portée disponible{' '}
+        Etoilys est accrédité Cofrac Inspection n°3-2394 pour réaliser les visites officielles de
+        classement des meublés de tourisme.{' '}
         <a
           href={COFRAC_ACCREDITATION_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="font-medium text-primary-300 underline hover:text-primary-400"
         >
-          ici
+          Consulter la portée d’accréditation Cofrac
         </a>
         .
       </>
     ),
   },
-  {
-    icon: FileCheck,
-    title: 'Une demande simple',
-    description:
-      'Quelques informations sur le logement suffisent pour lancer la démarche. Etoilys organise ensuite la visite sans vous imposer un dossier administratif lourd.',
-  },
-  {
-    icon: CalendarDays,
-    title: 'Une intervention rapide',
-    description:
-      'Nous intervenons généralement sous deux semaines, et toujours dans un délai maximal d’un mois après votre demande.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Des outils pour préparer votre catégorie',
-    description:
-      'Nos simulateurs et outils de suivi vous indiquent les critères à compléter pour viser la catégorie souhaitée et les justificatifs à transmettre lorsqu’un complément est possible.',
-  },
 ];
 
 export default function ClassementBergerac() {
+  const PrimaryReasonIcon = etoilysPrimaryReason.icon;
+
   return (
     <>
       <section className="relative min-h-[720px] overflow-hidden py-section text-white">
@@ -103,7 +149,7 @@ export default function ClassementBergerac() {
             <p className="max-w-3xl text-xl leading-comfortable text-white/90">
               Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à
               Bergerac ? Etoilys réalise la visite officielle directement dans votre logement, avec
-              des tarifs clairs et une intervention généralement sous deux semaines.
+              une démarche simple et des tarifs clairs.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Button href="/demande-classement" variant="white" size="lg">
@@ -113,27 +159,58 @@ export default function ClassementBergerac() {
                 Estimer la catégorie de mon logement
               </Button>
             </div>
-            <p className="mt-6 max-w-2xl text-xs leading-comfortable text-white/75">
-              Photo :{' '}
-              <a
-                href="https://commons.wikimedia.org/wiki/File:Bergerac_-_View_in_late_afternoon.jpg"
-                target="_blank"
-                rel="nofollow noopener noreferrer"
-                className="underline hover:text-white"
-              >
-                Benjamin Smith / Wikimedia Commons
-              </a>{' '}
-              —{' '}
-              <a
-                href="https://creativecommons.org/licenses/by-sa/4.0/"
-                target="_blank"
-                rel="nofollow noopener noreferrer"
-                className="underline hover:text-white"
-              >
-                CC BY-SA 4.0
-              </a>
+            <p className="mt-5 flex max-w-3xl flex-wrap items-center gap-x-3 gap-y-2 text-sm font-medium leading-relaxed text-white/90">
+              <span className="inline-flex items-center gap-2">
+                <CheckCircle2
+                  className="h-4 w-4 flex-shrink-0 text-success-200"
+                  aria-hidden="true"
+                />
+                Demande en 30 secondes
+              </span>
+              <span aria-hidden="true" className="text-white/45">
+                ·
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <CheckCircle2
+                  className="h-4 w-4 flex-shrink-0 text-success-200"
+                  aria-hidden="true"
+                />
+                Visite en moyenne sous deux semaines
+              </span>
+              <span aria-hidden="true" className="text-white/45">
+                ·
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <CheckCircle2
+                  className="h-4 w-4 flex-shrink-0 text-success-200"
+                  aria-hidden="true"
+                />
+                Aucun frais de déplacement
+              </span>
             </p>
           </div>
+        </div>
+        <div className="absolute bottom-4 left-0 right-0 z-10">
+          <p className="container-adaptive text-xs leading-comfortable text-white/70">
+            Photo :{' '}
+            <a
+              href="https://commons.wikimedia.org/wiki/File:Bergerac_-_View_in_late_afternoon.jpg"
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="underline hover:text-white"
+            >
+              Benjamin Smith / Wikimedia Commons
+            </a>{' '}
+            —{' '}
+            <a
+              href="https://creativecommons.org/licenses/by-sa/4.0/"
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="underline hover:text-white"
+            >
+              CC BY-SA 4.0
+            </a>
+          </p>
         </div>
       </section>
 
@@ -147,18 +224,23 @@ export default function ClassementBergerac() {
             <h2 className="mb-5">Etoilys intervient à Bergerac et dans les communes proches</h2>
             <div className="space-y-5 text-textLight leading-comfortable">
               <p>
-                Nous organisons des visites à Bergerac, Creysse, Prigonrieux, Monbazillac,
-                Cours-de-Pile, Lembras, Mouleydier, La Force, Gardonne, Sigoulès-et-Flaugeac,
-                Issigeac, Eymet et Lalinde.
+                Etoilys organise des visites à Bergerac et dans l’ensemble du Bergeracois, notamment
+                dans les communes suivantes :
               </p>
+              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {BERGERAC_SERVICE_COMMUNES.map((commune) => (
+                  <li
+                    key={commune}
+                    className="rounded-full border border-primary-200 bg-primary-100 px-4 py-2 text-sm font-medium text-primary-500"
+                  >
+                    {commune}
+                  </li>
+                ))}
+              </ul>
               <p>
-                Cette liste est indicative et non exhaustive. Si votre commune n’apparaît pas,
-                envoyez-nous simplement l’adresse du logement : nous vous confirmerons les
-                prochaines possibilités d’intervention.
-              </p>
-              <p>
-                Aucun frais de déplacement supplémentaire n’est ajouté pour une visite organisée
-                dans le secteur habituel autour de Bergerac.
+                Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, transmettez-nous
+                simplement l’adresse du logement pour connaître les prochaines possibilités
+                d’intervention.
               </p>
             </div>
             <Link
@@ -180,13 +262,14 @@ export default function ClassementBergerac() {
                 <p>
                   Entre le centre historique, la Dordogne et les vignobles du Bergeracois, le
                   secteur accueille de nombreux gîtes, maisons de vacances et appartements proposés
-                  en location saisonnière. Le classement peut notamment changer la manière dont la
-                  taxe de séjour est calculée.
+                  en location saisonnière. Au-delà de ses avantages fiscaux et de la visibilité
+                  qu’il peut apporter, le classement a aussi un effet concret sur la taxe de séjour
+                  payée par vos voyageurs.
                 </p>
                 <p>
                   À Bergerac, un meublé non classé relève en 2026 d’un tarif proportionnel au prix
                   de la nuitée. Un meublé classé bénéficie au contraire d’un montant fixe par
-                  personne, déterminé par son nombre d’étoiles.
+                  personne.
                 </p>
                 <p>
                   Sur une réservation à 150 € la nuit pour quatre adultes, un meublé classé 2
@@ -222,7 +305,8 @@ export default function ClassementBergerac() {
                     3,48 € de moins par nuit · soit environ –53 %
                   </p>
                   <p className="mt-2 text-sm font-medium text-gray-900">
-                    Sur 7 nuits : 24,36 € de taxe de séjour en moins
+                    Pour les voyageurs, cela représente 24,36 € de taxe de séjour en moins sur une
+                    semaine.
                   </p>
                 </div>
                 <p className="text-xs leading-comfortable text-gray-500">
@@ -270,30 +354,43 @@ export default function ClassementBergerac() {
               Tarifs
             </div>
             <h2 className="mb-5">Combien coûte le classement d’un meublé à Bergerac ?</h2>
-            <p className="mb-8 max-w-4xl text-textLight leading-comfortable">
-              Pour une visite de classement à Bergerac, le tarif se situe généralement entre 150 €
-              et 250 € TTC. Le prix exact est confirmé avant tout engagement et dépend notamment du
-              nombre de logements, de leur localisation et de la possibilité de regrouper les
-              visites.
+            <p className="mb-8 max-w-5xl text-textLight leading-comfortable">
+              Les tarifs ci-dessous sont tout compris, sans frais de déplacement. Le montant
+              applicable est confirmé avant tout engagement.
             </p>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {tariffCards.map((tariff) => (
                 <Card key={tariff.title} hover={false} className="p-6">
                   <h3 className="mb-3 text-xl font-playfair font-semibold text-gray-900">
                     {tariff.title}
                   </h3>
                   <p className="mb-4 text-3xl font-bold text-primary-400">{tariff.price}</p>
-                  <p className="text-sm text-textLight leading-comfortable">{tariff.description}</p>
                 </Card>
               ))}
             </div>
-            <p className="mt-6 text-sm font-medium text-gray-900">
-              Aucun frais de déplacement supplémentaire n’est ajouté dans le secteur habituel autour
-              de Bergerac.
-            </p>
-            <Button href="/demande-classement" variant="primary" className="mt-6">
-              Obtenir le tarif pour mon logement
-            </Button>
+            <div className="mt-8">
+              <h3 className="mb-4 text-2xl font-playfair font-semibold text-gray-900">
+                Tarifs dégressifs pour plusieurs logements
+              </h3>
+              <ResponsiveComparisonTable
+                columns={multiPropertyTariffColumns}
+                rows={multiPropertyTariffRows}
+                primaryColumnKey="logement"
+                caption="Tarifs dégressifs Etoilys pour plusieurs logements"
+                tableClassName="w-full table-fixed overflow-hidden rounded-card border border-gray-200 bg-white text-sm shadow-card"
+                headerRowClassName="bg-primary-400 text-white"
+                headerCellClassName="p-4 font-semibold"
+                cellClassName="border-t border-gray-100 p-4 align-top"
+                mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-card"
+                mobileTitleClassName="mb-3 text-base font-semibold text-gray-900"
+                mobileValueClassName="text-base font-bold text-primary-400 text-right"
+              />
+            </div>
+            <div className="mt-6 flex justify-center">
+              <Button href="/demande-classement" variant="primary">
+                Demander mon classement
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -302,8 +399,17 @@ export default function ClassementBergerac() {
         <div className="container-adaptive">
           <div className="mx-auto max-w-6xl">
             <h2 className="mb-8">Pourquoi choisir Etoilys pour votre classement à Bergerac ?</h2>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {etoilysReasons.map((reason) => {
+            <Card hover={false} className="mb-6 border-primary-200 bg-primary-100 p-8">
+              <PrimaryReasonIcon className="mb-4 h-10 w-10 text-primary-400" aria-hidden="true" />
+              <h3 className="mb-3 text-2xl font-playfair font-semibold text-gray-900">
+                {etoilysPrimaryReason.title}
+              </h3>
+              <p className="max-w-5xl text-textLight leading-comfortable">
+                {etoilysPrimaryReason.description}
+              </p>
+            </Card>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {etoilysSecondaryReasons.map((reason) => {
                 const Icon = reason.icon;
                 return (
                   <Card key={reason.title} hover={false} className="p-6">

@@ -64,7 +64,7 @@ describe('InterventionAreaCards', () => {
     renderCards([girondeArea]);
 
     expect(screen.getByRole('heading', { name: 'Gironde' })).toBeInTheDocument();
-    expect(screen.queryByText('Secteurs locaux')).not.toBeInTheDocument();
+    expect(screen.queryByText('Pages locales dédiées')).not.toBeInTheDocument();
     expect(
       screen.queryByRole('link', { name: /agen|bergerac|villeneuve/i })
     ).not.toBeInTheDocument();
@@ -75,7 +75,7 @@ describe('InterventionAreaCards', () => {
 
     const link = screen.getByRole('link', { name: 'Bergerac et le Bergeracois' });
 
-    expect(screen.getByText('Secteurs locaux')).toBeInTheDocument();
+    expect(screen.getByText('Pages locales dédiées')).toBeInTheDocument();
     expect(link).toHaveAttribute('href', '/classement-meuble-tourisme-bergerac');
   });
 
@@ -98,7 +98,7 @@ describe('InterventionAreaCards', () => {
     ).toHaveAttribute('href', '/classement-meuble-tourisme-villeneuve-sur-lot');
     expect(girondeCard).toBeDefined();
     expect(
-      within(girondeCard as HTMLElement).queryByText('Secteurs locaux')
+      within(girondeCard as HTMLElement).queryByText('Pages locales dédiées')
     ).not.toBeInTheDocument();
   });
 });
