@@ -75,7 +75,7 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/': {
     lastModified: '2026-07-10',
-    title: 'Classement meublé de tourisme en Dordogne, Gironde et Lot-et-Garonne',
+    title: 'Classement officiel de meublé de tourisme',
     description:
       'Etoilys accompagne les propriétaires de meublés de tourisme pour obtenir leur classement officiel en Dordogne, Gironde et Lot-et-Garonne.',
     ogImageKey: 'homeHero',
