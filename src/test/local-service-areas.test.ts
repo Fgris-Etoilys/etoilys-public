@@ -54,9 +54,9 @@ describe('local service areas data', () => {
     });
   });
 
-  it('registers Bergerac as a Dordogne child page only', () => {
+  it('registers city pages under their department only', () => {
     const dordogne = DEPARTMENT_INTERVENTION_AREAS.find((area) => area.id === 'dordogne');
-    const otherDepartments = DEPARTMENT_INTERVENTION_AREAS.filter((area) => area.id !== 'dordogne');
+    const gironde = DEPARTMENT_INTERVENTION_AREAS.find((area) => area.id === 'gironde');
 
     expect(dordogne?.localPages).toEqual([
       {
@@ -65,8 +65,15 @@ describe('local service areas data', () => {
         path: '/classement-meuble-tourisme-bergerac',
       },
     ]);
-    otherDepartments.forEach((area) => {
-      expect(area.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();
-    });
+    expect(gironde?.localPages).toEqual([
+      {
+        id: 'bordeaux',
+        label: 'Bordeaux et sa métropole',
+        departmentLabel: 'Bordeaux et sa métropole',
+        path: '/classement-meuble-tourisme-bordeaux',
+      },
+    ]);
+    expect(dordogne?.localPages.find((localPage) => localPage.id === 'bordeaux')).toBeUndefined();
+    expect(gironde?.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();
   });
 });

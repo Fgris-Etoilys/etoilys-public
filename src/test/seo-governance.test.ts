@@ -148,6 +148,18 @@ describe('seo governance', () => {
     ]);
   });
 
+  it('builds the Bordeaux breadcrumb hierarchy from zones to Gironde', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-bordeaux')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Gironde', url: `${SITE_URL}/classement-meuble-tourisme-gironde` },
+      {
+        name: 'Bordeaux',
+        url: `${SITE_URL}/classement-meuble-tourisme-bordeaux`,
+      },
+    ]);
+  });
+
   it('keeps dynamic public simulations noindex and out of the sitemap', () => {
     const dynamicSimulationSeo = getSeoRouteConfig('/simulateur/simulation-id');
 
@@ -273,6 +285,7 @@ describe('seo governance', () => {
       '/zones-intervention',
       '/classement-meuble-tourisme-dordogne',
       '/classement-meuble-tourisme-bergerac',
+      '/classement-meuble-tourisme-bordeaux',
       '/classement-meuble-tourisme-gironde',
       '/classement-meuble-tourisme-lot-et-garonne',
       '/recrutement',

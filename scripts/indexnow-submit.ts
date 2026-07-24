@@ -241,6 +241,7 @@ function staticRoutesFromPage(filePath: string): string[] {
     'src/pages/Procedure.tsx': ['/procedure', '/en/classification-process'],
     'src/pages/ZonesIntervention.tsx': ['/zones-intervention'],
     'src/pages/locales/ClassementBergerac.tsx': ['/classement-meuble-tourisme-bergerac'],
+    'src/pages/locales/ClassementBordeaux.tsx': ['/classement-meuble-tourisme-bordeaux'],
     'src/pages/locales/ClassementDordogne.tsx': ['/classement-meuble-tourisme-dordogne'],
     'src/pages/locales/ClassementGironde.tsx': ['/classement-meuble-tourisme-gironde'],
     'src/pages/locales/ClassementLotEtGaronne.tsx': ['/classement-meuble-tourisme-lot-et-garonne'],
@@ -288,6 +289,12 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
       ) {
         urls.push(routeUrl('/actualites'));
         urls.push(...allIndexableUrls().filter((url) => url.includes('/actualites/')));
+        continue;
+      }
+
+      if (normalizedPath === 'src/content/cityLandingPages.tsx') {
+        urls.push(routeUrl('/classement-meuble-tourisme-bergerac'));
+        urls.push(routeUrl('/classement-meuble-tourisme-bordeaux'));
         continue;
       }
 

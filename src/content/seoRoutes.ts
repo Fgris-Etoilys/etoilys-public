@@ -147,12 +147,22 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'bergeracHero',
     lcpImageKey: 'bergeracHero',
   },
+  '/classement-meuble-tourisme-bordeaux': {
+    lastModified: '2026-07-24',
+    title: 'Classement meublé de tourisme à Bordeaux',
+    description:
+      'Faites classer votre meublé de tourisme à Bordeaux et dans la métropole. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
+    breadcrumbLabel: 'Bordeaux',
+    breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-gironde'],
+    ogImageKey: 'bordeauxHero',
+    lcpImageKey: 'bordeauxHero',
+  },
   '/classement-meuble-tourisme-gironde': {
     lastModified: '2026-06-07',
     title: 'Classement gîte, Airbnb et meublé de tourisme en Gironde',
     description:
       'Etoilys accompagne les propriétaires de meublés de tourisme en Gironde : classement officiel, zones d’intervention, procédure, fiscalité, taxe de séjour et demande en ligne.',
-    breadcrumbLabel: 'Classement en Gironde',
+    breadcrumbLabel: 'Gironde',
     ogImageKey: 'girondeHero',
     lcpImageKey: 'girondeHero',
   },

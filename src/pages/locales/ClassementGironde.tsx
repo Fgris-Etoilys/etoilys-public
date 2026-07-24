@@ -264,6 +264,14 @@ export default function ClassementGironde() {
                   <p className="text-sm text-textLight leading-comfortable">
                     {sector.communes.join(', ')}.
                   </p>
+                  {sector.name.startsWith('Bordeaux Métropole') && (
+                    <Link
+                      to="/classement-meuble-tourisme-bordeaux"
+                      className="mt-4 inline-flex text-sm font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400"
+                    >
+                      Voir la page Bordeaux →
+                    </Link>
+                  )}
                 </Card>
               ))}
             </div>

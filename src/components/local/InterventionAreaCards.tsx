@@ -26,7 +26,7 @@ export default function InterventionAreaCards({ areas }: InterventionAreaCardsPr
                 to={singleLocalPage.path}
                 className="mb-6 inline-flex text-sm font-medium leading-comfortable text-primary-300 underline-offset-4 hover:text-primary-400 hover:underline focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
               >
-                {singleLocalPage.label} →
+                {singleLocalPage.hubLabel ?? singleLocalPage.label} →
               </Link>
             )}
 
@@ -40,7 +40,7 @@ export default function InterventionAreaCards({ areas }: InterventionAreaCardsPr
                         to={localPage.path}
                         className="inline-flex text-sm font-medium leading-comfortable text-primary-300 underline-offset-4 hover:text-primary-400 hover:underline focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
                       >
-                        {localPage.label} →
+                        {localPage.hubLabel ?? localPage.label} →
                       </Link>
                     </li>
                   ))}

@@ -7,6 +7,7 @@ import Prerequis from './pages/Prerequis';
 import Procedure from './pages/Procedure';
 import ZonesIntervention from './pages/ZonesIntervention';
 import ClassementBergerac from './pages/locales/ClassementBergerac';
+import ClassementBordeaux from './pages/locales/ClassementBordeaux';
 import ClassementDordogne from './pages/locales/ClassementDordogne';
 import ClassementGironde from './pages/locales/ClassementGironde';
 import ClassementLotEtGaronne from './pages/locales/ClassementLotEtGaronne';
@@ -47,6 +48,7 @@ export default function AppRoutes() {
         <Route path="procedure" element={<Procedure />} />
         <Route path="zones-intervention" element={<ZonesIntervention />} />
         <Route path="classement-meuble-tourisme-bergerac" element={<ClassementBergerac />} />
+        <Route path="classement-meuble-tourisme-bordeaux" element={<ClassementBordeaux />} />
         <Route path="classement-meuble-tourisme-dordogne" element={<ClassementDordogne />} />
         <Route path="classement-meuble-tourisme-gironde" element={<ClassementGironde />} />
         <Route

@@ -132,20 +132,21 @@ Ne pas fournir la liste administrative complète d’un EPCI si elle ne correspo
 Fournir uniquement :
 
 - une courte introduction propre à la ville ou au bassin ;
-- la collectivité compétente pour la taxe de séjour ;
-- l’année des tarifs ;
-- les données nécessaires au calcul ;
-- l’exemple comparatif local ;
-- la source officielle ;
-- la date de vérification.
+- les informations de contexte utiles à faire confirmer ;
+- les sources officielles à vérifier ;
+- les questions métier à poser si les données de taxe de séjour ne sont pas déjà validées par Florian.
 
 Le composant, sa structure visuelle et les formulations génériques doivent être récupérés depuis Bergerac.
+
+Les données de taxe de séjour publiées sont des données métier sensibles. Elles doivent être fournies ou explicitement validées par Florian pendant le plan d’implémentation, comme les tarifs Etoilys. ChatGPT peut préparer les sources et le raisonnement, mais Codex ne doit pas publier un barème, un calcul ou un exemple comparatif sans validation métier explicite.
 
 ### 4.5 FAQ
 
 La FAQ fait partie des contenus variables.
 
-ChatGPT doit fournir une FAQ adaptée à la ville, en conservant une cohérence de ton et de longueur avec Bergerac.
+ChatGPT doit distinguer les questions communes et les questions réellement locales.
+
+Par défaut, les questions communes doivent reprendre le modèle Bergerac. Il ne faut pas réécrire artificiellement une FAQ commune sous prétexte de changer de ville.
 
 La FAQ peut contenir :
 
@@ -159,11 +160,13 @@ La FAQ peut contenir :
 
 Il n’est pas nécessaire de rendre chaque question totalement originale. Il faut éviter aussi bien la duplication mécanique que l’invention de questions artificielles.
 
+Interdiction : la FAQ publique ne doit jamais mentionner la ville de référence ou la logique d’industrialisation. Ne pas écrire par exemple « les tarifs de Bergerac s’appliquent aussi », « comme Bergerac », « modèle Bergerac » ou toute formulation équivalente.
+
 ### 4.6 Tarifs et modalités Etoilys
 
 Les tarifs sont des données métier variables qui doivent être confirmées pour chaque zone.
 
-Vérifier ou demander :
+Toujours demander confirmation à Florian pendant le plan d’implémentation :
 
 - tarif standard ;
 - qualification TTC ou HT ;
@@ -177,6 +180,8 @@ Vérifier ou demander :
 - toute autre modalité réellement affichée dans le modèle de page.
 
 Ne pas considérer les tarifs de Bergerac comme des tarifs par défaut.
+
+Même si la nouvelle ville semble appartenir à la même zone commerciale, Codex doit demander confirmation. Si Florian répond que les tarifs sont exactement les mêmes que Bergerac, Codex peut alors réutiliser la configuration tarifaire commune, sans jamais le dire dans la page publique.
 
 Ne pas rechercher les tarifs Etoilys sur le web.
 
@@ -265,7 +270,7 @@ Ne pas produire une brochure touristique.
 
 ### 6.3 Taxe de séjour
 
-Rechercher :
+Rechercher pour préparer la validation métier :
 
 - territoire collecteur ;
 - année applicable ;
@@ -283,6 +288,8 @@ Sources prioritaires :
 - portail DGFiP ;
 - office ou organisme public chargé de la collecte.
 
+ChatGPT doit fournir les sources et signaler les points à confirmer. Codex doit ensuite demander à Florian les données finales à utiliser dans la page si elles ne sont pas déjà explicitement validées dans le prompt d’intégration.
+
 ### 6.4 Règles locales exceptionnelles
 
 Ne rechercher une règle locale que si elle est susceptible d’apporter une vraie valeur à la page :
@@ -295,6 +302,15 @@ Ne rechercher une règle locale que si elle est susceptible d’apporter une vra
 La découverte d’une règle locale ne signifie pas qu’elle doit être publiée.
 
 Par défaut, ne pas transformer la page en guide réglementaire.
+
+Les garde-fous administratifs et juridiques sont des consignes internes, pas de la copy publique. Une landing page ville doit rester une page commerciale claire, pas une fiche CERFA. Ne pas rendre publiquement des phrases défensives du type :
+
+- « ces règles concernent spécifiquement la commune et ne doivent pas être généralisées » ;
+- « vérifier la portée géographique de cette règle » ;
+- « les règles présentées ne s’appliquent pas automatiquement aux communes voisines » ;
+- toute autre formulation administrative destinée à protéger le raisonnement interne.
+
+Si une règle locale est publiée, elle doit être courte, utile au propriétaire, orientée décision et formulée naturellement. Si elle ne peut pas être formulée simplement sans alourdir la page, la garder en note interne et renvoyer vers la source officielle.
 
 ---
 
@@ -309,7 +325,7 @@ Sauf raison locale particulière, utiliser le même scénario que Bergerac afin 
 - résultat pour une nuit ;
 - projection sur sept nuits.
 
-ChatGPT doit vérifier :
+ChatGPT doit préparer les vérifications suivantes, mais Codex ne doit publier le calcul qu’après validation par Florian :
 
 1. le calcul du non-classé ;
 2. le tarif total du classé 2 étoiles ;
@@ -320,7 +336,7 @@ ChatGPT doit vérifier :
 7. la réduction en pourcentage ;
 8. la projection sur sept nuits.
 
-Le livrable doit fournir les données et les résultats, pas recopier le composant commun de Bergerac.
+Le livrable doit fournir les sources, les hypothèses et les points à confirmer. Les données finales de taxe de séjour utilisées dans la page doivent être explicitement fournies ou validées par Florian pendant le plan d’implémentation.
 
 Si la comparaison n’est pas fiable ou pertinente, le signaler et ne pas inventer d’exemple.
 
@@ -410,7 +426,11 @@ Fournir uniquement :
 - canonical ;
 - libellé de breadcrumb ;
 - département parent ;
-- ancres proposées pour le hub et la page départementale.
+- libellé de page locale dans le hub ;
+- libellé du lien contextuel depuis la page départementale ;
+- libellé du lien retour depuis la page ville vers le département parent.
+
+Les libellés de maillage doivent rester cohérents avec les patterns existants. Si le hub affiche une page comme « Bergerac et le Bergeracois », une nouvelle ville doit utiliser un libellé de zone comparable, pas une ancre SEO longue artificielle.
 
 ### D. Paquet de contenu variable
 
@@ -419,7 +439,7 @@ Fournir uniquement les champs qui doivent différer de Bergerac :
 - données du hero local ;
 - zone d’intervention ;
 - introduction du bloc local ;
-- données du module taxe de séjour ;
+- contexte du module taxe de séjour et données à faire confirmer par Florian ;
 - tarifs et modalités Etoilys confirmés ;
 - FAQ ;
 - preuve locale éventuelle ;
@@ -429,17 +449,19 @@ Ne jamais fournir la page complète.
 
 Ne jamais reproduire les blocs communs.
 
+Séparer explicitement les champs publics des consignes internes. Les garde-fous de conformité, limites de portée géographique et réserves administratives ne doivent pas être injectés tels quels dans la page publique.
+
 ### E. Calcul de taxe de séjour
 
 - hypothèses ;
 - source ;
-- calcul non classé ;
-- calcul classé 2 étoiles ;
-- résultat par nuit ;
-- résultat sur sept nuits ;
-- différence ;
-- pourcentage ;
-- données condensées à injecter dans le composant partagé.
+- calcul non classé préparé pour vérification ;
+- calcul classé 2 étoiles préparé pour vérification ;
+- résultat par nuit préparé pour vérification ;
+- résultat sur sept nuits préparé pour vérification ;
+- différence préparée pour vérification ;
+- pourcentage préparé pour vérification ;
+- données à confirmer par Florian avant injection dans le composant partagé.
 
 ### F. Image locale
 
@@ -514,7 +536,7 @@ Codex doit :
 
 ### 11.4 Vérifier les informations métier
 
-Avant toute intégration, Codex doit vérifier que les informations suivantes sont explicites :
+Pendant le plan d’implémentation, Codex doit demander confirmation à Florian pour :
 
 - tarifs ;
 - TTC ou HT ;
@@ -523,14 +545,17 @@ Avant toute intégration, Codex doit vérifier que les informations suivantes so
 - frais ;
 - délais ;
 - zone couverte ;
+- données de taxe de séjour à afficher ;
+- exemple de taxe de séjour à publier ;
 - preuve locale éventuelle.
 
-Si une information essentielle manque, Codex doit poser à Florian une seule série de questions consolidées avant d’intégrer le champ concerné.
+Les tarifs et la taxe de séjour doivent toujours être confirmés pour une nouvelle ville. Si les autres informations essentielles manquent, Codex doit poser à Florian une seule série de questions consolidées avant d’intégrer le champ concerné.
 
 Il ne doit :
 
 - rien inventer ;
 - reprendre aucun montant de Bergerac par défaut ;
+- corriger ou recalculer silencieusement une donnée de taxe de séjour sans validation ;
 - laisser aucun placeholder en production ;
 - ajouter aucune modalité absente volontairement du modèle.
 
@@ -551,6 +576,8 @@ Accueil > Zones d’intervention > Département > Ville
 - ajouter le lien depuis `/zones-intervention` ;
 - ajouter le lien depuis la page départementale parente ;
 - ajouter depuis la page ville un lien naturel vers le département parent ;
+- respecter le style de libellé déjà utilisé dans le hub et les pages départementales ;
+- reproduire le lien contextuel dans la carte de secteur si la page départementale possède déjà ce pattern ;
 - ne pas ajouter la page dans la home, le header ou le footer ;
 - ne pas créer de version EN ou NL ;
 - ne pas générer de route locale fictive ;
@@ -605,6 +632,9 @@ Ne recopie pas le contenu fixe dans cette nouvelle page. Inspecte Bergerac et r�
 DONNÉES LOCALES À INJECTER
 [uniquement les données variables]
 
+CHAMPS PUBLICS VS CONSIGNES INTERNES
+[séparer clairement les textes rendus publiquement des garde-fous internes qui ne doivent pas apparaître sur la landing page]
+
 SEO ET MAILLAGE
 [uniquement les données propres à la nouvelle route]
 
@@ -616,6 +646,9 @@ DONNÉES INTERNES DE VÉRIFICATION
 
 INFORMATIONS MÉTIER À CONFIRMER
 [uniquement les éventuels éléments manquants]
+
+TAXE DE SÉJOUR À CONFIRMER
+[sources, hypothèses et données à faire valider par Florian avant publication]
 
 INSTRUCTIONS TECHNIQUES
 [routes, SEO centralisé, sitemap, prerender, breadcrumbs, maillage, absence EN/NL]
@@ -629,6 +662,7 @@ Le prompt ne doit pas contenir :
 - la copy complète de Bergerac ;
 - le texte des blocs communs ;
 - des exemples de formulations génériques à recopier ;
+- des garde-fous internes présentés comme copy publique ;
 - des placeholders silencieux ;
 - une nouvelle architecture imposée sans inspection du repo.
 
@@ -641,8 +675,9 @@ Le prompt ne doit pas contenir :
 - Les données propres à la ville sont-elles réelles et vérifiées ?
 - L’introduction locale apporte-t-elle quelque chose ?
 - La liste de communes correspond-elle à la couverture réelle ?
-- L’exemple de taxe est-il exact ?
+- L’exemple de taxe a-t-il été validé par Florian ?
 - La FAQ traite-t-elle des questions utiles à cette localité ?
+- La page reste-t-elle une landing page claire et commerciale, sans paragraphe administratif défensif ?
 
 ### Cohérence avec Bergerac
 
@@ -650,17 +685,21 @@ Le prompt ne doit pas contenir :
 - La structure est-elle récupérée depuis la page de référence ?
 - Les nouveaux champs sont-ils réellement variables ?
 - Le rendu attendu reste-t-il cohérent avec les autres pages villes ?
+- Les questions communes de FAQ sont-elles reprises depuis le modèle commun sauf vrai besoin local ?
+- La nouvelle page ne contient-elle aucune mention visible de la ville de référence ou de la logique d’industrialisation ?
 
 ### SEO
 
 - L’intention locale est-elle distincte de celle du département ?
 - Le H1 et les métadonnées sont-ils propres à la ville ?
 - Le maillage suit-il la hiérarchie hub > département > ville ?
+- Les libellés de maillage sont-ils cohérents avec ceux des pages locales déjà publiées ?
 - La page apporte-t-elle davantage qu’un simple remplacement de nom ?
 
 ### Métier
 
 - Les tarifs sont-ils explicitement confirmés ?
+- Les données de taxe de séjour sont-elles explicitement confirmées ?
 - Les conditions sont-elles confirmées ?
 - Les délais sont-ils confirmés ?
 - Aucun montant de Bergerac n’a-t-il été repris par défaut ?
@@ -698,6 +737,10 @@ Vérifier notamment :
 - absence de faux `LocalBusiness` ;
 - absence de modification de la home, du header et du footer ;
 - modules facultatifs absents lorsqu’ils sont vides ;
+- absence de phrases de consignes internes rendues publiquement ;
+- absence de mention visible de la ville de référence sur la nouvelle page ;
+- FAQ commune réutilisée sauf vrai besoin local ;
+- tarifs et taxe de séjour confirmés par Florian ;
 - absence de débordement horizontal ;
 - accessibilité des liens, CTA, tableaux et FAQ ;
 - rendu à 390, 768, 1024 et 1440 px ;

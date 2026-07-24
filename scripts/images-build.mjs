@@ -23,6 +23,7 @@ const HERO_ASSET_KEYS = new Set([
   'girondeHero',
   'lotEtGaronneHero',
   'bergeracHero',
+  'bordeauxHero',
 ]);
 
 const IMAGE_ASSETS = [
@@ -90,6 +91,11 @@ const IMAGE_ASSETS = [
   { key: 'lotEtGaronneTerritory', fileName: 'pexels-d-goth-37724280.jpg' },
   { key: 'lotEtGaronneCanal', fileName: 'AdobeStock_919223785.jpeg' },
   { key: 'bergeracHero', fileName: 'bergerac-view-late-afternoon.jpg' },
+  {
+    key: 'bordeauxHero',
+    fileName: 'pexels-miguel-cuenca-67882473-17356595.jpg',
+    outputName: 'bordeaux-place-de-la-bourse',
+  },
 ];
 
 function formatSrcSet(baseName, widths, format) {

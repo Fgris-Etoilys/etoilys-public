@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "c4c422529bc0c465a6d5bed98d95c55f0820d73ee2b218358b0d8d6aeb961b47",
+  "pipelineSignature": "49667275e88f59bfe4a8e621dd45c30534e3f30b047354c0df129dff33c5c000",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "f3264b7d155cc939de7e04c45d984c1149621f85266244dc1fc25809e97ad593"
+    "sha256": "bad8acbf22548a2e387985ac54114d0e845e073f6d5aec947ce1afa86a922d8c"
   },
   "sources": [
     {
@@ -120,6 +120,11 @@
       "key": "lotEtGaronneTerritory",
       "path": "src/assets/seo-images/source/pexels-d-goth-37724280.jpg",
       "sha256": "fdd791994976b1cc505e4a33f25978fdaef64400aa2dea6ceb5625de3a9dd2e2"
+    },
+    {
+      "key": "bordeauxHero",
+      "path": "src/assets/seo-images/source/pexels-miguel-cuenca-67882473-17356595.jpg",
+      "sha256": "7e4f66e35d9f3d4abd903eca291340cc8d946f50475bd3afe03aae0cccc41d36"
     },
     {
       "key": "articleApiMeubles",
@@ -967,6 +972,61 @@
       "path": "/images/optimized/bergerac-view-late-afternoon-768.webp",
       "bytes": 25702,
       "sha256": "f7336fa5d98420f466ee07370d541ff3efa3e5da10a15fb0e2b3d838bed9a2a1"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-1200.avif",
+      "bytes": 62476,
+      "sha256": "36eeb74662e9e8868695de0a2d55e2c714b1f2ea98fb6b5d4c8b3ac844e9ffa0"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-1200.jpg",
+      "bytes": 115245,
+      "sha256": "963844afc2d9fb953106a31ea3d971a8cbbee46d2787e12da90916356fae0f14"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-1200.webp",
+      "bytes": 94716,
+      "sha256": "eed06990ecb7fe434b9c3d356fabf1a81119c43a6e5f9b506a58b28b3ceb780c"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-1600.avif",
+      "bytes": 122974,
+      "sha256": "88dec791bbbed2e5d743d141a492d6979c1d1ec50814f138e8ca8fad38d1d63d"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-1600.webp",
+      "bytes": 170308,
+      "sha256": "e1b7a0cf8363140ecceb7dbd41f475e7303e4b6d2b40f638aacab94104f086db"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-1920.avif",
+      "bytes": 169971,
+      "sha256": "b546ee42f7308893717bd5b90a474a208a195b2ca95ad511b605f0fb536a0d74"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-1920.webp",
+      "bytes": 237502,
+      "sha256": "b30984184bef370c52980b1f894b2ea2f91def0fc9381bf3826d64b2c15b4341"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-480.avif",
+      "bytes": 10886,
+      "sha256": "48ac2160926d9fb30bb1bac70161172ea302473115945da488c94946b6225aab"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-480.webp",
+      "bytes": 16362,
+      "sha256": "029bc5e6e2246fd08781548797ef7d95f9789606c3a11fcbe30091865a037dd3"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-768.avif",
+      "bytes": 23157,
+      "sha256": "d26329957ba604133393cefed09e7595896f2d9b5e8937dd57fc139899d956bc"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-768.webp",
+      "bytes": 35934,
+      "sha256": "c7f39727d90461c0c0e7ef00a34a118a7b2a606f811a18116fe2e9efbf26f698"
     },
     {
       "path": "/images/optimized/home-hero-1200.avif",

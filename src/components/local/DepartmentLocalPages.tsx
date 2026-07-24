@@ -37,7 +37,7 @@ export default function DepartmentLocalPages({
                   className="group inline-flex min-h-12 w-full items-center text-lg font-semibold leading-snug text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
                 >
                   <span className="underline-offset-4 group-hover:text-primary-400 group-hover:underline">
-                    {localPage.label}
+                    {localPage.departmentLabel ?? localPage.label}
                   </span>
                 </Link>
               </Card>

@@ -47,6 +47,7 @@ const SERVICE_COMPACT_GRAPH_PATHS = new Set([
   '/zones-intervention',
   '/classement-meuble-tourisme-dordogne',
   '/classement-meuble-tourisme-bergerac',
+  '/classement-meuble-tourisme-bordeaux',
   '/classement-meuble-tourisme-gironde',
   '/classement-meuble-tourisme-lot-et-garonne',
   '/demande-classement',

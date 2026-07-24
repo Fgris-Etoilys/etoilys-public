@@ -98,6 +98,10 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
+    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole →' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bordeaux'
+    );
   });
 
   it('renders Dordogne local landing page', () => {
@@ -123,6 +127,24 @@ describe('routing', () => {
   it('renders Gironde local landing page', () => {
     renderAt('/classement-meuble-tourisme-gironde');
     expectPageHeading(/classement/i, /gironde/i);
+    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bordeaux'
+    );
+    expect(screen.getByRole('link', { name: 'Voir la page Bordeaux →' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bordeaux'
+    );
+  });
+
+  it('renders Bordeaux city local landing page', () => {
+    renderAt('/classement-meuble-tourisme-bordeaux');
+    expectPageHeading(/classement/i, /bordeaux/i, /métropole/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d’intervention en Gironde/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-gironde'
+    );
   });
 
   it('renders Lot-et-Garonne local landing page', () => {

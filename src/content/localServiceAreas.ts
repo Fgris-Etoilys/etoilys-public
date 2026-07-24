@@ -3,6 +3,8 @@ export type DepartmentAreaId = 'dordogne' | 'gironde' | 'lot-et-garonne';
 export interface LocalInterventionPage {
   id: string;
   label: string;
+  hubLabel?: string;
+  departmentLabel?: string;
   path: string;
 }
 
@@ -62,7 +64,14 @@ export const DEPARTMENT_INTERVENTION_AREAS: DepartmentInterventionArea[] = [
     path: '/classement-meuble-tourisme-gironde',
     description:
       'Les visites sont organisées notamment autour de Bordeaux, du Libournais, de l’Entre-deux-Mers, de la Haute-Gironde et de la vallée de la Garonne.',
-    localPages: [],
+    localPages: [
+      {
+        id: 'bordeaux',
+        label: 'Bordeaux et sa métropole',
+        departmentLabel: 'Bordeaux et sa métropole',
+        path: '/classement-meuble-tourisme-bordeaux',
+      },
+    ],
   },
   {
     id: 'lot-et-garonne',
