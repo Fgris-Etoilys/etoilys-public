@@ -315,6 +315,9 @@ export default function CityLandingPage({ config }: CityLandingPageProps) {
                   <p className="mt-2 text-2xl font-playfair font-semibold">
                     {config.tax.exampleTitle}
                   </p>
+                  <p className="mt-1 text-base font-semibold text-white/90">
+                    {config.tax.exampleSubtitle}
+                  </p>
                 </div>
                 <div className="space-y-4 p-6">
                   {config.tax.comparison.map((item) => (
@@ -354,9 +357,13 @@ export default function CityLandingPage({ config }: CityLandingPageProps) {
               <Card hover={false} className="border-warning-200 bg-warning-100 p-6 md:p-8">
                 <h2 className="mb-5 text-h3">{config.localWarning.title}</h2>
                 <div className="space-y-5 text-textLight leading-comfortable">
-                  {config.localWarning.paragraphs.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
+                  <p>{config.localWarning.intro}</p>
+                  <ul className="ml-5 list-disc space-y-2">
+                    {config.localWarning.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p>{config.localWarning.conclusion}</p>
                 </div>
                 {config.localWarning.source && (
                   <a

@@ -34,6 +34,7 @@ interface CityTaxContent {
   paragraphs: string[];
   exampleLabel: string;
   exampleTitle: string;
+  exampleSubtitle: string;
   comparison: CityTaxComparisonItem[];
   savingsHeadline: string;
   savingsDetail: string;
@@ -42,7 +43,9 @@ interface CityTaxContent {
 
 interface CityLocalWarningContent {
   title: string;
-  paragraphs: string[];
+  intro: string;
+  items: string[];
+  conclusion: string;
   source?: {
     label: string;
     href: string;
@@ -151,15 +154,16 @@ export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
     paragraphs: [
       'Entre le centre historique, la Dordogne et les vignobles du Bergeracois, le secteur accueille de nombreux gîtes, maisons de vacances et appartements proposés en location saisonnière. Au-delà de ses avantages fiscaux et de la visibilité qu’il peut apporter, le classement a aussi un effet concret sur la taxe de séjour payée par vos voyageurs.',
       'À Bergerac, un meublé non classé relève en 2026 d’un tarif proportionnel au prix de la nuitée. Un meublé classé bénéficie au contraire d’un montant fixe par personne.',
-      'Sur une réservation à 150 € la nuit pour quatre adultes, un meublé classé 2 étoiles permet par exemple de réduire la taxe de séjour de 3,48 € par nuit.',
+      'Sur une réservation à 150 € la nuit hors taxe de séjour pour quatre adultes, un meublé classé 2 étoiles permet par exemple de réduire la taxe de séjour de 3,48 € par nuit.',
     ],
     exampleLabel: 'Exemple à Bergerac',
-    exampleTitle: 'Taxe de séjour pour 150 € la nuit · 4 adultes',
+    exampleTitle: 'Taxe de séjour pour 4 adultes',
+    exampleSubtitle: 'Logement à 150 € la nuit',
     comparison: [
       { label: 'Meublé non classé', value: '6,60 € par nuit' },
       { label: 'Meublé classé 2 étoiles', value: '3,12 € par nuit' },
     ],
-    savingsHeadline: '3,48 € de moins par nuit · soit environ –53 %',
+    savingsHeadline: '3,48 € de taxe de séjour en moins par nuit, soit une baisse d’environ 53 %',
     savingsDetail:
       'Pour les voyageurs, cela représente 24,36 € de taxe de séjour en moins sur une semaine.',
     sourceNote: 'Tarifs 2026 de la Communauté d’agglomération Bergeracoise.',
@@ -202,10 +206,10 @@ export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
   serviceArea: {
     title: 'Où intervenons-nous autour de Bordeaux ?',
     intro:
-      'Etoilys intervient à Bordeaux ainsi que dans les communes proches de la métropole, notamment dans les communes suivantes :',
+      'Etoilys organise des visites à Bordeaux et dans les communes de Bordeaux Métropole, notamment :',
     communes: BORDEAUX_SERVICE_COMMUNES,
     outro: [
-      'Cette liste est indicative et non exhaustive. Pour un logement situé dans une autre commune de Bordeaux Métropole ou ailleurs en Gironde, le propriétaire doit transmettre l’adresse afin qu’Etoilys confirme les modalités d’intervention.',
+      'Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, transmettez-nous simplement l’adresse du logement : nous vous confirmerons rapidement les possibilités d’intervention, dans la métropole ou ailleurs en Gironde.',
     ],
     parentLink: {
       label: 'Voir notre zone d’intervention en Gironde',
@@ -217,25 +221,31 @@ export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
     paragraphs: [
       'Bordeaux attire aussi bien les voyageurs venus profiter de la ville que ceux qui souhaitent découvrir les vignobles et le reste de la Gironde. Face à une offre de locations saisonnières particulièrement dense, le classement permet de donner à votre logement un repère officiel, plus lisible et plus rassurant au moment de réserver.',
       'Il peut également améliorer sa visibilité, notamment auprès des voyageurs sensibles aux étoiles, et vous faire bénéficier d’un régime fiscal plus favorable que celui d’un meublé non classé. À Bordeaux Métropole, son intérêt se retrouve aussi directement dans la taxe de séjour payée par vos voyageurs.',
-      'Pour une réservation à 150 € HT la nuit et quatre adultes, un meublé classé 2 étoiles représente ainsi 5,04 € de taxe de séjour en moins par nuit, soit 35,28 € économisés sur une semaine.',
+      'Pour une réservation à 150 € la nuit hors taxe de séjour et quatre adultes, un meublé classé 2 étoiles représente ainsi 5,04 € de taxe de séjour en moins par nuit, soit 35,28 € économisés sur une semaine.',
     ],
     exampleLabel: 'Exemple à Bordeaux',
-    exampleTitle: 'Taxe de séjour pour 150 € HT la nuit · 4 adultes',
+    exampleTitle: 'Taxe de séjour pour 4 adultes',
+    exampleSubtitle: 'Logement à 150 € la nuit',
     comparison: [
       { label: 'Meublé non classé', value: '10,80 € par nuit' },
       { label: 'Meublé classé 2 étoiles', value: '5,76 € par nuit' },
     ],
-    savingsHeadline: '5,04 € de moins par nuit · soit environ –47 %',
+    savingsHeadline: '5,04 € de taxe de séjour en moins par nuit, soit une baisse d’environ 47 %',
     savingsDetail:
       'Pour les voyageurs, cela représente 35,28 € de taxe de séjour en moins sur une semaine.',
     sourceNote: 'Tarifs 2026 de Bordeaux Métropole, taxes additionnelles comprises.',
   },
   localWarning: {
-    title: 'À Bordeaux, le classement ne remplace pas les autorisations locales',
-    paragraphs: [
-      'Dans la commune de Bordeaux, toute location d’un meublé de tourisme doit disposer d’un numéro d’enregistrement, qu’il s’agisse d’une résidence principale ou secondaire. Depuis le 1er janvier 2026, une résidence principale ne peut pas être proposée en location touristique plus de 90 jours par année civile.',
-      'Pour une résidence secondaire, une autorisation préalable de changement d’usage est requise et peut impliquer une compensation selon la situation du bien. Le classement du meublé ne dispense d’aucune de ces démarches.',
+    title: 'Avant de louer à Bordeaux, trois règles locales à vérifier',
+    intro:
+      'Le classement et les autorisations locales répondent à deux objectifs différents. Pour un logement situé dans la commune de Bordeaux, vérifiez également :',
+    items: [
+      'le numéro d’enregistrement obligatoire pour la location d’un logement entier ;',
+      'la limite de 90 jours par année civile lorsqu’il s’agit de la résidence principale ;',
+      'l’autorisation de changement d’usage applicable aux résidences secondaires, avec une éventuelle compensation selon la situation du bien.',
     ],
+    conclusion:
+      'Le classement ne vous dispense pas de ces formalités, mais il peut ensuite vous aider à mieux présenter votre logement et à bénéficier des effets liés à la fiscalité ou à la taxe de séjour.',
     source: {
       label: 'Consulter le guide propriétaire de la Ville de Bordeaux',
       href: 'https://www.bordeaux.fr/location-touristique-bordeaux--guide-proprietaires',
@@ -249,7 +259,14 @@ export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
   },
   faq: {
     title: 'Questions fréquentes sur le classement à Bordeaux',
-    items: BERGERAC_FAQ,
+    items: [
+      ...BERGERAC_FAQ,
+      {
+        question: 'Le classement me permet-il automatiquement de louer mon logement à Bordeaux ?',
+        answer:
+          'Non. Le classement et les formalités locales sont deux démarches distinctes. Selon votre logement, vous devez notamment vérifier le numéro d’enregistrement, la limite applicable à une résidence principale et les règles de changement d’usage.',
+      },
+    ],
   },
   finalCta: {
     title: 'Vous souhaitez faire classer votre meublé à Bordeaux ?',
