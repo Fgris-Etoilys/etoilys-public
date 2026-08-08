@@ -880,9 +880,12 @@ Contrôles réalisés le 10 juillet 2026 sur la propriété Search Console
       alternatives `fr`, `en` et `x-default` attendues dans le HTML prerendered.
 - [x] Googlebot a exploré les 9 routes EN entre le 27 juin et le 3 juillet 2026 avec un rendu mobile
       et une récupération réussie.
-- [ ] La home EN présente un écart : `/en/` répond par une redirection `308` vers `/en`, tandis que
-      la canonical et le `hreflang="en"` déclarent `/en/`. Google retient `/en` et classe l'URL inspectée
-      `/en/` comme `Page with redirect`.
+- [x] La home EN est désormais cohérente : `/en` répond en `200`, la canonical, le
+      `hreflang="en"`, les liens globaux, le sitemap public et le prerender ciblent `/en`.
+- [x] L'ancienne variante `/en/` répond par une redirection `308` vers `/en` ; il est normal que
+      Search Console la classe comme `Page with redirect` tant que Google la connaît encore.
+- [x] Dans Search Console, l'URL à inspecter et à demander à l'indexation est
+      `https://www.etoilys.fr/en`.
 - [x] Correctif préparé dans le code le 10 juillet 2026 : route localisée, canonical, `hreflang`,
       breadcrumbs, liens globaux, sitemap et prerender sont alignés sur `/en`.
 - [ ] L'API d'inspection ne fournit pas le `hreflang` interprété par Google. Sa présence est confirmée
@@ -911,8 +914,8 @@ Période contrôlée : du 20 juin au 10 juillet 2026, données fraîches incluse
 - [x] Total EN : 197 impressions, 2 clics, CTR de 1,02 % et position moyenne de 6,67.
 - [x] Pages les plus exposées : avantages du classement (80 impressions), prérequis (49) et page
       générale du classement (44).
-- [x] Les seules URLs EN remontées sont les 9 routes MVP, avec deux variantes pour la home (`/en` et
-      `/en/`) en raison de l'écart de canonical/redirection.
+- [x] Les seules URLs EN remontées sont les 9 routes MVP ; la variante `/en/` est uniquement
+      l'ancienne URL redirigée vers la canonical `/en`.
 - [ ] Search Console mesure l'acquisition organique, pas le comportement après le clic. Un contrôle
       des sessions et conversions EN nécessite l'outil analytics de production.
 

@@ -46,7 +46,7 @@ Exemple :
 
 ```txt
 /                  -> français
-/en/               -> anglais
+/en                -> anglais
 /en/contact        -> page contact anglaise
 ```
 
@@ -421,7 +421,7 @@ Exemple conceptuel :
 export const localizedRoutes = {
   home: {
     fr: '/',
-    en: '/en/',
+    en: '/en',
   },
   classement: {
     fr: '/classement',
@@ -548,7 +548,7 @@ Règles :
 
 - afficher `FR` et `EN`, ou `Français` / `English` selon l'espace disponible ;
 - le switcher doit renvoyer vers l'équivalent de la page courante quand il existe ;
-- si une page n'a pas encore de version anglaise, renvoyer vers `/en/` ou masquer l'option selon le choix retenu ;
+- si une page n'a pas encore de version anglaise, renvoyer vers `/en` ou masquer l'option selon le choix retenu ;
 - ne pas changer la langue uniquement en mémoire ou via cookie ;
 - utiliser de vrais liens.
 
@@ -612,7 +612,7 @@ Pages du MVP :
 
 | Page française                 | Page anglaise recommandée                                        |
 | ------------------------------ | ---------------------------------------------------------------- |
-| `/`                            | `/en/`                                                           |
+| `/`                            | `/en`                                                            |
 | `/classement`                  | `/en/furnished-tourist-accommodation-classification`             |
 | `/les-avantages-du-classement` | `/en/benefits-of-furnished-tourist-accommodation-classification` |
 | `/prerequis-au-classement`     | `/en/classification-requirements`                                |
