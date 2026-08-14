@@ -96,7 +96,7 @@ export const formContent = {
         message: 'Message',
       },
       placeholders: {
-        telephone: 'Ex: 06 12 34 56 78',
+        telephone: 'Ex : 06 12 34 56 78 ou +32 470 12 34 56',
         adresse: 'Adresse complète de votre meublé de tourisme',
         message: 'Parlez-nous de votre hébergement et de vos attentes (optionnel)',
       },
@@ -192,7 +192,7 @@ export const formContent = {
         message: 'Message',
       },
       placeholders: {
-        telephone: 'Example: +33 6 12 34 56 78',
+        telephone: 'Example: +44 7700 900123',
         adresse: 'Full address of your furnished tourist accommodation',
         message: 'Tell us about your accommodation and expectations (optional)',
       },
@@ -290,7 +290,7 @@ export const formContent = {
         message: 'Bericht',
       },
       placeholders: {
-        telephone: 'Voorbeeld: +33 6 12 34 56 78',
+        telephone: 'Voorbeeld: +31 6 12345678',
         adresse: 'Volledig adres van uw vakantiewoning in Frankrijk',
         message: 'Vertel ons over uw woning en uw verwachtingen (optioneel)',
       },

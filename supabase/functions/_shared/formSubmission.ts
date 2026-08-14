@@ -66,7 +66,8 @@ interface CustomerConfirmationInput {
 }
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const phoneRegex = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
+const frenchPhoneRegex = /^0[1-9]\d{8}$/;
+const internationalPhoneRegex = /^(?:\+|00)[1-9]\d{6,14}$/;
 
 export const normalizeText = (value: unknown): string => {
   if (typeof value !== 'string') return '';
@@ -85,7 +86,11 @@ export const formatPreferredLanguageLabel = (preferredLanguage: PreferredLanguag
 
 export const validateEmail = (value: string): boolean => emailRegex.test(value);
 
-export const validatePhone = (value: string): boolean => phoneRegex.test(value.replace(/\s/g, ''));
+export const validatePhone = (value: string): boolean => {
+  const normalizedPhone = value.trim().replace(/[\s().-]/g, '');
+
+  return frenchPhoneRegex.test(normalizedPhone) || internationalPhoneRegex.test(normalizedPhone);
+};
 
 const parseAllowedOrigins = (): string[] => {
   const raw = Deno.env.get('ALLOWED_ORIGINS') || '';

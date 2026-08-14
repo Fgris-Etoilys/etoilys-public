@@ -11,8 +11,12 @@ export const validateEmail = (email: string): boolean => {
 };
 
 export const validatePhone = (phone: string): boolean => {
-  const phoneRegex = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/;
-  return phoneRegex.test(phone.replace(/\s/g, ''));
+  const normalizedPhone = phone.trim().replace(/[\s().-]/g, '');
+
+  const frenchPhoneRegex = /^0[1-9]\d{8}$/;
+  const internationalPhoneRegex = /^(?:\+|00)[1-9]\d{6,14}$/;
+
+  return frenchPhoneRegex.test(normalizedPhone) || internationalPhoneRegex.test(normalizedPhone);
 };
 
 export const validateRequired = (value: string): boolean => {
