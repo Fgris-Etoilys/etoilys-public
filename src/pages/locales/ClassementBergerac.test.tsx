@@ -76,7 +76,9 @@ describe('ClassementBergerac', () => {
     expect(screen.getByText('6,60 € par nuit')).toBeInTheDocument();
     expect(screen.getByText('Meublé classé 2 étoiles')).toBeInTheDocument();
     expect(screen.getByText('3,12 € par nuit')).toBeInTheDocument();
-    expect(screen.getByText('3,48 € de moins par nuit · soit environ –53 %')).toBeInTheDocument();
+    expect(
+      screen.getByText('3,48 € de taxe de séjour en moins par nuit, soit une baisse d’environ 53 %')
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
         'Pour les voyageurs, cela représente 24,36 € de taxe de séjour en moins sur une semaine.'

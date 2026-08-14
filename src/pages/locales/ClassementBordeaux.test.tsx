@@ -34,7 +34,9 @@ describe('ClassementBordeaux', () => {
     expect(screen.getByText('Villenave-d’Ornon')).toBeInTheDocument();
     expect(screen.getByText('10,80 € par nuit')).toBeInTheDocument();
     expect(screen.getByText('5,76 € par nuit')).toBeInTheDocument();
-    expect(screen.getByText('5,04 € de moins par nuit · soit environ –47 %')).toBeInTheDocument();
+    expect(
+      screen.getByText('5,04 € de taxe de séjour en moins par nuit, soit une baisse d’environ 47 %')
+    ).toBeInTheDocument();
     expect(
       screen.getByText(/35,28 € de taxe de séjour en moins sur une semaine/i)
     ).toBeInTheDocument();
