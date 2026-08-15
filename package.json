@@ -37,7 +37,7 @@
     "posthog-js": "^1.372.5",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.18.1"
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@chialab/vitest-axe": "^0.19.1",
