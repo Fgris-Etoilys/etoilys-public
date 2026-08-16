@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "49667275e88f59bfe4a8e621dd45c30534e3f30b047354c0df129dff33c5c000",
+  "pipelineSignature": "63c16cdb600c21eec4d3bca64eaff252706c266a9499334675f626388b89e4b1",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "bad8acbf22548a2e387985ac54114d0e845e073f6d5aec947ce1afa86a922d8c"
+    "sha256": "8c9ff9d0f8ce1bfbc62ccfa9419c8a7525d556605ee0bcd2f0564ec5ae1f1289"
   },
   "sources": [
     {
@@ -65,6 +65,11 @@
       "key": "articleResidence90Jours",
       "path": "src/assets/seo-images/source/article-residence-90-jours.jpg",
       "sha256": "266d3a5b5052189a9fd7f8a52429773123998745add24926fe41dea16c8869fa"
+    },
+    {
+      "key": "articleRipostVoyageurRefuseQuitter",
+      "path": "src/assets/seo-images/source/article-ripost-voyageur-refuse-quitter.png",
+      "sha256": "e2f06b55d6e3768b8ed2591fbb4bd3312832ca91dabb1d58124180836a860417"
     },
     {
       "key": "articleTaxeDeSejour2026",
@@ -697,6 +702,51 @@
       "path": "/images/optimized/article-residence-90-jours-768.webp",
       "bytes": 130612,
       "sha256": "3d7cfe88122e116a45b356dc3ae3d915afda000238918a0e714f630a3638f3dc"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-1200.avif",
+      "bytes": 70635,
+      "sha256": "6e97813ab0f616b10d2aa97cfe951ba04b86fe66278f064747e4a67d34fbff00"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-1200.jpg",
+      "bytes": 99771,
+      "sha256": "591ae41e0e8356848aa46db4a2390eaa86d0cc7a0bd49d7c71d05808421f0645"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-1200.webp",
+      "bytes": 80756,
+      "sha256": "3f209ba1eb2419609e3c3e1e7fcdc553f1c7c5e3d7bdf1ce42e6069a59fcbdc0"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-1600.avif",
+      "bytes": 102381,
+      "sha256": "1965ef808c5539e11f09c884d869d6c6341dc5d9d8411fc3ea511f8de9a5d371"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-1600.webp",
+      "bytes": 122372,
+      "sha256": "2ed13600f5c34fafea917d256ec89c597333bfcb3740e9d2f107ffa476678c9f"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-480.avif",
+      "bytes": 19633,
+      "sha256": "152d5dc34a19604b47e45c94b65e419c319a43effdd995cf76da82a249ae5d2b"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-480.webp",
+      "bytes": 19832,
+      "sha256": "3671bab780a8b72c50b0f31425f1c3a148d44ef4b6d48f60b9080723b51685aa"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-768.avif",
+      "bytes": 37468,
+      "sha256": "0bf294780c6f70411c18498f0f7dee5290e319ca8435002db05ff363c8624016"
+    },
+    {
+      "path": "/images/optimized/article-ripost-voyageur-refuse-quitter-768.webp",
+      "bytes": 40480,
+      "sha256": "e688f0340aaad1061543fe83d216d827359d5b556fa8889e9d860bd4aac8e2ef"
     },
     {
       "path": "/images/optimized/article-taxe-sejour-2026-1200.avif",

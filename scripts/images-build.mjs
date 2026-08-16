@@ -81,6 +81,10 @@ const IMAGE_ASSETS = [
     key: 'articlePreparerVisiteClassement',
     fileName: 'article-preparer-visite-classement.png',
   },
+  {
+    key: 'articleRipostVoyageurRefuseQuitter',
+    fileName: 'article-ripost-voyageur-refuse-quitter.png',
+  },
   { key: 'dordogneHero', fileName: 'pexels-slimmars-13-197677686-14298615.jpg' },
   { key: 'dordogneInterior', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
   { key: 'dordogneLandscape', fileName: 'le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg' },

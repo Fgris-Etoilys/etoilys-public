@@ -30,6 +30,7 @@ import ArticleApiMeubles from './pages/actualites/ApiMeublesDeclarationMeubleTou
 import ArticleTransmissionDonneesPlateformesCommunes from './pages/actualites/TransmissionDonneesPlateformesCommunes';
 import ArticleQueFaireApresClassementMeubleTourisme from './pages/actualites/QueFaireApresClassementMeubleTourisme';
 import ArticlePreparerVisiteClassementMeubleTourisme from './pages/actualites/PreparerVisiteClassementMeubleTourisme';
+import ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost from './pages/actualites/VoyageurRefuseQuitterMeubleTourismeLoiRipost';
 import Recrutement from './pages/Recrutement';
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -110,6 +111,10 @@ export default function AppRoutes() {
         <Route
           path="actualites/preparer-visite-classement-meuble-tourisme"
           element={<ArticlePreparerVisiteClassementMeubleTourisme />}
+        />
+        <Route
+          path="actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost"
+          element={<ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost />}
         />
         <Route path="recrutement" element={<Recrutement />} />
         <Route path="contact" element={<Contact />} />
