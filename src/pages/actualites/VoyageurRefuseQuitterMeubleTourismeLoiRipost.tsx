@@ -17,6 +17,8 @@ const SENAT_CMP_URL = 'https://www.senat.fr/leg/pjl25-905.html';
 const SENAT_RAPPORT_URL = 'https://www.senat.fr/rap/l25-601/l25-6014.html';
 const SERVICE_PUBLIC_SQUAT_URL = 'https://www.service-public.fr/particuliers/vosdroits/F35254';
 const PREFECTURES_ANNUAIRE_URL = 'https://lannuaire.service-public.fr/navigation/prefecture';
+const MA_SECURITE_URL = 'https://www.masecurite.interieur.gouv.fr/fr/informations-locales';
+const CNCJ_ANNUAIRE_URL = 'https://commissaire-justice.fr/annuaire/';
 
 const officialSources = [
   {
@@ -54,7 +56,8 @@ const officialSources = [
     organization: 'Service-Public.fr',
     title: 'Squat : que faire en cas d’occupation illicite de son logement ?',
     url: SERVICE_PUBLIC_SQUAT_URL,
-    detail: 'Décrit la procédure administrative antérieure à la loi RIPOST.',
+    detail:
+      'Procédure applicable avant la loi RIPOST : cette page n’a pas encore été mise à jour et exclut actuellement le cas de la fin d’une location de meublé de tourisme.',
   },
   {
     id: 'service-public-annuaire-prefectures-7',
@@ -363,13 +366,12 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         établir ce droit. Ces 72 heures ne correspondent donc pas à la durée totale de la procédure.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Une fois votre droit établi, le préfet dispose ensuite de 48 heures pour statuer sur la mise
-        en demeure adressée à l’occupant. Le délai d’exécution de cette mise en demeure dépend alors
-        d’un critère précis : si le logement constitue votre domicile, ce délai ne peut être
-        inférieur à 24 heures ; s’il ne constitue pas votre domicile — ce qui est le cas de la
-        plupart des meublés de tourisme, qui ne sont pas la résidence du propriétaire — ce délai est
-        porté à 7 jours. Si l’occupant ne quitte pas les lieux dans ce délai, l’évacuation forcée
-        peut alors être engagée.
+        Le texte actuel de l’article 38 prévoit que le préfet statue sur la mise en demeure dans les
+        48 heures suivant la réception de la demande. Le délai d’exécution de cette mise en demeure
+        ne peut être inférieur à 24 heures. Lorsque le logement occupé ne constitue pas le domicile
+        du demandeur, ce délai est porté à 7 jours. Si la réforme est promulguée dans la rédaction
+        adoptée, ces règles s’appliqueront également au maintien dans un meublé de tourisme après la
+        fin du séjour.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
         La procédure peut être beaucoup plus rapide qu’une procédure judiciaire classique, mais
@@ -381,8 +383,16 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         Que faire si un voyageur refuse de quitter votre meublé ?
       </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Voici, dans l’ordre, les démarches à engager si un voyageur refuse de quitter votre meublé
-        de tourisme :
+        Au jour de publication, la loi RIPOST n’est pas encore promulguée : cette nouvelle procédure
+        préfectorale n’est donc pas encore ouverte au cas du voyageur qui se maintient dans un
+        meublé après la fin de son séjour. Si cela vous arrive aujourd’hui, conservez toutes les
+        preuves de la réservation et du refus de partir, ne tentez pas d’expulser vous-même le
+        voyageur et contactez rapidement un commissaire de justice ou un avocat pour déterminer la
+        procédure à engager.
+      </p>
+      <p className="text-gray-700 leading-comfortable mb-4">
+        Une fois la loi promulguée, si le dispositif est inchangé, les étapes prévues seront les
+        suivantes :
       </p>
       <div className="rounded-card border border-primary-200 bg-primary-100 p-6 mb-8">
         <ul className="space-y-4 text-gray-700">
@@ -398,12 +408,31 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
           </li>
           <li>
             <strong>3. Déposer plainte.</strong> Cette étape reste une condition de la procédure
-            administrative.
+            administrative. Pour trouver le commissariat ou la brigade de gendarmerie le plus
+            proche, vous pouvez utiliser{' '}
+            <a
+              href={MA_SECURITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="article-inline-link"
+            >
+              Ma Sécurité
+            </a>
+            , le site officiel du ministère de l’Intérieur.
           </li>
           <li>
             <strong>4. Faire constater que le voyageur occupe toujours le logement.</strong> Ce
             constat doit être établi par un officier de police judiciaire, le maire ou un
-            commissaire de justice.
+            commissaire de justice. Vous pouvez retrouver un commissaire de justice via{' '}
+            <a
+              href={CNCJ_ANNUAIRE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="article-inline-link"
+            >
+              l’annuaire officiel de la Chambre nationale des commissaires de justice
+            </a>
+            .
           </li>
           <li>
             <strong>5. Préparer la preuve du droit sur le logement.</strong> Vous devez pouvoir
