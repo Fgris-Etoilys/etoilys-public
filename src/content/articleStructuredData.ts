@@ -132,6 +132,16 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     imageKey: 'articleApiMeubles',
     authorId: 'florian-grisorio',
   },
+  {
+    path: '/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost',
+    headline: 'Voyageur qui refuse de quitter votre meublé : ce que prévoit la loi RIPOST',
+    description:
+      'La loi RIPOST prévoit une nouvelle procédure si un voyageur refuse de quitter un meublé après son séjour. Ce qui change, les délais et les démarches.',
+    datePublished: '2026-08-16',
+    dateModified: '2026-08-16',
+    imageKey: 'articleRipostVoyageurRefuseQuitter',
+    authorId: 'florian-grisorio',
+  },
 ];
 
 function normalizePath(pathname: string): string {

@@ -214,7 +214,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'faq',
   },
   '/actualites': {
-    lastModified: '2026-07-08',
+    lastModified: '2026-08-16',
     title: 'Actualités meublés de tourisme : fiscalité, avantages, réglementation',
     description:
       'Actualités et guides pratiques sur les meublés de tourisme : classement officiel, fiscalité, réglementation, taxe de séjour, obligations locales et démarches propriétaires.',
@@ -304,6 +304,14 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       '133 critères, vaisselle, équipements, documents et informations clients : les points à vérifier avant la visite de classement de votre meublé.',
     breadcrumbLabel: 'Préparer la visite de classement',
     ogImageKey: 'articlePreparerVisiteClassement',
+  },
+  '/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost': {
+    lastModified: '2026-08-16',
+    title: 'Voyageur qui refuse de partir : ce que prévoit la loi RIPOST',
+    description:
+      'La loi RIPOST prévoit une nouvelle procédure si un voyageur refuse de quitter un meublé après son séjour. Ce qui change, les délais et les démarches.',
+    breadcrumbLabel: 'Voyageur qui refuse de partir : loi RIPOST',
+    ogImageKey: 'articleRipostVoyageurRefuseQuitter',
   },
   '/recrutement': {
     lastModified: '2026-07-10',

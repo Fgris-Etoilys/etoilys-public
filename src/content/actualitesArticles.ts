@@ -281,6 +281,22 @@ const articleContent: ActualiteArticleContent[] = [
       'meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
     ],
   },
+  {
+    title: 'Voyageur qui refuse de quitter votre meublé : ce que prévoit la loi RIPOST',
+    excerpt:
+      'Un voyageur refuse de quitter votre meublé après la fin de sa réservation ? La loi RIPOST prévoit d’ouvrir la procédure administrative d’évacuation à cette situation. Voici ce que cela change, les délais et les démarches.',
+    relatedSummary:
+      'Voyageur qui refuse de partir après son séjour : ce que la loi RIPOST prévoit de changer et les démarches à engager.',
+    imageKey: 'articleRipostVoyageurRefuseQuitter',
+    href: '/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost',
+    category: 'reglementation',
+    readingTimeMinutes: 6,
+    relatedArticleSlugs: [
+      'meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
+      'api-meubles-declaration-meuble-tourisme',
+      'airbnb-booking-abritel-donnees-communes-api-meubles',
+    ],
+  },
 ];
 
 function buildArticle(article: ActualiteArticleContent): ActualiteArticle {

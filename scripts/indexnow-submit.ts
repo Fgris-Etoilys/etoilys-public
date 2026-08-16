@@ -220,6 +220,8 @@ function articlePathFromPage(filePath: string): string | null {
       '/actualites/airbnb-booking-abritel-donnees-communes-api-meubles',
     'src/pages/actualites/QueFaireApresClassementMeubleTourisme.tsx':
       '/actualites/que-faire-apres-classement-meuble-tourisme',
+    'src/pages/actualites/VoyageurRefuseQuitterMeubleTourismeLoiRipost.tsx':
+      '/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost',
   };
 
   return articlePageRoutes[filePath.replace(/\\/g, '/')] ?? null;
