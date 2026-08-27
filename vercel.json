@@ -49,6 +49,19 @@
           "value": "noindex"
         }
       ]
+    },
+    {
+      "source": "/email-signatures/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, noimageindex, nosnippet, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400"
+        }
+      ]
     }
   ],
   "rewrites": [
