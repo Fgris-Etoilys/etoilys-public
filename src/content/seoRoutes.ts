@@ -306,10 +306,10 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'articlePreparerVisiteClassement',
   },
   '/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost': {
-    lastModified: '2026-08-16',
+    lastModified: '2026-08-30',
     title: 'Voyageur qui refuse de partir : ce que prévoit la loi RIPOST',
     description:
-      'La loi RIPOST prévoit une nouvelle procédure si un voyageur refuse de quitter un meublé après son séjour. Ce qui change, les délais et les démarches.',
+      'La loi RIPOST, promulguée le 18 août 2026, ouvre une procédure si un voyageur refuse de quitter un meublé après son séjour. Ce qui change, les délais et les démarches.',
     breadcrumbLabel: 'Voyageur qui refuse de partir : loi RIPOST',
     ogImageKey: 'articleRipostVoyageurRefuseQuitter',
   },

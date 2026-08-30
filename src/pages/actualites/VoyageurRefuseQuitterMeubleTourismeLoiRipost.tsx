@@ -9,10 +9,11 @@ import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTabl
 import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
 import { getArticleAuthor } from '../../content/articleAuthors';
 
+const LOI_RIPOST_URL = 'https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054707332';
 const CC_DECISION_URL = 'https://www.conseil-constitutionnel.fr/decision/2026/2026915DC.htm';
 const CC_COMMUNIQUE_URL =
   'https://www.conseil-constitutionnel.fr/actualites/communique/decision-n-2026-915-dc-du-14-aout-2026-communique-de-presse';
-const ARTICLE_38_DALO_URL = 'https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000042655744/';
+const ARTICLE_38_DALO_URL = 'https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000054724643/';
 const SENAT_CMP_URL = 'https://www.senat.fr/leg/pjl25-905.html';
 const SENAT_RAPPORT_URL = 'https://www.senat.fr/rap/l25-601/l25-6014.html';
 const SERVICE_PUBLIC_SQUAT_URL = 'https://www.service-public.fr/particuliers/vosdroits/F35254';
@@ -22,48 +23,56 @@ const CNCJ_ANNUAIRE_URL = 'https://commissaire-justice.fr/annuaire/';
 
 const officialSources = [
   {
-    id: 'conseil-constitutionnel-decision-2026-915-dc-1',
+    id: 'legifrance-loi-2026-798-ripost-1',
+    organization: 'Légifrance',
+    title: 'Loi n° 2026-798 du 18 août 2026 (article 14)',
+    url: LOI_RIPOST_URL,
+  },
+  {
+    id: 'legifrance-article-38-loi-dalo-2',
+    organization: 'Légifrance',
+    title: 'Article 38 de la loi DALO du 5 mars 2007 (version en vigueur depuis le 20 août 2026)',
+    url: ARTICLE_38_DALO_URL,
+  },
+  {
+    id: 'conseil-constitutionnel-decision-2026-915-dc-3',
     organization: 'Conseil constitutionnel',
     title: 'Décision n° 2026-915 DC du 14 août 2026',
     url: CC_DECISION_URL,
   },
   {
-    id: 'conseil-constitutionnel-communique-2026-915-dc-2',
+    id: 'service-public-squat-evacuation-4',
+    organization: 'Service-Public.fr',
+    title: 'Squat : que faire en cas d’occupation illicite de son logement ?',
+    url: SERVICE_PUBLIC_SQUAT_URL,
+    detail:
+      'Page vérifiée le 20 août 2026 : elle couvre désormais expressément le maintien dans un meublé de tourisme après l’expiration du contrat de location.',
+  },
+  {
+    id: 'conseil-constitutionnel-communique-2026-915-dc-5',
     organization: 'Conseil constitutionnel',
     title: 'Communiqué de presse sur la décision n° 2026-915 DC',
     url: CC_COMMUNIQUE_URL,
   },
   {
-    id: 'legifrance-article-38-loi-dalo-3',
-    organization: 'Légifrance',
-    title: 'Article 38 de la loi DALO du 5 mars 2007 (version consolidée)',
-    url: ARTICLE_38_DALO_URL,
-  },
-  {
-    id: 'senat-texte-cmp-loi-ripost-4',
-    organization: 'Sénat',
-    title: 'Texte du projet de loi RIPOST issu de la commission mixte paritaire',
-    url: SENAT_CMP_URL,
-  },
-  {
-    id: 'senat-rapport-meubles-tourisme-ripost-5',
-    organization: 'Sénat',
-    title: 'Rapport sur la disposition relative aux meublés de tourisme',
-    url: SENAT_RAPPORT_URL,
-  },
-  {
-    id: 'service-public-squat-evacuation-6',
-    organization: 'Service-Public.fr',
-    title: 'Squat : que faire en cas d’occupation illicite de son logement ?',
-    url: SERVICE_PUBLIC_SQUAT_URL,
-    detail:
-      'Procédure applicable avant la loi RIPOST : cette page n’a pas encore été mise à jour et exclut actuellement le cas de la fin d’une location de meublé de tourisme.',
-  },
-  {
-    id: 'service-public-annuaire-prefectures-7',
+    id: 'service-public-annuaire-prefectures-6',
     organization: 'Service-Public.fr',
     title: 'Annuaire des préfectures',
     url: PREFECTURES_ANNUAIRE_URL,
+  },
+  {
+    id: 'senat-texte-cmp-loi-ripost-7',
+    organization: 'Sénat',
+    title: 'Texte du projet de loi RIPOST issu de la commission mixte paritaire',
+    url: SENAT_CMP_URL,
+    detail: 'Historique du texte avant sa promulgation.',
+  },
+  {
+    id: 'senat-rapport-meubles-tourisme-ripost-8',
+    organization: 'Sénat',
+    title: 'Rapport sur la disposition relative aux meublés de tourisme',
+    url: SENAT_RAPPORT_URL,
+    detail: 'Documente l’intention du législateur à l’origine de la réforme.',
   },
 ];
 
@@ -74,7 +83,7 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   },
   {
     id: 'ce-que-la-loi-ripost-prevoit-de-changer',
-    label: 'Ce que la loi RIPOST prévoit de changer',
+    label: 'Ce que la loi RIPOST change désormais',
   },
   {
     id: 'ce-que-le-conseil-constitutionnel-a-change-le-14-aout',
@@ -98,8 +107,9 @@ const keyTakeawaysBlock = (
         id: 'voyageurrefusequittermeubletourismeloiripost-takeaway-1',
         content: (
           <>
-            Si un voyageur refuse de partir à la fin de sa réservation, RIPOST prévoit d’ouvrir la
-            possibilité de demander au préfet son évacuation, alors que la procédure était jusqu’ici
+            La loi RIPOST permet désormais, sous les conditions de l’article 38 de la loi DALO, de
+            demander au préfet l’évacuation d’un voyageur qui se maintient dans un meublé de
+            tourisme après la fin de son contrat de location, alors que la procédure était jusqu’ici
             mal adaptée à ce cas.
           </>
         ),
@@ -108,8 +118,9 @@ const keyTakeawaysBlock = (
         id: 'voyageurrefusequittermeubletourismeloiripost-takeaway-2',
         content: (
           <>
-            Le Conseil constitutionnel n’a pas supprimé cette nouvelle possibilité. Il a censuré les
-            nouvelles sanctions pénales prévues en parallèle.
+            Le Conseil constitutionnel a validé l’extension de cette procédure administrative aux
+            meublés de tourisme. Il a en revanche censuré le paragraphe II de l’article 14, qui
+            étendait en parallèle des incriminations pénales aux mêmes faits.
           </>
         ),
       },
@@ -136,8 +147,9 @@ const keyTakeawaysBlock = (
         id: 'voyageurrefusequittermeubletourismeloiripost-takeaway-5',
         content: (
           <>
-            Au jour de la publication de cet article, la loi RIPOST n’est pas encore promulguée :
-            cette page sera mise à jour dès la publication du texte définitif.
+            La loi RIPOST a été promulguée le 18 août 2026 et publiée au Journal officiel le 19 août
+            2026. La nouvelle rédaction de l’article 38 de la loi DALO, qui couvre ce cas, est en
+            vigueur depuis le 20 août 2026.
           </>
         ),
       },
@@ -160,11 +172,13 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         <p className="text-xl leading-comfortable text-gray-700 mb-6">
           Un voyageur termine sa réservation mais refuse de quitter le logement : jusqu’ici, la
           procédure administrative rapide utilisée contre certaines occupations illégales était mal
-          adaptée, car le voyageur était entré légalement dans les lieux. La loi RIPOST prévoit de
-          permettre au propriétaire de saisir le préfet pour demander l’évacuation du logement, sans
+          adaptée, car le voyageur était entré légalement dans les lieux. Depuis la loi RIPOST,
+          promulguée le 18 août 2026, l’article 38 de la loi DALO s’applique désormais expressément
+          à ce cas : le propriétaire peut saisir le préfet pour demander l’évacuation d’un voyageur
+          qui se maintient dans un meublé de tourisme après la fin de son contrat de location, sans
           devoir commencer par une procédure judiciaire classique. Le Conseil constitutionnel a
-          maintenu cette possibilité le 14 août 2026, tout en censurant les nouvelles sanctions
-          pénales prévues en parallèle.
+          validé cette extension le 14 août 2026, tout en censurant les nouvelles sanctions pénales
+          prévues en parallèle.
         </p>
       }
       keyTakeaways={keyTakeawaysBlock}
@@ -234,14 +248,14 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       </p>
 
       <ArticleSectionHeading id="ce-que-la-loi-ripost-prevoit-de-changer">
-        Ce que la loi RIPOST prévoit de changer
+        Ce que la loi RIPOST change désormais
       </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
-        La loi RIPOST prévoit d’étendre la procédure administrative au cas d’un voyageur entré
+        La loi RIPOST étend désormais la procédure administrative au cas d’un voyageur entré
         légalement dans un meublé mais qui refuse de partir après la fin de son contrat.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Concrètement, le mécanisme prévu suit ces étapes :
+        Concrètement, la procédure applicable suit ces étapes :
       </p>
       <ul className="space-y-2 mb-6 text-gray-700">
         <li className="flex gap-3">
@@ -288,7 +302,9 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         >
           l’article 38 de la loi DALO
         </a>
-        . Le nom importe peu pour le propriétaire : son intérêt est de permettre une intervention
+        , dans sa rédaction en vigueur depuis le 20 août 2026, qui couvre désormais explicitement le
+        maintien dans un meublé de tourisme après l’expiration du contrat de location. Le nom
+        importe peu pour le propriétaire : son intérêt est de permettre une intervention
         administrative sous l’autorité du préfet, plutôt que de devoir commencer par une procédure
         judiciaire classique.
       </p>
@@ -303,7 +319,7 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
         Pour un propriétaire qui cherche surtout à récupérer son logement, le principal dispositif
-        de la réforme a été conservé.
+        de la réforme a été validé et est bien en vigueur.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
         Voici, en synthèse, ce que retient la décision du 14 août 2026 :
@@ -344,13 +360,14 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       />
       <p className="text-gray-700 leading-comfortable mb-4">
         Le Conseil constitutionnel n’a pas remis en cause le principe d’une protection pour le
-        propriétaire. Il a censuré la partie du texte qui créait, pour les mêmes faits, deux
-        infractions pénales distinctes assorties de peines différentes : une construction qui
-        méconnaît le principe d’égalité devant la loi pénale.
+        propriétaire. Il a censuré le paragraphe II de l’article 14, qui créait, pour les mêmes
+        faits, deux infractions pénales distinctes assorties de peines différentes : une
+        construction qui méconnaît le principe d’égalité devant la loi pénale.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Pour récupérer votre logement, l’essentiel de la réforme a donc survécu au contrôle du
-        Conseil constitutionnel.
+        Pour récupérer votre logement, la procédure administrative prévue par l’article 38 est donc
+        bien applicable, y compris lorsque l’occupant se maintient dans un meublé de tourisme après
+        la fin de son contrat.
       </p>
 
       <ArticleSectionHeading id="peut-on-vraiment-recuperer-son-logement-en-72-heures">
@@ -369,9 +386,9 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         Le texte actuel de l’article 38 prévoit que le préfet statue sur la mise en demeure dans les
         48 heures suivant la réception de la demande. Le délai d’exécution de cette mise en demeure
         ne peut être inférieur à 24 heures. Lorsque le logement occupé ne constitue pas le domicile
-        du demandeur, ce délai est porté à 7 jours. Si la réforme est promulguée dans la rédaction
-        adoptée, ces règles s’appliqueront également au maintien dans un meublé de tourisme après la
-        fin du séjour.
+        du demandeur, ce délai est porté à 7 jours. Ces règles s’appliquent au maintien dans un
+        meublé de tourisme après la fin du séjour, puisque l’article 38, dans sa rédaction en
+        vigueur depuis le 20 août 2026, couvre désormais expressément ce cas.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
         La procédure peut être beaucoup plus rapide qu’une procédure judiciaire classique, mais
@@ -383,16 +400,14 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         Que faire si un voyageur refuse de quitter votre meublé ?
       </ArticleSectionHeading>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Au jour de publication, la loi RIPOST n’est pas encore promulguée : cette nouvelle procédure
-        préfectorale n’est donc pas encore ouverte au cas du voyageur qui se maintient dans un
-        meublé après la fin de son séjour. Si cela vous arrive aujourd’hui, conservez toutes les
-        preuves de la réservation et du refus de partir, ne tentez pas d’expulser vous-même le
-        voyageur et contactez rapidement un commissaire de justice ou un avocat pour déterminer la
-        procédure à engager.
+        Depuis l’entrée en vigueur de la nouvelle rédaction de l’article 38 le 20 août 2026, cette
+        procédure préfectorale est ouverte au cas du voyageur qui se maintient dans un meublé de
+        tourisme après la fin de son séjour. Si cela vous arrive, conservez toutes les preuves de la
+        réservation et du refus de partir, ne tentez pas d’expulser vous-même le voyageur et engagez
+        les démarches suivantes.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Une fois la loi promulguée, si le dispositif est inchangé, les étapes prévues seront les
-        suivantes :
+        Voici les étapes de la procédure applicable :
       </p>
       <div className="rounded-card border border-primary-200 bg-primary-100 p-6 mb-8">
         <ul className="space-y-4 text-gray-700">
@@ -461,14 +476,14 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       </div>
 
       <p className="text-gray-700 leading-comfortable mb-4">
-        Si un voyageur refuse de partir à la fin de son séjour, RIPOST doit surtout donner au
+        Si un voyageur refuse de partir à la fin de son séjour, RIPOST donne désormais au
         propriétaire une nouvelle porte de sortie : demander au préfet d’engager une procédure
         d’évacuation, alors que ce recours était jusqu’ici mal adapté à cette situation.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Le Conseil constitutionnel n’a pas remis en cause ce mécanisme. En revanche, la procédure ne
-        devient pas automatique : il faut conserver les preuves, déposer plainte si le texte
-        l’exige, faire constater l’occupation et saisir officiellement la préfecture.
+        Le Conseil constitutionnel n’a pas remis en cause ce mécanisme. La procédure n’est toutefois
+        pas automatique : il faut conserver les preuves, déposer plainte, faire constater
+        l’occupation et saisir officiellement la préfecture.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
         Si cela vous arrive, votre premier réflexe doit donc être de conserver toutes les preuves de

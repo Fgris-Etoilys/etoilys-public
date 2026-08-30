@@ -284,9 +284,9 @@ const articleContent: ActualiteArticleContent[] = [
   {
     title: 'Voyageur qui refuse de quitter votre meublé : ce que prévoit la loi RIPOST',
     excerpt:
-      'Un voyageur refuse de quitter votre meublé après la fin de sa réservation ? La loi RIPOST prévoit d’ouvrir la procédure administrative d’évacuation à cette situation. Voici ce que cela change, les délais et les démarches.',
+      'Un voyageur refuse de quitter votre meublé après la fin de sa réservation ? La loi RIPOST, promulguée le 18 août 2026, permet désormais de recourir à la procédure administrative d’évacuation prévue par l’article 38. Voici ce que cela change, les délais et les démarches.',
     relatedSummary:
-      'Voyageur qui refuse de partir après son séjour : ce que la loi RIPOST prévoit de changer et les démarches à engager.',
+      'Voyageur qui refuse de partir après son séjour : ce que la loi RIPOST change désormais et les démarches à engager.',
     imageKey: 'articleRipostVoyageurRefuseQuitter',
     href: '/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost',
     category: 'reglementation',
