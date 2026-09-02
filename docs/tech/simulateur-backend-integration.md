@@ -9,8 +9,8 @@ Le serveur indiqué par le Swagger est `http://api-dev.etoilys.fr`, mais le prox
 
 Le frontend appelle toujours des URLs same-origin sous `/api`.
 
-- `/api/public/forms/contact` et `/api/public/forms/classement` restent routés vers Supabase Edge Functions.
-- `/api/public/simulations` et `/api/public/simulations/*` sont routés vers le backend simulateur Etoilys.
+- `/api/public/forms/contact` et `/api/public/forms/classement` sont routés vers Starsmanager.
+- `/api/public/simulations` et `/api/public/simulations/*` sont routés vers Starsmanager.
 
 En développement, le routage est défini dans `vite.config.ts`.
 Le proxy Vite retire l’en-tête `Origin` sur les routes simulateur, afin que le backend ne traite pas les appels serveur-à-serveur comme une requête CORS venant de `localhost`.

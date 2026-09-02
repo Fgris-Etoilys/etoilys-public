@@ -39,7 +39,6 @@ type DemandeClassementSubmissionPayload = DemandeClassementFormData & {
 type DemandeSubmissionResponse =
   | {
       success: true;
-      submissionId: string;
       message: string;
     }
   | {

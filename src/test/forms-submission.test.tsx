@@ -44,7 +44,6 @@ const createDeferredResponse = () => {
         new Response(
           JSON.stringify({
             success: true,
-            submissionId: 'submission-id',
             message: 'ok',
           }),
           {
@@ -70,7 +69,6 @@ describe('localized form submissions', () => {
       new Response(
         JSON.stringify({
           success: true,
-          submissionId: 'submission-id',
           message: 'ok',
         }),
         {

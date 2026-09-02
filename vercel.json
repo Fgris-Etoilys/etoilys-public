@@ -67,11 +67,11 @@
   "rewrites": [
     {
       "source": "/api/public/forms/contact",
-      "destination": "https://wrsqwdtjbglzuajjxtmc.supabase.co/functions/v1/public-forms-contact"
+      "destination": "https://api-dev.etoilys.fr/public/forms/contact"
     },
     {
       "source": "/api/public/forms/classement",
-      "destination": "https://wrsqwdtjbglzuajjxtmc.supabase.co/functions/v1/public-forms-classement"
+      "destination": "https://api-dev.etoilys.fr/public/forms/classement"
     },
     {
       "source": "/api/public/simulations",

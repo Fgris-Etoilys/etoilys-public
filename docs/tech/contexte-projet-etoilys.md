@@ -20,9 +20,8 @@ Les affirmations juridiques et fiscales doivent rester sourcées.
 - SEO/prerender : configuration centralisée dans `src/content/seoRoutes.ts`, génération sitemap, prerender Playwright.
 - Images SEO/CWV : pipeline local Sharp via `npm run images:build`, manifeste typé dans `src/content/imageManifest.ts`, contrôle rapide via `npm run images:check`.
 - Analytics : PostHog via `src/utils/analytics.ts`, consentement cookies via le layout.
-- Backends publics :
-  - Supabase Edge Functions pour les formulaires.
-  - Backend Etoilys `api-dev.etoilys.fr` pour le simulateur public.
+- Backend public : Starsmanager `api-dev.etoilys.fr` pour les formulaires publics et le simulateur public.
+- Supabase reste présent temporairement dans le dépôt uniquement pour rollback des formulaires pendant ETOILYS-381.
 
 La source de vérité des versions est `package.json`. Si une ancienne doc mentionne React 18, elle est obsolète pour l’état actuel du repo.
 
@@ -45,7 +44,6 @@ Pré-requis principaux :
 
 - Node.js 22 LTS (`.nvmrc`, `package.json`).
 - npm 10+.
-- Supabase CLI pour les fonctions de formulaires.
 
 ## Variables d’environnement
 
@@ -54,8 +52,8 @@ Variables principales côté frontend/local :
 - `VITE_API_BASE_URL` : préfixe API same-origin, généralement `/api`.
 - `VITE_TURNSTILE_SITE_KEY` : clé publique Cloudflare Turnstile.
 - `VITE_ENABLE_ANALYTICS_IN_DEV` : `false` par défaut recommandé en local.
-- `SUPABASE_FUNCTIONS_BASE_URL` : cible proxy Vite pour les Edge Functions en développement.
-- `ETOILYS_SIMULATOR_API_BASE_URL` : cible proxy Vite pour le simulateur public.
+- `ETOILYS_API_BASE_URL` : cible proxy Vite pour Starsmanager en développement.
+- `ETOILYS_SIMULATOR_API_BASE_URL` : ancien nom encore supporté comme fallback local temporaire.
 
 Les appels frontend doivent rester en `/api/...`. Le routage vers les backends se fait par le proxy Vite en local et par les rewrites Vercel en production.
 
@@ -206,7 +204,8 @@ Les deux passent par :
 - `TurnstileField` pour la vérification anti-spam.
 - `src/utils/analytics.ts` pour le tracking des étapes formulaire.
 
-Les Edge Functions correspondantes sont dans `supabase/functions/public-forms-contact` et `supabase/functions/public-forms-classement`.
+Les deux endpoints sont traités par Starsmanager via les rewrites/proxy `/api/public/forms/*`.
+Le dossier `supabase/` reste temporairement disponible uniquement pour rollback tant que la validation Vercel représentative d'ETOILYS-381 n'est pas terminée.
 
 ## Simulateur public
 
@@ -259,7 +258,7 @@ Le frontend ne doit pas masquer durablement un contrat backend absent ou incorre
 Routage API :
 
 - En frontend, construire les URLs avec `getApiUrl` ou les clients dédiés.
-- En local, `vite.config.ts` route `/api/public/forms/*` vers Supabase et `/api/public/simulations*` vers le backend simulateur.
+- En local, `vite.config.ts` route `/api/public/forms/*` et `/api/public/simulations*` vers Starsmanager.
 - En production, `vercel.json` applique les rewrites équivalents.
 
 ## Déploiement et SEO build

@@ -121,7 +121,7 @@ npm run preview
 - App routing is defined in `src/App.tsx`, wrapped by layout components.
 - Shared UI lives in `src/components/ui`; forms in `src/components/forms`; helpers in `src/utils`.
 - Frontend API URLs use `VITE_API_BASE_URL` (usually `/api`) and are routed by Vite/Vercel.
-- Public forms use Supabase Edge Functions through `submitToApi`.
+- Public forms use Starsmanager through same-origin `/api/public/forms/*` URLs and `submitToApi`.
 - Public simulator calls use the dedicated `src/utils/simulatorApi.ts` client and the Etoilys simulator backend.
 
 ## UI Rules (Web)
@@ -165,5 +165,5 @@ npm run preview
 ## Environment Variables
 
 - `VITE_API_BASE_URL` (usually `/api`, same-origin frontend API prefix)
-- `SUPABASE_FUNCTIONS_BASE_URL` (development proxy target for public form Edge Functions)
+- `ETOILYS_API_BASE_URL` (development proxy target for Starsmanager public APIs)
 - `ETOILYS_SIMULATOR_API_BASE_URL` (development proxy target for the public simulator backend)

@@ -16,11 +16,12 @@ function readRepoFile(relativePath: string): string {
 }
 
 describe('backend routing', () => {
-  it('keeps Vite dev routing split between Supabase forms and the simulator backend', () => {
+  it('routes Vite dev public APIs to Starsmanager', () => {
     const viteConfig = readRepoFile('vite.config.ts');
 
-    expect(viteConfig).toContain('SUPABASE_FUNCTIONS_BASE_URL');
+    expect(viteConfig).toContain('ETOILYS_API_BASE_URL');
     expect(viteConfig).toContain('ETOILYS_SIMULATOR_API_BASE_URL');
+    expect(viteConfig).not.toContain('SUPABASE_FUNCTIONS_BASE_URL');
     expect(viteConfig).toContain("'/api/public/forms/contact'");
     expect(viteConfig).toContain("'/api/public/forms/classement'");
     expect(viteConfig).toContain("'/api/public/simulations'");
@@ -28,19 +29,24 @@ describe('backend routing', () => {
     expect(viteConfig).toContain("proxyReq.removeHeader('origin')");
   });
 
-  it('keeps Vercel production rewrites split between Supabase forms and simulator routes', () => {
+  it('routes Vercel production public APIs to Starsmanager', () => {
     const vercelConfig = JSON.parse(readRepoFile('vercel.json')) as VercelConfig;
     const rewrites = new Map(
       vercelConfig.rewrites.map((rewrite) => [rewrite.source, rewrite.destination])
     );
 
-    expect(rewrites.get('/api/public/forms/contact')).toContain('supabase.co');
-    expect(rewrites.get('/api/public/forms/classement')).toContain('supabase.co');
+    expect(rewrites.get('/api/public/forms/contact')).toBe(
+      'https://api-dev.etoilys.fr/public/forms/contact'
+    );
+    expect(rewrites.get('/api/public/forms/classement')).toBe(
+      'https://api-dev.etoilys.fr/public/forms/classement'
+    );
     expect(rewrites.get('/api/public/simulations')).toBe(
       'https://api-dev.etoilys.fr/public/simulations'
     );
     expect(rewrites.get('/api/public/simulations/:path*')).toBe(
       'https://api-dev.etoilys.fr/public/simulations/:path*'
     );
+    expect(JSON.stringify(vercelConfig.rewrites)).not.toContain('supabase.co');
   });
 });

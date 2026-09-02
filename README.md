@@ -18,7 +18,6 @@ ChatGPT est le seul assistant testé activement. Les autres référents IA reste
 
 - Node.js 22 LTS (voir `.nvmrc`)
 - npm 10+
-- Supabase CLI (`npx supabase --version`)
 
 ## Installation
 
@@ -35,28 +34,28 @@ VITE_API_BASE_URL=/api
 VITE_TURNSTILE_SITE_KEY=...
 VITE_ENABLE_ANALYTICS_IN_DEV=false
 VITE_ENABLE_COOKIELESS_AUDIENCE=false
+ETOILYS_API_BASE_URL=https://api-dev.etoilys.fr
 ETOILYS_SIMULATOR_API_BASE_URL=https://api-dev.etoilys.fr
-SUPABASE_FUNCTIONS_BASE_URL=https://<project_ref>.supabase.co/functions/v1
 ```
 
 `VITE_API_BASE_URL` reste sur `/api` pour garder des URLs frontend same-origin.
-`SUPABASE_FUNCTIONS_BASE_URL` est utilisé uniquement en développement local par le proxy Vite pour les formulaires.
-`ETOILYS_SIMULATOR_API_BASE_URL` est utilisé uniquement en développement local par le proxy Vite pour le simulateur public.
+`ETOILYS_API_BASE_URL` est la cible Starsmanager utilisée uniquement en développement local par le proxy Vite pour les formulaires publics et le simulateur public.
+`ETOILYS_SIMULATOR_API_BASE_URL` reste supporté temporairement comme fallback local.
 `VITE_ENABLE_ANALYTICS_IN_DEV=false` évite les appels PostHog en local, même si un ancien consentement analytics est stocké dans le navigateur. Utiliser `true` uniquement pour tester explicitement l’analytics.
 `VITE_ENABLE_COOKIELESS_AUDIENCE=false` maintient la mesure minimale après refus désactivée. Ce flag ne doit passer à `true` qu’après validation des textes, contrôle du payload réel, configuration du projet PostHog et test live.
 
 ## Backends publics
 
-Deux backends coexistent dans ce repo :
+Le site public consomme Starsmanager via des URLs same-origin :
 
-- Supabase Edge Functions pour les formulaires publics :
+- Formulaires publics :
   - `POST /api/public/forms/contact`
   - `POST /api/public/forms/classement`
-- Backend Etoilys `api-dev.etoilys.fr` pour le simulateur public :
+- Simulateur public :
   - `/api/public/simulations`
   - `/api/public/simulations/*`
 
-Les appels frontend restent en `/api/...`. En développement, Vite route ces chemins vers le bon backend. En production, Vercel applique les rewrites équivalents.
+Les appels frontend restent en `/api/...`. En développement, Vite route ces chemins vers Starsmanager. En production, Vercel applique les rewrites équivalents.
 
 Les simulations publiques sont associées au navigateur par le backend. Les appels simulateur doivent passer par `src/utils/simulatorApi.ts`, qui utilise `credentials: 'include'`.
 
@@ -64,9 +63,9 @@ Les simulations publiques sont associées au navigateur par le backend. Les appe
 
 Pour garder `VITE_API_BASE_URL=/api` aussi en production, ce repo inclut un `vercel.json` qui rewrite :
 
-- `/api/public/forms/contact` -> `public-forms-contact` (Supabase)
-- `/api/public/forms/classement` -> `public-forms-classement` (Supabase)
-- `/api/public/simulations` et sous-routes -> `api-dev.etoilys.fr` (backend simulateur)
+- `/api/public/forms/contact` -> `api-dev.etoilys.fr/public/forms/contact`
+- `/api/public/forms/classement` -> `api-dev.etoilys.fr/public/forms/classement`
+- `/api/public/simulations` et sous-routes -> `api-dev.etoilys.fr/public/simulations`
 
 Variables à définir dans Vercel :
 
@@ -76,8 +75,8 @@ Variables à définir dans Vercel :
 Vérifier aussi :
 
 - Les hostnames Turnstile autorisés (domaine prod + domaines preview Vercel).
-- `ALLOWED_ORIGINS` côté Supabase Secrets (domaine prod + previews + localhost).
-- L’accessibilité du backend simulateur. En production, privilégier HTTPS côté backend, ou conserver le routage same-origin via Vercel.
+- Les secrets/configurations Starsmanager nécessaires à Turnstile et Resend.
+- L’accessibilité du backend Starsmanager. En production, privilégier HTTPS côté backend, ou conserver le routage same-origin via Vercel.
 
 ## Scripts utiles
 
@@ -90,48 +89,11 @@ npm run build
 npm run preview
 ```
 
-## Setup Supabase (transitoire)
+## Rollback Supabase (temporaire)
 
-1. Initialiser le dossier Supabase local :
+Le dossier `supabase/` reste présent uniquement pour faciliter un rollback de la première étape ETOILYS-381 tant que la bascule réelle Vercel vers Starsmanager n'a pas été validée.
 
-```bash
-npx supabase init
-npx supabase link --project-ref <project_ref>
-```
-
-2. Appliquer les migrations :
-
-```bash
-npx supabase db push
-```
-
-3. Déployer les functions :
-
-```bash
-npx supabase functions deploy public-forms-contact --project-ref <project_ref>
-npx supabase functions deploy public-forms-classement --project-ref <project_ref>
-```
-
-4. Configurer les secrets functions :
-
-```bash
-npx supabase secrets set TURNSTILE_SECRET_KEY=...
-npx supabase secrets set RESEND_API_KEY=...
-npx supabase secrets set RESEND_FROM_EMAIL=...
-npx supabase secrets set NOTIFY_TO_EMAIL=...
-```
-
-`RESEND_FROM_EMAIL` est réutilisé pour les notifications internes et les accusés de réception client.
-`NOTIFY_TO_EMAIL` reçoit les notifications internes et sert aussi d'adresse de réponse (`reply_to`) pour les confirmations envoyées aux clients.
-
-Secrets optionnels :
-
-- `ALLOWED_ORIGINS` (liste séparée par virgules)
-- `FORM_RATE_LIMIT_IP_PER_HOUR` (défaut : 10)
-- `FORM_RATE_LIMIT_EMAIL_PER_HOUR` (défaut : 5)
-- `BYPASS_TURNSTILE=true` (uniquement pour debug local)
-
-Un exemple local est disponible dans `supabase/functions/.env.example`.
+Les formulaires publics actifs ne doivent plus utiliser Supabase. Ne pas supprimer ni désactiver les ressources Supabase distantes avant validation post-déploiement du site public.
 
 ## Contrat API formulaires
 
@@ -141,33 +103,34 @@ Un exemple local est disponible dans `supabase/functions/.env.example`.
 Réponse succès :
 
 ```json
-{ "success": true, "submissionId": "uuid", "message": "..." }
+{ "success": true, "message": "..." }
 ```
 
-Réponse erreur :
+Réponse erreur formulaire :
 
 ```json
-{ "success": false, "error": "...", "fieldErrors": { "champ": "..." } }
+{
+  "success": false,
+  "error": "...",
+  "errorCode": "VALIDATION_FAILED",
+  "fieldErrors": { "champ": "..." },
+  "fieldErrorCodes": { "champ": "REQUIRED" }
+}
 ```
 
-En développement, Vite proxy ces routes vers :
+Réponse erreur transverse Starsmanager :
 
-- `public-forms-contact`
-- `public-forms-classement`
-
-## Rétention et purge
-
-La rétention cible est 12 mois.
-
-Commande de purge :
-
-```sql
-select public.purge_form_submissions_older_than(interval '12 months');
+```json
+{ "code": "INVALID_REQUEST", "message": "...", "fieldErrors": { "champ": "..." } }
 ```
+
+En développement, Vite proxy ces routes vers Starsmanager :
+
+- `/public/forms/contact`
+- `/public/forms/classement`
 
 ## Règles sécurité
 
 - Ne jamais commiter de secrets (`.env*`, `supabase/.env`, `supabase/functions/.env`).
 - Ne jamais exposer `SUPABASE_SERVICE_ROLE_KEY` dans le frontend.
-- La table `form_submissions` est en RLS forcée, sans policy publique.
-- Les écritures se font uniquement via Edge Functions.
+- Ne jamais exposer les secrets Starsmanager, Turnstile ou Resend dans le bundle frontend.

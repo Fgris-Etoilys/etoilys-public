@@ -42,7 +42,6 @@ type ContactSubmissionPayload = ContactFormData & {
 type ContactSubmissionResponse =
   | {
       success: true;
-      submissionId: string;
       message: string;
     }
   | {

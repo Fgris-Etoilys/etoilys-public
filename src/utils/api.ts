@@ -11,7 +11,6 @@ export const API_ERROR_CODES = [
   'TURNSTILE_INVALID',
   'RATE_LIMITED',
   'RATE_LIMIT_UNAVAILABLE',
-  'INSERT_FAILED',
   'NOTIFICATION_FAILED',
 ] as const;
 
@@ -64,18 +63,39 @@ const isFieldErrorCodes = (value: unknown): value is Record<string, FieldErrorCo
 const isApiErrorBody = (
   value: unknown
 ): value is {
+  success?: boolean;
   error?: string;
   errorCode?: ApiErrorCode;
   fieldErrors?: Record<string, string>;
   fieldErrorCodes?: Record<string, FieldErrorCode>;
 } => {
   if (!isRecord(value)) return false;
+  const hasPublicFormErrorShape =
+    'success' in value || 'error' in value || 'errorCode' in value || 'fieldErrorCodes' in value;
+  if (!hasPublicFormErrorShape) return false;
+  const hasSuccess = value.success === undefined || typeof value.success === 'boolean';
   const hasError = value.error === undefined || typeof value.error === 'string';
   const hasErrorCode = value.errorCode === undefined || isApiErrorCode(value.errorCode);
   const hasFieldErrors = value.fieldErrors === undefined || isFieldErrors(value.fieldErrors);
   const hasFieldErrorCodes =
     value.fieldErrorCodes === undefined || isFieldErrorCodes(value.fieldErrorCodes);
-  return hasError && hasErrorCode && hasFieldErrors && hasFieldErrorCodes;
+  return hasSuccess && hasError && hasErrorCode && hasFieldErrors && hasFieldErrorCodes;
+};
+
+const isStarsmanagerErrorBody = (
+  value: unknown
+): value is {
+  code?: string;
+  message?: string;
+  fieldErrors?: Record<string, string>;
+} => {
+  if (!isRecord(value)) return false;
+  const hasStarsmanagerErrorShape = 'code' in value || 'message' in value || 'fieldErrors' in value;
+  if (!hasStarsmanagerErrorShape) return false;
+  const hasCode = value.code === undefined || typeof value.code === 'string';
+  const hasMessage = value.message === undefined || typeof value.message === 'string';
+  const hasFieldErrors = value.fieldErrors === undefined || isFieldErrors(value.fieldErrors);
+  return hasCode && hasMessage && hasFieldErrors;
 };
 
 export type ApiResponse<T = unknown> =
@@ -88,6 +108,7 @@ export type ApiResponse<T = unknown> =
       error: string;
       status?: number | undefined;
       errorCode?: ApiErrorCode | undefined;
+      code?: string | undefined;
       fieldErrors?: Record<string, string> | undefined;
       fieldErrorCodes?: Record<string, FieldErrorCode> | undefined;
     };
@@ -103,7 +124,29 @@ export const getApiUrl = (endpoint: string): string => {
 };
 
 export const getHttpErrorMessage = (status: number, locale: Locale = DEFAULT_LOCALE): string =>
-  status === 429 ? formContent[locale].api.rateLimited : formContent[locale].api.httpError(status);
+  status === 429
+    ? formContent[locale].api.rateLimited
+    : status >= 500
+      ? formContent[locale].api.genericError
+      : formContent[locale].api.httpError(status);
+
+const getStarsmanagerErrorMessage = (
+  parsed: {
+    fieldErrors?: Record<string, string>;
+  },
+  status: number,
+  locale: Locale
+): string => {
+  if (status === 429) {
+    return formContent[locale].api.rateLimited;
+  }
+
+  if (parsed.fieldErrors !== undefined) {
+    return getLocalizedApiErrorMessage({ errorCode: 'VALIDATION_FAILED', status }, locale);
+  }
+
+  return formContent[locale].api.genericError;
+};
 
 export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
   endpoint: string,
@@ -147,6 +190,24 @@ export const submitToApi = async <T = unknown, P = Record<string, unknown>>(
 
         if (parsed.fieldErrorCodes !== undefined) {
           apiError.fieldErrorCodes = parsed.fieldErrorCodes;
+        }
+
+        return apiError;
+      }
+
+      if (isStarsmanagerErrorBody(parsed)) {
+        const apiError: Extract<ApiResponse<T>, { success: false }> = {
+          success: false,
+          status: response.status,
+          error: getStarsmanagerErrorMessage(parsed, response.status, locale),
+        };
+
+        if (parsed.code !== undefined) {
+          apiError.code = parsed.code;
+        }
+
+        if (parsed.fieldErrors !== undefined) {
+          apiError.fieldErrors = parsed.fieldErrors;
         }
 
         return apiError;

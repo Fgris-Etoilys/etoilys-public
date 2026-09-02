@@ -6,7 +6,7 @@ describe('submitToApi', () => {
     vi.restoreAllMocks();
   });
 
-  it('retourne un message explicite sur une réponse HTTP 429 sans body JSON', async () => {
+  it('returns an explicit message for an HTTP 429 response without JSON', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response('<html>Too many requests</html>', {
         status: 429,
@@ -21,7 +21,34 @@ describe('submitToApi', () => {
     });
   });
 
-  it('maps backend error codes to localized English messages', async () => {
+  it('accepts the Starsmanager public form success response without persisted identifier', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          success: true,
+          message: 'ok',
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    );
+
+    await expect(
+      submitToApi<{ success: true; message: string }>('/public/forms/contact', {
+        message: 'test',
+      })
+    ).resolves.toEqual({
+      success: true,
+      data: {
+        success: true,
+        message: 'ok',
+      },
+    });
+  });
+
+  it('maps PublicFormResponse error codes and fieldErrorCodes to localized messages', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(
         JSON.stringify({
@@ -58,7 +85,7 @@ describe('submitToApi', () => {
     });
   });
 
-  it('uses localized rate-limit and Turnstile messages', async () => {
+  it('uses localized rate-limit and Turnstile messages for PublicFormResponse errors', async () => {
     vi.spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(
         new Response(
@@ -106,8 +133,79 @@ describe('submitToApi', () => {
     });
   });
 
+  it('preserves Starsmanager ValidationErrorResponse fieldErrors without inventing fieldErrorCodes', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          code: 'INVALID_REQUEST',
+          message: 'Invalid request',
+          fieldErrors: {
+            email: 'Invalid email',
+          },
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    );
+
+    await expect(
+      submitToApi('/public/forms/contact', { message: 'test' }, { locale: 'en' })
+    ).resolves.toEqual({
+      success: false,
+      status: 400,
+      error: 'Some fields need to be corrected.',
+      code: 'INVALID_REQUEST',
+      fieldErrors: {
+        email: 'Invalid email',
+      },
+    });
+  });
+
+  it('uses a localized generic fallback for unmapped Starsmanager ApiErrorResponse codes', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          code: 'MAIL_DELIVERY_FAILED',
+          message: 'Mail delivery failed',
+        }),
+        {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    );
+
+    await expect(
+      submitToApi('/public/forms/contact', { message: 'test' }, { locale: 'en' })
+    ).resolves.toEqual({
+      success: false,
+      status: 503,
+      error: 'An unexpected error occurred. Please try again later.',
+      code: 'MAIL_DELIVERY_FAILED',
+    });
+  });
+
+  it('uses localized generic errors for HTTP 5xx responses without JSON', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response('<html>Service unavailable</html>', {
+        status: 503,
+        headers: { 'Content-Type': 'text/html' },
+      })
+    );
+
+    await expect(
+      submitToApi('/public/forms/contact', { message: 'test' }, { locale: 'en' })
+    ).resolves.toEqual({
+      success: false,
+      status: 503,
+      error: 'An unexpected error occurred. Please try again later.',
+    });
+  });
+
   it('uses localized generic errors for unexpected network failures', async () => {
-    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Erreur réseau brute'));
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('Erreur reseau brute'));
 
     await expect(
       submitToApi('/public/forms/contact', { message: 'test' }, { locale: 'en' })

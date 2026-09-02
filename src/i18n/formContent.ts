@@ -137,9 +137,7 @@ export const formContent = {
         TURNSTILE_INVALID: 'La vérification anti-spam a échoué. Merci de réessayer.',
         RATE_LIMITED: 'Trop de requêtes envoyées en peu de temps. Réessayez dans quelques minutes.',
         RATE_LIMIT_UNAVAILABLE: 'Une erreur est survenue. Merci de réessayer plus tard.',
-        INSERT_FAILED: "Impossible d'enregistrer la demande. Merci de réessayer plus tard.",
-        NOTIFICATION_FAILED:
-          'Votre demande a bien été enregistrée, mais la notification interne n’a pas pu être envoyée. N’envoyez pas à nouveau le formulaire. Etoilys traitera votre demande dès que possible.',
+        NOTIFICATION_FAILED: 'Votre demande n’a pas pu être envoyée. Merci de réessayer plus tard.',
       },
       fieldErrorCodes: {
         REQUIRED: 'Ce champ est requis.',
@@ -235,9 +233,7 @@ export const formContent = {
         RATE_LIMITED:
           'Too many requests were sent in a short time. Please try again in a few minutes.',
         RATE_LIMIT_UNAVAILABLE: 'An unexpected error occurred. Please try again later.',
-        INSERT_FAILED: 'The request could not be saved. Please try again later.',
-        NOTIFICATION_FAILED:
-          'Your request has been saved, but the internal notification could not be sent. Do not submit the form again. Etoilys will process your request as soon as possible.',
+        NOTIFICATION_FAILED: 'Your request could not be sent. Please try again later.',
       },
       fieldErrorCodes: {
         REQUIRED: 'This field is required.',
@@ -332,9 +328,7 @@ export const formContent = {
         RATE_LIMITED:
           'Er zijn te veel verzoeken in korte tijd verzonden. Probeer het over enkele minuten opnieuw.',
         RATE_LIMIT_UNAVAILABLE: 'Er is een onverwachte fout opgetreden. Probeer het later opnieuw.',
-        INSERT_FAILED: 'De aanvraag kon niet worden opgeslagen. Probeer het later opnieuw.',
-        NOTIFICATION_FAILED:
-          'Uw aanvraag is opgeslagen, maar de interne melding kon niet worden verzonden. Dien het formulier niet opnieuw in. Etoilys neemt uw aanvraag zo snel mogelijk in behandeling.',
+        NOTIFICATION_FAILED: 'Uw aanvraag kon niet worden verzonden. Probeer het later opnieuw.',
       },
       fieldErrorCodes: {
         REQUIRED: 'Dit veld is verplicht.',
@@ -410,7 +404,7 @@ export const getLocalizedFieldErrors = (
     });
   }
 
-  if (locale === DEFAULT_LOCALE && fallbackFieldErrors) {
+  if (fallbackFieldErrors) {
     Object.entries(fallbackFieldErrors).forEach(([field, message]) => {
       if (localizedErrors[field] === undefined) {
         localizedErrors[field] = message;
