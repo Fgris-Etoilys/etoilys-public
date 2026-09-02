@@ -227,8 +227,8 @@ export default function Confidentialite() {
                     l&apos;exploitation du site ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">Supabase</strong> pour certaines fonctions
-                    techniques ou de traitement ;
+                    <strong className="text-gray-700">Starsmanager</strong> pour le traitement
+                    technique des formulaires ;
                   </li>
                   <li>
                     <strong className="text-gray-700">Resend</strong> pour l&apos;acheminement de

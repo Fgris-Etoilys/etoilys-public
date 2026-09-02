@@ -21,7 +21,6 @@ Les affirmations juridiques et fiscales doivent rester sourcées.
 - Images SEO/CWV : pipeline local Sharp via `npm run images:build`, manifeste typé dans `src/content/imageManifest.ts`, contrôle rapide via `npm run images:check`.
 - Analytics : PostHog via `src/utils/analytics.ts`, consentement cookies via le layout.
 - Backend public : Starsmanager `api-dev.etoilys.fr` pour les formulaires publics et le simulateur public.
-- Supabase reste présent temporairement dans le dépôt uniquement pour rollback des formulaires pendant ETOILYS-381.
 
 La source de vérité des versions est `package.json`. Si une ancienne doc mentionne React 18, elle est obsolète pour l’état actuel du repo.
 
@@ -134,7 +133,6 @@ Principaux dossiers :
 - `src/assets/seo-images/source` : sources des images critiques.
 - `public` : assets statiques, favicon, `robots.txt`, `sitemap.xml`, clé IndexNow.
 - `scripts` : génération images, sitemap, prerender, dataset taxe de séjour, IndexNow.
-- `supabase` : Edge Functions et migrations des formulaires.
 - `docs` : documentation projet, sources réglementaires, workflows SEO, Swagger.
 
 ## Conventions UI
@@ -205,7 +203,6 @@ Les deux passent par :
 - `src/utils/analytics.ts` pour le tracking des étapes formulaire.
 
 Les deux endpoints sont traités par Starsmanager via les rewrites/proxy `/api/public/forms/*`.
-Le dossier `supabase/` reste temporairement disponible uniquement pour rollback tant que la validation Vercel représentative d'ETOILYS-381 n'est pas terminée.
 
 ## Simulateur public
 
@@ -299,5 +296,5 @@ Avant de livrer une modification significative :
 - Ne pas exécuter d’opérations git sans demande explicite : commit, push, merge, changement de branche.
 - Ne pas démarrer ou arrêter de serveur long-running sans demande explicite.
 - Les commandes de validation sont autorisées.
-- Ne jamais commiter de secrets `.env*`, clés Supabase, clés Turnstile ou clés de service.
-- Ne pas exposer `SUPABASE_SERVICE_ROLE_KEY` côté frontend.
+- Ne jamais commiter de secrets `.env*`, clés Starsmanager, clés Turnstile ou clés de service.
+- Ne pas exposer de secret backend côté frontend.

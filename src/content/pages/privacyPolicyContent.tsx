@@ -202,8 +202,8 @@ export const privacyPolicyContent = {
               <strong className={strongClassName}>Vercel</strong> for site hosting and operation;
             </li>
             <li>
-              <strong className={strongClassName}>Supabase</strong> for certain technical or
-              processing functions;
+              <strong className={strongClassName}>Starsmanager</strong> for technical processing of
+              forms;
             </li>
             <li>
               <strong className={strongClassName}>Resend</strong> for email routing;
@@ -562,8 +562,8 @@ export const privacyPolicyContent = {
               site;
             </li>
             <li>
-              <strong className={strongClassName}>Supabase</strong> voor bepaalde technische of
-              verwerkingsfuncties;
+              <strong className={strongClassName}>Starsmanager</strong> voor technische verwerking
+              van formulieren;
             </li>
             <li>
               <strong className={strongClassName}>Resend</strong> voor e-mailroutering;

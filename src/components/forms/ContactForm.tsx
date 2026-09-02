@@ -106,7 +106,9 @@ export default function ContactForm({
 
   const handleTurnstileChange = useCallback((token: string | null) => {
     setTurnstileToken(token);
-    setSubmitError(null);
+    if (token !== null) {
+      setSubmitError(null);
+    }
     setErrors((prev) => {
       if (!prev.turnstileToken) return prev;
       const nextErrors = { ...prev };
@@ -114,6 +116,11 @@ export default function ContactForm({
       return nextErrors;
     });
   }, []);
+
+  const resetTurnstileToken = () => {
+    setTurnstileToken(null);
+    setTurnstileResetKey((prev) => prev + 1);
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -166,7 +173,12 @@ export default function ContactForm({
     if (!response.success) {
       setErrors(getLocalizedFieldErrors(response.fieldErrorCodes, locale, response.fieldErrors));
       setSubmitError(response.error);
-      trackFormSubmitFailed('contact', 'api', Object.keys(response.fieldErrorCodes || {}).sort());
+      resetTurnstileToken();
+      trackFormSubmitFailed(
+        'contact',
+        'api',
+        Object.keys(response.fieldErrorCodes || response.fieldErrors || {}).sort()
+      );
       return;
     }
 
@@ -188,6 +200,7 @@ export default function ContactForm({
         'api',
         Object.keys(response.data.fieldErrorCodes || response.data.fieldErrors || {}).sort()
       );
+      resetTurnstileToken();
       return;
     }
 

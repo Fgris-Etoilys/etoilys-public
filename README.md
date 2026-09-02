@@ -89,12 +89,6 @@ npm run build
 npm run preview
 ```
 
-## Rollback Supabase (temporaire)
-
-Le dossier `supabase/` reste présent uniquement pour faciliter un rollback de la première étape ETOILYS-381 tant que la bascule réelle Vercel vers Starsmanager n'a pas été validée.
-
-Les formulaires publics actifs ne doivent plus utiliser Supabase. Ne pas supprimer ni désactiver les ressources Supabase distantes avant validation post-déploiement du site public.
-
 ## Contrat API formulaires
 
 - `POST /api/public/forms/contact`
@@ -131,6 +125,5 @@ En développement, Vite proxy ces routes vers Starsmanager :
 
 ## Règles sécurité
 
-- Ne jamais commiter de secrets (`.env*`, `supabase/.env`, `supabase/functions/.env`).
-- Ne jamais exposer `SUPABASE_SERVICE_ROLE_KEY` dans le frontend.
+- Ne jamais commiter de secrets (`.env*`).
 - Ne jamais exposer les secrets Starsmanager, Turnstile ou Resend dans le bundle frontend.

@@ -134,8 +134,7 @@ Constats déjà vérifiés dans le repo :
 - [x] Les formulaires publics sont `ContactForm` et `DemandeClassementForm`.
 - [x] Les validations frontend sont dans `src/utils/formValidation.ts`.
 - [x] Les appels formulaires passent par `src/utils/api.ts`.
-- [x] Les Edge Functions reconstruisent explicitement leurs payloads et ne persistent pas encore `preferredLanguage`.
-- [x] La table Supabase `form_submissions` contient `payload_json`, exploitable pour stocker la langue sans migration SQL dédiée si le champ reste dans ce JSON.
+- [x] Le backend formulaire reconstruit explicitement ses payloads et reçoit `preferredLanguage` sans créer de persistance côté site public.
 - [x] Les tests existants couvrent déjà routes, gouvernance SEO, liens légaux de formulaires et images critiques.
 
 Checklist à reprendre au début du Lot 0 :
@@ -145,7 +144,7 @@ Checklist à reprendre au début du Lot 0 :
 - [x] Relire `docs/tech/seo-structurant-workflow.md`.
 - [x] Vérifier que la liste des routes actives n'a pas changé depuis cette roadmap.
 - [x] Vérifier que le sitemap est toujours généré depuis `src/content/seoRoutes.ts`.
-- [x] Vérifier que les contrats Supabase des formulaires n'ont pas évolué.
+- [x] Vérifier que les contrats Starsmanager des formulaires n'ont pas évolué.
 
 ## 6. Architecture i18n proposée
 
@@ -349,9 +348,6 @@ Fichiers probables :
 - `src/components/forms/DemandeClassementForm.tsx`
 - `src/utils/formValidation.ts`
 - `src/utils/api.ts`
-- `supabase/functions/public-forms-contact/index.ts`
-- `supabase/functions/public-forms-classement/index.ts`
-- `supabase/functions/_shared/formSubmission.ts`
 - `src/test/forms-legal-links.test.tsx`
 
 Critères d'acceptation :
@@ -362,8 +358,8 @@ Critères d'acceptation :
 - [ ] Aucun message d'erreur visible sur page EN ne reste en français.
 - [ ] Les erreurs backend attendues sont mappées vers des messages EN ou remplacées par un message générique EN.
 - [ ] Le payload EN contient `preferredLanguage: "en"`.
-- [ ] `preferredLanguage` est stocké dans `payload_json`.
-- [ ] La notification interne mentionne la langue préférée.
+- [ ] `preferredLanguage` est transmis au backend formulaire.
+- [ ] Les emails internes mentionnent la langue préférée.
 
 ## 11. Traduction des pages MVP
 
@@ -846,10 +842,6 @@ Avant release :
 - `src/test/routes.test.tsx`
 - `src/test/forms-legal-links.test.tsx`
 - `src/test/cwv-images.test.tsx`
-- `supabase/functions/_shared/formSubmission.ts`
-- `supabase/functions/public-forms-contact/index.ts`
-- `supabase/functions/public-forms-classement/index.ts`
-- `supabase/migrations/20260325190000_create_form_submissions.sql`
 
 ## 20. Mini-lot post-release monitoring
 
@@ -956,27 +948,14 @@ les cases historiques encore non cochées.
 - [ ] Vercel : ajouter une règle qui sert `en/404.html` avec status `404` sans intercepter `/en`,
       `/en/`, les 9 routes EN MVP, les assets ni les API.
 - [ ] Prerender : générer `404.html` et `en/404.html`.
-- [ ] Formulaires : vérifier les deux formulaires FR/EN côté payload frontend, stockage
-      `form_submissions.payload_json`, payload Resend et contenu email interne.
-- [x] Edge Functions : confirmer les versions réellement déployées de `public-forms-contact` et
-      `public-forms-classement`, puis redéployer si le code prod ne contient pas la ligne de langue.
+- [ ] Formulaires : vérifier les deux formulaires FR/EN côté payload frontend, payload
+      Starsmanager, payload Resend et contenu email interne.
 - [ ] Ne pas créer de colonne SQL ni de migration pour `preferredLanguage`.
 
-Diagnostic Supabase du 11 juillet 2026 :
+Diagnostic formulaire du 11 juillet 2026 :
 
-- [x] Connexion CLI cloud restaurée avec le profil `etoilys-public`.
-- [x] Sources déployées avant correctif téléchargées et comparées : les fonctions prod ne contenaient
-      ni `preferredLanguage`, ni `Langue préférée`, ni `formatPreferredLanguageLabel`.
-- [x] Requête SQL non-PII sur les dernières soumissions : `payload_json ->> 'preferredLanguage'`
-      était `null` sur les lignes notifiées existantes, confirmant un ancien code Edge Function en
-      production.
-- [x] Redéploiement effectué de `public-forms-contact` et `public-forms-classement` avec
-      `--no-verify-jwt` et `--use-api`.
-- [x] Vérification post-déploiement par téléchargement des sources : les deux fonctions prod
-      contiennent désormais `preferredLanguage`, `Langue préférée` et
-      `formatPreferredLanguageLabel`.
-- [ ] Test réel post-déploiement encore à refaire : soumission FR/EN, contrôle
-      `payload_json.preferredLanguage` et email interne.
+- [x] Le lot i18n a établi que les formulaires doivent transmettre `preferredLanguage`.
+- [ ] Test réel post-déploiement encore à refaire : soumission FR/EN et contrôle email interne.
 
 ### QA et validation
 
@@ -1033,7 +1012,7 @@ Entrées obsolètes :
 Entrées encore actives :
 
 - 404 EN localisée avec vrai statut HTTP 404.
-- Vérification production de `preferredLanguage` dans Supabase, Resend et l'email interne.
+- Vérification production de `preferredLanguage` dans Starsmanager, Resend et l'email interne.
 - QA responsive desktop/mobile.
 - Non-régression FR.
 - Smoke test production FR/EN après déploiement.

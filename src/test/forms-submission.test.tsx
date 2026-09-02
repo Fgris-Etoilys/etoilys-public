@@ -5,6 +5,8 @@ import ContactForm from '../components/forms/ContactForm';
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
 
 let turnstileCallback: ((token: string) => void) | null = null;
+const resetTurnstile = vi.fn();
+const removeTurnstile = vi.fn();
 
 const renderTurnstile = vi.fn(
   (_container: HTMLElement, options: { callback: (token: string) => void; language: string }) => {
@@ -58,12 +60,14 @@ const createDeferredResponse = () => {
 describe('localized form submissions', () => {
   beforeEach(() => {
     renderTurnstile.mockClear();
+    resetTurnstile.mockClear();
+    removeTurnstile.mockClear();
     turnstileCallback = null;
     vi.stubEnv('VITE_TURNSTILE_SITE_KEY', 'site-key');
     window.turnstile = {
       render: renderTurnstile,
-      remove: vi.fn(),
-      reset: vi.fn(),
+      remove: removeTurnstile,
+      reset: resetTurnstile,
     };
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(
@@ -208,6 +212,71 @@ describe('localized form submissions', () => {
       deferred.resolveSuccess();
       await deferred.promise;
     });
+  });
+
+  it('resets the contact Turnstile token after an API error and requires a new token before retry', async () => {
+    vi.mocked(globalThis.fetch)
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Envoi impossible.',
+            errorCode: 'NOTIFICATION_FAILED',
+          }),
+          {
+            status: 503,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            success: true,
+            message: 'ok',
+          }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      );
+
+    render(
+      <MemoryRouter>
+        <ContactForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('first-turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Jane Doe');
+    fillInput(/^email/i, 'jane@example.com');
+    fillTextarea('message', 'Bonjour');
+    fireEvent.click(screen.getByRole('checkbox'));
+
+    const submitButton = screen.getByRole('button', { name: /envoyer mon message/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
+    expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'first-turnstile-token' });
+    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
+
+    fireEvent.click(submitButton);
+
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    expect(await screen.findByText(/merci de valider la vérification anti-spam/i)).toBeVisible();
+
+    act(() => {
+      turnstileCallback?.('second-turnstile-token');
+    });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(2));
+    expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'second-turnstile-token' });
   });
 
   it('sends preferredLanguage en from the English classification request form', async () => {
@@ -357,5 +426,73 @@ describe('localized form submissions', () => {
       deferred.resolveSuccess();
       await deferred.promise;
     });
+  });
+
+  it('resets the classification request Turnstile token after an API error and accepts a new token on retry', async () => {
+    vi.mocked(globalThis.fetch)
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Envoi impossible.',
+            errorCode: 'NOTIFICATION_FAILED',
+          }),
+          {
+            status: 503,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      )
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            success: true,
+            message: 'ok',
+          }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      );
+
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('first-turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Doe');
+    fillInput(/^prénom/i, 'Jane');
+    fillInput(/^email/i, 'jane@example.com');
+    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
+    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
+    fillTextarea('message', 'Classement');
+    fireEvent.click(screen.getByRole('checkbox'));
+
+    const submitButton = screen.getByRole('button', { name: /envoyer ma demande/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
+    expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'first-turnstile-token' });
+    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
+
+    fireEvent.click(submitButton);
+
+    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    expect(await screen.findByText(/merci de valider la vérification anti-spam/i)).toBeVisible();
+
+    act(() => {
+      turnstileCallback?.('second-turnstile-token');
+    });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(2));
+    expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'second-turnstile-token' });
   });
 });
