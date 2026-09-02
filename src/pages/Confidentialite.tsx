@@ -227,8 +227,8 @@ export default function Confidentialite() {
                     l&apos;exploitation du site ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">Starsmanager</strong> pour le traitement
-                    technique des formulaires ;
+                    <strong className="text-gray-700">Railway</strong> pour l&apos;hébergement et
+                    l&apos;exploitation technique du backend Starsmanager ;
                   </li>
                   <li>
                     <strong className="text-gray-700">Resend</strong> pour l&apos;acheminement de

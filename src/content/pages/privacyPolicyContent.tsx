@@ -202,8 +202,8 @@ export const privacyPolicyContent = {
               <strong className={strongClassName}>Vercel</strong> for site hosting and operation;
             </li>
             <li>
-              <strong className={strongClassName}>Starsmanager</strong> for technical processing of
-              forms;
+              <strong className={strongClassName}>Railway</strong> for hosting and technical
+              operation of the Starsmanager backend;
             </li>
             <li>
               <strong className={strongClassName}>Resend</strong> for email routing;
@@ -562,8 +562,8 @@ export const privacyPolicyContent = {
               site;
             </li>
             <li>
-              <strong className={strongClassName}>Starsmanager</strong> voor technische verwerking
-              van formulieren;
+              <strong className={strongClassName}>Railway</strong> voor hosting en technische
+              exploitatie van de Starsmanager-backend;
             </li>
             <li>
               <strong className={strongClassName}>Resend</strong> voor e-mailroutering;
