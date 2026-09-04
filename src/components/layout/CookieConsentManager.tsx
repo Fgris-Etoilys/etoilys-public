@@ -9,6 +9,12 @@ import {
   setCookielessAudienceMeasurementEnabled,
   type AnalyticsConsent,
 } from '../../utils/analytics';
+import {
+  acceptAdvertisingConsent,
+  getAdvertisingConsentStatus,
+  refuseAdvertisingConsent,
+  type AdvertisingConsent,
+} from '../../utils/openAiAds';
 import { COOKIE_PREFERENCES_EVENT_NAME } from '../../utils/cookiePreferences';
 import { type Locale } from '../../i18n/locales';
 import { getLocaleFromPath, getLocalizedPath } from '../../i18n/routeHelpers';
@@ -18,17 +24,22 @@ const cookieConsentContent = {
     bannerAriaLabel: 'Gestion des cookies',
     bannerTitle: 'Vos préférences de confidentialité',
     bannerText:
-      'Etoilys utilise PostHog pour mesurer l’utilisation du site et améliorer ses pages, formulaires et simulateurs. Avec votre accord, nous mesurons également l’origine des visites et les actions réalisées sur le site.\n\nSi vous refusez, aucun cookie analytique n’est utilisé. Une mesure limitée, sans cookie, de la page d’entrée et de la langue peut toutefois rester active. Vous pouvez aussi la désactiver dans les préférences et modifier votre choix à tout moment.',
+      'Etoilys utilise PostHog pour mesurer l’utilisation du site et améliorer ses pages, formulaires et simulateurs, ainsi qu’OpenAI Ads pour mesurer l’efficacité de ses campagnes publicitaires. Avec votre accord, nous mesurons également l’origine des visites et les actions réalisées sur le site.\n\nSi vous refusez, aucun cookie analytique ni publicitaire n’est utilisé. Une mesure limitée, sans cookie, de la page d’entrée et de la langue peut toutefois rester active. Vous pouvez aussi la désactiver dans les préférences et modifier votre choix à tout moment.',
     privacyLinkLabel: 'Politique de confidentialité',
     rejectLabel: 'Refuser',
     acceptLabel: 'Accepter',
     preferencesTitle: 'Préférences cookies',
     preferencesDescription:
-      'Le consentement détaillé et la mesure minimale après refus sont deux réglages distincts.',
+      'Le consentement détaillé, la mesure publicitaire et la mesure minimale après refus sont des réglages distincts.',
     closePreferencesLabel: 'Fermer les préférences cookies',
     detailedPurposeLabel: 'Analytics détaillés',
     detailedPurposeValue:
       'Pages consultées, acquisition, formulaires, contacts, simulateurs et conversions, uniquement après acceptation.',
+    advertisingPurposeLabel: 'Mesure publicitaire (OpenAI Ads)',
+    advertisingPurposeValue:
+      'Envoi d’un événement de conversion à OpenAI Ads uniquement lorsqu’une demande de classement est réellement envoyée avec succès, sans aucune donnée du formulaire.',
+    advertisingToggleLabel: 'Autoriser la mesure publicitaire OpenAI Ads',
+    currentAdvertisingStatusLabel: 'Consentement publicitaire',
     minimalPurposeLabel: 'Audience minimale après refus',
     minimalPurposeValue:
       'Au maximum un événement sans cookie par chargement, limité à la page d’entrée sans paramètres et à la langue. Le flag de production reste désactivé tant que les contrôles préalables ne sont pas terminés.',
@@ -45,17 +56,22 @@ const cookieConsentContent = {
     bannerAriaLabel: 'Cookie management',
     bannerTitle: 'Your privacy preferences',
     bannerText:
-      'Etoilys uses PostHog to understand how the website is used and improve its pages, forms and simulators. With your consent, we also measure where visits come from and the actions taken on the website.\n\nIf you decline, no analytics cookies will be used. A limited, cookieless measurement of the landing page and language may still remain active. You can also disable it in the preferences and change your choice at any time.',
+      'Etoilys uses PostHog to understand how the website is used and improve its pages, forms and simulators, as well as OpenAI Ads to measure the effectiveness of its advertising campaigns. With your consent, we also measure where visits come from and the actions taken on the website.\n\nIf you decline, no analytics or advertising cookies will be used. A limited, cookieless measurement of the landing page and language may still remain active. You can also disable it in the preferences and change your choice at any time.',
     privacyLinkLabel: 'Privacy policy',
     rejectLabel: 'Refuse',
     acceptLabel: 'Accept',
     preferencesTitle: 'Cookie preferences',
     preferencesDescription:
-      'Detailed consent and minimal measurement after refusal are two separate settings.',
+      'Detailed consent, advertising measurement and minimal measurement after refusal are separate settings.',
     closePreferencesLabel: 'Close cookie preferences',
     detailedPurposeLabel: 'Detailed analytics',
     detailedPurposeValue:
       'Viewed pages, acquisition, forms, contact links, simulators and conversions, only after acceptance.',
+    advertisingPurposeLabel: 'Advertising measurement (OpenAI Ads)',
+    advertisingPurposeValue:
+      'Sends a conversion event to OpenAI Ads only when a classification request is actually submitted successfully, without any form data.',
+    advertisingToggleLabel: 'Allow OpenAI Ads advertising measurement',
+    currentAdvertisingStatusLabel: 'Advertising consent',
     minimalPurposeLabel: 'Minimal audience measurement after refusal',
     minimalPurposeValue:
       'At most one cookieless event per page load, limited to the landing page without parameters and the language. The production flag remains disabled until the prerequisite checks are complete.',
@@ -72,17 +88,22 @@ const cookieConsentContent = {
     bannerAriaLabel: 'Cookiebeheer',
     bannerTitle: 'Uw privacyvoorkeuren',
     bannerText:
-      'Etoilys gebruikt PostHog om te begrijpen hoe de website wordt gebruikt en om pagina’s, formulieren en diensten te verbeteren. Met uw toestemming meten wij ook waar bezoeken vandaan komen en welke acties op de website worden uitgevoerd.\n\nAls u weigert, worden er geen analytische cookies gebruikt. Een beperkte meting zonder cookies van de landingspagina en de taal kan wel actief blijven. U kunt die ook uitschakelen in de voorkeuren en uw keuze op elk moment wijzigen.',
+      'Etoilys gebruikt PostHog om te begrijpen hoe de website wordt gebruikt en om pagina’s, formulieren en diensten te verbeteren, evenals OpenAI Ads om de effectiviteit van advertentiecampagnes te meten. Met uw toestemming meten wij ook waar bezoeken vandaan komen en welke acties op de website worden uitgevoerd.\n\nAls u weigert, worden er geen analytische of advertentiecookies gebruikt. Een beperkte meting zonder cookies van de landingspagina en de taal kan wel actief blijven. U kunt die ook uitschakelen in de voorkeuren en uw keuze op elk moment wijzigen.',
     privacyLinkLabel: 'Privacybeleid',
     rejectLabel: 'Weigeren',
     acceptLabel: 'Accepteren',
     preferencesTitle: 'Cookievoorkeuren',
     preferencesDescription:
-      'Gedetailleerde toestemming en minimale meting na weigering zijn twee aparte instellingen.',
+      'Gedetailleerde toestemming, advertentiemeting en minimale meting na weigering zijn aparte instellingen.',
     closePreferencesLabel: 'Cookievoorkeuren sluiten',
     detailedPurposeLabel: 'Gedetailleerde analytics',
     detailedPurposeValue:
       'Bekeken pagina’s, acquisitie, formulieren, contactlinks, simulatoren en conversies, alleen na acceptatie.',
+    advertisingPurposeLabel: 'Advertentiemeting (OpenAI Ads)',
+    advertisingPurposeValue:
+      'Verzendt een conversiegebeurtenis naar OpenAI Ads alleen wanneer een classificatieaanvraag daadwerkelijk succesvol is verzonden, zonder gegevens uit het formulier.',
+    advertisingToggleLabel: 'Advertentiemeting via OpenAI Ads toestaan',
+    currentAdvertisingStatusLabel: 'Advertentietoestemming',
     minimalPurposeLabel: 'Minimale bezoekersmeting na weigering',
     minimalPurposeValue:
       'Maximaal één gebeurtenis zonder cookie per paginaweergave, beperkt tot de landingspagina zonder parameters en de taal. Deze beperkte meting kan afzonderlijk worden uitgeschakeld in de cookievoorkeuren.',
@@ -109,12 +130,16 @@ const cookieConsentContent = {
     closePreferencesLabel: string;
     detailedPurposeLabel: string;
     detailedPurposeValue: string;
+    advertisingPurposeLabel: string;
+    advertisingPurposeValue: string;
+    advertisingToggleLabel: string;
+    currentAdvertisingStatusLabel: string;
     minimalPurposeLabel: string;
     minimalPurposeValue: string;
     minimalToggleLabel: string;
     toolLabel: string;
     currentStatusLabel: string;
-    statusLabels: Record<AnalyticsConsent | 'unset', string>;
+    statusLabels: Record<AnalyticsConsent | AdvertisingConsent | 'unset', string>;
   }
 >;
 
@@ -135,29 +160,46 @@ export default function CookieConsentManager() {
   const [consentStatus, setConsentStatus] = useState<AnalyticsConsent | null>(() =>
     getAnalyticsConsentStatus()
   );
+  const [advertisingConsentStatus, setAdvertisingConsentStatus] =
+    useState<AdvertisingConsent | null>(() => getAdvertisingConsentStatus());
   const [isMinimalAudienceEnabled, setIsMinimalAudienceEnabled] = useState(() =>
     isCookielessAudienceMeasurementEnabled()
   );
   const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
   const bannerRef = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
-  const showInitialBanner = consentStatus === null && !isPreferencesOpen;
+  const showInitialBanner =
+    (consentStatus === null || advertisingConsentStatus === null) && !isPreferencesOpen;
 
   const refreshPreferences = useCallback(() => {
     setConsentStatus(getAnalyticsConsentStatus());
+    setAdvertisingConsentStatus(getAdvertisingConsentStatus());
     setIsMinimalAudienceEnabled(isCookielessAudienceMeasurementEnabled());
   }, []);
 
   const handleAccept = useCallback(() => {
     acceptAnalyticsConsent();
+    acceptAdvertisingConsent();
     setConsentStatus('accepted');
+    setAdvertisingConsentStatus('accepted');
     setIsPreferencesOpen(false);
   }, []);
 
   const handleReject = useCallback(() => {
     rejectAnalyticsConsent();
+    refuseAdvertisingConsent();
     setConsentStatus('refused');
+    setAdvertisingConsentStatus('refused');
     setIsPreferencesOpen(false);
+  }, []);
+
+  const handleAdvertisingConsentChange = useCallback((enabled: boolean) => {
+    if (enabled) {
+      acceptAdvertisingConsent();
+    } else {
+      refuseAdvertisingConsent();
+    }
+    setAdvertisingConsentStatus(enabled ? 'accepted' : 'refused');
   }, []);
 
   const handleMinimalAudienceChange = useCallback((enabled: boolean) => {
@@ -307,6 +349,25 @@ export default function CookieConsentManager() {
                   {content.currentStatusLabel} :{' '}
                   {getStatusLabel(consentStatus, content.statusLabels)}
                 </p>
+                <p className="mt-1 text-textLight">{content.toolLabel} : PostHog</p>
+              </div>
+              <div className="border-t border-gray-200 pt-4">
+                <p className="font-medium text-gray-900">{content.advertisingPurposeLabel}</p>
+                <p className="mt-1 text-textLight">{content.advertisingPurposeValue}</p>
+                <label className="mt-3 flex cursor-pointer items-start gap-3 text-gray-800">
+                  <input
+                    type="checkbox"
+                    checked={advertisingConsentStatus === 'accepted'}
+                    onChange={(event) => handleAdvertisingConsentChange(event.target.checked)}
+                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary-400 focus:ring-primary-300"
+                  />
+                  <span>{content.advertisingToggleLabel}</span>
+                </label>
+                <p className="mt-2 text-textLight">
+                  {content.currentAdvertisingStatusLabel} :{' '}
+                  {getStatusLabel(advertisingConsentStatus, content.statusLabels)}
+                </p>
+                <p className="mt-1 text-textLight">{content.toolLabel} : OpenAI Ads</p>
               </div>
               <div className="border-t border-gray-200 pt-4">
                 <p className="font-medium text-gray-900">{content.minimalPurposeLabel}</p>
@@ -321,9 +382,6 @@ export default function CookieConsentManager() {
                   <span>{content.minimalToggleLabel}</span>
                 </label>
               </div>
-              <p className="border-t border-gray-200 pt-4 text-textLight">
-                {content.toolLabel} : PostHog
-              </p>
             </div>
 
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">

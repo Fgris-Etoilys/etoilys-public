@@ -85,3 +85,5 @@ Les chemins dynamiques de classement sont normalisés en `/simulateur/:simulatio
 Les vues « Audience minimale » utilisent exclusivement `audience_landed`, `landing_page` et `locale`. Les vues « Acquisition consentie » utilisent exclusivement les événements consentis et leurs propriétés de session. Il est interdit de diviser des conversions consenties par l’audience cookieless pour produire un taux de conversion.
 
 La procédure d’activation et les contrôles externes sont détaillés dans [Mesure GEO/AEO](../seo/geo-aeo/geo-aeo-measurement.md).
+
+La mesure de conversion publicitaire OpenAI Ads (`lead_created`) est un système entièrement séparé, sans lien de code ni de storage avec ce contrat : voir le [contrat de mesure OpenAI Ads](openai-ads-pixel-contract.md).
