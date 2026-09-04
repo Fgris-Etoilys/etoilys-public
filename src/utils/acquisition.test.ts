@@ -126,6 +126,23 @@ describe('acquisition', () => {
     ).toMatchObject({ acquisition_channel: 'social', acquisition_source: 'linkedin' });
   });
 
+  it('classifies chatgpt_ads + cpc as paid_search, not generative_ai (OpenAI Ads campaign traffic)', () => {
+    expect(
+      classifyConsentedAcquisition({
+        landingPage: '/demande-classement',
+        locale: 'fr',
+        utmSource: 'chatgpt_ads',
+        utmMedium: 'cpc',
+        initialReferrer: null,
+      })
+    ).toEqual({
+      acquisition_channel: 'paid_search',
+      acquisition_source: 'chatgpt_ads',
+      landing_page: '/demande-classement',
+      locale: 'fr',
+    });
+  });
+
   it('classifies empty and internal referrers as direct', () => {
     for (const initialReferrer of [null, 'https://www.etoilys.fr/classement']) {
       expect(

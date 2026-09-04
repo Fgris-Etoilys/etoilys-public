@@ -18,6 +18,7 @@ import {
   trackFormSubmitSucceeded,
   trackFormValidationFailed,
 } from '../../utils/analytics';
+import { trackLeadCreatedConversion } from '../../utils/openAiAds';
 import {
   formContent,
   getLocalizedApiErrorMessage,
@@ -197,6 +198,11 @@ export default function DemandeClassementForm({
     }
 
     trackFormSubmitSucceeded('demande_classement');
+    try {
+      trackLeadCreatedConversion();
+    } catch {
+      // OpenAI Ads ne doit jamais empêcher l'affichage du succès métier.
+    }
     setIsSuccess(true);
     setFormData({
       nom: '',

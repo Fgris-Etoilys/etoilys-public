@@ -4,6 +4,14 @@ import { MemoryRouter } from 'react-router-dom';
 import ContactForm from '../components/forms/ContactForm';
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
 
+const openAiAdsMock = vi.hoisted(() => ({
+  trackLeadCreatedConversion: vi.fn(),
+}));
+
+vi.mock('../utils/openAiAds', () => ({
+  trackLeadCreatedConversion: openAiAdsMock.trackLeadCreatedConversion,
+}));
+
 let turnstileCallback: ((token: string) => void) | null = null;
 const resetTurnstile = vi.fn();
 const removeTurnstile = vi.fn();
@@ -62,6 +70,7 @@ describe('localized form submissions', () => {
     renderTurnstile.mockClear();
     resetTurnstile.mockClear();
     removeTurnstile.mockClear();
+    openAiAdsMock.trackLeadCreatedConversion.mockReset();
     turnstileCallback = null;
     vi.stubEnv('VITE_TURNSTILE_SITE_KEY', 'site-key');
     window.turnstile = {
@@ -494,5 +503,179 @@ describe('localized form submissions', () => {
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(2));
     expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'second-turnstile-token' });
+  });
+
+  it('triggers the OpenAI Ads lead_created conversion only after a confirmed classification request success', async () => {
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Doe');
+    fillInput(/^prénom/i, 'Jane');
+    fillInput(/^email/i, 'jane@example.com');
+    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
+    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
+    fillTextarea('message', 'Classement');
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
+    await waitFor(() => expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText(/envoyée avec succès/i)).toBeVisible();
+  });
+
+  it('does not trigger the OpenAI Ads conversion on frontend validation failure', async () => {
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    // No fields filled in and no Turnstile token provided: submit should be blocked before any API call.
+    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
+  });
+
+  it('does not trigger the OpenAI Ads conversion on a network error', async () => {
+    vi.mocked(globalThis.fetch).mockRejectedValueOnce(new Error('network down'));
+
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Doe');
+    fillInput(/^prénom/i, 'Jane');
+    fillInput(/^email/i, 'jane@example.com');
+    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
+    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
+    fillTextarea('message', 'Classement');
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
+    expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
+  });
+
+  it('does not trigger the OpenAI Ads conversion on an HTTP error response', async () => {
+    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+      new Response(JSON.stringify({ success: false, error: 'Erreur serveur.' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
+
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Doe');
+    fillInput(/^prénom/i, 'Jane');
+    fillInput(/^email/i, 'jane@example.com');
+    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
+    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
+    fillTextarea('message', 'Classement');
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
+    expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
+  });
+
+  it('does not trigger the OpenAI Ads conversion when the API reports a business failure', async () => {
+    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          success: false,
+          error: 'Envoi impossible.',
+          errorCode: 'NOTIFICATION_FAILED',
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    );
+
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Doe');
+    fillInput(/^prénom/i, 'Jane');
+    fillInput(/^email/i, 'jane@example.com');
+    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
+    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
+    fillTextarea('message', 'Classement');
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
+
+    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
+    expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
+  });
+
+  it('still shows the business success state and resets the form even if the OpenAI Ads helper throws', async () => {
+    openAiAdsMock.trackLeadCreatedConversion.mockImplementation(() => {
+      throw new Error('OpenAI Ads SDK exploded');
+    });
+
+    render(
+      <MemoryRouter>
+        <DemandeClassementForm locale="fr" />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+    act(() => {
+      turnstileCallback?.('turnstile-token');
+    });
+
+    fillInput(/^nom/i, 'Doe');
+    fillInput(/^prénom/i, 'Jane');
+    fillInput(/^email/i, 'jane@example.com');
+    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
+    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
+    fillTextarea('message', 'Classement');
+    fireEvent.click(screen.getByRole('checkbox'));
+    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
+
+    await waitFor(() => expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText(/envoyée avec succès/i)).toBeVisible();
+
+    const nameInput = screen.getByLabelText(/^nom/i) as HTMLInputElement;
+    expect(nameInput.value).toBe('');
   });
 });

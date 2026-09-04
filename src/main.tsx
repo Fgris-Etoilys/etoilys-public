@@ -3,8 +3,10 @@ import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 import { initializeAnalytics } from './utils/analytics';
+import { initOpenAiAdsPixelIfConsented } from './utils/openAiAds';
 
 initializeAnalytics();
+initOpenAiAdsPixelIfConsented();
 
 const rootElement = document.getElementById('root')!;
 const app = (

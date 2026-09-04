@@ -243,10 +243,15 @@ export default function Confidentialite() {
                     l&apos;audience, de l&apos;acquisition et des parcours après consentement, ou
                     pour une mesure minimale facultative sans cookie après un refus explicite.
                   </li>
+                  <li>
+                    <strong className="text-gray-700">OpenAI Ads</strong> pour mesurer, avec votre
+                    accord distinct, si une demande de classement fait suite à une publicité Etoilys
+                    diffusée sur ChatGPT.
+                  </li>
                 </ul>
                 <p className="mb-3">
-                  ETOILYS ne transmet volontairement à PostHog ni nom, ni adresse e-mail, ni numéro
-                  de téléphone, ni adresse postale, ni contenu de message saisi dans les
+                  ETOILYS ne transmet volontairement à PostHog ni à OpenAI Ads aucun nom, adresse
+                  e-mail, numéro de téléphone, adresse postale, ni contenu de message saisi dans les
                   formulaires.
                 </p>
                 <p>ETOILYS ne vend pas vos données personnelles à des tiers.</p>
@@ -396,6 +401,20 @@ export default function Confidentialite() {
                   analytics persistants peuvent mesurer les pages consultées, l&apos;acquisition,
                   les formulaires, les contacts, les simulateurs et les conversions. Le choix est
                   conservé au maximum 6 mois.
+                </p>
+                <p className="mb-3">
+                  Avec votre accord distinct pour la mesure publicitaire, un pixel de mesure OpenAI
+                  Ads peut être chargé afin de mesurer si une demande de classement fait suite à une
+                  publicité Etoilys diffusée sur ChatGPT. Le site ne transmet explicitement aucune
+                  donnée brute saisie dans le formulaire (nom, e-mail, téléphone, adresse, message)
+                  dans cet événement de conversion, qui n&apos;est envoyé qu&apos;après confirmation
+                  réelle du succès de votre demande. Si la fonctionnalité de correspondance avancée
+                  automatique d&apos;OpenAI Ads est activée pour cette source, elle peut toutefois
+                  détecter certaines informations client prises en charge directement sur la page et
+                  les transmettre séparément à OpenAI sous une forme hachée (non lisible),
+                  indépendamment du contenu de cet événement. Ce consentement est indépendant de
+                  celui donné à PostHog et peut être retiré à tout moment dans les préférences, ce
+                  qui arrête l&apos;envoi de tout nouvel événement.
                 </p>
                 <p className="mb-3">
                   Après un refus explicite, et seulement si le réglage de production dédié est
