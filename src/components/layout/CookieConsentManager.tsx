@@ -37,7 +37,7 @@ const cookieConsentContent = {
       'Pages consultées, acquisition, formulaires, contacts, simulateurs et conversions, uniquement après acceptation.',
     advertisingPurposeLabel: 'Mesure publicitaire (OpenAI Ads)',
     advertisingPurposeValue:
-      'Envoi d’un événement de conversion à OpenAI Ads uniquement lorsqu’une demande de classement est réellement envoyée avec succès, sans aucune donnée du formulaire.',
+      'Envoi d’un événement de conversion à OpenAI Ads uniquement lorsqu’une demande de classement est réellement envoyée avec succès. Le site n’y ajoute explicitement aucune donnée brute du formulaire ; si la correspondance avancée automatique d’OpenAI Ads est active pour cette source, elle peut toutefois transmettre séparément des informations client hachées détectées sur la page.',
     advertisingToggleLabel: 'Autoriser la mesure publicitaire OpenAI Ads',
     currentAdvertisingStatusLabel: 'Consentement publicitaire',
     minimalPurposeLabel: 'Audience minimale après refus',
@@ -69,7 +69,7 @@ const cookieConsentContent = {
       'Viewed pages, acquisition, forms, contact links, simulators and conversions, only after acceptance.',
     advertisingPurposeLabel: 'Advertising measurement (OpenAI Ads)',
     advertisingPurposeValue:
-      'Sends a conversion event to OpenAI Ads only when a classification request is actually submitted successfully, without any form data.',
+      'Sends a conversion event to OpenAI Ads only when a classification request is actually submitted successfully. The site does not explicitly add any raw form data to it; OpenAI Ads’ automatic advanced matching, if active for this source, may separately send hashed customer information it detects on the page.',
     advertisingToggleLabel: 'Allow OpenAI Ads advertising measurement',
     currentAdvertisingStatusLabel: 'Advertising consent',
     minimalPurposeLabel: 'Minimal audience measurement after refusal',
@@ -101,7 +101,7 @@ const cookieConsentContent = {
       'Bekeken pagina’s, acquisitie, formulieren, contactlinks, simulatoren en conversies, alleen na acceptatie.',
     advertisingPurposeLabel: 'Advertentiemeting (OpenAI Ads)',
     advertisingPurposeValue:
-      'Verzendt een conversiegebeurtenis naar OpenAI Ads alleen wanneer een classificatieaanvraag daadwerkelijk succesvol is verzonden, zonder gegevens uit het formulier.',
+      'Verzendt een conversiegebeurtenis naar OpenAI Ads alleen wanneer een classificatieaanvraag daadwerkelijk succesvol is verzonden. De site voegt hier expliciet geen ruwe formuliergegevens aan toe; de automatische advanced matching van OpenAI Ads kan, indien actief voor deze bron, afzonderlijk gehashte klantgegevens verzenden die op de pagina worden gedetecteerd.',
     advertisingToggleLabel: 'Advertentiemeting via OpenAI Ads toestaan',
     currentAdvertisingStatusLabel: 'Advertentietoestemming',
     minimalPurposeLabel: 'Minimale bezoekersmeting na weigering',

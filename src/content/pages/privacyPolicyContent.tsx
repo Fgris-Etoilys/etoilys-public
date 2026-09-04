@@ -349,11 +349,14 @@ export const privacyPolicyContent = {
           <p className="mb-3">
             With your separate consent for advertising measurement, an OpenAI Ads measurement pixel
             may be loaded to measure whether a classification request follows an Etoilys
-            advertisement shown on ChatGPT. This conversion event contains no data entered in the
-            form (name, email, phone number, address, message) and is only sent after your request
-            has actually been confirmed as successful. This consent is independent from the one
-            given to PostHog and can be withdrawn at any time in the preferences, which stops any
-            new event from being sent.
+            advertisement shown on ChatGPT. The site does not explicitly send any raw data entered
+            in the form (name, email, phone number, address, message) in this conversion event,
+            which is only sent after your request has actually been confirmed as successful. If
+            OpenAI Ads' automatic advanced matching is enabled for this source, it may separately
+            detect certain supported customer information directly on the page and send it to OpenAI
+            in hashed (non-readable) form, independently of the content of this event. This consent
+            is independent from the one given to PostHog and can be withdrawn at any time in the
+            preferences, which stops any new event from being sent.
           </p>
           <p className="mb-3">
             After an explicit refusal, and only if the dedicated production setting is enabled, at
@@ -733,11 +736,15 @@ export const privacyPolicyContent = {
           <p className="mb-3">
             Met uw afzonderlijke toestemming voor advertentiemeting kan een OpenAI Ads-meetpixel
             worden geladen om te meten of een classificatieaanvraag volgt op een Etoilys-advertentie
-            die op ChatGPT wordt getoond. Deze conversiegebeurtenis bevat geen gegevens die in het
-            formulier zijn ingevoerd (naam, e-mail, telefoonnummer, adres, bericht) en wordt alleen
-            verzonden nadat uw aanvraag daadwerkelijk succesvol is bevestigd. Deze toestemming staat
-            los van de toestemming die aan PostHog is gegeven en kan op elk moment worden
-            ingetrokken in de voorkeuren, waardoor geen nieuwe gebeurtenis meer wordt verzonden.
+            die op ChatGPT wordt getoond. De site verzendt in deze conversiegebeurtenis expliciet
+            geen ruwe gegevens die in het formulier zijn ingevoerd (naam, e-mail, telefoonnummer,
+            adres, bericht); de gebeurtenis wordt alleen verzonden nadat uw aanvraag daadwerkelijk
+            succesvol is bevestigd. Als de automatische advanced matching van OpenAI Ads voor deze
+            bron is geactiveerd, kan deze afzonderlijk bepaalde ondersteunde klantgegevens
+            rechtstreeks op de pagina detecteren en in gehashte (niet-leesbare) vorm naar OpenAI
+            verzenden, onafhankelijk van de inhoud van deze gebeurtenis. Deze toestemming staat los
+            van de toestemming die aan PostHog is gegeven en kan op elk moment worden ingetrokken in
+            de voorkeuren, waardoor geen nieuwe gebeurtenis meer wordt verzonden.
           </p>
           <p className="mb-3">
             Na een uitdrukkelijke weigering, en alleen als de specifieke productie-instelling is
