@@ -139,13 +139,11 @@ export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
     },
   },
   serviceArea: {
-    title: 'Etoilys intervient à Bergerac et dans les communes proches',
+    title: 'Votre classement directement dans votre logement',
     intro:
-      'Etoilys organise des visites à Bergerac et dans l’ensemble du Bergeracois, notamment dans les communes suivantes :',
+      'Nos inspecteurs interviennent à Bergerac et dans le Bergeracois, sans frais de déplacement, notamment à :',
     communes: BERGERAC_SERVICE_COMMUNES,
-    outro: [
-      'Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, transmettez-nous simplement l’adresse du logement pour connaître les prochaines possibilités d’intervention.',
-    ],
+    outro: [],
     parentLink: {
       label: 'Voir l’ensemble de nos interventions en Dordogne',
       href: '/classement-meuble-tourisme-dordogne',
@@ -171,9 +169,8 @@ export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
     sourceNote: 'Tarifs 2026 de la Communauté d’agglomération Bergeracoise.',
   },
   procedure: {
-    title: 'Comment faire classer votre meublé à Bergerac ?',
-    intro:
-      'La démarche est simple : vous nous transmettez les informations principales, nous organisons la visite dans votre logement, puis Etoilys réalise le classement officiel.',
+    title: 'Votre classement en 3 étapes',
+    intro: '',
     steps: BERGERAC_PROCEDURE_STEPS,
   },
   faq: {

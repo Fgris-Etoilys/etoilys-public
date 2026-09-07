@@ -295,9 +295,9 @@ function WhyClassifySection() {
           <div className="mb-10 max-w-4xl">
             <h2 className="mb-5">Pourquoi classer votre meublé ?</h2>
             <p className="text-textLight leading-comfortable">
-              Le classement ne sert pas seulement à obtenir des étoiles. Pour un propriétaire, il
-              peut avoir des effets très concrets sur la fiscalité, la taxe de séjour et
-              l’attractivité du logement auprès des voyageurs.
+              Dans un marché de la location saisonnière de plus en plus concurrentiel, le classement
+              ne se résume pas à ses avantages fiscaux : il permet aussi de mieux différencier votre
+              logement et de renforcer son attractivité auprès des voyageurs.
             </p>
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -493,7 +493,9 @@ function ProcedureSection({
       <div className="container-adaptive">
         <div className={wrapperClassName}>
           <h2 className="mb-6">{config.procedure.title}</h2>
-          <p className="mb-8 text-textLight leading-comfortable">{config.procedure.intro}</p>
+          {config.procedure.intro && (
+            <p className="mb-8 text-textLight leading-comfortable">{config.procedure.intro}</p>
+          )}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {config.procedure.steps.map((step) => (
               <Card key={step.number} hover={false} className="p-6">
