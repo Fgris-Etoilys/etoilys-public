@@ -241,7 +241,7 @@ describe('localized layout', () => {
     expectDutchMvpInternalLinksInScope(footer);
   });
 
-  it('keeps the French header and footer destinations unchanged', () => {
+  it('keeps the French header and simplified footer destinations coherent', () => {
     renderAt('/');
 
     const header = screen.getByRole('banner');
@@ -259,17 +259,14 @@ describe('localized layout', () => {
       '/recrutement'
     );
 
-    expect(within(footer).getByRole('link', { name: 'Zones d’intervention' })).toHaveAttribute(
-      'href',
-      '/zones-intervention'
-    );
-    expect(within(footer).getByRole('link', { name: 'Classement en Dordogne' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-dordogne'
-    );
     expect(
-      within(footer).getByRole('link', { name: 'Classement en Lot-et-Garonne' })
-    ).toHaveAttribute('href', '/classement-meuble-tourisme-lot-et-garonne');
+      within(footer).getByRole('link', { name: 'Toutes les zones d’intervention' })
+    ).toHaveAttribute('href', '/zones-intervention');
+    expect(within(footer).queryByRole('link', { name: /Classement en Dordogne/i })).toBeNull();
+    expect(within(footer).queryByRole('link', { name: /Classement en Gironde/i })).toBeNull();
+    expect(
+      within(footer).queryByRole('link', { name: /Classement en Lot-et-Garonne/i })
+    ).toBeNull();
     expect(within(footer).getByRole('link', { name: 'Mentions légales' })).toHaveAttribute(
       'href',
       '/mentions-legales'

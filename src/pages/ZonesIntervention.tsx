@@ -1,10 +1,12 @@
 import Button from '../components/ui/Button';
 import InterventionAreaCards from '../components/local/InterventionAreaCards';
-import { DEPARTMENT_INTERVENTION_AREAS } from '../content/localServiceAreas';
+import { groupActiveDepartmentsByRegion } from '../content/local/registry';
 
 const carteFranceExpansion = '/images/carte-france-expansion-card.webp';
 
 export default function ZonesIntervention() {
+  const departmentGroups = groupActiveDepartmentsByRegion();
+
   return (
     <>
       <section className="bg-gradient-to-br from-themePrimary-1 to-primary-300 py-16 text-white md:py-24 lg:py-28">
@@ -17,11 +19,9 @@ export default function ZonesIntervention() {
               Zones d’intervention pour le classement des meublés de tourisme
             </h1>
             <p className="max-w-3xl text-xl leading-comfortable text-white/90">
-              Etoilys réalise des visites de classement dans plusieurs secteurs de Dordogne, Gironde
-              et Lot-et-Garonne. Les zones exactes d’intervention dépendent de la localisation du
-              logement et de l’organisation des tournées. Si votre commune n’apparaît pas, vous
-              pouvez déposer une demande : les possibilités d’intervention sont confirmées avant
-              validation.
+              Etoilys réalise des visites de classement dans plusieurs départements, avec un réseau
+              d’inspecteurs qui s’étend progressivement à de nouveaux territoires. Retrouvez
+              ci-dessous les secteurs actuellement couverts.
             </p>
             <div className="mt-8 flex flex-col gap-4 sm:flex-row">
               <Button href="/demande-classement" variant="white" size="lg">
@@ -43,7 +43,19 @@ export default function ZonesIntervention() {
               </p>
             </div>
 
-            <InterventionAreaCards areas={DEPARTMENT_INTERVENTION_AREAS} />
+            <div className="space-y-12">
+              {departmentGroups.map((group) => (
+                <section key={group.region.id} aria-labelledby={`region-${group.region.id}`}>
+                  <h3
+                    id={`region-${group.region.id}`}
+                    className="mb-5 text-2xl font-playfair font-semibold text-gray-900"
+                  >
+                    {group.region.label}
+                  </h3>
+                  <InterventionAreaCards areas={group.departments} departmentHeadingLevel={4} />
+                </section>
+              ))}
+            </div>
 
             <div className="mt-10 overflow-hidden rounded-card border border-primary-200 bg-primary-100">
               <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.45fr)]">

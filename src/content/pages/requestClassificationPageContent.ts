@@ -71,7 +71,7 @@ export const requestClassificationPageContent = {
     hero: {
       title: 'Classificatie aanvragen',
       description:
-        'Dien uw aanvraag in enkele minuten in voor een vakantiewoning in Dordogne, Gironde of Lot-et-Garonne. Etoilys neemt binnen één werkdag contact met u op om de inspectievoorwaarden, het toepasselijke tarief en de eerstvolgende beschikbaarheden te bevestigen voordat u de aanvraag definitief bevestigt.',
+        'Dien uw aanvraag in enkele minuten in voor een vakantiewoning in de momenteel bediende gebieden. Etoilys neemt binnen één werkdag contact met u op om de inspectievoorwaarden, het toepasselijke tarief en de eerstvolgende beschikbaarheden te bevestigen voordat u de aanvraag definitief bevestigt.',
       phoneNote: 'U kunt ook bellen naar +33 6 49 55 15 40',
     },
     sidebar: {

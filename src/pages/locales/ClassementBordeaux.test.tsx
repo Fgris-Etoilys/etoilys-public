@@ -13,6 +13,26 @@ function getJsonLdScripts() {
   ].map((script) => JSON.parse(script.textContent ?? '{}') as Record<string, unknown>);
 }
 
+function expectHeadingSequence(expectedHeadings: Array<string | RegExp>) {
+  const headings = screen.getAllByRole('heading').map((heading) => heading.textContent ?? '');
+  let cursor = -1;
+
+  expectedHeadings.forEach((expectedHeading) => {
+    const nextIndex = headings.findIndex((heading, index) => {
+      if (index <= cursor) return false;
+      return typeof expectedHeading === 'string'
+        ? heading === expectedHeading
+        : expectedHeading.test(heading);
+    });
+
+    expect(
+      nextIndex,
+      `Missing heading after index ${cursor}: ${String(expectedHeading)}`
+    ).toBeGreaterThan(cursor);
+    cursor = nextIndex;
+  });
+}
+
 describe('ClassementBordeaux', () => {
   afterEach(() => {
     cleanup();
@@ -50,6 +70,23 @@ describe('ClassementBordeaux', () => {
       /témoignage|partenariat local|agence Etoilys à Bordeaux/i
     );
     expect(document.body).not.toHaveTextContent(/LocalBusiness/i);
+  });
+
+  it('keeps Bordeaux on the current city layout order while Bergerac migrates', () => {
+    renderBordeauxPage();
+
+    expect(screen.queryByRole('heading', { name: 'Pourquoi classer votre meublé ?' })).toBeNull();
+    expectHeadingSequence([
+      'Classement de meublé de tourisme à Bordeaux et dans la métropole',
+      'Où intervenons-nous autour de Bordeaux ?',
+      'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
+      'Avant de louer à Bordeaux, trois règles locales à vérifier',
+      'Comment faire classer votre meublé à Bordeaux ?',
+      'Combien coûte le classement d’un meublé à Bordeaux ?',
+      'Pourquoi choisir Etoilys pour votre classement à Bordeaux ?',
+      'Questions fréquentes sur le classement à Bordeaux',
+      'Vous souhaitez faire classer votre meublé à Bordeaux ?',
+    ]);
   });
 
   it('sets Bordeaux SEO metadata and hierarchical breadcrumb JSON-LD', async () => {

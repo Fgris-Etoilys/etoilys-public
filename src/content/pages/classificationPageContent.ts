@@ -167,7 +167,7 @@ export const classificationPageContent: Record<Locale, ClassificationPageContent
     localIntervention: {
       title: 'Etoilys intervient aussi localement',
       description:
-        'Etoilys intervient auprès des propriétaires de meublés de tourisme dans plusieurs secteurs du Sud-Ouest, notamment en Dordogne.',
+        'Etoilys intervient auprès des propriétaires de meublés de tourisme dans plusieurs secteurs, avec une couverture qui s’étend progressivement.',
       ctaLabel: "Voir les zones d'intervention",
       ctaHref: '/zones-intervention',
     },

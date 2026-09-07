@@ -1,10 +1,10 @@
 import type { ImageAssetKey } from './imageManifest';
-import type { LocalFaqItem, LocalProcedureStep } from './localServiceAreas';
 import {
   BERGERAC_FAQ,
   BERGERAC_PROCEDURE_STEPS,
   BERGERAC_SERVICE_COMMUNES,
-} from './localServiceAreas';
+} from './local/cities/bergerac';
+import type { LocalFaqItem, LocalProcedureStep } from './local/types';
 
 interface HeroImageCredit {
   sourceLabel: string;
@@ -58,6 +58,7 @@ interface CityFinalCtaContent {
 }
 
 export interface CityLandingPageConfig {
+  layoutVersion?: 'v3' | 'v4';
   city: string;
   areaName: string;
   hero: {
@@ -120,6 +121,7 @@ const BORDEAUX_PROCEDURE_STEPS: LocalProcedureStep[] = [
 ];
 
 export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
+  layoutVersion: 'v4',
   city: 'Bergerac',
   areaName: 'Bergeracois',
   hero: {
@@ -137,22 +139,20 @@ export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
     },
   },
   serviceArea: {
-    title: 'Etoilys intervient à Bergerac et dans les communes proches',
+    title: 'Votre classement directement dans votre logement',
     intro:
-      'Etoilys organise des visites à Bergerac et dans l’ensemble du Bergeracois, notamment dans les communes suivantes :',
+      'Nos inspecteurs interviennent à Bergerac et dans le Bergeracois, sans frais de déplacement, notamment à :',
     communes: BERGERAC_SERVICE_COMMUNES,
-    outro: [
-      'Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, transmettez-nous simplement l’adresse du logement pour connaître les prochaines possibilités d’intervention.',
-    ],
+    outro: [],
     parentLink: {
       label: 'Voir l’ensemble de nos interventions en Dordogne',
       href: '/classement-meuble-tourisme-dordogne',
     },
   },
   tax: {
-    title: 'À Bergerac, le classement peut réduire la taxe de séjour',
+    title: 'Un exemple concret à Bergerac : l’effet du classement sur la taxe de séjour',
     paragraphs: [
-      'Entre le centre historique, la Dordogne et les vignobles du Bergeracois, le secteur accueille de nombreux gîtes, maisons de vacances et appartements proposés en location saisonnière. Au-delà de ses avantages fiscaux et de la visibilité qu’il peut apporter, le classement a aussi un effet concret sur la taxe de séjour payée par vos voyageurs.',
+      'Entre le centre historique, la Dordogne et les vignobles du Bergeracois, le secteur accueille de nombreux gîtes, maisons de vacances et appartements proposés en location saisonnière. Dans ce contexte local, l’écart de taxe de séjour entre un meublé non classé et un meublé classé donne un exemple concret de l’intérêt du classement.',
       'À Bergerac, un meublé non classé relève en 2026 d’un tarif proportionnel au prix de la nuitée. Un meublé classé bénéficie au contraire d’un montant fixe par personne.',
       'Sur une réservation à 150 € la nuit hors taxe de séjour pour quatre adultes, un meublé classé 2 étoiles permet par exemple de réduire la taxe de séjour de 3,48 € par nuit.',
     ],
@@ -169,9 +169,8 @@ export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
     sourceNote: 'Tarifs 2026 de la Communauté d’agglomération Bergeracoise.',
   },
   procedure: {
-    title: 'Comment faire classer votre meublé à Bergerac ?',
-    intro:
-      'La démarche est simple : vous nous transmettez les informations principales, nous organisons la visite dans votre logement, puis Etoilys réalise le classement officiel.',
+    title: 'Votre classement en 3 étapes',
+    intro: '',
     steps: BERGERAC_PROCEDURE_STEPS,
   },
   faq: {

@@ -324,7 +324,7 @@ export const homePageContent = {
       imageAlt: 'Terras met zwembad bij een Franse vakantiewoning',
       title: 'Officiële classificatie van uw vakantiewoning in Frankrijk',
       description:
-        'Etoilys begeleidt u in Dordogne, Gironde en Lot-et-Garonne bij het verkrijgen van de officiële sterrenclassificatie van uw vakantiewoning, juridisch aangeduid als een “meublé de tourisme” in Frankrijk.',
+        'Etoilys begeleidt u in de momenteel bediende gebieden bij het verkrijgen van de officiële sterrenclassificatie van uw vakantiewoning, juridisch aangeduid als een “meublé de tourisme” in Frankrijk.',
       primaryCta: {
         label: 'Classificatie aanvragen',
         href: '/nl/classificatie-aanvragen',
