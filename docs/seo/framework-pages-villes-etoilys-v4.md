@@ -327,6 +327,18 @@ Le bloc local principal est déplacé vers le bas de la page, **après `Pourquoi
 
 Son rôle n’est plus de présenter la taxe de séjour comme un bénéfice générique — ce rôle est déjà assuré par le bloc `Pourquoi classer votre meublé ?`.
 
+La structure CRO et les arguments principaux sont communs aux pages villes, mais ce bloc de preuve locale ne doit pas être standardisé à outrance. Il fait partie des emplacements privilégiés pour donner une vraie personnalité locale à la landing page, à condition que cette singularité serve la compréhension ou la conversion.
+
+Il peut notamment partir :
+
+- du contexte touristique local ;
+- de la densité ou de la concurrence de l’offre lorsqu’elle est pertinente ;
+- d’une caractéristique propre au territoire ;
+- d’un angle éditorial spécifique à la ville ;
+- puis relier ce contexte à une preuve concrète, par exemple la taxe de séjour.
+
+Le but n’est pas d’ajouter du texte SEO décoratif. La singularité locale doit aider le propriétaire à comprendre pourquoi le classement peut avoir un intérêt dans son secteur.
+
 Il doit devenir une **preuve locale concrète** :
 
 - règle ou barème réellement applicable au territoire ;
@@ -341,6 +353,10 @@ L’angle éditorial recommandé est :
 
 Éviter de répéter mot pour mot les explications générales du bloc `Pourquoi classer`.
 
+Bon exemple pour Bordeaux : partir du contexte d’une ville attractive, d’un marché de locations saisonnières dense et du besoin de mieux se différencier, puis faire la transition vers l’effet concret du classement sur la taxe de séjour avec les chiffres locaux.
+
+Lors d’une migration d’une page existante, une bonne copy locale déjà présente ne doit pas être remplacée mécaniquement par une copy générique V4. Il faut conserver sa valeur locale et seulement supprimer les répétitions devenues inutiles avec les nouveaux blocs communs.
+
 Si la donnée locale n’est pas fiable ou n’apporte pas de valeur réelle, le module doit pouvoir être simplifié ou absent plutôt que rempli artificiellement.
 
 ### 4.8 Règle locale exceptionnelle éventuelle
@@ -349,8 +365,8 @@ Une règle locale particulière peut être affichée uniquement si elle influenc
 
 Par défaut :
 
-- si elle est critique pour savoir si le propriétaire peut exploiter le logement, elle peut être placée après la zone d’intervention ou au moment où elle devient utile ;
-- si elle est informative mais non bloquante, la conserver près du bloc local différenciant ou dans la FAQ ;
+- si elle est réellement bloquante pour la décision de classement ou l’organisation de la visite, elle peut être placée après la zone d’intervention ou au moment où elle devient utile ;
+- si elle est informative, réglementaire ou périphérique à la démarche de classement, la conserver dans la partie basse avec la preuve ou l’information locale, avant la FAQ ;
 - ne pas casser le parcours de conversion avec un gros encadré administratif sans nécessité.
 
 ### 4.9 FAQ locale
@@ -411,7 +427,7 @@ Ne pas alterner arbitrairement `max-w-5xl` et `max-w-6xl` entre les H2 principau
 
 Conserver une règle verticale commune de type `py-section`. Ne pas corriger les espacements en ajoutant des marges spécifiques différentes à chaque bloc.
 
-Si un module local critique est ajouté — par exemple un warning réglementaire à Bordeaux — l’intégrer sans casser le rythme général. Éviter notamment deux grandes sections blanches successives uniquement à cause d’un module facultatif ; préférer un encadré compact ou une composition intégrée à la section logique.
+Si un module local critique est ajouté, l’intégrer sans casser le rythme général. Un warning réellement bloquant pour la décision de classement peut rester haut dans la page ; une information réglementaire locale périphérique à la démarche de classement doit plutôt être rattachée à la partie basse, avec la preuve ou l’information locale, avant la FAQ. Éviter notamment deux grandes sections blanches successives uniquement à cause d’un module facultatif ; préférer un encadré compact ou une composition intégrée à la section logique.
 
 ### 4.13 Économie éditoriale
 
@@ -1006,8 +1022,8 @@ Lors de sa migration :
 - conserver son hero, son image, son SEO et son maillage local s’ils restent valides ;
 - conserver ses données de taxe de séjour déjà publiées si elles sont toujours exactes ;
 - conserver son bloc de règles locales, car il apporte une vraie information décisionnelle ;
-- placer ce bloc de règles juste après la zone d’intervention ;
-- l’intégrer visuellement sans casser l’alternance et la hiérarchie V4 ;
+- placer ce bloc de règles après le bloc taxe de séjour et juste avant la FAQ ;
+- l’intégrer visuellement comme une information locale basse de page, sur le même fond que la taxe de séjour, sans casser l’alternance et la hiérarchie V4 ;
 - appliquer la copy commune de Bergerac V4 aux blocs génériques ;
 - passer la procédure à `Votre classement en 3 étapes` sans intro ;
 - passer la zone au modèle `Votre classement directement dans votre logement` ;
@@ -1191,6 +1207,7 @@ Hero
 → Votre classement en 3 étapes
 → Pourquoi Etoilys ?
 → Preuve locale / taxe de séjour
+→ Règle locale informative éventuelle
 → FAQ
 → CTA final
 ```

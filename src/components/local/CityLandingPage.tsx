@@ -174,6 +174,9 @@ interface CityLandingPageProps {
 
 export default function CityLandingPage({ config }: CityLandingPageProps) {
   const variant: CityLandingPageVariant = config.layoutVersion ?? 'v3';
+  const localWarningPlacement = config.localWarningPlacement ?? 'afterServiceArea';
+  const hasAfterTaxLocalWarning =
+    variant === 'v4' && localWarningPlacement === 'afterTax' && config.localWarning !== undefined;
   const faqItems = config.faq.items.map((item) => ({
     ...item,
     answer: renderLocalMarkdownLinks(item.answer),
@@ -185,11 +188,16 @@ export default function CityLandingPage({ config }: CityLandingPageProps) {
         <HeroSection config={config} />
         <WhyClassifySection />
         <ServiceAreaSection config={config} variant="v4" />
-        <LocalWarningSection config={config} variant="v4" />
+        {localWarningPlacement === 'afterServiceArea' && (
+          <LocalWarningSection config={config} variant="v4" />
+        )}
         <TariffsSection city={config.city} variant="v4" />
         <ProcedureSection config={config} variant="v4" />
         <EtoilysReasonsSection city={config.city} variant="v4" />
-        <TaxSection config={config} />
+        <TaxSection config={config} hasFollowingLocalWarning={hasAfterTaxLocalWarning} />
+        {localWarningPlacement === 'afterTax' && (
+          <LocalWarningSection config={config} variant="v4" />
+        )}
         <FaqSection title={config.faq.title} items={faqItems} variant="v4" />
         <FinalCtaSection config={config} />
       </>
@@ -368,9 +376,19 @@ function ServiceAreaSection({
   );
 }
 
-function TaxSection({ config }: { config: CityLandingPageConfig }) {
+function TaxSection({
+  config,
+  hasFollowingLocalWarning = false,
+}: {
+  config: CityLandingPageConfig;
+  hasFollowingLocalWarning?: boolean;
+}) {
+  const sectionClassName = hasFollowingLocalWarning
+    ? 'bg-primary-100 pb-10 pt-section'
+    : 'bg-primary-100 py-section';
+
   return (
-    <section className="bg-primary-100 py-section">
+    <section className={sectionClassName}>
       <div className="container-adaptive">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.85fr)] lg:items-center">
           <div>
