@@ -171,24 +171,26 @@ Ce bloc doit apparaître **immédiatement après le hero**, avant le détail de 
 
 Il sert principalement les visiteurs qui ne sont pas encore totalement convaincus de l’intérêt du classement.
 
+Intro publique à utiliser :
+
+> Le classement ne sert pas seulement à obtenir des étoiles. Pour un propriétaire, il peut avoir des effets très concrets sur la fiscalité, la taxe de séjour et l’attractivité du logement auprès des voyageurs.
+
 Il doit rester court et contenir **exactement trois bénéfices principaux** :
 
 1. **Fiscalité micro-BIC** ;
 2. **Taxe de séjour** ;
-3. **Repère officiel et attractivité auprès des voyageurs**.
+3. **Gagnez en visibilité auprès des voyageurs**.
 
 #### Angle éditorial des trois bénéfices
 
 **Fiscalité micro-BIC**  
-Présenter le fait qu’un meublé classé conserve un cadre micro-BIC plus favorable qu’un meublé non classé, sans afficher dans ce bloc les seuils ou abattements chiffrés susceptibles d’évoluer. Les chiffres détaillés doivent rester sur les pages ou simulateurs dédiés.
+Au régime micro-BIC, un meublé classé bénéficie d’un plafond plus élevé et d’un abattement plus favorable qu’un meublé non classé.
 
 **Taxe de séjour**  
-Expliquer simplement que le classement fait passer le logement à un tarif lié à son nombre d’étoiles, qui peut être plus favorable que le calcul proportionnel applicable aux non-classés selon le territoire. Le détail local vient plus bas dans la page.
+Un meublé classé passe à un tarif fixe selon son nombre d’étoiles. Selon la commune, cela peut réduire sensiblement la taxe de séjour payée par vos voyageurs.
 
-**Repère officiel et attractivité auprès des voyageurs**  
-La formulation doit être plus commerciale qu’une simple description administrative. Le classement de 1 à 5 étoiles doit être présenté comme un repère officiel qui **rassure les voyageurs, valorise le logement, aide l’annonce à se démarquer et peut renforcer son attractivité commerciale**.
-
-Il est acceptable d’écrire une copy orientée conversion du type `Des étoiles qui rassurent les voyageurs et rendent votre meublé plus attractif`.
+**Gagnez en visibilité auprès des voyageurs**
+Les étoiles offrent un repère officiel reconnu, rassurent au moment de réserver et aident votre annonce à se démarquer pour attirer davantage de voyageurs.
 
 En revanche, ne pas garantir un résultat non démontrable du type `le classement vous apportera plus de réservations`, `augmente automatiquement votre taux d’occupation` ou toute promesse chiffrée sans preuve.
 

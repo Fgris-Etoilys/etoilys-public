@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import App from '../../App';
+import CityLandingPage from '../../components/local/CityLandingPage';
+import { BERGERAC_CITY_LANDING_PAGE } from '../../content/cityLandingPages';
 
 function renderBergeracPage() {
   window.history.pushState({}, 'Bergerac', '/classement-meuble-tourisme-bergerac');
@@ -31,6 +34,19 @@ function expectHeadingSequence(expectedHeadings: Array<string | RegExp>) {
     ).toBeGreaterThan(cursor);
     cursor = nextIndex;
   });
+}
+
+function expectHeadingSectionClass(headingName: string | RegExp, className: string | RegExp) {
+  const heading = screen.getByRole('heading', { name: headingName });
+  const section = heading.closest('section');
+
+  expect(section).not.toBeNull();
+  if (typeof className === 'string') {
+    expect(section).toHaveClass(className);
+    return;
+  }
+
+  expect(section?.className).toEqual(expect.stringMatching(className));
 }
 
 describe('ClassementBergerac', () => {
@@ -83,11 +99,58 @@ describe('ClassementBergerac', () => {
     expect(screen.getByRole('heading', { name: 'Fiscalité micro-BIC' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Taxe de séjour' })).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', { name: 'Repère officiel et attractivité' })
+      screen.getByRole('heading', { name: 'Gagnez en visibilité auprès des voyageurs' })
     ).toBeInTheDocument();
     expect(
       screen.queryByRole('heading', { name: /cotisations sociales/i })
     ).not.toBeInTheDocument();
+  });
+
+  it('keeps the V4 background alternation by section', () => {
+    renderBergeracPage();
+
+    expectHeadingSectionClass('Pourquoi classer votre meublé ?', 'bg-white');
+    expectHeadingSectionClass(
+      'Etoilys intervient à Bergerac et dans les communes proches',
+      'bg-primary-100'
+    );
+    expectHeadingSectionClass('Combien coûte le classement d’un meublé à Bergerac ?', 'bg-white');
+    expectHeadingSectionClass('Comment faire classer votre meublé à Bergerac ?', 'bg-primary-100');
+    expectHeadingSectionClass(
+      'Pourquoi choisir Etoilys pour votre classement à Bergerac ?',
+      'bg-white'
+    );
+    expectHeadingSectionClass(
+      'Un exemple concret à Bergerac : l’effet du classement sur la taxe de séjour',
+      'bg-primary-100'
+    );
+    expectHeadingSectionClass('Questions fréquentes sur le classement à Bergerac', 'bg-white');
+    expectHeadingSectionClass('Vous souhaitez faire classer votre meublé à Bergerac ?', /from-/);
+  });
+
+  it('keeps optional local warnings available in the V4 renderer', () => {
+    render(
+      <MemoryRouter>
+        <CityLandingPage
+          config={{
+            ...BERGERAC_CITY_LANDING_PAGE,
+            localWarning: {
+              title: 'Règles locales à vérifier',
+              intro: 'Avant publication, contrôlez les règles applicables.',
+              items: ['Déclaration en mairie', 'Numéro d’enregistrement'],
+              conclusion: 'Ces obligations dépendent de la commune.',
+            },
+          }}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('heading', { name: 'Règles locales à vérifier' })).toBeInTheDocument();
+    expectHeadingSequence([
+      'Etoilys intervient à Bergerac et dans les communes proches',
+      'Règles locales à vérifier',
+      'Combien coûte le classement d’un meublé à Bergerac ?',
+    ]);
   });
 
   it('keeps Bergerac local data, tariffs, tax comparison and V4 Etoilys reasons', () => {

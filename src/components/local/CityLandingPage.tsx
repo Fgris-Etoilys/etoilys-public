@@ -82,19 +82,19 @@ const cityClassificationBenefits: ReasonCard[] = [
     icon: Euro,
     title: 'Fiscalité micro-BIC',
     description:
-      'Un meublé classé conserve un cadre micro-BIC plus favorable qu’un meublé non classé. Les seuils et abattements détaillés restent à vérifier sur les pages et simulateurs dédiés.',
+      'Au régime micro-BIC, un meublé classé bénéficie d’un plafond plus élevé et d’un abattement plus favorable qu’un meublé non classé.',
   },
   {
     icon: FileCheck,
     title: 'Taxe de séjour',
     description:
-      'Le classement fait passer le logement à un tarif lié au nombre d’étoiles, qui peut être plus favorable que le calcul proportionnel applicable aux meublés non classés selon le territoire.',
+      'Un meublé classé passe à un tarif fixe selon son nombre d’étoiles. Selon la commune, cela peut réduire sensiblement la taxe de séjour payée par vos voyageurs.',
   },
   {
     icon: Award,
-    title: 'Repère officiel et attractivité',
+    title: 'Gagnez en visibilité auprès des voyageurs',
     description:
-      'Les étoiles rassurent les voyageurs, valorisent le logement, aident l’annonce à mieux se démarquer et peuvent renforcer son attractivité auprès des voyageurs.',
+      'Les étoiles offrent un repère officiel reconnu, rassurent au moment de réserver et aident votre annonce à se démarquer pour attirer davantage de voyageurs.',
   },
 ];
 
@@ -157,13 +157,13 @@ const etoilysV4Reasons: ReasonCard[] = [
     icon: Sparkles,
     title: 'Des outils pour mieux préparer la catégorie visée',
     description:
-      'Le simulateur Etoilys vous aide à comprendre les critères de la catégorie demandée et à identifier les points à compléter avant la visite officielle, sans promettre un résultat qui dépend du logement contrôlé.',
+      'Avant la visite, le simulateur Etoilys vous permet de vérifier les principaux critères de la catégorie visée et d’identifier les points à préparer. Vous abordez ainsi la visite avec une vision beaucoup plus claire du niveau attendu.',
   },
   {
     icon: Award,
     title: '100 % spécialisés dans le classement des meublés de tourisme',
     description:
-      'Etoilys se consacre exclusivement au classement des meublés de tourisme, avec une méthode centrée sur la grille officielle et les attentes concrètes de ce type de logement.',
+      'Etoilys se consacre exclusivement au classement des meublés de tourisme. Nos inspecteurs connaissent en profondeur la réglementation, la grille officielle et les points qui font réellement la différence pour atteindre la catégorie visée.',
   },
   cofracReasonV4,
 ];
@@ -184,12 +184,13 @@ export default function CityLandingPage({ config }: CityLandingPageProps) {
       <>
         <HeroSection config={config} />
         <WhyClassifySection />
-        <ServiceAreaSection config={config} />
-        <TariffsSection city={config.city} />
-        <ProcedureSection config={config} />
+        <ServiceAreaSection config={config} variant="v4" />
+        <LocalWarningSection config={config} variant="v4" />
+        <TariffsSection city={config.city} variant="v4" />
+        <ProcedureSection config={config} variant="v4" />
         <EtoilysReasonsSection city={config.city} variant="v4" />
         <TaxSection config={config} />
-        <FaqSection title={config.faq.title} items={faqItems} />
+        <FaqSection title={config.faq.title} items={faqItems} variant="v4" />
         <FinalCtaSection config={config} />
       </>
     );
@@ -294,9 +295,9 @@ function WhyClassifySection() {
           <div className="mb-10 max-w-4xl">
             <h2 className="mb-5">Pourquoi classer votre meublé ?</h2>
             <p className="text-textLight leading-comfortable">
-              Le classement officiel apporte un repère clair pour le propriétaire comme pour les
-              voyageurs, avec des effets concrets sur la fiscalité, la taxe de séjour et la
-              présentation commerciale du logement.
+              Le classement ne sert pas seulement à obtenir des étoiles. Pour un propriétaire, il
+              peut avoir des effets très concrets sur la fiscalité, la taxe de séjour et
+              l’attractivité du logement auprès des voyageurs.
             </p>
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -316,12 +317,28 @@ function WhyClassifySection() {
   );
 }
 
-function ServiceAreaSection({ config }: { config: CityLandingPageConfig }) {
+function ServiceAreaSection({
+  config,
+  variant = 'v3',
+}: {
+  config: CityLandingPageConfig;
+  variant?: CityLandingPageVariant;
+}) {
+  const isV4 = variant === 'v4';
+  const sectionClassName = isV4 ? 'bg-primary-100 py-section' : 'bg-white py-section';
+  const wrapperClassName = isV4 ? 'mx-auto max-w-6xl' : 'mx-auto max-w-5xl';
+  const badgeClassName = isV4
+    ? 'mb-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-400 shadow-sm'
+    : 'mb-5 inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-400';
+  const communeClassName = isV4
+    ? 'rounded-full border border-primary-200 bg-white px-4 py-2 text-sm font-medium text-primary-500 shadow-sm'
+    : 'rounded-full border border-primary-200 bg-primary-100 px-4 py-2 text-sm font-medium text-primary-500';
+
   return (
-    <section className="bg-white py-section">
+    <section className={sectionClassName}>
       <div className="container-adaptive">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-400">
+        <div className={wrapperClassName}>
+          <div className={badgeClassName}>
             <MapPin className="h-4 w-4" aria-hidden="true" />
             Intervention locale
           </div>
@@ -330,10 +347,7 @@ function ServiceAreaSection({ config }: { config: CityLandingPageConfig }) {
             <p>{config.serviceArea.intro}</p>
             <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {config.serviceArea.communes.map((commune) => (
-                <li
-                  key={commune}
-                  className="rounded-full border border-primary-200 bg-primary-100 px-4 py-2 text-sm font-medium text-primary-500"
-                >
+                <li key={commune} className={communeClassName}>
                   {commune}
                 </li>
               ))}
@@ -419,15 +433,23 @@ function TaxSection({ config }: { config: CityLandingPageConfig }) {
   );
 }
 
-function LocalWarningSection({ config }: { config: CityLandingPageConfig }) {
+function LocalWarningSection({
+  config,
+  variant = 'v3',
+}: {
+  config: CityLandingPageConfig;
+  variant?: CityLandingPageVariant;
+}) {
   if (!config.localWarning) {
     return null;
   }
 
+  const wrapperClassName = variant === 'v4' ? 'mx-auto max-w-6xl' : 'mx-auto max-w-5xl';
+
   return (
     <section className="bg-white py-section">
       <div className="container-adaptive">
-        <div className="mx-auto max-w-5xl">
+        <div className={wrapperClassName}>
           <Card hover={false} className="border-warning-200 bg-warning-100 p-6 md:p-8">
             <h2 className="mb-5 text-h3">{config.localWarning.title}</h2>
             <div className="space-y-5 text-textLight leading-comfortable">
@@ -456,11 +478,20 @@ function LocalWarningSection({ config }: { config: CityLandingPageConfig }) {
   );
 }
 
-function ProcedureSection({ config }: { config: CityLandingPageConfig }) {
+function ProcedureSection({
+  config,
+  variant = 'v3',
+}: {
+  config: CityLandingPageConfig;
+  variant?: CityLandingPageVariant;
+}) {
+  const sectionClassName = variant === 'v4' ? 'bg-primary-100 py-section' : 'bg-white py-section';
+  const wrapperClassName = variant === 'v4' ? 'mx-auto max-w-6xl' : 'mx-auto max-w-5xl';
+
   return (
-    <section className="bg-white py-section">
+    <section className={sectionClassName}>
       <div className="container-adaptive">
-        <div className="mx-auto max-w-5xl">
+        <div className={wrapperClassName}>
           <h2 className="mb-6">{config.procedure.title}</h2>
           <p className="mb-8 text-textLight leading-comfortable">{config.procedure.intro}</p>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -485,12 +516,24 @@ function ProcedureSection({ config }: { config: CityLandingPageConfig }) {
   );
 }
 
-function TariffsSection({ city }: { city: string }) {
+function TariffsSection({
+  city,
+  variant = 'v3',
+}: {
+  city: string;
+  variant?: CityLandingPageVariant;
+}) {
+  const sectionClassName = variant === 'v4' ? 'bg-white py-section' : 'bg-primary-100 py-section';
+  const badgeClassName =
+    variant === 'v4'
+      ? 'mb-5 inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-400'
+      : 'mb-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-400';
+
   return (
-    <section className="bg-primary-100 py-section">
+    <section className={sectionClassName}>
       <div className="container-adaptive">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-primary-400">
+          <div className={badgeClassName}>
             <Euro className="h-4 w-4" aria-hidden="true" />
             Tarifs
           </div>
@@ -621,12 +664,16 @@ function ReasonIcon({ reason, className }: { reason: ReasonCard; className: stri
 function FaqSection({
   title,
   items,
+  variant = 'v3',
 }: {
   title: string;
   items: { question: string; answer: ReactNode }[];
+  variant?: CityLandingPageVariant;
 }) {
+  const sectionClassName = variant === 'v4' ? 'bg-white py-section' : 'bg-primary-100 py-section';
+
   return (
-    <section className="bg-primary-100 py-section">
+    <section className={sectionClassName}>
       <div className="container-adaptive">
         <div className="mx-auto max-w-4xl">
           <h2 className="mb-8 text-center">{title}</h2>
