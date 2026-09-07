@@ -323,7 +323,7 @@ Ces éléments sont déjà traités dans le hero et ne sont pas les vrais diffé
 
 ### 4.7 Bloc local différenciant — taxe de séjour et preuve locale
 
-Le bloc local principal est déplacé vers le bas de la page, **après `Pourquoi choisir Etoilys ?` et juste avant la FAQ**, sauf contrainte locale particulière.
+Le bloc local principal est placé dans la partie basse de la page, **après `Pourquoi choisir Etoilys ?`**. Il précède la FAQ, éventuellement suivi d’un module réglementaire local informatif lorsqu’il est pertinent, sauf contrainte locale particulière.
 
 Son rôle n’est plus de présenter la taxe de séjour comme un bénéfice générique — ce rôle est déjà assuré par le bloc `Pourquoi classer votre meublé ?`.
 
