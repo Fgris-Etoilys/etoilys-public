@@ -13,6 +13,26 @@ function getJsonLdScripts() {
   ].map((script) => JSON.parse(script.textContent ?? '{}') as Record<string, unknown>);
 }
 
+function expectHeadingSequence(expectedHeadings: Array<string | RegExp>) {
+  const headings = screen.getAllByRole('heading').map((heading) => heading.textContent ?? '');
+  let cursor = -1;
+
+  expectedHeadings.forEach((expectedHeading) => {
+    const nextIndex = headings.findIndex((heading, index) => {
+      if (index <= cursor) return false;
+      return typeof expectedHeading === 'string'
+        ? heading === expectedHeading
+        : expectedHeading.test(heading);
+    });
+
+    expect(
+      nextIndex,
+      `Missing heading after index ${cursor}: ${String(expectedHeading)}`
+    ).toBeGreaterThan(cursor);
+    cursor = nextIndex;
+  });
+}
+
 describe('ClassementBergerac', () => {
   afterEach(() => {
     cleanup();
@@ -20,7 +40,7 @@ describe('ClassementBergerac', () => {
     document.title = '';
   });
 
-  it('renders the V2 Bergerac landing page with one H1 and the existing hero image credit', () => {
+  it('keeps the Bergerac hero with one H1 and the existing image credit', () => {
     renderBergeracPage();
 
     expect(
@@ -34,11 +54,6 @@ describe('ClassementBergerac', () => {
     expect(screen.getByText('Visite en moyenne sous deux semaines')).toBeInTheDocument();
     expect(screen.getAllByText('Aucun frais de déplacement').length).toBeGreaterThan(0);
     expect(
-      screen.getByText(
-        'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Bergerac ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.'
-      )
-    ).toBeInTheDocument();
-    expect(
       screen.getByRole('link', { name: /Benjamin Smith \/ Wikimedia Commons/i })
     ).toHaveAttribute(
       'href',
@@ -50,29 +65,37 @@ describe('ClassementBergerac', () => {
     );
   });
 
-  it('renders V2 service area, tax comparison, tariffs and FAQ', () => {
+  it('renders Bergerac in the V4 section order without migrating generic city content into config', () => {
     renderBergeracPage();
 
+    expectHeadingSequence([
+      'Classement de meublé de tourisme à Bergerac et dans le Bergeracois',
+      'Pourquoi classer votre meublé ?',
+      'Etoilys intervient à Bergerac et dans les communes proches',
+      'Combien coûte le classement d’un meublé à Bergerac ?',
+      'Comment faire classer votre meublé à Bergerac ?',
+      'Pourquoi choisir Etoilys pour votre classement à Bergerac ?',
+      'Un exemple concret à Bergerac : l’effet du classement sur la taxe de séjour',
+      'Questions fréquentes sur le classement à Bergerac',
+      'Vous souhaitez faire classer votre meublé à Bergerac ?',
+    ]);
+
+    expect(screen.getByRole('heading', { name: 'Fiscalité micro-BIC' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Taxe de séjour' })).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', {
-        level: 2,
-        name: 'Etoilys intervient à Bergerac et dans les communes proches',
-      })
+      screen.getByRole('heading', { name: 'Repère officiel et attractivité' })
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: /cotisations sociales/i })
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps Bergerac local data, tariffs, tax comparison and V4 Etoilys reasons', () => {
+    renderBergeracPage();
+
     expect(screen.getByText('Eymet')).toBeInTheDocument();
     expect(screen.getByText('Lalinde')).toBeInTheDocument();
-
     expect(screen.getByText('Meublé non classé')).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Entre le centre historique, la Dordogne et les vignobles du Bergeracois, le secteur accueille de nombreux gîtes, maisons de vacances et appartements proposés en location saisonnière. Au-delà de ses avantages fiscaux et de la visibilité qu’il peut apporter, le classement a aussi un effet concret sur la taxe de séjour payée par vos voyageurs.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'À Bergerac, un meublé non classé relève en 2026 d’un tarif proportionnel au prix de la nuitée. Un meublé classé bénéficie au contraire d’un montant fixe par personne.'
-      )
-    ).toBeInTheDocument();
     expect(screen.getByText('6,60 € par nuit')).toBeInTheDocument();
     expect(screen.getByText('Meublé classé 2 étoiles')).toBeInTheDocument();
     expect(screen.getByText('3,12 € par nuit')).toBeInTheDocument();
@@ -80,9 +103,7 @@ describe('ClassementBergerac', () => {
       screen.getByText('3,48 € de taxe de séjour en moins par nuit, soit une baisse d’environ 53 %')
     ).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Pour les voyageurs, cela représente 24,36 € de taxe de séjour en moins sur une semaine.'
-      )
+      screen.getByText(/24,36 € de taxe de séjour en moins sur une semaine/i)
     ).toBeInTheDocument();
 
     expect(screen.getByText('Tarif public')).toBeInTheDocument();
@@ -94,52 +115,38 @@ describe('ClassementBergerac', () => {
     expect(screen.getAllByText('Troisième logement et suivants').length).toBeGreaterThan(0);
     expect(screen.getAllByText('160 €').length).toBeGreaterThan(0);
     expect(screen.getAllByText('100 € par logement').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('Aucun frais de déplacement').length).toBeGreaterThan(0);
+
+    expect(
+      screen.getByRole('heading', { name: 'Des outils pour mieux préparer la catégorie visée' })
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('heading', {
+        name: '100 % spécialisés dans le classement des meublés de tourisme',
+      })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Organisme accrédité Cofrac Inspection' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', {
         name: 'Des outils pour atteindre plus facilement la catégorie visée',
       })
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Avant la visite, le simulateur Etoilys vous indique précisément les critères à compléter pour la catégorie demandée. Pendant le contrôle, l’inspecteur vous explique les éventuels points bloquants, puis son compte rendu détaille les équipements, ajustements ou justificatifs encore utiles pour atteindre le classement visé.'
-      )
-    ).toBeInTheDocument();
-    expect(screen.queryByText('Pendant et après la visite')).toBeNull();
+      screen.queryByRole('heading', { name: 'Une demande en 30 secondes, sans dossier complexe' })
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByRole('heading', {
-        name: 'Une demande en 30 secondes, sans dossier complexe',
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Quelques informations essentielles suffisent pour lancer votre demande. Vous n’avez aucun dossier technique à constituer ni relevé détaillé du logement à préparer : Etoilys organise la visite et prend en charge les documents et démarches administratives du classement.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'La visite est organisée en moyenne sous deux semaines et toujours sous un mois après votre demande. La date d’intervention est fixée directement avec vous selon vos disponibilités.'
-      )
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: '100 % spécialisés dans le classement' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'Consulter la portée d’accréditation Cofrac' })
-    ).toHaveAttribute('href');
-    expect(document.body).not.toHaveTextContent(/OT de Bergerac|Tarif préférentiel/i);
-    expect(document.body).not.toHaveTextContent(
-      /recommandations|conseils|accompagnement personnalisé/i
-    );
+      screen.queryByRole('heading', { name: 'Une intervention rapide' })
+    ).not.toBeInTheDocument();
   });
 
-  it('renders expected V2 internal links without V1 public sections', () => {
+  it('renders expected V4 internal links without V1 public sections', () => {
     renderBergeracPage();
 
     const expectedLinks: Array<{ href: string; name: string | RegExp }> = [
       { href: '/classement-meuble-tourisme-dordogne', name: /interventions en Dordogne/i },
       { href: '/procedure', name: 'Découvrir la procédure complète' },
-      { href: '/les-avantages-du-classement', name: 'Comprendre les avantages du classement' },
+      { href: '/les-avantages-du-classement', name: /avantages du classement/i },
       { href: '/simulateur', name: 'Estimer la catégorie de mon logement' },
       { href: '/simulateur-taxe-sejour', name: 'Comparer la taxe de séjour de mon logement' },
       { href: '/faq', name: 'Consulter toutes les questions fréquentes' },
@@ -161,7 +168,7 @@ describe('ClassementBergerac', () => {
     expect(document.body).not.toHaveTextContent(/0,61 €|1,71 €/i);
   });
 
-  it('sets SEO metadata and hierarchical breadcrumb JSON-LD', async () => {
+  it('keeps SEO metadata and hierarchical breadcrumb JSON-LD', async () => {
     renderBergeracPage();
 
     await waitFor(() => {
