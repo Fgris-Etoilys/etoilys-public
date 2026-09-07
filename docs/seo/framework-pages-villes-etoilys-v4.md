@@ -511,7 +511,7 @@ Le composant, sa structure visuelle et les formulations génériques doivent êt
 
 Les données de taxe de séjour publiées sont des données métier sensibles. Elles doivent être fournies ou explicitement validées par Florian pendant le plan d’implémentation, comme les tarifs Etoilys. ChatGPT peut préparer les sources et le raisonnement, mais Codex ne doit pas publier un barème, un calcul ou un exemple comparatif sans validation métier explicite.
 
-Dans la V4, ce module est placé vers le bas de la landing page, juste avant la FAQ. Il doit être traité comme une **preuve locale concrète** du bénéfice taxe de séjour déjà évoqué plus haut, et non comme une deuxième explication générique du même avantage.
+Dans la V4, ce module est placé vers le bas de la landing page, avant la FAQ. Il peut être suivi d’un module réglementaire local informatif lorsqu’il est pertinent. Il doit être traité comme une **preuve locale concrète** du bénéfice taxe de séjour déjà évoqué plus haut, et non comme une deuxième explication générique du même avantage.
 
 ### 5.5 FAQ
 
