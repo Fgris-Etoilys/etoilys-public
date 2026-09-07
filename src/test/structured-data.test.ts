@@ -11,6 +11,7 @@ import {
   type JsonLdObject,
 } from '../content/structuredData';
 import { getArticleAuthor } from '../content/articleAuthors';
+import { getClassificationAreaServed } from '../content/localServiceAreas';
 
 function getGraph(data: JsonLdObject | null): JsonLdObject[] {
   expect(data).not.toBeNull();
@@ -96,7 +97,7 @@ describe('structured data graph', () => {
 
     expect(asObject(website.publisher)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
     expect(asObject(service.provider)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
-    expect(service.areaServed).toBe('Dordogne, Gironde et Lot-et-Garonne');
+    expect(service.areaServed).toBe(getClassificationAreaServed());
     expect(service.offers).toBeUndefined();
 
     expect(certification.certificationIdentification).toBe('3-2394');

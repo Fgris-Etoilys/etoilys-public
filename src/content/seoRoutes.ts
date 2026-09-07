@@ -75,17 +75,17 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
 
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-07',
     title: 'Classement officiel de meublé de tourisme',
     description:
-      'Etoilys accompagne les propriétaires de meublés de tourisme pour obtenir leur classement officiel en Dordogne, Gironde et Lot-et-Garonne.',
+      'Etoilys accompagne les propriétaires de meublés de tourisme pour obtenir leur classement officiel dans les secteurs actuellement couverts.',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
     locale: 'fr',
     routeId: 'home',
   },
   '/classement': {
-    lastModified: '2026-06-25',
+    lastModified: '2026-09-07',
     title: 'Classement des meublés de tourisme : principe, avantages et procédure',
     description:
       'Comprendre le classement officiel des meublés de tourisme : étoiles, durée de validité, organisme accrédité, visite et critères à vérifier.',
@@ -122,10 +122,10 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'procedure',
   },
   '/zones-intervention': {
-    lastModified: '2026-06-24',
+    lastModified: '2026-09-07',
     title: 'Zones d’intervention pour le classement des meublés de tourisme',
     description:
-      'Découvrez les zones où Etoilys intervient pour le classement des meublés de tourisme, notamment en Dordogne, Gironde et Lot-et-Garonne.',
+      'Découvrez les secteurs actuellement couverts par Etoilys pour les visites de classement des meublés de tourisme.',
     breadcrumbLabel: 'Zones d’intervention',
   },
   '/classement-meuble-tourisme-dordogne': {
@@ -433,10 +433,10 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'confidentialite',
   },
   '/nl': {
-    lastModified: '2026-07-11',
+    lastModified: '2026-09-07',
     title: 'Vakantiewoning classificeren in Frankrijk',
     description:
-      'Etoilys begeleidt eigenaars in Dordogne, Gironde en Lot-et-Garonne bij de officiële sterrenclassificatie van hun Franse vakantiewoning.',
+      'Etoilys begeleidt eigenaars bij de officiële sterrenclassificatie van hun Franse vakantiewoning in de momenteel bediende gebieden.',
     breadcrumbLabel: 'Home',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
@@ -490,7 +490,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'faq',
   },
   '/nl/contact': {
-    lastModified: '2026-07-11',
+    lastModified: '2026-09-07',
     title: 'Contact',
     description:
       'Contactgegevens en formulier voor vragen over Etoilys en de Franse classificatieprocedure voor vakantiewoningen.',
@@ -499,7 +499,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/nl/classificatie-aanvragen': {
-    lastModified: '2026-07-11',
+    lastModified: '2026-09-07',
     title: 'Classificatie aanvragen',
     description:
       'Dien in enkele minuten uw aanvraag in voor de officiële classificatie van uw Franse vakantiewoning.',

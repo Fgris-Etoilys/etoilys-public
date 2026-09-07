@@ -8,6 +8,9 @@ const dordogneArea: DepartmentInterventionArea = {
   id: 'dordogne',
   name: 'Dordogne',
   path: '/classement-meuble-tourisme-dordogne',
+  regionId: 'nouvelle-aquitaine',
+  status: 'published',
+  displayOrder: 10,
   description: 'Page départementale Dordogne.',
   localPages: [
     {
@@ -22,6 +25,9 @@ const girondeArea: DepartmentInterventionArea = {
   id: 'gironde',
   name: 'Gironde',
   path: '/classement-meuble-tourisme-gironde',
+  regionId: 'nouvelle-aquitaine',
+  status: 'published',
+  displayOrder: 20,
   description: 'Page départementale Gironde.',
   localPages: [],
 };
@@ -30,6 +36,9 @@ const lotEtGaronneArea: DepartmentInterventionArea = {
   id: 'lot-et-garonne',
   name: 'Lot-et-Garonne',
   path: '/classement-meuble-tourisme-lot-et-garonne',
+  regionId: 'nouvelle-aquitaine',
+  status: 'published',
+  displayOrder: 30,
   description: 'Page départementale Lot-et-Garonne.',
   localPages: [
     {
@@ -56,6 +65,29 @@ const lotEtGaronneArea: DepartmentInterventionArea = {
 };
 
 const fixtureAreas = [dordogneArea, girondeArea, lotEtGaronneArea];
+const fiveDepartmentFixture: DepartmentInterventionArea[] = [
+  ...fixtureAreas,
+  {
+    id: 'lot' as DepartmentInterventionArea['id'],
+    name: 'Lot',
+    path: '/classement-meuble-tourisme-lot',
+    regionId: 'occitanie',
+    status: 'published',
+    displayOrder: 40,
+    description: 'Page départementale Lot.',
+    localPages: [],
+  },
+  {
+    id: 'aveyron' as DepartmentInterventionArea['id'],
+    name: 'Aveyron',
+    path: '/classement-meuble-tourisme-aveyron',
+    regionId: 'occitanie',
+    status: 'published',
+    displayOrder: 50,
+    description: 'Page départementale Aveyron.',
+    localPages: [],
+  },
+];
 
 function renderCards(areas: DepartmentInterventionArea[]) {
   return render(
@@ -114,5 +146,19 @@ describe('InterventionAreaCards', () => {
     expect(screen.queryByRole('link', { name: 'Nérac et l’Albret →' })).not.toBeInTheDocument();
     expect(girondeCard).toBeDefined();
     expect(within(girondeCard as HTMLElement).queryByText('Pages locales')).not.toBeInTheDocument();
+  });
+
+  it('renders five department cards without dropping department links', () => {
+    renderCards(fiveDepartmentFixture);
+
+    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(5);
+    expect(screen.getByRole('link', { name: 'Consulter la page Dordogne' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-dordogne'
+    );
+    expect(screen.getByRole('link', { name: 'Consulter la page Aveyron' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-aveyron'
+    );
   });
 });

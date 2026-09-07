@@ -4,12 +4,12 @@ import Card from '../ui/Card';
 import type { DepartmentInterventionArea } from '../../content/localServiceAreas';
 
 interface InterventionAreaCardsProps {
-  areas: DepartmentInterventionArea[];
+  areas: readonly DepartmentInterventionArea[];
 }
 
 export default function InterventionAreaCards({ areas }: InterventionAreaCardsProps) {
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       {areas.map((area) => {
         const visibleLocalPages = area.localPages.slice(0, 3);
         const singleLocalPage = visibleLocalPages[0];

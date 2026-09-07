@@ -94,6 +94,8 @@ describe('routing', () => {
   it('renders local service areas hub page', () => {
     renderAt('/zones-intervention');
     expectPageHeading(/zones d’intervention/i);
+    expect(screen.getByRole('heading', { name: 'Nouvelle-Aquitaine' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Occitanie' })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
@@ -152,7 +154,7 @@ describe('routing', () => {
     expectPageHeading(/classement/i, /lot-et-garonne/i);
   });
 
-  it('exposes service areas in classement navigation and footer', () => {
+  it('exposes service areas in classement navigation and keeps footer hub-focused', () => {
     renderAt('/');
 
     fireEvent.click(screen.getByLabelText(/ouvrir ou fermer le menu/i));
@@ -164,21 +166,13 @@ describe('routing', () => {
         .some((link) => link.getAttribute('href') === '/zones-intervention')
     ).toBe(true);
 
-    expect(screen.getByRole('link', { name: /classement en dordogne/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /toutes les zones d’intervention/i })).toHaveAttribute(
       'href',
-      '/classement-meuble-tourisme-dordogne'
+      '/zones-intervention'
     );
-
-    expect(screen.getByRole('link', { name: /classement en gironde/i })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-gironde'
-    );
-
-    expect(screen.getByRole('link', { name: /classement en lot-et-garonne/i })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-lot-et-garonne'
-    );
-
+    expect(screen.queryByRole('link', { name: /classement en dordogne/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /classement en gironde/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /classement en lot-et-garonne/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /bergerac et le bergeracois/i })).toBeNull();
   });
 

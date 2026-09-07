@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Award,
@@ -17,6 +16,7 @@ import ResponsiveComparisonTable from '../ui/ResponsiveComparisonTable';
 import SmartImage from '../ui/SmartImage';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
 import type { CityLandingPageConfig } from '../../content/cityLandingPages';
+import { renderLocalMarkdownLinks } from './renderLocalMarkdownLinks';
 
 const tariffCards = [
   {
@@ -114,49 +114,6 @@ const etoilysSecondaryReasons = [
   },
 ];
 
-function renderFaqAnswer(answer: string): ReactNode {
-  const linkPattern = /\[([^\]]+)\]\((\/[^)]+)\)/g;
-  const parts: ReactNode[] = [];
-  let lastIndex = 0;
-  let match = linkPattern.exec(answer);
-
-  while (match !== null) {
-    const [rawMatch, label, href] = match;
-
-    if (label === undefined || href === undefined) {
-      match = linkPattern.exec(answer);
-      continue;
-    }
-
-    if (match.index > lastIndex) {
-      parts.push(answer.slice(lastIndex, match.index));
-    }
-
-    parts.push(
-      <Link
-        key={`${href}-${match.index}`}
-        to={href}
-        className="font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400"
-      >
-        {label}
-      </Link>
-    );
-
-    lastIndex = match.index + rawMatch.length;
-    match = linkPattern.exec(answer);
-  }
-
-  if (parts.length === 0) {
-    return answer;
-  }
-
-  if (lastIndex < answer.length) {
-    parts.push(answer.slice(lastIndex));
-  }
-
-  return <>{parts}</>;
-}
-
 interface CityLandingPageProps {
   config: CityLandingPageConfig;
 }
@@ -165,7 +122,7 @@ export default function CityLandingPage({ config }: CityLandingPageProps) {
   const PrimaryReasonIcon = etoilysPrimaryReason.icon;
   const faqItems = config.faq.items.map((item) => ({
     ...item,
-    answer: renderFaqAnswer(item.answer),
+    answer: renderLocalMarkdownLinks(item.answer),
   }));
 
   return (
