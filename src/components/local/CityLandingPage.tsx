@@ -444,10 +444,12 @@ function LocalWarningSection({
     return null;
   }
 
+  const sectionClassName =
+    variant === 'v4' ? 'bg-primary-100 pb-section pt-0' : 'bg-white py-section';
   const wrapperClassName = variant === 'v4' ? 'mx-auto max-w-6xl' : 'mx-auto max-w-5xl';
 
   return (
-    <section className="bg-white py-section">
+    <section className={sectionClassName}>
       <div className="container-adaptive">
         <div className={wrapperClassName}>
           <Card hover={false} className="border-warning-200 bg-warning-100 p-6 md:p-8">
