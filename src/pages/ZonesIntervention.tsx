@@ -1,6 +1,6 @@
 import Button from '../components/ui/Button';
 import InterventionAreaCards from '../components/local/InterventionAreaCards';
-import { groupActiveDepartmentsByRegion } from '../content/localServiceAreas';
+import { groupActiveDepartmentsByRegion } from '../content/local/registry';
 
 const carteFranceExpansion = '/images/carte-france-expansion-card.webp';
 
@@ -52,7 +52,7 @@ export default function ZonesIntervention() {
                   >
                     {group.region.label}
                   </h3>
-                  <InterventionAreaCards areas={group.departments} />
+                  <InterventionAreaCards areas={group.departments} departmentHeadingLevel={4} />
                 </section>
               ))}
             </div>

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import InterventionAreaCards from './InterventionAreaCards';
-import type { DepartmentInterventionArea } from '../../content/localServiceAreas';
+import type { DepartmentInterventionArea } from '../../content/local/types';
 
 const dordogneArea: DepartmentInterventionArea = {
   id: 'dordogne',
@@ -89,10 +89,18 @@ const fiveDepartmentFixture: DepartmentInterventionArea[] = [
   },
 ];
 
-function renderCards(areas: DepartmentInterventionArea[]) {
+function renderCards(
+  areas: DepartmentInterventionArea[],
+  options: { departmentHeadingLevel?: 3 | 4 | 5 | 6 } = {}
+) {
+  const props =
+    options.departmentHeadingLevel === undefined
+      ? { areas }
+      : { areas, departmentHeadingLevel: options.departmentHeadingLevel };
+
   return render(
     <MemoryRouter>
-      <InterventionAreaCards areas={areas} />
+      <InterventionAreaCards {...props} />
     </MemoryRouter>
   );
 }
@@ -160,5 +168,12 @@ describe('InterventionAreaCards', () => {
       'href',
       '/classement-meuble-tourisme-aveyron'
     );
+  });
+
+  it('can render department titles below a regional heading level', () => {
+    renderCards([dordogneArea], { departmentHeadingLevel: 4 });
+
+    expect(screen.getByRole('heading', { level: 4, name: 'Dordogne' })).toBeInTheDocument();
+    expect(screen.queryByRole('heading', { level: 3, name: 'Dordogne' })).not.toBeInTheDocument();
   });
 });

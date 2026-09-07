@@ -4,12 +4,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import DepartmentLandingPage from './DepartmentLandingPage';
-import {
-  DORDOGNE_DEPARTMENT_PAGE,
-  GIRONDE_DEPARTMENT_PAGE,
-  LOT_ET_GARONNE_DEPARTMENT_PAGE,
-  type DepartmentLandingPageConfig,
-} from '../../content/localServiceAreas';
+import type { DepartmentLandingPageConfig } from '../../content/local/types';
+import { DORDOGNE_DEPARTMENT_PAGE } from '../../content/local/departments/dordogne';
+import { GIRONDE_DEPARTMENT_PAGE } from '../../content/local/departments/gironde';
+import { LOT_ET_GARONNE_DEPARTMENT_PAGE } from '../../content/local/departments/lot-et-garonne';
 
 function renderDepartmentPage(config: DepartmentLandingPageConfig) {
   return render(

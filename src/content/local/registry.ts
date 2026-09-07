@@ -135,6 +135,8 @@ export function groupActiveDepartmentsByRegion(
     .filter((group) => group.departments.length > 0);
 }
 
-export function getClassificationAreaServed(): string {
-  return joinFrenchList(getActiveDepartmentInterventionAreas().map((area) => area.name));
+export function getClassificationAreaServed(
+  areas: DepartmentInterventionArea[] = DEPARTMENT_INTERVENTION_AREAS
+): string {
+  return joinFrenchList(getActiveDepartmentInterventionAreas(areas).map((area) => area.name));
 }

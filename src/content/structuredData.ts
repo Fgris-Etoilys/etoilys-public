@@ -1,7 +1,7 @@
 import { IMAGE_MANIFEST } from './imageManifest';
 import { SITE_URL, type BreadcrumbItem } from './seoRoutes';
 import { getArticleAuthor, type ArticleAuthorId } from './articleAuthors';
-import { getClassificationAreaServed } from './localServiceAreas';
+import { getClassificationAreaServed } from './local/registry';
 
 export type JsonLdObject = Record<string, unknown>;
 

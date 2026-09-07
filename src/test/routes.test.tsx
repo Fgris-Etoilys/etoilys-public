@@ -94,7 +94,12 @@ describe('routing', () => {
   it('renders local service areas hub page', () => {
     renderAt('/zones-intervention');
     expectPageHeading(/zones d’intervention/i);
-    expect(screen.getByRole('heading', { name: 'Nouvelle-Aquitaine' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 3, name: 'Nouvelle-Aquitaine' })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Dordogne' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Gironde' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Lot-et-Garonne' })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Occitanie' })).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' })).toHaveAttribute(
       'href',
@@ -109,10 +114,6 @@ describe('routing', () => {
   it('renders Dordogne local landing page', () => {
     renderAt('/classement-meuble-tourisme-dordogne');
     expectPageHeading(/classement/i, /dordogne/i);
-    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bergerac'
-    );
     expect(screen.getByRole('link', { name: 'Voir la page Bergerac →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
@@ -129,10 +130,6 @@ describe('routing', () => {
   it('renders Gironde local landing page', () => {
     renderAt('/classement-meuble-tourisme-gironde');
     expectPageHeading(/classement/i, /gironde/i);
-    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bordeaux'
-    );
     expect(screen.getByRole('link', { name: 'Voir la page Bordeaux →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bordeaux'

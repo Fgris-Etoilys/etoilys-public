@@ -2,15 +2,14 @@ import { describe, expect, it } from 'vitest';
 import {
   DEPARTMENT_INTERVENTION_AREAS,
   DEPARTMENT_REGIONS,
-  DORDOGNE_DEPARTMENT_PAGE,
-  GIRONDE_DEPARTMENT_PAGE,
-  LOT_ET_GARONNE_DEPARTMENT_PAGE,
   getActiveDepartmentInterventionAreas,
   getClassificationAreaServed,
   groupActiveDepartmentsByRegion,
-  type DepartmentAreaId,
-  type DepartmentInterventionArea,
-} from '../content/localServiceAreas';
+} from '../content/local/registry';
+import type { DepartmentAreaId, DepartmentInterventionArea } from '../content/local/types';
+import { DORDOGNE_DEPARTMENT_PAGE } from '../content/local/departments/dordogne';
+import { GIRONDE_DEPARTMENT_PAGE } from '../content/local/departments/gironde';
+import { LOT_ET_GARONNE_DEPARTMENT_PAGE } from '../content/local/departments/lot-et-garonne';
 import { getIndexablePaths } from '../content/seoRoutes';
 import { extractActiveAppPaths } from './routeGovernance';
 
@@ -78,6 +77,7 @@ describe('local service areas data', () => {
       'Lot-et-Garonne',
     ]);
     expect(groupActiveDepartmentsByRegion(DEPARTMENT_REGIONS, fixtureAreas)).toHaveLength(1);
+    expect(getClassificationAreaServed(fixtureAreas)).toBe('Dordogne, Gironde et Lot-et-Garonne');
     expect(getClassificationAreaServed()).toBe('Dordogne, Gironde et Lot-et-Garonne');
   });
 

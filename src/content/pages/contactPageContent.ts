@@ -58,7 +58,7 @@ export const contactPageContent = {
     hero: {
       title: 'Contact met Etoilys',
       description:
-        'Heeft u een vraag voordat u de officiële classificatie van uw vakantiewoning in Frankrijk aanvraagt? Etoilys beantwoordt uw vraag en licht de volgende stappen toe.',
+        'Heeft u een vraag voordat u de officiële classificatie van uw vakantiewoning in de momenteel bediende gebieden aanvraagt? Etoilys beantwoordt uw vraag en licht de volgende stappen toe.',
     },
     detailsTitle: 'Onze contactgegevens',
     contactLabels: {

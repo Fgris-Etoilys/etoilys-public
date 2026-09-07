@@ -502,7 +502,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     lastModified: '2026-09-07',
     title: 'Classificatie aanvragen',
     description:
-      'Dien in enkele minuten uw aanvraag in voor de officiële classificatie van uw Franse vakantiewoning.',
+      'Dien in enkele minuten uw aanvraag in voor de officiële classificatie van uw vakantiewoning in de momenteel bediende gebieden.',
     breadcrumbLabel: 'Classificatie aanvragen',
     locale: 'nl',
     routeId: 'demandeClassement',

@@ -1,13 +1,21 @@
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
-import type { DepartmentInterventionArea } from '../../content/localServiceAreas';
+import type { DepartmentInterventionArea } from '../../content/local/types';
+
+type DepartmentHeadingLevel = 3 | 4 | 5 | 6;
 
 interface InterventionAreaCardsProps {
   areas: readonly DepartmentInterventionArea[];
+  departmentHeadingLevel?: DepartmentHeadingLevel;
 }
 
-export default function InterventionAreaCards({ areas }: InterventionAreaCardsProps) {
+export default function InterventionAreaCards({
+  areas,
+  departmentHeadingLevel = 3,
+}: InterventionAreaCardsProps) {
+  const DepartmentHeading = `h${departmentHeadingLevel}` as const;
+
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       {areas.map((area) => {
@@ -17,7 +25,9 @@ export default function InterventionAreaCards({ areas }: InterventionAreaCardsPr
         return (
           <Card key={area.id} className="flex min-h-[320px] flex-col p-6">
             <div className="mb-5 flex items-start justify-between gap-4">
-              <h3 className="text-2xl font-playfair font-semibold text-gray-900">{area.name}</h3>
+              <DepartmentHeading className="text-2xl font-playfair font-semibold text-gray-900">
+                {area.name}
+              </DepartmentHeading>
             </div>
             <p className="mb-4 text-sm leading-comfortable text-textLight">{area.description}</p>
 

@@ -7,7 +7,7 @@ import FeatureCard from '../ui/FeatureCard';
 import SmartImage from '../ui/SmartImage';
 import { renderLocalMarkdownLinks } from './renderLocalMarkdownLinks';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
-import { type DepartmentLandingPageConfig } from '../../content/localServiceAreas';
+import type { DepartmentLandingPageConfig } from '../../content/local/types';
 
 interface DepartmentLandingPageProps {
   config: DepartmentLandingPageConfig;
