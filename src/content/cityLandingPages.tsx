@@ -1,10 +1,8 @@
 import type { ImageAssetKey } from './imageManifest';
-import {
-  BERGERAC_FAQ,
-  BERGERAC_PROCEDURE_STEPS,
-  BERGERAC_SERVICE_COMMUNES,
-} from './local/cities/bergerac';
+import { BERGERAC_FAQ, BERGERAC_SERVICE_COMMUNES } from './local/cities/bergerac';
+import { LOCAL_CLASSIFICATION_PROCEDURE } from './local/sharedLocalContent';
 import type { LocalFaqItem, LocalProcedureStep } from './local/types';
+import type { PricingProfileId } from './local/pricing';
 
 interface HeroImageCredit {
   sourceLabel: string;
@@ -60,6 +58,7 @@ interface CityFinalCtaContent {
 export interface CityLandingPageConfig {
   layoutVersion?: 'v3' | 'v4';
   localWarningPlacement?: 'afterServiceArea' | 'afterTax';
+  pricingProfileId: PricingProfileId;
   city: string;
   areaName: string;
   hero: {
@@ -100,29 +99,9 @@ const BORDEAUX_SERVICE_COMMUNES = [
   'Gradignan',
 ];
 
-const BORDEAUX_PROCEDURE_STEPS: LocalProcedureStep[] = [
-  {
-    number: 1,
-    title: 'Vous envoyez votre demande',
-    description:
-      'Remplissez le formulaire en 30 secondes. Un inspecteur proche de chez vous vous recontacte sous 24h ouvrées.',
-  },
-  {
-    number: 2,
-    title: 'Nous organisons la visite',
-    description:
-      'Etoilys confirme le tarif et vous propose une date d’intervention dans le secteur de Bordeaux.',
-  },
-  {
-    number: 3,
-    title: 'Nous réalisons le classement',
-    description:
-      'La visite est effectuée sur place selon le référentiel officiel. Vous recevez ensuite les documents correspondant au classement obtenu.',
-  },
-];
-
 export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
   layoutVersion: 'v4',
+  pricingProfileId: 'dordogne-standard',
   city: 'Bergerac',
   areaName: 'Bergeracois',
   hero: {
@@ -169,11 +148,7 @@ export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
       'Pour les voyageurs, cela représente 24,36 € de taxe de séjour en moins sur une semaine.',
     sourceNote: 'Tarifs 2026 de la Communauté d’agglomération Bergeracoise.',
   },
-  procedure: {
-    title: 'Votre classement en 3 étapes',
-    intro: '',
-    steps: BERGERAC_PROCEDURE_STEPS,
-  },
+  procedure: LOCAL_CLASSIFICATION_PROCEDURE,
   faq: {
     title: 'Questions fréquentes sur le classement à Bergerac',
     items: BERGERAC_FAQ,
@@ -189,6 +164,7 @@ export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
 export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
   layoutVersion: 'v4',
   localWarningPlacement: 'afterTax',
+  pricingProfileId: 'bordeaux-standard',
   city: 'Bordeaux',
   areaName: 'Bordeaux Métropole',
   hero: {
@@ -250,11 +226,7 @@ export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
       href: 'https://www.bordeaux.fr/location-touristique-bordeaux--guide-proprietaires',
     },
   },
-  procedure: {
-    title: 'Votre classement en 3 étapes',
-    intro: '',
-    steps: BORDEAUX_PROCEDURE_STEPS,
-  },
+  procedure: LOCAL_CLASSIFICATION_PROCEDURE,
   faq: {
     title: 'Questions fréquentes sur le classement à Bordeaux',
     items: [

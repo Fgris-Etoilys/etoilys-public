@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react';
 import type { ImageAssetKey } from '../imageManifest';
+import type { PricingProfileId } from './pricing';
 
 export type DepartmentAreaId = 'dordogne' | 'gironde' | 'lot-et-garonne';
 
@@ -25,6 +26,7 @@ export interface DepartmentInterventionArea {
   id: DepartmentAreaId;
   name: string;
   path: string;
+  departmentCode: string;
   regionId: RegionId;
   status: DepartmentPublicationStatus;
   displayOrder: number;
@@ -72,7 +74,9 @@ export interface DepartmentBenefitItem {
 
 export interface DepartmentSector {
   name: string;
-  communes: string[];
+  communes?: string[];
+  visibleCommunes?: string[];
+  collapsedCommunes?: string[];
 }
 
 export interface DepartmentHeroConfig {
@@ -126,6 +130,23 @@ export interface DepartmentTariffConfig {
   paragraphs: string[];
 }
 
+export interface DepartmentPricingLocality {
+  id: string;
+  label: string;
+  postalCode?: string;
+  pricingProfileId?: PricingProfileId;
+}
+
+export interface DepartmentPricingResolutionConfig {
+  title: string;
+  intro: string;
+  inputLabel: string;
+  placeholder: string;
+  defaultPricingProfileId: PricingProfileId;
+  overrides: Record<string, PricingProfileId>;
+  searchLocalities: DepartmentPricingLocality[];
+}
+
 export interface DepartmentFinalCtaConfig {
   title: string;
   paragraphs: string[];
@@ -133,6 +154,7 @@ export interface DepartmentFinalCtaConfig {
 
 export interface DepartmentLandingPageConfig {
   departmentId: DepartmentAreaId;
+  layoutVersion?: 'v5';
   hero: DepartmentHeroConfig;
   benefits: {
     title: string;
@@ -144,6 +166,7 @@ export interface DepartmentLandingPageConfig {
   serviceArea: DepartmentServiceAreaConfig;
   procedure: DepartmentProcedureConfig;
   tariff: DepartmentTariffConfig;
+  pricing?: DepartmentPricingResolutionConfig;
   faq: {
     title: string;
     items: LocalFaqItem[];

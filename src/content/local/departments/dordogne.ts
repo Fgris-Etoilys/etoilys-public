@@ -1,11 +1,13 @@
 import { Award, Calculator, Percent, PiggyBank } from 'lucide-react';
 import type {
   DepartmentLandingPageConfig,
+  DepartmentPricingLocality,
   LocalFaqItem,
   LocalProcedureStep,
   LocalSource,
   LocalTableRow,
 } from '../types';
+import { LOCAL_CLASSIFICATION_PROCEDURE } from '../sharedLocalContent';
 
 export const DORDOGNE_SERVICE_SECTORS = [
   {
@@ -121,6 +123,48 @@ export const DORDOGNE_STATISTICS = [
   { value: '43 836', label: 'lits en meublés de tourisme' },
   { value: '3 011', label: 'meublés classés' },
   { value: '2 019 186', label: 'nuitées via plateformes en 2024' },
+];
+
+const DORDOGNE_VISIBLE_COMMUNE_COUNT = 5;
+
+export const DORDOGNE_V5_SERVICE_SECTORS = DORDOGNE_SERVICE_SECTORS.map((sector) => ({
+  name: sector.name,
+  visibleCommunes: sector.communes.slice(0, DORDOGNE_VISIBLE_COMMUNE_COUNT),
+  collapsedCommunes: sector.communes.slice(DORDOGNE_VISIBLE_COMMUNE_COUNT),
+}));
+
+export const DORDOGNE_PRICING_SEARCH_LOCALITIES: DepartmentPricingLocality[] = [
+  {
+    id: 'bergerac',
+    label: 'Bergerac',
+    postalCode: '24100',
+  },
+  {
+    id: 'perigueux',
+    label: 'Périgueux',
+    postalCode: '24000',
+  },
+  {
+    id: 'sarlat-la-caneda',
+    label: 'Sarlat-la-Canéda',
+    postalCode: '24200',
+  },
+  {
+    id: 'lalinde',
+    label: 'Lalinde',
+    postalCode: '24150',
+  },
+  {
+    id: 'eymet',
+    label: 'Eymet',
+    postalCode: '24500',
+  },
+];
+
+export const DORDOGNE_V5_TOURISM_ROWS: LocalTableRow[] = [
+  { key: 'meubles-tourisme', label: 'meublés de tourisme au 31 décembre 2025', value: '8 030' },
+  { key: 'meubles-classes', label: 'meublés classés', value: '3 011' },
+  { key: 'nuitees-plateformes', label: 'nuitées via plateformes en 2024', value: '2 019 186' },
 ];
 
 export const DORDOGNE_TOURISM_ROWS: LocalTableRow[] = [
@@ -242,6 +286,44 @@ export const DORDOGNE_FAQ: LocalFaqItem[] = [
   },
 ];
 
+export const DORDOGNE_V5_FAQ: LocalFaqItem[] = [
+  {
+    question: 'Etoilys intervient-il dans ma commune en Dordogne ?',
+    answer:
+      'Etoilys intervient dans une large partie de la Dordogne, notamment dans le Bergeracois, le Périgord Noir, le Grand Périgueux, la vallée de la Dordogne et plusieurs secteurs proches. La liste affichée sur cette page sert de repère éditorial et n’est pas un annuaire exhaustif des communes couvertes.',
+  },
+  {
+    question: 'Comment connaître le tarif exact pour mon logement ?',
+    answer:
+      'Saisissez votre code postal à 5 chiffres dans le module tarifs. Pour cette V1, les codes postaux de Dordogne en 24xxx utilisent la politique tarifaire Dordogne actuellement validée.',
+  },
+  {
+    question: 'Combien de temps faut-il pour organiser la visite ?',
+    answer:
+      'Après votre demande, Etoilys reprend contact avec vous sous 24h ouvrées pour confirmer le périmètre, le tarif et les prochaines disponibilités. La visite est ensuite organisée selon votre secteur et les tournées prévues.',
+  },
+  {
+    question: 'Que se passe-t-il si des critères manquent ?',
+    answer:
+      'L’inspecteur vous indique les points constatés pendant la visite. Selon la nature du critère, certains justificatifs ou compléments peuvent être transmis après la visite lorsque le référentiel le permet.',
+  },
+  {
+    question: 'Peut-on regrouper plusieurs logements ?',
+    answer:
+      'Oui. Chaque meublé doit être visité séparément, mais plusieurs visites peuvent être organisées le même jour dans le même secteur. Indiquez toutes les adresses dans votre demande pour confirmer l’organisation et le tarif applicables.',
+  },
+  {
+    question: 'Le classement est-il obligatoire ?',
+    answer:
+      'Non. Le classement d’un meublé de tourisme reste une démarche volontaire. Il peut toutefois avoir un intérêt pour la fiscalité micro-BIC, la taxe de séjour et la lisibilité de votre annonce.',
+  },
+  {
+    question: 'Etoilys est-il habilité pour réaliser le classement ?',
+    answer:
+      'Oui. Etoilys est accrédité Cofrac Inspection n°3-2394 pour réaliser les visites officielles de classement des meublés de tourisme.',
+  },
+];
+
 export const DORDOGNE_SOURCES: LocalSource[] = [
   {
     label:
@@ -335,14 +417,14 @@ export const DORDOGNE_LOCAL_CHECK_ROWS: LocalTableRow[] = [
 
 export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
   departmentId: 'dordogne',
+  layoutVersion: 'v5',
   hero: {
     assetKey: 'dordogneHero',
     alt: 'Paysage de Dordogne autour d’un secteur touristique',
     eyebrow: 'Dordogne',
     h1: 'Classement de gîte et meublé de tourisme en Dordogne',
     paragraphs: [
-      'Vous louez un gîte, une maison de vacances, un appartement ou une location saisonnière en Dordogne ? Etoilys accompagne les propriétaires qui souhaitent demander le classement officiel de leur meublé de tourisme.',
-      'La Dordogne est un territoire touristique majeur, avec une offre importante de meublés, de résidences secondaires et de locations de courte durée. Dans ce contexte, le classement peut renforcer l’intérêt économique de votre meublé, notamment sur la fiscalité, la taxe de séjour et la lisibilité de votre offre auprès des voyageurs.',
+      'Vous louez un gîte, une maison de vacances, un appartement ou une location saisonnière en Dordogne ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et un tarif consultable par commune ou code postal.',
     ],
     imageClassName: 'h-full w-full object-cover object-top',
     overlayClassName: 'absolute inset-0 bg-black/60',
@@ -393,20 +475,19 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
       alt: 'Village et paysage de Dordogne',
     },
     cardTitle: 'Données Dordogne',
-    rows: DORDOGNE_TOURISM_ROWS,
+    rows: DORDOGNE_V5_TOURISM_ROWS,
     sourceNote: 'Source : CDT Dordogne 2025.',
     afterTitle: 'En Dordogne, les meublés de tourisme ne sont pas un marché de niche',
     afterParagraphs: [
       'Avec plus de 8 000 meublés de tourisme recensés fin 2025, la Dordogne fait partie des territoires où la location saisonnière occupe une place importante dans l’offre touristique.',
-      'Dans ce contexte, le classement n’est pas seulement une formalité. Il permet à votre logement de s’inscrire dans un cadre officiel, plus lisible pour les voyageurs, et peut avoir des effets concrets sur la fiscalité, la taxe de séjour et les cotisations sociales.',
-      'Plus de 3 000 meublés étaient déjà classés dans le département fin 2025. Autrement dit, une partie importante du marché est déjà structurée autour du classement.',
+      'La taxe de séjour varie selon la commune ou l’EPCI. Le classement donne un repère officiel et permet de comparer plus clairement les effets locaux, notamment avec le simulateur de taxe de séjour.',
     ],
   },
   serviceArea: {
     title: 'Classement de meublés en Dordogne : les secteurs couverts',
     intro:
       'Etoilys intervient en Dordogne sur une large zone couvrant notamment le Bergeracois, le Périgord Noir, la vallée de la Dordogne, la vallée de la Vézère, le Grand Périgueux, la vallée de l’Isle, le Ribéracois et une partie du nord-ouest du département.',
-    sectors: DORDOGNE_SERVICE_SECTORS,
+    sectors: DORDOGNE_V5_SERVICE_SECTORS,
     sectorLinks: {
       'Bergeracois et sud Dordogne': {
         label: 'Voir la page Bergerac →',
@@ -417,14 +498,13 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
       'Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, vous pouvez tout de même déposer une demande : Etoilys vous confirmera les possibilités d’intervention selon la localisation du logement et l’organisation des tournées.',
   },
   procedure: {
-    title: 'Comment se déroule une visite de classement avec Etoilys ?',
-    intro:
-      'Vous déposez votre demande, nous vérifions le périmètre avec vous, puis la visite est organisée sur place selon la grille officielle.',
+    title: LOCAL_CLASSIFICATION_PROCEDURE.title,
+    intro: LOCAL_CLASSIFICATION_PROCEDURE.intro,
     image: {
       assetKey: 'dordogneInterior',
       alt: 'Intérieur de maison de vacances',
     },
-    steps: DORDOGNE_PROCEDURE_STEPS,
+    steps: LOCAL_CLASSIFICATION_PROCEDURE.steps,
     simulatorPrompt: {
       title: 'Vous voulez avoir une première idée du classement possible ?',
       description:
@@ -438,10 +518,20 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
       'Après réception de votre demande, Etoilys vous confirme les modalités d’intervention et le tarif applicable avant toute validation. Vous savez donc à quoi vous engager avant de fixer la visite.',
     ],
   },
+  pricing: {
+    title: 'Quel tarif pour classer votre meublé en Dordogne ?',
+    intro:
+      'Indiquez une commune de référence ou un code postal. En Dordogne V1, le code postal à 5 chiffres est la référence tarifaire et les codes 24xxx utilisent la politique Dordogne actuellement validée.',
+    inputLabel: 'Commune ou code postal',
+    placeholder: 'Ex. Bergerac ou 24100',
+    defaultPricingProfileId: 'dordogne-standard',
+    overrides: {},
+    searchLocalities: DORDOGNE_PRICING_SEARCH_LOCALITIES,
+  },
   faq: {
-    title: 'Questions fréquentes',
-    items: DORDOGNE_FAQ,
-    sectionClassName: 'bg-primary-100 py-section',
+    title: 'Questions fréquentes sur le classement en Dordogne',
+    items: DORDOGNE_V5_FAQ,
+    sectionClassName: 'bg-white py-section',
   },
   finalCta: {
     title: 'Demander le classement de votre meublé en Dordogne',

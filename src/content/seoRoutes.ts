@@ -129,7 +129,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Zones d’intervention',
   },
   '/classement-meuble-tourisme-dordogne': {
-    lastModified: '2026-06-07',
+    lastModified: '2026-09-07',
     title: 'Classement gîte, Airbnb et meublé de tourisme en Dordogne',
     description:
       'Etoilys accompagne les propriétaires de gîtes et locations saisonnières en Dordogne pour le classement officiel de leur meublé de tourisme.',

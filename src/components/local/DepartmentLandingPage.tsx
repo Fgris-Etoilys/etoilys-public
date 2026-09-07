@@ -1,13 +1,24 @@
 import { Link } from 'react-router-dom';
+import type { ReactNode } from 'react';
 import { MapPin, ShieldCheck } from 'lucide-react';
 import Accordion from '../ui/Accordion';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 import FeatureCard from '../ui/FeatureCard';
 import SmartImage from '../ui/SmartImage';
+import DepartmentPricingSection from './DepartmentPricingSection';
 import { renderLocalMarkdownLinks } from './renderLocalMarkdownLinks';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
 import type { DepartmentLandingPageConfig } from '../../content/local/types';
+import {
+  LocalDepartmentServiceAreaSection,
+  LocalEtoilysReasonsSection,
+  LocalFaqSection,
+  LocalFinalCtaSection,
+  LocalHeroSection,
+  LocalProcedureSection,
+  LocalWhyClassifySection,
+} from './LocalLandingSections';
 
 interface DepartmentLandingPageProps {
   config: DepartmentLandingPageConfig;
@@ -18,6 +29,10 @@ export default function DepartmentLandingPage({ config }: DepartmentLandingPageP
     ...item,
     answer: renderLocalMarkdownLinks(item.answer),
   }));
+
+  if (config.layoutVersion === 'v5') {
+    return <DepartmentLandingPageV5 config={config} faqItems={faqItems} />;
+  }
 
   return (
     <>
@@ -179,6 +194,11 @@ export default function DepartmentLandingPage({ config }: DepartmentLandingPageP
             <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
               {config.serviceArea.sectors.map((sector) => {
                 const sectorLink = config.serviceArea.sectorLinks?.[sector.name];
+                const sectorCommunes = [
+                  ...(sector.communes ?? []),
+                  ...(sector.visibleCommunes ?? []),
+                  ...(sector.collapsedCommunes ?? []),
+                ];
 
                 return (
                   <Card key={sector.name} hover={false} className="p-6 md:last:col-span-2">
@@ -186,7 +206,7 @@ export default function DepartmentLandingPage({ config }: DepartmentLandingPageP
                       {sector.name}
                     </h3>
                     <p className="text-sm text-textLight leading-comfortable">
-                      {sector.communes.join(', ')}.
+                      {sectorCommunes.join(', ')}.
                     </p>
                     {sectorLink && (
                       <Link
@@ -326,5 +346,96 @@ export default function DepartmentLandingPage({ config }: DepartmentLandingPageP
         </div>
       </section>
     </>
+  );
+}
+
+function DepartmentLandingPageV5({
+  config,
+  faqItems,
+}: {
+  config: DepartmentLandingPageConfig;
+  faqItems: { question: string; answer: ReactNode }[];
+}) {
+  const heroIntro = config.hero.paragraphs[0] ?? '';
+
+  return (
+    <>
+      <LocalHeroSection
+        hero={{
+          assetKey: config.hero.assetKey,
+          alt: config.hero.alt,
+          eyebrow: config.hero.eyebrow,
+          h1: config.hero.h1,
+          intro: heroIntro,
+          imageClassName: config.hero.imageClassName,
+          overlayClassName: config.hero.overlayClassName,
+        }}
+        primaryCtaLabel="Demander le classement de mon meublé"
+      />
+      <LocalWhyClassifySection />
+      <LocalDepartmentServiceAreaSection serviceArea={config.serviceArea} />
+      {config.pricing && (
+        <DepartmentPricingSection
+          currentDepartmentId={config.departmentId}
+          config={config.pricing}
+        />
+      )}
+      <LocalProcedureSection title={config.procedure.title} steps={config.procedure.steps} />
+      <LocalEtoilysReasonsSection
+        title={`Pourquoi choisir Etoilys pour votre classement en ${config.hero.eyebrow} ?`}
+      />
+      <DepartmentLocalProofSection config={config} />
+      <LocalFaqSection title={config.faq.title} items={faqItems} />
+      <LocalFinalCtaSection
+        title={config.finalCta.title}
+        paragraphs={config.finalCta.paragraphs}
+        primaryLabel="Demander le classement de mon meublé"
+        secondaryHref="/faq"
+        secondaryLabel="Lire la FAQ"
+      />
+    </>
+  );
+}
+
+function DepartmentLocalProofSection({ config }: { config: DepartmentLandingPageConfig }) {
+  return (
+    <section className="bg-primary-100 py-section">
+      <div className="container-adaptive">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="mb-6">{config.tourism.title}</h2>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-stretch">
+            <SmartImage
+              assetKey={config.tourism.image.assetKey}
+              alt={config.tourism.image.alt}
+              sizes="(min-width: 1024px) 44vw, 100vw"
+              className="h-full min-h-[360px] w-full rounded-card object-cover shadow-card-hover"
+            />
+
+            <Card hover={false} className="p-6">
+              <h3 className="mb-6 text-2xl font-playfair font-semibold text-gray-900">
+                {config.tourism.cardTitle}
+              </h3>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {config.tourism.rows.map((row) => (
+                  <div key={row.key} className="rounded-card bg-white p-5 shadow-sm">
+                    <p className="mb-1 text-3xl font-bold text-primary-300">{row.value}</p>
+                    <p className="text-sm leading-comfortable text-textLight">{row.label}</p>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-4 text-xs text-gray-500">{config.tourism.sourceNote}</p>
+              <div className="mt-6 space-y-4 text-sm leading-comfortable text-textLight">
+                {config.tourism.afterParagraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+              <Button href="/simulateur-taxe-sejour" variant="secondary" className="mt-6">
+                Comparer la taxe de séjour
+              </Button>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
