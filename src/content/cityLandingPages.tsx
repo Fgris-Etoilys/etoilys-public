@@ -59,6 +59,7 @@ interface CityFinalCtaContent {
 
 export interface CityLandingPageConfig {
   layoutVersion?: 'v3' | 'v4';
+  localWarningPlacement?: 'afterServiceArea' | 'afterTax';
   city: string;
   areaName: string;
   hero: {
@@ -186,6 +187,8 @@ export const BERGERAC_CITY_LANDING_PAGE: CityLandingPageConfig = {
 };
 
 export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
+  layoutVersion: 'v4',
+  localWarningPlacement: 'afterTax',
   city: 'Bordeaux',
   areaName: 'Bordeaux Métropole',
   hero: {
@@ -203,13 +206,11 @@ export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
     },
   },
   serviceArea: {
-    title: 'Où intervenons-nous autour de Bordeaux ?',
+    title: 'Votre classement directement dans votre logement',
     intro:
-      'Etoilys organise des visites à Bordeaux et dans les communes de Bordeaux Métropole, notamment :',
+      'Nos inspecteurs interviennent à Bordeaux et dans Bordeaux Métropole, sans frais de déplacement, notamment à :',
     communes: BORDEAUX_SERVICE_COMMUNES,
-    outro: [
-      'Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, transmettez-nous simplement l’adresse du logement : nous vous confirmerons rapidement les possibilités d’intervention, dans la métropole ou ailleurs en Gironde.',
-    ],
+    outro: [],
     parentLink: {
       label: 'Voir notre zone d’intervention en Gironde',
       href: '/classement-meuble-tourisme-gironde',
@@ -218,9 +219,8 @@ export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
   tax: {
     title: 'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
     paragraphs: [
-      'Bordeaux attire aussi bien les voyageurs venus profiter de la ville que ceux qui souhaitent découvrir les vignobles et le reste de la Gironde. Face à une offre de locations saisonnières particulièrement dense, le classement permet de donner à votre logement un repère officiel, plus lisible et plus rassurant au moment de réserver.',
-      'Il peut également améliorer sa visibilité, notamment auprès des voyageurs sensibles aux étoiles, et vous faire bénéficier d’un régime fiscal plus favorable que celui d’un meublé non classé. À Bordeaux Métropole, son intérêt se retrouve aussi directement dans la taxe de séjour payée par vos voyageurs.',
-      'Pour une réservation à 150 € la nuit hors taxe de séjour et quatre adultes, un meublé classé 2 étoiles représente ainsi 5,04 € de taxe de séjour en moins par nuit, soit 35,28 € économisés sur une semaine.',
+      'Bordeaux attire aussi bien les voyageurs venus profiter de la ville que ceux qui souhaitent découvrir les vignobles et le reste de la Gironde. Face à une offre de locations saisonnières particulièrement dense, le classement donne à votre logement un repère officiel qui peut l’aider à mieux se distinguer au moment de réserver.',
+      'À Bordeaux Métropole, cet intérêt se retrouve aussi très concrètement dans la taxe de séjour. Pour une réservation à 150 € la nuit hors taxe de séjour et quatre adultes, un meublé classé 2 étoiles représente 5,04 € de taxe de séjour en moins par nuit, soit 35,28 € économisés sur une semaine.',
     ],
     exampleLabel: 'Exemple à Bordeaux',
     exampleTitle: 'Taxe de séjour pour 4 adultes',
@@ -235,25 +235,24 @@ export const BORDEAUX_CITY_LANDING_PAGE: CityLandingPageConfig = {
     sourceNote: 'Tarifs 2026 de Bordeaux Métropole, taxes additionnelles comprises.',
   },
   localWarning: {
-    title: 'Avant de louer à Bordeaux, trois règles locales à vérifier',
+    title: 'À Bordeaux, quelques règles locales à connaître',
     intro:
-      'Le classement et les autorisations locales répondent à deux objectifs différents. Pour un logement situé dans la commune de Bordeaux, vérifiez également :',
+      'Le classement de votre meublé est indépendant de certaines démarches locales liées à la location touristique. À Bordeaux, pensez notamment à vérifier les règles applicables concernant l’enregistrement, la résidence principale et, selon votre situation, le changement d’usage.',
     items: [
       'le numéro d’enregistrement obligatoire pour la location d’un logement entier ;',
       'la limite de 90 jours par année civile lorsqu’il s’agit de la résidence principale ;',
       'l’autorisation de changement d’usage applicable aux résidences secondaires, avec une éventuelle compensation selon la situation du bien.',
     ],
     conclusion:
-      'Le classement ne vous dispense pas de ces formalités, mais il peut ensuite vous aider à mieux présenter votre logement et à bénéficier des effets liés à la fiscalité ou à la taxe de séjour.',
+      'Ces formalités restent indépendantes du classement et doivent être vérifiées auprès de la Ville de Bordeaux avant la mise en location.',
     source: {
       label: 'Consulter le guide propriétaire de la Ville de Bordeaux',
       href: 'https://www.bordeaux.fr/location-touristique-bordeaux--guide-proprietaires',
     },
   },
   procedure: {
-    title: 'Comment faire classer votre meublé à Bordeaux ?',
-    intro:
-      'La démarche est simple : vous nous transmettez les informations principales, nous organisons la visite dans votre logement, puis Etoilys réalise le classement officiel.',
+    title: 'Votre classement en 3 étapes',
+    intro: '',
     steps: BORDEAUX_PROCEDURE_STEPS,
   },
   faq: {

@@ -1,8 +1,8 @@
 # Framework de déclinaison des pages villes Etoilys
 
-**Version :** 4.0 — 7 septembre 2026  
+**Version :** 4.1 — 7 septembre 2026  
 **Projet :** site public Etoilys  
-**Usage :** document autonome destiné à ChatGPT pour auditer, migrer ou créer une page ville selon le modèle CRO commun, préparer uniquement les données locales nécessaires, puis produire un prompt d’intégration à transmettre à Codex.
+**Usage :** document autonome destiné à ChatGPT et Codex pour auditer, migrer ou créer une page ville selon le modèle CRO V4, avec Bergerac comme référence fonctionnelle et visuelle, tout en séparant strictement le modèle commun des données locales.
 
 ---
 
@@ -36,17 +36,35 @@ Le modèle cible doit réunir, dans cet ordre mental :
 
 ### Source de vérité à partir de la V4
 
-La **structure CRO cible** est définie par le présent framework V4.
+La **structure CRO, la hiérarchie visuelle et la copy commune** sont définies par le présent framework V4.
 
-La route suivante reste la page ville de référence fonctionnelle et la première page à migrer vers cette V4 :
+La page de référence est :
 
 ```text
 /classement-meuble-tourisme-bergerac
 ```
 
-Une fois Bergerac migrée et validée, son implémentation partagée devient la **référence technique** du modèle V4 pour les autres pages villes.
+Bergerac est désormais la **référence fonctionnelle et visuelle V4**. Elle sert de modèle pour :
 
-Il ne faut plus considérer l’ordre historique des sections de Bergerac V3 comme une contrainte. Le framework V4 prévaut lorsqu’un ticket demande explicitement la migration d’une page vers le nouveau modèle CRO.
+- l’ordre des sections ;
+- les blocs communs ;
+- la hiérarchie des CTA ;
+- l’alternance des fonds ;
+- les largeurs de contenu ;
+- la densité éditoriale ;
+- les formulations génériques validées.
+
+Cela ne signifie pas qu’il faut recopier ses données locales. Restent propres à chaque ville :
+
+- H1 et métadonnées ;
+- hero, image et crédit ;
+- bassin couvert et communes ;
+- données de taxe de séjour ;
+- éventuelles règles locales ;
+- FAQ locale ;
+- CTA final localisé.
+
+Les nouvelles villes doivent utiliser directement le modèle V4. Les pages villes existantes doivent être migrées **une par une**. Bordeaux doit notamment pouvoir passer en V4 sans modifier simultanément les autres villes.
 
 ---
 
@@ -169,19 +187,13 @@ Ne pas charger le hero avec les détails fiscaux, un tableau tarifaire complet o
 
 Ce bloc doit apparaître **immédiatement après le hero**, avant le détail de la zone d’intervention.
 
-Il sert principalement les visiteurs qui ne sont pas encore totalement convaincus de l’intérêt du classement.
+Il sert à créer un véritable angle commercial avant de présenter les trois bénéfices.
 
-Intro publique à utiliser :
+Intro publique commune à utiliser :
 
-> Le classement ne sert pas seulement à obtenir des étoiles. Pour un propriétaire, il peut avoir des effets très concrets sur la fiscalité, la taxe de séjour et l’attractivité du logement auprès des voyageurs.
+> **Dans un marché de la location saisonnière de plus en plus concurrentiel, le classement ne se résume pas à ses avantages fiscaux : il permet aussi de mieux différencier votre logement et de renforcer son attractivité auprès des voyageurs.**
 
-Il doit rester court et contenir **exactement trois bénéfices principaux** :
-
-1. **Fiscalité micro-BIC** ;
-2. **Taxe de séjour** ;
-3. **Gagnez en visibilité auprès des voyageurs**.
-
-#### Angle éditorial des trois bénéfices
+Le bloc contient **exactement trois bénéfices principaux**.
 
 **Fiscalité micro-BIC**  
 Au régime micro-BIC, un meublé classé bénéficie d’un plafond plus élevé et d’un abattement plus favorable qu’un meublé non classé.
@@ -189,32 +201,46 @@ Au régime micro-BIC, un meublé classé bénéficie d’un plafond plus élevé
 **Taxe de séjour**  
 Un meublé classé passe à un tarif fixe selon son nombre d’étoiles. Selon la commune, cela peut réduire sensiblement la taxe de séjour payée par vos voyageurs.
 
-**Gagnez en visibilité auprès des voyageurs**
+**Gagnez en visibilité auprès des voyageurs**  
 Les étoiles offrent un repère officiel reconnu, rassurent au moment de réserver et aident votre annonce à se démarquer pour attirer davantage de voyageurs.
 
-En revanche, ne pas garantir un résultat non démontrable du type `le classement vous apportera plus de réservations`, `augmente automatiquement votre taux d’occupation` ou toute promesse chiffrée sans preuve.
+Sous les trois bénéfices, conserver un lien secondaire vers la page générale des avantages du classement. Ne pas ajouter un gros CTA supplémentaire.
 
-#### Ce qui sort de ce bloc
+Ne pas inclure les cotisations sociales dans ce bloc.
 
-Ne pas inclure les **cotisations sociales** dans les trois bénéfices principaux des pages villes V4. Le sujet est plus technique, moins universel et doit rester traité dans les contenus spécialisés lorsqu’il est pertinent.
-
-Sous les trois bénéfices, prévoir un lien secondaire vers la page générale des avantages du classement. Ne pas ajouter un troisième gros CTA concurrent du hero.
+Ne pas garantir un résultat du type `plus de réservations garanties`, `hausse automatique du taux d’occupation` ou toute promesse chiffrée non démontrée.
 
 ### 4.3 Zone d’intervention
 
 Le bloc de couverture vient après les bénéfices.
 
-Son rôle est de répondre à la question :
+Sa fonction n’est pas de présenter une liste administrative : il doit répondre à la question mentale du prospect :
 
-> Etoilys intervient-il réellement chez moi ?
+> **Est-ce qu’un inspecteur Etoilys vient directement chez moi ?**
 
-Il doit rester concis :
+H2 commun V4 :
 
-- ville principale ;
-- bassin réellement couvert ;
-- sélection raisonnable de communes voisines ;
-- mention que la liste n’est pas exhaustive lorsque c’est utile ;
-- lien vers le département parent.
+```text
+Votre classement directement dans votre logement
+```
+
+Pattern d’introduction locale :
+
+> Nos inspecteurs interviennent à **[VILLE]** et dans **[BASSIN]**, **[modalité de déplacement si confirmée]**, notamment à :
+
+Exemple Bergerac :
+
+> Nos inspecteurs interviennent à Bergerac et dans le Bergeracois, sans frais de déplacement, notamment à :
+
+Afficher ensuite une sélection raisonnable de communes réellement couvertes.
+
+Ne pas ajouter de phrase du type :
+
+> Cette liste n’est pas exhaustive.
+
+Le mot **`notamment`** suffit. Une telle phrase alourdit la landing sans apporter de valeur.
+
+Conserver en fin de bloc un lien vers le département parent.
 
 Éviter les listes interminables de communes. La valeur du bloc vient de la confirmation de couverture, pas du volume de noms de lieux.
 
@@ -241,46 +267,77 @@ Ne pas masquer volontairement un tarif fixe connu derrière une demande de devis
 
 ### 4.5 Procédure
 
-La procédure doit rester commercialement simple.
+La procédure doit montrer la simplicité au lieu de l’affirmer.
 
-Par défaut, le modèle V4 utilise **trois grandes étapes** :
+H2 commun V4 :
+
+```text
+Votre classement en 3 étapes
+```
+
+**Ne pas mettre de paragraphe introductif générique sous ce H2.**
+
+La phrase historique du type :
+
+> La démarche est simple : vous nous transmettez les informations principales...
+
+doit disparaître. Elle ne fait que répéter les cartes.
+
+Le modèle V4 utilise directement trois grandes étapes :
 
 1. demande de classement ;
 2. organisation de la visite ;
 3. inspection et classement.
 
-Le détail réglementaire complet reste sur la page `/procedure`.
+Le détail réglementaire complet reste sur `/procedure`.
 
-Le bloc doit rassurer sur la simplicité du parcours, pas reproduire toute la procédure administrative.
+Conserver un lien secondaire du type :
+
+```text
+Découvrir la procédure complète
+```
 
 ### 4.6 Bloc commun `Pourquoi choisir Etoilys ?`
 
-Ce bloc vient après la procédure et doit se concentrer sur les **vrais différenciateurs** d’Etoilys.
+**Ce bloc est validé tel qu’il existe sur Bergerac V4. Il ne doit pas être réécrit lors de la création ou migration d’une ville, sauf décision explicite ultérieure.**
 
-Il doit contenir **exactement trois arguments principaux** :
+Il contient exactement trois arguments principaux.
 
-1. **Des outils pour mieux préparer la catégorie visée** ;
-2. **100 % spécialisés dans le classement des meublés de tourisme** ;
-3. **Organisme accrédité Cofrac Inspection**.
+**Des outils pour mieux préparer la catégorie visée**  
+Avant la visite, le simulateur Etoilys vous permet de vérifier les principaux critères de la catégorie visée et d’identifier les points à préparer. Vous abordez ainsi la visite avec une vision beaucoup plus claire du niveau attendu.
 
-La formulation historique `Des outils pour atteindre plus facilement la catégorie visée` doit être abandonnée. Elle est trop proche d’une promesse de résultat et cadre moins bien avec la posture d’un organisme d’inspection.
+**100 % spécialisés dans le classement des meublés de tourisme**  
+Etoilys se consacre exclusivement au classement des meublés de tourisme. Nos inspecteurs connaissent en profondeur la réglementation, la grille officielle et les points qui font réellement la différence pour atteindre la catégorie visée.
 
-Utiliser une formulation centrée sur la **préparation** de la catégorie visée, la compréhension des critères et l’identification des points à compléter.
+**Organisme accrédité Cofrac Inspection**  
+Conserver la référence Cofrac et le lien vers la portée d’accréditation déjà utilisés sur Bergerac.
 
-Ne pas répéter ici :
+Le bloc se termine par un CTA principal vers la demande de classement. Le lien secondaire vers les avantages du classement peut rester présent.
+
+Ne pas réintroduire ici :
 
 - `Demande en 30 secondes` ;
-- `Intervention rapide` ;
+- `Intervention rapide`.
 
-si ces éléments figurent déjà dans le hero.
-
-Le bloc doit se terminer par un CTA principal vers la demande de classement.
+Ces éléments sont déjà traités dans le hero et ne sont pas les vrais différenciateurs du bloc.
 
 ### 4.7 Bloc local différenciant — taxe de séjour et preuve locale
 
-Le bloc local principal est déplacé vers le bas de la page, **après `Pourquoi choisir Etoilys ?` et juste avant la FAQ**, sauf contrainte locale particulière.
+Le bloc local principal est placé dans la partie basse de la page, **après `Pourquoi choisir Etoilys ?`**. Il précède la FAQ, éventuellement suivi d’un module réglementaire local informatif lorsqu’il est pertinent, sauf contrainte locale particulière.
 
 Son rôle n’est plus de présenter la taxe de séjour comme un bénéfice générique — ce rôle est déjà assuré par le bloc `Pourquoi classer votre meublé ?`.
+
+La structure CRO et les arguments principaux sont communs aux pages villes, mais ce bloc de preuve locale ne doit pas être standardisé à outrance. Il fait partie des emplacements privilégiés pour donner une vraie personnalité locale à la landing page, à condition que cette singularité serve la compréhension ou la conversion.
+
+Il peut notamment partir :
+
+- du contexte touristique local ;
+- de la densité ou de la concurrence de l’offre lorsqu’elle est pertinente ;
+- d’une caractéristique propre au territoire ;
+- d’un angle éditorial spécifique à la ville ;
+- puis relier ce contexte à une preuve concrète, par exemple la taxe de séjour.
+
+Le but n’est pas d’ajouter du texte SEO décoratif. La singularité locale doit aider le propriétaire à comprendre pourquoi le classement peut avoir un intérêt dans son secteur.
 
 Il doit devenir une **preuve locale concrète** :
 
@@ -296,6 +353,10 @@ L’angle éditorial recommandé est :
 
 Éviter de répéter mot pour mot les explications générales du bloc `Pourquoi classer`.
 
+Bon exemple pour Bordeaux : partir du contexte d’une ville attractive, d’un marché de locations saisonnières dense et du besoin de mieux se différencier, puis faire la transition vers l’effet concret du classement sur la taxe de séjour avec les chiffres locaux.
+
+Lors d’une migration d’une page existante, une bonne copy locale déjà présente ne doit pas être remplacée mécaniquement par une copy générique V4. Il faut conserver sa valeur locale et seulement supprimer les répétitions devenues inutiles avec les nouveaux blocs communs.
+
 Si la donnée locale n’est pas fiable ou n’apporte pas de valeur réelle, le module doit pouvoir être simplifié ou absent plutôt que rempli artificiellement.
 
 ### 4.8 Règle locale exceptionnelle éventuelle
@@ -304,8 +365,8 @@ Une règle locale particulière peut être affichée uniquement si elle influenc
 
 Par défaut :
 
-- si elle est critique pour savoir si le propriétaire peut exploiter le logement, elle peut être placée après la zone d’intervention ou au moment où elle devient utile ;
-- si elle est informative mais non bloquante, la conserver près du bloc local différenciant ou dans la FAQ ;
+- si elle est réellement bloquante pour la décision de classement ou l’organisation de la visite, elle peut être placée après la zone d’intervention ou au moment où elle devient utile ;
+- si elle est informative, réglementaire ou périphérique à la démarche de classement, la conserver dans la partie basse avec la preuve ou l’information locale, avant la FAQ ;
 - ne pas casser le parcours de conversion avec un gros encadré administratif sans nécessité.
 
 ### 4.9 FAQ locale
@@ -342,6 +403,49 @@ Ne pas ajouter mécaniquement :
 - contenu touristique décoratif.
 
 Ces éléments peuvent faire l’objet de tests ou d’un enrichissement ultérieur s’ils reposent sur un besoin démontré et des données réelles.
+
+### 4.12 Hiérarchie visuelle V4 — référence Bergerac
+
+La structure visuelle fait partie du framework.
+
+Alternance de référence lorsqu’aucun module local supplémentaire n’est présent :
+
+| Section                      | Fond              |
+| ---------------------------- | ----------------- |
+| Pourquoi classer             | blanc             |
+| Zone d’intervention          | `primary-100`     |
+| Tarifs                       | blanc             |
+| Votre classement en 3 étapes | `primary-100`     |
+| Pourquoi Etoilys             | blanc             |
+| Preuve locale / taxe         | `primary-100`     |
+| FAQ                          | blanc             |
+| CTA final                    | gradient existant |
+
+Les grandes sections V4 utilisent une grille principale cohérente, de référence `max-w-6xl`. Un paragraphe interne peut être plus étroit pour la lisibilité. La FAQ peut rester centrée et plus étroite (`max-w-4xl`).
+
+Ne pas alterner arbitrairement `max-w-5xl` et `max-w-6xl` entre les H2 principaux.
+
+Conserver une règle verticale commune de type `py-section`. Ne pas corriger les espacements en ajoutant des marges spécifiques différentes à chaque bloc.
+
+Si un module local critique est ajouté, l’intégrer sans casser le rythme général. Un warning réellement bloquant pour la décision de classement peut rester haut dans la page ; une information réglementaire locale périphérique à la démarche de classement doit plutôt être rattachée à la partie basse, avec la preuve ou l’information locale, avant la FAQ. Éviter notamment deux grandes sections blanches successives uniquement à cause d’un module facultatif ; préférer un encadré compact ou une composition intégrée à la section logique.
+
+### 4.13 Économie éditoriale
+
+Une landing page n’a pas besoin d’un paragraphe introductif sous chaque H2.
+
+Avant de conserver une phrase, appliquer ce test :
+
+> **Si cette phrase disparaît, le visiteur perd-il une information, une rassurance ou un argument utile ?**
+
+Si la réponse est non, supprimer la phrase.
+
+Décisions de référence :
+
+- `Pourquoi classer votre meublé ?` garde une intro, car elle crée une tension commerciale autour de la concurrence ;
+- `Votre classement en 3 étapes` n’a pas d’intro ;
+- la zone n’a pas de disclaimer `liste non exhaustive` ;
+- le détail réglementaire n’est pas répété dans la procédure ;
+- éviter les paragraphes qui annoncent simplement le contenu des cartes qui suivent.
 
 ---
 
@@ -380,13 +484,17 @@ ChatGPT ne doit pas reproduire le reste du hero commun.
 
 ### 5.3 Zone d’intervention
 
+Fournir uniquement :
+
 - ville principale ;
 - bassin réellement couvert ;
 - sélection de communes proches réellement desservies ;
-- éventuelles conditions particulières de couverture ;
+- éventuelle modalité de déplacement si elle varie ;
 - lien vers le département parent.
 
-La liste doit rester lisible et non exhaustive.
+La copy commune du bloc est définie par la section 4.3.
+
+Ne pas fournir de phrase `Cette liste n’est pas exhaustive`. La structure `notamment à :` permet déjà de présenter une sélection ouverte.
 
 Ne pas fournir la liste administrative complète d’un EPCI si elle ne correspond pas à la zone commerciale réelle.
 
@@ -403,7 +511,7 @@ Le composant, sa structure visuelle et les formulations génériques doivent êt
 
 Les données de taxe de séjour publiées sont des données métier sensibles. Elles doivent être fournies ou explicitement validées par Florian pendant le plan d’implémentation, comme les tarifs Etoilys. ChatGPT peut préparer les sources et le raisonnement, mais Codex ne doit pas publier un barème, un calcul ou un exemple comparatif sans validation métier explicite.
 
-Dans la V4, ce module est placé vers le bas de la landing page, juste avant la FAQ. Il doit être traité comme une **preuve locale concrète** du bénéfice taxe de séjour déjà évoqué plus haut, et non comme une deuxième explication générique du même avantage.
+Dans la V4, ce module est placé vers le bas de la landing page, avant la FAQ. Il peut être suivi d’un module réglementaire local informatif lorsqu’il est pertinent. Il doit être traité comme une **preuve locale concrète** du bénéfice taxe de séjour déjà évoqué plus haut, et non comme une deuxième explication générique du même avantage.
 
 ### 5.5 FAQ
 
@@ -476,21 +584,20 @@ En l’absence de preuve réelle, ne rien fournir et ne rien afficher.
 ChatGPT ne doit pas refaire de recherche ou de rédaction locale sur :
 
 - le fonctionnement général du classement ;
-- le bloc commun `Pourquoi classer votre meublé ?` et ses trois bénéfices ;
-- les étapes communes de la procédure en trois temps ;
-- le bloc commun `Pourquoi choisir Etoilys ?` et ses trois différenciateurs ;
+- l’intro commune et les trois cartes de `Pourquoi classer votre meublé ?` ;
+- le H2 `Votre classement directement dans votre logement` ;
+- le H2 `Votre classement en 3 étapes` et l’absence volontaire d’intro ;
+- les étapes communes de la procédure ;
+- le bloc `Pourquoi choisir Etoilys ?`, validé tel quel ;
 - l’accréditation Etoilys ;
 - les outils Etoilys ;
 - les CTA communs ;
-- les arguments génériques de confiance ;
-- le contenu générique du bloc tarifaire ;
-- les formulations communes du hero ;
-- les textes génériques de transition ;
+- les règles visuelles V4 ;
 - les règles nationales déjà traitées ailleurs sur le site.
 
-Ces éléments doivent rester centralisés dans l’implémentation commune V4. Le présent framework fixe leur rôle, leur ordre et leurs garde-fous ; la copy commune elle-même ne doit pas être dupliquée dans chaque configuration locale.
+Ces éléments doivent rester centralisés dans l’implémentation commune V4.
 
-Si ChatGPT détecte qu’un élément commun paraît obsolète ou problématique, il doit le signaler séparément sans le réécrire dans le livrable de la nouvelle ville.
+Si ChatGPT détecte qu’un élément commun paraît obsolète ou problématique, il doit le signaler séparément sans créer une variante locale.
 
 ---
 
@@ -789,26 +896,20 @@ Codex doit d’abord :
 6. vérifier la configuration SEO, le sitemap, le prerender et les breadcrumbs existants ;
 7. déterminer si le ticket concerne une **migration V4 d’une page existante** ou la **création d’une nouvelle page déjà basée sur V4**.
 
-### 12.2 Industrialiser le modèle commun V4
+### 12.2 Réutiliser le modèle commun V4 existant
 
-Codex doit faire du framework V4 la référence fonctionnelle du modèle commun.
+Bergerac est désormais la référence V4. Codex doit réutiliser l’implémentation existante plutôt que recréer une nouvelle structure.
 
-Si Bergerac est la première page migrée, Codex doit :
+Le mécanisme de migration doit permettre une activation ville par ville, par exemple via la configuration de layout déjà en place.
 
-- adapter l’implémentation partagée afin de pouvoir rendre le modèle V4 ;
-- modifier Bergerac conformément à l’ordre et aux règles de la section 4 ;
-- centraliser la copy et les comportements communs ;
-- éviter toute duplication du contenu commun ;
-- rendre les seuls champs locaux configurables ;
-- préserver les autres pages villes non encore migrées si le ticket ne les concerne pas.
+Codex doit :
 
-Si le composant partagé actuel rend impossible une migration page par page sans effet de bord, Codex doit utiliser un mécanisme transitoire limité permettant d’activer V4 localité par localité.
-
-Si Bergerac a déjà été migrée, Codex doit réutiliser le modèle V4 existant plutôt que recréer une nouvelle structure.
-
-Ne pas créer un CMS ou une abstraction disproportionnée.
-
-Le prompt ne doit pas dicter les noms de fichiers si l’architecture réelle suggère une solution différente.
+- centraliser la copy commune ;
+- ne rendre configurables que les champs réellement locaux ;
+- préserver les pages villes non encore migrées ;
+- éviter toute duplication durable ;
+- ne pas créer un CMS ou une abstraction disproportionnée ;
+- ne pas imposer de nouveaux noms de fichiers si l’architecture actuelle fournit déjà la solution.
 
 ### 12.3 Migrer ou créer la déclinaison cible
 
@@ -830,7 +931,7 @@ Pour une **ville existante à migrer**, Codex doit :
 
 ### 12.4 Vérifier les informations métier
 
-Pendant le plan d’implémentation, Codex doit demander confirmation à Florian pour :
+Pour une **nouvelle ville**, Codex doit demander confirmation lorsque nécessaire pour :
 
 - tarifs ;
 - TTC ou HT ;
@@ -839,19 +940,19 @@ Pendant le plan d’implémentation, Codex doit demander confirmation à Florian
 - frais ;
 - délais ;
 - zone couverte ;
-- données de taxe de séjour à afficher ;
-- exemple de taxe de séjour à publier ;
+- données de taxe de séjour ;
+- exemple de taxe de séjour ;
 - preuve locale éventuelle.
 
-Les tarifs et la taxe de séjour doivent toujours être confirmés pour une nouvelle ville. Si les autres informations essentielles manquent, Codex doit poser à Florian une seule série de questions consolidées avant d’intégrer le champ concerné.
+Pour une **migration d’une page existante**, conserver par défaut les données métier déjà publiées lorsqu’elles sont récentes, sourcées et toujours valides. Ne pas recalculer ou modifier un prix, une taxe ou une modalité uniquement parce que le layout passe en V4.
 
-Il ne doit :
+Codex ne doit :
 
 - rien inventer ;
-- reprendre aucun montant de Bergerac par défaut ;
-- corriger ou recalculer silencieusement une donnée de taxe de séjour sans validation ;
-- laisser aucun placeholder en production ;
-- ajouter aucune modalité absente volontairement du modèle.
+- reprendre aucun montant de Bergerac par défaut pour une nouvelle zone ;
+- corriger ou recalculer silencieusement une donnée de taxe de séjour ;
+- laisser de placeholder en production ;
+- ajouter une modalité absente volontairement du modèle.
 
 ### 12.5 SEO et maillage
 
@@ -910,6 +1011,25 @@ Les tests doivent vérifier des contrats structurels :
 Ne pas créer de tests vérifiant mot pour mot la copy commune ou la présence exacte de phrases marketing.
 
 Une reformulation éditoriale mineure ne doit pas casser les tests.
+
+### 12.8 Cas de référence : migration de Bordeaux
+
+Bordeaux est une **migration V4 d’une page existante**, pas une création.
+
+Lors de sa migration :
+
+- conserver sa route ;
+- conserver son hero, son image, son SEO et son maillage local s’ils restent valides ;
+- conserver ses données de taxe de séjour déjà publiées si elles sont toujours exactes ;
+- conserver son bloc de règles locales, car il apporte une vraie information décisionnelle ;
+- placer ce bloc de règles après le bloc taxe de séjour et juste avant la FAQ ;
+- l’intégrer visuellement comme une information locale basse de page, sur le même fond que la taxe de séjour, sans casser l’alternance et la hiérarchie V4 ;
+- appliquer la copy commune de Bergerac V4 aux blocs génériques ;
+- passer la procédure à `Votre classement en 3 étapes` sans intro ;
+- passer la zone au modèle `Votre classement directement dans votre logement` ;
+- ne modifier aucune autre ville pendant cette migration.
+
+Le but n’est pas de rendre Bordeaux identique à Bergerac, mais de faire appartenir les deux pages au même système V4 tout en conservant leur delta local réel.
 
 ---
 
@@ -971,8 +1091,8 @@ Le prompt ne doit pas contenir :
 ### Valeur locale
 
 - Les données propres à la ville sont-elles réelles et vérifiées ?
-- L’introduction locale apporte-t-elle quelque chose ?
-- La liste de communes correspond-elle à la couverture réelle ?
+- Chaque introduction apporte-t-elle une information ou un angle réel, au lieu d’annoncer simplement le contenu qui suit ?
+- La sélection de communes correspond-elle à la couverture réelle et est-elle introduite par `notamment` plutôt que par un disclaimer administratif ?
 - L’exemple de taxe a-t-il été validé par Florian ?
 - La FAQ traite-t-elle des questions utiles à cette localité ?
 - La page reste-t-elle une landing page claire et commerciale, sans paragraphe administratif défensif ?
@@ -1000,8 +1120,8 @@ Le prompt ne doit pas contenir :
 
 ### Métier
 
-- Les tarifs sont-ils explicitement confirmés ?
-- Les données de taxe de séjour sont-elles explicitement confirmées ?
+- Pour une nouvelle ville, les tarifs sont-ils explicitement confirmés ? Pour une migration, les tarifs existants ont-ils été conservés s’ils restent valides ?
+- Pour une nouvelle ville, les données de taxe de séjour sont-elles explicitement confirmées ? Pour une migration, les données existantes restent-elles valides et sourcées ?
 - Les conditions sont-elles confirmées ?
 - Les délais sont-ils confirmés ?
 - Aucun montant de Bergerac n’a-t-il été repris par défaut ?
@@ -1046,6 +1166,10 @@ Vérifier notamment :
 - absence de débordement horizontal ;
 - accessibilité des liens, CTA, tableaux et FAQ ;
 - rendu à 390, 768, 1024 et 1440 px ;
+- alternance des fonds conforme à la V4 ;
+- H2 principaux alignés sur une même grille ;
+- absence de section visuellement indentée sans raison ;
+- espacement vertical cohérent basé sur la règle commune ;
 - image optimisée et correctement créditée ;
 - calcul de taxe correctement affiché.
 
@@ -1077,11 +1201,19 @@ La valeur CRO commune doit venir de la structure V4 :
 ```text
 Hero
 → Pourquoi classer ?
-→ Zone d’intervention
+→ Votre classement directement dans votre logement
+→ Règle locale critique éventuelle
 → Tarifs
-→ Procédure
+→ Votre classement en 3 étapes
 → Pourquoi Etoilys ?
 → Preuve locale / taxe de séjour
+→ Règle locale informative éventuelle
 → FAQ
 → CTA final
 ```
+
+---
+
+## 17. Règle finale de référence
+
+> **Bergerac définit le système V4. Une nouvelle ville n’apporte que ce qui doit réellement changer localement. Une ville existante conserve ses données locales valides et adopte le système V4 sans réécriture inutile.**

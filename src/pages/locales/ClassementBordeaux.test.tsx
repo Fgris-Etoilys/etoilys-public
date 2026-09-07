@@ -33,6 +33,19 @@ function expectHeadingSequence(expectedHeadings: Array<string | RegExp>) {
   });
 }
 
+function expectHeadingSectionClass(headingName: string | RegExp, className: string | RegExp) {
+  const heading = screen.getByRole('heading', { name: headingName });
+  const section = heading.closest('section');
+
+  expect(section).not.toBeNull();
+  if (typeof className === 'string') {
+    expect(section).toHaveClass(className);
+    return;
+  }
+
+  expect(section?.className).toEqual(expect.stringMatching(className));
+}
+
 describe('ClassementBordeaux', () => {
   afterEach(() => {
     cleanup();
@@ -40,7 +53,7 @@ describe('ClassementBordeaux', () => {
     document.title = '';
   });
 
-  it('renders the Bordeaux city page with local data and no local proof module', () => {
+  it('renders the Bordeaux city page with local data and V4 common sections', () => {
     renderBordeauxPage();
 
     expect(
@@ -66,27 +79,60 @@ describe('ClassementBordeaux', () => {
     expect(screen.getAllByText('100 € par logement').length).toBeGreaterThan(0);
     expect(screen.getAllByText(/numéro d’enregistrement/i).length).toBeGreaterThan(0);
     expect(screen.getAllByText(/90 jours par année civile/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/changement d’usage/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/compensation/i).length).toBeGreaterThan(0);
+    expect(
+      screen.queryByRole('heading', {
+        name: 'Avant de louer à Bordeaux, trois règles locales à vérifier',
+      })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Le classement de votre meublé est indépendant de certaines démarches/i)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Consulter le guide propriétaire de la Ville de Bordeaux' })
+    ).toHaveAttribute(
+      'href',
+      'https://www.bordeaux.fr/location-touristique-bordeaux--guide-proprietaires'
+    );
     expect(document.body).not.toHaveTextContent(
       /témoignage|partenariat local|agence Etoilys à Bordeaux/i
     );
     expect(document.body).not.toHaveTextContent(/LocalBusiness/i);
   });
 
-  it('keeps Bordeaux on the current city layout order while Bergerac migrates', () => {
+  it('renders Bordeaux in the V4 section order with the local warning after tax', () => {
     renderBordeauxPage();
 
-    expect(screen.queryByRole('heading', { name: 'Pourquoi classer votre meublé ?' })).toBeNull();
     expectHeadingSequence([
       'Classement de meublé de tourisme à Bordeaux et dans la métropole',
-      'Où intervenons-nous autour de Bordeaux ?',
-      'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
-      'Avant de louer à Bordeaux, trois règles locales à vérifier',
-      'Comment faire classer votre meublé à Bordeaux ?',
+      'Pourquoi classer votre meublé ?',
+      'Votre classement directement dans votre logement',
       'Combien coûte le classement d’un meublé à Bordeaux ?',
+      'Votre classement en 3 étapes',
       'Pourquoi choisir Etoilys pour votre classement à Bordeaux ?',
+      'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
+      'À Bordeaux, quelques règles locales à connaître',
       'Questions fréquentes sur le classement à Bordeaux',
       'Vous souhaitez faire classer votre meublé à Bordeaux ?',
     ]);
+
+    expect(screen.queryByText(/Cette liste n’est pas exhaustive/i)).not.toBeInTheDocument();
+    expectHeadingSectionClass('Pourquoi classer votre meublé ?', 'bg-white');
+    expectHeadingSectionClass('Votre classement directement dans votre logement', 'bg-primary-100');
+    expectHeadingSectionClass('Combien coûte le classement d’un meublé à Bordeaux ?', 'bg-white');
+    expectHeadingSectionClass('Votre classement en 3 étapes', 'bg-primary-100');
+    expectHeadingSectionClass(
+      'Pourquoi choisir Etoilys pour votre classement à Bordeaux ?',
+      'bg-white'
+    );
+    expectHeadingSectionClass(
+      'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
+      'bg-primary-100'
+    );
+    expectHeadingSectionClass('À Bordeaux, quelques règles locales à connaître', 'bg-primary-100');
+    expectHeadingSectionClass('Questions fréquentes sur le classement à Bordeaux', 'bg-white');
+    expectHeadingSectionClass('Vous souhaitez faire classer votre meublé à Bordeaux ?', /from-/);
   });
 
   it('sets Bordeaux SEO metadata and hierarchical breadcrumb JSON-LD', async () => {
