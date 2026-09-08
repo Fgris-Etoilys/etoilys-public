@@ -108,7 +108,7 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     description:
       'Réception, émission, e-reporting, calendrier, sanctions : voici ce qui s\u2019applique vraiment aux propriétaires de meublés de tourisme.',
     datePublished: '2026-05-04',
-    dateModified: '2026-05-04',
+    dateModified: '2026-09-08',
     imageKey: 'articleFacturationElectronique2026',
     authorId: 'florian-grisorio',
   },

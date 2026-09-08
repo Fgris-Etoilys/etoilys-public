@@ -46,9 +46,9 @@ const keyTakeawaysBlock = (
         id: 'facturationelectronique2026-takeaway-2',
         content: (
           <>
-            En revanche, il doit <strong>recevoir</strong> les factures électroniques de ses
-            fournisseurs à partir du <strong>1er septembre 2026</strong>, sous réserve de disposer
-            d'un <strong>SIREN</strong>.
+            En revanche, depuis le <strong>1er septembre 2026</strong>, il doit être en mesure de
+            recevoir les factures électroniques de ses fournisseurs, sous réserve de disposer d'un{' '}
+            <strong>SIREN</strong>.
           </>
         ),
       },
@@ -80,9 +80,8 @@ const keyTakeawaysBlock = (
         id: 'facturationelectronique2026-takeaway-5',
         content: (
           <>
-            En pratique, le minimum à anticiper dès maintenant est simple&nbsp;:{' '}
-            <strong>choisir une plateforme de réception</strong> et organiser votre circuit
-            fournisseurs.
+            Si vous n'avez pas encore choisi de plateforme agréée pour la réception, la démarche
+            doit désormais être faite dans les meilleurs délais.
           </>
         ),
       },
@@ -123,6 +122,13 @@ const articleSources = (
         organization: 'impots.gouv.fr',
         title: "Foire aux questions : J'approfondis la facturation électronique",
         url: 'https://www.impots.gouv.fr/foire-aux-questions-japprofondis-la-facturation-electronique',
+      },
+      {
+        id: 'ministere-economie-la-facturation-electronique-demarre-aujourdhui',
+        organization: 'Ministère de l’Économie et des Finances',
+        title:
+          "La facturation électronique démarre aujourd'hui : priorité à l’accompagnement des entreprises",
+        url: 'https://presse.economie.gouv.fr/la-facturation-demarre-aujourdhui-priorite-a-laccompagnement-des-entreprises/',
       },
       {
         id: 'impots-gouv-fr-la-facturation-electronique-qu-est-ce-que-ca-change-pour-moi-6',
@@ -174,15 +180,15 @@ export default function ArticleFacturationElectronique2026() {
             Oui, les propriétaires de meublés de tourisme sont concernés par la réforme de la
             facturation électronique. La confusion vient d'un mauvais réflexe&nbsp;: beaucoup
             pensent que seuls les loueurs qui <strong>collectent la TVA</strong> sont concernés. En
-            réalité, pour un <strong>loueur en meublé classique</strong>, la réforme impose déjà la{' '}
-            <strong>réception</strong> des factures électroniques des fournisseurs à partir du{' '}
-            <strong>1er septembre 2026</strong>, même si les séjours restent exonérés de TVA.
+            réalité, depuis le <strong>1er septembre 2026</strong>, un{' '}
+            <strong>loueur en meublé classique</strong> doit être en mesure de recevoir les factures
+            électroniques de ses fournisseurs, même si les séjours restent exonérés de TVA.
           </p>
           <p className="text-gray-700 leading-comfortable mb-10">
-            En pratique, le sujet concerne surtout les loueurs déclarés avec un numéro{' '}
-            <strong>SIREN/SIRET</strong>. Même lorsque les séjours restent exonérés de TVA, ces
-            loueurs doivent organiser la réception de leurs factures électroniques fournisseurs à
-            partir du <strong>1er septembre 2026</strong>.
+            En pratique, le sujet concerne surtout les loueurs disposant d'un numéro{' '}
+            <strong>SIREN</strong>. Même lorsque les séjours restent exonérés de TVA, ces loueurs
+            doivent désormais avoir choisi une plateforme agréée pour recevoir les factures
+            fournisseurs.
           </p>
         </>
       }
@@ -223,14 +229,14 @@ export default function ArticleFacturationElectronique2026() {
         <em>est-ce que je facture la TVA à mes voyageurs&nbsp;?</em>
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Pour un <strong>loueur en meublé classique</strong>, la DGFIP indique que les locations
+        Pour un <strong>loueur en meublé classique</strong>, la DGFiP indique que les locations
         exonérées de TVA au titre de l'article <strong>261 D du CGI</strong> n'emportent{' '}
         <strong>pas d'obligation d'émission</strong> de facture électronique ni de{' '}
         <strong>e-reporting</strong> pour ces opérations.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Mais cette même fiche DGFIP ajoute un point essentiel&nbsp;: <strong>en réception</strong>,
-        ces bailleurs restent assujettis à la TVA et devront <strong>recevoir</strong> des factures
+        Mais cette même fiche DGFiP ajoute un point essentiel&nbsp;: <strong>en réception</strong>,
+        ces bailleurs restent assujettis à la TVA et doivent <strong>recevoir</strong> des factures
         électroniques, <strong>sous réserve de disposer d'un numéro SIREN</strong>.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
@@ -269,7 +275,7 @@ export default function ArticleFacturationElectronique2026() {
 
       <h3 className="mt-6 mb-3">1. Réception des factures électroniques</h3>
       <p className="text-gray-700 leading-comfortable mb-4">
-        À partir du <strong>1er septembre 2026</strong>, vous devez être en mesure de{' '}
+        Depuis le <strong>1er septembre 2026</strong>, vous devez être en mesure de{' '}
         <strong>recevoir</strong> les factures électroniques de vos fournisseurs français assujettis
         à la TVA.
       </p>
@@ -296,14 +302,14 @@ export default function ArticleFacturationElectronique2026() {
 
       <h3 className="mt-6 mb-3">2. Émission des factures électroniques</h3>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Pour vos <strong>séjours exonérés de TVA</strong>, la fiche DGFIP dédiée aux loueurs en
+        Pour vos <strong>séjours exonérés de TVA</strong>, la fiche DGFiP dédiée aux loueurs en
         meublé est claire&nbsp;: <strong>pas d'obligation d'émission</strong> de facture
         électronique.
       </p>
 
       <h3 className="mt-6 mb-3">3. E-reporting</h3>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Pour ces <strong>opérations exonérées</strong>, la fiche DGFIP est là aussi claire&nbsp;:{' '}
+        Pour ces <strong>opérations exonérées</strong>, la fiche DGFiP est là aussi claire&nbsp;:{' '}
         <strong>pas d'obligation de e-reporting</strong>.
       </p>
       <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-6">
@@ -353,7 +359,7 @@ export default function ArticleFacturationElectronique2026() {
             •
           </span>
           <span>
-            la <strong>réception</strong> à partir du <strong>1er septembre 2026</strong>
+            la <strong>réception</strong>, obligatoire depuis le <strong>1er septembre 2026</strong>
             &nbsp;;
           </span>
         </li>
@@ -398,7 +404,7 @@ export default function ArticleFacturationElectronique2026() {
                 Situation
               </th>
               <th scope="col" className="p-3 text-center font-semibold">
-                Réception à partir du 01/09/2026
+                Réception depuis le 01/09/2026
               </th>
               <th scope="col" className="p-3 text-center font-semibold">
                 Émission
@@ -420,8 +426,7 @@ export default function ArticleFacturationElectronique2026() {
               <td className="p-3 text-center text-gray-500">Non pour les séjours exonérés</td>
               <td className="p-3 text-center text-gray-500">Non pour ces opérations exonérées</td>
               <td className="p-3 text-gray-700">
-                Choisir une plateforme de réception et être prêt à recevoir les factures
-                fournisseurs
+                Avoir choisi une plateforme agréée pour recevoir les factures fournisseurs
               </td>
             </tr>
             <tr className="bg-gray-50">
@@ -449,9 +454,9 @@ export default function ArticleFacturationElectronique2026() {
 
       <h3 className="mt-6 mb-3">Réception</h3>
       <p className="text-gray-700 leading-comfortable mb-4">
-        <strong>1er septembre 2026</strong>&nbsp;: obligation de <strong>réception</strong> des
-        factures électroniques pour les entreprises concernées. Pour un loueur en meublé classique,
-        c'est la date clé.
+        Depuis le <strong>1er septembre 2026</strong>, la réception des factures électroniques est
+        <strong> obligatoire</strong> pour les entreprises concernées. Pour un loueur en meublé
+        classique, c'est la principale obligation à retenir.
       </p>
 
       <h3 className="mt-6 mb-3">Émission</h3>
@@ -519,6 +524,18 @@ export default function ArticleFacturationElectronique2026() {
           </span>
         </li>
       </ul>
+      <p className="text-gray-700 leading-comfortable mb-4">
+        Toutefois, le démarrage de la réforme s'accompagne d'une période de tolérance. Le ministère
+        de l'Économie a annoncé le 1er septembre 2026 qu'aucune sanction ne serait appliquée pendant
+        la fin de l'année 2026 aux entreprises rencontrant des difficultés dans la mise en œuvre de
+        la réforme.
+      </p>
+      <p className="text-gray-700 leading-comfortable mb-4">
+        Cette tolérance ne supprime pas les obligations entrées en vigueur le 1er septembre. Si vous
+        n'avez pas encore choisi de plateforme agréée ou organisé la réception de vos factures
+        électroniques, l'administration demande de vous mettre en conformité dans les meilleurs
+        délais.
+      </p>
 
       {/* Section 6 */}
       <ArticleSectionHeading id="comment-se-mettre-en-conformite-concretement">
@@ -527,12 +544,13 @@ export default function ArticleFacturationElectronique2026() {
 
       <h3 className="mt-6 mb-3">Option 1 — Le minimum indispensable pour un loueur exonéré</h3>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Si vous êtes un loueur en meublé classique exonéré de TVA, le minimum à prévoir est&nbsp;:
+        Si vous êtes un loueur en meublé classique exonéré de TVA, le minimum à vérifier désormais
+        est&nbsp;:
       </p>
       <div className="space-y-3 mb-6 text-gray-700">
         {[
           "vérifier que votre activité dispose bien d'un SIREN\u00a0;",
-          'choisir une plateforme agréée ou la solution retenue pour la réception\u00a0;',
+          "si ce n'est pas encore fait, choisir une plateforme agréée pour la réception\u00a0;",
           'faire le point sur vos fournisseurs qui vous facturent déjà en B2B\u00a0;',
           'organiser un circuit simple\u00a0: réception, classement, transmission à votre comptable si besoin.',
         ].map((step, i) => (
@@ -579,9 +597,9 @@ export default function ArticleFacturationElectronique2026() {
         La bonne réponse n'est donc pas <em>je suis concerné seulement si je collecte la TVA</em>.
       </p>
       <p className="text-gray-700 leading-comfortable mb-4">
-        Pour un propriétaire de meublé de tourisme classique, la réforme impose déjà un changement
-        concret&nbsp;: être prêt à <strong>recevoir</strong> des factures électroniques à partir du{' '}
-        <strong>1er septembre 2026</strong>. L'
+        Pour un propriétaire de meublé de tourisme classique, la réforme impose désormais un
+        changement concret&nbsp;: être en mesure de recevoir les factures électroniques de ses
+        fournisseurs. Cette obligation s'applique depuis le <strong>1er septembre 2026</strong>. L'
         <strong>émission</strong> et le <strong>e-reporting</strong> dépendent ensuite de la nature
         TVA réelle de l'activité.
       </p>
