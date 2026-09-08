@@ -255,14 +255,30 @@ Pattern :
 
 #### Variante département
 
-Le bloc affiche :
+Le bloc départemental validé est un **panneau compact pleine largeur**, avec une ligne par secteur.
+
+Chaque ligne affiche :
 
 - plusieurs **secteurs ou bassins commerciaux** du département ;
-- pour chaque secteur, une sélection courte de communes représentatives visible par défaut ;
-- lorsque la liste complète apporte une vraie valeur, un bouton de type `Voir plus de villes` / `Voir toutes les communes desservies` ;
-- les liens vers les pages villes publiées lorsqu’elles existent.
+- le nom du secteur ;
+- environ 4 à 6 communes représentatives visibles par défaut, en texte inline ;
+- un contrôle `+N communes` lorsque des communes supplémentaires sont utiles ;
+- les liens vers les pages villes publiées lorsqu’elles existent, directement sur le nom de commune.
+
+Exemple :
+
+```text
+Bergeracois et sud Dordogne
+Bergerac → · Prigonrieux · Creysse · La Force · Mouleydier     +6 communes
+```
 
 La page départementale ne doit pas afficher d’emblée des dizaines de communes au point de casser le parcours de conversion.
+
+Ne pas utiliser :
+
+- de grosses cards indépendantes par secteur ;
+- de pills ou badges pour chaque commune ;
+- un CTA séparé du type `Voir la page Bergerac` si `Bergerac →` est déjà cliquable dans la ligne.
 
 ### 4.4 Listes de communes repliables sur les pages départementales
 
@@ -276,9 +292,8 @@ Le compromis V5 est :
 Exemple :
 
 ```text
-Bergeracois et Sud Dordogne
-Bergerac · Monbazillac · Eymet · Lalinde · Issigeac
-[Voir les autres communes desservies]
+Bergeracois et sud Dordogne
+Bergerac → · Prigonrieux · Creysse · La Force · Mouleydier     +6 communes
 ```
 
 #### Règle SEO / rendu
@@ -286,6 +301,12 @@ Bergerac · Monbazillac · Eymet · Lalinde · Issigeac
 Les communes repliées doivent être **présentes dans le HTML/DOM rendu**, y compris dans le prerender.
 
 Le bouton doit uniquement contrôler leur visibilité.
+
+Le libellé fermé doit rester compact, par exemple `+6 communes`.
+
+Après ouverture, le libellé doit indiquer l’action inverse, par exemple `Masquer les 6 communes`.
+
+Le bouton doit conserver `aria-expanded` et `aria-controls`.
 
 Ne pas faire :
 
@@ -431,13 +452,16 @@ Bordeaux peut conserver un contexte local et un module réglementaire spécifiqu
 
 Le département ne doit pas inventer un barème de taxe de séjour unique lorsqu’il existe plusieurs collectivités ou politiques locales.
 
-Le module peut utiliser :
+Par défaut, le module départemental doit être un bloc compact de contexte marché / tourisme :
 
-- quelques données départementales réellement utiles sur le marché des meublés de tourisme ;
-- 2 ou 3 chiffres maximum si leur valeur commerciale est réelle ;
-- un rappel que la taxe de séjour varie selon la commune ;
-- un lien vers le simulateur de taxe de séjour ;
-- toute donnée départementale fiable qui aide à comprendre l’intérêt du classement.
+- 2 ou 3 chiffres maximum ;
+- uniquement des données réellement utiles pour comprendre le poids des meublés ou du classement ;
+- quelques phrases de contexte utiles ;
+- une source clairement affichée.
+
+La taxe de séjour ou son simulateur ne doivent être utilisés dans ce bloc que s’ils apportent une vraie preuve locale complémentaire.
+
+Ne pas en faire un élément obligatoire ni le choix par défaut.
 
 Éviter les longues statistiques touristiques ou les paragraphes généraux sur le département.
 
@@ -485,11 +509,18 @@ Ne pas remplir la FAQ avec des variantes SEO de type `gîte`, `Airbnb`, `studio`
 
 Même structure de CTA final pour les deux scopes.
 
+Pattern commun :
+
+- CTA principal vers `/demande-classement` ;
+- CTA secondaire `Poser une question` vers `/contact`.
+
 Seuls les éléments localisés changent :
 
 - `à Bergerac` ;
 - `en Dordogne` ;
 - éventuelle modalité locale réellement utile.
+
+Ne pas remplacer arbitrairement le CTA secondaire par `Lire la FAQ`, surtout lorsque la FAQ est placée juste au-dessus.
 
 ### 4.12 Hiérarchie visuelle
 
@@ -518,7 +549,7 @@ Ne pas créer une hiérarchie visuelle différente entre ville et département s
 
 ## 5. Architecture tarifaire V5
 
-Le tarif devient une vraie donnée locale partagée plutôt qu’un texte hardcodé dans une page.
+Le tarif est une donnée locale partagée, portée par les `PricingProfile`.
 
 ### 5.1 Source de vérité unique
 
@@ -580,7 +611,7 @@ Dordogne
 puis demain :
   overrides:
     24322 → perigueux-profile
-    24520 → secteur-bergeracois-profile
+    24520 → sarlat-profile
 ```
 
 Le nom de commune sert à la recherche et à l’affichage ; l’identifiant de commune sert à l’override tarifaire.
@@ -632,9 +663,16 @@ Après sélection :
 
 Ne pas faire disparaître le picker après la première sélection.
 
-### 6.2 Réutiliser la base du picker du simulateur taxe de séjour
+### 6.2 Réutiliser la mécanique de recherche existante
 
-À la date de la V5, `SimulateurTaxeSejour.tsx` contient déjà une mécanique d’autocomplete avancée :
+La logique générique de recherche locale existe dans `src/utils/localitySearch.ts`, avec notamment :
+
+```text
+prepareLocalitySearch
+searchPreparedLocalities
+```
+
+Cette mécanique couvre déjà :
 
 - normalisation de recherche ;
 - suggestions ;
@@ -646,20 +684,21 @@ Ne pas faire disparaître le picker après la première sélection.
 - gestion du focus ;
 - rôles ARIA de combobox.
 
-Cette mécanique est actuellement intégrée dans la page du simulateur et dépend de son type `TaxeSejourCity`.
+Le simulateur taxe de séjour et le picker départemental utilisent cette base commune.
 
-La V5 recommande donc :
+La V5 impose donc :
 
-- d’extraire **uniquement la mécanique générique utile** ;
-- de créer un composant ou hook de recherche suffisamment générique pour être réutilisé ;
-- de laisser le simulateur taxe continuer à fournir ses propres données ;
-- de laisser la tarification locale fournir ses propres données ;
-- de ne pas coupler le pricing à la source de données DELTA.
+- de réutiliser `src/utils/localitySearch.ts` ;
+- de ne pas réimplémenter une nouvelle normalisation ou un nouveau matching ;
+- de ne pas extraire à nouveau le simulateur taxe de séjour ;
+- de laisser les datasets métier indépendants ;
+- de laisser le simulateur taxe continuer à utiliser son dataset fiscal ;
+- de laisser les pages départementales utiliser un index léger de communes du département courant.
 
 Conceptuellement :
 
 ```text
-LocalityCombobox / generic search logic
+src/utils/localitySearch.ts
         ↑
         ├── Simulateur taxe de séjour
         └── Tarification pages départementales
@@ -677,6 +716,8 @@ Le partage doit porter sur **l’UX et la logique de recherche**, pas sur les do
 
 Le picker d’une page départementale charge uniquement un index léger des communes du département courant.
 
+Chaque page départementale V5 doit fournir explicitement son propre `communeIndexUrl`. Il ne doit pas exister de fallback silencieux vers l’index d’un autre département.
+
 Format cible :
 
 ```text
@@ -689,12 +730,28 @@ Format cible :
 
 La source peut être dérivée du pipeline du simulateur de taxe de séjour, mais le fichier chargé par la landing ne doit pas être le dataset fiscal complet.
 
+Le chargement doit rester lazy :
+
+- ne pas charger l’index au chargement initial de la landing ;
+- charger l’index au premier focus ou à la première interaction avec le picker ;
+- conserver ensuite l’index en mémoire pour les recherches successives ;
+- ne pas refetcher à chaque saisie ;
+- préparer / indexer les communes une seule fois après chargement.
+
 Pour une page Dordogne :
 
 ```text
 dataset = communes Dordogne uniquement
 résolution = defaultPricingProfileId + overrides éventuels par id commune
 autre département = lien générique vers /zones-intervention
+```
+
+Pour les prochains départements, le pipeline doit réutiliser le même mécanisme d’index léger, en changeant seulement le code département, par exemple via `buildDepartmentCommuneIndexFromCompactDataset(dataset, departmentCode)` :
+
+```text
+Dordogne → 24
+Gironde → 33
+Lot-et-Garonne → 47
 ```
 
 Le picker ne doit pas résoudre ni rediriger vers un autre département. Si le visiteur cherche une commune absente du dataset courant, la page peut proposer un lien discret vers `/zones-intervention`.
@@ -753,6 +810,7 @@ ChatGPT doit produire uniquement les données réellement variables du scope cib
 - communes visibles par défaut ;
 - communes additionnelles repliées ;
 - liens vers les pages villes publiées ;
+- `communeIndexUrl` vers l’index léger du département courant ;
 - default pricing profile et overrides éventuels par commune ;
 - preuve locale départementale ;
 - éventuelles questions de FAQ propres à la diversité territoriale.
@@ -812,10 +870,15 @@ Ne pas forcer un calcul local unique si le département contient plusieurs barè
 
 Préférer :
 
-- quelques données départementales vérifiées ;
-- un renvoi vers le simulateur de taxe de séjour ;
-- une phrase claire indiquant que la taxe dépend de la commune ;
-- éventuellement des exemples ciblés uniquement s’ils sont clairement présentés comme locaux et non comme départementaux.
+- un bloc compact de contexte marché / tourisme ;
+- 2 ou 3 chiffres maximum ;
+- uniquement des données utiles pour comprendre le poids des meublés ou du classement ;
+- quelques phrases de contexte utiles ;
+- une source clairement affichée.
+
+La taxe de séjour ou son simulateur ne doivent être utilisés que s’ils apportent une vraie preuve locale complémentaire.
+
+Ne jamais présenter un barème communal comme s’il était valable pour tout le département.
 
 ---
 
@@ -897,6 +960,7 @@ Pour un département :
 | Communes visibles                              |        |        |      | Public         |
 | Communes repliées                              |        |        |      | Public         |
 | Pages villes enfants                           |        |        |      | Public         |
+| URL de l’index communes                        |        |        |      | Technique      |
 | Pricing profile par défaut / overrides commune |        |        |      | Interne/public |
 | Preuve locale                                  |        |        |      | Public         |
 | Image                                          |        |        |      | Public         |
@@ -975,27 +1039,47 @@ Codex doit :
 - ne pas créer un CMS ;
 - ne pas imposer de nouveaux fichiers si l’architecture réelle fournit déjà une solution plus simple.
 
-### 13.3 Extraire le bloc tarifaire
+### 13.3 Réutiliser le bloc tarifaire partagé
 
-À la date de la V5, le bloc tarifaire de `CityLandingPage` contient encore des valeurs partagées directement dans le composant.
-
-Le chantier V5 doit viser :
+L’architecture tarifaire existe et doit être réutilisée :
 
 ```text
 PricingProfile
-→ shared LocalTariffsSection
+→ LocalTariffsSection / renderer tarifaire partagé
+→ page ville
+
+ou
+
+PricingProfile
+→ LocalTariffsSection / renderer tarifaire partagé
+→ résultat du picker départemental
 ```
 
-Le même rendu doit pouvoir être appelé :
+Codex doit appliquer les règles suivantes :
+
+- ne jamais recréer un bloc tarifaire spécifique à une page ;
+- ne jamais recopier les valeurs tarifaires dans une config locale ;
+- ville et département doivent consommer le même `PricingProfile` lorsqu’ils partagent la même politique commerciale ;
+- note / microcopy, tarif public, tarif partenaire, conditions, multi-logements, frais éventuels et CTA doivent être issus du renderer partagé ;
+- les blocs `partner`, `multiProperty`, `travelFees` et autres sections tarifaires restent optionnels/configurables.
+
+Le même rendu doit rester appelable :
 
 - directement par une page ville ;
 - après résolution du picker sur une page départementale.
 
-### 13.4 Extraire seulement la base utile du picker taxe de séjour
+### 13.4 Réutiliser la recherche locale partagée
 
-Le simulateur possède déjà une bonne logique de combobox.
+La recherche locale partagée existe dans `src/utils/localitySearch.ts`.
 
-Codex doit réutiliser cette logique lorsque cela réduit réellement la duplication, mais ne doit pas :
+Codex doit :
+
+- réutiliser `prepareLocalitySearch` et `searchPreparedLocalities` ;
+- ne pas réimplémenter la normalisation, le matching strict/fuzzy ou la logique de suggestion ;
+- ne pas extraire à nouveau le simulateur taxe de séjour ;
+- conserver la mémoïsation / préparation de l’index une seule fois par dataset chargé.
+
+Codex ne doit pas :
 
 - brancher le pricing sur les données DELTA ;
 - déplacer tout le simulateur dans un composant générique ;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  buildDordogneCommuneIndexFromCompactDataset,
+  buildDepartmentCommuneIndexFromCompactDataset,
   buildCompactDatasetFromXml,
 } from './build-taxe-sejour-dataset';
 
@@ -129,26 +129,29 @@ describe('buildCompactDatasetFromXml', () => {
     expect(paris?.[4]).toBe('r');
   });
 
-  it('builds a lightweight Dordogne commune index from INSEE ids without fiscal fields', () => {
-    const communeIndex = buildDordogneCommuneIndexFromCompactDataset({
-      v: '2.5.0',
-      sd: '01/01/2026',
-      g: '2026-01-01T00:00:00.000Z',
-      c: [
-        ['24322', 'PERIGUEUX (24)', 'perigueux 24 grand perigueux', 'r', 'r', 0, [], []],
-        [
-          '24335',
-          'PORT-SAINTE-FOY-ET-PONCHAPT (33)',
-          'port sainte foy et ponchapt 33',
-          'r',
-          'r',
-          0,
-          [],
-          [],
+  it('builds a lightweight department commune index from INSEE ids without fiscal fields', () => {
+    const communeIndex = buildDepartmentCommuneIndexFromCompactDataset(
+      {
+        v: '2.5.0',
+        sd: '01/01/2026',
+        g: '2026-01-01T00:00:00.000Z',
+        c: [
+          ['24322', 'PERIGUEUX (24)', 'perigueux 24 grand perigueux', 'r', 'r', 0, [], []],
+          [
+            '24335',
+            'PORT-SAINTE-FOY-ET-PONCHAPT (33)',
+            'port sainte foy et ponchapt 33',
+            'r',
+            'r',
+            0,
+            [],
+            [],
+          ],
+          ['33063', 'BORDEAUX (33)', 'bordeaux 33 bordeaux metropole', 'r', 'r', 0, [], []],
         ],
-        ['33063', 'BORDEAUX (33)', 'bordeaux 33 bordeaux metropole', 'r', 'r', 0, [], []],
-      ],
-    });
+      },
+      '24'
+    );
 
     expect(communeIndex.c).toEqual([
       {

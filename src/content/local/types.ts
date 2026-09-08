@@ -136,7 +136,7 @@ export interface DepartmentPricingResolutionConfig {
   intro: string;
   inputLabel: string;
   placeholder: string;
-  communeIndexUrl?: string;
+  communeIndexUrl: string;
   defaultPricingProfileId: PricingProfileId;
   overrides: Record<string, PricingProfileId>;
 }

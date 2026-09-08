@@ -2,11 +2,7 @@ import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { Euro } from 'lucide-react';
 import Card from '../ui/Card';
-import {
-  COMMUNE_INDEX_URL,
-  parseCommuneIndexDataset,
-  type CommuneIndexEntry,
-} from '../../content/local/communeIndex';
+import { parseCommuneIndexDataset, type CommuneIndexEntry } from '../../content/local/communeIndex';
 import { getPricingProfile, type PricingProfileId } from '../../content/local/pricing';
 import type { DepartmentPricingResolutionConfig } from '../../content/local/types';
 import {
@@ -96,7 +92,7 @@ export default function DepartmentPricingSection({ config }: DepartmentPricingSe
     controllerRef.current = controller;
     setIsLoadingCommunes(true);
 
-    fetch(config.communeIndexUrl ?? COMMUNE_INDEX_URL, { signal: controller.signal })
+    fetch(config.communeIndexUrl, { signal: controller.signal })
       .then((response) => {
         if (!response.ok) {
           throw new Error("L'index des communes n'a pas pu être chargé.");

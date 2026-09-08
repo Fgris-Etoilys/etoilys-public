@@ -362,11 +362,13 @@ function toReadableCommuneLabel(rawName: string): string {
     .replace(/(^|[\s'-])\p{L}/gu, (match) => match.toLocaleUpperCase('fr-FR'));
 }
 
-export function buildDordogneCommuneIndexFromCompactDataset(
-  dataset: CompactDataset
+export function buildDepartmentCommuneIndexFromCompactDataset(
+  dataset: CompactDataset,
+  departmentCode: string
 ): CommuneIndexDataset {
+  const normalizedDepartmentCode = departmentCode.toUpperCase();
   const communes = dataset.c
-    .filter((city) => city[0].startsWith('24'))
+    .filter((city) => city[0].startsWith(normalizedDepartmentCode))
     .map((city) => {
       const id = city[0];
       const label =
@@ -376,7 +378,7 @@ export function buildDordogneCommuneIndexFromCompactDataset(
       return {
         id,
         label,
-        departmentCode: id.slice(0, 2),
+        departmentCode: normalizedDepartmentCode,
       };
     })
     .sort(
@@ -498,7 +500,7 @@ export function buildCompactDatasetFromXml(
 async function main() {
   const xml = await readFile(INPUT_XML_PATH, 'utf8');
   const dataset = buildCompactDatasetFromXml(xml);
-  const communeIndex = buildDordogneCommuneIndexFromCompactDataset(dataset);
+  const communeIndex = buildDepartmentCommuneIndexFromCompactDataset(dataset, '24');
 
   await mkdir(OUTPUT_DIR, { recursive: true });
   await writeFile(OUTPUT_JSON_PATH, JSON.stringify(dataset), 'utf8');

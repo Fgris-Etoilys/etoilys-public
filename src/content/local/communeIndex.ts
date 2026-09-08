@@ -1,5 +1,3 @@
-export const COMMUNE_INDEX_URL = '/data/communes-dordogne-index.v1.json';
-
 export interface CommuneIndexEntry {
   id: string;
   label: string;
