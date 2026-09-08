@@ -2,6 +2,7 @@ import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { Euro } from 'lucide-react';
 import Card from '../ui/Card';
+import Button from '../ui/Button';
 import { parseCommuneIndexDataset, type CommuneIndexEntry } from '../../content/local/communeIndex';
 import { getPricingProfile, type PricingProfileId } from '../../content/local/pricing';
 import type { DepartmentPricingResolutionConfig } from '../../content/local/types';
@@ -17,6 +18,7 @@ const MAX_LOCALITY_SUGGESTIONS = 8;
 
 interface DepartmentPricingSectionProps {
   config: DepartmentPricingResolutionConfig;
+  variant?: 'default' | 'dordogne';
 }
 
 interface PricingSearchItem extends LocalitySearchItem {
@@ -37,7 +39,11 @@ function buildSearchItems(communes: readonly CommuneIndexEntry[]): PricingSearch
   }));
 }
 
-export default function DepartmentPricingSection({ config }: DepartmentPricingSectionProps) {
+export default function DepartmentPricingSection({
+  config,
+  variant = 'default',
+}: DepartmentPricingSectionProps) {
+  const isDordogne = variant === 'dordogne';
   const [communes, setCommunes] = useState<CommuneIndexEntry[] | null>(null);
   const [isLoadingCommunes, setIsLoadingCommunes] = useState(false);
   const [loadingError, setLoadingError] = useState<string | null>(null);
@@ -205,17 +211,31 @@ export default function DepartmentPricingSection({ config }: DepartmentPricingSe
   }
 
   return (
-    <section className="bg-white py-section">
-      <div className="container-adaptive">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-400">
+    <section className={isDordogne ? 'dd-pricing' : 'bg-white py-section'}>
+      <div className={isDordogne ? undefined : 'container-adaptive'}>
+        <div className={isDordogne ? undefined : 'mx-auto max-w-6xl'}>
+          <div
+            className={
+              isDordogne
+                ? 'dd-pricing-eyebrow'
+                : 'mb-5 inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-400'
+            }
+          >
             <Euro className="h-4 w-4" aria-hidden="true" />
             Tarifs
           </div>
-          <h2 className="mb-5">{config.title}</h2>
-          <p className="mb-8 max-w-5xl text-textLight leading-comfortable">{config.intro}</p>
+          <h2 className={isDordogne ? 'dd-pricing-title' : 'mb-5'}>
+            {isDordogne ? 'Votre tarif en Dordogne' : config.title}
+          </h2>
+          <p
+            className={
+              isDordogne ? 'dd-pricing-intro' : 'mb-8 max-w-5xl text-textLight leading-comfortable'
+            }
+          >
+            {config.intro}
+          </p>
 
-          <Card hover={false} className="mb-8 p-6">
+          <Card hover={false} className={isDordogne ? 'dd-pricing-search' : 'mb-8 p-6'}>
             <div className="relative max-w-2xl">
               <label
                 htmlFor="department-pricing-locality"
@@ -283,16 +303,103 @@ export default function DepartmentPricingSection({ config }: DepartmentPricingSe
                 Découvrez toutes nos zones d’intervention.
               </Link>
             </p>
-            {loadingError && <p className="mt-2 text-sm text-red-600">{loadingError}</p>}
+            {isDordogne && isLoadingCommunes && (
+              <p className="dd-pricing-feedback" role="status">
+                Chargement des communes…
+              </p>
+            )}
+            {loadingError && (!isDordogne || !isLoadingCommunes) && (
+              <p
+                className={
+                  isDordogne ? 'dd-pricing-feedback dd-pricing-error' : 'mt-2 text-sm text-red-600'
+                }
+                role={isDordogne ? 'alert' : undefined}
+              >
+                {loadingError}
+                {isDordogne && (
+                  <>
+                    {' '}
+                    <button type="button" onClick={requestCommunes}>
+                      Réessayer
+                    </button>
+                  </>
+                )}
+              </p>
+            )}
+            {isDordogne &&
+              communes &&
+              !resolution &&
+              normalizeLocalitySearchTerm(query) &&
+              suggestions.length === 0 && (
+                <p className="dd-pricing-feedback" role="status">
+                  Commune introuvable dans notre liste.{' '}
+                  <Link to="/demande-classement">Indiquez votre adresse dans une demande</Link> pour
+                  vérifier les possibilités d’intervention.
+                </p>
+              )}
           </Card>
 
-          {resolution && resolvedPricingProfile && (
-            <div className="rounded-card border border-gray-200 bg-white p-6 shadow-card">
-              <p className="mb-5 text-sm font-semibold uppercase tracking-wide text-primary-500">
-                Tarif applicable à {resolution.label}
-              </p>
-              <LocalTariffsProfileContent pricingProfile={resolvedPricingProfile} />
-            </div>
+          {resolution &&
+            resolvedPricingProfile &&
+            (isDordogne ? (
+              <div className="dd-pricing-result" aria-live="polite">
+                <p className="dd-pricing-locality">Votre meublé à {resolution.label}</p>
+                {resolvedPricingProfile.note && (
+                  <p className="dd-pricing-note">{resolvedPricingProfile.note}</p>
+                )}
+                <div className="dd-pricing-public">
+                  <span>{resolvedPricingProfile.standard.label}</span>
+                  <p className="dd-pricing-amount">
+                    {resolvedPricingProfile.standard.amount}{' '}
+                    <small>{resolvedPricingProfile.standard.qualifier}</small>
+                  </p>
+                </div>
+                {resolvedPricingProfile.partner && (
+                  <div className="dd-pricing-partner">
+                    <strong>
+                      {resolvedPricingProfile.partner.amount}{' '}
+                      {resolvedPricingProfile.partner.qualifier}
+                    </strong>
+                    <p>
+                      Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.
+                      {resolvedPricingProfile.partner.conditions && (
+                        <> {resolvedPricingProfile.partner.conditions}</>
+                      )}
+                    </p>
+                  </div>
+                )}
+                {resolvedPricingProfile.multiProperty && (
+                  <details className="dd-pricing-multiple">
+                    <summary>Plusieurs logements dans le même secteur ?</summary>
+                    <dl>
+                      {resolvedPricingProfile.multiProperty.rows.map((row) => (
+                        <div key={row.key}>
+                          <dt>{row.label}</dt>
+                          <dd>{row.amount} TTC</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </details>
+                )}
+                <p className="dd-pricing-note">
+                  La possibilité d’intervention est confirmée avec vous avant de fixer la visite.
+                </p>
+                <Button href="/demande-classement" className="dd-pricing-cta">
+                  Demander mon classement
+                </Button>
+              </div>
+            ) : (
+              <div className="rounded-card border border-gray-200 bg-white p-6 shadow-card">
+                <p className="mb-5 text-sm font-semibold uppercase tracking-wide text-primary-500">
+                  Tarif applicable à {resolution.label}
+                </p>
+                <LocalTariffsProfileContent pricingProfile={resolvedPricingProfile} />
+              </div>
+            ))}
+          {isDordogne && !resolution && (
+            <p className="dd-pricing-hint">
+              Sélectionnez une commune pour découvrir le tarif de votre visite.
+            </p>
           )}
         </div>
       </div>

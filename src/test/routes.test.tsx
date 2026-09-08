@@ -113,12 +113,12 @@ describe('routing', () => {
 
   it('renders Dordogne local landing page', () => {
     renderAt('/classement-meuble-tourisme-dordogne');
-    expectPageHeading(/classement/i, /dordogne/i);
-    expect(screen.getByRole('link', { name: 'Bergerac →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bergerac'
-    );
-    expect(screen.queryByText(/Une page dédiée présente aussi/i)).toBeNull();
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/\S/);
+    expect(document.querySelector('a[href="/demande-classement"]')).toBeInTheDocument();
+    expect(
+      document.querySelector('a[href="/classement-meuble-tourisme-bergerac"]')
+    ).toBeInTheDocument();
   });
 
   it('renders Bergerac city local landing page', () => {

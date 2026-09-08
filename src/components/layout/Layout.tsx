@@ -5,6 +5,7 @@ import AnalyticsContactTracker from './AnalyticsContactTracker';
 import CookieConsentManager from './CookieConsentManager';
 import Header from './Header';
 import Footer from './Footer';
+import { DordogneHeader, DordogneFooter } from '../local/DordogneChrome';
 import SEO from '../ui/SEO';
 import { ToastProvider } from '../ui/Toast';
 import {
@@ -23,6 +24,8 @@ import { IMAGE_MANIFEST } from '../../content/imageManifest';
 
 export default function Layout() {
   const location = useLocation();
+  const isDordogne =
+    location.pathname.replace(/\/+$/, '') === '/classement-meuble-tourisme-dordogne';
   const seoConfig = getSeoRouteConfig(location.pathname);
   const alternateLinks = getSeoAlternateLinks(location.pathname);
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
@@ -53,7 +56,7 @@ export default function Layout() {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`min-h-screen flex flex-col${isDordogne ? ' dordogne-shell' : ''}`}>
       <AnalyticsRouteTracker />
       <AnalyticsContactTracker />
       <SEO
@@ -81,11 +84,14 @@ export default function Layout() {
         />
       )}
       <ToastProvider>
-        <Header />
-        <main className="flex-grow pt-16">
+        {isDordogne ? <DordogneHeader /> : <Header />}
+        <main
+          id={isDordogne ? 'dordogne-content' : undefined}
+          className={isDordogne ? 'flex-grow' : 'flex-grow pt-16'}
+        >
           <Outlet />
         </main>
-        <Footer />
+        {isDordogne ? <DordogneFooter /> : <Footer />}
         <CookieConsentManager />
       </ToastProvider>
     </div>

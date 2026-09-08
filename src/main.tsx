@@ -2,6 +2,8 @@ import { StrictMode } from 'react';
 import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+import './components/local/DordogneLanding.css';
+import './components/local/DepartmentPricingSection.css';
 import { initializeAnalytics } from './utils/analytics';
 import { initOpenAiAdsPixelIfConsented } from './utils/openAiAds';
 

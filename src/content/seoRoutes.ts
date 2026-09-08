@@ -130,12 +130,12 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   },
   '/classement-meuble-tourisme-dordogne': {
     lastModified: '2026-09-08',
-    title: 'Classement gîte, Airbnb et meublé de tourisme en Dordogne',
+    title: 'Classement de meublé de tourisme en Dordogne : visite et tarifs',
     description:
-      'Etoilys accompagne les propriétaires de gîtes et locations saisonnières en Dordogne pour le classement officiel de leur meublé de tourisme.',
+      'Faites classer votre gîte, maison ou appartement en Dordogne avec Etoilys, organisme accrédité Cofrac. Consultez votre tarif et demandez votre visite.',
     breadcrumbLabel: 'Dordogne',
-    ogImageKey: 'dordogneHero',
-    lcpImageKey: 'dordogneHero',
+    ogImageKey: 'dordogneInterior',
+    lcpImageKey: 'dordogneInterior',
   },
   '/classement-meuble-tourisme-bergerac': {
     lastModified: '2026-07-23',

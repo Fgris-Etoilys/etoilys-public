@@ -65,15 +65,16 @@ describe('DepartmentLandingPage', () => {
     vi.unstubAllGlobals();
   });
 
-  it('keeps routed department pages as thin renderer wrappers', () => {
-    ['ClassementDordogne.tsx', 'ClassementGironde.tsx', 'ClassementLotEtGaronne.tsx'].forEach(
-      (fileName) => {
-        const source = readPageSource(fileName);
+  it('keeps shared department wrappers and reuses configured pricing on the dedicated Dordogne page', () => {
+    ['ClassementGironde.tsx', 'ClassementLotEtGaronne.tsx'].forEach((fileName) => {
+      const source = readPageSource(fileName);
 
-        expect(source).toContain('<DepartmentLandingPage config=');
-        expect(source).not.toContain('<section');
-        expect(source).not.toContain('SmartImage');
-      }
+      expect(source).toContain('<DepartmentLandingPage config=');
+      expect(source).not.toContain('<section');
+      expect(source).not.toContain('SmartImage');
+    });
+    expect(readPageSource('ClassementDordogne.tsx')).toContain(
+      '<DepartmentPricingSection config={DORDOGNE_DEPARTMENT_PAGE.pricing}'
     );
   });
 
