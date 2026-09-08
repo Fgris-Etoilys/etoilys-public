@@ -108,6 +108,7 @@ export interface DepartmentServiceAreaConfig {
   intro: string;
   sectors: DepartmentSector[];
   sectorLinks?: Record<string, { label: string; href: string }>;
+  communeLinks?: Record<string, { href: string; label?: string }>;
   outro: string;
 }
 
@@ -130,13 +131,6 @@ export interface DepartmentTariffConfig {
   paragraphs: string[];
 }
 
-export interface DepartmentPricingLocality {
-  id: string;
-  label: string;
-  postalCode?: string;
-  pricingProfileId?: PricingProfileId;
-}
-
 export interface DepartmentPricingResolutionConfig {
   title: string;
   intro: string;
@@ -144,7 +138,6 @@ export interface DepartmentPricingResolutionConfig {
   placeholder: string;
   defaultPricingProfileId: PricingProfileId;
   overrides: Record<string, PricingProfileId>;
-  searchLocalities: DepartmentPricingLocality[];
 }
 
 export interface DepartmentFinalCtaConfig {

@@ -27,7 +27,7 @@ import {
   normalizePdfText,
 } from '../utils/simulatorExport';
 import { trackSimulatorCalculated, trackSimulatorStarted } from '../utils/analytics';
-import { buildLocalitySearchSuggestions } from '../utils/localitySearch';
+import { prepareLocalitySearch, searchPreparedLocalities } from '../utils/localitySearch';
 import LocalizedContent from '../i18n/LocalizedContent';
 import { translateText } from '../i18n/textTranslation';
 import { touristTaxSimulatorEnglishTranslations } from '../i18n/simulatorContent';
@@ -928,13 +928,18 @@ export default function SimulateurTaxeSejour() {
 
   const normalizedQuery = useMemo(() => normalizeTaxeSejourSearchTerm(cityQuery), [cityQuery]);
 
+  const citySearchIndex = useMemo(
+    () => (dataset ? prepareLocalitySearch(dataset.cities) : []),
+    [dataset]
+  );
+
   const suggestions = useMemo(() => {
-    if (!dataset || !normalizedQuery) {
+    if (!normalizedQuery) {
       return [] as TaxeSejourCity[];
     }
 
-    return buildLocalitySearchSuggestions(dataset.cities, normalizedQuery, MAX_CITY_SUGGESTIONS);
-  }, [dataset, normalizedQuery]);
+    return searchPreparedLocalities(citySearchIndex, normalizedQuery, MAX_CITY_SUGGESTIONS);
+  }, [citySearchIndex, normalizedQuery]);
 
   useEffect(() => {
     if (!dataset || !pendingRestoredCalculation) {

@@ -221,9 +221,11 @@ export default function DepartmentLandingPage({ config }: DepartmentLandingPageP
               })}
             </div>
 
-            <p className="mt-8 max-w-4xl text-sm text-textLight leading-comfortable">
-              {config.serviceArea.outro}
-            </p>
+            {config.serviceArea.outro && (
+              <p className="mt-8 max-w-4xl text-sm text-textLight leading-comfortable">
+                {config.serviceArea.outro}
+              </p>
+            )}
 
             <div className="mt-6 flex flex-col gap-4 sm:flex-row">
               <Button href="/demande-classement" variant="primary">
@@ -403,6 +405,13 @@ function DepartmentLocalProofSection({ config }: { config: DepartmentLandingPage
       <div className="container-adaptive">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-6">{config.tourism.title}</h2>
+          {config.tourism.introParagraphs.length > 0 && (
+            <div className="mb-8 max-w-4xl space-y-4 text-textLight leading-comfortable">
+              {config.tourism.introParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
+          )}
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-stretch">
             <SmartImage
               assetKey={config.tourism.image.assetKey}
@@ -425,6 +434,7 @@ function DepartmentLocalProofSection({ config }: { config: DepartmentLandingPage
               </div>
               <p className="mt-4 text-xs text-gray-500">{config.tourism.sourceNote}</p>
               <div className="mt-6 space-y-4 text-sm leading-comfortable text-textLight">
+                <p className="font-semibold text-gray-900">{config.tourism.afterTitle}</p>
                 {config.tourism.afterParagraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}

@@ -1,19 +1,25 @@
-import { type KeyboardEvent, useMemo, useRef, useState } from 'react';
+import { type KeyboardEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Euro } from 'lucide-react';
 import Card from '../ui/Card';
+import {
+  COMMUNE_INDEX_URL,
+  parseCommuneIndexDataset,
+  type CommuneIndexEntry,
+} from '../../content/local/communeIndex';
 import { getActiveDepartmentInterventionAreas } from '../../content/local/registry';
 import { getPricingProfile, type PricingProfileId } from '../../content/local/pricing';
 import type {
   DepartmentAreaId,
   DepartmentInterventionArea,
-  DepartmentPricingLocality,
   DepartmentPricingResolutionConfig,
 } from '../../content/local/types';
 import {
-  buildLocalitySearchSuggestions,
   normalizeLocalitySearchTerm,
+  prepareLocalitySearch,
+  searchPreparedLocalities,
   type LocalitySearchItem,
+  type PreparedLocalitySearch,
 } from '../../utils/localitySearch';
 import { LocalTariffsBlock } from './LocalLandingSections';
 
@@ -25,7 +31,7 @@ interface DepartmentPricingSectionProps {
 }
 
 interface PricingSearchItem extends LocalitySearchItem {
-  locality: DepartmentPricingLocality;
+  commune: CommuneIndexEntry;
 }
 
 type PricingResolution =
@@ -36,37 +42,56 @@ type PricingResolution =
     }
   | {
       kind: 'covered-other-department';
+      label: string;
       department: DepartmentInterventionArea;
     }
   | {
       kind: 'uncovered-department';
-      departmentCode: string;
-    }
-  | {
-      kind: 'unknown-locality';
+      label: string;
     };
 
-function isPostalCodeQuery(query: string): boolean {
-  return /^\d+$/.test(query.trim());
+function isFiveDigitQuery(query: string): boolean {
+  return /^\d{5}$/.test(query.trim());
 }
 
-function getDepartmentCodeFromPostalCode(postalCode: string): string {
-  return postalCode.slice(0, 2);
-}
-
-function buildSearchItems(localities: readonly DepartmentPricingLocality[]): PricingSearchItem[] {
-  return localities.map((locality) => ({
-    id: locality.id,
-    label: locality.postalCode ? `${locality.label} / ${locality.postalCode}` : locality.label,
-    searchKey: normalizeLocalitySearchTerm(`${locality.label} ${locality.postalCode ?? ''}`),
-    locality,
+function buildSearchItems(communes: readonly CommuneIndexEntry[]): PricingSearchItem[] {
+  return communes.map((commune) => ({
+    id: commune.id,
+    label: commune.label,
+    searchKey: normalizeLocalitySearchTerm(
+      `${commune.label} ${commune.departmentCode} ${commune.postalCodes?.join(' ') ?? ''}`
+    ),
+    commune,
   }));
+}
+
+function mergeSuggestions(
+  primary: readonly PricingSearchItem[],
+  secondary: readonly PricingSearchItem[]
+): PricingSearchItem[] {
+  const suggestions: PricingSearchItem[] = [];
+  const pickedIds = new Set<string>();
+
+  for (const item of [...primary, ...secondary]) {
+    if (pickedIds.has(item.id)) {
+      continue;
+    }
+    suggestions.push(item);
+    pickedIds.add(item.id);
+    if (suggestions.length >= MAX_LOCALITY_SUGGESTIONS) {
+      break;
+    }
+  }
+
+  return suggestions;
 }
 
 export default function DepartmentPricingSection({
   currentDepartmentId,
   config,
 }: DepartmentPricingSectionProps) {
+  const [communes, setCommunes] = useState<CommuneIndexEntry[]>([]);
+  const [loadingError, setLoadingError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [isListOpen, setIsListOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
@@ -75,51 +100,112 @@ export default function DepartmentPricingSection({
   const listId = 'department-pricing-locality-listbox';
   const departments = useMemo(() => getActiveDepartmentInterventionAreas(), []);
   const currentDepartment = departments.find((department) => department.id === currentDepartmentId);
-  const searchItems = useMemo(() => buildSearchItems(config.searchLocalities), [config]);
+  const currentDepartmentCode = currentDepartment?.departmentCode;
+  const searchItems = useMemo(() => buildSearchItems(communes), [communes]);
+  const searchIndex = useMemo(() => prepareLocalitySearch(searchItems), [searchItems]);
+  const currentDepartmentSearchIndex = useMemo(
+    () =>
+      searchIndex.filter((entry) => entry.item.commune.departmentCode === currentDepartmentCode),
+    [currentDepartmentCode, searchIndex]
+  );
+
+  function buildSuggestionsFromIndex(
+    value: string,
+    primaryIndex: readonly PreparedLocalitySearch<PricingSearchItem>[],
+    fullIndex: readonly PreparedLocalitySearch<PricingSearchItem>[]
+  ): PricingSearchItem[] {
+    if (!normalizeLocalitySearchTerm(value)) {
+      return [];
+    }
+
+    const localSuggestions = searchPreparedLocalities(
+      primaryIndex,
+      value,
+      MAX_LOCALITY_SUGGESTIONS
+    );
+    const nationalSuggestions = searchPreparedLocalities(
+      fullIndex,
+      value,
+      MAX_LOCALITY_SUGGESTIONS * 3
+    );
+
+    return mergeSuggestions(localSuggestions, nationalSuggestions);
+  }
+
   const suggestions = useMemo(
-    () => buildLocalitySearchSuggestions(searchItems, query, MAX_LOCALITY_SUGGESTIONS),
-    [query, searchItems]
+    () => buildSuggestionsFromIndex(query, currentDepartmentSearchIndex, searchIndex),
+    [currentDepartmentSearchIndex, query, searchIndex]
   );
   const resolvedPricingProfile =
     resolution?.kind === 'covered' ? getPricingProfile(resolution.pricingProfileId) : null;
 
-  function resolvePostalCode(postalCode: string): PricingResolution {
-    const departmentCode = getDepartmentCodeFromPostalCode(postalCode);
+  useEffect(() => {
+    const controller = new AbortController();
 
-    if (currentDepartment?.departmentCode === departmentCode) {
+    if (typeof fetch !== 'function') {
+      setLoadingError("L'index des communes n'a pas pu être chargé.");
+      return;
+    }
+
+    fetch(COMMUNE_INDEX_URL, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("L'index des communes n'a pas pu être chargé.");
+        }
+        return response.json();
+      })
+      .then((payload: unknown) => {
+        setCommunes(parseCommuneIndexDataset(payload));
+        setLoadingError(null);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return;
+        }
+        setLoadingError(
+          error instanceof Error ? error.message : "L'index des communes n'a pas pu être chargé."
+        );
+      });
+
+    return () => {
+      controller.abort();
+      if (closeTimerRef.current !== null) {
+        window.clearTimeout(closeTimerRef.current);
+      }
+    };
+  }, []);
+
+  function resolveCommune(commune: CommuneIndexEntry): PricingResolution {
+    if (commune.departmentCode === currentDepartmentCode) {
+      const postalCodeOverride = commune.postalCodes
+        ?.map((postalCode) => config.overrides[postalCode])
+        .find(Boolean);
+
       return {
         kind: 'covered',
-        label: postalCode,
-        pricingProfileId: config.overrides[postalCode] ?? config.defaultPricingProfileId,
+        label: commune.label,
+        pricingProfileId:
+          config.overrides[commune.id] ?? postalCodeOverride ?? config.defaultPricingProfileId,
       };
     }
 
     const otherDepartment = departments.find(
       (department) =>
-        department.departmentCode === departmentCode && department.id !== currentDepartmentId
+        department.departmentCode === commune.departmentCode &&
+        department.id !== currentDepartmentId
     );
 
     if (otherDepartment) {
       return {
         kind: 'covered-other-department',
+        label: commune.label,
         department: otherDepartment,
       };
     }
 
     return {
       kind: 'uncovered-department',
-      departmentCode,
-    };
-  }
-
-  function resolveLocality(locality: DepartmentPricingLocality): PricingResolution {
-    return {
-      kind: 'covered',
-      label: locality.postalCode ? `${locality.label} / ${locality.postalCode}` : locality.label,
-      pricingProfileId:
-        locality.pricingProfileId ??
-        (locality.postalCode ? config.overrides[locality.postalCode] : undefined) ??
-        config.defaultPricingProfileId,
+      label: commune.label,
     };
   }
 
@@ -130,47 +216,68 @@ export default function DepartmentPricingSection({
     }
 
     setQuery(item.label);
-    setResolution(resolveLocality(item.locality));
+    setResolution(resolveCommune(item.commune));
     setIsListOpen(false);
     setHighlightedIndex(-1);
   }
 
+  function resolveSinglePostalCodeMatch(
+    value: string,
+    nextSuggestions: readonly PricingSearchItem[]
+  ) {
+    if (!isFiveDigitQuery(value)) {
+      return false;
+    }
+
+    const postalMatches = nextSuggestions.filter((item) =>
+      item.commune.postalCodes?.includes(value.trim())
+    );
+    if (postalMatches.length !== 1) {
+      return false;
+    }
+
+    const [postalMatch] = postalMatches;
+    if (!postalMatch) {
+      return false;
+    }
+
+    setResolution(resolveCommune(postalMatch.commune));
+    setIsListOpen(false);
+    setHighlightedIndex(-1);
+    return true;
+  }
+
   function handleQueryChange(value: string) {
     setQuery(value);
-    setHighlightedIndex(-1);
     setResolution(null);
 
-    const trimmedValue = value.trim();
-    if (!trimmedValue) {
-      setIsListOpen(false);
-      return;
-    }
-
-    if (isPostalCodeQuery(trimmedValue)) {
-      setIsListOpen(false);
-      if (trimmedValue.length === 5) {
-        setResolution(resolvePostalCode(trimmedValue));
-      }
-      return;
-    }
-
-    const exactMatch = searchItems.find(
-      (item) =>
-        normalizeLocalitySearchTerm(item.locality.label) ===
-        normalizeLocalitySearchTerm(trimmedValue)
+    const nextSuggestions = buildSuggestionsFromIndex(
+      value,
+      currentDepartmentSearchIndex,
+      searchIndex
     );
-    if (exactMatch) {
-      setResolution(resolveLocality(exactMatch.locality));
-      setIsListOpen(true);
+    if (resolveSinglePostalCodeMatch(value, nextSuggestions)) {
       return;
     }
 
-    const hasSuggestion = buildLocalitySearchSuggestions(searchItems, trimmedValue, 1).length > 0;
-    if (!hasSuggestion) {
-      setResolution({ kind: 'unknown-locality' });
-    }
-    setIsListOpen(true);
+    setIsListOpen(nextSuggestions.length > 0);
+    setHighlightedIndex(nextSuggestions.length > 0 ? 0 : -1);
   }
+
+  useEffect(() => {
+    if (!query.trim() || resolution) {
+      return;
+    }
+
+    if (resolveSinglePostalCodeMatch(query, suggestions)) {
+      return;
+    }
+
+    if (suggestions.length > 0) {
+      setIsListOpen(true);
+      setHighlightedIndex(0);
+    }
+  }, [query, resolution, suggestions]);
 
   function handleInputBlur() {
     closeTimerRef.current = window.setTimeout(() => {
@@ -184,6 +291,15 @@ export default function DepartmentPricingSection({
       setIsListOpen(true);
       setHighlightedIndex(0);
       event.preventDefault();
+      return;
+    }
+
+    if (event.key === 'Enter' && suggestions.length > 0) {
+      event.preventDefault();
+      const selectedSuggestion = suggestions[Math.max(highlightedIndex, 0)];
+      if (selectedSuggestion) {
+        selectSuggestion(selectedSuggestion);
+      }
       return;
     }
 
@@ -204,15 +320,6 @@ export default function DepartmentPricingSection({
     if (event.key === 'ArrowUp') {
       setHighlightedIndex((previous) => Math.max(previous - 1, 0));
       event.preventDefault();
-      return;
-    }
-
-    if (event.key === 'Enter' && highlightedIndex >= 0) {
-      event.preventDefault();
-      const highlightedSuggestion = suggestions[highlightedIndex];
-      if (highlightedSuggestion) {
-        selectSuggestion(highlightedSuggestion);
-      }
       return;
     }
 
@@ -249,6 +356,7 @@ export default function DepartmentPricingSection({
                 onFocus={() => {
                   if (suggestions.length > 0) {
                     setIsListOpen(true);
+                    setHighlightedIndex(0);
                   }
                 }}
                 onBlur={handleInputBlur}
@@ -296,28 +404,22 @@ export default function DepartmentPricingSection({
               )}
             </div>
             <p className="mt-3 text-sm leading-comfortable text-textLight">
-              Le code postal à 5 chiffres est la référence tarifaire en Dordogne pour cette V1. La
-              recherche par commune s’appuie sur les communes de référence disponibles et ne prétend
-              pas couvrir toutes les communes administratives du département.
+              Vous ne trouvez pas votre commune ? Saisissez son code postal à 5 chiffres.
             </p>
-            {isPostalCodeQuery(query) && query.trim().length > 0 && query.trim().length < 5 && (
-              <p className="mt-2 text-sm text-textLight">
-                Continuez la saisie du code postal sur 5 chiffres pour obtenir le tarif.
-              </p>
-            )}
+            {loadingError && <p className="mt-2 text-sm text-red-600">{loadingError}</p>}
           </Card>
 
           {resolution?.kind === 'covered-other-department' && (
             <Card hover={false} className="mb-8 border-primary-200 bg-primary-100 p-6">
               <p className="text-textLight leading-comfortable">
-                Ce code postal se situe en {resolution.department.name}. Etoilys intervient
+                {resolution.label} se situe en {resolution.department.name}. Etoilys intervient
                 également dans ce département.
               </p>
               <Link
                 to={resolution.department.path}
                 className="mt-4 inline-flex text-sm font-medium text-primary-300 underline hover:text-primary-400"
               >
-                Voir les tarifs en {resolution.department.name}
+                Voir la page {resolution.department.name}
               </Link>
             </Card>
           )}
@@ -325,15 +427,8 @@ export default function DepartmentPricingSection({
           {resolution?.kind === 'uncovered-department' && (
             <Card hover={false} className="mb-8 border-gray-200 bg-gray-50 p-6">
               <p className="text-textLight leading-comfortable">
-                Etoilys n’est pas encore implanté dans ce département.
-              </p>
-            </Card>
-          )}
-
-          {resolution?.kind === 'unknown-locality' && (
-            <Card hover={false} className="mb-8 border-gray-200 bg-gray-50 p-6">
-              <p className="text-textLight leading-comfortable">
-                Saisissez un code postal à 5 chiffres pour obtenir le tarif applicable.
+                {resolution.label} se situe dans un département où Etoilys n’est pas encore
+                implanté.
               </p>
             </Card>
           )}
@@ -341,7 +436,7 @@ export default function DepartmentPricingSection({
           {resolution?.kind === 'covered' && resolvedPricingProfile && (
             <div className="rounded-card border border-gray-200 bg-white p-6 shadow-card">
               <p className="mb-5 text-sm font-semibold uppercase tracking-wide text-primary-500">
-                Tarif applicable pour {resolution.label}
+                Tarif applicable à {resolution.label}
               </p>
               <LocalTariffsBlock pricingProfile={resolvedPricingProfile} />
             </div>

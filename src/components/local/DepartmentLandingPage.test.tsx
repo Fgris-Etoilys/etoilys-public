@@ -1,13 +1,25 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import DepartmentLandingPage from './DepartmentLandingPage';
 import type { DepartmentLandingPageConfig } from '../../content/local/types';
 import { DORDOGNE_DEPARTMENT_PAGE } from '../../content/local/departments/dordogne';
 import { GIRONDE_DEPARTMENT_PAGE } from '../../content/local/departments/gironde';
 import { LOT_ET_GARONNE_DEPARTMENT_PAGE } from '../../content/local/departments/lot-et-garonne';
+
+const COMMUNE_INDEX_FIXTURE = {
+  c: [
+    { id: '24352', label: 'Ribérac', departmentCode: '24', postalCodes: ['24600'] },
+    { id: '24274', label: 'Monbazillac', departmentCode: '24', postalCodes: ['24240'] },
+    { id: '24331', label: 'Pomport', departmentCode: '24', postalCodes: ['24240'] },
+    { id: '24322', label: 'Périgueux', departmentCode: '24', postalCodes: ['24000'] },
+    { id: '33063', label: 'Bordeaux', departmentCode: '33', postalCodes: ['33000'] },
+    { id: '47001', label: 'Agen', departmentCode: '47', postalCodes: ['47000'] },
+    { id: '78646', label: 'Versailles', departmentCode: '78', postalCodes: ['78000'] },
+  ],
+};
 
 function renderDepartmentPage(config: DepartmentLandingPageConfig) {
   return render(
@@ -42,8 +54,19 @@ function expectHeadingSequence(expectedHeadings: Array<string | RegExp>) {
 }
 
 describe('DepartmentLandingPage', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => COMMUNE_INDEX_FIXTURE,
+      }))
+    );
+  });
+
   afterEach(() => {
     cleanup();
+    vi.unstubAllGlobals();
   });
 
   it('keeps routed department pages as thin renderer wrappers', () => {
@@ -88,10 +111,12 @@ describe('DepartmentLandingPage', () => {
       screen.queryByRole('heading', { name: /Cotisations sociales/i })
     ).not.toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: /Pages locales en/i })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Voir la page Bergerac →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bergerac →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
+    expect(document.body).not.toHaveTextContent(/Cette liste n’est pas exhaustive/i);
+    expect(document.body).not.toHaveTextContent(/V1|politique tarifaire|repère éditorial/i);
   });
 
   it('keeps collapsed Dordogne communes rendered while toggling visibility accessibly', () => {
@@ -99,66 +124,73 @@ describe('DepartmentLandingPage', () => {
 
     expect(document.body).toHaveTextContent('Gardonne');
 
-    const toggle = screen.getAllByRole('button', { name: 'Voir plus de communes' })[0];
+    const toggle = screen.getAllByRole('button', { name: '+6 communes' })[0];
     expect(toggle).toBeDefined();
     const firstToggle = toggle!;
     expect(firstToggle).toHaveAttribute('aria-expanded', 'false');
     fireEvent.click(firstToggle);
     expect(firstToggle).toHaveAttribute('aria-expanded', 'true');
+    expect(firstToggle).toHaveTextContent('6 autres communes');
+    expect(screen.queryByRole('link', { name: 'Voir la page Bergerac →' })).not.toBeInTheDocument();
   });
 
-  it('resolves Dordogne V1 pricing by postal code and commune without hiding the picker', () => {
+  it('resolves Dordogne pricing through commune autocomplete and successive searches', async () => {
     renderDepartmentPage(DORDOGNE_DEPARTMENT_PAGE);
 
-    const input = screen.getByRole('combobox', { name: 'Commune ou code postal' });
-    fireEvent.change(input, { target: { value: '24100' } });
+    const input = screen.getByRole('combobox', { name: 'Commune' });
+    fireEvent.change(input, { target: { value: 'Rib' } });
 
-    expect(input).toHaveValue('24100');
-    expect(screen.getByText('Tarif applicable pour 24100')).toBeInTheDocument();
+    expect(await screen.findByRole('option', { name: 'Ribérac' })).toBeInTheDocument();
+    expect(input).toHaveAttribute('aria-expanded', 'true');
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(screen.getByText('Tarif applicable à Ribérac')).toBeInTheDocument();
     expect(screen.getByText('Tarif public')).toBeInTheDocument();
-    expect(screen.getAllByText('240 € TTC').length).toBeGreaterThan(0);
-    expect(screen.getByText('Adhérent à un office de tourisme partenaire')).toBeInTheDocument();
-    expect(screen.getAllByText('200 € TTC').length).toBeGreaterThan(0);
 
-    fireEvent.change(input, { target: { value: 'Bergerac' } });
-    fireEvent.mouseDown(screen.getByRole('option', { name: 'Bergerac / 24100' }));
+    fireEvent.change(input, { target: { value: 'Mon' } });
+    const monbazillac = await screen.findByRole('option', { name: 'Monbazillac' });
+    fireEvent.mouseDown(monbazillac);
 
-    expect(input).toHaveValue('Bergerac / 24100');
-    expect(screen.getByText('Tarif applicable pour Bergerac / 24100')).toBeInTheDocument();
-
-    fireEvent.change(input, { target: { value: 'Nontron' } });
-    expect(screen.getByText(/Saisissez un code postal/)).toBeInTheDocument();
-    expect(screen.queryByText(/Tarif applicable pour Nontron/i)).not.toBeInTheDocument();
+    expect(input).toHaveValue('Monbazillac');
+    expect(screen.getByText('Tarif applicable à Monbazillac')).toBeInTheDocument();
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  it('handles partial, other-covered and uncovered postal codes without auto-redirect', () => {
+  it('uses postal codes only to find communes before resolving their department', async () => {
     renderDepartmentPage(DORDOGNE_DEPARTMENT_PAGE);
 
-    const input = screen.getByRole('combobox', { name: 'Commune ou code postal' });
-    fireEvent.change(input, { target: { value: '2410' } });
-    expect(
-      screen.getByText(/Continuez la saisie du code postal sur 5 chiffres/i)
-    ).toBeInTheDocument();
-    expect(screen.queryByText(/n’est pas encore implanté/i)).not.toBeInTheDocument();
+    const input = screen.getByRole('combobox', { name: 'Commune' });
+    fireEvent.change(input, { target: { value: '24000' } });
+    await waitFor(() => {
+      expect(screen.getByText('Tarif applicable à Périgueux')).toBeInTheDocument();
+    });
+
+    fireEvent.change(input, { target: { value: '24240' } });
+    expect(await screen.findByRole('option', { name: 'Monbazillac' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Pomport' })).toBeInTheDocument();
+    expect(screen.queryByText(/Tarif applicable à 24240/i)).not.toBeInTheDocument();
 
     fireEvent.change(input, { target: { value: '33000' } });
-    expect(screen.getByText(/Ce code postal se situe en Gironde/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Voir les tarifs en Gironde' })).toHaveAttribute(
+    await waitFor(() => {
+      expect(screen.getByText(/Bordeaux se situe en Gironde/i)).toBeInTheDocument();
+    });
+    expect(screen.getByRole('link', { name: 'Voir la page Gironde' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-gironde'
     );
 
     fireEvent.change(input, { target: { value: '47000' } });
-    expect(screen.getByText(/Ce code postal se situe en Lot-et-Garonne/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Voir les tarifs en Lot-et-Garonne' })).toHaveAttribute(
+    await waitFor(() => {
+      expect(screen.getByText(/Agen se situe en Lot-et-Garonne/i)).toBeInTheDocument();
+    });
+    expect(screen.getByRole('link', { name: 'Voir la page Lot-et-Garonne' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-lot-et-garonne'
     );
 
     fireEvent.change(input, { target: { value: '78000' } });
-    expect(
-      screen.getByText('Etoilys n’est pas encore implanté dans ce département.')
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Versailles se situe dans un département/i)).toBeInTheDocument();
+    });
   });
 
   it('renders Gironde-specific city links and linked FAQ answer through the legacy renderer', () => {

@@ -4,7 +4,7 @@ export interface LocalitySearchItem {
   searchKey?: string;
 }
 
-interface PreparedLocalitySearch<TItem extends LocalitySearchItem> {
+export interface PreparedLocalitySearch<TItem extends LocalitySearchItem> {
   item: TItem;
   normalizedName: string;
   normalizedNameTokens: string[];
@@ -33,7 +33,7 @@ export function stripTrailingDepartmentCode(label: string): string {
   return label.replace(/\s*\([0-9A-Z]{2,3}\)\s*$/i, '').trim();
 }
 
-function prepareLocalitySearch<TItem extends LocalitySearchItem>(
+export function prepareLocalitySearch<TItem extends LocalitySearchItem>(
   items: readonly TItem[]
 ): PreparedLocalitySearch<TItem>[] {
   return items.map((item) => {
@@ -152,12 +152,19 @@ export function buildLocalitySearchSuggestions<TItem extends LocalitySearchItem>
   query: string,
   maxSuggestions: number
 ): TItem[] {
+  return searchPreparedLocalities(prepareLocalitySearch(items), query, maxSuggestions);
+}
+
+export function searchPreparedLocalities<TItem extends LocalitySearchItem>(
+  preparedItems: readonly PreparedLocalitySearch<TItem>[],
+  query: string,
+  maxSuggestions: number
+): TItem[] {
   const normalizedQuery = normalizeLocalitySearchTerm(query);
   if (!normalizedQuery) {
     return [];
   }
 
-  const preparedItems = prepareLocalitySearch(items);
   const strictMatches: ScoredSuggestion<TItem>[] = [];
 
   for (const prepared of preparedItems) {

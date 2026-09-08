@@ -61,6 +61,7 @@ interface DepartmentServiceAreaContent {
   intro: string;
   sectors: DepartmentSector[];
   sectorLinks?: Record<string, { label: string; href: string }>;
+  communeLinks?: Record<string, { href: string; label?: string }>;
   outro: string;
 }
 
@@ -328,80 +329,98 @@ export function LocalDepartmentServiceAreaSection({
           <h2 className="mb-5">{serviceArea.title}</h2>
           <p className="max-w-5xl text-textLight leading-comfortable">{serviceArea.intro}</p>
 
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="mt-8 overflow-hidden rounded-card border border-primary-200 bg-white shadow-sm">
             {serviceArea.sectors.map((sector) => {
               const visibleCommunes = sector.visibleCommunes ?? sector.communes ?? [];
               const collapsedCommunes = sector.collapsedCommunes ?? [];
-              const sectorLink = serviceArea.sectorLinks?.[sector.name];
               const isExpanded = expandedSectors.has(sector.name);
               const collapsedListId = `department-sector-${sector.name
                 .toLowerCase()
                 .replace(/[^a-z0-9]+/g, '-')}-collapsed`;
 
               return (
-                <Card key={sector.name} hover={false} className="p-6">
-                  <h3 className="mb-4 text-xl font-playfair font-semibold text-gray-900">
+                <div
+                  key={sector.name}
+                  className="grid gap-3 border-b border-primary-100 px-4 py-5 last:border-b-0 md:grid-cols-[minmax(180px,0.36fr)_minmax(0,1fr)_auto] md:items-start md:px-6"
+                >
+                  <h3 className="text-base font-playfair font-semibold text-gray-900">
                     {sector.name}
                   </h3>
-                  <ul className="flex flex-wrap gap-2 text-sm leading-comfortable text-textLight">
-                    {visibleCommunes.map((commune) => (
-                      <li
+                  <p className="text-sm leading-7 text-textLight">
+                    {visibleCommunes.map((commune, index) => (
+                      <DepartmentCommuneName
                         key={commune}
-                        className="rounded-full border border-primary-200 bg-white px-3 py-1.5 font-medium text-primary-500"
-                      >
-                        {commune}
-                      </li>
+                        commune={commune}
+                        link={serviceArea.communeLinks?.[commune]}
+                        prefix={index > 0 ? ' · ' : undefined}
+                      />
                     ))}
-                  </ul>
+                    {collapsedCommunes.length > 0 && (
+                      <span id={collapsedListId} className={`${isExpanded ? '' : 'hidden'}`}>
+                        {collapsedCommunes.map((commune) => (
+                          <DepartmentCommuneName
+                            key={commune}
+                            commune={commune}
+                            link={serviceArea.communeLinks?.[commune]}
+                            prefix=" · "
+                          />
+                        ))}
+                      </span>
+                    )}
+                  </p>
 
                   {collapsedCommunes.length > 0 && (
-                    <>
-                      <ul
-                        id={collapsedListId}
-                        className={`mt-3 flex flex-wrap gap-2 text-sm leading-comfortable text-textLight ${
-                          isExpanded ? '' : 'hidden'
-                        }`}
-                      >
-                        {collapsedCommunes.map((commune) => (
-                          <li
-                            key={commune}
-                            className="rounded-full border border-gray-200 bg-gray-50 px-3 py-1.5"
-                          >
-                            {commune}
-                          </li>
-                        ))}
-                      </ul>
-                      <button
-                        type="button"
-                        aria-expanded={isExpanded}
-                        aria-controls={collapsedListId}
-                        onClick={() => toggleSector(sector.name)}
-                        className="mt-4 inline-flex text-sm font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
-                      >
-                        {isExpanded ? 'Voir moins de communes' : 'Voir plus de communes'}
-                      </button>
-                    </>
-                  )}
-
-                  {sectorLink && (
-                    <Link
-                      to={sectorLink.href}
-                      className="mt-4 block text-sm font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400"
+                    <button
+                      type="button"
+                      aria-expanded={isExpanded}
+                      aria-controls={collapsedListId}
+                      onClick={() => toggleSector(sector.name)}
+                      className="justify-self-start text-sm font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 md:justify-self-end md:whitespace-nowrap"
                     >
-                      {sectorLink.label}
-                    </Link>
+                      {isExpanded
+                        ? `${collapsedCommunes.length} autres communes`
+                        : `+${collapsedCommunes.length} communes`}
+                    </button>
                   )}
-                </Card>
+                </div>
               );
             })}
           </div>
 
-          <p className="mt-8 max-w-4xl text-sm text-textLight leading-comfortable">
-            {serviceArea.outro}
-          </p>
+          {serviceArea.outro && (
+            <p className="mt-8 max-w-4xl text-sm text-textLight leading-comfortable">
+              {serviceArea.outro}
+            </p>
+          )}
         </div>
       </div>
     </section>
+  );
+}
+
+function DepartmentCommuneName({
+  commune,
+  link,
+  prefix,
+}: {
+  commune: string;
+  link?: { href: string; label?: string } | undefined;
+  prefix?: string | undefined;
+}) {
+  return (
+    <>
+      {prefix}
+      {link ? (
+        <Link
+          to={link.href}
+          className="font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400"
+        >
+          {link.label ?? commune}
+        </Link>
+      ) : (
+        <span>{commune}</span>
+      )}
+    </>
   );
 }
 
@@ -507,10 +526,6 @@ export function LocalTariffsBlock({
             mobileValueClassName="text-base font-bold text-primary-400 text-right"
           />
         </div>
-      )}
-
-      {pricingProfile.travelFees && (
-        <p className="mt-5 text-sm font-medium text-gray-900">{pricingProfile.travelFees}</p>
       )}
 
       <div className="mt-6 flex justify-center">

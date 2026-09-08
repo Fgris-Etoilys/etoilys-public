@@ -114,7 +114,7 @@ describe('routing', () => {
   it('renders Dordogne local landing page', () => {
     renderAt('/classement-meuble-tourisme-dordogne');
     expectPageHeading(/classement/i, /dordogne/i);
-    expect(screen.getByRole('link', { name: 'Voir la page Bergerac →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bergerac →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
