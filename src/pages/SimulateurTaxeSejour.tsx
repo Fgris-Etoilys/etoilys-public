@@ -27,6 +27,7 @@ import {
   normalizePdfText,
 } from '../utils/simulatorExport';
 import { trackSimulatorCalculated, trackSimulatorStarted } from '../utils/analytics';
+import { prepareLocalitySearch, searchPreparedLocalities } from '../utils/localitySearch';
 import LocalizedContent from '../i18n/LocalizedContent';
 import { translateText } from '../i18n/textTranslation';
 import { touristTaxSimulatorEnglishTranslations } from '../i18n/simulatorContent';
@@ -49,19 +50,6 @@ interface ParsedFormValues {
   capacity?: number;
   personsStaying?: number;
   exemptedPersons?: number;
-}
-
-interface PreparedCitySearch {
-  city: TaxeSejourCity;
-  normalizedCityName: string;
-  normalizedNameTokens: string[];
-}
-
-interface ScoredSuggestion {
-  city: TaxeSejourCity;
-  tier: number;
-  position: number;
-  length: number;
 }
 
 const MAX_CITY_SUGGESTIONS = 8;
@@ -661,10 +649,6 @@ function isFullYearPeriod(startLabel: string, endLabel: string): boolean {
   return isJanuaryStart && isDecemberEnd;
 }
 
-function extractCityNameWithoutDepartment(label: string): string {
-  return label.replace(/\s*\([0-9A-Z]{2,3}\)\s*$/i, '').trim();
-}
-
 function extractDepartmentBucket(label: string): string {
   return label.match(/\(([0-9A-Z]{2,3})\)\s*$/i)?.[1] ?? 'unknown';
 }
@@ -684,102 +668,6 @@ function bucketNumber(value: number, buckets: readonly number[]): string {
   }
 
   return `${buckets[buckets.length - 1]}+`;
-}
-
-function isEditDistanceAtMostOneWithSwap(query: string, candidate: string): boolean {
-  if (query === candidate) {
-    return true;
-  }
-
-  const queryLength = query.length;
-  const candidateLength = candidate.length;
-  const lengthDifference = Math.abs(queryLength - candidateLength);
-  if (lengthDifference > 1) {
-    return false;
-  }
-
-  if (queryLength === candidateLength) {
-    const mismatchIndexes: number[] = [];
-    for (let index = 0; index < queryLength; index += 1) {
-      if (query[index] !== candidate[index]) {
-        mismatchIndexes.push(index);
-        if (mismatchIndexes.length > 2) {
-          return false;
-        }
-      }
-    }
-
-    if (mismatchIndexes.length === 1) {
-      return true;
-    }
-
-    if (mismatchIndexes.length === 2) {
-      const firstIndex = mismatchIndexes[0];
-      const secondIndex = mismatchIndexes[1];
-      if (firstIndex === undefined || secondIndex === undefined) {
-        return false;
-      }
-      return (
-        secondIndex === firstIndex + 1 &&
-        query[firstIndex] === candidate[secondIndex] &&
-        query[secondIndex] === candidate[firstIndex]
-      );
-    }
-
-    return false;
-  }
-
-  const longer = queryLength > candidateLength ? query : candidate;
-  const shorter = queryLength > candidateLength ? candidate : query;
-
-  let longerIndex = 0;
-  let shorterIndex = 0;
-  let mismatchCount = 0;
-
-  while (longerIndex < longer.length && shorterIndex < shorter.length) {
-    if (longer[longerIndex] === shorter[shorterIndex]) {
-      longerIndex += 1;
-      shorterIndex += 1;
-      continue;
-    }
-
-    mismatchCount += 1;
-    if (mismatchCount > 1) {
-      return false;
-    }
-    longerIndex += 1;
-  }
-
-  return true;
-}
-
-function getFuzzyScore(query: string, citySearch: PreparedCitySearch): number | null {
-  const candidates = [citySearch.normalizedCityName, ...citySearch.normalizedNameTokens];
-  let bestScore: number | null = null;
-
-  for (const candidate of candidates) {
-    if (!candidate) {
-      continue;
-    }
-    if (Math.abs(candidate.length - query.length) > 1) {
-      continue;
-    }
-    if (candidate[0] !== query[0]) {
-      continue;
-    }
-    if (!isEditDistanceAtMostOneWithSwap(query, candidate)) {
-      continue;
-    }
-
-    const score =
-      Math.abs(candidate.length - query.length) +
-      (candidate === citySearch.normalizedCityName ? 0 : 1);
-    if (bestScore === null || score < bestScore) {
-      bestScore = score;
-    }
-  }
-
-  return bestScore;
 }
 
 export default function SimulateurTaxeSejour() {
@@ -1040,159 +928,18 @@ export default function SimulateurTaxeSejour() {
 
   const normalizedQuery = useMemo(() => normalizeTaxeSejourSearchTerm(cityQuery), [cityQuery]);
 
-  const preparedCitySearch = useMemo(() => {
-    if (!dataset) {
-      return [] as PreparedCitySearch[];
-    }
-
-    return dataset.cities.map((city) => {
-      const normalizedCityName = normalizeTaxeSejourSearchTerm(
-        extractCityNameWithoutDepartment(city.label)
-      );
-
-      return {
-        city,
-        normalizedCityName,
-        normalizedNameTokens: normalizedCityName.split(' ').filter(Boolean),
-      };
-    });
-  }, [dataset]);
+  const citySearchIndex = useMemo(
+    () => (dataset ? prepareLocalitySearch(dataset.cities) : []),
+    [dataset]
+  );
 
   const suggestions = useMemo(() => {
-    if (!dataset || !normalizedQuery) {
+    if (!normalizedQuery) {
       return [] as TaxeSejourCity[];
     }
 
-    const strictMatches: ScoredSuggestion[] = [];
-    for (const prepared of preparedCitySearch) {
-      const { city, normalizedCityName, normalizedNameTokens } = prepared;
-      const searchIndex = city.searchKey.indexOf(normalizedQuery);
-      if (searchIndex < 0) {
-        continue;
-      }
-
-      if (normalizedCityName === normalizedQuery) {
-        strictMatches.push({
-          city,
-          tier: 0,
-          position: 0,
-          length: normalizedCityName.length,
-        });
-        continue;
-      }
-
-      const tokenExactIndex = normalizedNameTokens.findIndex((token) => token === normalizedQuery);
-      if (tokenExactIndex >= 0) {
-        strictMatches.push({
-          city,
-          tier: 1,
-          position: Math.abs(normalizedCityName.length - normalizedQuery.length),
-          length: normalizedCityName.length,
-        });
-        continue;
-      }
-
-      if (normalizedCityName.startsWith(normalizedQuery)) {
-        strictMatches.push({
-          city,
-          tier: 2,
-          position: 0,
-          length: normalizedCityName.length,
-        });
-        continue;
-      }
-
-      const tokenStartsWithIndex = normalizedNameTokens.findIndex((token) =>
-        token.startsWith(normalizedQuery)
-      );
-      if (tokenStartsWithIndex >= 0) {
-        strictMatches.push({
-          city,
-          tier: 3,
-          position: tokenStartsWithIndex,
-          length: normalizedCityName.length,
-        });
-        continue;
-      }
-
-      const cityNameContainsIndex = normalizedCityName.indexOf(normalizedQuery);
-      if (cityNameContainsIndex >= 0) {
-        strictMatches.push({
-          city,
-          tier: 4,
-          position: cityNameContainsIndex,
-          length: normalizedCityName.length,
-        });
-        continue;
-      }
-
-      strictMatches.push({
-        city,
-        tier: 5,
-        position: searchIndex,
-        length: normalizedCityName.length,
-      });
-    }
-
-    strictMatches.sort(
-      (left, right) =>
-        left.tier - right.tier ||
-        left.position - right.position ||
-        left.length - right.length ||
-        left.city.label.localeCompare(right.city.label, 'fr')
-    );
-
-    const picked: TaxeSejourCity[] = [];
-    const pickedIds = new Set<string>();
-    for (const match of strictMatches) {
-      if (!pickedIds.has(match.city.id)) {
-        picked.push(match.city);
-        pickedIds.add(match.city.id);
-      }
-      if (picked.length >= MAX_CITY_SUGGESTIONS) {
-        return picked;
-      }
-    }
-
-    if (normalizedQuery.length < 4) {
-      return picked;
-    }
-
-    const fuzzyMatches: ScoredSuggestion[] = [];
-    for (const prepared of preparedCitySearch) {
-      if (pickedIds.has(prepared.city.id)) {
-        continue;
-      }
-
-      const fuzzyScore = getFuzzyScore(normalizedQuery, prepared);
-      if (fuzzyScore === null) {
-        continue;
-      }
-
-      fuzzyMatches.push({
-        city: prepared.city,
-        tier: 6 + fuzzyScore,
-        position: 0,
-        length: prepared.normalizedCityName.length,
-      });
-    }
-
-    fuzzyMatches.sort(
-      (left, right) =>
-        left.tier - right.tier ||
-        left.length - right.length ||
-        left.city.label.localeCompare(right.city.label, 'fr')
-    );
-
-    for (const match of fuzzyMatches) {
-      picked.push(match.city);
-      if (picked.length >= MAX_CITY_SUGGESTIONS) {
-        break;
-      }
-    }
-
-    return picked;
-  }, [dataset, normalizedQuery, preparedCitySearch]);
+    return searchPreparedLocalities(citySearchIndex, normalizedQuery, MAX_CITY_SUGGESTIONS);
+  }, [citySearchIndex, normalizedQuery]);
 
   useEffect(() => {
     if (!dataset || !pendingRestoredCalculation) {

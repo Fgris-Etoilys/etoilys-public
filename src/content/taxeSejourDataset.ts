@@ -1,3 +1,5 @@
+import { normalizeLocalitySearchTerm } from '../utils/localitySearch';
+
 export const TAXE_SEJOUR_DATASET_URL = '/data/taxe-sejour-dataset.v1.json';
 
 export const TAXE_MASK_DEPARTMENTAL_10 = 1;
@@ -188,14 +190,7 @@ function decodeCity(tuple: TaxeSejourCityTuple): TaxeSejourCity {
 }
 
 export function normalizeTaxeSejourSearchTerm(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/['’`-]/g, ' ')
-    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .toLowerCase();
+  return normalizeLocalitySearchTerm(value);
 }
 
 export async function loadTaxeSejourDataset(signal?: AbortSignal): Promise<TaxeSejourDataset> {

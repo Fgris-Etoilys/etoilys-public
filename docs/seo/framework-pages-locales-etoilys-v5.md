@@ -1,6 +1,6 @@
 # Framework de déclinaison des pages locales Etoilys
 
-**Version :** 5.0 — 7 septembre 2026  
+**Version :** 5.0 — 8 septembre 2026
 **Projet :** site public Etoilys  
 **Usage :** document autonome destiné à ChatGPT et Codex pour auditer, migrer ou créer les pages locales Etoilys, qu’il s’agisse d’une **page ville** ou d’une **page départementale**, selon un modèle CRO commun avec un delta local strictement limité aux informations réellement variables.
 
@@ -125,7 +125,7 @@ La page départementale doit :
 
 - convertir directement lorsqu’un visiteur cherche un organisme dans le département ;
 - confirmer la couverture territoriale ;
-- permettre de trouver le **tarif exact selon la commune ou le code postal** ;
+- permettre de trouver le **tarif exact selon la commune** ;
 - servir de hub vers les pages villes lorsqu’elles existent ;
 - conserver un contexte départemental utile sans devenir un annuaire ni une brochure touristique.
 
@@ -255,14 +255,30 @@ Pattern :
 
 #### Variante département
 
-Le bloc affiche :
+Le bloc départemental validé est un **panneau compact pleine largeur**, avec une ligne par secteur.
+
+Chaque ligne affiche :
 
 - plusieurs **secteurs ou bassins commerciaux** du département ;
-- pour chaque secteur, une sélection courte de communes représentatives visible par défaut ;
-- lorsque la liste complète apporte une vraie valeur, un bouton de type `Voir plus de villes` / `Voir toutes les communes desservies` ;
-- les liens vers les pages villes publiées lorsqu’elles existent.
+- le nom du secteur ;
+- environ 4 à 6 communes représentatives visibles par défaut, en texte inline ;
+- un contrôle `+N communes` lorsque des communes supplémentaires sont utiles ;
+- les liens vers les pages villes publiées lorsqu’elles existent, directement sur le nom de commune.
+
+Exemple :
+
+```text
+Bergeracois et sud Dordogne
+Bergerac → · Prigonrieux · Creysse · La Force · Mouleydier     +6 communes
+```
 
 La page départementale ne doit pas afficher d’emblée des dizaines de communes au point de casser le parcours de conversion.
+
+Ne pas utiliser :
+
+- de grosses cards indépendantes par secteur ;
+- de pills ou badges pour chaque commune ;
+- un CTA séparé du type `Voir la page Bergerac` si `Bergerac →` est déjà cliquable dans la ligne.
 
 ### 4.4 Listes de communes repliables sur les pages départementales
 
@@ -276,9 +292,8 @@ Le compromis V5 est :
 Exemple :
 
 ```text
-Bergeracois et Sud Dordogne
-Bergerac · Monbazillac · Eymet · Lalinde · Issigeac
-[Voir les autres communes desservies]
+Bergeracois et sud Dordogne
+Bergerac → · Prigonrieux · Creysse · La Force · Mouleydier     +6 communes
 ```
 
 #### Règle SEO / rendu
@@ -286,6 +301,12 @@ Bergerac · Monbazillac · Eymet · Lalinde · Issigeac
 Les communes repliées doivent être **présentes dans le HTML/DOM rendu**, y compris dans le prerender.
 
 Le bouton doit uniquement contrôler leur visibilité.
+
+Le libellé fermé doit rester compact, par exemple `+6 communes`.
+
+Après ouverture, le libellé doit indiquer l’action inverse, par exemple `Masquer les 6 communes`.
+
+Le bouton doit conserver `aria-expanded` et `aria-controls`.
 
 Ne pas faire :
 
@@ -337,22 +358,24 @@ Exemple conceptuel :
 LocalTariffsSection(pricingProfileBergerac)
 ```
 
-#### Page départementale : résolution par commune ou code postal
+#### Page départementale : résolution par commune
 
 La page départementale affiche d’abord un sélecteur léger :
 
 ```text
-Commune ou code postal
-[ Bergerac / 24100 ]
+Commune
+[ Bergerac ]
 ```
 
 Une fois la localisation résolue, elle affiche **exactement le même composant tarifaire** que la page ville correspondante.
 
-Si `Bergerac` ou `24100` renvoie vers le même profil que la page Bergerac, le contenu rendu doit être identique :
+Si `Bergerac` renvoie vers le même profil que la page Bergerac, le contenu rendu doit être identique :
 
 - même tarif public ;
 - même tarif OT ;
+- même note / microcopy portée par le profil ;
 - même dégressivité ;
+- mêmes frais de déplacement si le profil en déclare ;
 - mêmes conditions ;
 - même CTA ;
 - même présentation.
@@ -429,13 +452,16 @@ Bordeaux peut conserver un contexte local et un module réglementaire spécifiqu
 
 Le département ne doit pas inventer un barème de taxe de séjour unique lorsqu’il existe plusieurs collectivités ou politiques locales.
 
-Le module peut utiliser :
+Par défaut, le module départemental doit être un bloc compact de contexte marché / tourisme :
 
-- quelques données départementales réellement utiles sur le marché des meublés de tourisme ;
-- 2 ou 3 chiffres maximum si leur valeur commerciale est réelle ;
-- un rappel que la taxe de séjour varie selon la commune ;
-- un lien vers le simulateur de taxe de séjour ;
-- toute donnée départementale fiable qui aide à comprendre l’intérêt du classement.
+- 2 ou 3 chiffres maximum ;
+- uniquement des données réellement utiles pour comprendre le poids des meublés ou du classement ;
+- quelques phrases de contexte utiles ;
+- une source clairement affichée.
+
+La taxe de séjour ou son simulateur ne doivent être utilisés dans ce bloc que s’ils apportent une vraie preuve locale complémentaire.
+
+Ne pas en faire un élément obligatoire ni le choix par défaut.
 
 Éviter les longues statistiques touristiques ou les paragraphes généraux sur le département.
 
@@ -483,11 +509,18 @@ Ne pas remplir la FAQ avec des variantes SEO de type `gîte`, `Airbnb`, `studio`
 
 Même structure de CTA final pour les deux scopes.
 
+Pattern commun :
+
+- CTA principal vers `/demande-classement` ;
+- CTA secondaire `Poser une question` vers `/contact`.
+
 Seuls les éléments localisés changent :
 
 - `à Bergerac` ;
 - `en Dordogne` ;
 - éventuelle modalité locale réellement utile.
+
+Ne pas remplacer arbitrairement le CTA secondaire par `Lire la FAQ`, surtout lorsque la FAQ est placée juste au-dessus.
 
 ### 4.12 Hiérarchie visuelle
 
@@ -516,7 +549,7 @@ Ne pas créer une hiérarchie visuelle différente entre ville et département s
 
 ## 5. Architecture tarifaire V5
 
-Le tarif devient une vraie donnée locale partagée plutôt qu’un texte hardcodé dans une page.
+Le tarif est une donnée locale partagée, portée par les `PricingProfile`.
 
 ### 5.1 Source de vérité unique
 
@@ -546,24 +579,42 @@ et :
 ```text
 Page Dordogne
   → picker
-  → 24100
-  → pricingProfile Bergerac
+  → Bergerac
+  → pricingProfile dordogne-standard
   → LocalTariffsSection
 ```
 
 L’objectif est d’empêcher structurellement qu’un même secteur affiche un jour des informations différentes selon la page d’entrée.
 
-### 5.2 Code postal comme clé de résolution tarifaire
+### 5.2 Commune comme clé de résolution tarifaire
 
-Décision V5 : le code postal est suffisamment précis pour la tarification Etoilys.
+Décision V5 : le picker public des pages départementales sélectionne une commune du département courant.
 
-Règle métier retenue :
+Règle technique retenue :
 
-> Si plusieurs communes partagent un même code postal, elles ne doivent pas avoir des politiques tarifaires Etoilys différentes.
+```text
+defaultPricingProfileId
++ overrides éventuels par id commune
+→ PricingProfile
+→ renderer tarifaire partagé
+```
 
-Il n’est donc pas nécessaire d’utiliser le code INSEE comme clé tarifaire dans la V5.
+Le `defaultPricingProfileId` couvre la politique commerciale majoritaire du département. Les `overrides` permettent de faire évoluer une commune vers un profil spécifique sans refactorer le composant tarifaire ni le picker.
 
-Le nom de commune sert à la recherche et à l’affichage ; le code postal peut servir de clé de résolution du profil tarifaire.
+Exemple :
+
+```text
+Dordogne
+  defaultPricingProfileId: dordogne-standard
+  overrides: {}
+
+puis demain :
+  overrides:
+    24322 → perigueux-profile
+    24520 → sarlat-profile
+```
+
+Le nom de commune sert à la recherche et à l’affichage ; l’identifiant de commune sert à l’override tarifaire.
 
 Cette architecture reste volontairement légère et remplaçable.
 
@@ -582,40 +633,46 @@ La résolution tarifaire actuelle doit être simple, typée et facilement rempla
 
 ---
 
-## 6. Picker commune / code postal pour les pages départementales
+## 6. Picker commune pour les pages départementales
 
 ### 6.1 UX cible
 
 Un seul champ :
 
 ```text
-Commune ou code postal
+Commune
 ```
 
 Le visiteur peut saisir :
 
 - `Bergerac` ;
-- `24100` ;
 - une partie du nom de la commune.
 
 Le picker propose des suggestions lisibles, par exemple :
 
 ```text
-Bergerac — 24100
+Bergerac
 ```
 
 Après sélection :
 
 - le champ reste visible ;
 - le bloc tarifaire apparaît sous le picker ;
-- l’utilisateur peut immédiatement modifier la commune ou le code postal ;
+- l’utilisateur peut immédiatement modifier la commune ;
 - il peut effectuer plusieurs recherches successives sans recharger la page.
 
 Ne pas faire disparaître le picker après la première sélection.
 
-### 6.2 Réutiliser la base du picker du simulateur taxe de séjour
+### 6.2 Réutiliser la mécanique de recherche existante
 
-À la date de la V5, `SimulateurTaxeSejour.tsx` contient déjà une mécanique d’autocomplete avancée :
+La logique générique de recherche locale existe dans `src/utils/localitySearch.ts`, avec notamment :
+
+```text
+prepareLocalitySearch
+searchPreparedLocalities
+```
+
+Cette mécanique couvre déjà :
 
 - normalisation de recherche ;
 - suggestions ;
@@ -627,20 +684,21 @@ Ne pas faire disparaître le picker après la première sélection.
 - gestion du focus ;
 - rôles ARIA de combobox.
 
-Cette mécanique est actuellement intégrée dans la page du simulateur et dépend de son type `TaxeSejourCity`.
+Le simulateur taxe de séjour et le picker départemental utilisent cette base commune.
 
-La V5 recommande donc :
+La V5 impose donc :
 
-- d’extraire **uniquement la mécanique générique utile** ;
-- de créer un composant ou hook de recherche suffisamment générique pour être réutilisé ;
-- de laisser le simulateur taxe continuer à fournir ses propres données ;
-- de laisser la tarification locale fournir ses propres données ;
-- de ne pas coupler le pricing à la source de données DELTA.
+- de réutiliser `src/utils/localitySearch.ts` ;
+- de ne pas réimplémenter une nouvelle normalisation ou un nouveau matching ;
+- de ne pas extraire à nouveau le simulateur taxe de séjour ;
+- de laisser les datasets métier indépendants ;
+- de laisser le simulateur taxe continuer à utiliser son dataset fiscal ;
+- de laisser les pages départementales utiliser un index léger de communes du département courant.
 
 Conceptuellement :
 
 ```text
-LocalityCombobox / generic search logic
+src/utils/localitySearch.ts
         ↑
         ├── Simulateur taxe de séjour
         └── Tarification pages départementales
@@ -654,46 +712,51 @@ Il ne doit pas devenir la source de vérité du pricing Etoilys.
 
 Le partage doit porter sur **l’UX et la logique de recherche**, pas sur les données métier.
 
-### 6.4 Validation des codes postaux
+### 6.4 Index de communes du département courant
 
-Règles :
+Le picker d’une page départementale charge uniquement un index léger des communes du département courant.
 
-- un code postal saisi numériquement doit avoir exactement 5 chiffres pour être validé ;
-- ne pas afficher une erreur agressive pendant que l’utilisateur n’a saisi que 1 à 4 chiffres ;
-- les caractères non pertinents peuvent être filtrés ou refusés proprement ;
-- une saisie texte continue de fonctionner indépendamment du code postal.
+Chaque page départementale V5 doit fournir explicitement son propre `communeIndexUrl`. Il ne doit pas exister de fallback silencieux vers l’index d’un autre département.
 
-Sur une page départementale, ne pas considérer automatiquement un code postal d’un autre département comme une erreur.
+Format cible :
 
-Il peut devenir une opportunité de navigation vers une autre zone Etoilys.
+```text
+{
+  id,
+  label,
+  departmentCode
+}
+```
 
-### 6.5 Code postal d’un autre département Etoilys
+La source peut être dérivée du pipeline du simulateur de taxe de séjour, mais le fichier chargé par la landing ne doit pas être le dataset fiscal complet.
 
-Si le visiteur saisit un code postal appartenant à un département **déjà publié et couvert par Etoilys**, afficher un message contextuel et proposer la page correspondante.
+Le chargement doit rester lazy :
 
-Exemple depuis Dordogne avec `33000` :
+- ne pas charger l’index au chargement initial de la landing ;
+- charger l’index au premier focus ou à la première interaction avec le picker ;
+- conserver ensuite l’index en mémoire pour les recherches successives ;
+- ne pas refetcher à chaque saisie ;
+- préparer / indexer les communes une seule fois après chargement.
 
-> Ce code postal se situe en Gironde. Etoilys intervient également dans ce département.
->
-> **Voir les tarifs en Gironde**
+Pour une page Dordogne :
 
-Le lien doit utiliser la route départementale déjà déclarée dans le registre local.
+```text
+dataset = communes Dordogne uniquement
+résolution = defaultPricingProfileId + overrides éventuels par id commune
+autre département = lien générique vers /zones-intervention
+```
 
-**Ne pas rediriger automatiquement.**
+Pour les prochains départements, le pipeline doit réutiliser le même mécanisme d’index léger, en changeant seulement le code département, par exemple via `buildDepartmentCommuneIndexFromCompactDataset(dataset, departmentCode)` :
 
-Le visiteur garde le contrôle.
+```text
+Dordogne → 24
+Gironde → 33
+Lot-et-Garonne → 47
+```
 
-### 6.6 Code postal d’un département non couvert
+Le picker ne doit pas résoudre ni rediriger vers un autre département. Si le visiteur cherche une commune absente du dataset courant, la page peut proposer un lien discret vers `/zones-intervention`.
 
-Exemple avec `78000` :
-
-> Etoilys n’est pas encore implanté dans ce département.
-
-Le message doit rester sobre.
-
-Ne pas proposer un faux tarif, une estimation approximative ou une zone voisine.
-
-### 6.7 Registre départemental
+### 6.5 Registre départemental
 
 Le registre central des zones d’intervention doit pouvoir associer un département à son code numérique, par exemple :
 
@@ -747,7 +810,8 @@ ChatGPT doit produire uniquement les données réellement variables du scope cib
 - communes visibles par défaut ;
 - communes additionnelles repliées ;
 - liens vers les pages villes publiées ;
-- mapping code postal → profil tarifaire ;
+- `communeIndexUrl` vers l’index léger du département courant ;
+- default pricing profile et overrides éventuels par commune ;
 - preuve locale départementale ;
 - éventuelles questions de FAQ propres à la diversité territoriale.
 
@@ -776,7 +840,7 @@ Ne jamais déduire qu’une zone a les mêmes tarifs qu’une autre simplement p
 
 ### 8.2 Réutilisation volontaire d’un pricing profile
 
-Si Florian confirme que plusieurs communes / codes postaux partagent exactement la même politique tarifaire, ils peuvent pointer vers le même profil.
+Si Florian confirme que plusieurs communes partagent exactement la même politique tarifaire, elles peuvent pointer vers le même profil.
 
 Cette réutilisation doit être une décision métier explicite, pas une approximation technique.
 
@@ -806,10 +870,15 @@ Ne pas forcer un calcul local unique si le département contient plusieurs barè
 
 Préférer :
 
-- quelques données départementales vérifiées ;
-- un renvoi vers le simulateur de taxe de séjour ;
-- une phrase claire indiquant que la taxe dépend de la commune ;
-- éventuellement des exemples ciblés uniquement s’ils sont clairement présentés comme locaux et non comme départementaux.
+- un bloc compact de contexte marché / tourisme ;
+- 2 ou 3 chiffres maximum ;
+- uniquement des données utiles pour comprendre le poids des meublés ou du classement ;
+- quelques phrases de contexte utiles ;
+- une source clairement affichée.
+
+La taxe de séjour ou son simulateur ne doivent être utilisés que s’ils apportent une vraie preuve locale complémentaire.
+
+Ne jamais présenter un barème communal comme s’il était valable pour tout le département.
 
 ---
 
@@ -870,30 +939,31 @@ Ne pas relancer une recherche inutile uniquement parce que le shell change.
 
 Pour une ville :
 
-| Champ | Valeur | Source | Date | Usage |
-| --- | --- | --- | --- | --- |
-| Ville | | | | Public |
-| Bassin | | | | Public |
-| Département | | | | Public |
-| EPCI | | | | Interne |
-| Communes couvertes | | | | Public |
-| Tarif / pricing profile | | | | Public |
-| Taxe de séjour | | | | Interne/public |
-| Image | | | | Public |
+| Champ                   | Valeur | Source | Date | Usage          |
+| ----------------------- | ------ | ------ | ---- | -------------- |
+| Ville                   |        |        |      | Public         |
+| Bassin                  |        |        |      | Public         |
+| Département             |        |        |      | Public         |
+| EPCI                    |        |        |      | Interne        |
+| Communes couvertes      |        |        |      | Public         |
+| Tarif / pricing profile |        |        |      | Public         |
+| Taxe de séjour          |        |        |      | Interne/public |
+| Image                   |        |        |      | Public         |
 
 Pour un département :
 
-| Champ | Valeur | Source | Date | Usage |
-| --- | --- | --- | --- | --- |
-| Département | | | | Public |
-| Code département | | | | Technique |
-| Secteurs | | | | Public |
-| Communes visibles | | | | Public |
-| Communes repliées | | | | Public |
-| Pages villes enfants | | | | Public |
-| Mapping CP / pricing | | | | Interne/public |
-| Preuve locale | | | | Public |
-| Image | | | | Public |
+| Champ                                          | Valeur | Source | Date | Usage          |
+| ---------------------------------------------- | ------ | ------ | ---- | -------------- |
+| Département                                    |        |        |      | Public         |
+| Code département                               |        |        |      | Technique      |
+| Secteurs                                       |        |        |      | Public         |
+| Communes visibles                              |        |        |      | Public         |
+| Communes repliées                              |        |        |      | Public         |
+| Pages villes enfants                           |        |        |      | Public         |
+| URL de l’index communes                        |        |        |      | Technique      |
+| Pricing profile par défaut / overrides commune |        |        |      | Interne/public |
+| Preuve locale                                  |        |        |      | Public         |
+| Image                                          |        |        |      | Public         |
 
 ### C. Données SEO locales
 
@@ -913,7 +983,7 @@ Ne fournir que :
 
 - hero local ;
 - couverture ;
-- données tarifaires / mapping ;
+- données tarifaires / résolution commune ;
 - preuve locale ;
 - règles locales éventuelles ;
 - FAQ ;
@@ -969,47 +1039,60 @@ Codex doit :
 - ne pas créer un CMS ;
 - ne pas imposer de nouveaux fichiers si l’architecture réelle fournit déjà une solution plus simple.
 
-### 13.3 Extraire le bloc tarifaire
+### 13.3 Réutiliser le bloc tarifaire partagé
 
-À la date de la V5, le bloc tarifaire de `CityLandingPage` contient encore des valeurs partagées directement dans le composant.
-
-Le chantier V5 doit viser :
+L’architecture tarifaire existe et doit être réutilisée :
 
 ```text
 PricingProfile
-→ shared LocalTariffsSection
+→ LocalTariffsSection / renderer tarifaire partagé
+→ page ville
+
+ou
+
+PricingProfile
+→ LocalTariffsSection / renderer tarifaire partagé
+→ résultat du picker départemental
 ```
 
-Le même rendu doit pouvoir être appelé :
+Codex doit appliquer les règles suivantes :
+
+- ne jamais recréer un bloc tarifaire spécifique à une page ;
+- ne jamais recopier les valeurs tarifaires dans une config locale ;
+- ville et département doivent consommer le même `PricingProfile` lorsqu’ils partagent la même politique commerciale ;
+- note / microcopy, tarif public, tarif partenaire, conditions, multi-logements, frais éventuels et CTA doivent être issus du renderer partagé ;
+- les blocs `partner`, `multiProperty`, `travelFees` et autres sections tarifaires restent optionnels/configurables.
+
+Le même rendu doit rester appelable :
 
 - directement par une page ville ;
 - après résolution du picker sur une page départementale.
 
-### 13.4 Extraire seulement la base utile du picker taxe de séjour
+### 13.4 Réutiliser la recherche locale partagée
 
-Le simulateur possède déjà une bonne logique de combobox.
+La recherche locale partagée existe dans `src/utils/localitySearch.ts`.
 
-Codex doit réutiliser cette logique lorsque cela réduit réellement la duplication, mais ne doit pas :
+Codex doit :
+
+- réutiliser `prepareLocalitySearch` et `searchPreparedLocalities` ;
+- ne pas réimplémenter la normalisation, le matching strict/fuzzy ou la logique de suggestion ;
+- ne pas extraire à nouveau le simulateur taxe de séjour ;
+- conserver la mémoïsation / préparation de l’index une seule fois par dataset chargé.
+
+Codex ne doit pas :
 
 - brancher le pricing sur les données DELTA ;
 - déplacer tout le simulateur dans un composant générique ;
 - refondre le simulateur au-delà de ce qui est nécessaire ;
 - construire un moteur géographique national dans ce ticket.
 
-### 13.5 Navigation inter-départements depuis le picker
+### 13.5 Autres départements depuis le picker
 
-Ajouter au registre local les informations minimales nécessaires pour identifier les départements publiés.
+Le picker d’une page départementale reste scoped au dataset du département courant.
 
-Si un code postal correspond à un autre département Etoilys publié :
+Ne pas implémenter de résolution ou de redirection inter-départementale depuis ce picker.
 
-- afficher un message ;
-- proposer un lien vers la page départementale ;
-- ne pas rediriger automatiquement.
-
-Si le département n’est pas couvert :
-
-- afficher le message de non-implantation ;
-- ne pas extrapoler un tarif.
+Pour les visiteurs dont le meublé se situe ailleurs, ajouter un lien générique vers `/zones-intervention`.
 
 ### 13.6 SEO et maillage
 
@@ -1076,7 +1159,7 @@ Sur une page départementale :
 - Les communes repliées sont-elles réellement rendues ?
 - Le picker permet-il plusieurs recherches successives ?
 - Un résultat tarifaire utilise-t-il exactement le même composant qu’une page ville ?
-- Les codes postaux d’autres départements sont-ils gérés proprement ?
+- Les communes absentes du dataset courant ne déclenchent-elles aucune résolution tarifaire ?
 - Le contexte départemental reste-t-il compact ?
 
 ---
@@ -1112,10 +1195,8 @@ Vérifier notamment :
 - picker clavier / souris / tactile ;
 - `aria-autocomplete`, `aria-expanded`, sélection clavier et fermeture correcte ;
 - changement successif de commune sans reload ;
-- CP valide 5 chiffres ;
-- CP du département courant ;
-- CP d’un autre département Etoilys ;
-- CP d’un département non couvert ;
+- dataset du picker limité au département courant ;
+- absence de résolution ou redirection inter-départementale depuis le picker ;
 - listes de communes repliées présentes dans le prerender ;
 - `aria-expanded` du bouton `Voir plus` ;
 - aucun chargement réseau nécessaire au dépliage ;
@@ -1128,20 +1209,20 @@ Vérifier notamment :
 
 ## 16. Différences autorisées entre ville et département
 
-| Élément | Ville | Département |
-| --- | --- | --- |
-| Hero | ville + bassin | département |
-| Pourquoi classer | commun | commun |
-| Couverture | communes proches | secteurs + communes + pages villes |
-| Liste longue | généralement inutile | repliable si utile |
-| Prix | affichage direct | picker commune / CP puis affichage identique |
-| Procédure | commune | commune |
-| Pourquoi Etoilys | commun | commun |
-| Preuve locale | taxe / contexte / règle ville | contexte départemental compact |
-| Règle locale | facultative | généralement absente ou très ciblée |
-| FAQ | delta ville | delta département |
-| CTA final | commun | commun |
-| UI / spacing / responsive | commun | commun |
+| Élément                   | Ville                         | Département                             |
+| ------------------------- | ----------------------------- | --------------------------------------- |
+| Hero                      | ville + bassin                | département                             |
+| Pourquoi classer          | commun                        | commun                                  |
+| Couverture                | communes proches              | secteurs + communes + pages villes      |
+| Liste longue              | généralement inutile          | repliable si utile                      |
+| Prix                      | affichage direct              | picker commune puis affichage identique |
+| Procédure                 | commune                       | commune                                 |
+| Pourquoi Etoilys          | commun                        | commun                                  |
+| Preuve locale             | taxe / contexte / règle ville | contexte départemental compact          |
+| Règle locale              | facultative                   | généralement absente ou très ciblée     |
+| FAQ                       | delta ville                   | delta département                       |
+| CTA final                 | commun                        | commun                                  |
+| UI / spacing / responsive | commun                        | commun                                  |
 
 Toute différence supplémentaire doit être justifiée par un besoin utilisateur ou métier réel.
 
@@ -1156,8 +1237,7 @@ Le système V5 doit permettre :
 - d’afficher une politique tarifaire depuis une source unique ;
 - de retrouver exactement le même tarif depuis une page ville ou depuis le picker départemental ;
 - de conserver les communes utiles au SEO sans rendre la page départementale interminable ;
-- d’orienter naturellement un utilisateur vers un autre département Etoilys lorsqu’il saisit un code postal extérieur ;
-- de signaler simplement les zones non couvertes ;
+- d’orienter simplement un utilisateur vers `/zones-intervention` lorsque sa commune n’est pas proposée sur la page départementale courante ;
 - de réutiliser l’UX existante du picker taxe de séjour sans mélanger les données métier ;
 - de préparer la future cartographie EPCI sans construire aujourd’hui une architecture qui devra être jetée ;
 - de conserver les preuves locales réellement utiles ;

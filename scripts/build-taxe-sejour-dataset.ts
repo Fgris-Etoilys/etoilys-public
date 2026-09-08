@@ -7,6 +7,10 @@ const ROOT_DIR = process.cwd();
 const INPUT_XML_PATH = path.join(ROOT_DIR, 'docs', 'data', 'taxe_sejour_donnees_deliberations.xml');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public', 'data');
 const OUTPUT_JSON_PATH = path.join(OUTPUT_DIR, 'taxe-sejour-dataset.v1.json');
+const OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH = path.join(
+  OUTPUT_DIR,
+  'communes-dordogne-index.v1.json'
+);
 
 const CLASSIFIED_NATURE_ID = '4';
 const UNCLASSIFIED_NATURE_ID = '10';
@@ -49,6 +53,26 @@ export interface CompactDataset {
   g: string;
   c: CityTuple[];
 }
+
+export interface CommuneIndexEntry {
+  id: string;
+  label: string;
+  departmentCode: string;
+}
+
+export interface CommuneIndexDataset {
+  v: string;
+  sd: string;
+  g: string;
+  c: CommuneIndexEntry[];
+}
+
+const COMMUNE_LABEL_OVERRIDES_BY_INSEE: Record<string, string> = {
+  '24335': 'Port-Sainte-Foy-et-Ponchapt',
+  '24274': 'Monbazillac',
+  '24322': 'Périgueux',
+  '24352': 'Ribérac',
+};
 
 interface TextNode {
   '#text'?: string;
@@ -328,6 +352,50 @@ function toCityTuple(entry: CityAccumulator, displayLabel: string): CityTuple {
   ];
 }
 
+function extractCityNameFromDisplayLabel(displayLabel: string): string {
+  return displayLabel.replace(/\s*\([0-9A-Z]{2,3}\).*$/i, '').trim();
+}
+
+function toReadableCommuneLabel(rawName: string): string {
+  return rawName
+    .toLocaleLowerCase('fr-FR')
+    .replace(/(^|[\s'-])\p{L}/gu, (match) => match.toLocaleUpperCase('fr-FR'));
+}
+
+export function buildDepartmentCommuneIndexFromCompactDataset(
+  dataset: CompactDataset,
+  departmentCode: string
+): CommuneIndexDataset {
+  const normalizedDepartmentCode = departmentCode.toUpperCase();
+  const communes = dataset.c
+    .filter((city) => city[0].startsWith(normalizedDepartmentCode))
+    .map((city) => {
+      const id = city[0];
+      const label =
+        COMMUNE_LABEL_OVERRIDES_BY_INSEE[id] ??
+        toReadableCommuneLabel(extractCityNameFromDisplayLabel(city[1]));
+
+      return {
+        id,
+        label,
+        departmentCode: normalizedDepartmentCode,
+      };
+    })
+    .sort(
+      (left, right) =>
+        left.label.localeCompare(right.label, 'fr-FR') ||
+        left.departmentCode.localeCompare(right.departmentCode, 'fr-FR') ||
+        left.id.localeCompare(right.id, 'fr-FR')
+    );
+
+  return {
+    v: dataset.v,
+    sd: dataset.sd,
+    g: dataset.g,
+    c: communes,
+  };
+}
+
 export function buildCompactDatasetFromXml(
   xml: string,
   generatedAt = new Date().toISOString()
@@ -432,12 +500,20 @@ export function buildCompactDatasetFromXml(
 async function main() {
   const xml = await readFile(INPUT_XML_PATH, 'utf8');
   const dataset = buildCompactDatasetFromXml(xml);
+  const communeIndex = buildDepartmentCommuneIndexFromCompactDataset(dataset, '24');
 
   await mkdir(OUTPUT_DIR, { recursive: true });
   await writeFile(OUTPUT_JSON_PATH, JSON.stringify(dataset), 'utf8');
+  await writeFile(OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH, JSON.stringify(communeIndex), 'utf8');
 
   console.log(
     `Generated ${dataset.c.length} cities in ${path.relative(ROOT_DIR, OUTPUT_JSON_PATH)}.`
+  );
+  console.log(
+    `Generated ${communeIndex.c.length} communes in ${path.relative(
+      ROOT_DIR,
+      OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH
+    )}.`
   );
 }
 
