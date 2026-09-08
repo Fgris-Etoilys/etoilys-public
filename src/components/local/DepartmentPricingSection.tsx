@@ -15,7 +15,7 @@ import {
   searchPreparedLocalities,
   type LocalitySearchItem,
 } from '../../utils/localitySearch';
-import { LocalTariffsBlock } from './LocalLandingSections';
+import { LocalTariffsProfileContent } from './LocalLandingSections';
 
 const MAX_LOCALITY_SUGGESTIONS = 8;
 
@@ -96,7 +96,7 @@ export default function DepartmentPricingSection({ config }: DepartmentPricingSe
     controllerRef.current = controller;
     setIsLoadingCommunes(true);
 
-    fetch(COMMUNE_INDEX_URL, { signal: controller.signal })
+    fetch(config.communeIndexUrl ?? COMMUNE_INDEX_URL, { signal: controller.signal })
       .then((response) => {
         if (!response.ok) {
           throw new Error("L'index des communes n'a pas pu être chargé.");
@@ -295,7 +295,7 @@ export default function DepartmentPricingSection({ config }: DepartmentPricingSe
               <p className="mb-5 text-sm font-semibold uppercase tracking-wide text-primary-500">
                 Tarif applicable à {resolution.label}
               </p>
-              <LocalTariffsBlock pricingProfile={resolvedPricingProfile} />
+              <LocalTariffsProfileContent pricingProfile={resolvedPricingProfile} />
             </div>
           )}
         </div>

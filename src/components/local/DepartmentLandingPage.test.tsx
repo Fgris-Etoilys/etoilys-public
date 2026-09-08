@@ -140,6 +140,9 @@ describe('DepartmentLandingPage', () => {
     expect(input).toHaveAttribute('aria-expanded', 'true');
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(screen.getByText('Tarif applicable à Ribérac')).toBeInTheDocument();
+    expect(
+      screen.getByText(/Le montant applicable est confirmé avant tout engagement/)
+    ).toBeInTheDocument();
     expect(screen.getByText('Tarif public')).toBeInTheDocument();
     expect(screen.getAllByText(/240\s€/)).not.toHaveLength(0);
 

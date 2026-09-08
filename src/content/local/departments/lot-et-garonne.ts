@@ -328,7 +328,8 @@ export const LOT_ET_GARONNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
     intro:
       'Etoilys intervient dans le Lot-et-Garonne sur une zone couvrant notamment l’Agenais, la vallée de la Garonne, le Val de Garonne, le Villeneuvois, la vallée du Lot, le Fumélois, les bastides du Haut-Agenais, le Pays de Lauzun, le Pays de Duras et le secteur de Casteljaloux.',
     sectors: LOT_ET_GARONNE_SERVICE_SECTORS,
-    outro: '',
+    outro:
+      'Cette liste n’est pas exhaustive. Si votre commune n’apparaît pas, vous pouvez tout de même déposer une demande : Etoilys vous confirmera les possibilités d’intervention selon la localisation du logement et l’organisation des tournées.',
   },
   procedure: {
     title: 'Comment se déroule une visite de classement avec Etoilys ?',

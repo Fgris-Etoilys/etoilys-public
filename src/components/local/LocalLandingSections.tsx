@@ -433,15 +433,6 @@ export function LocalTariffsSection({
   pricingProfile: PricingProfile;
   intro?: ReactNode;
 }) {
-  const rows =
-    pricingProfile.multiProperty?.rows.map((row) => ({
-      key: row.key,
-      cells: {
-        logement: row.label,
-        tarif: row.amount,
-      },
-    })) ?? [];
-
   return (
     <section className="bg-white py-section">
       <div className="container-adaptive">
@@ -451,13 +442,24 @@ export function LocalTariffsSection({
             Tarifs
           </div>
           <h2 className="mb-5">{title}</h2>
-          <div className="mb-8 max-w-5xl text-textLight leading-comfortable">
-            {intro ?? <p>{pricingProfile.note}</p>}
-          </div>
-          <LocalTariffsBlock pricingProfile={pricingProfile} rows={rows} />
+          {intro && (
+            <div className="mb-8 max-w-5xl text-textLight leading-comfortable">{intro}</div>
+          )}
+          <LocalTariffsProfileContent pricingProfile={pricingProfile} />
         </div>
       </div>
     </section>
+  );
+}
+
+export function LocalTariffsProfileContent({ pricingProfile }: { pricingProfile: PricingProfile }) {
+  return (
+    <>
+      {pricingProfile.note && (
+        <p className="mb-8 max-w-5xl text-textLight leading-comfortable">{pricingProfile.note}</p>
+      )}
+      <LocalTariffsBlock pricingProfile={pricingProfile} />
+    </>
   );
 }
 
@@ -506,6 +508,12 @@ export function LocalTariffsBlock({
           </TariffCard>
         )}
       </div>
+
+      {pricingProfile.travelFees && (
+        <p className="mt-4 text-sm leading-comfortable text-textLight">
+          {pricingProfile.travelFees}
+        </p>
+      )}
 
       {pricingProfile.multiProperty && (
         <div className="mt-8">

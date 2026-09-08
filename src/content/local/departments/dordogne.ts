@@ -274,7 +274,7 @@ export const DORDOGNE_V5_FAQ: LocalFaqItem[] = [
   {
     question: 'Combien de temps faut-il pour organiser la visite ?',
     answer:
-      'Après votre demande, Etoilys reprend contact avec vous sous 24h ouvrées pour confirmer le périmètre, le tarif et les prochaines disponibilités. La visite est ensuite organisée selon votre secteur et les tournées prévues.',
+      'Après votre demande, Etoilys vous recontacte sous 24h ouvrées pour confirmer le tarif et les disponibilités. La visite est organisée en moyenne sous deux semaines.',
   },
   {
     question: 'Que se passe-t-il si des critères manquent ?',
@@ -284,7 +284,7 @@ export const DORDOGNE_V5_FAQ: LocalFaqItem[] = [
   {
     question: 'Peut-on regrouper plusieurs logements ?',
     answer:
-      'Oui. Chaque meublé doit être visité séparément, mais plusieurs visites peuvent être organisées le même jour dans le même secteur. Indiquez toutes les adresses dans votre demande pour confirmer l’organisation et le tarif applicables.',
+      'Oui. Si plusieurs logements sont situés dans le même secteur, les visites peuvent être regroupées et bénéficier des tarifs dégressifs affichés ci-dessus. Chaque meublé fait néanmoins l’objet de sa propre visite de classement.',
   },
   {
     question: 'Le classement est-il obligatoire ?',
@@ -494,6 +494,7 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
     intro: 'Sélectionnez la commune de votre meublé pour afficher le tarif applicable.',
     inputLabel: 'Commune',
     placeholder: 'Ex. Périgueux, Ribérac, Monbazillac',
+    communeIndexUrl: '/data/communes-dordogne-index.v1.json',
     defaultPricingProfileId: 'dordogne-standard',
     overrides: {},
   },
@@ -505,8 +506,7 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
   finalCta: {
     title: 'Demander le classement de votre meublé en Dordogne',
     paragraphs: [
-      'Vous louez ou préparez la mise en location d’un meublé de tourisme en Dordogne ? Etoilys peut vous accompagner pour organiser la visite de classement.',
-      'Déposez votre demande en ligne : nous vous confirmerons les modalités d’intervention, le tarif applicable et les prochaines disponibilités avant toute validation.',
+      'Vous louez ou préparez la mise en location d’un meublé de tourisme en Dordogne ? Déposez votre demande : Etoilys vous recontacte sous 24h ouvrées pour confirmer le tarif et organiser la visite.',
     ],
   },
   sources: DORDOGNE_SOURCES,

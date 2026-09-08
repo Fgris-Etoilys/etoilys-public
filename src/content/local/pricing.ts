@@ -65,7 +65,6 @@ const standardProfileValues = {
       },
     ],
   },
-  travelFees: 'Aucun frais de déplacement',
   note: 'Les tarifs ci-dessous sont tout compris, sans frais de déplacement. Le montant applicable est confirmé avant tout engagement.',
 } as const satisfies Omit<PricingProfile, 'id'>;
 
