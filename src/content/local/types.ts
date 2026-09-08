@@ -99,7 +99,7 @@ export interface DepartmentTourismConfig {
   cardTitle: string;
   rows: LocalTableRow[];
   sourceNote: string;
-  afterTitle: string;
+  afterTitle?: string;
   afterParagraphs: string[];
 }
 

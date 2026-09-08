@@ -168,9 +168,11 @@ export default function DepartmentLandingPage({ config }: DepartmentLandingPageP
             </div>
 
             <div className="mt-8 space-y-5 text-textLight leading-comfortable">
-              <h3 className="text-2xl font-playfair font-semibold text-gray-900">
-                {config.tourism.afterTitle}
-              </h3>
+              {config.tourism.afterTitle && (
+                <h3 className="text-2xl font-playfair font-semibold text-gray-900">
+                  {config.tourism.afterTitle}
+                </h3>
+              )}
               {config.tourism.afterParagraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
@@ -376,12 +378,7 @@ function DepartmentLandingPageV5({
       />
       <LocalWhyClassifySection />
       <LocalDepartmentServiceAreaSection serviceArea={config.serviceArea} />
-      {config.pricing && (
-        <DepartmentPricingSection
-          currentDepartmentId={config.departmentId}
-          config={config.pricing}
-        />
-      )}
+      {config.pricing && <DepartmentPricingSection config={config.pricing} />}
       <LocalProcedureSection title={config.procedure.title} steps={config.procedure.steps} />
       <LocalEtoilysReasonsSection
         title={`Pourquoi choisir Etoilys pour votre classement en ${config.hero.eyebrow} ?`}
@@ -392,8 +389,8 @@ function DepartmentLandingPageV5({
         title={config.finalCta.title}
         paragraphs={config.finalCta.paragraphs}
         primaryLabel="Demander le classement de mon meublé"
-        secondaryHref="/faq"
-        secondaryLabel="Lire la FAQ"
+        secondaryHref="/contact"
+        secondaryLabel="Poser une question"
       />
     </>
   );
@@ -405,13 +402,6 @@ function DepartmentLocalProofSection({ config }: { config: DepartmentLandingPage
       <div className="container-adaptive">
         <div className="mx-auto max-w-6xl">
           <h2 className="mb-6">{config.tourism.title}</h2>
-          {config.tourism.introParagraphs.length > 0 && (
-            <div className="mb-8 max-w-4xl space-y-4 text-textLight leading-comfortable">
-              {config.tourism.introParagraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-          )}
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-stretch">
             <SmartImage
               assetKey={config.tourism.image.assetKey}
@@ -424,6 +414,13 @@ function DepartmentLocalProofSection({ config }: { config: DepartmentLandingPage
               <h3 className="mb-6 text-2xl font-playfair font-semibold text-gray-900">
                 {config.tourism.cardTitle}
               </h3>
+              {config.tourism.introParagraphs.length > 0 && (
+                <div className="mb-6 space-y-4 text-sm leading-comfortable text-textLight">
+                  {config.tourism.introParagraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              )}
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {config.tourism.rows.map((row) => (
                   <div key={row.key} className="rounded-card bg-white p-5 shadow-sm">
@@ -432,16 +429,12 @@ function DepartmentLocalProofSection({ config }: { config: DepartmentLandingPage
                   </div>
                 ))}
               </div>
-              <p className="mt-4 text-xs text-gray-500">{config.tourism.sourceNote}</p>
               <div className="mt-6 space-y-4 text-sm leading-comfortable text-textLight">
-                <p className="font-semibold text-gray-900">{config.tourism.afterTitle}</p>
                 {config.tourism.afterParagraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
-              <Button href="/simulateur-taxe-sejour" variant="secondary" className="mt-6">
-                Comparer la taxe de séjour
-              </Button>
+              <p className="mt-4 text-xs text-gray-500">{config.tourism.sourceNote}</p>
             </Card>
           </div>
         </div>

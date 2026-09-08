@@ -1,10 +1,9 @@
-export const COMMUNE_INDEX_URL = '/data/communes-index.v1.json';
+export const COMMUNE_INDEX_URL = '/data/communes-dordogne-index.v1.json';
 
 export interface CommuneIndexEntry {
   id: string;
   label: string;
   departmentCode: string;
-  postalCodes?: string[];
 }
 
 interface RawCommuneIndexDataset {
@@ -20,10 +19,7 @@ function isCommuneIndexEntry(value: unknown): value is CommuneIndexEntry {
   return (
     typeof candidate.id === 'string' &&
     typeof candidate.label === 'string' &&
-    typeof candidate.departmentCode === 'string' &&
-    (candidate.postalCodes === undefined ||
-      (Array.isArray(candidate.postalCodes) &&
-        candidate.postalCodes.every((postalCode) => typeof postalCode === 'string')))
+    typeof candidate.departmentCode === 'string'
   );
 }
 

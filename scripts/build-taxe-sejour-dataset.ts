@@ -7,7 +7,10 @@ const ROOT_DIR = process.cwd();
 const INPUT_XML_PATH = path.join(ROOT_DIR, 'docs', 'data', 'taxe_sejour_donnees_deliberations.xml');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public', 'data');
 const OUTPUT_JSON_PATH = path.join(OUTPUT_DIR, 'taxe-sejour-dataset.v1.json');
-const OUTPUT_COMMUNE_INDEX_JSON_PATH = path.join(OUTPUT_DIR, 'communes-index.v1.json');
+const OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH = path.join(
+  OUTPUT_DIR,
+  'communes-dordogne-index.v1.json'
+);
 
 const CLASSIFIED_NATURE_ID = '4';
 const UNCLASSIFIED_NATURE_ID = '10';
@@ -55,7 +58,6 @@ export interface CommuneIndexEntry {
   id: string;
   label: string;
   departmentCode: string;
-  postalCodes?: string[];
 }
 
 export interface CommuneIndexDataset {
@@ -66,23 +68,10 @@ export interface CommuneIndexDataset {
 }
 
 const COMMUNE_LABEL_OVERRIDES_BY_INSEE: Record<string, string> = {
+  '24335': 'Port-Sainte-Foy-et-Ponchapt',
   '24274': 'Monbazillac',
   '24322': 'Périgueux',
-  '24331': 'Pomport',
   '24352': 'Ribérac',
-  '33063': 'Bordeaux',
-  '47001': 'Agen',
-  '78646': 'Versailles',
-};
-
-const COMMUNE_POSTAL_CODES_BY_INSEE: Record<string, string[]> = {
-  '24274': ['24240'],
-  '24322': ['24000'],
-  '24331': ['24240'],
-  '24352': ['24600'],
-  '33063': ['33000'],
-  '47001': ['47000'],
-  '78646': ['78000'],
 };
 
 interface TextNode {
@@ -367,31 +356,27 @@ function extractCityNameFromDisplayLabel(displayLabel: string): string {
   return displayLabel.replace(/\s*\([0-9A-Z]{2,3}\).*$/i, '').trim();
 }
 
-function extractDepartmentCodeFromDisplayLabel(displayLabel: string, id: string): string {
-  const match = /\(([0-9A-Z]{2,3})\)/i.exec(displayLabel);
-  return match?.[1]?.toUpperCase() ?? id.slice(0, 2).toUpperCase();
-}
-
 function toReadableCommuneLabel(rawName: string): string {
   return rawName
     .toLocaleLowerCase('fr-FR')
     .replace(/(^|[\s'-])\p{L}/gu, (match) => match.toLocaleUpperCase('fr-FR'));
 }
 
-export function buildCommuneIndexFromCompactDataset(dataset: CompactDataset): CommuneIndexDataset {
+export function buildDordogneCommuneIndexFromCompactDataset(
+  dataset: CompactDataset
+): CommuneIndexDataset {
   const communes = dataset.c
+    .filter((city) => city[0].startsWith('24'))
     .map((city) => {
       const id = city[0];
       const label =
         COMMUNE_LABEL_OVERRIDES_BY_INSEE[id] ??
         toReadableCommuneLabel(extractCityNameFromDisplayLabel(city[1]));
-      const postalCodes = COMMUNE_POSTAL_CODES_BY_INSEE[id];
 
       return {
         id,
         label,
-        departmentCode: extractDepartmentCodeFromDisplayLabel(city[1], id),
-        ...(postalCodes ? { postalCodes } : {}),
+        departmentCode: id.slice(0, 2),
       };
     })
     .sort(
@@ -513,11 +498,11 @@ export function buildCompactDatasetFromXml(
 async function main() {
   const xml = await readFile(INPUT_XML_PATH, 'utf8');
   const dataset = buildCompactDatasetFromXml(xml);
-  const communeIndex = buildCommuneIndexFromCompactDataset(dataset);
+  const communeIndex = buildDordogneCommuneIndexFromCompactDataset(dataset);
 
   await mkdir(OUTPUT_DIR, { recursive: true });
   await writeFile(OUTPUT_JSON_PATH, JSON.stringify(dataset), 'utf8');
-  await writeFile(OUTPUT_COMMUNE_INDEX_JSON_PATH, JSON.stringify(communeIndex), 'utf8');
+  await writeFile(OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH, JSON.stringify(communeIndex), 'utf8');
 
   console.log(
     `Generated ${dataset.c.length} cities in ${path.relative(ROOT_DIR, OUTPUT_JSON_PATH)}.`
@@ -525,7 +510,7 @@ async function main() {
   console.log(
     `Generated ${communeIndex.c.length} communes in ${path.relative(
       ROOT_DIR,
-      OUTPUT_COMMUNE_INDEX_JSON_PATH
+      OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH
     )}.`
   );
 }

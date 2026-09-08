@@ -118,9 +118,9 @@ export const DORDOGNE_SERVICE_SECTORS = [
 ];
 
 export const DORDOGNE_STATISTICS = [
-  { value: '8 030', label: 'meublés de tourisme au 31 décembre 2025' },
+  { value: '8 030', label: 'meublés de tourisme' },
   { value: '3 011', label: 'meublés classés' },
-  { value: '32 %', label: 'des lits marchands' },
+  { value: '32 %', label: 'des lits marchands en meublés saisonniers' },
 ];
 
 const DORDOGNE_VISIBLE_COMMUNE_COUNT = 5;
@@ -132,9 +132,13 @@ export const DORDOGNE_V5_SERVICE_SECTORS = DORDOGNE_SERVICE_SECTORS.map((sector)
 }));
 
 export const DORDOGNE_V5_TOURISM_ROWS: LocalTableRow[] = [
-  { key: 'meubles-tourisme', label: 'meublés de tourisme au 31 décembre 2025', value: '8 030' },
+  { key: 'meubles-tourisme', label: 'meublés de tourisme', value: '8 030' },
   { key: 'meubles-classes', label: 'meublés classés', value: '3 011' },
-  { key: 'part-lits-marchands', label: 'des lits marchands', value: '32 %' },
+  {
+    key: 'part-lits-marchands',
+    label: 'des lits marchands en meublés saisonniers',
+    value: '32 %',
+  },
 ];
 
 export const DORDOGNE_TOURISM_ROWS: LocalTableRow[] = [
@@ -437,7 +441,7 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
   tourism: {
     title: 'Un territoire touristique où les meublés ont une vraie place',
     introParagraphs: [
-      'En Dordogne, les meublés de tourisme représentent une part importante de l’offre d’hébergement touristique. Fin 2025, plus de 8 000 meublés étaient recensés dans le département, dont plus de 3 000 déjà classés. Ces chiffres montrent que le classement est déjà bien installé dans le parc de locations saisonnières du territoire.',
+      'En Dordogne, les meublés de tourisme représentent une part importante de l’offre d’hébergement touristique.',
     ],
     image: {
       assetKey: 'dordogneLandscape',
@@ -446,9 +450,9 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
     cardTitle: 'Données Dordogne',
     rows: DORDOGNE_V5_TOURISM_ROWS,
     sourceNote: 'Source : CDT Dordogne 2025.',
-    afterTitle: 'Un classement déjà installé dans le parc touristique',
     afterParagraphs: [
-      'La taxe de séjour varie selon la commune ou l’EPCI. Le classement donne un repère officiel et permet de comparer plus clairement les effets locaux, notamment avec le simulateur de taxe de séjour.',
+      'Avec plus de 8 000 meublés de tourisme recensés fin 2025, la Dordogne fait partie des territoires où la location saisonnière occupe une place importante dans l’offre touristique.',
+      'Plus de 3 000 meublés étaient déjà classés dans le département fin 2025. Autrement dit, une partie importante du marché est déjà structurée autour du classement.',
     ],
   },
   serviceArea: {
@@ -487,10 +491,9 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
   },
   pricing: {
     title: 'Quel tarif pour classer votre meublé en Dordogne ?',
-    intro:
-      'Indiquez la commune ou le code postal de votre meublé pour afficher le tarif applicable.',
+    intro: 'Sélectionnez la commune de votre meublé pour afficher le tarif applicable.',
     inputLabel: 'Commune',
-    placeholder: 'Ex. Périgueux, Ribérac ou 24000',
+    placeholder: 'Ex. Périgueux, Ribérac, Monbazillac',
     defaultPricingProfileId: 'dordogne-standard',
     overrides: {},
   },

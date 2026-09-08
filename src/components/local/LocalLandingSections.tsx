@@ -378,7 +378,7 @@ export function LocalDepartmentServiceAreaSection({
                       className="justify-self-start text-sm font-medium text-primary-300 underline underline-offset-4 hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 md:justify-self-end md:whitespace-nowrap"
                     >
                       {isExpanded
-                        ? `${collapsedCommunes.length} autres communes`
+                        ? `Masquer les ${collapsedCommunes.length} communes`
                         : `+${collapsedCommunes.length} communes`}
                     </button>
                   )}
