@@ -25,7 +25,7 @@ export default function ArticleCard({
   return (
     <Link
       to={href}
-      className="group block h-full rounded-card focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+      className="ui-focus group block h-full rounded-editorial text-ink hover:text-ink"
       aria-label={`Lire l'article : ${title}`}
     >
       <Card className="overflow-hidden h-full flex flex-col">
@@ -34,19 +34,21 @@ export default function ArticleCard({
             assetKey={imageKey}
             alt={title}
             sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover"
           />
         </div>
         <div className="p-6 flex-1 flex flex-col">
           {category && (
-            <span className="mb-3 inline-flex w-fit rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-500">
+            <span className="mb-3 inline-flex w-fit rounded-control bg-paper px-3 py-1 text-xs font-semibold text-ink">
               {getArticleCategoryLabel(category)}
             </span>
           )}
-          {date && <time className="text-sm text-textLight mb-2">{date}</time>}
-          <h3 className="text-xl font-playfair font-semibold text-gray-900 mb-3">{title}</h3>
-          <p className="text-textLight leading-comfortable mb-4 line-clamp-3 flex-1">{excerpt}</p>
-          <span className="inline-flex items-center gap-2 text-primary-400 group-hover:text-primary-500 font-medium transition-colors duration-200">
+          {date && <time className="text-sm text-muted mb-2">{date}</time>}
+          <h3 className="text-xl font-roboto font-semibold tracking-tight text-ink mb-3">
+            {title}
+          </h3>
+          <p className="text-muted leading-comfortable mb-4 line-clamp-3 flex-1">{excerpt}</p>
+          <span className="inline-flex items-center gap-2 text-ink underline decoration-ink/30 underline-offset-4 group-hover:decoration-current font-medium">
             Lire plus
             <ArrowRight className="h-4 w-4" />
           </span>

@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Shield, Zap, Clock, Calculator, Users, Globe, type LucideIcon } from 'lucide-react';
 import Button from '../components/ui/Button';
+import PageCta from '../components/ui/PageCta';
 import FeatureCard from '../components/ui/FeatureCard';
 import ArticleCard from '../components/ui/ArticleCard';
 import SmartImage from '../components/ui/SmartImage';
@@ -34,12 +35,7 @@ function renderFeatureDescription(feature: HomeFeature) {
   return (
     <>
       {feature.description}
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-medium text-primary-400 underline hover:text-primary-500"
-      >
+      <a href={href} target="_blank" rel="noopener noreferrer" className="editorial-inline-link">
         {feature.link.label}
       </a>
       .
@@ -55,7 +51,7 @@ export default function Home() {
 
   return (
     <>
-      <section className="relative min-h-[600px] flex items-center justify-center text-white overflow-hidden">
+      <section className="relative min-h-[560px] lg:min-h-[600px] flex items-center justify-center text-white overflow-hidden">
         <div className="absolute inset-0">
           <SmartImage
             assetKey="homeHero"
@@ -65,9 +61,11 @@ export default function Home() {
             className="h-full w-full object-cover"
           />
         </div>
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="container-adaptive relative z-10 py-24 text-center">
-          <h1 className="mb-6 text-white">{content.hero.title}</h1>
+        <div className="absolute inset-0 bg-ink/70"></div>
+        <div className="container-editorial relative z-10 py-16 md:py-24 text-center">
+          <h1 className="editorial-title mx-auto mb-6 max-w-4xl text-white">
+            {content.hero.title}
+          </h1>
           <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-comfortable">
             {content.hero.description}
           </p>
@@ -79,7 +77,7 @@ export default function Home() {
               href={content.hero.secondaryCta.href}
               variant="secondary"
               size="lg"
-              className="bg-white/10 border-white text-white hover:!bg-white/20 hover:text-white"
+              className="editorial-inverse-button"
             >
               {content.hero.secondaryCta.label}
             </Button>
@@ -87,11 +85,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-section bg-white">
-        <div className="container-adaptive">
+      <section className="editorial-section bg-surface">
+        <div className="container-editorial">
           <div className="text-center mb-16">
-            <h2 className="mb-4">{content.features.title}</h2>
-            <p className="text-lg text-themePrimary-1 max-w-2xl mx-auto leading-comfortable">
+            <h2 className="editorial-heading text-ink mb-4">{content.features.title}</h2>
+            <p className="text-lg text-muted max-w-2xl mx-auto leading-comfortable">
               {content.features.description}
             </p>
           </div>
@@ -102,18 +100,17 @@ export default function Home() {
                 icon={homeFeatureIcons[feature.icon]}
                 title={feature.title}
                 description={renderFeatureDescription(feature)}
-                iconColor="bicolor"
               />
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-section bg-primary-100">
-        <div className="container-adaptive">
+      <section className="editorial-section bg-paper">
+        <div className="container-editorial">
           <div className="text-center mb-16">
-            <h2 className="mb-4">{content.benefits.title}</h2>
-            <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+            <h2 className="editorial-heading text-ink mb-4">{content.benefits.title}</h2>
+            <p className="text-lg text-muted max-w-2xl mx-auto leading-comfortable">
               {content.benefits.description}
             </p>
           </div>
@@ -135,12 +132,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-section bg-white">
-        <div className="container-adaptive">
+      <section className="editorial-section bg-surface">
+        <div className="container-editorial">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="mb-6">{content.procedure.title}</h2>
-              <div className="space-y-4 text-textLight leading-comfortable">
+              <h2 className="editorial-heading text-ink mb-6">{content.procedure.title}</h2>
+              <div className="space-y-4 text-muted leading-comfortable">
                 {content.procedure.paragraphs.map((paragraph) => (
                   <p key={paragraph}>{paragraph}</p>
                 ))}
@@ -156,7 +153,7 @@ export default function Home() {
                 assetKey="homeProcedure"
                 alt={content.procedure.imageAlt}
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="rounded-card shadow-card-hover w-full"
+                className="rounded-editorial shadow-sm w-full"
               />
             </div>
           </div>
@@ -164,11 +161,11 @@ export default function Home() {
       </section>
 
       {content.news && (
-        <section className="py-section bg-accent-1">
-          <div className="container-adaptive">
+        <section className="editorial-section bg-paper">
+          <div className="container-editorial">
             <div className="text-center mb-16">
-              <h2 className="mb-4">{content.news.title}</h2>
-              <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+              <h2 className="editorial-heading text-ink mb-4">{content.news.title}</h2>
+              <p className="text-lg text-muted max-w-2xl mx-auto leading-comfortable">
                 {content.news.description}
               </p>
             </div>
@@ -194,25 +191,25 @@ export default function Home() {
       )}
 
       {content.serviceLinks && (
-        <section className="py-section bg-accent-1">
-          <div className="container-adaptive">
+        <section className="editorial-section bg-paper">
+          <div className="container-editorial">
             <div className="text-center mb-16">
-              <h2 className="mb-4">{content.serviceLinks.title}</h2>
-              <p className="text-lg text-textLight max-w-2xl mx-auto leading-comfortable">
+              <h2 className="editorial-heading text-ink mb-4">{content.serviceLinks.title}</h2>
+              <p className="text-lg text-muted max-w-2xl mx-auto leading-comfortable">
                 {content.serviceLinks.description}
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {content.serviceLinks.links.map((link) => (
-                <Card key={link.href} hover={false} className="h-full bg-white">
+                <Card key={link.href} hover={false} className="h-full bg-surface">
                   <Link
                     to={link.href}
-                    className="block h-full p-6 transition-colors duration-200 hover:bg-primary-100/50"
+                    className="ui-focus block h-full rounded-editorial p-6 text-ink transition-colors duration-200 motion-reduce:transition-none hover:bg-surface-hover hover:text-ink"
                   >
-                    <h3 className="mb-3 text-xl font-playfair font-semibold text-gray-900">
+                    <h3 className="mb-3 text-xl font-roboto font-semibold text-ink">
                       {link.title}
                     </h3>
-                    <p className="text-sm leading-comfortable text-textLight">{link.description}</p>
+                    <p className="text-sm leading-comfortable text-muted">{link.description}</p>
                   </Link>
                 </Card>
               ))}
@@ -221,22 +218,16 @@ export default function Home() {
         </section>
       )}
 
-      <section className="py-section bg-gradient-to-br from-primary-300 to-themePrimary-2 text-white">
-        <div className="container-adaptive text-center">
-          <h2 className="mb-6 text-white">{content.finalCta.title}</h2>
-          <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-comfortable">
-            {content.finalCta.description}
-          </p>
-          <Button
-            href={content.finalCta.cta.href}
-            variant="secondary"
-            size="lg"
-            className="border-white text-white hover:!bg-white/20 hover:text-white"
-          >
-            {content.finalCta.cta.label}
-          </Button>
-        </div>
-      </section>
+      <PageCta title={content.finalCta.title} description={content.finalCta.description}>
+        <Button
+          href={content.finalCta.cta.href}
+          variant="secondary"
+          size="lg"
+          className="editorial-inverse-button"
+        >
+          {content.finalCta.cta.label}
+        </Button>
+      </PageCta>
     </>
   );
 }

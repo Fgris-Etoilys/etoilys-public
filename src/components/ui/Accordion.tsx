@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 interface AccordionItem {
@@ -11,36 +11,42 @@ interface AccordionProps {
 }
 
 export default function Accordion({ items }: AccordionProps) {
+  const id = useId();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const toggleItem = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndex((current) => (current === index ? null : index));
   };
 
   return (
     <div className="space-y-4">
       {items.map((item, index) => (
-        <div key={index} className="bg-white border border-gray-200 rounded-card overflow-hidden">
+        <div key={index} className="bg-surface border border-ink/15 rounded-editorial">
           <button
+            type="button"
+            id={`${id}-trigger-${index}`}
+            aria-controls={`${id}-panel-${index}`}
             onClick={() => toggleItem(index)}
-            className="w-full flex items-center justify-between p-6 text-left transition-colors duration-200 hover:bg-gray-50"
+            className="ui-focus w-full flex items-center justify-between rounded-editorial p-5 sm:p-6 text-left transition-colors duration-200 motion-reduce:transition-none hover:bg-surface-hover"
             aria-expanded={openIndex === index}
           >
-            <span className="text-lg font-playfair font-semibold text-gray-900 pr-4">
-              {item.question}
-            </span>
+            <span className="text-lg font-semibold text-ink pr-4">{item.question}</span>
             <ChevronDown
-              className={`h-5 w-5 text-primary-300 flex-shrink-0 transition-transform duration-300 ${
+              aria-hidden="true"
+              className={`h-5 w-5 text-copper flex-shrink-0 transition-transform duration-200 motion-reduce:transition-none ${
                 openIndex === index ? 'rotate-180' : ''
               }`}
             />
           </button>
           <div
-            className={`transition-all duration-300 ease-in-out ${
-              openIndex === index ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
-            } overflow-hidden`}
+            id={`${id}-panel-${index}`}
+            role="region"
+            aria-labelledby={`${id}-trigger-${index}`}
+            hidden={openIndex !== index}
           >
-            <div className="px-6 pb-6 text-textLight leading-comfortable">{item.answer}</div>
+            <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-muted leading-comfortable [&_a]:editorial-inline-link">
+              {item.answer}
+            </div>
           </div>
         </div>
       ))}
