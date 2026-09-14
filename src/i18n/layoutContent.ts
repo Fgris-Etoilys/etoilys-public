@@ -21,6 +21,7 @@ export type LayoutFooterColumn = {
 };
 
 export type LayoutContent = {
+  skipToContentLabel: string;
   header: {
     homeHref: string;
     menuToggleLabel: string;
@@ -30,6 +31,8 @@ export type LayoutContent = {
   footer: {
     homeHref: string;
     brandTagline: readonly [string, string];
+    linksLabel: string;
+    contactLabel: string;
     columns: readonly LayoutFooterColumn[];
     cookiePreferencesLabel: string;
     copyright: string;
@@ -51,6 +54,7 @@ export const localeNativeNames = {
 
 export const layoutContent = {
   fr: {
+    skipToContentLabel: 'Aller au contenu',
     header: {
       homeHref: '/',
       menuToggleLabel: 'Ouvrir ou fermer le menu',
@@ -118,6 +122,8 @@ export const layoutContent = {
       },
     },
     footer: {
+      linksLabel: 'Liens utiles',
+      contactLabel: 'Contact',
       homeHref: '/',
       brandTagline: ['Classement de meublés', 'de tourisme'],
       columns: [
@@ -169,6 +175,7 @@ export const layoutContent = {
     },
   },
   en: {
+    skipToContentLabel: 'Skip to content',
     header: {
       homeHref: '/en',
       menuToggleLabel: 'Open or close menu',
@@ -220,6 +227,8 @@ export const layoutContent = {
       },
     },
     footer: {
+      linksLabel: 'Useful links',
+      contactLabel: 'Contact',
       homeHref: '/en',
       brandTagline: ['Furnished tourist', 'accommodation classification'],
       columns: [
@@ -272,6 +281,7 @@ export const layoutContent = {
     },
   },
   nl: {
+    skipToContentLabel: 'Ga naar de inhoud',
     header: {
       homeHref: '/nl',
       menuToggleLabel: 'Menu openen of sluiten',
@@ -309,6 +319,8 @@ export const layoutContent = {
       },
     },
     footer: {
+      linksLabel: 'Handige links',
+      contactLabel: 'Contact',
       homeHref: '/nl',
       brandTagline: ['Classificatie van', 'vakantiewoningen'],
       columns: [

@@ -1,0 +1,58 @@
+import { afterEach, describe, expect, it } from 'vitest';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import Input from './Input';
+import Textarea from './Textarea';
+import Select from './Select';
+import Checkbox from './Checkbox';
+
+afterEach(cleanup);
+
+describe('shared form controls', () => {
+  it.each([Input, Textarea, Select])(
+    'associates labels and feedback without changing caller attributes',
+    (Control) => {
+      const props = {
+        label: 'Field',
+        options: [{ value: 'one', label: 'One' }],
+        'aria-describedby': 'external',
+      };
+      const { rerender } = render(
+        <>
+          <span id="external">External help</span>
+          <Control {...props} helperText="Help" />
+        </>
+      );
+      expect(screen.getByLabelText('Field')).toHaveAccessibleDescription('External help Help');
+      rerender(
+        <>
+          <span id="external">External help</span>
+          <Control {...props} id="explicit" error="Error" helperText="Help" />
+        </>
+      );
+      const field = screen.getByLabelText('Field');
+      expect(field).toHaveAttribute('id', 'explicit');
+      expect(field).toHaveAttribute('aria-invalid', 'true');
+      expect(field).toHaveAccessibleDescription('External help Error');
+      expect(screen.queryByText('Help')).not.toBeInTheDocument();
+      rerender(<Control {...props} id="explicit" aria-invalid="grammar" disabled />);
+      expect(screen.getByLabelText('Field')).toHaveAttribute('aria-invalid', 'grammar');
+      expect(screen.getByLabelText('Field')).toHaveAttribute('aria-describedby', 'external');
+      expect(screen.getByLabelText('Field')).toBeDisabled();
+    }
+  );
+
+  it('keeps name-derived input IDs and associates checkbox errors', () => {
+    render(
+      <>
+        <Input label="Name" name="customer" />
+        <Checkbox label="Consent" error="Required" />
+      </>
+    );
+    expect(screen.getByLabelText('Name')).toHaveAttribute('id', 'customer');
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toHaveAccessibleDescription('Required');
+    expect(checkbox).toHaveAttribute('aria-invalid', 'true');
+    fireEvent.click(screen.getByText('Consent'));
+    expect(checkbox).toBeChecked();
+  });
+});

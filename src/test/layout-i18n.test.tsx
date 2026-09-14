@@ -86,6 +86,21 @@ function expectSeoHeadWithoutDuplicates({
 }
 
 describe('localized layout', () => {
+  it.each(['/contact', '/en/contact', '/nl/contact'])(
+    'provides a shared footer and a named skip link on %s',
+    (path) => {
+      renderAt(path);
+      const main = screen.getByRole('main');
+      expect(main).toHaveAttribute('id', 'main-content');
+      expect(main).toHaveAttribute('tabindex', '-1');
+      expect(document.querySelector('a[href="#main-content"]')).toHaveAccessibleName();
+      const footer = screen.getByRole('contentinfo');
+      expect(footer).toHaveClass('site-footer');
+      expect(footer.querySelector(`a[href="${path}"]`)).toBeInTheDocument();
+      expect(within(footer).getByRole('button')).toHaveAccessibleName();
+    }
+  );
+
   afterEach(() => {
     cleanup();
   });

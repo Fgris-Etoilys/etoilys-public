@@ -23,22 +23,19 @@ export default function Button({
   ...props
 }: ButtonProps) {
   const baseClasses =
-    'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-300 disabled:opacity-50 disabled:cursor-not-allowed';
+    'ui-focus inline-flex items-center justify-center font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantClasses = {
-    primary:
-      'bg-primary-400 text-white hover:bg-primary-500 hover:text-white shadow-sm hover:shadow-md',
-    secondary:
-      'bg-transparent border-2 border-primary-400 text-primary-400 hover:bg-white hover:text-primary-500 hover:shadow-sm',
-    white:
-      'bg-white text-primary-400 hover:bg-gray-100 hover:text-primary-500 shadow-sm hover:shadow-md',
-    ghost: 'bg-transparent border-2 border-white text-white hover:bg-white/10 hover:text-white',
+    primary: 'bg-ink text-white hover:bg-ink-hover hover:text-white',
+    secondary: 'bg-transparent border border-ink text-ink hover:bg-surface-hover hover:text-ink',
+    white: 'bg-paper text-ink hover:bg-white hover:text-ink',
+    ghost: 'bg-transparent border border-white text-white hover:bg-white/10 hover:text-white',
   };
 
   const sizeClasses = {
-    sm: 'px-4 py-2 text-sm rounded-lg',
-    md: 'px-6 py-3 text-base rounded-lg',
-    lg: 'px-8 py-4 text-lg rounded-lg',
+    sm: 'px-4 py-2 text-sm rounded-control',
+    md: 'px-6 py-3 text-base rounded-control',
+    lg: 'px-8 py-4 text-lg rounded-control',
   };
 
   const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;

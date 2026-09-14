@@ -12,13 +12,13 @@ const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
   ref
 ) {
   const hoverClasses = hover
-    ? 'hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300'
+    ? 'hover:border-ink/25 hover:shadow-[0_4px_16px_rgb(var(--color-ink)/0.06)] transition-colors duration-300'
     : '';
 
   return (
     <div
       ref={ref}
-      className={`bg-white border border-gray-200 rounded-card shadow-card ${hoverClasses} ${className}`}
+      className={`bg-surface border border-ink/10 rounded-editorial ${hoverClasses} ${className}`}
       {...props}
     >
       {children}

@@ -124,7 +124,7 @@ const questions = [
 export default function ClassementDordogne() {
   return (
     <div className="dd-landing">
-      <section className="dd-hero dd-container" aria-labelledby="dd-title">
+      <section className="dd-hero container-editorial" aria-labelledby="dd-title">
         <div className="dd-hero-copy">
           <p className="dd-eyebrow">
             <span /> PROPRIÉTAIRES EN DORDOGNE
@@ -139,7 +139,7 @@ export default function ClassementDordogne() {
           <Button href="/demande-classement" size="lg" className="dd-button">
             Demander mon classement <ArrowUpRight size={20} aria-hidden="true" />
           </Button>
-          <a href="#tarifs" className="dd-text-link dd-hero-price">
+          <a href="#tarifs" className="editorial-link ui-focus dd-hero-price">
             Connaître mon tarif <ArrowDown size={16} aria-hidden="true" />
           </a>
           <ul className="dd-hero-reassurance">
@@ -189,7 +189,7 @@ export default function ClassementDordogne() {
       </section>
 
       <div className="dd-proof-strip">
-        <div className="dd-container dd-proof-inner">
+        <div className="container-editorial dd-proof-inner">
           <div>
             <ShieldCheck size={27} strokeWidth={1.3} aria-hidden="true" />
             <p>
@@ -218,12 +218,14 @@ export default function ClassementDordogne() {
 
       <section
         id="le-classement"
-        className="dd-section dd-container dd-benefits"
+        className="editorial-section container-editorial dd-benefits"
         aria-labelledby="dd-benefits-title"
       >
         <div className="dd-section-intro">
           <p className="dd-eyebrow">LE CLASSEMENT, POUR VOUS</p>
-          <h2 id="dd-benefits-title">Pourquoi faire classer votre meublé de tourisme ?</h2>
+          <h2 className="editorial-heading" id="dd-benefits-title">
+            Pourquoi faire classer votre meublé de tourisme ?
+          </h2>
         </div>
         <div className="dd-benefit-cards">
           <article>
@@ -261,14 +263,16 @@ export default function ClassementDordogne() {
 
       {DORDOGNE_DEPARTMENT_PAGE.serviceArea && (
         <div id="communes" className="dd-service-area">
-          <LocalDepartmentServiceAreaSection
-            serviceArea={{
-              ...DORDOGNE_DEPARTMENT_PAGE.serviceArea,
-              title: 'Dans quelles communes de Dordogne intervenons-nous ?',
-            }}
-          />
-          <div className="dd-container">
-            <Link to="/zones-intervention" className="dd-text-link">
+          <div className="container-editorial">
+            <LocalDepartmentServiceAreaSection
+              serviceArea={{
+                ...DORDOGNE_DEPARTMENT_PAGE.serviceArea,
+                title: 'Dans quelles communes de Dordogne intervenons-nous ?',
+              }}
+            />
+          </div>
+          <div className="container-editorial">
+            <Link to="/zones-intervention" className="editorial-link ui-focus">
               Voir toutes nos zones d’intervention <ArrowUpRight size={16} aria-hidden="true" />
             </Link>
           </div>
@@ -277,12 +281,14 @@ export default function ClassementDordogne() {
 
       <section
         id="tarifs"
-        className="dd-section dd-container dd-tariff-section"
+        className="editorial-section container-editorial dd-tariff-section"
         aria-labelledby="dd-tariff-title"
       >
         <div className="dd-tariff-copy">
           <p className="dd-eyebrow">VOTRE LOGEMENT, VOTRE TARIF</p>
-          <h2 id="dd-tariff-title">Quel tarif pour classer votre meublé en Dordogne ?</h2>
+          <h2 className="editorial-heading" id="dd-tariff-title">
+            Quel tarif pour classer votre meublé en Dordogne ?
+          </h2>
           <p>
             Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons
             ensuite les modalités et la possibilité d’intervenir à votre adresse.
@@ -309,7 +315,7 @@ export default function ClassementDordogne() {
               </span>
             </li>
           </ul>
-          <Link to="/procedure" className="dd-text-link">
+          <Link to="/procedure" className="editorial-link ui-focus">
             Les modalités de la visite <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
         </div>
@@ -319,13 +325,15 @@ export default function ClassementDordogne() {
       </section>
 
       <section id="etapes" className="dd-process" aria-labelledby="dd-process-title">
-        <div className="dd-container">
+        <div className="container-editorial">
           <div className="dd-process-heading">
             <div>
               <p className="dd-eyebrow">DE LA DEMANDE AUX ÉTOILES</p>
-              <h2 id="dd-process-title">Votre classement en trois étapes</h2>
+              <h2 className="editorial-heading" id="dd-process-title">
+                Votre classement en trois étapes
+              </h2>
             </div>
-            <Link to="/procedure" className="dd-text-link">
+            <Link to="/procedure" className="editorial-link ui-focus">
               La procédure en détail <ArrowUpRight size={17} aria-hidden="true" />
             </Link>
           </div>
@@ -363,7 +371,7 @@ export default function ClassementDordogne() {
       </section>
 
       <section className="dd-expertise" aria-labelledby="dd-expertise-title">
-        <div className="dd-container dd-expertise-grid">
+        <div className="container-editorial dd-expertise-grid">
           <figure className="dd-stone-photo">
             <SmartImage
               assetKey="dordogneLandscape"
@@ -373,7 +381,9 @@ export default function ClassementDordogne() {
             <figcaption>Les pierres du Périgord.</figcaption>
           </figure>
           <div className="dd-expertise-copy">
-            <h2 id="dd-expertise-title">Pourquoi choisir Etoilys pour votre classement ?</h2>
+            <h2 className="editorial-heading" id="dd-expertise-title">
+              Pourquoi choisir Etoilys pour votre classement ?
+            </h2>
             <ul className="dd-expertise-arguments">
               <li>
                 <Star size={23} strokeWidth={1.4} aria-hidden="true" />
@@ -394,7 +404,7 @@ export default function ClassementDordogne() {
                     Notre simulateur vous aide à estimer la catégorie visée et à repérer les points
                     à préparer.
                   </p>
-                  <Link to="/simulateur" className="dd-text-link">
+                  <Link to="/simulateur" className="editorial-link ui-focus">
                     Estimer mon classement <ArrowUpRight size={17} aria-hidden="true" />
                   </Link>
                 </div>
@@ -411,7 +421,7 @@ export default function ClassementDordogne() {
                     href={COFRAC_ACCREDITATION_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="dd-text-link"
+                    className="editorial-link ui-focus"
                   >
                     Consulter notre accréditation <ArrowUpRight size={17} aria-hidden="true" />
                   </a>
@@ -422,12 +432,17 @@ export default function ClassementDordogne() {
         </div>
       </section>
 
-      <section className="dd-section dd-container dd-faq" aria-labelledby="dd-faq-title">
+      <section
+        className="editorial-section container-editorial dd-faq"
+        aria-labelledby="dd-faq-title"
+      >
         <div>
           <p className="dd-eyebrow">AVANT DE VOUS LANCER</p>
-          <h2 id="dd-faq-title">Questions fréquentes sur le classement en Dordogne</h2>
+          <h2 className="editorial-heading" id="dd-faq-title">
+            Questions fréquentes sur le classement en Dordogne
+          </h2>
           <p>Un point particulier sur votre logement ?</p>
-          <Link to="/contact" className="dd-text-link">
+          <Link to="/contact" className="editorial-link ui-focus">
             Parlons-en <ArrowUpRight size={16} aria-hidden="true" />
           </Link>
         </div>
@@ -445,10 +460,12 @@ export default function ClassementDordogne() {
       </section>
 
       <section className="dd-final" aria-labelledby="dd-final-title">
-        <div className="dd-container dd-final-inner">
+        <div className="container-editorial dd-final-inner">
           <div>
             <p className="dd-eyebrow">À VOUS DE JOUER</p>
-            <h2 id="dd-final-title">Demandez le classement de votre meublé en Dordogne</h2>
+            <h2 className="editorial-heading" id="dd-final-title">
+              Demandez le classement de votre meublé en Dordogne
+            </h2>
             <p>
               Parlez-nous de votre projet. Rappel sous 24 h ouvrées,
               <br />
