@@ -748,7 +748,7 @@
     padding: 20px;
   }
   .dd-photo-note > span:last-child {
-    font-size: 9px;
+    font-size: 11px;
   }
   .dd-proof-inner {
     gap: 14px;
@@ -761,7 +761,7 @@
   }
   .dd-proof-inner p > span,
   .dd-proof-inner p > a {
-    font-size: 9px;
+    font-size: 11px;
   }
   .dd-section {
     padding-block: 65px;
@@ -862,7 +862,7 @@
     top: 10px;
     bottom: auto;
     right: 10px;
-    font-size: 8px;
+    font-size: 11px;
   }
   .dd-photo-note {
     left: 0;
@@ -878,7 +878,7 @@
     height: 14px;
   }
   .dd-photo-note > span:last-child {
-    font-size: 8px;
+    font-size: 11px;
   }
   .dd-proof-inner {
     grid-template-columns: 1fr 1fr;
@@ -904,7 +904,7 @@
   }
   .dd-proof-inner p > span,
   .dd-proof-inner p > a {
-    font-size: 9px;
+    font-size: 11px;
   }
   .dd-proof-inner > div:first-child a {
     font-size: 11px;
@@ -986,7 +986,7 @@
     font-size: 13px;
   }
   .dd-process-note {
-    font-size: 10px;
+    font-size: 11px;
   }
   .dd-faq summary {
     font-size: 13px;
@@ -1023,12 +1023,16 @@
     min-height: 27px;
   }
   .dd-footer-bottom {
+    font-size: 11px;
     flex-wrap: wrap;
     gap: 15px 21px;
     line-height: 1.6;
   }
   .dd-footer-bottom > span {
     width: 100%;
+  }
+  .dd-footer-label {
+    font-size: 11px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

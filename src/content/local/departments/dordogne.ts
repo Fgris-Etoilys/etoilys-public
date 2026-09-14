@@ -472,7 +472,7 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
     title: LOCAL_CLASSIFICATION_PROCEDURE.title,
     intro: LOCAL_CLASSIFICATION_PROCEDURE.intro,
     image: {
-      assetKey: 'dordogneInterior',
+      assetKey: 'dordogneLaRoqueGageac',
       alt: 'Intérieur de maison de vacances',
     },
     steps: LOCAL_CLASSIFICATION_PROCEDURE.steps,

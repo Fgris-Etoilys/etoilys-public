@@ -20,7 +20,7 @@ export type ImageAssetKey =
   | 'articlePreparerVisiteClassement'
   | 'articleRipostVoyageurRefuseQuitter'
   | 'dordogneHero'
-  | 'dordogneInterior'
+  | 'dordogneLaRoqueGageac'
   | 'dordogneLandscape'
   | 'girondeHero'
   | 'girondeTerritory'
@@ -229,7 +229,7 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
     srcSetAvif:
       '/images/optimized/pexels-slimmars-13-197677686-14298615-480.avif 480w, /images/optimized/pexels-slimmars-13-197677686-14298615-768.avif 768w, /images/optimized/pexels-slimmars-13-197677686-14298615-1200.avif 1200w, /images/optimized/pexels-slimmars-13-197677686-14298615-1600.avif 1600w, /images/optimized/pexels-slimmars-13-197677686-14298615-1920.avif 1920w',
   },
-  dordogneInterior: {
+  dordogneLaRoqueGageac: {
     width: 3158,
     height: 2228,
     src: '/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1200.jpg',

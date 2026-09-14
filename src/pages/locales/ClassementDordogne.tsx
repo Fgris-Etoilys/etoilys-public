@@ -160,7 +160,7 @@ export default function ClassementDordogne() {
         <div className="dd-hero-visual">
           <figure className="dd-hero-photo">
             <SmartImage
-              assetKey="dordogneInterior"
+              assetKey="dordogneLaRoqueGageac"
               alt="Les maisons de pierre de La Roque-Gageac au bord de la Dordogne"
               priority
               sizes={heroImageSizes}
@@ -318,6 +318,50 @@ export default function ClassementDordogne() {
         )}
       </section>
 
+      <section id="etapes" className="dd-process" aria-labelledby="dd-process-title">
+        <div className="dd-container">
+          <div className="dd-process-heading">
+            <div>
+              <p className="dd-eyebrow">DE LA DEMANDE AUX ÉTOILES</p>
+              <h2 id="dd-process-title">Votre classement en trois étapes</h2>
+            </div>
+            <Link to="/procedure" className="dd-text-link">
+              La procédure en détail <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+          </div>
+          <ol className="dd-steps">
+            <li>
+              <span>01</span>
+              <h3>Vous nous parlez de votre logement.</h3>
+              <p>
+                Envoyez vos coordonnées et l’adresse du meublé. Nous vous rappelons sous 24 h
+                ouvrées pour préciser votre projet.
+              </p>
+            </li>
+            <li>
+              <span>02</span>
+              <h3>Nous préparons la visite ensemble.</h3>
+              <p>
+                Nous confirmons le tarif et les modalités, puis convenons d’une date. La visite a
+                lieu en moyenne sous deux semaines.
+              </p>
+            </li>
+            <li>
+              <span>03</span>
+              <h3>Votre logement est évalué sur place.</h3>
+              <p>
+                Après le contrôle selon la grille officielle, vous recevez les documents et la
+                proposition de classement.
+              </p>
+            </li>
+          </ol>
+          <p className="dd-process-note">
+            Nos inspecteurs vous accompagnent à chaque étape, de votre demande à la remise des
+            documents de classement.
+          </p>
+        </div>
+      </section>
+
       <section className="dd-expertise" aria-labelledby="dd-expertise-title">
         <div className="dd-container dd-expertise-grid">
           <figure className="dd-stone-photo">
@@ -375,50 +419,6 @@ export default function ClassementDordogne() {
               </li>
             </ul>
           </div>
-        </div>
-      </section>
-
-      <section id="etapes" className="dd-process" aria-labelledby="dd-process-title">
-        <div className="dd-container">
-          <div className="dd-process-heading">
-            <div>
-              <p className="dd-eyebrow">DE LA DEMANDE AUX ÉTOILES</p>
-              <h2 id="dd-process-title">Votre classement en trois étapes</h2>
-            </div>
-            <Link to="/procedure" className="dd-text-link">
-              La procédure en détail <ArrowUpRight size={17} aria-hidden="true" />
-            </Link>
-          </div>
-          <ol className="dd-steps">
-            <li>
-              <span>01</span>
-              <h3>Vous nous parlez de votre logement.</h3>
-              <p>
-                Envoyez vos coordonnées et l’adresse du meublé. Nous vous rappelons sous 24 h
-                ouvrées pour préciser votre projet.
-              </p>
-            </li>
-            <li>
-              <span>02</span>
-              <h3>Nous préparons la visite ensemble.</h3>
-              <p>
-                Nous confirmons le tarif et les modalités, puis convenons d’une date. La visite a
-                lieu en moyenne sous deux semaines.
-              </p>
-            </li>
-            <li>
-              <span>03</span>
-              <h3>Votre logement est évalué sur place.</h3>
-              <p>
-                Après le contrôle selon la grille officielle, vous recevez les documents et la
-                proposition de classement.
-              </p>
-            </li>
-          </ol>
-          <p className="dd-process-note">
-            Nos inspecteurs vous accompagnent à chaque étape, de votre demande à la remise des
-            documents de classement.
-          </p>
         </div>
       </section>
 

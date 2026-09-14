@@ -3,7 +3,7 @@
   "pipelineSignature": "63c16cdb600c21eec4d3bca64eaff252706c266a9499334675f626388b89e4b1",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "8c9ff9d0f8ce1bfbc62ccfa9419c8a7525d556605ee0bcd2f0564ec5ae1f1289"
+    "sha256": "be306d2c8931b51d6e59baa2dead4e8f536922c53b5aefbc194fd494408b4383"
   },
   "sources": [
     {
@@ -102,7 +102,7 @@
       "sha256": "10c152d1bafc65fe0c806291a36f0640237e23c6a2afb6dee6fc26685daf00c0"
     },
     {
-      "key": "dordogneInterior",
+      "key": "dordogneLaRoqueGageac",
       "path": "src/assets/seo-images/source/jametlene-reskp-0MF_yWx470o-unsplash.jpg",
       "sha256": "ada5d2ff88b2bc0677b7158edf9027ef5729a7713b52a384d4e232d7992cc8f6"
     },

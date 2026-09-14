@@ -135,8 +135,8 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     description:
       'Classez votre gîte ou meublé de tourisme en Dordogne avec Etoilys, organisme accrédité Cofrac. Consultez les tarifs. Rappel sous 24 h ouvrées.',
     breadcrumbLabel: 'Dordogne',
-    ogImageKey: 'dordogneInterior',
-    lcpImageKey: 'dordogneInterior',
+    ogImageKey: 'dordogneLaRoqueGageac',
+    lcpImageKey: 'dordogneLaRoqueGageac',
     lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 681px) 45vw, 100vw',
   },
   '/classement-meuble-tourisme-bergerac': {

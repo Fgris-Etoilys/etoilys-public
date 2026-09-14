@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from '../../App';
+import { IMAGE_MANIFEST } from '../../content/imageManifest';
 import { getCanonicalUrl, getSeoRouteConfig, getSeoTitle } from '../../content/seoRoutes';
 
 const DORDOGNE_PATH = '/classement-meuble-tourisme-dordogne';
@@ -41,6 +42,26 @@ describe('Dordogne layout isolation', () => {
       expectSingleLayoutAndSeo(path, true);
       expect(screen.getByRole('main')).toHaveAttribute('id', 'dordogne-content');
       const sizes = getSeoRouteConfig(path).lcpImageSizes;
+      const heroAsset = IMAGE_MANIFEST.dordogneLaRoqueGageac;
+      expect(document.querySelector('.dd-hero-photo img')).toHaveAttribute('src', heroAsset.src);
+      expect(document.querySelector('link[data-seo-lcp-preload]')).toHaveAttribute(
+        'href',
+        heroAsset.src
+      );
+      expect(document.querySelector('meta[property="og:image"]')).toHaveAttribute(
+        'content',
+        `https://www.etoilys.fr${heroAsset.src}`
+      );
+      const sectionIds = Array.from(document.querySelectorAll('.dd-landing > section')).map(
+        (section) => section.getAttribute('aria-labelledby')
+      );
+      const tariffIndex = sectionIds.indexOf('dd-tariff-title');
+      expect(sectionIds.slice(tariffIndex, tariffIndex + 4)).toEqual([
+        'dd-tariff-title',
+        'dd-process-title',
+        'dd-expertise-title',
+        'dd-faq-title',
+      ]);
       expect(document.querySelector('.dd-hero-photo source[type="image/avif"]')).toHaveAttribute(
         'sizes',
         sizes
