@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
+import type { ComponentProps } from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import Input from './Input';
 import Textarea from './Textarea';
@@ -7,13 +8,16 @@ import Checkbox from './Checkbox';
 
 afterEach(cleanup);
 
+const SelectWithOptions = (props: Omit<ComponentProps<typeof Select>, 'options'>) => (
+  <Select {...props} options={[{ value: 'one', label: 'One' }]} />
+);
+
 describe('shared form controls', () => {
-  it.each([Input, Textarea, Select])(
+  it.each([Input, Textarea, SelectWithOptions])(
     'associates labels and feedback without changing caller attributes',
     (Control) => {
       const props = {
         label: 'Field',
-        options: [{ value: 'one', label: 'One' }],
         'aria-describedby': 'external',
       };
       const { rerender } = render(

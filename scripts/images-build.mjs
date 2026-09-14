@@ -204,7 +204,7 @@ function buildPipelineSignature() {
         ogAspectRatio: OG_ASPECT_RATIO,
         heroAssetKeys: [...HERO_ASSET_KEYS].sort(),
         imageAssets: IMAGE_ASSETS,
-        sharpVersions: sharp.versions,
+        sharpVersion: sharp.versions.sharp,
         formatSrcSet: formatSrcSet.toString(),
         buildOgCompositionOverlay: buildOgCompositionOverlay.toString(),
         getJpegQuality: getJpegQuality.toString(),
