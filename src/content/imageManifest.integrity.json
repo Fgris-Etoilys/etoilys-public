@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "435a83ccb88ff8d02e4522d1b5ccae469e91387897b3d92efdeba323a193cd53",
+  "pipelineSignature": "886311c2cca334de6fef8a6db5f2914a0c5d2496b277b54e99bb08bbc23afeef",
   "manifest": {
     "path": "src/content/imageManifest.ts",
     "sha256": "be306d2c8931b51d6e59baa2dead4e8f536922c53b5aefbc194fd494408b4383"

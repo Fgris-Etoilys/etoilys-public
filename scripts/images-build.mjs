@@ -195,6 +195,10 @@ function toRelativePath(filePath) {
   return toPosixPath(path.relative(ROOT_DIR, filePath));
 }
 
+function normalizeFnSource(fn) {
+  return normalizeText(fn.toString());
+}
+
 function buildPipelineSignature() {
   return hashText(
     JSON.stringify(
@@ -205,17 +209,17 @@ function buildPipelineSignature() {
         heroAssetKeys: [...HERO_ASSET_KEYS].sort(),
         imageAssets: IMAGE_ASSETS,
         sharpVersion: sharp.versions.sharp,
-        formatSrcSet: formatSrcSet.toString(),
-        buildOgCompositionOverlay: buildOgCompositionOverlay.toString(),
-        getJpegQuality: getJpegQuality.toString(),
-        getWebpQuality: getWebpQuality.toString(),
-        getAvifQuality: getAvifQuality.toString(),
-        getOutputPaths: getOutputPaths.toString(),
-        shouldBuildAsset: shouldBuildAsset.toString(),
-        createAssetPlan: createAssetPlan.toString(),
-        buildAsset: buildAsset.toString(),
-        buildManifestEntry: buildManifestEntry.toString(),
-        buildManifest: buildManifest.toString(),
+        formatSrcSet: normalizeFnSource(formatSrcSet),
+        buildOgCompositionOverlay: normalizeFnSource(buildOgCompositionOverlay),
+        getJpegQuality: normalizeFnSource(getJpegQuality),
+        getWebpQuality: normalizeFnSource(getWebpQuality),
+        getAvifQuality: normalizeFnSource(getAvifQuality),
+        getOutputPaths: normalizeFnSource(getOutputPaths),
+        shouldBuildAsset: normalizeFnSource(shouldBuildAsset),
+        createAssetPlan: normalizeFnSource(createAssetPlan),
+        buildAsset: normalizeFnSource(buildAsset),
+        buildManifestEntry: normalizeFnSource(buildManifestEntry),
+        buildManifest: normalizeFnSource(buildManifest),
       },
       null,
       2
