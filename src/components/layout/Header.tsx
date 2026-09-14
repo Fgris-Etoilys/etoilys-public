@@ -75,9 +75,19 @@ export default function Header() {
         setOpenDropdown(null);
       }
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenDropdown(null);
+        setIsMobileMenuOpen(false);
+      }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const headerClasses = `fixed left-0 right-0 top-0 z-[70] border-b border-primary-100/80 shadow-[0_10px_30px_rgba(1,50,176,0.08)] backdrop-blur-md transition-all duration-300 ${
@@ -158,6 +168,9 @@ export default function Header() {
                         }`}
                         aria-expanded={openDropdown === item.name}
                         aria-haspopup="true"
+                        onClick={() =>
+                          setOpenDropdown(openDropdown === item.name ? null : item.name)
+                        }
                       >
                         {item.name}
                         <ChevronDown
@@ -226,6 +239,8 @@ export default function Header() {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="rounded-full p-2 text-themePrimary-1 transition-colors duration-200 hover:bg-primary-100/70 hover:text-primary-500 xl:hidden"
               aria-label={content.menuToggleLabel}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls={isMobileMenuOpen ? 'site-mobile-menu' : undefined}
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -234,7 +249,10 @@ export default function Header() {
       </header>
 
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] overflow-y-auto bg-white pt-20 xl:hidden">
+        <div
+          id="site-mobile-menu"
+          className="fixed inset-0 z-[60] overflow-y-auto bg-white pt-20 xl:hidden"
+        >
           <nav className="container-adaptive py-6">
             <div className="flex flex-col gap-2">
               {navigation.map((item) => {

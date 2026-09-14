@@ -14,7 +14,7 @@ function expectSingleLayoutAndSeo(path: string, local: boolean) {
   expect(screen.getAllByRole('banner')).toHaveLength(1);
   expect(screen.getAllByRole('contentinfo')).toHaveLength(1);
   expect(screen.getAllByRole('main')).toHaveLength(1);
-  expect(screen.getByRole('banner').classList.contains('dd-header')).toBe(local);
+  expect(screen.getByRole('banner')).toHaveClass('fixed');
   expect(screen.getByRole('contentinfo').classList.contains('dd-footer')).toBe(local);
   expect(document.querySelector('.dordogne-shell') !== null).toBe(local);
   expect(document.querySelectorAll('link[rel="canonical"]')).toHaveLength(1);
@@ -40,12 +40,24 @@ describe('Dordogne layout isolation', () => {
       render(<App />);
       expectSingleLayoutAndSeo(path, true);
       expect(screen.getByRole('main')).toHaveAttribute('id', 'dordogne-content');
+      const sizes = getSeoRouteConfig(path).lcpImageSizes;
+      expect(document.querySelector('.dd-hero-photo source[type="image/avif"]')).toHaveAttribute(
+        'sizes',
+        sizes
+      );
+      expect(document.querySelector('link[data-seo-lcp-preload]')).toHaveAttribute(
+        'imagesizes',
+        sizes
+      );
+      expect(document.querySelectorAll('link[hreflang]')).toHaveLength(0);
+      expect(screen.getByRole('button', { name: /^Le classement$/ })).toBeInTheDocument();
 
       const contactLink = screen.getByRole('contentinfo').querySelector('a[href="/contact"]');
       if (!contactLink) throw new Error('The local footer must provide the contact route');
       fireEvent.click(contactLink);
       await waitFor(() => expect(window.location.pathname).toBe('/contact'));
       expectSingleLayoutAndSeo('/contact', false);
+      expect(document.querySelector('link[data-seo-lcp-preload]')).toBeNull();
       expect(screen.getByRole('main')).not.toHaveAttribute('id', 'dordogne-content');
     }
   );

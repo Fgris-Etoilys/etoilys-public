@@ -5,7 +5,7 @@ import AnalyticsContactTracker from './AnalyticsContactTracker';
 import CookieConsentManager from './CookieConsentManager';
 import Header from './Header';
 import Footer from './Footer';
-import { DordogneHeader, DordogneFooter } from '../local/DordogneChrome';
+import { DordogneFooter } from '../local/DordogneChrome';
 import SEO from '../ui/SEO';
 import { ToastProvider } from '../ui/Toast';
 import {
@@ -66,7 +66,7 @@ export default function Layout() {
         ogImage={ogImageUrl}
         preloadImage={lcpPreloadAsset?.src}
         preloadImageSrcSet={lcpPreloadAsset?.srcSetAvif}
-        preloadImageSizes={lcpPreloadAsset ? '100vw' : undefined}
+        preloadImageSizes={lcpPreloadAsset ? (seoConfig.lcpImageSizes ?? '100vw') : undefined}
         alternateLinks={alternateLinks}
         includeCanonical={seoConfig.includeCanonical !== false}
       />
@@ -84,10 +84,15 @@ export default function Layout() {
         />
       )}
       <ToastProvider>
-        {isDordogne ? <DordogneHeader /> : <Header />}
+        {isDordogne && (
+          <a href="#dordogne-content" className="dd-skip">
+            Aller au contenu
+          </a>
+        )}
+        <Header />
         <main
           id={isDordogne ? 'dordogne-content' : undefined}
-          className={isDordogne ? 'flex-grow' : 'flex-grow pt-16'}
+          className={isDordogne ? 'flex-grow dd-main' : 'flex-grow pt-16'}
         >
           <Outlet />
         </main>

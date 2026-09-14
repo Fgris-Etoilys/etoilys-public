@@ -44,6 +44,7 @@ export default function DepartmentPricingSection({
   variant = 'default',
 }: DepartmentPricingSectionProps) {
   const isDordogne = variant === 'dordogne';
+  const Heading = isDordogne ? 'h3' : 'h2';
   const [communes, setCommunes] = useState<CommuneIndexEntry[] | null>(null);
   const [isLoadingCommunes, setIsLoadingCommunes] = useState(false);
   const [loadingError, setLoadingError] = useState<string | null>(null);
@@ -224,9 +225,9 @@ export default function DepartmentPricingSection({
             <Euro className="h-4 w-4" aria-hidden="true" />
             Tarifs
           </div>
-          <h2 className={isDordogne ? 'dd-pricing-title' : 'mb-5'}>
-            {isDordogne ? 'Votre tarif en Dordogne' : config.title}
-          </h2>
+          <Heading className={isDordogne ? 'dd-pricing-title' : 'mb-5'}>
+            {isDordogne ? 'Sélectionnez votre commune' : config.title}
+          </Heading>
           <p
             className={
               isDordogne ? 'dd-pricing-intro' : 'mb-8 max-w-5xl text-textLight leading-comfortable'

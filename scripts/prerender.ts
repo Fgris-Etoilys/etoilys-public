@@ -229,7 +229,7 @@ function buildSeoHead(pathname: string): string {
 
   if (preloadImage) {
     tags.push(
-      `    <link rel="preload" as="image" href="${escapeHtml(preloadImage.src)}" imagesrcset="${escapeHtml(preloadImage.srcSetAvif)}" imagesizes="100vw" data-seo-lcp-preload="true">`
+      `    <link rel="preload" as="image" href="${escapeHtml(preloadImage.src)}" imagesrcset="${escapeHtml(preloadImage.srcSetAvif)}" imagesizes="${escapeHtml(seoConfig.lcpImageSizes ?? '100vw')}" data-seo-lcp-preload="true">`
     );
   }
 

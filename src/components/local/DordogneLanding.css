@@ -6,15 +6,17 @@
   color: var(--dd-ink);
   background: var(--dd-paper);
 }
-.dordogne-shell .dd-container {
+.dordogne-shell :is(.dd-container, .dd-service-area .container-adaptive) {
   width: min(1240px, calc(100% - 96px));
   margin-inline: auto;
 }
-.dordogne-shell :is(.dd-landing, .dd-header, .dd-footer) a:not(.dd-button, .dd-pricing-cta) {
+.dordogne-shell
+  :is(.dd-landing, header, #site-mobile-menu, .dd-footer)
+  a:not(.dd-button, .dd-pricing-cta) {
   color: inherit;
 }
 .dordogne-shell
-  :is(.dd-landing, .dd-header, .dd-footer)
+  :is(.dd-landing, header, #site-mobile-menu, .dd-footer)
   :is(a, button, input, summary):focus-visible {
   outline: 3px solid #a65e36;
   outline-offset: 5px;
@@ -38,17 +40,37 @@
 .dd-landing p {
   line-height: 1.75;
 }
-.dd-landing section[id] {
-  scroll-margin-top: 28px;
+.dd-main {
+  padding-top: var(--etoilys-header-height, 81px);
 }
-.dd-header {
-  border-bottom: 1px solid #173d491a;
+.dd-landing section[id],
+#communes,
+#dordogne-content {
+  scroll-margin-top: calc(var(--etoilys-header-height, 81px) + 24px);
 }
-.dd-header-inner {
-  display: flex;
-  height: 102px;
-  align-items: center;
-  gap: 25px;
+.dordogne-shell > header {
+  background: #f6f3ebf5;
+  border-color: #173d4922;
+  box-shadow: 0 4px 20px #173d4908;
+}
+.dordogne-shell #site-mobile-menu {
+  background: var(--dd-paper);
+}
+.dordogne-shell :is(header, #site-mobile-menu) :is(a, button):not(:disabled) {
+  color: var(--dd-ink);
+  --tw-ring-color: var(--dd-copper);
+}
+.dordogne-shell :is(header, #site-mobile-menu) :is(a, button):not(:disabled):hover {
+  background-color: #eae7dc;
+}
+.dordogne-shell :is(header, #site-mobile-menu) a[href='/demande-classement'] {
+  background: var(--dd-ink);
+  color: white;
+  border-color: var(--dd-ink);
+  box-shadow: none;
+}
+.dordogne-shell :is(header, #site-mobile-menu) [aria-expanded='true'] {
+  color: var(--dd-copper);
 }
 .dordogne-shell .dd-logo {
   display: block;
@@ -61,27 +83,6 @@
   width: 125px;
   height: 70px;
   object-fit: contain;
-}
-.dd-header-note {
-  font-size: 11px;
-  line-height: 1.65;
-  color: var(--dd-muted);
-  border-left: 1px solid #173d4933;
-  padding-left: 23px;
-}
-.dd-nav {
-  margin-left: auto;
-  display: flex;
-  gap: 26px;
-  font-size: 13px;
-  font-weight: 500;
-}
-.dd-nav a {
-  padding-block: 12px;
-}
-.dd-nav a:hover {
-  text-decoration: underline;
-  text-underline-offset: 6px;
 }
 .dordogne-shell .dd-button {
   background: var(--dd-ink);
@@ -100,15 +101,8 @@
   color: #fff;
   box-shadow: none;
 }
-.dordogne-shell .dd-header-cta {
-  font-size: 12px;
-  min-height: 44px;
-  padding: 12px 16px;
-  gap: 16px;
-  margin-left: 12px;
-}
 .dd-skip {
-  position: absolute;
+  position: fixed;
   left: 20px;
   top: -100px;
   padding: 12px;
@@ -141,7 +135,7 @@
   background: var(--dd-copper);
 }
 .dd-hero h1 {
-  font-size: clamp(52px, 5.8vw, 80px);
+  font-size: clamp(42px, 4.2vw, 58px);
   letter-spacing: -0.055em;
   line-height: 1.05;
   margin-top: 24px;
@@ -157,11 +151,6 @@
   font-size: 16px;
   color: var(--dd-muted);
   line-height: 1.8;
-}
-.dd-hero .dd-cta-note {
-  font-size: 11px;
-  margin-top: 12px;
-  color: var(--dd-muted);
 }
 .dordogne-shell .dd-text-link {
   display: inline-flex;
@@ -179,7 +168,27 @@
   text-decoration-color: currentColor;
 }
 .dd-hero-price {
-  margin-top: 22px;
+  display: flex !important;
+  width: fit-content;
+  margin-top: 12px;
+}
+.dd-hero-reassurance {
+  display: grid;
+  gap: 7px;
+  list-style: none;
+  padding: 0;
+  margin: 21px 0 0;
+  font-size: 12px;
+  color: var(--dd-muted);
+}
+.dd-hero-reassurance li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.dd-hero-reassurance svg {
+  flex-shrink: 0;
+  color: var(--dd-copper);
 }
 .dd-hero-visual {
   position: relative;
@@ -303,45 +312,71 @@
 .dd-section {
   padding-block: 100px;
 }
-.dd-benefits {
+.dd-benefits .dd-section-intro {
+  max-width: 680px;
+}
+.dd-benefit-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 95px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 35px;
+}
+.dd-benefit-cards article {
+  padding: 30px;
+  border: 1px solid #173d491a;
+  border-radius: 6px;
+  background: #fffefa;
+}
+.dd-benefit-cards article > svg {
+  color: var(--dd-copper);
+  margin-bottom: 23px;
+}
+.dd-benefit-cards h3 {
+  font-size: 21px;
+  line-height: 1.4;
+  margin-bottom: 14px;
+}
+.dd-benefit-cards p {
+  font-size: 14px;
+  color: var(--dd-muted);
+}
+.dd-service-area {
+  padding-block: 65px;
+  background: #eeede5;
+}
+.dd-service-area > section {
+  padding: 0 0 24px;
+  background: transparent;
+}
+.dd-service-area .container-adaptive {
+  padding-inline: 0;
+}
+.dd-service-area .max-w-6xl {
+  max-width: none;
+}
+.dd-service-area h2 {
+  max-width: 810px;
+}
+.dd-service-area p {
+  color: var(--dd-muted);
+}
+.dd-service-area :is(h3, button, a) {
+  color: var(--dd-ink);
+}
+.dd-service-area .rounded-full {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--dd-copper);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.dd-service-area :is(.border, .border-b) {
+  border-color: #173d4922;
 }
 .dd-section-intro h2 {
   margin-block: 22px;
-}
-.dd-section-intro > p:last-child {
-  color: var(--dd-muted);
-  max-width: 390px;
-  font-size: 15px;
-}
-.dd-benefit-list article {
-  display: flex;
-  gap: 25px;
-  padding-block: 24px;
-  border-top: 1px solid #173d4926;
-}
-.dd-benefit-list article:first-child {
-  padding-top: 0;
-  border: 0;
-}
-.dd-benefit-list article:last-child {
-  padding-bottom: 0;
-}
-.dd-list-number {
-  color: var(--dd-copper);
-  font-size: 11px;
-  padding-top: 5px;
-  letter-spacing: 0.08em;
-}
-.dd-benefit-list h3 {
-  font-size: 19px;
-  margin-bottom: 10px;
-}
-.dd-benefit-list p {
-  font-size: 14px;
-  color: var(--dd-muted);
 }
 .dordogne-shell .dd-small-link {
   display: inline-flex;
@@ -389,12 +424,35 @@
   margin-block: 22px;
   font-size: clamp(32px, 3.1vw, 42px);
 }
-.dd-expertise h2 em {
-  color: #526b5e;
+.dd-expertise-arguments {
+  display: grid;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-.dd-expertise-copy > p:not(.dd-eyebrow) {
+.dd-expertise-arguments li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.dd-expertise-arguments li > svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--dd-copper);
+}
+.dd-expertise-arguments h3 {
+  font-size: 18px;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+.dd-expertise-arguments p {
   color: var(--dd-muted);
   font-size: 14px;
+}
+.dd-expertise-arguments .dd-small-link {
+  display: flex;
+  width: fit-content;
 }
 .dd-checks {
   display: grid;
@@ -428,18 +486,6 @@
   font-size: 15px;
   color: var(--dd-muted);
   max-width: 395px;
-}
-.dd-tariff-copy .dd-area-label {
-  display: flex;
-  gap: 9px;
-  align-items: center;
-  margin-top: 35px;
-  font-size: 12px;
-  font-weight: 600;
-}
-.dd-tariff-copy .dd-area-copy {
-  margin-block: 12px;
-  font-size: 13px !important;
 }
 .dd-process {
   background: #eae7dc;
@@ -593,7 +639,7 @@
 }
 .dd-footer-main {
   display: grid;
-  grid-template-columns: 1.1fr 1fr 1fr;
+  grid-template-columns: 1fr 3fr;
   gap: 60px;
   padding-bottom: 42px;
 }
@@ -601,6 +647,11 @@
   font-family: 'Playfair Display', serif;
   font-size: 18px;
   line-height: 1.5;
+}
+.dd-footer-links {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 0.7fr 1fr;
+  gap: 25px;
 }
 .dd-footer-label {
   font-size: 10px;
@@ -620,6 +671,7 @@
   font-size: 18px;
 }
 .dd-address {
+  font-style: normal;
   font-size: 11px;
   margin-top: 17px;
   color: var(--dd-muted);
@@ -641,11 +693,8 @@
   align-items: center;
 }
 @media (max-width: 1150px) {
-  .dordogne-shell .dd-container {
+  .dordogne-shell :is(.dd-container, .dd-service-area .container-adaptive) {
     width: calc(100% - 64px);
-  }
-  .dd-header-note {
-    display: none;
   }
   .dordogne-shell .dd-hero {
     gap: 30px;
@@ -659,33 +708,33 @@
   .dd-photo-index {
     display: none;
   }
-  .dd-benefits,
   .dd-expertise-grid,
   .dd-tariff-section {
     gap: 50px;
   }
 }
 @media (max-width: 899px) {
-  .dd-header-inner {
-    height: 82px;
+  .dd-main {
+    padding-top: var(--etoilys-header-height, 73px);
+  }
+  .dd-benefit-cards {
     gap: 14px;
   }
-  .dd-nav {
-    gap: 16px;
-    font-size: 12px;
+  .dd-benefit-cards article {
+    padding: 22px;
   }
-  .dordogne-shell .dd-header-cta {
-    font-size: 11px;
-    margin-left: 0;
-    gap: 9px;
-    padding-inline: 12px;
+  .dd-benefit-cards h3 {
+    font-size: 18px;
+  }
+  .dd-footer-main {
+    grid-template-columns: 1fr;
   }
   .dordogne-shell .dd-hero {
     gap: 24px;
     padding-block: 48px 50px;
   }
   .dd-hero h1 {
-    font-size: 53px;
+    font-size: 41px;
   }
   .dd-hero .dd-hero-description {
     font-size: 14px;
@@ -717,7 +766,6 @@
   .dd-section {
     padding-block: 65px;
   }
-  .dd-benefits,
   .dd-tariff-section {
     gap: 35px;
   }
@@ -741,12 +789,25 @@
   }
 }
 @media (max-width: 680px) {
-  .dordogne-shell .dd-container {
-    width: calc(100% - 40px);
+  .dd-benefit-cards {
+    grid-template-columns: 1fr;
+    margin-top: 25px;
   }
-  .dd-header-inner {
-    height: 73px;
-    justify-content: space-between;
+  .dd-benefit-cards article {
+    padding: 26px;
+  }
+  .dd-benefit-cards article > svg {
+    margin-bottom: 16px;
+  }
+  .dd-service-area {
+    padding-block: 45px;
+  }
+  .dd-footer-links {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 25px;
+  }
+  .dordogne-shell :is(.dd-container, .dd-service-area .container-adaptive) {
+    width: calc(100% - 40px);
   }
   .dordogne-shell .dd-logo {
     width: 104px;
@@ -755,15 +816,6 @@
   .dd-logo img {
     width: 104px;
     height: 59px;
-  }
-  .dd-nav {
-    display: none;
-  }
-  .dordogne-shell .dd-header-cta {
-    font-size: 10px;
-    padding: 10px 11px;
-    min-height: 42px;
-    gap: 8px;
   }
   .dordogne-shell .dd-hero {
     grid-template-columns: 1fr;
@@ -775,7 +827,7 @@
     letter-spacing: 0.17em;
   }
   .dd-hero h1 {
-    font-size: clamp(51px, 13vw, 72px);
+    font-size: clamp(38px, 10.4vw, 52px);
     line-height: 1.03;
     margin-top: 19px;
   }
@@ -791,11 +843,6 @@
     font-size: 14px;
     min-height: 54px;
     padding: 16px 20px;
-  }
-  .dd-hero .dd-cta-note {
-    font-size: 10px;
-    margin-top: 9px;
-    text-align: center;
   }
   .dd-hero-price {
     margin-top: 14px;
@@ -868,7 +915,6 @@
   .dd-section {
     padding-block: 53px;
   }
-  .dd-benefits,
   .dd-expertise-grid,
   .dd-tariff-section,
   .dd-faq {
@@ -880,19 +926,6 @@
   }
   .dd-section-intro h2 {
     margin-block: 17px;
-  }
-  .dd-section-intro > p:last-child {
-    font-size: 14px;
-  }
-  .dd-benefit-list h3 {
-    font-size: 18px;
-  }
-  .dd-benefit-list article {
-    gap: 19px;
-    padding-block: 21px;
-  }
-  .dd-benefit-list p {
-    font-size: 13px;
   }
   .dd-expertise {
     padding-block: 32px 45px;
@@ -910,7 +943,7 @@
     font-size: 33px;
     margin-block: 17px;
   }
-  .dd-expertise-copy > p:not(.dd-eyebrow) {
+  .dd-expertise-arguments p {
     font-size: 13px;
   }
   .dd-checks li {
@@ -918,9 +951,6 @@
   }
   .dd-tariff-copy > p:not(.dd-eyebrow, .dd-area-label) {
     font-size: 14px;
-  }
-  .dd-tariff-copy .dd-area-label {
-    margin-top: 24px;
   }
   .dd-process {
     padding-block: 50px;
@@ -952,17 +982,11 @@
     font-size: 18px;
     line-height: 1.45;
   }
-  .dd-steps h3 br {
-    display: none;
-  }
   .dd-steps p {
     font-size: 13px;
   }
   .dd-process-note {
     font-size: 10px;
-  }
-  .dd-faq h2 br {
-    display: none;
   }
   .dd-faq summary {
     font-size: 13px;
@@ -1008,7 +1032,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .dordogne-shell :is(.dd-landing, .dd-header, .dd-footer) * {
+  .dordogne-shell :is(.dd-landing, header, #site-mobile-menu, .dd-footer) * {
     transition: none;
     scroll-behavior: auto;
   }

@@ -19,6 +19,7 @@ export interface SeoRouteConfig {
   indexable?: boolean;
   prerender?: boolean;
   lcpImageKey?: ImageAssetKey;
+  lcpImageSizes?: string;
   locale?: Locale;
   routeId?: LocalizedRouteId;
   includeCanonical?: boolean;
@@ -129,13 +130,14 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Zones d’intervention',
   },
   '/classement-meuble-tourisme-dordogne': {
-    lastModified: '2026-09-08',
-    title: 'Classement de meublé de tourisme en Dordogne : visite et tarifs',
+    lastModified: '2026-09-14',
+    title: 'Classement de meublé de tourisme en Dordogne',
     description:
-      'Faites classer votre gîte, maison ou appartement en Dordogne avec Etoilys, organisme accrédité Cofrac. Consultez votre tarif et demandez votre visite.',
+      'Classez votre gîte ou meublé de tourisme en Dordogne avec Etoilys, organisme accrédité Cofrac. Consultez les tarifs. Rappel sous 24 h ouvrées.',
     breadcrumbLabel: 'Dordogne',
     ogImageKey: 'dordogneInterior',
     lcpImageKey: 'dordogneInterior',
+    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 681px) 45vw, 100vw',
   },
   '/classement-meuble-tourisme-bergerac': {
     lastModified: '2026-07-23',
