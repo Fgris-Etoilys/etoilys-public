@@ -473,7 +473,7 @@ export const DORDOGNE_DEPARTMENT_PAGE: DepartmentLandingPageConfig = {
     intro: LOCAL_CLASSIFICATION_PROCEDURE.intro,
     image: {
       assetKey: 'dordogneLaRoqueGageac',
-      alt: 'Intérieur de maison de vacances',
+      alt: 'Vue du village de La Roque-Gageac en Dordogne',
     },
     steps: LOCAL_CLASSIFICATION_PROCEDURE.steps,
     simulatorPrompt: {
