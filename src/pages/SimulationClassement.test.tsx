@@ -2013,7 +2013,7 @@ describe('SimulationClassement', () => {
     expect(screen.queryByRole('button', { name: /continuer la grille/i })).not.toBeInTheDocument();
     expect(
       screen.getAllByRole('button', { name: /voir le résultat de ma simulation/i })[0]
-    ).toHaveClass('bg-primary-400');
+    ).toHaveClass('bg-ink');
     expect(screen.getByText(/^0$/i)).toBeInTheDocument();
   });
 

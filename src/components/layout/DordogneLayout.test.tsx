@@ -11,13 +11,13 @@ afterEach(() => {
   window.history.replaceState({}, '', '/');
 });
 
-function expectSingleLayoutAndSeo(path: string, local: boolean) {
+function expectSingleLayoutAndSeo(path: string) {
   expect(screen.getAllByRole('banner')).toHaveLength(1);
   expect(screen.getAllByRole('contentinfo')).toHaveLength(1);
   expect(screen.getAllByRole('main')).toHaveLength(1);
   expect(screen.getByRole('banner')).toHaveClass('fixed');
-  expect(screen.getByRole('contentinfo').classList.contains('dd-footer')).toBe(local);
-  expect(document.querySelector('.dordogne-shell') !== null).toBe(local);
+  expect(screen.getByRole('contentinfo')).toHaveClass('site-footer');
+  expect(document.querySelector('.dordogne-shell')).toBeNull();
   expect(document.querySelectorAll('link[rel="canonical"]')).toHaveLength(1);
   expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
     'href',
@@ -33,14 +33,14 @@ function expectSingleLayoutAndSeo(path: string, local: boolean) {
   expect(document.querySelectorAll('#structured-data-breadcrumbs')).toHaveLength(1);
 }
 
-describe('Dordogne layout isolation', () => {
+describe('Shared site layout', () => {
   it.each([DORDOGNE_PATH, `${DORDOGNE_PATH}/`])(
-    'keeps a single local layout and central SEO at %s, then restores the default layout on navigation',
+    'keeps a single shared layout and central SEO at %s and after navigation',
     async (path) => {
       window.history.replaceState({}, '', path);
       render(<App />);
-      expectSingleLayoutAndSeo(path, true);
-      expect(screen.getByRole('main')).toHaveAttribute('id', 'dordogne-content');
+      expectSingleLayoutAndSeo(path);
+      expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
       const sizes = getSeoRouteConfig(path).lcpImageSizes;
       const heroAsset = IMAGE_MANIFEST.dordogneLaRoqueGageac;
       expect(document.querySelector('.dd-hero-photo img')).toHaveAttribute('src', heroAsset.src);
@@ -77,9 +77,9 @@ describe('Dordogne layout isolation', () => {
       if (!contactLink) throw new Error('The local footer must provide the contact route');
       fireEvent.click(contactLink);
       await waitFor(() => expect(window.location.pathname).toBe('/contact'));
-      expectSingleLayoutAndSeo('/contact', false);
+      expectSingleLayoutAndSeo('/contact');
       expect(document.querySelector('link[data-seo-lcp-preload]')).toBeNull();
-      expect(screen.getByRole('main')).not.toHaveAttribute('id', 'dordogne-content');
+      expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
     }
   );
 

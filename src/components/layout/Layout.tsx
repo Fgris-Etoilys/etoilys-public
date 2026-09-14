@@ -5,7 +5,8 @@ import AnalyticsContactTracker from './AnalyticsContactTracker';
 import CookieConsentManager from './CookieConsentManager';
 import Header from './Header';
 import Footer from './Footer';
-import { DordogneFooter } from '../local/DordogneChrome';
+import { layoutContent } from '../../i18n/layoutContent';
+import { getLocaleFromPath } from '../../i18n/routeHelpers';
 import SEO from '../ui/SEO';
 import { ToastProvider } from '../ui/Toast';
 import {
@@ -24,8 +25,7 @@ import { IMAGE_MANIFEST } from '../../content/imageManifest';
 
 export default function Layout() {
   const location = useLocation();
-  const isDordogne =
-    location.pathname.replace(/\/+$/, '') === '/classement-meuble-tourisme-dordogne';
+  const content = layoutContent[getLocaleFromPath(location.pathname)];
   const seoConfig = getSeoRouteConfig(location.pathname);
   const alternateLinks = getSeoAlternateLinks(location.pathname);
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
@@ -56,7 +56,7 @@ export default function Layout() {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className={`min-h-screen flex flex-col${isDordogne ? ' dordogne-shell' : ''}`}>
+    <div className="min-h-screen flex flex-col">
       <AnalyticsRouteTracker />
       <AnalyticsContactTracker />
       <SEO
@@ -84,19 +84,14 @@ export default function Layout() {
         />
       )}
       <ToastProvider>
-        {isDordogne && (
-          <a href="#dordogne-content" className="dd-skip">
-            Aller au contenu
-          </a>
-        )}
+        <a href="#main-content" className="skip-link ui-focus">
+          {content.skipToContentLabel}
+        </a>
         <Header />
-        <main
-          id={isDordogne ? 'dordogne-content' : undefined}
-          className={isDordogne ? 'flex-grow dd-main' : 'flex-grow pt-16'}
-        >
+        <main id="main-content" tabIndex={-1} className="flex-grow site-main">
           <Outlet />
         </main>
-        {isDordogne ? <DordogneFooter /> : <Footer />}
+        <Footer />
         <CookieConsentManager />
       </ToastProvider>
     </div>

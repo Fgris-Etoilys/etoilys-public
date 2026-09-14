@@ -43,6 +43,7 @@ export default function DepartmentPricingSection({
   config,
   variant = 'default',
 }: DepartmentPricingSectionProps) {
+  // ponytail: local pricing presentation retained until ETOILYS-398 unifies department pages.
   const isDordogne = variant === 'dordogne';
   const Heading = isDordogne ? 'h3' : 'h2';
   const [communes, setCommunes] = useState<CommuneIndexEntry[] | null>(null);

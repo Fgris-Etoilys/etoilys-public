@@ -77,18 +77,17 @@ export default function LanguageSwitcher({
 
   const rootClasses = joinClassNames('relative inline-flex', isMobile && 'w-full', className);
   const triggerClasses = joinClassNames(
-    'inline-flex h-10 items-center justify-center gap-2 rounded-full border border-primary-100 bg-white px-3 text-sm font-semibold text-themePrimary-1 shadow-sm transition-all duration-200 hover:border-primary-200 hover:bg-primary-100/50 hover:text-primary-500 hover:shadow-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-200',
+    'inline-flex h-10 items-center justify-center gap-2 rounded-control border border-ink/15 bg-surface px-3 text-sm font-semibold text-ink transition-all duration-200 hover:border-ink/15 hover:bg-surface-hover hover:text-ink  ui-focus',
     isMobile ? 'w-full' : 'min-w-[5.25rem]'
   );
   const dropdownClasses = joinClassNames(
-    'absolute z-[90] mt-2 min-w-56 rounded-xl border border-primary-100/90 bg-white p-1.5 shadow-[0_18px_45px_rgba(1,50,176,0.14)]',
+    'absolute z-[90] mt-2 min-w-56 rounded-control border border-ink/15 bg-surface p-1.5 shadow-[0_6px_24px_rgb(var(--color-ink)/0.08)]',
     isMobile ? 'left-0 right-0 top-full' : 'right-0 top-full'
   );
   const optionBaseClasses =
-    'grid min-h-10 w-full grid-cols-[1.25rem_minmax(0,1fr)_2rem_1rem] items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-200';
-  const optionAvailableClasses =
-    'text-themePrimary-1 hover:bg-primary-100/70 hover:text-primary-500';
-  const optionActiveClasses = 'bg-primary-100/80 font-medium text-primary-500';
+    'grid min-h-10 w-full grid-cols-[1.25rem_minmax(0,1fr)_2rem_1rem] items-center gap-3 rounded-control px-3 py-2 text-left text-sm transition-colors duration-200 ui-focus';
+  const optionAvailableClasses = 'text-ink hover:bg-surface-hover hover:text-ink';
+  const optionActiveClasses = 'bg-surface-hover font-medium text-ink';
   const optionDisabledClasses = 'cursor-not-allowed text-gray-400 opacity-60';
 
   return (
@@ -136,7 +135,7 @@ export default function LanguageSwitcher({
                   className="block h-4 w-5 rounded-[3px] object-cover shadow-[0_0_0_1px_rgba(215,222,234,0.9)]"
                 />
                 <span className="min-w-0 leading-none">{localeName}</span>
-                <span className="justify-self-end text-xs font-semibold uppercase leading-none text-textLight">
+                <span className="justify-self-end text-xs font-semibold uppercase leading-none text-muted">
                   {shortLabel}
                 </span>
                 <Check
