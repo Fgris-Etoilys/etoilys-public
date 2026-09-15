@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../../App';
+import { IMAGE_MANIFEST } from '../../content/imageManifest';
 import { trackCtaClick } from '../../utils/analytics';
 
 vi.mock('../../utils/analytics', async (importOriginal) => ({
@@ -69,6 +70,7 @@ describe('ClassementBergerac', () => {
         name: 'Classement de meublé de tourisme à Bergerac et dans le Bergeracois',
       })
     ).toBeInTheDocument();
+    expect(screen.getByText('à Bergerac et dans le Bergeracois')).toHaveClass('text-copper');
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(screen.getAllByText('Demande en 30 secondes').length).toBeGreaterThan(0);
     expect(screen.getByText('Visite en moyenne sous deux semaines')).toBeInTheDocument();
@@ -93,6 +95,12 @@ describe('ClassementBergerac', () => {
         name: 'Connaître mon tarif',
       })
     ).toHaveAttribute('href', '#tarifs');
+    const heroImage = document.querySelector('.editorial-hero-media-photo img');
+    expect(heroImage).toHaveClass(
+      'object-[76%_center]',
+      'max-[899px]:object-[78%_center]',
+      'max-[680px]:object-[76%_center]'
+    );
   });
 
   it('renders Bergerac in the V6 section order with local data preserved', () => {
@@ -107,7 +115,7 @@ describe('ClassementBergerac', () => {
       'Pourquoi choisir Etoilys pour votre classement à Bergerac ?',
       'Un exemple concret à Bergerac : l’effet du classement sur la taxe de séjour',
       'Questions fréquentes sur le classement à Bergerac',
-      'Vous souhaitez faire classer votre meublé à Bergerac ?',
+      'Demandez le classement de votre meublé en Dordogne',
     ]);
 
     expect(screen.getByText('Eymet')).toBeInTheDocument();
@@ -146,12 +154,21 @@ describe('ClassementBergerac', () => {
       'bg-surface-neutral'
     );
     expectHeadingSectionClass('Questions fréquentes sur le classement à Bergerac', 'bg-paper');
-    expectHeadingSectionClass('Vous souhaitez faire classer votre meublé à Bergerac ?', 'bg-ink');
+    expectHeadingSectionClass('Demandez le classement de votre meublé en Dordogne', 'bg-ink');
   });
 
-  it('keeps Bergerac tariffs, tax comparison and V6 Etoilys reasons', () => {
+  it('keeps Bergerac tariffs, tax comparison, module rhythm and V6 Etoilys reasons', () => {
     renderBergeracPage();
 
+    [
+      'Aucun frais de déplacement : la visite et les documents de classement sont inclus.',
+      'Des tarifs dégressifs pour plusieurs meublés visités le même jour dans le même secteur.',
+      'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
+    ].forEach((guarantee) => expect(screen.getByText(guarantee)).toBeInTheDocument());
+    expect(screen.getByRole('link', { name: 'Les modalités de la visite' })).toHaveAttribute(
+      'href',
+      '/procedure'
+    );
     expect(screen.getByText('Meublé non classé')).toBeInTheDocument();
     expect(screen.getByText('6,60 € par nuit')).toBeInTheDocument();
     expect(screen.getByText('Meublé classé 2 étoiles')).toBeInTheDocument();
@@ -179,6 +196,11 @@ describe('ClassementBergerac', () => {
         /Les tarifs ci-dessous sont tout compris, sans frais de déplacement/g
       ) ?? []
     ).toHaveLength(1);
+    expect(document.body).not.toHaveTextContent('CONTEXTE LOCAL');
+    expect(document.querySelector('.local-v6-tax-grid')).toBeInTheDocument();
+    expect(document.querySelector('.local-v6-tax-copy h2')).toHaveTextContent(
+      'Un exemple concret à Bergerac : l’effet du classement sur la taxe de séjour'
+    );
 
     expect(
       screen.getByRole('heading', {
@@ -191,6 +213,16 @@ describe('ClassementBergerac', () => {
     expect(
       screen.getByRole('heading', { name: 'Un organisme accrédité Cofrac' })
     ).toBeInTheDocument();
+
+    const expertiseImage = screen.getByAltText(
+      'Église Saint-Jacques et statue de Cyrano de Bergerac'
+    );
+    expect(expertiseImage).toHaveAttribute('src', IMAGE_MANIFEST.bergeracSaintJacquesCyrano.src);
+    expect(expertiseImage).not.toHaveAttribute('src', IMAGE_MANIFEST.bergeracHero.src);
+    expect(screen.getByRole('link', { name: 'JGS25 / Wikimedia Commons' })).toHaveAttribute(
+      'href',
+      'https://commons.wikimedia.org/wiki/File:Bergerac,_l%27%C3%A9glise_Saint-Jacques_et_Cyrano.jpg'
+    );
   });
 
   it('renders expected V6 internal links without invented local claims', () => {
@@ -218,10 +250,18 @@ describe('ClassementBergerac', () => {
     expect(document.body).not.toHaveTextContent(/LocalBusiness/i);
   });
 
-  it('preserves historical Bergerac CTA analytics variants', () => {
+  it('preserves Bergerac CTA analytics variants after reusing the Dordogne final CTA', () => {
     renderBergeracPage();
 
     const main = screen.getByRole('main');
+    expect(
+      screen.getByRole('heading', { name: 'Demandez le classement de votre meublé en Dordogne' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Parlez-nous de votre projet. Rappel sous 24 h ouvrées,/)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/visite en moyenne sous deux semaines./)).toBeInTheDocument();
+    expect(screen.getByText('Tarif confirmé avant tout engagement.')).toBeInTheDocument();
     const conversionLinks = within(main).getAllByRole('link', { name: 'Demander mon classement' });
     const heroCta = conversionLinks[0];
     const finalCta = conversionLinks[conversionLinks.length - 1];
@@ -236,7 +276,7 @@ describe('ClassementBergerac', () => {
     });
     fireEvent.click(finalCta);
     expect(trackCtaClick).toHaveBeenLastCalledWith({
-      ctaId: 'cta_white_demande_classement',
+      ctaId: 'cta_primary_demande_classement',
       destinationPath: '/demande-classement',
     });
 

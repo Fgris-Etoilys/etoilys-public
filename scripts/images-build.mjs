@@ -95,6 +95,7 @@ const IMAGE_ASSETS = [
   { key: 'lotEtGaronneTerritory', fileName: 'pexels-d-goth-37724280.jpg' },
   { key: 'lotEtGaronneCanal', fileName: 'AdobeStock_919223785.jpeg' },
   { key: 'bergeracHero', fileName: 'bergerac-view-late-afternoon.jpg' },
+  { key: 'bergeracSaintJacquesCyrano', fileName: 'bergerac-saint-jacques-cyrano.jpg' },
   {
     key: 'bordeauxHero',
     fileName: 'pexels-miguel-cuenca-67882473-17356595.jpg',

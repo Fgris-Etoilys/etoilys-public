@@ -30,7 +30,7 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 
 ## Pricing
 
-Les montants et conditions restent dans `src/content/local/pricing.ts`. Le département résout le profil via le picker de communes existant ; la ville affiche directement son profil. Le composant partagé `LocalPricingProfileSummary` rend les deux cas pour éviter une copie entre ville et département.
+Les montants et conditions restent dans `src/content/local/pricing.ts`. Le département résout le profil via le picker de communes existant ; la ville affiche directement son profil. Le bloc explicatif de gauche reste commun aux deux modes : les trois garanties Etoilys et le lien vers `/procedure` sont affichés en city comme en department. Seule la résolution du tarif à droite varie.
 
 ## Consommateurs
 
@@ -49,3 +49,103 @@ Legacy conservé pour ETOILYS-414 :
 ## Garde-fous
 
 Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pendant une migration V6. Toute nouvelle page locale doit fournir une config complète typée, une route fine, une entrée SEO et les tests minimaux de rendu, maillage, pricing et CTA.
+
+- Hero : le suffixe géographique du H1 est mis en cuivre avec `highlightedTitleText`. Le CTA principal reprend le motif Dordogne avec flèche. L’action secondaire est un lien éditorial vers le tarif, jamais un deuxième gros CTA vers le simulateur.
+- Crop hero : chaque config définit un point focal pertinent via `image.className`, puis le vérifie en desktop, tablette et mobile.
+- Tarifs : city et department affichent le même bloc explicatif avec les trois garanties Etoilys et le lien procédure ; seule la partie droite diffère (`mode: 'direct'` ou `mode: 'picker'`).
+- Module local : il est facultatif. Ne pas imposer de surtitre générique `CONTEXTE LOCAL`. Garder un rythme titre -> texte cohérent avec les autres introductions de section ; sur desktop, la partie éditoriale reste plus large que la preuve ou carte chiffrée.
+- Images : une page locale ne réutilise pas par défaut le même asset pour le hero et l’expertise. Utiliser un second visuel local librement réutilisable et documenter son crédit/licence si nécessaire.
+- CTA final : reprendre le motif et la copy du département parent au lieu d’inventer une nouvelle formulation pour chaque ville. Bergerac reprend donc exactement le CTA final Dordogne.
+- Une migration V6 ne doit jamais appauvrir un motif validé simplement parce qu’un nouveau scope utilise moins de données.
+
+## Exemples Minimaux
+
+```tsx
+const CITY_V6: LocalLandingPageV6CityConfig = {
+  ...COMMON_LOCAL_V6,
+  layoutVersion: 'v6',
+  scope: 'city',
+  city: 'Bergerac',
+  hero: {
+    ...COMMON_LOCAL_V6.hero,
+    eyebrow: 'Bergerac et le Bergeracois',
+    title: 'Classement de meublé de tourisme à Bergerac et dans le Bergeracois',
+    highlightedTitleText: 'à Bergerac et dans le Bergeracois',
+    image: {
+      ...COMMON_LOCAL_V6.hero.image,
+      assetKey: 'bergeracHero',
+      sizes: getSeoRouteConfig(path).lcpImageSizes,
+    },
+    primaryAction: {
+      href: '/demande-classement',
+      variant: 'white',
+      label: (
+        <>
+          Demander mon classement <ArrowUpRight />
+        </>
+      ),
+    },
+    secondaryAction: { href: '#tarifs', variant: 'secondary', label: 'Connaître mon tarif' },
+  },
+  serviceArea: {
+    title: 'Votre classement directement dans votre logement',
+    intro: 'Nos inspecteurs interviennent à Bergerac et dans le Bergeracois.',
+    communes: ['Bergerac'],
+    parentLink: { href: '/classement-meuble-tourisme-dordogne', label: 'Voir la Dordogne' },
+  },
+  pricing: {
+    mode: 'direct',
+    title: 'Combien coûte le classement d’un meublé à Bergerac ?',
+    pricingProfileId: 'dordogne-standard',
+    checklist,
+    procedureLink,
+  },
+};
+```
+
+```tsx
+const DEPARTMENT_V6: LocalLandingPageV6DepartmentConfig = {
+  ...COMMON_LOCAL_V6,
+  layoutVersion: 'v6',
+  scope: 'department',
+  departmentId: 'dordogne',
+  hero: {
+    ...COMMON_LOCAL_V6.hero,
+    title: 'Classement de gîtes et meublés de tourisme en Dordogne',
+    highlightedTitleText: 'en Dordogne',
+    image: {
+      ...COMMON_LOCAL_V6.hero.image,
+      assetKey: 'dordogneLaRoqueGageac',
+      sizes: getSeoRouteConfig(path).lcpImageSizes,
+    },
+    primaryAction: {
+      href: '/demande-classement',
+      variant: 'primary',
+      label: (
+        <>
+          Demander mon classement <ArrowUpRight />
+        </>
+      ),
+    },
+    secondaryAction: {
+      href: '#department-pricing-locality',
+      variant: 'secondary',
+      label: 'Connaître mon tarif',
+    },
+  },
+  serviceArea: {
+    title: 'Dans quelles communes de Dordogne intervenons-nous ?',
+    intro: 'Nos inspecteurs interviennent par secteurs.',
+    sectors,
+    parentLink: { href: '/zones-intervention', label: 'Voir toutes nos zones' },
+  },
+  pricing: {
+    mode: 'picker',
+    title: 'Quel tarif pour classer votre meublé en Dordogne ?',
+    intro: 'Indiquez la commune de votre logement.',
+    picker: DORDOGNE_DEPARTMENT_PAGE.pricing,
+    checklist,
+    procedureLink,
+  },
+};
+```

@@ -389,22 +389,18 @@ function LocalV6PricingSection({ config }: { config: LocalLandingPageV6Config })
           <h2 className="editorial-heading" id="local-v6-pricing-title">
             {config.pricing.title}
           </h2>
-          {config.pricing.mode === 'picker' ? (
-            <>
-              <p>{config.pricing.intro}</p>
-              <ul className="local-v6-checks">
-                {config.pricing.checklist.map((item) => (
-                  <li key={item}>
-                    <Check size={18} aria-hidden="true" />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link to={config.pricing.procedureLink.href} className="editorial-link ui-focus">
-                {config.pricing.procedureLink.label} <ArrowUpRight size={16} aria-hidden="true" />
-              </Link>
-            </>
-          ) : null}
+          {config.pricing.intro && <p>{config.pricing.intro}</p>}
+          <ul className="local-v6-checks">
+            {config.pricing.checklist.map((item) => (
+              <li key={item}>
+                <Check size={18} aria-hidden="true" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+          <Link to={config.pricing.procedureLink.href} className="editorial-link ui-focus">
+            {config.pricing.procedureLink.label} <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
         </div>
         {config.scope === 'department' ? (
           <DepartmentPricingSection config={config.pricing.picker} presentation="panel" />
@@ -471,8 +467,30 @@ function LocalV6ExpertiseSection({ config }: { config: LocalLandingPageV6Config 
             sizes={config.expertise.image.sizes}
             className={config.expertise.image.className}
           />
-          {config.expertise.image.caption && (
-            <figcaption>{config.expertise.image.caption}</figcaption>
+          {(config.expertise.image.caption || config.expertise.image.credit) && (
+            <figcaption>
+              {config.expertise.image.caption}
+              {config.expertise.image.credit && (
+                <span className="local-v6-stone-credit">
+                  Photo :{' '}
+                  <a
+                    href={config.expertise.image.credit.sourceHref}
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                  >
+                    {config.expertise.image.credit.sourceLabel}
+                  </a>{' '}
+                  -{' '}
+                  <a
+                    href={config.expertise.image.credit.licenseHref}
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                  >
+                    {config.expertise.image.credit.licenseLabel}
+                  </a>
+                </span>
+              )}
+            </figcaption>
           )}
         </figure>
         <div>
@@ -516,10 +534,12 @@ function LocalV6ExpertiseSection({ config }: { config: LocalLandingPageV6Config 
 
 function LocalV6TaxModuleSection({ module }: { module: LocalV6TaxModule }) {
   return (
-    <section className="editorial-section bg-surface-neutral" aria-labelledby="local-v6-tax-title">
-      <div className="container-editorial editorial-split">
-        <div>
-          <p className="editorial-eyebrow">CONTEXTE LOCAL</p>
+    <section
+      className="editorial-section local-v6-tax-section bg-surface-neutral"
+      aria-labelledby="local-v6-tax-title"
+    >
+      <div className="container-editorial local-v6-tax-grid">
+        <div className="local-v6-tax-copy">
           <h2 className="editorial-heading" id="local-v6-tax-title">
             {module.title}
           </h2>

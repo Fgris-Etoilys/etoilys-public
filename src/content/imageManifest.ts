@@ -29,6 +29,7 @@ export type ImageAssetKey =
   | 'lotEtGaronneTerritory'
   | 'lotEtGaronneCanal'
   | 'bergeracHero'
+  | 'bergeracSaintJacquesCyrano'
   | 'bordeauxHero';
 
 export interface ImageManifestEntry {
@@ -309,6 +310,15 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/bergerac-view-late-afternoon-480.webp 480w, /images/optimized/bergerac-view-late-afternoon-768.webp 768w, /images/optimized/bergerac-view-late-afternoon-1200.webp 1200w, /images/optimized/bergerac-view-late-afternoon-1600.webp 1600w, /images/optimized/bergerac-view-late-afternoon-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/bergerac-view-late-afternoon-480.avif 480w, /images/optimized/bergerac-view-late-afternoon-768.avif 768w, /images/optimized/bergerac-view-late-afternoon-1200.avif 1200w, /images/optimized/bergerac-view-late-afternoon-1600.avif 1600w, /images/optimized/bergerac-view-late-afternoon-1920.avif 1920w',
+  },
+  bergeracSaintJacquesCyrano: {
+    width: 4411,
+    height: 4411,
+    src: '/images/optimized/bergerac-saint-jacques-cyrano-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/bergerac-saint-jacques-cyrano-480.webp 480w, /images/optimized/bergerac-saint-jacques-cyrano-768.webp 768w, /images/optimized/bergerac-saint-jacques-cyrano-1200.webp 1200w, /images/optimized/bergerac-saint-jacques-cyrano-1600.webp 1600w, /images/optimized/bergerac-saint-jacques-cyrano-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/bergerac-saint-jacques-cyrano-480.avif 480w, /images/optimized/bergerac-saint-jacques-cyrano-768.avif 768w, /images/optimized/bergerac-saint-jacques-cyrano-1200.avif 1200w, /images/optimized/bergerac-saint-jacques-cyrano-1600.avif 1600w, /images/optimized/bergerac-saint-jacques-cyrano-1920.avif 1920w',
   },
   bordeauxHero: {
     width: 7860,

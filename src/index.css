@@ -812,11 +812,11 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 14px;
+    margin-bottom: 20px;
     color: rgb(var(--color-copper));
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
@@ -1144,6 +1144,8 @@
     border: 0 !important;
     background: transparent !important;
     box-shadow: none !important;
+    font-size: 13px !important;
+    font-weight: 600;
   }
 
   .local-v6-process-note {
@@ -1162,6 +1164,32 @@
     color: white;
     background: #173d49bd;
     font-size: 11px;
+  }
+
+  .local-v6-stone-credit {
+    display: block;
+    margin-top: 4px;
+  }
+
+  .local-v6-stone-credit a {
+    color: currentColor;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .local-v6-tax-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: start;
+    gap: 64px;
+  }
+
+  .local-v6-tax-copy h2 {
+    margin-bottom: 20px;
+  }
+
+  .local-v6-tax-copy p {
+    line-height: 1.75;
   }
 
   .local-v6-faq {
@@ -1441,6 +1469,11 @@
   @media (max-width: 899px) {
     .local-v6-tariff-section,
     .local-v6-faq {
+      gap: 35px;
+    }
+
+    .local-v6-tax-grid {
+      grid-template-columns: 1fr;
       gap: 35px;
     }
 

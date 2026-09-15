@@ -20,6 +20,35 @@ const COMMUNE_INDEX_FIXTURE = {
   ],
 };
 
+const SECOND_DEPARTMENT_V6: LocalLandingPageV6DepartmentConfig = {
+  ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
+  departmentId: 'gironde',
+  hero: {
+    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.hero,
+    title: 'Classement de meublés de tourisme en département test',
+    highlightedTitleText: 'en département test',
+  },
+  serviceArea: {
+    title: 'Dans quelles communes du département test intervenons-nous ?',
+    intro: 'Une zone synthétique pour vérifier le renderer V6 département.',
+    sectors: [
+      {
+        name: 'Secteur test',
+        visibleCommunes: ['Commune Test'],
+        collapsedCommunes: ['Commune Test 2'],
+      },
+    ],
+  },
+  pricing: {
+    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.pricing,
+    title: 'Quel tarif pour classer votre meublé en département test ?',
+  },
+  finalCta: {
+    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
+    title: 'Demandez le classement de votre meublé en département test',
+  },
+};
+
 function renderDepartmentPage(
   config: DepartmentLandingPageConfig | LocalLandingPageV6DepartmentConfig
 ) {
@@ -154,6 +183,9 @@ describe('DepartmentLandingPage', () => {
     expect(css).toContain('.editorial-focus-inverse *');
     expect(css).toContain('@media (prefers-reduced-motion: reduce)');
     expect(css).toContain('.local-v6-landing *');
+    expect(css).toContain('letter-spacing: 0.12em;');
+    expect(css).toContain('.local-v6-procedure-link');
+    expect(css).toContain('font-size: 13px !important;');
   });
 
   it('keeps collapsed Dordogne communes rendered while toggling visibility accessibly', () => {
@@ -168,6 +200,27 @@ describe('DepartmentLandingPage', () => {
     fireEvent.click(firstToggle);
     expect(firstToggle).toHaveAttribute('aria-expanded', 'true');
     expect(firstToggle).toHaveTextContent('Masquer les 6 communes');
+  });
+
+  it('renders a second department V6 config without a route-specific structure fork', () => {
+    renderDepartmentPage(SECOND_DEPARTMENT_V6);
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Classement de meublés de tourisme en département test',
+      })
+    ).toBeInTheDocument();
+    expect(screen.getByText('en département test')).toHaveClass('text-copper');
+    expect(screen.getByRole('heading', { name: 'Secteur test' })).toBeInTheDocument();
+    expect(screen.getByText('Commune Test')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'Commune' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', {
+        name: 'Demandez le classement de votre meublé en département test',
+      })
+    ).toBeInTheDocument();
+    expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
   });
 
   it('preserves Dordogne rich FAQ links and external link attributes', () => {

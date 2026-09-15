@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "886311c2cca334de6fef8a6db5f2914a0c5d2496b277b54e99bb08bbc23afeef",
+  "pipelineSignature": "e4750471d24fc65fbb88ff20af685fbfe3d658c3cf56cdf988a47827e28ad22d",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "be306d2c8931b51d6e59baa2dead4e8f536922c53b5aefbc194fd494408b4383"
+    "sha256": "22a64323b7ba65b1ee0003c79e828f1a93d3a44ae70a87a228041426d0b40026"
   },
   "sources": [
     {
@@ -85,6 +85,11 @@
       "key": "girondeCoast",
       "path": "src/assets/seo-images/source/benjamin-esteves-A_JaVydOsRk-unsplash.jpg",
       "sha256": "b088e60360c513993e56b84b5a2e2a5af6dabd24aac5636bf26d9c3a075ffe2f"
+    },
+    {
+      "key": "bergeracSaintJacquesCyrano",
+      "path": "src/assets/seo-images/source/bergerac-saint-jacques-cyrano.jpg",
+      "sha256": "cf1dc07036c343635557262ba65eb3774d0a467b1065bbe241f897f85500ac85"
     },
     {
       "key": "bergeracHero",
@@ -967,6 +972,61 @@
       "path": "/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.webp",
       "bytes": 81170,
       "sha256": "f1cdc099e6eec431d8984d62a9955d3e7df1cbc2024e9fa6b6304db3591e176a"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1200.avif",
+      "bytes": 286192,
+      "sha256": "b8daf6a00c42449464d174eec0e919bec3b29b04503f041075d9c0135f3335d4"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1200.jpg",
+      "bytes": 263838,
+      "sha256": "47b54614fff72192c4742a5ad064f4842db6b8ec09559a13d6ca7236765c04fd"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1200.webp",
+      "bytes": 285492,
+      "sha256": "6be900292395a8a9d7f83a2ce504f779c3676ef11f83c9dbc12b9e6a61145755"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1600.avif",
+      "bytes": 497409,
+      "sha256": "43798aba3ff8fee2451e6ea4cea0326335d80f6f5fb2e897fc4a380b10ddd191"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1600.webp",
+      "bytes": 489908,
+      "sha256": "bf9b41419014236e65e9e8fa3f4442937b2aeba73ededcb8a89f58b0f56c86a4"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1920.avif",
+      "bytes": 674495,
+      "sha256": "90a68887513bcdd30a7ecd042cb7b8bbe30345f54dcb9565d3fee0d5ebb94c27"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1920.webp",
+      "bytes": 680004,
+      "sha256": "d870bcd356d289e4ef4e1163cddadd8122908fe01cdd44c4f8cb4c51c93a5a3e"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-480.avif",
+      "bytes": 46307,
+      "sha256": "d2e0c539088ae9a83f9c8672cfa245397439763db6d45094f6849d6f32a78034"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-480.webp",
+      "bytes": 48044,
+      "sha256": "8a82a84b2ee05d2a789dd22e954d0d2b2cf0e5793832ab5f01ef280462958461"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-768.avif",
+      "bytes": 118712,
+      "sha256": "78232c0d9f0579afe8065e7251b9cf8603ec0b0d72f1ee59be8b9c0ab5a17f45"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-768.webp",
+      "bytes": 119572,
+      "sha256": "dee8450d3c8164133d8b3690755160a31de7a9a7807b9124a2430932a0bb3b22"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-1200.avif",

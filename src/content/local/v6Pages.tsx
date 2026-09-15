@@ -6,7 +6,6 @@ import type {
   LocalProcedureStep,
 } from './types';
 import { COFRAC_ACCREDITATION_URL } from '../accreditationLinks';
-import { getPricingProfile } from './pricing';
 import { BERGERAC_FAQ, BERGERAC_SERVICE_COMMUNES } from './cities/bergerac';
 import { DORDOGNE_DEPARTMENT_PAGE, DORDOGNE_V5_SERVICE_SECTORS } from './departments/dordogne';
 import { getSeoRouteConfig } from '../seoRoutes';
@@ -24,6 +23,12 @@ const heroReassurance = [
   'Rappel sous 24 h ouvrées',
   'Visite en moyenne sous deux semaines',
   'Aucun frais de déplacement',
+] as const;
+
+const pricingChecklist = [
+  'Aucun frais de déplacement : la visite et les documents de classement sont inclus.',
+  'Des tarifs dégressifs pour plusieurs meublés visités le même jour dans le même secteur.',
+  'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
 ] as const;
 
 const processSteps: readonly LocalProcedureStep[] = [
@@ -264,11 +269,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
     title: 'Quel tarif pour classer votre meublé en Dordogne ?',
     intro:
       'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.',
-    checklist: [
-      'Aucun frais de déplacement : la visite et les documents de classement sont inclus.',
-      'Des tarifs dégressifs pour plusieurs meublés visités le même jour dans le même secteur.',
-      'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
-    ],
+    checklist: pricingChecklist,
     procedureLink: {
       href: '/procedure',
       label: 'Les modalités de la visite',
@@ -327,13 +328,15 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   hero: {
     eyebrow: 'Bergerac et le Bergeracois',
     title: 'Classement de meublé de tourisme à Bergerac et dans le Bergeracois',
+    highlightedTitleText: 'à Bergerac et dans le Bergeracois',
     description:
       'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Bergerac ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'bergeracHero',
       alt: 'Vue de la Dordogne et du centre-ville de Bergerac en fin d’après-midi',
       sizes: bergeracHeroImageSizes,
-      className: 'h-full w-full object-cover object-center',
+      className:
+        'h-full w-full object-cover object-[76%_center] max-[899px]:object-[78%_center] max-[680px]:object-[76%_center]',
       caption: (
         <>
           <MapPin size={14} aria-hidden="true" /> Bergerac et le Bergeracois
@@ -355,7 +358,11 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       href: '/demande-classement',
       variant: 'white',
       className: '!border-ink !bg-ink !text-white hover:!bg-ink-hover hover:!text-white',
-      label: 'Demander mon classement',
+      label: (
+        <>
+          Demander mon classement <ArrowUpRight size={20} aria-hidden="true" />
+        </>
+      ),
     },
     secondaryAction: {
       href: '#tarifs',
@@ -383,6 +390,11 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   pricing: {
     mode: 'direct',
     title: 'Combien coûte le classement d’un meublé à Bergerac ?',
+    checklist: pricingChecklist,
+    procedureLink: {
+      href: '/procedure',
+      label: 'Les modalités de la visite',
+    },
     pricingProfileId: 'dordogne-standard',
   },
   procedure: {
@@ -396,11 +408,18 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   expertise: {
     title: 'Pourquoi choisir Etoilys pour votre classement à Bergerac ?',
     image: {
-      assetKey: 'bergeracHero',
-      alt: 'Vue de Bergerac et de la Dordogne',
+      assetKey: 'bergeracSaintJacquesCyrano',
+      alt: 'Église Saint-Jacques et statue de Cyrano de Bergerac',
       sizes: '(min-width: 900px) 35vw, 100vw',
-      className: 'h-full w-full object-cover object-center',
-      caption: 'Bergerac et le Bergeracois.',
+      className: 'h-full w-full object-cover object-[center_42%]',
+      caption: 'Église Saint-Jacques, Bergerac. ',
+      credit: {
+        sourceLabel: 'JGS25 / Wikimedia Commons',
+        sourceHref:
+          'https://commons.wikimedia.org/wiki/File:Bergerac,_l%27%C3%A9glise_Saint-Jacques_et_Cyrano.jpg',
+        licenseLabel: 'CC BY-SA 4.0',
+        licenseHref: 'https://creativecommons.org/licenses/by-sa/4.0/',
+      },
     },
   },
   localModule: {
@@ -433,16 +452,5 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
     },
     items: bergeracFaqItems,
   },
-  finalCta: {
-    eyebrow: 'À VOUS DE JOUER',
-    title: 'Vous souhaitez faire classer votre meublé à Bergerac ?',
-    description:
-      'Envoyez-nous l’adresse du logement et quelques informations. Nous vous confirmerons rapidement le tarif et les prochaines disponibilités dans le Bergeracois.',
-    primaryAction: {
-      href: '/demande-classement',
-      variant: 'white',
-      label: 'Demander mon classement',
-    },
-    hint: `Tarif public ${getPricingProfile('dordogne-standard').standard.amount} ${getPricingProfile('dordogne-standard').standard.qualifier}.`,
-  },
+  finalCta: DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
 };

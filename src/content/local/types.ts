@@ -246,6 +246,12 @@ export interface LocalV6DepartmentServiceArea {
 export interface LocalV6DirectPricing {
   mode: 'direct';
   title: string;
+  intro?: string;
+  checklist: readonly string[];
+  procedureLink: {
+    href: string;
+    label: string;
+  };
   pricingProfileId: PricingProfileId;
 }
 
@@ -295,6 +301,7 @@ export interface LocalV6Expertise {
     sizes: string;
     className: string;
     caption?: string;
+    credit?: LocalV6HeroImageCredit;
   };
 }
 
