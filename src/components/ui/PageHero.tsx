@@ -22,7 +22,7 @@ export default function PageHero({
   const isSplit = Boolean(media);
   const eyebrowClasses = `editorial-eyebrow ${eyebrowMarked ? 'editorial-eyebrow-marked ' : ''}mb-6`;
   const descriptionClasses = isSplit
-    ? 'max-w-[470px] text-[16px] leading-[1.8] text-muted'
+    ? 'editorial-hero-description'
     : 'max-w-3xl text-lg text-muted leading-comfortable';
   const childrenClasses = isSplit ? 'mt-[26px]' : 'mt-8';
 

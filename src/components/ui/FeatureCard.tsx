@@ -25,7 +25,7 @@ export default function FeatureCard({
   const linkContent = (
     <>
       {linkLabel}
-      <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+      <ArrowUpRight className="h-[14px] w-[14px] shrink-0" aria-hidden="true" />
     </>
   );
 

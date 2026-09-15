@@ -19,7 +19,7 @@ interface ProofStripProps {
 
 export default function ProofStrip({ items }: ProofStripProps) {
   return (
-    <div className="border-y border-ink/10 bg-surface">
+    <div className="editorial-proof-shell">
       <ul className="container-editorial editorial-proof-strip">
         {items.map((item) => {
           const Icon = item.icon;

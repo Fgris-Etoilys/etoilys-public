@@ -16,22 +16,6 @@
 :where(.dd-landing) :where(h1, h2, h3, p, figure) {
   margin: 0;
 }
-.dd-landing h2 {
-  font-size: var(--editorial-heading-size);
-  letter-spacing: -0.04em;
-  line-height: 1.16;
-}
-.dd-landing h2 em {
-  font-style: normal;
-  color: rgb(var(--color-copper));
-}
-.dd-landing h3 {
-  font-family: inherit;
-  letter-spacing: -0.025em;
-}
-.dd-landing p {
-  line-height: 1.75;
-}
 .dd-landing section[id],
 #communes {
   scroll-margin-top: calc(var(--etoilys-header-height, 81px) + 24px);
@@ -44,12 +28,12 @@
 .dd-benefits .dd-section-intro {
   max-width: 680px;
 }
-.dd-benefits .dd-section-intro + .grid {
+.dd-benefits .dd-section-intro + .editorial-feature-grid {
   margin-top: 35px;
 }
 .dd-service-area {
   padding-block: 65px;
-  background: rgb(var(--color-surface-hover));
+  background: rgb(var(--color-surface-neutral));
 }
 .dd-service-area > .container-editorial > section {
   padding: 0 0 24px;
@@ -67,6 +51,7 @@
 }
 .dd-service-area p {
   color: rgb(var(--color-muted));
+  line-height: 1.75;
 }
 .dd-service-area :is(h3, button, a) {
   color: rgb(var(--color-ink));
@@ -121,13 +106,16 @@
   color: rgb(var(--color-copper));
 }
 .dd-expertise-arguments h3 {
+  font-family: inherit;
   font-size: 18px;
   line-height: 1.4;
+  letter-spacing: -0.025em;
   margin-bottom: 8px;
 }
 .dd-expertise-arguments p {
   color: rgb(var(--color-muted));
   font-size: 14px;
+  line-height: 1.75;
 }
 .dd-checks {
   display: grid;
@@ -159,11 +147,12 @@
 }
 .dd-tariff-copy > p:not(.editorial-eyebrow, .dd-area-label) {
   font-size: 15px;
+  line-height: 1.75;
   color: rgb(var(--color-muted));
   max-width: 395px;
 }
 .dd-process {
-  background: rgb(var(--color-surface-hover));
+  background: rgb(var(--color-surface-warm));
   padding-block: 75px;
 }
 .dd-process-heading {
@@ -177,6 +166,7 @@
 }
 .dd-process-note {
   font-size: 11px;
+  line-height: 1.75;
   color: rgb(var(--color-muted));
   margin-top: 30px;
 }
@@ -190,6 +180,7 @@
 }
 .dd-faq > div > p:not(.editorial-eyebrow) {
   font-size: 13px;
+  line-height: 1.75;
   color: rgb(var(--color-muted));
 }
 .dd-faq > div > .editorial-link {
@@ -213,7 +204,7 @@
     padding-block: 45px;
   }
   .dd-hero-price {
-    margin-top: 14px;
+    margin-top: 12px;
   }
   .dd-tariff-section,
   .dd-faq {
@@ -222,6 +213,9 @@
   }
   .dd-section-intro h2 {
     margin-block: 17px;
+  }
+  .dd-benefits .dd-section-intro + .editorial-feature-grid {
+    margin-top: 25px;
   }
   .dd-expertise {
     padding-block: 32px 45px;

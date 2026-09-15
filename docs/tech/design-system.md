@@ -4,8 +4,9 @@ Le socle ETOILYS-394 reprend la direction Dordogne. Les composants partagés uti
 
 ## Tokens et primitives
 
-- Les variables `--color-*` de `src/index.css` définissent les couleurs. Tailwind expose `ink`, `muted`, `paper`, `surface`, `copper`, `ink-hover` et `surface-hover`, avec les modificateurs d’opacité habituels.
+- Les variables `--color-*` de `src/index.css` définissent les couleurs. Tailwind expose `ink`, `muted`, `paper`, `surface`, `surface-neutral`, `surface-warm`, `surface-sage`, `copper`, `ink-hover` et `surface-hover`, avec les modificateurs d’opacité habituels.
 - `rounded-control` (4 px) et `rounded-editorial` (6 px) servent aux boutons et cartes/champs. Les anciens tokens restent disponibles pour les pages encore à migrer.
+- Les tons `surface-neutral`, `surface-warm` et `surface-sage` portent les nuances éditoriales Dordogne pour les sections zone d’intervention, process/timeline et expertise, sans token nommé par route.
 - `container-editorial` reprend la largeur Dordogne : 1240 px maximum, marges de 48 px, 32 px jusqu’à 1150 px et 20 px jusqu’à 680 px. `container-adaptive` reste disponible pour les mises en page existantes.
 - `editorial-heading`, `editorial-section` et `editorial-link` exposent les styles éditoriaux. Les titres des pages existantes ne sont pas redimensionnés globalement.
 - `ui-focus` fournit le focus clavier cuivre. `ui-field` et `ui-field-error` regroupent les styles des champs et de leurs erreurs.
@@ -22,15 +23,15 @@ Le Header et le Footer sont uniques. Le Footer utilise les contenus FR/EN/NL de 
 
 ### Pages cœur métier — ETOILYS-395
 
-La Home, Classement, Avantages, Prérequis, Procédure et FAQ utilisent le socle éditorial dans leurs variantes FR/EN/NL. Cette migration part directement d’ETOILYS-394, sans attendre le framework local V6 d’ETOILYS-398.
+La Home, Classement, Avantages, Prérequis, Procédure et FAQ utilisent le socle éditorial dans leurs variantes FR/EN/NL. Cette migration part directement d’ETOILYS-394, sans attendre le framework local V6 d’ETOILYS-398. La page Dordogne de `913becf` reste la référence visuelle de la direction artistique : les primitives partagées conservent désormais sa finesse plutôt que des variantes locales.
 
 - `PageHero` reste le shell de hero. Il accepte un slot `media`, un surtitre, `eyebrowMarked` pour le point cuivre des heroes Home/Dordogne, et des enfants pour les CTA, réassurances ou sommaires. Il ne porte pas de logique locale ou métier.
 - `EditorialHeroMedia` porte la géométrie photo partagée issue de Dordogne : grand arrondi supérieur gauche, autres coins discrets, caption optionnelle, note superposée et index décoratif optionnel. Les crops restent passés par `imageClassName`.
-- `ClassificationHeroNote` unifie le cartouche “1 à 5 étoiles” de la Home et de Dordogne, avec la densité mobile Dordogne sous 680 px. `HeroReassurance` reprend par défaut l’ancien motif Dordogne : liste verticale, 12 px, espacement court et coche cuivre.
+- `ClassificationHeroNote` unifie le cartouche “1 à 5 étoiles” de la Home et de Dordogne avec une hiérarchie `lead`, `title`, `caption`, la mini-card chaude et l’overlay issus de `913becf`. `HeroReassurance` reprend par défaut l’ancien motif Dordogne : liste verticale, 12 px, espacement court et coche cuivre.
 - `ProofStrip` unifie les bandeaux de preuves Home/Dordogne sur les proportions de l’ancien Dordogne : colonnes `1fr / .8fr / 1fr` sur desktop, premier item pleine largeur puis deux colonnes sur mobile, icône ou grande valeur Playfair lisible par les lecteurs d’écran.
 - `PageCta` compose un texte et une colonne d’actions sur fond `ink`, empilés sur mobile. Il accepte `eyebrow` et `density="compact"` pour retrouver la densité du CTA final Dordogne sans CSS local. `editorial-inverse-button` donne une surface ivoire au CTA final Dordogne tout en conservant `Button variant="primary"` et donc l’identifiant analytics historique.
 - `editorial-title` complète la typographie des héros. `editorial-inline-link` conserve le flux des liens dans les paragraphes et leur focus clavier. `editorial-inverse-button` adapte un bouton secondaire au fond sombre sans changer sa variante, utilisée dans son identifiant analytics.
-- `FeatureCard`, `Timeline`, `Accordion` et `ArticleCard` utilisent la palette partagée. `FeatureCard` reprend par défaut la densité exacte des anciennes cartes bénéfices Dordogne, liens bas inclus, sans variante locale : desktop validé à 30 px / titre 21 px, 681-899 px à 22 px / titre 18 px, mobile à 26 px / titre 18 px. Les autres consommateurs (Home, Avantages, pages départementales et Recrutement) reçoivent aussi cette apparence.
+- `FeatureCard`, `Timeline`, `Accordion` et `ArticleCard` utilisent la palette partagée. `FeatureCard` reprend par défaut la densité exacte des anciennes cartes bénéfices Dordogne, liens bas inclus, sans variante locale : desktop validé à 30 px / titre 21 px, 681-899 px à 22 px / titre 18 px, mobile à 26 px / titre 18 px. `Timeline layout="horizontal"` reprend le rendu `913becf` dès 681 px : colonnes égales, numéros Playfair vert-gris et séparateurs fins, puis stack vertical compact sous 680 px. Les autres consommateurs (Home, Avantages, pages départementales et Recrutement) reçoivent aussi cette apparence.
 - Les accordéons gardent un seul panneau ouvert par groupe. Les réponses restent montées dans le DOM ; `hidden` retire les panneaux fermés de l’affichage, de l’arbre d’accessibilité et du parcours clavier. Les associations ARIA utilisent `useId` et l’index ; Enter/Espace restent gérés nativement par les boutons. `density="compact"` sert uniquement à reprendre la densité FAQ Dordogne dans la primitive partagée.
 - Les avertissements éditoriaux emploient le cuivre, les résultats favorables un fond `ink/5`, avec des libellés explicites. Les erreurs de formulaire gardent leur sémantique d’alerte. Les routes, chiffres métier, variantes analytics et image LCP restent conservés.
 

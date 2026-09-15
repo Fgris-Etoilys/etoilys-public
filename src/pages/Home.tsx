@@ -39,6 +39,24 @@ const homeFeatureIcons = {
   globe: Globe,
 } as const satisfies Record<HomeIconKey, LucideIcon>;
 
+const classificationNoteContent = {
+  fr: {
+    lead: 'Du studio au grand gîte,',
+    title: 'un classement de 1 à 5 étoiles.',
+    caption: 'Un repère de qualité pour vos voyageurs.',
+  },
+  en: {
+    lead: 'From studios to large holiday homes,',
+    title: 'a classification from 1 to 5 stars.',
+    caption: 'A quality reference for your guests.',
+  },
+  nl: {
+    lead: 'Van studio tot groot vakantiehuis,',
+    title: 'een classificatie van 1 tot 5 sterren.',
+    caption: 'Een kwaliteitskenmerk voor uw gasten.',
+  },
+} as const;
+
 function renderFeatureLink(link: NonNullable<HomeFeature['link']>) {
   const className = 'editorial-link ui-focus inline-flex items-center gap-2 text-sm';
   const label = (
@@ -85,8 +103,9 @@ export default function Home() {
             priority
             note={
               <ClassificationHeroNote
-                title={content.hero.photoNote.title}
-                description={content.hero.photoNote.description}
+                lead={classificationNoteContent[locale].lead}
+                title={classificationNoteContent[locale].title}
+                caption={classificationNoteContent[locale].caption}
               />
             }
           />
@@ -133,7 +152,7 @@ export default function Home() {
               {content.benefits.description}
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="editorial-feature-grid">
             {content.benefits.items.map((advantage) => (
               <FeatureCard
                 key={advantage.title}
@@ -153,7 +172,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="editorial-section bg-surface">
+      <section className="editorial-section bg-surface-sage">
         <div className="container-editorial editorial-media-split">
           <div className="editorial-expertise-photo">
             <SmartImage
@@ -195,7 +214,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="editorial-section bg-paper">
+      <section className="editorial-section bg-surface-warm">
         <div className="container-editorial">
           <div className="mb-10 flex flex-col items-start gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
             <div className="max-w-2xl">

@@ -1,13 +1,15 @@
 import { Star } from 'lucide-react';
 
 interface ClassificationHeroNoteProps {
+  lead: string;
   title: string;
-  description: string;
+  caption: string;
 }
 
 export default function ClassificationHeroNote({
+  lead,
   title,
-  description,
+  caption,
 }: ClassificationHeroNoteProps) {
   return (
     <div className="classification-hero-note">
@@ -16,8 +18,12 @@ export default function ClassificationHeroNote({
           <Star key={star} size={18} strokeWidth={1.4} />
         ))}
       </div>
-      <p className="classification-hero-note-title">{title}</p>
-      <p className="classification-hero-note-description">{description}</p>
+      <p className="classification-hero-note-copy">
+        {lead}
+        <br />
+        <strong>{title}</strong>
+      </p>
+      <p className="classification-hero-note-caption">{caption}</p>
     </div>
   );
 }

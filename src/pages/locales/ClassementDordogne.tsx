@@ -184,15 +184,16 @@ export default function ClassementDordogne() {
             }
             note={
               <ClassificationHeroNote
-                title="Un classement de 1 à 5 étoiles"
-                description="Du studio au grand gîte, un repère de qualité pour vos voyageurs."
+                lead="Du studio au grand gîte,"
+                title="un classement de 1 à 5 étoiles."
+                caption="Un repère de qualité pour vos voyageurs."
               />
             }
             index="24 / LE PÉRIGORD"
           />
         }
       >
-        <div className="flex flex-col items-start gap-3">
+        <div className="flex flex-col items-start gap-0">
           <Button href="/demande-classement" size="lg" className="editorial-hero-cta">
             Demander mon classement <ArrowUpRight size={20} aria-hidden="true" />
           </Button>
@@ -237,7 +238,7 @@ export default function ClassementDordogne() {
             Pourquoi faire classer votre meublé de tourisme ?
           </h2>
         </div>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="editorial-feature-grid">
           <FeatureCard
             icon={Calculator}
             title="Une fiscalité micro-BIC plus favorable"
@@ -346,7 +347,7 @@ export default function ClassementDordogne() {
         </div>
       </section>
 
-      <section className="dd-expertise bg-surface-hover" aria-labelledby="dd-expertise-title">
+      <section className="dd-expertise bg-surface-sage" aria-labelledby="dd-expertise-title">
         <div className="container-editorial editorial-media-split">
           <figure className="editorial-expertise-photo dd-stone-photo">
             <SmartImage
@@ -432,7 +433,13 @@ export default function ClassementDordogne() {
         density="compact"
         eyebrow="À VOUS DE JOUER"
         title="Demandez le classement de votre meublé en Dordogne"
-        description="Parlez-nous de votre projet. Rappel sous 24 h ouvrées, visite en moyenne sous deux semaines."
+        description={
+          <>
+            Parlez-nous de votre projet. Rappel sous 24 h ouvrées,
+            <br />
+            visite en moyenne sous deux semaines.
+          </>
+        }
       >
         <Button
           href="/demande-classement"
@@ -442,9 +449,7 @@ export default function ClassementDordogne() {
         >
           Demander mon classement <ArrowRight size={20} aria-hidden="true" />
         </Button>
-        <span className="text-center text-xs text-white/75">
-          Tarif confirmé avant tout engagement.
-        </span>
+        <span className="text-center text-[11px]">Tarif confirmé avant tout engagement.</span>
       </PageCta>
     </div>
   );
