@@ -28,20 +28,18 @@ export default function ProofStrip({ items }: ProofStripProps) {
               {Icon ? (
                 <Icon
                   size={27}
-                  strokeWidth={1.4}
+                  strokeWidth={1.3}
                   className="shrink-0 text-copper"
                   aria-hidden="true"
                 />
               ) : (
-                <span className="editorial-proof-value" aria-hidden="true">
-                  {item.value}
-                </span>
+                <span className="editorial-proof-value">{item.value}</span>
               )}
               <div>
-                <p className="mb-1 text-sm font-semibold text-ink">{item.title}</p>
+                <p className="editorial-proof-title">{item.title}</p>
                 {item.link ? (
                   item.link.href.startsWith('/') && !item.link.href.startsWith('//') ? (
-                    <Link to={item.link.href} className="editorial-link ui-focus text-sm">
+                    <Link to={item.link.href} className="editorial-proof-link ui-focus">
                       {item.link.label}
                       <ArrowUpRight size={13} aria-hidden="true" />
                     </Link>
@@ -50,14 +48,14 @@ export default function ProofStrip({ items }: ProofStripProps) {
                       href={item.link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="editorial-link ui-focus text-sm"
+                      className="editorial-proof-link ui-focus"
                     >
                       {item.link.label}
                       <ArrowUpRight size={13} aria-hidden="true" />
                     </a>
                   )
                 ) : (
-                  item.description && <p className="text-sm text-muted">{item.description}</p>
+                  item.description && <p className="editorial-proof-subtext">{item.description}</p>
                 )}
               </div>
             </li>

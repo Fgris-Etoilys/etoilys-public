@@ -4,6 +4,7 @@ interface PageHeroProps {
   title: ReactNode;
   description: string;
   eyebrow?: string;
+  eyebrowMarked?: boolean;
   media?: ReactNode;
   size?: 'default' | 'compact';
   children?: ReactNode;
@@ -13,11 +14,17 @@ export default function PageHero({
   title,
   description,
   eyebrow,
+  eyebrowMarked = false,
   media,
   size = 'default',
   children,
 }: PageHeroProps) {
   const isSplit = Boolean(media);
+  const eyebrowClasses = `editorial-eyebrow ${eyebrowMarked ? 'editorial-eyebrow-marked ' : ''}mb-6`;
+  const descriptionClasses = isSplit
+    ? 'max-w-[470px] text-[16px] leading-[1.8] text-muted'
+    : 'max-w-3xl text-lg text-muted leading-comfortable';
+  const childrenClasses = isSplit ? 'mt-[26px]' : 'mt-8';
 
   return (
     <section
@@ -25,10 +32,10 @@ export default function PageHero({
     >
       <div className={`container-editorial ${isSplit ? 'editorial-hero-grid' : ''}`}>
         <div className={isSplit ? 'min-w-0' : 'max-w-4xl'}>
-          {eyebrow && <p className="editorial-eyebrow mb-6">{eyebrow}</p>}
+          {eyebrow && <p className={eyebrowClasses}>{eyebrow}</p>}
           <h1 className="editorial-title mb-6">{title}</h1>
-          <p className="max-w-3xl text-lg text-muted leading-comfortable">{description}</p>
-          {children && <div className="mt-8">{children}</div>}
+          <p className={descriptionClasses}>{description}</p>
+          {children && <div className={childrenClasses}>{children}</div>}
         </div>
         {media}
       </div>

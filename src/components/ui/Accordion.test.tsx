@@ -64,4 +64,16 @@ describe('Accordion', () => {
       .forEach((button) => fireEvent.click(button));
     expect(screen.getAllByRole('region')).toHaveLength(2);
   });
+
+  it('keeps compact density single-open', () => {
+    render(<Accordion items={items} density="compact" />);
+    const first = screen.getByRole('button', { name: 'First question' });
+    const second = screen.getByRole('button', { name: 'Second question' });
+
+    expect(first).toHaveClass('py-[22px]');
+    fireEvent.click(first);
+    fireEvent.click(second);
+    expect(first).toHaveAttribute('aria-expanded', 'false');
+    expect(second).toHaveAttribute('aria-expanded', 'true');
+  });
 });

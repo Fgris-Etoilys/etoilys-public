@@ -162,6 +162,7 @@ export default function ClassementDordogne() {
     <div className="dd-landing">
       <PageHero
         eyebrow="Propriétaires en Dordogne"
+        eyebrowMarked
         title={
           <>
             Classement de gîtes et meublés de tourisme{' '}
@@ -345,7 +346,7 @@ export default function ClassementDordogne() {
         </div>
       </section>
 
-      <section className="dd-expertise bg-surface" aria-labelledby="dd-expertise-title">
+      <section className="dd-expertise bg-surface-hover" aria-labelledby="dd-expertise-title">
         <div className="container-editorial editorial-media-split">
           <figure className="editorial-expertise-photo dd-stone-photo">
             <SmartImage
@@ -423,11 +424,12 @@ export default function ClassementDordogne() {
           </Link>
         </div>
         <div className="dd-faq-list">
-          <Accordion items={questions} />
+          <Accordion items={questions} density="compact" />
         </div>
       </section>
 
       <PageCta
+        density="compact"
         eyebrow="À VOUS DE JOUER"
         title="Demandez le classement de votre meublé en Dordogne"
         description="Parlez-nous de votre projet. Rappel sous 24 h ouvrées, visite en moyenne sous deux semaines."

@@ -245,16 +245,25 @@
   }
 
   .editorial-eyebrow {
-    @apply text-xs font-semibold uppercase tracking-[0.16em] text-ink;
+    @apply uppercase text-ink;
+    font-size: 10px;
+    font-weight: 650;
+    letter-spacing: 0.2em;
+    line-height: 1.5;
   }
 
-  .editorial-eyebrow::before {
+  .editorial-eyebrow-marked {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .editorial-eyebrow-marked::before {
     content: '';
-    display: inline-block;
-    width: 5px;
-    height: 5px;
-    margin-right: 10px;
-    vertical-align: middle;
+    display: block;
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: rgb(var(--color-copper));
   }
@@ -268,13 +277,19 @@
   }
 
   .editorial-hero-featured {
-    padding-block: clamp(48px, 6vw, 80px);
+    padding-block: 64px 70px;
   }
 
   .editorial-hero-compact .editorial-title {
     max-width: 32ch;
     font-size: clamp(32px, 3.5vw, 46px);
     line-height: 1.16;
+  }
+
+  .editorial-hero-grid .editorial-title {
+    font-size: clamp(42px, 4.2vw, 58px);
+    letter-spacing: -0.055em;
+    line-height: 1.05;
   }
 
   .editorial-hero-compact + .editorial-section {
@@ -305,16 +320,14 @@
 
   .editorial-hero-media {
     position: relative;
-    align-self: stretch;
-    min-height: 500px;
     margin-bottom: 24px;
     padding-left: 20px;
     padding-bottom: 40px;
   }
 
   .editorial-hero-media-photo {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    height: 530px;
     overflow: hidden;
     border-radius: 140px 5px 5px 5px;
     background: rgb(var(--color-surface-hover));
@@ -356,12 +369,13 @@
   }
 
   .classification-hero-note {
-    @apply rounded-control border border-ink/15 bg-surface px-6 py-5 text-sm text-ink sm:px-[30px] sm:py-6;
-    box-shadow: 0 12px 28px rgb(var(--color-ink) / 0.06);
+    @apply border border-ink/15 bg-surface px-5 py-[15px] text-sm text-ink sm:px-[30px] sm:py-6;
+    border-radius: 3px;
+    box-shadow: 0 6px 30px rgb(var(--color-ink) / 0.05);
   }
 
   .classification-hero-note-stars {
-    @apply mb-3 flex gap-1.5 text-copper;
+    @apply flex gap-[7px] text-copper;
   }
 
   .classification-hero-note-stars svg {
@@ -369,11 +383,15 @@
   }
 
   .classification-hero-note-title {
-    @apply mb-2 font-semibold leading-relaxed text-ink;
+    @apply font-semibold text-ink;
+    margin-block: 10px 7px;
+    line-height: 1.6;
   }
 
   .classification-hero-note-description {
-    @apply text-sm leading-relaxed text-muted;
+    @apply text-muted;
+    font-size: 10px;
+    line-height: 1.6;
   }
 
   .hero-reassurance {
@@ -389,31 +407,55 @@
   }
 
   .editorial-proof-strip {
-    @apply grid gap-5 py-6 md:grid-cols-3 md:gap-0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 16px;
+    padding-block: 21px;
   }
 
   .editorial-proof-item {
-    @apply flex min-w-0 items-center gap-4 md:justify-center;
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px;
   }
 
   .editorial-proof-item:first-child {
-    @apply md:justify-start;
+    grid-column: 1 / -1;
   }
 
-  .editorial-proof-item:last-child {
-    @apply md:justify-end;
+  .editorial-proof-title {
+    display: block;
+    color: rgb(var(--color-ink));
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.35;
   }
 
-  .editorial-proof-item + .editorial-proof-item {
-    @apply border-t border-ink/15 pt-5 md:border-l md:border-t-0 md:pl-6 md:pt-0;
+  .editorial-proof-item:first-child .editorial-proof-title {
+    font-size: 13px;
   }
 
-  .editorial-proof-item:not(:last-child) {
-    @apply md:pr-6;
+  .editorial-proof-subtext,
+  .editorial-proof-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 3px;
+    color: rgb(var(--color-muted));
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .editorial-proof-link {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .editorial-proof-value {
-    @apply shrink-0 font-playfair text-4xl leading-none text-ink;
+    @apply shrink-0 font-playfair leading-none text-ink;
+    font-size: 34px;
   }
 
   .editorial-media-split {
@@ -480,6 +522,48 @@
     }
   }
 
+  @media (min-width: 681px) {
+    .editorial-proof-strip {
+      grid-template-columns: 1fr 0.8fr 1fr;
+      gap: 0;
+      padding-block: 26px;
+    }
+
+    .editorial-proof-item {
+      justify-content: center;
+      gap: 19px;
+      border-right: 1px solid rgb(var(--color-ink) / 0.13);
+    }
+
+    .editorial-proof-item:first-child {
+      grid-column: auto;
+      justify-content: flex-start;
+    }
+
+    .editorial-proof-item:last-child {
+      justify-content: flex-end;
+      border-right: 0;
+    }
+
+    .editorial-proof-title {
+      font-size: 13px;
+    }
+
+    .editorial-proof-value {
+      font-size: 45px;
+    }
+  }
+
+  @media (max-width: 1150px) {
+    .editorial-hero-media-photo {
+      height: 500px;
+    }
+
+    .editorial-hero-media-note {
+      width: min(310px, calc(100% - 24px));
+    }
+  }
+
   .editorial-anchor,
   #department-pricing-locality {
     scroll-margin-top: calc(var(--etoilys-header-height, 81px) + 24px);
@@ -517,22 +601,24 @@
   }
 
   @media (max-width: 899px) {
+    .editorial-hero-featured {
+      padding-block: 48px 50px;
+    }
+
     .editorial-hero-grid,
     .editorial-media-split,
     .editorial-split {
       grid-template-columns: minmax(0, 1fr);
     }
     .editorial-hero-media {
-      min-height: 0;
       margin-bottom: 0;
       padding-left: 14px;
       padding-bottom: 31px;
     }
 
     .editorial-hero-media-photo {
-      position: relative;
-      aspect-ratio: 16 / 10;
-      border-top-left-radius: 64px;
+      height: 440px;
+      border-top-left-radius: 90px;
     }
 
     .editorial-hero-media-photo picture {
@@ -597,8 +683,16 @@
     .editorial-section {
       padding-block: 53px;
     }
+    .editorial-hero-featured {
+      padding-block: 37px 28px;
+    }
+    .editorial-hero-grid .editorial-title {
+      font-size: clamp(38px, 10.4vw, 52px);
+      line-height: 1.03;
+      margin-top: 19px;
+    }
     .editorial-hero-media-photo {
-      aspect-ratio: 16 / 10;
+      height: 275px;
       border-top-left-radius: 85px;
     }
     .editorial-hero-media-caption {

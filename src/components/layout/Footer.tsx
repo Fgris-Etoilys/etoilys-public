@@ -16,7 +16,7 @@ export default function Footer() {
           <div className="site-footer-brand">
             <Link to={content.homeHref} className="footer-logo ui-focus">
               <img
-                src="/Logo complet - site web copy.svg"
+                src="/logo-etoilys-editorial.svg"
                 alt="Etoilys"
                 width="1025"
                 height="576"

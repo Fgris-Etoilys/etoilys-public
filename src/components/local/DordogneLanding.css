@@ -8,9 +8,6 @@
     scroll-behavior: auto;
   }
 }
-.dd-landing a:not(.dd-pricing-cta) {
-  color: inherit;
-}
 .dd-landing :is(a, button, input, summary):not(.ui-field-error):focus-visible {
   outline: 3px solid rgb(var(--color-copper));
   outline-offset: 5px;

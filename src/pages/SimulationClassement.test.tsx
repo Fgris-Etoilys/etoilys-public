@@ -1993,7 +1993,7 @@ describe('SimulationClassement', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: /pièces du logement/i }));
     expect(screen.getAllByRole('button', { name: /ajouter une pièce/i })[0]).toBeInTheDocument();
-  }, 20000);
+  }, 10000);
 
   it('garde le résultat en CTA principal unique dans le bloc grille quand la grille est complète', async () => {
     mockFetchJsonSequence([

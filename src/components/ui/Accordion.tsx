@@ -8,11 +8,23 @@ interface AccordionItem {
 
 interface AccordionProps {
   items: readonly AccordionItem[];
+  density?: 'default' | 'compact';
 }
 
-export default function Accordion({ items }: AccordionProps) {
+export default function Accordion({ items, density = 'default' }: AccordionProps) {
   const id = useId();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const isCompact = density === 'compact';
+  const triggerClasses = isCompact
+    ? 'ui-focus w-full flex items-center justify-between gap-[25px] py-[22px] text-left transition-colors duration-200 motion-reduce:transition-none hover:text-copper'
+    : 'ui-focus w-full flex items-center justify-between gap-4 py-5 text-left transition-colors duration-200 motion-reduce:transition-none hover:text-copper';
+  const questionClasses = isCompact
+    ? 'text-[14px] font-[550] leading-[1.6] text-ink'
+    : 'text-base font-medium text-ink sm:text-lg';
+  const answerClasses = isCompact
+    ? 'pb-[23px] pr-[30px] text-[13px] leading-[1.8] text-muted [&_a]:editorial-inline-link'
+    : 'pb-6 pr-9 text-muted leading-comfortable [&_a]:editorial-inline-link';
+  const iconClasses = isCompact ? 'h-[23px] w-[23px]' : 'h-5 w-5';
 
   const toggleItem = (index: number) => {
     setOpenIndex((current) => (current === index ? null : index));
@@ -27,13 +39,13 @@ export default function Accordion({ items }: AccordionProps) {
             id={`${id}-trigger-${index}`}
             aria-controls={`${id}-panel-${index}`}
             onClick={() => toggleItem(index)}
-            className="ui-focus w-full flex items-center justify-between gap-4 py-5 text-left transition-colors duration-200 motion-reduce:transition-none hover:text-copper"
+            className={triggerClasses}
             aria-expanded={openIndex === index}
           >
-            <span className="text-base font-medium text-ink sm:text-lg">{item.question}</span>
+            <span className={questionClasses}>{item.question}</span>
             <Plus
               aria-hidden="true"
-              className={`h-5 w-5 text-copper flex-shrink-0 transition-transform duration-200 motion-reduce:transition-none ${
+              className={`${iconClasses} text-copper flex-shrink-0 transition-transform duration-200 motion-reduce:transition-none ${
                 openIndex === index ? 'rotate-45' : ''
               }`}
             />
@@ -44,9 +56,7 @@ export default function Accordion({ items }: AccordionProps) {
             aria-labelledby={`${id}-trigger-${index}`}
             hidden={openIndex !== index}
           >
-            <div className="pb-6 pr-9 text-muted leading-comfortable [&_a]:editorial-inline-link">
-              {item.answer}
-            </div>
+            <div className={answerClasses}>{item.answer}</div>
           </div>
         </div>
       ))}

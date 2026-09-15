@@ -94,7 +94,7 @@ export default function Header() {
           <div className="flex items-center justify-between">
             <Link to={content.homeHref} className="ui-focus flex items-center">
               <img
-                src="/Logo complet - site web copy.svg"
+                src="/logo-etoilys-editorial.svg"
                 alt="Etoilys"
                 width={1025}
                 height={576}

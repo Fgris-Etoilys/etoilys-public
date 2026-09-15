@@ -69,6 +69,7 @@ export default function Home() {
     <>
       <PageHero
         eyebrow={content.hero.eyebrow}
+        eyebrowMarked
         title={
           <>
             {content.hero.title.lead}{' '}

@@ -77,6 +77,13 @@ describe('Shared site layout', () => {
       expect(document.querySelector('.dd-benefit-cards')).toBeNull();
       expect(document.querySelector('.dd-steps')).toBeNull();
       expect(document.querySelector('.dd-faq details')).toBeNull();
+      expect(document.querySelectorAll('.editorial-eyebrow-marked')).toHaveLength(1);
+      expect(document.querySelector('.dd-faq .editorial-eyebrow-marked')).toBeNull();
+      const proofValue = document.querySelector('.editorial-proof-value');
+      expect(proofValue).toHaveTextContent('5');
+      expect(proofValue).not.toHaveAttribute('aria-hidden');
+      const heroCta = screen.getAllByRole('link', { name: /Demander mon classement/i })[0];
+      expect(heroCta).toHaveClass('bg-ink', 'text-white', 'hover:text-white');
       const faqButtons = Array.from(document.querySelectorAll('.dd-faq button[aria-expanded]'));
       expect(faqButtons.length).toBeGreaterThan(1);
       const [firstFaqButton, secondFaqButton] = faqButtons;
