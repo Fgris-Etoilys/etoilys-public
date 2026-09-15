@@ -24,7 +24,7 @@ Ordre V6 :
 Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 
 - `scope: 'department'` impose une zone par secteurs et un pricing `mode: 'picker'`.
-- `scope: 'city'` impose une zone par communes proches, un pricing `mode: 'direct'` et un module local utile.
+- `scope: 'city'` impose une zone par communes proches et un pricing `mode: 'direct'`. Le module local reste facultatif, par exemple pour une comparaison de taxe de séjour quand elle apporte un vrai contexte local.
 - Les contenus riches de FAQ sont des `ReactNode` pour préserver les liens internes, les ancres et les liens externes avec leurs attributs.
 - Les CTA gardent leur `variant` de tracking ; les ajustements visuels passent par `className`.
 

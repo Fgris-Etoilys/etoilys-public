@@ -13,6 +13,7 @@ import PageHero from '../ui/PageHero';
 import ProofStrip from '../ui/ProofStrip';
 import SmartImage from '../ui/SmartImage';
 import Timeline from '../ui/Timeline';
+import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
 import { getPricingProfile } from '../../content/local/pricing';
 import type {
   DepartmentSector,
@@ -20,6 +21,7 @@ import type {
   LocalV6Action,
   LocalV6CityServiceArea,
   LocalV6DepartmentServiceArea,
+  LocalV6Hero,
   LocalV6TaxModule,
 } from '../../content/local/types';
 import DepartmentPricingSection, { LocalPricingProfileSummary } from './DepartmentPricingSection';
@@ -73,7 +75,7 @@ const expertiseReasons = [
     description:
       'Etoilys réalise les visites officielles de classement dans le cadre de son accréditation Cofrac Inspection n° 3-2394.',
     link: {
-      href: 'https://tools.cofrac.fr/fr/easysearch/index_advanced.php?list-81145836',
+      href: COFRAC_ACCREDITATION_URL,
       label: 'Consulter notre accréditation',
     },
   },
@@ -109,42 +111,7 @@ function LocalV6Hero({ config }: { config: LocalLandingPageV6Config }) {
       eyebrowMarked
       title={<HighlightedTitle title={hero.title} highlightedText={hero.highlightedTitleText} />}
       description={hero.description}
-      media={
-        <>
-          <EditorialHeroMedia
-            assetKey={hero.image.assetKey}
-            alt={hero.image.alt}
-            priority
-            {...(hero.image.sizes ? { sizes: hero.image.sizes } : {})}
-            imageClassName={hero.image.className}
-            caption={hero.image.caption}
-            note={<ClassificationHeroNote {...hero.image.note} />}
-            index={hero.image.index}
-          />
-          {hero.image.credit && (
-            <p className="local-v6-hero-credit">
-              Photo :{' '}
-              <a
-                href={hero.image.credit.sourceHref}
-                target="_blank"
-                rel="nofollow noopener noreferrer"
-                className="editorial-inline-link"
-              >
-                {hero.image.credit.sourceLabel}
-              </a>{' '}
-              -{' '}
-              <a
-                href={hero.image.credit.licenseHref}
-                target="_blank"
-                rel="nofollow noopener noreferrer"
-                className="editorial-inline-link"
-              >
-                {hero.image.credit.licenseLabel}
-              </a>
-            </p>
-          )}
-        </>
-      }
+      media={<LocalV6HeroMedia hero={hero} />}
     >
       <div className="flex flex-col items-start gap-0">
         <LocalV6ActionLink action={hero.primaryAction} />
@@ -152,6 +119,45 @@ function LocalV6Hero({ config }: { config: LocalLandingPageV6Config }) {
       </div>
       <HeroReassurance items={hero.reassuranceItems} />
     </PageHero>
+  );
+}
+
+function LocalV6HeroMedia({ hero }: { hero: LocalV6Hero }) {
+  return (
+    <div className="local-v6-hero-media">
+      <EditorialHeroMedia
+        assetKey={hero.image.assetKey}
+        alt={hero.image.alt}
+        priority
+        {...(hero.image.sizes ? { sizes: hero.image.sizes } : {})}
+        imageClassName={hero.image.className}
+        caption={hero.image.caption}
+        note={<ClassificationHeroNote {...hero.image.note} />}
+        index={hero.image.index}
+      />
+      {hero.image.credit && (
+        <p className="local-v6-hero-credit">
+          Photo :{' '}
+          <a
+            href={hero.image.credit.sourceHref}
+            target="_blank"
+            rel="nofollow noopener noreferrer"
+            className="editorial-inline-link"
+          >
+            {hero.image.credit.sourceLabel}
+          </a>{' '}
+          -{' '}
+          <a
+            href={hero.image.credit.licenseHref}
+            target="_blank"
+            rel="nofollow noopener noreferrer"
+            className="editorial-inline-link"
+          >
+            {hero.image.credit.licenseLabel}
+          </a>
+        </p>
+      )}
+    </div>
   );
 }
 
@@ -398,12 +404,7 @@ function LocalV6PricingSection({ config }: { config: LocalLandingPageV6Config })
                 {config.pricing.procedureLink.label} <ArrowUpRight size={16} aria-hidden="true" />
               </Link>
             </>
-          ) : (
-            <p>
-              Les tarifs ci-dessous sont tout compris, sans frais de déplacement. Le montant
-              applicable est confirmé avant tout engagement.
-            </p>
-          )}
+          ) : null}
         </div>
         {config.scope === 'department' ? (
           <DepartmentPricingSection config={config.pricing.picker} presentation="panel" />
@@ -435,9 +436,19 @@ function LocalV6ProcedureSection({ config }: { config: LocalLandingPageV6Config 
               {config.procedure.title}
             </h2>
           </div>
-          <Link to={config.procedure.link.href} className="editorial-link ui-focus">
-            {config.procedure.link.label} <ArrowUpRight size={17} aria-hidden="true" />
-          </Link>
+          {config.procedure.link.variant ? (
+            <Button
+              href={config.procedure.link.href}
+              variant={config.procedure.link.variant}
+              className={`local-v6-procedure-link ${config.procedure.link.className ?? ''}`}
+            >
+              {config.procedure.link.label} <ArrowUpRight size={17} aria-hidden="true" />
+            </Button>
+          ) : (
+            <Link to={config.procedure.link.href} className="editorial-link ui-focus">
+              {config.procedure.link.label} <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
+          )}
         </div>
         <Timeline layout="horizontal" steps={config.procedure.steps} />
         <p className="local-v6-process-note">{config.procedure.note}</p>

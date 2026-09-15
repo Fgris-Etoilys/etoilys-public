@@ -281,6 +281,8 @@ export interface LocalV6Procedure {
   link: {
     href: string;
     label: string;
+    variant?: LocalV6ButtonVariant;
+    className?: string;
   };
   note: string;
 }
@@ -330,7 +332,7 @@ export interface LocalLandingPageV6CityConfig extends LocalLandingPageV6Base {
   city: string;
   serviceArea: LocalV6CityServiceArea;
   pricing: LocalV6DirectPricing;
-  localModule: LocalV6TaxModule;
+  localModule?: LocalV6TaxModule;
 }
 
 export interface LocalLandingPageV6DepartmentConfig extends LocalLandingPageV6Base {

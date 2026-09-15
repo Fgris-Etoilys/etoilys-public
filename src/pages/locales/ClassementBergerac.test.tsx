@@ -73,16 +73,26 @@ describe('ClassementBergerac', () => {
     expect(screen.getAllByText('Demande en 30 secondes').length).toBeGreaterThan(0);
     expect(screen.getByText('Visite en moyenne sous deux semaines')).toBeInTheDocument();
     expect(screen.getAllByText('Aucun frais de déplacement').length).toBeGreaterThan(0);
+    const heroGrid = document.querySelector('.editorial-hero-grid');
+    expect(heroGrid?.children).toHaveLength(2);
+    const mediaColumn = heroGrid?.children[1];
+    expect(mediaColumn).toHaveClass('local-v6-hero-media');
     expect(
-      screen.getByRole('link', { name: /Benjamin Smith \/ Wikimedia Commons/i })
+      within(mediaColumn as HTMLElement).getByRole('link', {
+        name: /Benjamin Smith \/ Wikimedia Commons/i,
+      })
     ).toHaveAttribute(
       'href',
       'https://commons.wikimedia.org/wiki/File:Bergerac_-_View_in_late_afternoon.jpg'
     );
-    expect(screen.getByRole('link', { name: 'CC BY-SA 4.0' })).toHaveAttribute(
-      'href',
-      'https://creativecommons.org/licenses/by-sa/4.0/'
-    );
+    expect(
+      within(mediaColumn as HTMLElement).getByRole('link', { name: 'CC BY-SA 4.0' })
+    ).toHaveAttribute('href', 'https://creativecommons.org/licenses/by-sa/4.0/');
+    expect(
+      within(document.querySelector('.editorial-hero-featured') as HTMLElement).getByRole('link', {
+        name: 'Connaître mon tarif',
+      })
+    ).toHaveAttribute('href', '#tarifs');
   });
 
   it('renders Bergerac in the V6 section order with local data preserved', () => {
@@ -155,13 +165,20 @@ describe('ClassementBergerac', () => {
 
     expect(screen.getByText('Tarif public')).toBeInTheDocument();
     expect(screen.getAllByText(/240\s€/)).not.toHaveLength(0);
-    expect(screen.getByText('Adhérent à un office de tourisme partenaire')).toBeInTheDocument();
+    expect(
+      screen.getByText('Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.')
+    ).toBeInTheDocument();
     expect(screen.getAllByText(/200\s€/)).not.toHaveLength(0);
     expect(screen.getAllByText('Premier logement').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Deuxième logement').length).toBeGreaterThan(0);
     expect(screen.getAllByText('Troisième logement et suivants').length).toBeGreaterThan(0);
     expect(screen.getAllByText('160 € TTC').length).toBeGreaterThan(0);
     expect(screen.getAllByText('100 € par logement TTC').length).toBeGreaterThan(0);
+    expect(
+      document.body.textContent?.match(
+        /Les tarifs ci-dessous sont tout compris, sans frais de déplacement/g
+      ) ?? []
+    ).toHaveLength(1);
 
     expect(
       screen.getByRole('heading', {
@@ -183,7 +200,7 @@ describe('ClassementBergerac', () => {
       { href: '/classement-meuble-tourisme-dordogne', name: /interventions en Dordogne/i },
       { href: '/procedure', name: 'La procédure en détail' },
       { href: '/les-avantages-du-classement', name: /avantages du classement/i },
-      { href: '/simulateur', name: 'Estimer la catégorie de mon logement' },
+      { href: '/simulateur', name: 'Estimer mon classement' },
       { href: '/simulateur-taxe-sejour', name: 'Comparer la taxe de séjour de mon logement' },
       { href: '/demande-classement', name: 'Demander mon classement' },
       { href: '/contact', name: 'Parlons-en' },
@@ -221,6 +238,14 @@ describe('ClassementBergerac', () => {
     expect(trackCtaClick).toHaveBeenLastCalledWith({
       ctaId: 'cta_white_demande_classement',
       destinationPath: '/demande-classement',
+    });
+
+    const procedureLink = within(main).getByRole('link', { name: 'La procédure en détail' });
+    procedureLink.addEventListener('click', (event: MouseEvent) => event.preventDefault());
+    fireEvent.click(procedureLink);
+    expect(trackCtaClick).toHaveBeenLastCalledWith({
+      ctaId: 'cta_secondary_procedure',
+      destinationPath: '/procedure',
     });
   });
 

@@ -67,6 +67,7 @@ export default function DepartmentPricingSection({
     return searchPreparedLocalities(searchIndex, query, MAX_LOCALITY_SUGGESTIONS);
   }, [query, searchIndex]);
   const resolvedPricingProfile = resolution ? getPricingProfile(resolution.pricingProfileId) : null;
+  const Heading = presentation === 'panel' ? 'h3' : 'h2';
 
   useEffect(() => {
     return () => {
@@ -218,9 +219,9 @@ export default function DepartmentPricingSection({
         <Euro className="h-4 w-4" aria-hidden="true" />
         Tarifs
       </div>
-      <h2 className={presentation === 'panel' ? 'local-v6-pricing-title' : 'mb-5'}>
+      <Heading className={presentation === 'panel' ? 'local-v6-pricing-title' : 'mb-5'}>
         {presentation === 'panel' ? 'Sélectionnez votre commune' : config.title}
-      </h2>
+      </Heading>
       <p
         className={
           presentation === 'panel'
@@ -360,9 +361,7 @@ export function LocalPricingProfileSummary({
 }) {
   return (
     <div className="local-v6-pricing-result" aria-live="polite">
-      {localityLabel && (
-        <p className="local-v6-pricing-locality">Tarif applicable à {localityLabel}</p>
-      )}
+      {localityLabel && <p className="local-v6-pricing-locality">Votre meublé à {localityLabel}</p>}
       {pricingProfile.note && <p className="local-v6-pricing-note">{pricingProfile.note}</p>}
       <div className="local-v6-pricing-public">
         <span>{pricingProfile.standard.label}</span>
@@ -376,7 +375,7 @@ export function LocalPricingProfileSummary({
             {pricingProfile.partner.amount} {pricingProfile.partner.qualifier}
           </strong>
           <p>
-            {pricingProfile.partner.label}
+            Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.
             {pricingProfile.partner.conditions && <> {pricingProfile.partner.conditions}</>}
           </p>
         </div>

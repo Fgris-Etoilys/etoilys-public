@@ -30,6 +30,12 @@ describe('Department pricing picker', () => {
       </MemoryRouter>
     );
     const input = screen.getByRole('combobox', { name: 'Commune' });
+    expect(
+      screen.getByRole('heading', { level: 3, name: 'Sélectionnez votre commune' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { level: 2, name: 'Sélectionnez votre commune' })
+    ).not.toBeInTheDocument();
     expect(container.querySelector('.local-v6-pricing-amount')).toBeNull();
     fireEvent.focus(input);
     expect(screen.getByRole('status')).toBeInTheDocument();
@@ -40,9 +46,13 @@ describe('Department pricing picker', () => {
     fireEvent.change(input, { target: { value: 'per' } });
     expect(await screen.findByRole('option', { name: 'Périgueux' })).toBeInTheDocument();
     fireEvent.keyDown(input, { key: 'Enter' });
+    expect(screen.getByText('Votre meublé à Périgueux')).toBeInTheDocument();
     expect(container.querySelector('.local-v6-pricing-amount')).toHaveTextContent(
       profile.standard.amount
     );
+    expect(
+      screen.getByText('Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.')
+    ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Demander mon classement' })).toHaveAttribute(
       'href',
       '/demande-classement'

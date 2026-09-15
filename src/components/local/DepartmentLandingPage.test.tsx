@@ -34,6 +34,10 @@ function readPageSource(fileName: string): string {
   return readFileSync(path.resolve(process.cwd(), 'src', 'pages', 'locales', fileName), 'utf8');
 }
 
+function readIndexCss(): string {
+  return readFileSync(path.resolve(process.cwd(), 'src', 'index.css'), 'utf8');
+}
+
 function expectHeadingSequence(expectedHeadings: Array<string | RegExp>) {
   const headings = screen.getAllByRole('heading').map((heading) => heading.textContent ?? '');
   let cursor = -1;
@@ -103,12 +107,17 @@ describe('DepartmentLandingPage', () => {
       'Pourquoi faire classer votre meublé de tourisme ?',
       'Dans quelles communes de Dordogne intervenons-nous ?',
       'Quel tarif pour classer votre meublé en Dordogne ?',
-      'Sélectionnez votre commune',
       'Votre classement en trois étapes',
       'Pourquoi choisir Etoilys pour votre classement ?',
       'Questions fréquentes sur le classement en Dordogne',
       'Demandez le classement de votre meublé en Dordogne',
     ]);
+    expect(
+      screen.getByRole('heading', { level: 3, name: 'Sélectionnez votre commune' })
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { level: 2, name: 'Sélectionnez votre commune' })
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole('heading', { name: 'Une fiscalité micro-BIC plus favorable' })
     ).toBeInTheDocument();
@@ -126,6 +135,25 @@ describe('DepartmentLandingPage', () => {
       '/classement-meuble-tourisme-bergerac'
     );
     expect(document.body).not.toHaveTextContent(/V1|politique tarifaire|repère éditorial/i);
+  });
+
+  it('keeps the Dordogne intervention and focus contracts on generic V6 classes', () => {
+    renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
+
+    expect(document.querySelector('.local-v6-sector-list')).toBeInTheDocument();
+    expect(document.querySelector('.dd-service-area')).toBeNull();
+    expect(document.querySelector('.dd-landing')).toBeNull();
+
+    const css = readIndexCss();
+    expect(css).toContain('.local-v6-sector-list');
+    expect(css).toContain('background: #fff;');
+    expect(css).toContain('border: 1px solid rgb(var(--color-ink) / 0.13);');
+    expect(css).toContain('border-radius: 12px;');
+    expect(css).toContain('padding: 20px 24px;');
+    expect(css).toContain(':is(a, button, input, summary):not(.ui-field-error):not(');
+    expect(css).toContain('.editorial-focus-inverse *');
+    expect(css).toContain('@media (prefers-reduced-motion: reduce)');
+    expect(css).toContain('.local-v6-landing *');
   });
 
   it('keeps collapsed Dordogne communes rendered while toggling visibility accessibly', () => {
@@ -175,11 +203,14 @@ describe('DepartmentLandingPage', () => {
     expect(await screen.findByRole('option', { name: 'Ribérac' })).toBeInTheDocument();
     expect(input).toHaveAttribute('aria-expanded', 'true');
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByText('Tarif applicable à Ribérac')).toBeInTheDocument();
+    expect(screen.getByText('Votre meublé à Ribérac')).toBeInTheDocument();
     expect(
       screen.getByText(/Le montant applicable est confirmé avant tout engagement/)
     ).toBeInTheDocument();
     expect(screen.getByText('Tarif public')).toBeInTheDocument();
+    expect(
+      screen.getByText('Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.')
+    ).toBeInTheDocument();
     expect(screen.getAllByText(/240\s€/)).not.toHaveLength(0);
 
     fireEvent.change(input, { target: { value: 'Mon' } });
@@ -187,12 +218,12 @@ describe('DepartmentLandingPage', () => {
     fireEvent.mouseDown(monbazillac);
 
     expect(input).toHaveValue('Monbazillac');
-    expect(screen.getByText('Tarif applicable à Monbazillac')).toBeInTheDocument();
+    expect(screen.getByText('Votre meublé à Monbazillac')).toBeInTheDocument();
 
     fireEvent.change(input, { target: { value: 'Pér' } });
     expect(await screen.findByRole('option', { name: 'Périgueux' })).toBeInTheDocument();
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByText('Tarif applicable à Périgueux')).toBeInTheDocument();
+    expect(screen.getByText('Votre meublé à Périgueux')).toBeInTheDocument();
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith('/data/communes-dordogne-index.v1.json', {
       signal: expect.any(AbortSignal),

@@ -9,8 +9,14 @@ import { COFRAC_ACCREDITATION_URL } from '../accreditationLinks';
 import { getPricingProfile } from './pricing';
 import { BERGERAC_FAQ, BERGERAC_SERVICE_COMMUNES } from './cities/bergerac';
 import { DORDOGNE_DEPARTMENT_PAGE, DORDOGNE_V5_SERVICE_SECTORS } from './departments/dordogne';
+import { getSeoRouteConfig } from '../seoRoutes';
 
-const heroImageSizes = '(min-width: 1336px) 570px, (min-width: 681px) 45vw, 100vw';
+function getLocalHeroImageSizes(path: string) {
+  return getSeoRouteConfig(path).lcpImageSizes ?? '100vw';
+}
+
+const dordogneHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-dordogne');
+const bergeracHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-bergerac');
 const officialClassificationUrl =
   'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme';
 
@@ -183,7 +189,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
     image: {
       assetKey: 'dordogneLaRoqueGageac',
       alt: 'Les maisons de pierre de La Roque-Gageac au bord de la Dordogne',
-      sizes: heroImageSizes,
+      sizes: dordogneHeroImageSizes,
       className: 'h-full w-full object-cover object-[38%_center] max-[680px]:object-[center_48%]',
       caption: (
         <>
@@ -326,7 +332,7 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
     image: {
       assetKey: 'bergeracHero',
       alt: 'Vue de la Dordogne et du centre-ville de Bergerac en fin d’après-midi',
-      sizes: heroImageSizes,
+      sizes: bergeracHeroImageSizes,
       className: 'h-full w-full object-cover object-center',
       caption: (
         <>
@@ -352,10 +358,14 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       label: 'Demander mon classement',
     },
     secondaryAction: {
-      href: '/simulateur',
-      variant: 'ghost',
-      className: '!border-ink !text-ink hover:!bg-surface-hover hover:!text-ink',
-      label: 'Estimer la catégorie de mon logement',
+      href: '#tarifs',
+      variant: 'secondary',
+      className: 'editorial-link ui-focus local-v6-hero-price',
+      label: (
+        <>
+          Connaître mon tarif <ArrowDown size={16} aria-hidden="true" />
+        </>
+      ),
     },
     reassuranceItems: ['Demande en 30 secondes', ...heroReassurance.slice(1)],
   },
@@ -375,7 +385,14 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
     title: 'Combien coûte le classement d’un meublé à Bergerac ?',
     pricingProfileId: 'dordogne-standard',
   },
-  procedure: commonProcedure,
+  procedure: {
+    ...commonProcedure,
+    link: {
+      ...commonProcedure.link,
+      variant: 'secondary',
+      className: 'editorial-link ui-focus',
+    },
+  },
   expertise: {
     title: 'Pourquoi choisir Etoilys pour votre classement à Bergerac ?',
     image: {
