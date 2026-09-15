@@ -442,6 +442,7 @@
   }
 
   .editorial-proof-shell {
+    background: rgb(var(--color-paper));
     border-top: 1px solid rgb(var(--color-ink) / 0.13);
     border-bottom: 1px solid rgb(var(--color-ink) / 0.13);
   }

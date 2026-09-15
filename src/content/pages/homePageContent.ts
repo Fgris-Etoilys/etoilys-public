@@ -150,15 +150,15 @@ export const homePageContent = {
       items: [
         {
           icon: 'star',
-          title: 'Le classement, notre spécialité',
+          title: '100 % spécialisés dans le classement des meublés de tourisme',
           description:
-            'Etoilys se consacre au classement des meublés de tourisme. Nos inspecteurs connaissent la grille officielle et les critères de chaque catégorie.',
+            'Etoilys se consacre exclusivement au classement des meublés de tourisme. Nos inspecteurs connaissent en profondeur la réglementation, la grille officielle et les points qui font réellement la différence pour atteindre la catégorie visée.',
         },
         {
           icon: 'calculator',
           title: 'Des outils pour préparer votre visite',
           description:
-            'Notre simulateur vous aide à repérer les critères de la catégorie envisagée et les points à préparer. Son résultat est indicatif ; seule la visite officielle permet d’évaluer le logement.',
+            'Notre simulateur vous aide à estimer la catégorie visée et à repérer les points à préparer.',
           link: {
             label: 'Estimer mon classement',
             href: '/simulateur',
@@ -317,15 +317,15 @@ export const homePageContent = {
       items: [
         {
           icon: 'star',
-          title: 'Classification is our speciality',
+          title: '100% specialised in furnished tourist accommodation classification',
           description:
-            'Etoilys specialises in furnished tourist accommodation classification. Our inspectors know the official assessment framework and the criteria for each star category.',
+            'Etoilys focuses exclusively on furnished tourist accommodation classification. Our inspectors know the regulations, the official assessment framework and the details that truly make the difference in reaching the target category.',
         },
         {
           icon: 'calculator',
-          title: 'Resources to prepare your inspection',
+          title: 'Tools to prepare your inspection',
           description:
-            'Our requirements guide helps you identify the points to check before requesting an inspection. Our inspectors explain the next steps with you.',
+            'Our simulator helps you estimate the target category and identify the points to prepare.',
           link: {
             label: 'Check the requirements',
             href: '/en/classification-requirements',
@@ -333,9 +333,9 @@ export const homePageContent = {
         },
         {
           icon: 'shield',
-          title: 'A Cofrac accredited inspection body',
+          title: 'A Cofrac-accredited body',
           description:
-            'Etoilys carries out official classification inspections under its Cofrac Inspection accreditation, no. 3-2394.',
+            'Etoilys carries out official classification inspections under its Cofrac Inspection accreditation no. 3-2394.',
           link: {
             label: 'View our accreditation scope',
             href: COFRAC_ACCREDITATION_URL,
@@ -514,15 +514,15 @@ export const homePageContent = {
       items: [
         {
           icon: 'star',
-          title: 'Classificatie is ons specialisme',
+          title: '100% gespecialiseerd in de classificatie van vakantiewoningen',
           description:
-            'Etoilys is gespecialiseerd in de classificatie van vakantiewoningen. Onze inspecteurs kennen het officiële beoordelingskader en de criteria voor elke sterrencategorie.',
+            'Etoilys richt zich uitsluitend op de classificatie van vakantiewoningen. Onze inspecteurs kennen de regelgeving, het officiële beoordelingskader en de punten die echt het verschil maken om de beoogde categorie te bereiken.',
         },
         {
           icon: 'calculator',
           title: 'Hulpmiddelen om uw bezoek voor te bereiden',
           description:
-            'Onze gids met voorwaarden helpt u de aandachtspunten te controleren voordat u een inspectie aanvraagt. Onze inspecteurs bespreken de volgende stappen met u.',
+            'Onze simulator helpt u de beoogde categorie in te schatten en de aandachtspunten voor te bereiden.',
           link: {
             label: 'De voorwaarden bekijken',
             href: '/nl/voorwaarden-classificatie-vakantiewoning',
@@ -532,7 +532,7 @@ export const homePageContent = {
           icon: 'shield',
           title: 'Geaccrediteerd door Cofrac',
           description:
-            'Etoilys voert officiële classificatiebezoeken uit binnen de Cofrac Inspection-accreditatie, nr. 3-2394.',
+            'Etoilys voert officiële classificatiebezoeken uit binnen zijn Cofrac Inspection-accreditatie nr. 3-2394.',
           link: {
             label: 'De reikwijdte van onze accreditatie bekijken',
             href: COFRAC_ACCREDITATION_URL,
