@@ -108,15 +108,21 @@ describe('ResponsiveComparisonTable', () => {
     );
   });
 
-  it('keeps simulator integrations captioned and using bounded text classes', () => {
+  it('keeps simulator integrations captioned and on the editorial bounded table appearance', () => {
+    const componentSource = readFileSync(
+      path.resolve(process.cwd(), 'src/components/ui/ResponsiveComparisonTable.tsx'),
+      'utf8'
+    );
+    expect(componentSource).toContain('table-fixed');
+    expect(componentSource).toContain('break-words');
+
     ['src/pages/SimulateurTaxeSejour.tsx', 'src/pages/SimulateurFiscalClassement.tsx'].forEach(
       (relativePath) => {
         const source = readFileSync(path.resolve(process.cwd(), relativePath), 'utf8');
 
         expect(source).toContain('<ResponsiveComparisonTable');
+        expect(source).toContain('appearance="editorial"');
         expect(source).toContain('caption=');
-        expect(source).toContain('table-fixed');
-        expect(source).toContain('break-words');
       }
     );
   });

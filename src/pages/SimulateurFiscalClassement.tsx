@@ -445,7 +445,7 @@ function renderSocialContributionsCell(
             href={URSSAF_SOCIAL_CONTRIBUTIONS_SIMULATOR_URL}
             target="_blank"
             rel="noreferrer"
-            className="mt-2 block font-medium text-primary-300 underline underline-offset-2"
+            className="editorial-inline-link mt-2 block font-medium"
           >
             {localizeFiscalSimulatorText('Simulateur officiel Urssaf', locale)}
           </a>
@@ -1059,18 +1059,16 @@ export default function SimulateurFiscalClassement() {
 
   return (
     <LocalizedContent locale={locale} translations={fiscalSimulatorEnglishTranslations}>
-      <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-paper py-10 text-ink md:py-12">
+        <div className="container-editorial">
           <div className="max-w-3xl">
-            <h1 className="mb-4 text-white">
-              Simulateur fiscal 2026 : meublé classé ou non classé
-            </h1>
-            <p className="text-base text-white/90">
+            <h1 className="mb-4 text-ink">Simulateur fiscal 2026 : meublé classé ou non classé</h1>
+            <p className="text-base text-muted">
               Comparez l’imposition estimative d’un meublé de tourisme classé et non classé au
               régime micro-BIC, à partir de vos recettes annuelles et de votre tranche marginale
               d’imposition.
             </p>
-            <p className="mt-3 text-sm text-white/80">
+            <p className="mt-3 text-sm text-muted">
               Paramètres fiscaux : revenus 2026 déclarés en 2027 · Mise à jour :{' '}
               {formatDate(new Date(Date.UTC(2026, 6, 11)), locale)}
             </p>
@@ -1078,10 +1076,10 @@ export default function SimulateurFiscalClassement() {
         </div>
       </section>
 
-      <section className="simulator-ui bg-white py-10 md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-surface py-10 md:py-12">
+        <div className="container-editorial">
           <div className="mx-auto max-w-5xl space-y-6">
-            <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
+            <div className="rounded-editorial border border-ink/15 bg-paper p-5 leading-comfortable text-muted md:p-6">
               <h2 className="mb-3 text-gray-900">Hypothèses du simulateur fiscal</h2>
               <div className="space-y-3 text-sm">
                 <p>
@@ -1103,9 +1101,7 @@ export default function SimulateurFiscalClassement() {
                 </p>
               </div>
               {locale === 'en' && (
-                <p className="mt-3 text-xs text-textLight">
-                  Official sources are available in French.
-                </p>
+                <p className="mt-3 text-xs text-muted">Official sources are available in French.</p>
               )}
             </div>
 
@@ -1153,8 +1149,8 @@ export default function SimulateurFiscalClassement() {
                           type="button"
                           className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-200 ${
                             isSelected
-                              ? 'border-primary-300 bg-primary-300 text-white'
-                              : 'border-gray-300 bg-white text-gray-700 hover:border-primary-300 hover:text-primary-300'
+                              ? 'border-ink bg-ink text-white'
+                              : 'border-ink/25 bg-white text-ink hover:border-copper hover:text-copper'
                           }`}
                           aria-pressed={isSelected}
                           onClick={() => {
@@ -1204,10 +1200,10 @@ export default function SimulateurFiscalClassement() {
                     </div>
 
                     {result.estimatedSavings !== null && lastCalculationSnapshot && (
-                      <div className="mb-6 rounded-card border border-gray-200 bg-white shadow-sm">
+                      <div className="mb-6 rounded-editorial border border-ink/15 bg-white shadow-[0_4px_16px_rgb(var(--color-ink)/0.05)]">
                         <div className="grid gap-0 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
                           <div className="p-5 md:p-6">
-                            <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-copper">
                               Résultat principal
                             </p>
                             <p
@@ -1282,6 +1278,7 @@ export default function SimulateurFiscalClassement() {
                     )}
 
                     <ResponsiveComparisonTable
+                      appearance="editorial"
                       caption={
                         locale === 'en'
                           ? 'Tax comparison between classified and unclassified furnished tourist accommodation'
@@ -1291,21 +1288,11 @@ export default function SimulateurFiscalClassement() {
                       rows={tableRows}
                       primaryColumnKey="metric"
                       showPrimaryColumnInMobileDetails={false}
-                      tableClassName="w-full table-fixed border-collapse rounded-card text-sm shadow-sm"
-                      desktopWrapperClassName="hidden overflow-x-auto md:block"
-                      headerRowClassName="bg-primary-300 text-white"
-                      headerCellClassName="p-3 font-semibold break-words"
-                      cellClassName="p-3 align-top break-words"
-                      mobileContainerClassName="space-y-3 md:hidden"
-                      mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
-                      mobileTitleClassName="mb-3 text-sm font-semibold text-gray-900"
-                      mobileLabelClassName="text-xs font-medium text-gray-600"
-                      mobileValueClassName="text-right text-sm text-gray-900"
                     />
 
                     <div className="mt-6 space-y-4">
                       {getFiscalWarningMessages(result, locale).length > 0 && (
-                        <div className="rounded-card border border-warning-200 bg-warning-100 p-4 text-sm text-gray-700">
+                        <div className="rounded-editorial border border-warning-200 bg-warning-100 p-4 text-sm text-gray-700">
                           {getFiscalWarningMessages(result, locale).map((warning, index) => (
                             <p key={warning} className={index > 0 ? 'mt-3' : undefined}>
                               {warning}
@@ -1315,7 +1302,7 @@ export default function SimulateurFiscalClassement() {
                       )}
                     </div>
 
-                    <p className="mt-6 text-sm text-textLight">
+                    <p className="mt-6 text-sm text-muted">
                       Cette simulation est fournie à titre indicatif. Elle ne remplace pas un avis
                       fiscal ou comptable personnalisé.
                     </p>
@@ -1349,7 +1336,7 @@ export default function SimulateurFiscalClassement() {
                   </Card>
                 )}
 
-                <div className="mb-8 mt-8 rounded-card border border-primary-200 bg-primary-100 p-5 md:p-6">
+                <div className="mb-8 mt-8 rounded-editorial border border-ink/15 bg-paper p-5 md:p-6">
                   <h2 className="mb-3">Le classement intervient aussi dans la taxe de séjour</h2>
                   <p className="mb-5 text-sm text-gray-700">
                     Au-delà de la fiscalité, le classement peut aussi modifier le mode de calcul de

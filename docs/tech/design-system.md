@@ -88,6 +88,7 @@ CTA final sur fond sombre :
 
 - **ETOILYS-395** : socle premium, pages cœur, Home/Dordogne harmonisées, amorce des enveloppes de formulaires via `editorial-form`.
 - **ETOILYS-396** : terminer les formulaires et simulateurs. Ne pas leur imposer la densité visuelle d'une landing page ; préserver leurs exigences d'état, validation, API, Turnstile et accessibilité.
+- **ETOILYS-396** couvre aussi les états transverses des outils interactifs : `Toast`, enveloppe Turnstile, combobox/listbox, dialogs, tabs et comparatifs. Les états succès, avertissement et erreur restent sémantiques ; les usages décoratifs ou de marque migrent vers `ink`, `paper`, `surface` et `copper`.
 - **ETOILYS-398** : industrialiser les compositions locales, pricing et pages départementales encore spécifiques. Elles doivent consommer les primitives 395 au lieu de recréer des équivalents `.dd-*`.
 
 ## Compte Rendu Daté Des Validations

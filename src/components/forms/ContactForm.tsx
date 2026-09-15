@@ -225,13 +225,13 @@ export default function ContactForm({
       <h3 className="text-3xl text-ink mb-6">{displayedTitle}</h3>
 
       {isSuccess && (
-        <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
+        <div className="mb-6 rounded-editorial border border-success-200 bg-success-100 p-4 text-success-500">
           {displayedSuccessMessage}
         </div>
       )}
 
       {submitError && (
-        <div className="mb-6 p-4 bg-alert-100 border border-alert-200 rounded-lg text-alert-500">
+        <div className="mb-6 rounded-editorial border border-alert-200 bg-alert-100 p-4 text-alert-500">
           {submitError}
         </div>
       )}

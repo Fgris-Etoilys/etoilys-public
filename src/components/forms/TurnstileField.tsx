@@ -159,10 +159,12 @@ export default function TurnstileField({
   }, [resetKey, onTokenChange]);
 
   return (
-    <div className="w-full">
-      <div ref={containerRef} />
+    <div className="w-full rounded-editorial border border-ink/15 bg-paper p-4">
+      <div ref={containerRef} className="min-h-[65px]" />
       {(error || localError) && (
-        <p className="mt-2 text-sm text-alert-400">{error || localError}</p>
+        <p className="mt-2 text-sm text-alert-400" role="alert">
+          {error || localError}
+        </p>
       )}
     </div>
   );
