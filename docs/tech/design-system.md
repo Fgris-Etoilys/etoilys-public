@@ -1,59 +1,107 @@
 # Socle visuel du site public
 
-Le socle ETOILYS-394 reprend la direction Dordogne. Les composants partagés utilisent cette apparence par défaut, sans option de thème ni condition de route.
+Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et à la page Dordogne. La page Dordogne du commit `913becf` reste la référence visuelle de la direction artistique ; l'implémentation courante du spike reste la référence d'architecture et d'API.
 
-## Tokens et primitives
+## Mode D'Emploi Durable
 
-- Les variables `--color-*` de `src/index.css` définissent les couleurs. Tailwind expose `ink`, `muted`, `paper`, `surface`, `surface-neutral`, `surface-warm`, `surface-sage`, `copper`, `ink-hover` et `surface-hover`, avec les modificateurs d’opacité habituels.
-- `rounded-control` (4 px) et `rounded-editorial` (6 px) servent aux boutons et cartes/champs. Les anciens tokens restent disponibles pour les pages encore à migrer.
-- Les tons `surface-neutral`, `surface-warm` et `surface-sage` portent les nuances éditoriales Dordogne pour les sections zone d’intervention, process/timeline et expertise, sans token nommé par route.
-- `container-editorial` reprend la largeur Dordogne : 1240 px maximum, marges de 48 px, 32 px jusqu’à 1150 px et 20 px jusqu’à 680 px. `container-adaptive` reste disponible pour les mises en page existantes.
-- `editorial-heading`, `editorial-section` et `editorial-link` exposent les styles éditoriaux. Les titres des pages existantes ne sont pas redimensionnés globalement.
-- `ui-focus` fournit le focus clavier cuivre. `ui-field` et `ui-field-error` regroupent les styles des champs et de leurs erreurs.
+### Tokens Et Cadre
 
-## Composants et shell
+- Les variables `--color-*` de `src/index.css` définissent la palette. Tailwind expose `ink`, `muted`, `paper`, `surface`, `surface-neutral`, `surface-warm`, `surface-sage`, `copper`, `ink-hover` et `surface-hover`.
+- `container-editorial` fixe la largeur éditoriale commune : 1240 px maximum, marges de 48 px, 32 px jusqu'à 1150 px et 20 px jusqu'à 680 px.
+- `editorial-heading`, `editorial-title`, `editorial-link`, `editorial-inline-link`, `editorial-section` et les tons de surface sont des primitives partagées, pas des variantes de route.
+- Le focus cuivre reste le comportement par défaut sur fond clair. Les surfaces `ink` utilisent `editorial-focus-inverse`, avec un contour `paper`. Les champs en erreur gardent leurs styles `ui-field-error`.
+- `Button` conserve ses variantes, tailles, navigation et événements analytics. Pour changer le rendu d'un CTA, ajouter une classe contextuelle partagée sans changer `variant`, `href` ni le libellé analytics dérivé.
 
-`Button` conserve ses variantes, tailles, navigation et événements analytics. Les dimensions des CTA Dordogne sont portées par les primitives partagées. `Card` n’est plus déplacée au survol.
+### Besoin → Composant → Règle D'Usage
 
-Les champs conservent leurs propriétés et les attributs ARIA fournis par leurs appelants. Leurs labels et messages sont associés en interne ; les formulaires n’ont pas besoin de modifier leurs usages.
+| Besoin                       | Composant ou classe                                | Règle d'usage                                                                                                                                             |
+| ---------------------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hero textuel                 | `PageHero` sans `media`                            | Utiliser pour les pages cœur simples. Le SEO reste centralisé dans `Layout`, pas dans la page.                                                            |
+| Hero compact                 | `PageHero size="compact"`                          | Utiliser pour les pages denses comme FAQ, Prérequis ou Procédure.                                                                                         |
+| Hero avec visuel             | `PageHero` + `EditorialHeroMedia`                  | Réserver aux compositions éditoriales fortes. Garder le slot `media`, les crops via `imageClassName`, et l'image LCP via `SmartImage`.                    |
+| Note de classement           | `ClassificationHeroNote`                           | API actuelle : `lead`, `title`, `caption`. Sert au cartouche commun Home/Dordogne, sans dictionnaire local dans `Home.tsx`.                               |
+| Réassurance hero             | `HeroReassurance`                                  | Liste courte, verticale, coche cuivre, contenu passé par la page.                                                                                         |
+| Navigation de section        | `SectionNav`, ancres, `editorial-anchor`           | Les liens pointent vers des `id` existants. Le décalage sous header passe par `scroll-margin-top` et `--etoilys-header-height`.                           |
+| Trois preuves                | `ProofStrip`                                       | Toujours trois preuves. Fond `paper` dans la primitive, proportions Dordogne, valeur `5` lisible par les lecteurs d'écran.                                |
+| Timeline horizontale         | `Timeline layout="horizontal"`                     | Trois étapes, colonnes dès 681 px, stack compact sous 680 px. Utilisée Home/Dordogne.                                                                     |
+| Timeline verticale           | `Timeline` par défaut                              | Garder pour les procédures détaillées ou parcours longs, sans reprendre le rendu horizontal.                                                              |
+| Carte bénéfice               | `FeatureCard`                                      | Densité Dordogne par défaut, lien aligné en bas. Ne pas ajouter de variante locale pour Home/Dordogne.                                                    |
+| Grille de cartes             | `editorial-feature-grid`                           | Grille de trois cartes bénéfices, gap 22 px desktop, 14 px tablette, une colonne mobile.                                                                  |
+| FAQ et listes repliables     | `Accordion`                                        | Single-open, `hidden`, ARIA via `useId`. `density="compact"` reprend la FAQ Dordogne.                                                                     |
+| CTA final                    | `PageCta`                                          | Fond `ink`, focus inverse. `density="compact"` pour la composition Dordogne. Les boutons gardent leurs variantes analytics.                               |
+| Tableau comparatif éditorial | `ResponsiveComparisonTable appearance="editorial"` | Utiliser explicitement l'apparence éditoriale quand le tableau appartient à une page éditoriale. Ce n'est pas encore le défaut global.                    |
+| Split éditorial              | `editorial-split`                                  | Deux colonnes texte/contenu pour introductions et comparaisons, sans card imbriquée.                                                                      |
+| Faits clés                   | `editorial-facts`                                  | Liste de chiffres ou statuts courts en `dl`, avec séparation horizontale.                                                                                 |
+| Notice éditoriale            | `editorial-notice`                                 | Bloc d'attention neutre, bord cuivre.                                                                                                                     |
+| Résultat favorable           | `editorial-positive`                               | Bloc positif, fond `ink/5`, libellé explicite.                                                                                                            |
+| Formulaire éditorial         | `editorial-form`                                   | Enveloppe légère pour les formulaires cœur. Ne pas imposer une densité landing page aux formulaires et simulateurs.                                       |
+| Liens inline                 | `editorial-inline-link`                            | Pour les liens dans les paragraphes. Garde le focus clavier et l'underline lisible.                                                                       |
+| Liens d'action               | `editorial-link`                                   | Pour les actions secondaires éditoriales avec icône, notamment dans les blocs expertise et procédure.                                                     |
+| Bouton inversé               | `editorial-inverse-button`                         | À combiner avec une variante `Button` existante sur fond sombre. Ne change pas l'analytics.                                                               |
+| Focus fond clair/sombre      | `ui-focus`, `editorial-focus-inverse`              | `ui-focus` donne le cuivre sur clair. `editorial-focus-inverse` donne le contour `paper` sur `ink`. Les règles locales Dordogne ne doivent pas l'écraser. |
 
-Le Header et le Footer sont uniques. Le Footer utilise les contenus FR/EN/NL de `layoutContent`. Le lien d’évitement cible `main-content` ; le décalage du contenu et du menu mobile utilise la hauteur mesurée du Header.
+### Exemples Courts
 
-## Migration suivante
+Hero éditorial Home/Dordogne :
 
-### Pages cœur métier — ETOILYS-395
+```tsx
+<PageHero
+  eyebrow={content.hero.eyebrow}
+  eyebrowMarked
+  title={...}
+  description={content.hero.description}
+  media={
+    <EditorialHeroMedia
+      assetKey="homeHero"
+      alt={content.hero.imageAlt}
+      note={<ClassificationHeroNote {...content.hero.photoNote} />}
+    />
+  }
+/>
+```
 
-La Home, Classement, Avantages, Prérequis, Procédure et FAQ utilisent le socle éditorial dans leurs variantes FR/EN/NL. Cette migration part directement d’ETOILYS-394, sans attendre le framework local V6 d’ETOILYS-398. La page Dordogne de `913becf` reste la référence visuelle de la direction artistique : les primitives partagées conservent désormais sa finesse plutôt que des variantes locales.
+Timeline courte Home/Dordogne :
 
-- `PageHero` reste le shell de hero. Il accepte un slot `media`, un surtitre, `eyebrowMarked` pour le point cuivre des heroes Home/Dordogne, et des enfants pour les CTA, réassurances ou sommaires. Il ne porte pas de logique locale ou métier.
-- `EditorialHeroMedia` porte la géométrie photo partagée issue de Dordogne : grand arrondi supérieur gauche, autres coins discrets, caption optionnelle, note superposée et index décoratif optionnel. Les crops restent passés par `imageClassName`.
-- `ClassificationHeroNote` unifie le cartouche “1 à 5 étoiles” de la Home et de Dordogne avec une hiérarchie `lead`, `title`, `caption`, la mini-card chaude et l’overlay issus de `913becf`. `HeroReassurance` reprend par défaut l’ancien motif Dordogne : liste verticale, 12 px, espacement court et coche cuivre.
-- `ProofStrip` unifie les bandeaux de preuves Home/Dordogne sur les proportions de l’ancien Dordogne : colonnes `1fr / .8fr / 1fr` sur desktop, premier item pleine largeur puis deux colonnes sur mobile, icône ou grande valeur Playfair lisible par les lecteurs d’écran.
-- `PageCta` compose un texte et une colonne d’actions sur fond `ink`, empilés sur mobile. Il accepte `eyebrow` et `density="compact"` pour retrouver la densité du CTA final Dordogne sans CSS local. `editorial-inverse-button` donne une surface ivoire au CTA final Dordogne tout en conservant `Button variant="primary"` et donc l’identifiant analytics historique.
-- `editorial-title` complète la typographie des héros. `editorial-inline-link` conserve le flux des liens dans les paragraphes et leur focus clavier. `editorial-inverse-button` adapte un bouton secondaire au fond sombre sans changer sa variante, utilisée dans son identifiant analytics.
-- `FeatureCard`, `Timeline`, `Accordion` et `ArticleCard` utilisent la palette partagée. `FeatureCard` reprend par défaut la densité exacte des anciennes cartes bénéfices Dordogne, liens bas inclus, sans variante locale : desktop validé à 30 px / titre 21 px, 681-899 px à 22 px / titre 18 px, mobile à 26 px / titre 18 px. `Timeline layout="horizontal"` reprend le rendu `913becf` dès 681 px : colonnes égales, numéros Playfair vert-gris et séparateurs fins, puis stack vertical compact sous 680 px. Les autres consommateurs (Home, Avantages, pages départementales et Recrutement) reçoivent aussi cette apparence.
-- Les accordéons gardent un seul panneau ouvert par groupe. Les réponses restent montées dans le DOM ; `hidden` retire les panneaux fermés de l’affichage, de l’arbre d’accessibilité et du parcours clavier. Les associations ARIA utilisent `useId` et l’index ; Enter/Espace restent gérés nativement par les boutons. `density="compact"` sert uniquement à reprendre la densité FAQ Dordogne dans la primitive partagée.
-- Les avertissements éditoriaux emploient le cuivre, les résultats favorables un fond `ink/5`, avec des libellés explicites. Les erreurs de formulaire gardent leur sémantique d’alerte. Les routes, chiffres métier, variantes analytics et image LCP restent conservés.
+```tsx
+<Timeline
+  layout="horizontal"
+  steps={content.procedure.steps.map((step, index) => ({ ...step, number: index + 1 }))}
+/>
+```
 
-Les tests ciblés sont `src/components/ui/Accordion.test.tsx` et `src/test/core-pages.test.tsx`. Contrôler les 18 routes à 390, 768, 1024 et 1440 px, ainsi que les consommateurs partagés. Pour une validation i18n locale ou de preview, définir `I18N_RELEASE_BASE_URL` sur l’environnement contenant le build à vérifier. Le typecheck exécuté par `build:seo` suffit, sans relance après ce build.
+CTA final sur fond sombre :
 
-Lors du contrôle de référence ETOILYS-395 sur `913becf`, l’erreur d’hydratation React #418 déjà documentée ci-dessous est également reproduite sur les pages cœur métier FR/EN/NL. Elle préexiste à cette migration.
+```tsx
+<PageCta title={content.finalCta.title} description={content.finalCta.description}>
+  <Button
+    href={content.finalCta.cta.href}
+    variant="primary"
+    size="lg"
+    className="editorial-inverse-button editorial-hero-cta"
+  >
+    {content.finalCta.cta.label}
+  </Button>
+</PageCta>
+```
 
-### Pages locales et formulaires
+## Frontières De Migration
 
-Les règles `.dd-*` restantes sont réservées aux compositions vraiment locales : pricing, service area, tarif par commune et ajustements de section territoriale. La variante `isDordogne` du pricing, le framework des pages locales, les secteurs/communes, les configs départementales et le pricing par commune restent explicitement délégués à **ETOILYS-398**. Ne pas ajouter de nouvelle exception de route. La migration des formulaires/simulateurs relève d’ETOILYS-396.
+- **ETOILYS-395** : socle premium, pages cœur, Home/Dordogne harmonisées, amorce des enveloppes de formulaires via `editorial-form`.
+- **ETOILYS-396** : terminer les formulaires et simulateurs. Ne pas leur imposer la densité visuelle d'une landing page ; préserver leurs exigences d'état, validation, API, Turnstile et accessibilité.
+- **ETOILYS-398** : industrialiser les compositions locales, pricing et pages départementales encore spécifiques. Elles doivent consommer les primitives 395 au lieu de recréer des équivalents `.dd-*`.
 
-## Validation
+## Compte Rendu Daté Des Validations
 
-Passe post-review ETOILYS-395 sur `spike/ETOILYS-395-premium-polish`. Le hash exact du commit final est communiqué dans le rapport de livraison : l'écrire ici avant commit modifierait ce hash.
+### 2026-09-15 - Passe ETOILYS-395
 
-Résultats réels de cette passe :
+- `npm.cmd run typecheck` : OK sur les passes successives du spike.
+- Les validations élargies déjà exécutées pendant la passe post-review incluaient lint et tests ciblés, avec l'avertissement préexistant `src/pages/SimulationClassement.tsx:970 react-hooks/exhaustive-deps`.
+- Les tests ciblés historiques couvraient notamment `Accordion`, `ProofStrip`, `core-pages` et le layout Dordogne.
+- Certains suivis ont été limités à `typecheck` à la demande explicite ; dans ces cas, Playwright, `build:seo`, `verify:i18n-release` et la suite complète n'ont pas été relancés.
 
-- `npm.cmd run lint` : OK, avec l'avertissement préexistant `src/pages/SimulationClassement.tsx:970 react-hooks/exhaustive-deps`.
-- `npm.cmd run typecheck` : OK.
-- Tests ciblés : `npx.cmd vitest run src/components/layout/DordogneLayout.test.tsx src/test/core-pages.test.tsx src/components/ui/Accordion.test.tsx src/components/ui/ProofStrip.test.tsx` : OK, 4 fichiers / 43 tests.
-- Re-test ciblé après correction TypeScript : `npx.cmd vitest run src/components/layout/DordogneLayout.test.tsx` : OK, 1 fichier / 3 tests.
-- Follow-up Home ProofStrip : `npm.cmd run typecheck` OK, `npx.cmd vitest run src/test/core-pages.test.tsx` OK, 1 fichier / 36 tests, puis `npm.cmd run lint` OK avec le même avertissement préexistant.
-- Non relancés à la demande : `npm run test:run`, `npm run build:seo`, Playwright et `verify:i18n-release`.
+### Points À Surveiller
 
-Les tests Dordogne couvrent le comportement single-open de l'Accordion, le CTA hero blanc, la valeur lisible de `ProofStrip`, et les deux CTA Dordogne vers `/demande-classement` avec `cta_primary_demande_classement`. Les fichiers modifiés ont été vérifiés en UTF-8 sans BOM ni mojibake avant livraison.
+- Le fallback 404 reste `noindex,follow`.
+- Les routes actives doivent rester couvertes par `src/content/seoRoutes.ts`.
+- Les images critiques doivent continuer à passer par `SmartImage` et le manifeste d'images.
+- La page Dordogne `913becf` guide la finesse visuelle, mais les composants restaurés doivent vivre dans les primitives partagées, pas dans de nouveaux forks locaux.

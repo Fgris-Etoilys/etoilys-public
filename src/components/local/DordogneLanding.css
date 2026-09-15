@@ -8,7 +8,10 @@
     scroll-behavior: auto;
   }
 }
-.dd-landing :is(a, button, input, summary):not(.ui-field-error):focus-visible {
+.dd-landing
+  :is(a, button, input, summary):not(.ui-field-error):not(
+    .editorial-focus-inverse *
+  ):focus-visible {
   outline: 3px solid rgb(var(--color-copper));
   outline-offset: 5px;
   box-shadow: none;

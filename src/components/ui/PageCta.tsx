@@ -17,8 +17,8 @@ export default function PageCta({
 }: PageCtaProps) {
   const sectionClassName =
     density === 'compact'
-      ? 'editorial-cta-compact bg-ink py-[70px] text-white max-[680px]:py-12'
-      : 'editorial-section bg-ink text-white';
+      ? 'editorial-focus-inverse editorial-cta-compact bg-ink py-[70px] text-white max-[680px]:py-12'
+      : 'editorial-focus-inverse editorial-section bg-ink text-white';
   const titleClassName =
     density === 'compact'
       ? 'editorial-heading mb-[22px] text-[clamp(32px,3.3vw,45px)] text-white max-[680px]:text-[34px]'

@@ -325,7 +325,7 @@ export const homePageContent = {
           icon: 'calculator',
           title: 'Tools to prepare your inspection',
           description:
-            'Our simulator helps you estimate the target category and identify the points to prepare.',
+            'Our requirements guide helps you identify the points to check before requesting an inspection.',
           link: {
             label: 'Check the requirements',
             href: '/en/classification-requirements',
@@ -522,7 +522,7 @@ export const homePageContent = {
           icon: 'calculator',
           title: 'Hulpmiddelen om uw bezoek voor te bereiden',
           description:
-            'Onze simulator helpt u de beoogde categorie in te schatten en de aandachtspunten voor te bereiden.',
+            'Onze gids met voorwaarden helpt u de aandachtspunten te controleren voordat u een inspectie aanvraagt.',
           link: {
             label: 'De voorwaarden bekijken',
             href: '/nl/voorwaarden-classificatie-vakantiewoning',

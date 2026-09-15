@@ -204,6 +204,12 @@
     box-shadow: none;
   }
 
+  .editorial-focus-inverse :is(.ui-focus, a, button):not(.ui-field-error):focus-visible {
+    outline: 3px solid rgb(var(--color-paper));
+    outline-offset: 5px;
+    box-shadow: none;
+  }
+
   .site-header button[aria-expanded='true'],
   #site-mobile-menu button[aria-expanded='true'] {
     color: rgb(var(--color-copper));
