@@ -155,7 +155,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="dd-expertise bg-surface-sage">
+      <section className="editorial-expertise-section bg-surface-sage">
         <div className="container-editorial editorial-media-split">
           <div className="editorial-expertise-photo">
             <SmartImage
@@ -169,7 +169,7 @@ export default function Home() {
             <p className="editorial-eyebrow mb-4">{content.features.eyebrow}</p>
             <h2 className="editorial-heading text-ink">{content.features.title}</h2>
             <p className="mb-8 text-muted leading-comfortable">{content.features.description}</p>
-            <ul className="dd-expertise-arguments">
+            <ul className="editorial-expertise-arguments">
               {content.features.items.map((feature) => {
                 const Icon = homeFeatureIcons[feature.icon];
                 return (
@@ -190,9 +190,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-paper py-[75px] max-[680px]:py-[50px]">
+      <section className="editorial-process-section bg-paper">
         <div className="container-editorial">
-          <div className="dd-process-heading">
+          <div className="editorial-process-heading">
             <div>
               <p className="editorial-eyebrow">{content.procedure.eyebrow}</p>
               <h2 className="editorial-heading text-ink">{content.procedure.title}</h2>
@@ -275,7 +275,7 @@ export default function Home() {
       <PageCta title={content.finalCta.title} description={content.finalCta.description}>
         <Button
           href={content.finalCta.cta.href}
-          variant="primary"
+          variant="secondary"
           size="lg"
           className="editorial-inverse-button editorial-hero-cta"
         >

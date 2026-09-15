@@ -147,4 +147,19 @@ describe('core pages', () => {
 
     expect(container.querySelector('#reconnaissance')).not.toBeNull();
   });
+
+  it.each([
+    ['/en', '/en/classification-requirements'],
+    ['/nl', '/nl/voorwaarden-classificatie-vakantiewoning'],
+  ])('links Home tools feature to requirements on %s', (pathname, href) => {
+    const { container } = render(
+      <MemoryRouter initialEntries={[pathname]}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+    const tools = container.querySelector('.editorial-expertise-section');
+    expect(tools).not.toBeNull();
+    if (!tools) throw new Error('Missing Home tools section');
+    expect(tools.querySelector(`a[href="${href}"]`)).not.toBeNull();
+  });
 });

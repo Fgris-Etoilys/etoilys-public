@@ -326,9 +326,13 @@ export default function ClassementDordogne() {
         )}
       </section>
 
-      <section id="etapes" className="dd-process" aria-labelledby="dd-process-title">
+      <section
+        id="etapes"
+        className="editorial-process-section dd-process"
+        aria-labelledby="dd-process-title"
+      >
         <div className="container-editorial">
-          <div className="dd-process-heading">
+          <div className="editorial-process-heading">
             <div>
               <p className="editorial-eyebrow">DE LA DEMANDE AUX ÉTOILES</p>
               <h2 className="editorial-heading" id="dd-process-title">
@@ -347,7 +351,10 @@ export default function ClassementDordogne() {
         </div>
       </section>
 
-      <section className="dd-expertise bg-surface-sage" aria-labelledby="dd-expertise-title">
+      <section
+        className="editorial-expertise-section bg-surface-sage"
+        aria-labelledby="dd-expertise-title"
+      >
         <div className="container-editorial editorial-media-split">
           <figure className="editorial-expertise-photo dd-stone-photo">
             <SmartImage
@@ -362,7 +369,7 @@ export default function ClassementDordogne() {
             <h2 className="editorial-heading" id="dd-expertise-title">
               Pourquoi choisir Etoilys pour votre classement ?
             </h2>
-            <ul className="dd-expertise-arguments">
+            <ul className="editorial-expertise-arguments">
               <li>
                 <Star size={23} strokeWidth={1.4} aria-hidden="true" />
                 <div>
