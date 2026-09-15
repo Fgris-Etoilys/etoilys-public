@@ -220,22 +220,22 @@ export const homePageContent = {
     },
     procedure: {
       eyebrow: 'De la demande aux étoiles',
-      title: 'Une procédure simple et rapide',
+      title: 'Votre classement en trois étapes',
       steps: [
         {
-          title: 'Vous déposez votre demande',
+          title: 'Vous nous parlez de votre logement.',
           description:
-            'La démarche est simple : vous déposez votre demande, puis un inspecteur vous contacte sous 24 heures pour vérifier les informations utiles et organiser la visite selon vos disponibilités.',
+            'Envoyez vos coordonnées et l’adresse du meublé. Nous vous rappelons sous 24 h ouvrées pour préciser votre projet.',
         },
         {
-          title: 'Nous réalisons la visite',
+          title: 'Nous préparons la visite ensemble.',
           description:
-            'La visite se déroule à votre logement, sur rendez-vous, à une date qui vous convient.',
+            'Nous confirmons le tarif et les modalités, puis convenons d’une date. La visite a lieu en moyenne sous deux semaines.',
         },
         {
-          title: 'Vous recevez votre proposition',
+          title: 'Votre logement est évalué sur place.',
           description:
-            "Sous 7 jours suivant la visite, vous recevez une proposition de classement en étoiles, que vous êtes libre d'accepter ou de refuser.",
+            'Après le contrôle selon la grille officielle, vous recevez sous 7 jours les documents et la proposition de classement.',
         },
       ],
       cta: {
@@ -384,23 +384,23 @@ export const homePageContent = {
       },
     },
     procedure: {
-      eyebrow: 'From your request to your stars',
-      title: 'A simple and fast procedure',
+      eyebrow: 'From request to stars',
+      title: 'Your classification in three steps',
       steps: [
         {
-          title: 'You submit your request',
+          title: 'You tell us about your property.',
           description:
-            'The process is simple: you submit your request, then an inspector contacts you within 24 hours to check the useful information and organize the visit according to your availability.',
+            'Send us your contact details and the address of the furnished accommodation. We call you back within 24 business hours to clarify your project.',
         },
         {
-          title: 'We inspect your property',
+          title: 'We prepare the inspection together.',
           description:
-            'The visit takes place at your accommodation, by appointment, on a date that suits you.',
+            'We confirm the price and practical details, then agree on a date. The inspection usually takes place within two weeks.',
         },
         {
-          title: 'You receive your proposal',
+          title: 'Your accommodation is assessed on site.',
           description:
-            'Within 7 days after the visit, you receive a star classification proposal, which you are free to accept or refuse.',
+            'After the inspection using the official framework, you receive the documents and classification proposal within 7 days.',
         },
       ],
       cta: {
@@ -583,23 +583,23 @@ export const homePageContent = {
       },
     },
     procedure: {
-      eyebrow: 'Van uw aanvraag tot uw sterren',
-      title: 'Een eenvoudige en snelle procedure',
+      eyebrow: 'Van aanvraag tot sterren',
+      title: 'Uw classificatie in drie stappen',
       steps: [
         {
-          title: 'U dient uw aanvraag in',
+          title: 'U vertelt ons over uw woning.',
           description:
-            'De procedure is eenvoudig: u dient uw aanvraag in, waarna een inspecteur binnen 24 uur contact met u opneemt om de nuttige informatie te controleren en het bezoek volgens uw beschikbaarheid te organiseren.',
+            'Stuur uw contactgegevens en het adres van de vakantiewoning. Wij bellen u binnen 24 werkuren terug om uw project te verduidelijken.',
         },
         {
-          title: 'Wij inspecteren uw woning',
+          title: 'Wij bereiden het bezoek samen voor.',
           description:
-            'Het bezoek vindt op afspraak plaats in de woning, op een datum die met u wordt afgestemd.',
+            'Wij bevestigen het tarief en de praktische modaliteiten, en spreken daarna een datum af. Het bezoek vindt gemiddeld binnen twee weken plaats.',
         },
         {
-          title: 'U ontvangt uw voorstel',
+          title: 'Uw woning wordt ter plaatse beoordeeld.',
           description:
-            'Binnen 7 dagen na het bezoek ontvangt u een voorstel voor sterrenclassificatie, dat u vrij kunt accepteren of weigeren.',
+            'Na de controle volgens het officiële beoordelingskader ontvangt u binnen 7 dagen de documenten en het classificatievoorstel.',
         },
       ],
       cta: {

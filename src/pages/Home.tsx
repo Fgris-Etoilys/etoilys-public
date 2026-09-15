@@ -6,6 +6,7 @@ import {
   Calculator,
   Users,
   Globe,
+  ArrowRight,
   ArrowUpRight,
   type LucideIcon,
 } from 'lucide-react';
@@ -40,11 +41,11 @@ const homeFeatureIcons = {
 } as const satisfies Record<HomeIconKey, LucideIcon>;
 
 function renderFeatureLink(link: NonNullable<HomeFeature['link']>) {
-  const className = 'editorial-link ui-focus inline-flex items-center gap-2 text-sm';
+  const className = 'editorial-link ui-focus';
   const label = (
     <>
       {link.label}
-      <ArrowUpRight size={14} className="shrink-0" aria-hidden="true" />
+      <ArrowUpRight size={17} className="shrink-0" aria-hidden="true" />
     </>
   );
 
@@ -154,7 +155,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="editorial-section bg-surface-sage">
+      <section className="dd-expertise bg-surface-sage">
         <div className="container-editorial editorial-media-split">
           <div className="editorial-expertise-photo">
             <SmartImage
@@ -166,24 +167,17 @@ export default function Home() {
           </div>
           <div>
             <p className="editorial-eyebrow mb-4">{content.features.eyebrow}</p>
-            <h2 className="editorial-heading text-ink mb-5">{content.features.title}</h2>
+            <h2 className="editorial-heading text-ink">{content.features.title}</h2>
             <p className="mb-8 text-muted leading-comfortable">{content.features.description}</p>
-            <ul className="space-y-7">
+            <ul className="dd-expertise-arguments">
               {content.features.items.map((feature) => {
                 const Icon = homeFeatureIcons[feature.icon];
                 return (
-                  <li key={feature.title} className="flex gap-4">
-                    <Icon
-                      size={24}
-                      strokeWidth={1.4}
-                      className="mt-1 shrink-0 text-copper"
-                      aria-hidden="true"
-                    />
+                  <li key={feature.title}>
+                    <Icon size={23} strokeWidth={1.4} aria-hidden="true" />
                     <div>
-                      <h3 className="mb-2 font-roboto text-lg font-semibold leading-snug text-ink">
-                        {feature.title}
-                      </h3>
-                      <p className="text-muted leading-comfortable">{feature.description}</p>
+                      <h3>{feature.title}</h3>
+                      <p>{feature.description}</p>
                       {feature.link && (
                         <div className="mt-3">{renderFeatureLink(feature.link)}</div>
                       )}
@@ -196,16 +190,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="editorial-section bg-surface-warm">
+      <section className="bg-paper py-[75px] max-[680px]:py-[50px]">
         <div className="container-editorial">
-          <div className="mb-10 flex flex-col items-start gap-6 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-            <div className="max-w-2xl">
-              <p className="editorial-eyebrow mb-4">{content.procedure.eyebrow}</p>
+          <div className="dd-process-heading">
+            <div>
+              <p className="editorial-eyebrow">{content.procedure.eyebrow}</p>
               <h2 className="editorial-heading text-ink">{content.procedure.title}</h2>
             </div>
-            <Button href={content.procedure.cta.href} variant="primary" className="shrink-0">
-              {content.procedure.cta.label}
-            </Button>
+            <Link to={content.procedure.cta.href} className="editorial-link ui-focus">
+              {content.procedure.cta.label} <ArrowUpRight size={17} aria-hidden="true" />
+            </Link>
           </div>
           <Timeline
             layout="horizontal"
@@ -281,11 +275,11 @@ export default function Home() {
       <PageCta title={content.finalCta.title} description={content.finalCta.description}>
         <Button
           href={content.finalCta.cta.href}
-          variant="secondary"
+          variant="primary"
           size="lg"
-          className="editorial-inverse-button"
+          className="editorial-inverse-button editorial-hero-cta"
         >
-          {content.finalCta.cta.label}
+          {content.finalCta.cta.label} <ArrowRight size={20} aria-hidden="true" />
         </Button>
       </PageCta>
     </>
