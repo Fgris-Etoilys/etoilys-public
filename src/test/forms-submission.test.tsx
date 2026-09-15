@@ -118,6 +118,7 @@ describe('localized form submissions', () => {
     fireEvent.click(screen.getByRole('button', { name: /envoyer mon message/i }));
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
+    expect(await screen.findByRole('status')).toBeVisible();
 
     expect(getLastFetchBody()).toMatchObject({
       nom: 'Jane Doe',
@@ -272,6 +273,7 @@ describe('localized form submissions', () => {
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
     expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'first-turnstile-token' });
+    expect(await screen.findByRole('alert')).toBeVisible();
     await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
 
     fireEvent.click(submitButton);
@@ -489,6 +491,7 @@ describe('localized form submissions', () => {
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
     expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'first-turnstile-token' });
+    expect(await screen.findByRole('alert')).toBeVisible();
     await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
 
     fireEvent.click(submitButton);
@@ -528,6 +531,7 @@ describe('localized form submissions', () => {
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
     await waitFor(() => expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1));
+    expect(await screen.findByRole('status')).toBeVisible();
     expect(await screen.findByText(/envoyée avec succès/i)).toBeVisible();
   });
 

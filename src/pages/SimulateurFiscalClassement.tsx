@@ -1140,14 +1140,18 @@ export default function SimulateurFiscalClassement() {
                     </span>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div
+                    className="flex flex-wrap gap-2"
+                    role="group"
+                    aria-describedby={errors.tmiRate ? 'tmi-rate-error' : undefined}
+                  >
                     {ALLOWED_TMI_RATES.map((rate) => {
                       const isSelected = selectedTmiRate === rate;
                       return (
                         <button
                           key={rate}
                           type="button"
-                          className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-200 ${
+                          className={`ui-focus rounded-full border px-4 py-2 text-sm font-medium transition-colors duration-200 ${
                             isSelected
                               ? 'border-ink bg-ink text-white'
                               : 'border-ink/25 bg-white text-ink hover:border-copper hover:text-copper'
@@ -1168,7 +1172,9 @@ export default function SimulateurFiscalClassement() {
                   </div>
 
                   {errors.tmiRate && (
-                    <p className="mt-2 text-sm text-alert-400">{errors.tmiRate}</p>
+                    <p id="tmi-rate-error" className="mt-2 text-sm text-alert-400">
+                      {errors.tmiRate}
+                    </p>
                   )}
                 </div>
 

@@ -1651,10 +1651,14 @@ export default function SimulateurTaxeSejour() {
               {!isLoading && !loadingError && (
                 <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                   <div className="relative max-w-2xl">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="city-input"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
                       Commune <span className="ml-1 text-alert-400">*</span>
                     </label>
                     <input
+                      id="city-input"
                       type="text"
                       required
                       value={cityQuery}
@@ -1669,6 +1673,8 @@ export default function SimulateurTaxeSejour() {
                       aria-autocomplete="list"
                       aria-expanded={isListOpen && suggestions.length > 0}
                       aria-controls={listId}
+                      aria-invalid={errors.city ? 'true' : undefined}
+                      aria-describedby={errors.city ? 'city-error' : undefined}
                       aria-activedescendant={
                         highlightedIndex >= 0 ? `taxe-sejour-option-${highlightedIndex}` : undefined
                       }
@@ -1702,7 +1708,7 @@ export default function SimulateurTaxeSejour() {
                       </ul>
                     )}
                     {errors.city && (
-                      <p className="mt-2 text-sm text-alert-400" role="alert">
+                      <p id="city-error" className="mt-2 text-sm text-alert-400" role="alert">
                         {errors.city}
                       </p>
                     )}
@@ -1758,6 +1764,8 @@ export default function SimulateurTaxeSejour() {
                             inputMode="numeric"
                             placeholder="Ex. 3"
                             value={nights}
+                            aria-invalid={errors.nights ? 'true' : undefined}
+                            aria-describedby={errors.nights ? 'nights-error' : undefined}
                             onChange={(event) => {
                               trackSimulatorStartOnce();
                               setNights(event.target.value);
@@ -1768,7 +1776,11 @@ export default function SimulateurTaxeSejour() {
                             className={`ui-field ${errors.nights ? 'ui-field-error' : ''}`}
                           />
                           {errors.nights && (
-                            <p className="mt-2 text-sm text-alert-400" role="alert">
+                            <p
+                              id="nights-error"
+                              className="mt-2 text-sm text-alert-400"
+                              role="alert"
+                            >
                               {errors.nights}
                             </p>
                           )}
@@ -1844,6 +1856,10 @@ export default function SimulateurTaxeSejour() {
                                 inputMode="numeric"
                                 placeholder="Ex. 1"
                                 value={exemptedPersons}
+                                aria-invalid={errors.exemptedPersons ? 'true' : undefined}
+                                aria-describedby={
+                                  errors.exemptedPersons ? 'exempted-persons-error' : undefined
+                                }
                                 onChange={(event) => {
                                   trackSimulatorStartOnce();
                                   setExemptedPersons(event.target.value);
@@ -1856,7 +1872,11 @@ export default function SimulateurTaxeSejour() {
                                 }`}
                               />
                               {errors.exemptedPersons && (
-                                <p className="mt-2 text-sm text-alert-400" role="alert">
+                                <p
+                                  id="exempted-persons-error"
+                                  className="mt-2 text-sm text-alert-400"
+                                  role="alert"
+                                >
                                   {errors.exemptedPersons}
                                 </p>
                               )}
