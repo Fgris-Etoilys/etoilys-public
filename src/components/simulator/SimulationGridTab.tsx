@@ -235,7 +235,7 @@ function delay(ms: number): Promise<void> {
 function getCriterionStatusBadgeClassName(status: CriterionStatus | undefined): string {
   switch (status) {
     case 'OPTIONNEL':
-      return 'border-primary-200 bg-primary-100 text-primary-500';
+      return 'border-ink/15 bg-paper text-ink';
     case 'OBLIGATOIRE':
       return 'border-alert-200 bg-alert-100 text-alert-500';
     case 'ONC':
@@ -395,15 +395,15 @@ function ResultScoreCard({
   const hasReachedGoal = missingPoints === 0;
 
   return (
-    <div className="rounded-card border border-gray-200 bg-white p-5 shadow-sm">
+    <div className="rounded-editorial border border-ink/15 bg-white p-5 shadow-[0_4px_16px_rgb(var(--color-ink)/0.05)]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-textLight">{title}</p>
+          <p className="text-sm font-medium text-muted">{title}</p>
           <p className="mt-2 text-3xl font-semibold leading-none text-gray-900">
             {formatReportScore(obtained, target)}
           </p>
           {available !== undefined && (
-            <p className="mt-2 text-sm text-textLight">{formatMaximumAvailablePoints(available)}</p>
+            <p className="mt-2 text-sm text-muted">{formatMaximumAvailablePoints(available)}</p>
           )}
         </div>
         <span
@@ -444,7 +444,7 @@ function GridTableOfContents({
         </label>
         <select
           id="grid-section-select"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary-300"
+          className="ui-field text-sm"
           value={activeSectionId ?? ''}
           onChange={(event: ChangeEvent<HTMLSelectElement>) => {
             if (event.target.value) {
@@ -476,10 +476,10 @@ function GridTableOfContents({
           >
             {groups.map((group) => (
               <div key={group.chapterLabel} className="space-y-2">
-                <p className="px-2 text-xs font-semibold uppercase tracking-wide text-themePrimary-1">
+                <p className="px-2 text-xs font-semibold uppercase tracking-wide text-copper">
                   {group.chapterLabel}
                 </p>
-                <div className="ml-2 space-y-1 border-l border-primary-200 pl-3">
+                <div className="ml-2 space-y-1 border-l border-ink/15 pl-3">
                   {group.links.map((link) => {
                     const isActive = activeSectionId === link.id;
 
@@ -488,10 +488,10 @@ function GridTableOfContents({
                         key={link.id}
                         type="button"
                         aria-current={isActive ? 'true' : undefined}
-                        className={`block w-full rounded-lg px-2 py-1.5 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 ${
+                        className={`block w-full rounded-editorial px-2 py-1.5 text-left text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-copper ${
                           isActive
-                            ? 'bg-primary-100 font-semibold text-primary-500'
-                            : 'text-gray-700 hover:bg-primary-100 hover:text-primary-500'
+                            ? 'bg-paper font-semibold text-ink'
+                            : 'text-muted hover:bg-paper hover:text-ink'
                         }`}
                         onClick={() => onSectionSelect(link.id)}
                       >
@@ -533,7 +533,7 @@ function ResponseButton({
   const selectedClassNames: Record<CriterionValidationStatus, string> = {
     VALIDE: 'border-success-400 bg-success-400 text-white hover:bg-success-500',
     NON_VALIDE: 'border-alert-400 bg-alert-400 text-white hover:bg-alert-500',
-    NON_APPLICABLE: 'border-primary-300 bg-primary-300 text-white hover:bg-primary-400',
+    NON_APPLICABLE: 'border-ink bg-ink text-white hover:bg-ink-hover',
   };
   const idleClassNames: Record<CriterionValidationStatus, string> = {
     VALIDE:
@@ -541,7 +541,7 @@ function ResponseButton({
     NON_VALIDE:
       'border-gray-300 bg-white text-gray-800 hover:border-alert-200 hover:bg-alert-100 hover:text-alert-500',
     NON_APPLICABLE:
-      'border-gray-300 bg-white text-gray-800 hover:border-primary-200 hover:bg-primary-100 hover:text-primary-500',
+      'border-gray-300 bg-white text-gray-800 hover:border-ink/25 hover:bg-paper hover:text-ink',
   };
 
   return (
@@ -549,7 +549,7 @@ function ResponseButton({
       type="button"
       disabled={disabled}
       aria-pressed={selected}
-      className={`min-h-10 rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-default ${
+      className={`min-h-10 rounded-editorial border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-copper focus-visible:ring-offset-2 disabled:pointer-events-none disabled:cursor-default ${
         selected ? selectedClassNames[validation] : idleClassNames[validation]
       }`}
       onClick={onClick}
@@ -659,12 +659,12 @@ function GridCriterionCard({
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
+              <p className="text-sm font-semibold uppercase tracking-wide text-copper">
                 Critère {criterion.num_critere}
               </p>
               <button
                 type="button"
-                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-primary-200 bg-white text-primary-300 transition-colors duration-200 hover:border-primary-300 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 motion-reduce:transition-none"
+                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-editorial border border-ink/15 bg-white text-copper transition-colors duration-200 hover:border-copper hover:bg-paper focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 motion-reduce:transition-none"
                 aria-label={`Afficher l’aide du critère ${criterion.num_critere}`}
                 onClick={() => onOpenHelp(criterion)}
               >
@@ -690,7 +690,7 @@ function GridCriterionCard({
         {isSurfaceReadOnly && (
           <>
             <AutomaticCriterionStatus response={response} />
-            <p className="rounded-lg border border-primary-200 bg-primary-100 p-3 text-sm text-primary-500">
+            <p className="rounded-editorial border border-ink/15 bg-paper p-3 text-sm text-ink">
               {SURFACE_CRITERION_MESSAGE}
             </p>
           </>
@@ -731,7 +731,7 @@ function GridChapterSection({
   if (chapters.length === 0) {
     return (
       <Card hover={false} className="p-5">
-        <p className="text-sm text-textLight">Aucun critère ne correspond à votre recherche.</p>
+        <p className="text-sm text-muted">Aucun critère ne correspond à votre recherche.</p>
       </Card>
     );
   }
@@ -761,7 +761,7 @@ function GridChapterSection({
                 className="scroll-mt-28 space-y-5"
                 aria-labelledby={`section-${chapterIndex + 1}-${subChapterIndex + 1}-title`}
               >
-                <div className="border-l-4 border-primary-200 pl-3">
+                <div className="border-l-4 border-copper pl-3">
                   <h4
                     id={`section-${chapterIndex + 1}-${subChapterIndex + 1}-title`}
                     className="text-base font-semibold leading-snug text-gray-900 md:text-lg"
@@ -773,7 +773,7 @@ function GridChapterSection({
                 {subChapter.rubriques.map((rubrique) => (
                   <div key={`${subChapter.libelle}-${rubrique.libelle}`} className="space-y-3">
                     {rubrique.libelle.trim() && (
-                      <h5 className="text-sm font-semibold uppercase tracking-wide text-textLight">
+                      <h5 className="text-sm font-semibold uppercase tracking-wide text-muted">
                         {rubrique.libelle}
                       </h5>
                     )}
@@ -824,7 +824,7 @@ export function SimulationVerificationIssues({
   return (
     <div className="space-y-4">
       <div
-        className="rounded-card border border-alert-200 bg-alert-100 p-4 text-sm font-semibold text-alert-500 md:p-5"
+        className="rounded-editorial border border-alert-200 bg-alert-100 p-4 text-sm font-semibold text-alert-500 md:p-5"
         role="alert"
       >
         Un ou plusieurs problèmes ont été détectés et doivent être corrigés avant de pouvoir générer
@@ -948,12 +948,12 @@ export function SimulationResultPanel({
     <>
       <Card hover={false} className={`p-4 md:p-5 ${resultToneClassNames.shell}`}>
         <div
-          className="rounded-card border border-white/70 bg-white p-4 shadow-sm md:p-5"
+          className="rounded-editorial border border-white/70 bg-white p-4 shadow-[0_4px_16px_rgb(var(--color-ink)/0.05)] md:p-5"
           role={verdictRole}
         >
           <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
             <div className="flex min-w-0 flex-col">
-              <p className="text-sm font-semibold uppercase tracking-wide text-textLight">
+              <p className="text-sm font-semibold uppercase tracking-wide text-muted">
                 Résultat de la simulation
               </p>
               <h3 className={`mt-2 text-xl font-semibold ${resultToneClassNames.title}`}>
@@ -1004,7 +1004,7 @@ export function SimulationResultPanel({
         </div>
 
         {shouldShowDiagnostic && (
-          <div className="mt-5 rounded-card border border-warning-200 bg-white p-4 shadow-sm md:p-5">
+          <div className="mt-5 rounded-editorial border border-warning-200 bg-white p-4 shadow-sm md:p-5">
             <h4 className="text-base font-semibold text-gray-900">
               Critères obligatoires non validés
             </h4>
@@ -1034,7 +1034,7 @@ export function SimulationResultPanel({
                     className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold uppercase tracking-wide text-primary-500">
+                      <p className="text-sm font-semibold uppercase tracking-wide text-copper">
                         Critère {criterion.number}
                       </p>
                       <p className="mt-1 text-sm font-medium leading-snug text-gray-900">
@@ -1085,7 +1085,7 @@ export function SimulationResultPanel({
         </div>
       </Card>
 
-      <div className="rounded-card border border-primary-200 bg-primary-100 p-5 md:p-6">
+      <div className="rounded-editorial border border-ink/15 bg-paper p-5 md:p-6">
         <h2 className="mb-3">Prêt pour une visite officielle ?</h2>
         <p className="mb-5 text-sm text-gray-700">
           Faites votre demande en ligne et bénéficiez des avantages du classement officiel dès
@@ -1365,39 +1365,37 @@ export default function SimulationGridTab({
 
   return (
     <div id="grid-top" className="space-y-6">
-      <Card hover={false} className="border-primary-300 bg-primary-100 p-5 md:p-6">
+      <Card hover={false} className="border-ink/15 bg-paper p-5 md:p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-3xl">
-            <span className="inline-flex rounded-full border border-primary-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-500">
+            <span className="inline-flex rounded-full border border-ink/15 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-copper">
               ÉTAPE 2 — GRILLE DE CONTRÔLE
             </span>
             <h2 className="mb-3 mt-4 text-gray-900">Complétez la grille de contrôle</h2>
-            <p className="text-sm leading-comfortable text-primary-500">
+            <p className="text-sm leading-comfortable text-muted">
               Renseignez les critères de contrôle selon les équipements, services et
               caractéristiques réellement présents dans votre logement.
             </p>
-            <div className="mt-4 rounded-lg border border-primary-200 bg-[#f6fbff] p-3 text-primary-500">
+            <div className="mt-4 rounded-editorial border border-ink/15 bg-white p-3 text-ink">
               <div className="flex items-start gap-3">
-                <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-primary-300" aria-hidden="true" />
+                <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-copper" aria-hidden="true" />
                 <div>
-                  <p className="text-sm font-semibold text-primary-500">
-                    Besoin d’aide sur un critère ?
-                  </p>
-                  <p className="mt-1 text-sm leading-comfortable text-primary-500">
+                  <p className="text-sm font-semibold text-ink">Besoin d’aide sur un critère ?</p>
+                  <p className="mt-1 text-sm leading-comfortable text-muted">
                     Cliquez sur l’icône livre pour afficher des explications complémentaires.
                   </p>
                 </div>
               </div>
             </div>
             <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
-              <div className="rounded-lg border border-primary-200 bg-white p-3">
-                <dt className="font-medium text-primary-500">Critères renseignés</dt>
+              <div className="rounded-editorial border border-ink/15 bg-white p-3">
+                <dt className="font-medium text-ink">Critères renseignés</dt>
                 <dd className="mt-1 font-semibold text-gray-900">
                   {progressSummary.answeredCount} / {progressSummary.totalCount}
                 </dd>
               </div>
-              <div className="rounded-lg border border-primary-200 bg-white p-3">
-                <dt className="font-medium text-primary-500">Critères restants</dt>
+              <div className="rounded-editorial border border-ink/15 bg-white p-3">
+                <dt className="font-medium text-ink">Critères restants</dt>
                 <dd className="mt-1 font-semibold text-gray-900">
                   {progressSummary.remainingCount}
                 </dd>
@@ -1430,7 +1428,7 @@ export default function SimulationGridTab({
 
       {responseSaveErrorMessage && (
         <div
-          className="rounded-card border border-alert-200 bg-alert-100 p-4 text-sm text-alert-500"
+          className="rounded-editorial border border-alert-200 bg-alert-100 p-4 text-sm text-alert-500"
           role="alert"
           aria-live="assertive"
         >
@@ -1456,7 +1454,7 @@ export default function SimulationGridTab({
 
           {isCriterionFilterActive && (
             <div
-              className="flex flex-col gap-3 rounded-card border border-primary-200 bg-primary-100 p-4 text-sm text-primary-500 sm:flex-row sm:items-center sm:justify-between"
+              className="flex flex-col gap-3 rounded-editorial border border-ink/15 bg-paper p-4 text-sm text-ink sm:flex-row sm:items-center sm:justify-between"
               role="status"
             >
               <p>
@@ -1470,7 +1468,7 @@ export default function SimulationGridTab({
                 type="button"
                 variant="secondary"
                 size="sm"
-                className="w-full border-primary-300 bg-white sm:w-auto"
+                className="w-full bg-white sm:w-auto"
                 onClick={onClearCriterionFilter}
               >
                 Afficher toute la grille

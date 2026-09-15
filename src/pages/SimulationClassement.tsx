@@ -652,7 +652,7 @@ function PieceTypeSelect({
               onChange(event.target.value);
             }
           }}
-          className="w-full appearance-none rounded-lg border border-gray-300 bg-white py-3 pl-4 pr-12 text-sm transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-300"
+          className="ui-field appearance-none py-3 pl-4 pr-12 text-sm"
         >
           <optgroup label={groupLabel}>
             {options.map((pieceType) => (
@@ -1738,12 +1738,12 @@ export default function SimulationClassement() {
     return (
       <div
         key={piece.id ?? `${piece.type_piece}-${piece.nom ?? piece.surface}`}
-        className="flex h-full min-h-52 flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-card"
+        className="flex h-full min-h-52 flex-col justify-between rounded-editorial border border-ink/15 bg-white p-4 shadow-[0_4px_16px_rgb(var(--color-ink)/0.05)]"
         data-testid={piece.id ? `piece-card-${piece.id}` : undefined}
       >
         <div className="min-w-0 space-y-3">
           <h4 className="flex min-h-[2.75rem] items-start gap-2 text-sm font-semibold leading-snug text-gray-900">
-            <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary-100 text-primary-500">
+            <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-editorial bg-paper text-copper">
               <PieceIcon aria-hidden="true" className="h-4 w-4" />
             </span>
             <span className="line-clamp-2 min-w-0">{pieceDisplayName}</span>
@@ -1760,23 +1760,23 @@ export default function SimulationClassement() {
             )}
           </h4>
 
-          <dl className="space-y-2 rounded-md bg-gray-50 p-3 text-xs text-gray-700">
+          <dl className="space-y-2 rounded-editorial bg-paper p-3 text-xs text-muted">
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-primary-500">
+              <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-editorial bg-white text-copper">
                 <Ruler aria-hidden="true" className="h-4 w-4" />
               </span>
               <div className="min-w-0">
-                <dt className="font-medium text-gray-900">Surface</dt>
+                <dt className="font-medium text-ink">Surface</dt>
                 <dd>{formatSurface(piece.surface)}</dd>
               </div>
             </div>
             {supportsSleepingCapacity && sleepingCapacity !== undefined && (
               <div className="flex items-center gap-2">
-                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-primary-500">
+                <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-editorial bg-white text-copper">
                   <BedDouble aria-hidden="true" className="h-4 w-4" />
                 </span>
                 <div className="min-w-0">
-                  <dt className="font-medium text-gray-900">Couchages</dt>
+                  <dt className="font-medium text-ink">Couchages</dt>
                   <dd>{formatPeopleCount(sleepingCapacity)}</dd>
                 </div>
               </div>
@@ -1790,7 +1790,7 @@ export default function SimulationClassement() {
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-white px-2 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
+                className="inline-flex items-center justify-center rounded-editorial border border-ink/15 bg-white px-2 py-1.5 text-xs font-medium text-muted transition-colors hover:bg-paper focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2"
                 onClick={() => setConfirmingDeleteId(null)}
               >
                 Annuler
@@ -1809,7 +1809,7 @@ export default function SimulationClassement() {
           <div className="mt-3 flex justify-end gap-1">
             <button
               type="button"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-primary-100 hover:text-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-editorial text-muted transition-colors hover:bg-paper hover:text-ink focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               aria-label={`Modifier ${pieceDisplayName}`}
               disabled={!canUpdatePiece}
               onClick={() => openEditPanel(piece)}
@@ -1841,11 +1841,11 @@ export default function SimulationClassement() {
     return (
       <button
         type="button"
-        className="flex h-full min-h-52 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-primary-200 bg-primary-100 p-4 text-primary-500 transition-colors hover:border-primary-300 hover:bg-white focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
+        className="flex h-full min-h-52 flex-col items-center justify-center gap-3 rounded-editorial border border-dashed border-ink/25 bg-paper p-4 text-ink transition-colors hover:border-copper hover:bg-white focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2"
         aria-label={ariaLabel}
         onClick={() => openCreatePanel(defaultType, scope)}
       >
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-primary-200 bg-white">
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-ink/15 bg-white">
           <Plus aria-hidden="true" className="h-5 w-5" />
         </span>
         <span className="text-center text-sm font-semibold">{label}</span>
@@ -1908,9 +1908,7 @@ export default function SimulationClassement() {
           onChange={onChange}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={`${name}-error`}
-          className={`h-12 w-full rounded-lg border border-gray-300 px-4 py-2 transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-300 ${
-            error ? 'border-alert-400 focus:ring-alert-400' : ''
-          }`}
+          className={`ui-field h-12 px-4 py-2 ${error ? 'ui-field-error' : ''}`}
         />
         <p
           id={`${name}-error`}
@@ -1929,7 +1927,7 @@ export default function SimulationClassement() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-gray-900">Ouvrant vers l’extérieur</p>
-            <p className="mt-1 text-sm text-textLight">
+            <p className="mt-1 text-sm text-muted">
               Indique si la pièce dispose d’une ouverture donnant vers l’extérieur.
             </p>
           </div>
@@ -1938,8 +1936,8 @@ export default function SimulationClassement() {
             role="switch"
             aria-checked={pieceForm.hasExteriorOpening}
             aria-label="Ouvrant vers l’extérieur"
-            className={`relative inline-flex h-7 w-12 shrink-0 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 ${
-              pieceForm.hasExteriorOpening ? 'bg-primary-300' : 'bg-gray-300'
+            className={`relative inline-flex h-7 w-12 shrink-0 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 ${
+              pieceForm.hasExteriorOpening ? 'bg-ink' : 'bg-gray-300'
             }`}
             onClick={() =>
               updatePieceFormField('hasExteriorOpening', !pieceForm.hasExteriorOpening)
@@ -1972,7 +1970,7 @@ export default function SimulationClassement() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="piece-modal-title"
-          className="w-full max-w-lg rounded-card border border-gray-200 bg-white p-5 shadow-card md:p-6"
+          className="w-full max-w-lg rounded-editorial border border-ink/15 bg-white p-5 shadow-[0_8px_30px_rgb(var(--color-ink)/0.12)] md:p-6"
           onClick={(event) => event.stopPropagation()}
         >
           <div className="mb-5">
@@ -2065,8 +2063,8 @@ export default function SimulationClassement() {
 
   if (loadStatus === 'loading') {
     return (
-      <section className="simulator-ui bg-white py-10 md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-surface py-10 md:py-12">
+        <div className="container-editorial">
           <Card hover={false} className="mx-auto max-w-3xl p-5 md:p-6">
             <p className="text-sm text-gray-700">Chargement de votre simulation...</p>
           </Card>
@@ -2077,8 +2075,8 @@ export default function SimulationClassement() {
 
   if (loadStatus === 'error') {
     return (
-      <section className="simulator-ui bg-white py-10 md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-surface py-10 md:py-12">
+        <div className="container-editorial">
           <Card
             hover={false}
             className="mx-auto max-w-3xl border-alert-200 bg-alert-100 p-5 md:p-6"
@@ -2103,21 +2101,18 @@ export default function SimulationClassement() {
 
   return (
     <>
-      <section className="simulator-ui bg-white py-10 md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-surface py-10 md:py-12">
+        <div className="container-editorial">
           <div className="mx-auto max-w-6xl space-y-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <Link
-                to="/simulateur"
-                className="text-sm font-medium text-primary-300 transition-colors hover:text-primary-400"
-              >
+              <Link to="/simulateur" className="editorial-inline-link text-sm font-medium">
                 Retour aux simulations
               </Link>
             </div>
 
             <div>
               <h1 className="mb-3 text-gray-900">Ma simulation de classement</h1>
-              <p className="max-w-3xl text-sm text-textLight">
+              <p className="max-w-3xl text-sm text-muted">
                 Complétez les pièces du logement, renseignez la grille de contrôle, puis consultez
                 le résultat de votre simulation.
               </p>
@@ -2127,11 +2122,11 @@ export default function SimulationClassement() {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
                   <p className="text-sm font-semibold text-gray-900">Paramètres de simulation</p>
-                  <p className="mt-1 text-sm text-textLight">{parametersSummary}</p>
+                  <p className="mt-1 text-sm text-muted">{parametersSummary}</p>
                 </div>
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                   {isSavingParameters && (
-                    <span className="inline-flex w-fit rounded-full border border-primary-200 bg-primary-100 px-3 py-1 text-sm font-medium text-primary-500">
+                    <span className="inline-flex w-fit rounded-full border border-ink/15 bg-paper px-3 py-1 text-sm font-medium text-ink">
                       Enregistrement...
                     </span>
                   )}
@@ -2160,7 +2155,7 @@ export default function SimulationClassement() {
                   id="simulation-parameters-panel"
                   className="mt-5 border-t border-gray-100 pb-5 pt-5 transition-all duration-300 ease-in-out md:pb-6"
                 >
-                  <p className="mb-4 rounded-lg border border-primary-200 bg-primary-100 px-4 py-3 text-sm text-primary-500">
+                  <p className="mb-4 rounded-editorial border border-ink/15 bg-paper px-4 py-3 text-sm text-ink">
                     Ces paramètres peuvent modifier les critères applicables et le résultat de la
                     simulation.
                   </p>
@@ -2261,23 +2256,23 @@ export default function SimulationClassement() {
                     aria-selected={isActive}
                     aria-controls={`simulation-panel-${tab.id}`}
                     tabIndex={isActive ? 0 : -1}
-                    className={`min-h-20 rounded-card border p-3 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 md:p-4 ${
+                    className={`min-h-20 rounded-editorial border p-3 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 md:p-4 ${
                       isActive
-                        ? 'border-primary-300 bg-primary-100/70'
-                        : 'border-gray-200 bg-white hover:border-primary-200 hover:bg-primary-100/40'
+                        ? 'border-ink/25 bg-paper'
+                        : 'border-ink/10 bg-white hover:border-ink/20 hover:bg-paper'
                     }`}
                     onClick={() => setActiveTab(tab.id)}
                     onKeyDown={(event) => handleTabKeyDown(event, tab.id)}
                   >
                     <span className="flex items-center justify-between gap-3">
-                      <span className="text-xs font-semibold uppercase tracking-wide text-textLight">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-muted">
                         Étape {tab.step}
                       </span>
                       {isComplete && (
                         <CheckCircle2 aria-hidden="true" className="h-5 w-5 text-success-400" />
                       )}
                       {showNeutralResultStatus && (
-                        <span className="inline-flex rounded-full border border-primary-200 bg-white px-2 py-0.5 text-xs font-semibold text-primary-500">
+                        <span className="inline-flex rounded-full border border-ink/15 bg-white px-2 py-0.5 text-xs font-semibold text-ink">
                           À jour
                         </span>
                       )}
@@ -2285,9 +2280,7 @@ export default function SimulationClassement() {
                     <span className="mt-1.5 block text-sm font-semibold text-gray-900">
                       {tab.label}
                     </span>
-                    <span className="mt-1.5 block text-xs leading-5 text-textLight">
-                      {tab.summary}
-                    </span>
+                    <span className="mt-1.5 block text-xs leading-5 text-muted">{tab.summary}</span>
                   </button>
                 );
               })}
@@ -2300,20 +2293,20 @@ export default function SimulationClassement() {
                 aria-labelledby="simulation-tab-pieces"
                 className="space-y-6"
               >
-                <Card hover={false} className="border-primary-300 bg-primary-100 p-5 md:p-6">
+                <Card hover={false} className="border-ink/15 bg-paper p-5 md:p-6">
                   <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                     <div className="max-w-3xl">
-                      <span className="inline-flex rounded-full border border-primary-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary-500">
+                      <span className="inline-flex rounded-full border border-ink/15 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-wide text-copper">
                         ÉTAPE 1 — PIÈCES DU LOGEMENT
                       </span>
                       <h2 className="mb-3 mt-4 text-gray-900">
                         Renseignez les pièces de votre logement
                       </h2>
-                      <p className="text-sm leading-comfortable text-primary-500">
+                      <p className="text-sm leading-comfortable text-muted">
                         Ajoutez les pièces de votre logement avec leur surface et les couchages
                         éventuels.
                       </p>
-                      <p className="mt-3 flex items-start gap-2 text-sm font-medium text-primary-500">
+                      <p className="mt-3 flex items-start gap-2 text-sm font-medium text-ink">
                         <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0" />
                         <span>Vous pourrez modifier ces informations à tout moment.</span>
                       </p>
@@ -2344,21 +2337,19 @@ export default function SimulationClassement() {
                   <h3 className="mb-4 text-lg font-semibold text-gray-900">Résumé du logement</h3>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div>
-                      <p className="text-sm font-medium text-textLight">
-                        Surface totale renseignée
-                      </p>
+                      <p className="text-sm font-medium text-muted">Surface totale renseignée</p>
                       <p className="mt-1 text-sm font-semibold text-gray-900">
                         {formatSurface(logement?.surface_totale)}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-textLight">Pièces d’habitation</p>
+                      <p className="text-sm font-medium text-muted">Pièces d’habitation</p>
                       <p className="mt-1 text-sm font-semibold text-gray-900">
                         {logement?.nb_pieces_habitation ?? 'Non renseigné'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-textLight">Capacité indiquée</p>
+                      <p className="text-sm font-medium text-muted">Capacité indiquée</p>
                       <p className="mt-1 text-sm font-semibold text-gray-900">
                         {grille?.capacite_accueil
                           ? formatPeopleCount(grille.capacite_accueil)
@@ -2366,7 +2357,7 @@ export default function SimulationClassement() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-textLight">Couchages renseignés</p>
+                      <p className="text-sm font-medium text-muted">Couchages renseignés</p>
                       <p className="mt-1 text-sm font-semibold text-gray-900">
                         {formatPeopleCount(totalSleepingCapacity)}
                       </p>
@@ -2397,7 +2388,7 @@ export default function SimulationClassement() {
                   </section>
 
                   {pieceCompletionWarnings.length > 0 ? (
-                    <div className="rounded-card border border-warning-200 bg-warning-100 p-4 text-sm text-warning-500">
+                    <div className="rounded-editorial border border-warning-200 bg-warning-100 p-4 text-sm text-warning-500">
                       <p className="font-semibold">
                         Vous pouvez passer à la grille de contrôle, mais certaines informations du
                         logement restent à compléter.
@@ -2409,7 +2400,7 @@ export default function SimulationClassement() {
                       </ul>
                     </div>
                   ) : (
-                    <div className="rounded-card border border-success-200 bg-success-100 p-4 text-sm text-success-500">
+                    <div className="rounded-editorial border border-success-200 bg-success-100 p-4 text-sm text-success-500">
                       <p className="font-semibold">Vous pouvez passer à la grille de contrôle.</p>
                       <p className="mt-2">
                         Lorsque vous avez terminé de renseigner les pièces de votre logement, vous
@@ -2473,7 +2464,7 @@ export default function SimulationClassement() {
                 {resultStatus === 'none' && (
                   <Card hover={false} className="p-5 md:p-6">
                     <h2 className="mb-3">Aucun résultat pour le moment</h2>
-                    <p className="max-w-3xl text-sm text-textLight">
+                    <p className="max-w-3xl text-sm text-muted">
                       Complétez les pièces et la grille, puis lancez la simulation pour voir si le
                       classement demandé semble atteint.
                     </p>
@@ -2509,16 +2500,16 @@ export default function SimulationClassement() {
                 )}
 
                 {resultStatus === 'checking' && (
-                  <Card hover={false} className="border-primary-200 bg-primary-100 p-5 md:p-6">
+                  <Card hover={false} className="border-ink/15 bg-paper p-5 md:p-6">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-primary-200 bg-white text-primary-300">
+                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ink/15 bg-white text-copper">
                         <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
                       </span>
                       <div>
                         <h2 className="mb-3 text-gray-900">
                           {isAutoRecalculatingResult ? 'Recalcul en cours' : 'Calcul en cours'}
                         </h2>
-                        <p className="max-w-3xl text-sm text-primary-500">
+                        <p className="max-w-3xl text-sm text-muted">
                           {isAutoRecalculatingResult
                             ? 'Les paramètres modifiés sont pris en compte. Le résultat se met à jour automatiquement.'
                             : 'Le résultat de votre simulation est en cours de calcul. Cette étape peut prendre quelques secondes.'}

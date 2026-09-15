@@ -54,6 +54,16 @@ describe('Tooltip', () => {
     expect(tooltip).toHaveAttribute('aria-hidden', 'false');
   });
 
+  it('uses the editorial surface styles', () => {
+    render(<Tooltip srLabel="Information">Contenu du tooltip</Tooltip>);
+
+    const trigger = screen.getByRole('button', { name: 'Information' });
+    const tooltip = screen.getByRole('tooltip', { hidden: true });
+
+    expect(trigger).toHaveClass('ui-focus', 'border-ink/15', 'bg-paper', 'text-muted');
+    expect(tooltip).toHaveClass('rounded-editorial', 'border-ink/15', 'bg-white', 'text-muted');
+  });
+
   it('stays open when the mouse reaches the tooltip before the dismiss delay', () => {
     render(<Tooltip srLabel="Information">Contenu du tooltip</Tooltip>);
 

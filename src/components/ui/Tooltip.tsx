@@ -164,7 +164,7 @@ export default function Tooltip({
     >
       <button
         type="button"
-        className={`inline-flex h-4 w-4 items-center justify-center rounded-full border border-gray-400 text-[10px] text-gray-600 ${triggerClassName}`}
+        className={`ui-focus inline-flex h-4 w-4 items-center justify-center rounded-full border border-ink/15 bg-paper text-[10px] text-muted ${triggerClassName}`}
         aria-label={srLabel}
         aria-describedby={isOpen ? tooltipId : undefined}
         tabIndex={triggerTabIndex}
@@ -178,7 +178,7 @@ export default function Tooltip({
         id={tooltipId}
         role="tooltip"
         aria-hidden={!isOpen}
-        className={`absolute left-1/2 z-50 w-80 rounded-lg border border-gray-200 bg-white p-3 text-left text-xs leading-relaxed text-gray-700 shadow-card ${tooltipVisibilityClassName} ${tooltipPositionClassName}`}
+        className={`absolute left-1/2 z-50 w-80 rounded-editorial border border-ink/15 bg-white p-3 text-left text-xs leading-relaxed text-muted shadow-[0_8px_24px_rgb(var(--color-ink)/0.08)] ${tooltipVisibilityClassName} ${tooltipPositionClassName}`}
         style={tooltipStyle}
         onMouseEnter={handleTooltipMouseEnter}
         onMouseLeave={handleTooltipMouseLeave}

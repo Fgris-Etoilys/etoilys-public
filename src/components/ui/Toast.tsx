@@ -49,8 +49,8 @@ const TOAST_STYLES: Record<
     label: 'Erreur',
   },
   info: {
-    shell: 'border-primary-200 bg-primary-100 text-primary-500',
-    icon: 'text-primary-500',
+    shell: 'border-ink/15 bg-paper text-ink',
+    icon: 'text-copper',
     Icon: Info,
     label: 'Information',
   },
@@ -76,7 +76,7 @@ function ToastMessage({ toast, onDismiss }: { toast: ToastItem; onDismiss: (id: 
     <div
       role={toast.type === 'error' ? 'alert' : 'status'}
       aria-atomic="true"
-      className={`pointer-events-auto flex w-full items-start gap-3 rounded-card border p-4 text-sm shadow-card ${styles.shell}`}
+      className={`pointer-events-auto flex w-full items-start gap-3 rounded-editorial border p-4 text-sm shadow-[0_6px_24px_rgb(var(--color-ink)/0.08)] ${styles.shell}`}
     >
       <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${styles.icon}`} aria-hidden="true" />
       <div className="min-w-0 flex-1">
@@ -85,7 +85,7 @@ function ToastMessage({ toast, onDismiss }: { toast: ToastItem; onDismiss: (id: 
       </div>
       <button
         type="button"
-        className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-current transition-colors hover:bg-white/60 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
+        className="ui-focus inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-current transition-colors hover:bg-white/60"
         aria-label="Fermer la notification"
         onClick={() => onDismiss(toast.id)}
       >

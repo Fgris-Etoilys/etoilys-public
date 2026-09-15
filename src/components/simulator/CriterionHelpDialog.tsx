@@ -147,18 +147,18 @@ export default function CriterionHelpDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="w-full max-w-2xl rounded-card border border-gray-200 bg-white p-5 shadow-card md:p-6"
+        className="w-full max-w-2xl rounded-editorial border border-ink/15 bg-white p-5 shadow-[0_8px_30px_rgb(var(--color-ink)/0.12)] md:p-6"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-6 flex items-start justify-between gap-4">
           <h3 id={titleId} className="flex items-center gap-2 text-xl text-gray-900">
-            <BookOpen className="h-5 w-5 shrink-0 text-primary-300" aria-hidden="true" />
+            <BookOpen className="h-5 w-5 shrink-0 text-copper" aria-hidden="true" />
             <span>Aide - Critère {criterion.num_critere}</span>
           </h3>
           <button
             ref={closeButtonRef}
             type="button"
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-200 hover:border-primary-300 hover:text-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 motion-reduce:transition-none"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-editorial border border-ink/15 text-muted transition-colors duration-200 hover:border-copper hover:text-copper focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 motion-reduce:transition-none"
             aria-label="Fermer l’aide du critère"
             onClick={onClose}
           >
@@ -168,7 +168,7 @@ export default function CriterionHelpDialog({
 
         <div className="max-h-[70vh] space-y-6 overflow-y-auto pr-1">
           <div>
-            <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-primary-300">
+            <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-copper">
               Intitulé
             </h4>
             <p className="text-lg font-semibold leading-relaxed text-gray-900">
@@ -178,7 +178,7 @@ export default function CriterionHelpDialog({
 
           {isLoading && !aide && (
             <div
-              className="rounded-card border border-primary-200 bg-primary-100 p-4 text-sm font-medium text-primary-500"
+              className="rounded-editorial border border-ink/15 bg-paper p-4 text-sm font-medium text-ink"
               role="status"
             >
               Chargement de l’aide contextuelle...
@@ -217,7 +217,7 @@ export default function CriterionHelpDialog({
               <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
                 Non-applicabilité
               </h4>
-              <div className="rounded-card border border-warning-200 bg-warning-100 p-4 shadow-sm">
+              <div className="rounded-editorial border border-warning-200 bg-warning-100 p-4 shadow-sm">
                 <div className="flex items-start gap-2">
                   <AlertTriangle
                     className="mt-0.5 h-5 w-5 shrink-0 text-warning-500"
@@ -236,10 +236,10 @@ export default function CriterionHelpDialog({
               <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
                 Notes
               </h4>
-              <div className="rounded-card border border-primary-200 bg-primary-100 p-4 shadow-sm">
+              <div className="rounded-editorial border border-ink/15 bg-paper p-4 shadow-sm">
                 <div className="flex items-start gap-2">
-                  <Info className="mt-0.5 h-5 w-5 shrink-0 text-primary-300" aria-hidden="true" />
-                  <div className="text-sm font-medium leading-relaxed text-primary-500">
+                  <Info className="mt-0.5 h-5 w-5 shrink-0 text-copper" aria-hidden="true" />
+                  <div className="text-sm font-medium leading-relaxed text-ink">
                     {renderTextBlocks(dialogContent.notes)}
                   </div>
                 </div>

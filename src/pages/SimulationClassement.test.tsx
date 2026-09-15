@@ -1908,7 +1908,7 @@ describe('SimulationClassement', () => {
     });
     expect(firstSectionButton).toBeInTheDocument();
     expect(firstSectionButton).toHaveAttribute('aria-current', 'true');
-    expect(firstSectionButton).toHaveClass('bg-primary-100');
+    expect(firstSectionButton).toHaveClass('bg-paper');
     expect(tableOfContents).toHaveClass('table-of-contents-scrollbar');
 
     const firstManualCriterion = screen.getByTestId('criterion-card-3');
@@ -1979,7 +1979,7 @@ describe('SimulationClassement', () => {
     expect(optionalNotApplicableButton).toBeInTheDocument();
     expect(optionalYesButton).toHaveClass('hover:bg-success-100');
     expect(optionalNoButton).toHaveClass('hover:bg-alert-100');
-    expect(optionalNotApplicableButton).toHaveClass('hover:bg-primary-100');
+    expect(optionalNotApplicableButton).toHaveClass('hover:bg-paper');
     expect(optionalYesButton).toHaveClass('focus-visible:ring-2');
     expect(optionalYesButton.className).not.toContain('focus:ring-2');
 

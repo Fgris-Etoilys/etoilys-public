@@ -759,11 +759,11 @@ export default function SimulateurTaxeSejour() {
     return result.rows.map((row, index) => {
       const delta = row.amount - nonClassReference;
       const isReferenceRow = row.category === 'Non classé';
-      const mobileCardClassName = isReferenceRow ? 'border-primary-200 bg-primary-100/60' : null;
+      const mobileCardClassName = isReferenceRow ? 'border-ink/15 bg-paper' : null;
       const comparisonRow: ResponsiveComparisonRow = {
         key: row.category,
         rowClassName: isReferenceRow
-          ? 'border-b border-primary-200 bg-primary-100/60'
+          ? 'border-b border-ink/15 bg-paper'
           : index % 2 === 0
             ? 'bg-white border-b border-gray-100'
             : 'bg-gray-50',
@@ -782,7 +782,7 @@ export default function SimulateurTaxeSejour() {
             <span
               className={
                 row.category === 'Non classé'
-                  ? 'font-semibold text-primary-500'
+                  ? 'font-semibold text-ink'
                   : 'font-semibold text-gray-900'
               }
             >
@@ -1591,13 +1591,11 @@ export default function SimulateurTaxeSejour() {
 
   return (
     <LocalizedContent locale={locale} translations={touristTaxSimulatorEnglishTranslations}>
-      <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-paper py-10 text-ink md:py-12">
+        <div className="container-editorial">
           <div className="max-w-4xl">
-            <h1 className="mb-4 text-white">
-              Simulateur taxe de séjour 2026 : classé ou non classé
-            </h1>
-            <p className="text-base text-white/90">
+            <h1 className="mb-4 text-ink">Simulateur taxe de séjour 2026 : classé ou non classé</h1>
+            <p className="text-base text-muted">
               Comparez le montant estimatif de taxe de séjour entre un meublé non classé et un
               meublé classé de 1 à 5 étoiles, selon les données locales disponibles.
             </p>
@@ -1605,10 +1603,10 @@ export default function SimulateurTaxeSejour() {
         </div>
       </section>
 
-      <section className="simulator-ui bg-white py-10 md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-surface py-10 md:py-12">
+        <div className="container-editorial">
           <div className="space-y-6">
-            <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
+            <div className="rounded-editorial border border-ink/15 bg-paper p-5 leading-comfortable text-muted md:p-6">
               <h2 className="mb-3 text-gray-900">Ce que compare le simulateur</h2>
               <div className="space-y-3 text-sm">
                 <p>
@@ -1632,7 +1630,7 @@ export default function SimulateurTaxeSejour() {
 
             <Card className="p-5 md:p-6" hover={false}>
               <h2 className="mb-2">Informations du séjour</h2>
-              <p className="mb-5 text-sm text-textLight">
+              <p className="mb-5 text-sm text-muted">
                 Sélectionnez une commune puis renseignez les informations du séjour pour comparer
                 les montants estimatifs.
               </p>
@@ -1643,7 +1641,7 @@ export default function SimulateurTaxeSejour() {
                 </p>
               )}
 
-              {isLoading && <p className="text-textLight">Chargement des données en cours...</p>}
+              {isLoading && <p className="text-muted">Chargement des données en cours...</p>}
               {loadingError && (
                 <p className="text-alert-500" role="alert">
                   {loadingError}
@@ -1653,10 +1651,14 @@ export default function SimulateurTaxeSejour() {
               {!isLoading && !loadingError && (
                 <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                   <div className="relative max-w-2xl">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="city-input"
+                      className="block text-sm font-medium text-gray-700 mb-2"
+                    >
                       Commune <span className="ml-1 text-alert-400">*</span>
                     </label>
                     <input
+                      id="city-input"
                       type="text"
                       required
                       value={cityQuery}
@@ -1671,18 +1673,18 @@ export default function SimulateurTaxeSejour() {
                       aria-autocomplete="list"
                       aria-expanded={isListOpen && suggestions.length > 0}
                       aria-controls={listId}
+                      aria-invalid={errors.city ? 'true' : undefined}
+                      aria-describedby={errors.city ? 'city-error' : undefined}
                       aria-activedescendant={
                         highlightedIndex >= 0 ? `taxe-sejour-option-${highlightedIndex}` : undefined
                       }
-                      className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-transparent transition-all duration-200 ${
-                        errors.city ? 'border-alert-400 focus:ring-alert-400' : ''
-                      }`}
+                      className={`ui-field ${errors.city ? 'ui-field-error' : ''}`}
                     />
                     {isListOpen && suggestions.length > 0 && (
                       <ul
                         id={listId}
                         role="listbox"
-                        className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-card"
+                        className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-editorial border border-ink/15 bg-white shadow-[0_8px_24px_rgb(var(--color-ink)/0.08)]"
                       >
                         {suggestions.map((city, index) => (
                           <li
@@ -1692,8 +1694,8 @@ export default function SimulateurTaxeSejour() {
                             aria-selected={highlightedIndex === index}
                             className={`cursor-pointer px-4 py-2 text-sm ${
                               highlightedIndex === index
-                                ? 'bg-primary-100 text-primary-500'
-                                : 'text-gray-700 hover:bg-gray-50'
+                                ? 'bg-paper text-ink'
+                                : 'text-muted hover:bg-paper'
                             }`}
                             onMouseDown={(event) => {
                               event.preventDefault();
@@ -1705,7 +1707,11 @@ export default function SimulateurTaxeSejour() {
                         ))}
                       </ul>
                     )}
-                    {errors.city && <p className="mt-2 text-sm text-alert-400">{errors.city}</p>}
+                    {errors.city && (
+                      <p id="city-error" className="mt-2 text-sm text-alert-400" role="alert">
+                        {errors.city}
+                      </p>
+                    )}
                   </div>
 
                   {selectedCity && (
@@ -1758,6 +1764,8 @@ export default function SimulateurTaxeSejour() {
                             inputMode="numeric"
                             placeholder="Ex. 3"
                             value={nights}
+                            aria-invalid={errors.nights ? 'true' : undefined}
+                            aria-describedby={errors.nights ? 'nights-error' : undefined}
                             onChange={(event) => {
                               trackSimulatorStartOnce();
                               setNights(event.target.value);
@@ -1765,12 +1773,16 @@ export default function SimulateurTaxeSejour() {
                                 clearFormError('nights');
                               }
                             }}
-                            className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-transparent transition-all duration-200 ${
-                              errors.nights ? 'border-alert-400 focus:ring-alert-400' : ''
-                            }`}
+                            className={`ui-field ${errors.nights ? 'ui-field-error' : ''}`}
                           />
                           {errors.nights && (
-                            <p className="mt-2 text-sm text-alert-400">{errors.nights}</p>
+                            <p
+                              id="nights-error"
+                              className="mt-2 text-sm text-alert-400"
+                              role="alert"
+                            >
+                              {errors.nights}
+                            </p>
                           )}
                         </div>
 
@@ -1844,6 +1856,10 @@ export default function SimulateurTaxeSejour() {
                                 inputMode="numeric"
                                 placeholder="Ex. 1"
                                 value={exemptedPersons}
+                                aria-invalid={errors.exemptedPersons ? 'true' : undefined}
+                                aria-describedby={
+                                  errors.exemptedPersons ? 'exempted-persons-error' : undefined
+                                }
                                 onChange={(event) => {
                                   trackSimulatorStartOnce();
                                   setExemptedPersons(event.target.value);
@@ -1851,14 +1867,16 @@ export default function SimulateurTaxeSejour() {
                                     clearFormError('exemptedPersons');
                                   }
                                 }}
-                                className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-transparent transition-all duration-200 ${
-                                  errors.exemptedPersons
-                                    ? 'border-alert-400 focus:ring-alert-400'
-                                    : ''
+                                className={`ui-field ${
+                                  errors.exemptedPersons ? 'ui-field-error' : ''
                                 }`}
                               />
                               {errors.exemptedPersons && (
-                                <p className="mt-2 text-sm text-alert-400">
+                                <p
+                                  id="exempted-persons-error"
+                                  className="mt-2 text-sm text-alert-400"
+                                  role="alert"
+                                >
                                   {errors.exemptedPersons}
                                 </p>
                               )}
@@ -1897,10 +1915,10 @@ export default function SimulateurTaxeSejour() {
                   </div>
 
                   {resultSummary && (
-                    <div className="mb-6 rounded-card border border-gray-200 bg-white shadow-sm">
+                    <div className="mb-6 rounded-editorial border border-ink/15 bg-white shadow-[0_4px_16px_rgb(var(--color-ink)/0.05)]">
                       <div className="grid gap-0 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
                         <div className="p-5 md:p-6">
-                          <p className="text-xs font-semibold uppercase tracking-wide text-primary-500">
+                          <p className="text-xs font-semibold uppercase tracking-wide text-copper">
                             Résultat principal
                           </p>
                           {resultSummary.bestSavings ? (
@@ -1998,6 +2016,7 @@ export default function SimulateurTaxeSejour() {
 
                   <div className="space-y-6">
                     <ResponsiveComparisonTable
+                      appearance="editorial"
                       caption={
                         locale === 'en'
                           ? 'Detailed tourist tax simulation result'
@@ -2006,20 +2025,10 @@ export default function SimulateurTaxeSejour() {
                       columns={resultColumns}
                       rows={resultRows}
                       primaryColumnKey="category"
-                      tableClassName="w-full table-fixed text-sm border-collapse rounded-card overflow-hidden shadow-sm"
-                      desktopWrapperClassName="hidden md:block"
-                      headerRowClassName="bg-primary-300 text-white"
-                      headerCellClassName="p-3 font-semibold break-words"
-                      cellClassName="p-3 align-top break-words"
-                      mobileContainerClassName="md:hidden space-y-3"
-                      mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
-                      mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
-                      mobileLabelClassName="text-xs font-medium text-gray-600"
-                      mobileValueClassName="text-sm text-gray-900 text-right"
                     />
 
                     {result.warnings.length > 0 && (
-                      <div className="rounded-card border border-warning-200 bg-warning-100 p-4">
+                      <div className="rounded-editorial border border-warning-200 bg-warning-100 p-4">
                         <h3 className="font-semibold text-gray-900 mb-2">
                           Points d&apos;attention
                         </h3>
@@ -2031,9 +2040,9 @@ export default function SimulateurTaxeSejour() {
                       </div>
                     )}
 
-                    <div className="rounded-card border border-gray-200 p-4 bg-gray-50">
+                    <div className="rounded-editorial border border-ink/15 bg-paper p-4">
                       <h3 className="font-semibold text-gray-900 mb-3">Taxes additionnelles</h3>
-                      <p className="mb-3 text-sm text-textLight">
+                      <p className="mb-3 text-sm text-muted">
                         Les taxes additionnelles sont incluses dans la simulation lorsqu&apos;elles
                         s&apos;appliquent.
                       </p>
@@ -2049,7 +2058,7 @@ export default function SimulateurTaxeSejour() {
                                 href={tax.legalReferenceUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-primary-400 hover:text-primary-500"
+                                className="editorial-inline-link"
                               >
                                 ({tax.legalReferenceLabel})
                               </a>
@@ -2066,13 +2075,13 @@ export default function SimulateurTaxeSejour() {
                       </ul>
                     </div>
 
-                    <p className="text-sm text-textLight">
+                    <p className="text-sm text-muted">
                       Cette simulation est fournie à titre informatif sur la base des délibérations
                       publiées. Elle ne constitue pas un conseil juridique ou fiscal personnalisé.
                     </p>
 
                     {dataset && (
-                      <div className="space-y-1 text-xs text-textLight">
+                      <div className="space-y-1 text-xs text-muted">
                         <p>
                           Source de données: DELTA v{dataset.version} (date de référence:{' '}
                           {dataset.sourceDate}).
@@ -2083,7 +2092,7 @@ export default function SimulateurTaxeSejour() {
                   </div>
                 </Card>
 
-                <div className="mb-8 mt-8 rounded-card border border-primary-200 bg-primary-100 p-5 md:p-6">
+                <div className="mb-8 mt-8 rounded-editorial border border-ink/15 bg-paper p-5 md:p-6">
                   <h2 className="mb-3">Le classement intervient aussi dans la fiscalité</h2>
                   <p className="mb-5 text-sm text-gray-700">
                     Le simulateur fiscal compare le cadre micro-BIC d’un meublé classé et d’un

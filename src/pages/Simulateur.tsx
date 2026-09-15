@@ -44,7 +44,7 @@ interface SimulationStatusBadge {
 const SIMULATION_STATUS_BADGES: Record<SimulationStatus, SimulationStatusBadge> = {
   BROUILLON: {
     label: 'Brouillon',
-    className: 'border-primary-200 bg-primary-100 text-primary-500',
+    className: 'border-ink/15 bg-paper text-ink',
   },
   FAVORABLE: {
     label: 'Résultat favorable',
@@ -232,11 +232,11 @@ export default function Simulateur() {
 
   return (
     <>
-      <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-paper py-10 text-ink md:py-12">
+        <div className="container-editorial">
           <div className="max-w-3xl">
-            <h1 className="mb-4 text-white">Simulateur de classement</h1>
-            <p className="text-base text-white/90">
+            <h1 className="mb-4 text-ink">Simulateur de classement</h1>
+            <p className="text-base text-muted">
               Ce simulateur vous aide à situer votre logement avant une visite officielle :
               catégorie atteignable, points à vérifier, équipements à préparer. Il ne délivre pas de
               classement, mais il vous donne une première lecture utile.
@@ -245,10 +245,10 @@ export default function Simulateur() {
         </div>
       </section>
 
-      <section className="simulator-ui bg-white py-10 md:py-12">
-        <div className="container-adaptive">
+      <section className="simulator-ui bg-surface py-10 md:py-12">
+        <div className="container-editorial">
           <div className="mx-auto mb-6 max-w-6xl">
-            <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
+            <div className="rounded-editorial border border-ink/15 bg-paper p-5 leading-comfortable text-muted md:p-6">
               <h2 className="mb-3 text-gray-900">Méthode du simulateur de classement</h2>
               <div className="space-y-3 text-sm">
                 <p>
@@ -268,8 +268,8 @@ export default function Simulateur() {
 
           <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
             <div ref={startBlockRef} className="space-y-5">
-              <Card hover={false} className="border-primary-200 bg-primary-100 p-5 md:p-6">
-                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary-500">
+              <Card hover={false} className="p-5 md:p-6">
+                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-copper">
                   Nouvelle simulation
                 </p>
                 <h2 className="mb-3">Les informations de départ</h2>
@@ -337,7 +337,7 @@ export default function Simulateur() {
                 </form>
               </Card>
 
-              <div className="rounded-card border border-warning-200 bg-warning-100 p-5 leading-comfortable text-gray-700 md:p-6">
+              <div className="rounded-editorial border border-warning-200 bg-warning-100 p-5 leading-comfortable text-gray-700 md:p-6">
                 <h2 className="mb-3 text-gray-900">Limites du simulateur de classement</h2>
                 <div className="space-y-3 text-sm">
                   <p>
@@ -357,11 +357,11 @@ export default function Simulateur() {
                 </div>
               </div>
 
-              <div className="rounded-card border border-primary-200 bg-white p-5 shadow-card md:p-6">
+              <div className="rounded-editorial border border-ink/15 bg-surface p-5 shadow-[0_4px_16px_rgb(var(--color-ink)/0.05)] md:p-6">
                 <h2 className="mb-3 text-gray-900">
                   Passer de l’estimation à la visite officielle
                 </h2>
-                <p className="mb-5 text-sm leading-comfortable text-textLight">
+                <p className="mb-5 text-sm leading-comfortable text-muted">
                   Le simulateur vous aide à préparer votre projet, mais seul un contrôle sur place
                   permet d’obtenir un classement. Etoilys peut réaliser cette visite en tant
                   qu’organisme de contrôle accrédité Cofrac Inspection n°3-2394.
@@ -375,7 +375,7 @@ export default function Simulateur() {
             <div className="space-y-5">
               <div>
                 <h2 className="mb-2">Mes simulations</h2>
-                <p className="text-sm text-textLight">
+                <p className="text-sm text-muted">
                   Vos simulations sont enregistrées sur ce navigateur.
                 </p>
               </div>
@@ -401,7 +401,7 @@ export default function Simulateur() {
               {simulationsStatus === 'success' && simulations.length === 0 && (
                 <Card hover={false} className="p-5 md:p-6">
                   <h3 className="mb-2">Aucune simulation enregistrée</h3>
-                  <p className="text-sm text-textLight">
+                  <p className="text-sm text-muted">
                     Vous n’avez pas encore de simulation enregistrée sur ce navigateur.
                   </p>
                 </Card>
@@ -451,7 +451,7 @@ export default function Simulateur() {
                             <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
                               <button
                                 type="button"
-                                className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="inline-flex items-center justify-center rounded-editorial border border-ink/15 bg-white px-4 py-2 text-sm font-medium text-muted transition-colors hover:bg-paper focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                 disabled={isDeleting}
                                 onClick={() => setConfirmingDeleteSimulationId(null)}
                               >

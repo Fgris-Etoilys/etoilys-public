@@ -106,7 +106,55 @@ describe('scroll automatique des simulateurs', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /calculer/i }));
 
+    const tmiGroup = screen.getByRole('group');
+    expect(tmiGroup).toHaveAttribute('aria-describedby', 'tmi-rate-error');
+    expect(document.getElementById('tmi-rate-error')).toBeVisible();
+    expect(screen.getByRole('button', { name: '30 %' })).toHaveClass('ui-focus');
     expect(scrollToMock).not.toHaveBeenCalled();
+  });
+
+  it('wires custom taxe sejour field errors', async () => {
+    mockTaxeSejourDatasetFetch();
+
+    renderWithProviders(<SimulateurTaxeSejour />, '/simulateur-taxe-sejour');
+
+    const cityInput = await screen.findByRole('combobox', { name: /commune/i });
+    const form = cityInput.closest('form');
+    if (!form) {
+      throw new Error('Taxe sejour form was not rendered');
+    }
+
+    fireEvent.submit(form);
+
+    expect(cityInput).toHaveAttribute('id', 'city-input');
+    expect(cityInput).toHaveAttribute('aria-invalid', 'true');
+    expect(cityInput).toHaveAttribute('aria-describedby', 'city-error');
+    expect(document.getElementById('city-error')).toHaveAttribute('role', 'alert');
+
+    fireEvent.change(cityInput, { target: { value: 'Testville' } });
+    fireEvent.mouseDown(await screen.findByRole('option', { name: /testville/i }));
+
+    const nightsInput = document.getElementById('nights-input');
+    const exemptedInput = document.getElementById('exempted-persons-input');
+    if (!(nightsInput instanceof HTMLInputElement)) {
+      throw new Error('Nights input was not rendered');
+    }
+    if (!(exemptedInput instanceof HTMLInputElement)) {
+      throw new Error('Exempted persons input was not rendered');
+    }
+
+    fireEvent.change(screen.getByPlaceholderText(/120/i), { target: { value: '100' } });
+    fireEvent.change(nightsInput, { target: { value: '0' } });
+    fireEvent.change(screen.getByPlaceholderText(/4/i), { target: { value: '1' } });
+    fireEvent.change(exemptedInput, { target: { value: '2' } });
+    fireEvent.click(screen.getByRole('button', { name: /calculer/i }));
+
+    expect(nightsInput).toHaveAttribute('aria-invalid', 'true');
+    expect(nightsInput).toHaveAttribute('aria-describedby', 'nights-error');
+    expect(document.getElementById('nights-error')).toHaveAttribute('role', 'alert');
+    expect(exemptedInput).toHaveAttribute('aria-invalid', 'true');
+    expect(exemptedInput).toHaveAttribute('aria-describedby', 'exempted-persons-error');
+    expect(document.getElementById('exempted-persons-error')).toHaveAttribute('role', 'alert');
   });
 
   it('localise les résultats calculés du simulateur fiscal en anglais', async () => {
