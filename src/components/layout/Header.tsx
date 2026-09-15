@@ -90,7 +90,7 @@ export default function Header() {
   return (
     <>
       <header ref={headerRef} className={headerClasses}>
-        <nav className="container-adaptive py-2">
+        <nav className="container-editorial py-2">
           <div className="flex items-center justify-between">
             <Link to={content.homeHref} className="ui-focus flex items-center">
               <img
@@ -100,7 +100,7 @@ export default function Header() {
                 height={576}
                 loading="eager"
                 decoding="async"
-                className="h-14 w-auto origin-left scale-110 md:h-14 xl:h-16"
+                className="editorial-logo h-14 w-auto origin-left scale-110 md:h-14 xl:h-16"
               />
             </Link>
 

@@ -9,6 +9,7 @@ interface ArticleCardProps {
   title: string;
   excerpt: string;
   imageKey: ImageAssetKey;
+  imageSizes?: string;
   href: string;
   category?: ArticleCategory;
   date?: string;
@@ -18,6 +19,7 @@ export default function ArticleCard({
   title,
   excerpt,
   imageKey,
+  imageSizes = '(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw',
   href,
   category,
   date,
@@ -33,7 +35,7 @@ export default function ArticleCard({
           <SmartImage
             assetKey={imageKey}
             alt={title}
-            sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+            sizes={imageSizes}
             className="w-full h-full object-cover"
           />
         </div>
@@ -44,9 +46,7 @@ export default function ArticleCard({
             </span>
           )}
           {date && <time className="text-sm text-muted mb-2">{date}</time>}
-          <h3 className="text-xl font-roboto font-semibold tracking-tight text-ink mb-3">
-            {title}
-          </h3>
+          <h3 className="text-2xl tracking-tight text-ink mb-3">{title}</h3>
           <p className="text-muted leading-comfortable mb-4 line-clamp-3 flex-1">{excerpt}</p>
           <span className="inline-flex items-center gap-2 text-ink underline decoration-ink/30 underline-offset-4 group-hover:decoration-current font-medium">
             Lire plus

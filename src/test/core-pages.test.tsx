@@ -34,7 +34,7 @@ describe('core pages', () => {
   );
 
   it.each(Object.values(localizedRoutes.avantages))(
-    'makes comparison scroll areas keyboard accessible on %s',
+    'provides labelled mobile comparisons and semantic desktop tables on %s',
     (pathname) => {
       const { container } = render(
         <MemoryRouter initialEntries={[pathname]}>
@@ -42,15 +42,45 @@ describe('core pages', () => {
         </MemoryRouter>
       );
       const main = within(container).getByRole('main');
-      const scrollAreas = within(main).getAllByRole('region');
-      expect(scrollAreas).toHaveLength(2);
-      scrollAreas.forEach((area) => {
-        expect(area).toHaveAttribute('tabindex', '0');
-        expect(area).toHaveAccessibleName();
-        expect(within(area).getByRole('table')).toBeInTheDocument();
+      const desktop = main.querySelectorAll('[data-responsive-comparison-variant="desktop"]');
+      expect(desktop).toHaveLength(2);
+      desktop.forEach((area) => {
+        const table = within(area as HTMLElement).getByRole('table');
+        expect(table).toHaveAccessibleName();
+        expect(table.querySelector('colgroup')).not.toBeNull();
+        const rows = table.querySelectorAll('tbody tr');
+        const cards = area.parentElement?.querySelectorAll(
+          '[data-responsive-comparison-variant="mobile"] article'
+        );
+        expect(cards).toHaveLength(rows.length);
+        rows.forEach((row, index) => {
+          expect(row.querySelector('th')).toHaveAttribute('scope', 'row');
+          const card = cards?.[index];
+          expect(card).toBeTruthy();
+          row.querySelectorAll('th, td').forEach((cell) => {
+            expect(card?.textContent).toContain(cell.textContent);
+          });
+        });
       });
     }
   );
+
+  it.each(
+    (['avantages', 'prerequis', 'faq'] as const).flatMap((id) => Object.values(localizedRoutes[id]))
+  )('connects each section link to a unique target on %s', (pathname) => {
+    const { container } = render(
+      <MemoryRouter initialEntries={[pathname]}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+    const main = within(container).getByRole('main');
+    const links = main.querySelectorAll('nav a[href^="#"]');
+    expect(links.length).toBeGreaterThan(0);
+    links.forEach((link) => {
+      const id = link.getAttribute('href')?.slice(1);
+      expect(main.querySelectorAll(`[id="${id}"]`)).toHaveLength(1);
+    });
+  });
 
   it.each([
     [

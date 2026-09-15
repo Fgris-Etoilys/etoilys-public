@@ -222,11 +222,9 @@ export default function DemandeClassementForm({
   };
 
   return (
-    <div className="bg-white rounded-card border border-gray-200 p-8">
-      <h2 className="text-2xl font-playfair font-semibold text-gray-900 mb-2">
-        {demandeContent.title}
-      </h2>
-      <p className="text-textLight mb-8 leading-comfortable">{demandeContent.intro}</p>
+    <div className="editorial-form">
+      <h2 className="text-3xl text-ink mb-3">{demandeContent.title}</h2>
+      <p className="text-muted mb-8 leading-comfortable">{demandeContent.intro}</p>
 
       {isSuccess && (
         <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
@@ -315,7 +313,7 @@ export default function DemandeClassementForm({
           label={
             <>
               {demandeContent.consentPrefix}{' '}
-              <Link to={privacyPath} className="text-primary-300 hover:text-primary-400">
+              <Link to={privacyPath} className="editorial-inline-link">
                 {demandeContent.privacyLinkLabel}
               </Link>
             </>

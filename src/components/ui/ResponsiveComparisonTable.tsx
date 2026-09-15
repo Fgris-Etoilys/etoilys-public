@@ -18,6 +18,7 @@ export interface ResponsiveComparisonRow {
 }
 
 interface ResponsiveComparisonTableProps {
+  appearance?: 'default' | 'editorial';
   columns: ResponsiveComparisonColumn[];
   rows: ResponsiveComparisonRow[];
   primaryColumnKey?: string;
@@ -55,25 +56,40 @@ const ALIGNMENT_CLASSES = {
   },
 } as const;
 
+const editorialComparisonStyles = {
+  tableClassName: 'w-full table-fixed border-collapse bg-surface text-sm',
+  headerRowClassName: 'border-y border-ink/25 text-ink',
+  headerCellClassName: 'p-4 font-semibold break-words',
+  cellClassName: 'border-b border-ink/15 p-4 align-top break-words text-muted',
+  mobileCardClassName: 'border-b border-ink/20 bg-surface p-5',
+  mobileTitleClassName: 'mb-4 text-xl text-ink',
+  mobileLabelClassName: 'text-sm text-muted',
+  mobileValueClassName: 'text-sm text-ink',
+} satisfies Partial<ResponsiveComparisonTableProps>;
+
 export default function ResponsiveComparisonTable({
-  columns,
-  rows,
-  primaryColumnKey,
-  showPrimaryColumnInMobileDetails = false,
-  className = '',
-  caption,
-  tableClassName = 'w-full table-fixed text-sm border-collapse rounded-card overflow-hidden shadow-sm',
-  desktopWrapperClassName = 'hidden md:block overflow-x-auto',
-  headerRowClassName = 'bg-primary-300 text-white',
-  headerCellClassName = 'p-3 font-semibold break-words',
-  bodyClassName = '',
-  cellClassName = 'p-3 align-top break-words',
-  mobileContainerClassName = 'md:hidden space-y-3',
-  mobileCardClassName = 'rounded-card border border-gray-200 bg-white p-4 shadow-sm',
-  mobileTitleClassName = 'text-sm font-semibold text-gray-900 mb-3',
-  mobileLabelClassName = 'text-xs font-medium text-gray-600',
-  mobileValueClassName = 'text-sm text-gray-900 text-right',
+  appearance = 'default',
+  ...props
 }: ResponsiveComparisonTableProps) {
+  const {
+    columns,
+    rows,
+    primaryColumnKey,
+    showPrimaryColumnInMobileDetails = false,
+    className = '',
+    caption,
+    tableClassName = 'w-full table-fixed text-sm border-collapse rounded-card overflow-hidden shadow-sm',
+    desktopWrapperClassName = 'hidden md:block overflow-x-auto',
+    headerRowClassName = 'bg-primary-300 text-white',
+    headerCellClassName = 'p-3 font-semibold break-words',
+    bodyClassName = '',
+    cellClassName = 'p-3 align-top break-words',
+    mobileContainerClassName = 'md:hidden space-y-3',
+    mobileCardClassName = 'rounded-card border border-gray-200 bg-white p-4 shadow-sm',
+    mobileTitleClassName = 'text-sm font-semibold text-gray-900 mb-3',
+    mobileLabelClassName = 'text-xs font-medium text-gray-600',
+    mobileValueClassName = 'text-sm text-gray-900 text-right',
+  } = { ...(appearance === 'editorial' ? editorialComparisonStyles : {}), ...props };
   if (columns.length === 0) {
     return null;
   }

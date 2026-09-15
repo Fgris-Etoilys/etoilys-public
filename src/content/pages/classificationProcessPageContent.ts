@@ -3,6 +3,7 @@ import type { Locale } from '../../i18n/locales';
 type ProcedureStep = {
   number: number;
   title: string;
+  meta?: string;
   description?: string;
   inspection?: {
     beforeReferenceLink: string;
@@ -20,13 +21,6 @@ type ClassificationProcessPageContent = {
   };
   stepsTitle: string;
   steps: readonly ProcedureStep[];
-  keyFigures: {
-    title: string;
-    items: readonly {
-      value: string;
-      label: string;
-    }[];
-  };
   certificate: {
     title: string;
     description: string;
@@ -68,11 +62,13 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
       {
         number: 2,
         title: 'Prise de contact',
+        meta: 'Rappel sous 24 heures',
         description:
           "L'inspecteur de votre secteur prend contact avec vous sous 24 heures pour confirmer l'éligibilité de votre logement et convenir avec vous de la date de la visite d'inspection.",
       },
       {
         number: 3,
+        meta: '133 critères contrôlés sur place',
         title: "Visite d'inspection",
         inspection: {
           beforeReferenceLink:
@@ -88,26 +84,18 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
       {
         number: 4,
         title: 'Proposition de classement',
+        meta: 'Certificat sous 7 jours · 15 jours pour refuser la proposition',
         description:
           "Vous recevez sous 7 jours le certificat de visite complet incluant la grille de contrôle, le rapport d'inspection détaillé et la proposition de classement officielle. Vous disposez alors de 15 jours pour refuser la proposition de classement.",
       },
       {
         number: 5,
         title: 'Attribution du classement',
+        meta: 'Classement valable 5 ans',
         description:
           "À l'issue de la procédure, le classement obtenu est valable 5 ans et peut figurer sur les annonces et supports de communication du logement.",
       },
     ],
-    keyFigures: {
-      title: 'Chiffres clés de la procédure',
-      items: [
-        { value: '24h', label: 'Délai de rappel après la demande' },
-        { value: '133', label: 'Critères contrôlés lors de la visite' },
-        { value: '7 jours', label: 'Délai de remise du certificat' },
-        { value: '15 jours', label: 'Délai pour refuser la proposition' },
-        { value: '5 ans', label: 'Durée de validité du classement' },
-      ],
-    },
     certificate: {
       title: 'Ce que comprend le certificat de visite',
       description:
@@ -124,7 +112,7 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
         'Déposez votre demande en ligne ou contactez Etoilys pour organiser les prochaines étapes.',
       links: [
         { label: 'Questions fréquentes', href: '/faq', variant: 'ghost' },
-        { label: 'Demander votre classement', href: '/demande-classement', variant: 'white' },
+        { label: 'Demander mon classement', href: '/demande-classement', variant: 'white' },
       ],
     },
   },
@@ -145,12 +133,14 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
       {
         number: 2,
         title: 'Contact',
+        meta: 'Call back within 24 hours',
         description:
           'The inspector for your area contacts you within 24 hours to confirm that the accommodation is eligible and to agree the inspection date with you.',
       },
       {
         number: 3,
         title: 'Inspection visit',
+        meta: '133 criteria checked on site',
         inspection: {
           beforeReferenceLink:
             'The visit takes place on site. The inspector checks the accommodation against the ',
@@ -165,26 +155,18 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
       {
         number: 4,
         title: 'Classification proposal',
+        meta: 'Certificate within 7 days · 15 days to refuse the proposal',
         description:
           'You receive the full inspection certificate within 7 days, including the inspection grid, the detailed inspection report and the official classification proposal. You then have 15 days to refuse the classification proposal.',
       },
       {
         number: 5,
         title: 'Classification awarded',
+        meta: 'Classification valid for 5 years',
         description:
           'At the end of the process, the classification obtained is valid for 5 years and may appear on the accommodation listings and communication materials.',
       },
     ],
-    keyFigures: {
-      title: 'Key figures for the process',
-      items: [
-        { value: '24h', label: 'Call-back time after the request' },
-        { value: '133', label: 'Criteria checked during the inspection' },
-        { value: '7 days', label: 'Time for delivery of the certificate' },
-        { value: '15 days', label: 'Time to refuse the proposal' },
-        { value: '5 years', label: 'Classification validity period' },
-      ],
-    },
     certificate: {
       title: 'What the inspection certificate includes',
       description: 'After the inspection, a complete file is sent within 7 days.',
@@ -224,12 +206,14 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
       {
         number: 2,
         title: 'Persoonlijk contact',
+        meta: 'Terugbellen binnen 24 uur',
         description:
           'De inspecteur in uw sector neemt binnen 24 uur contact met u op om te bevestigen dat de woning in aanmerking komt en om samen met u de datum van het inspectiebezoek vast te leggen.',
       },
       {
         number: 3,
         title: 'Inspectiebezoek',
+        meta: '133 criteria ter plaatse gecontroleerd',
         inspection: {
           beforeReferenceLink:
             'Het bezoek vindt ter plaatse plaats. De inspecteur controleert de woning volgens het ',
@@ -244,26 +228,18 @@ export const classificationProcessPageContent: Record<Locale, ClassificationProc
       {
         number: 4,
         title: 'Classificatievoorstel',
+        meta: 'Certificaat binnen 7 dagen · 15 dagen om het voorstel te weigeren',
         description:
           'Binnen 7 dagen ontvangt u het volledige inspectiecertificaat, met de controlelijst, het gedetailleerde inspectierapport en het officiële classificatievoorstel. Daarna heeft u 15 dagen om het voorstel te weigeren.',
       },
       {
         number: 5,
         title: 'Toekenning van de classificatie',
+        meta: 'Classificatie 5 jaar geldig',
         description:
           'Aan het einde van de procedure is de verkregen classificatie 5 jaar geldig en kan zij worden vermeld in advertenties en communicatiemiddelen van de woning.',
       },
     ],
-    keyFigures: {
-      title: 'Kerncijfers van de procedure',
-      items: [
-        { value: '24 uur', label: 'Terugbeltermijn na de aanvraag' },
-        { value: '133', label: 'Criteria gecontroleerd tijdens het bezoek' },
-        { value: '7 dagen', label: 'Termijn voor afgifte van het certificaat' },
-        { value: '15 dagen', label: 'Termijn om het voorstel te weigeren' },
-        { value: '5 jaar', label: 'Geldigheidsduur van de classificatie' },
-      ],
-    },
     certificate: {
       title: 'Wat het inspectiecertificaat bevat',
       description: 'Na het bezoek wordt binnen 7 dagen een volledig dossier verzonden.',

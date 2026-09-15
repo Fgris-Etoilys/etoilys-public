@@ -139,7 +139,7 @@ export default function ClassementDordogne() {
           <Button href="/demande-classement" size="lg" className="dd-button">
             Demander mon classement <ArrowUpRight size={20} aria-hidden="true" />
           </Button>
-          <a href="#tarifs" className="editorial-link ui-focus dd-hero-price">
+          <a href="#department-pricing-locality" className="editorial-link ui-focus dd-hero-price">
             Connaître mon tarif <ArrowDown size={16} aria-hidden="true" />
           </a>
           <ul className="dd-hero-reassurance">

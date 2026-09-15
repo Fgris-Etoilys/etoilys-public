@@ -1,23 +1,16 @@
 import { useLocation } from 'react-router-dom';
-import {
-  Award,
-  Calculator,
-  CheckCircle,
-  Globe,
-  Percent,
-  PiggyBank,
-  Ticket,
-  type LucideIcon,
-} from 'lucide-react';
+import { Award, Calculator, CheckCircle, Globe, Percent, PiggyBank, Ticket } from 'lucide-react';
 import Button from '../components/ui/Button';
 import PageCta from '../components/ui/PageCta';
 import PageHero from '../components/ui/PageHero';
+import Accordion from '../components/ui/Accordion';
 import FeatureCard from '../components/ui/FeatureCard';
+import SectionNav from '../components/ui/SectionNav';
+import ResponsiveComparisonTable from '../components/ui/ResponsiveComparisonTable';
 import Card from '../components/ui/Card';
 import SmartImage from '../components/ui/SmartImage';
 import {
   classificationBenefitsPageContent,
-  type BenefitsIconKey,
   type ClassificationBenefitsPageContent,
 } from '../content/pages/classificationBenefitsPageContent';
 import { getLocaleFromPath } from '../i18n/routeHelpers';
@@ -29,7 +22,7 @@ const benefitIcons = {
   percent: Percent,
   piggyBank: PiggyBank,
   ticket: Ticket,
-} as const satisfies Record<BenefitsIconKey, LucideIcon>;
+};
 
 const panonceaux = [
   {
@@ -106,33 +99,54 @@ export default function PourquoiClasser() {
 
   return (
     <>
-      <PageHero title={content.hero.title} description={content.hero.description} />
+      <PageHero title={content.hero.title} description={content.hero.description}>
+        <SectionNav
+          label={content.hero.title}
+          items={[
+            { id: 'fiscalite', label: content.navigation[0] },
+            { id: 'taxe-sejour', label: content.navigation[1] },
+            { id: 'reconnaissance', label: content.navigation[2] },
+          ]}
+        />
+      </PageHero>
 
       <section className="editorial-section bg-surface">
         <div className="container-editorial">
-          <h2 className="editorial-heading text-ink mb-12 text-center">
+          <h2 className="editorial-heading text-ink max-w-3xl mb-8 sm:mb-12">
             {content.mainBenefits.title}
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {content.mainBenefits.items.map((benefit) => (
-              <FeatureCard
-                key={benefit.title}
-                icon={benefitIcons[benefit.icon]}
-                title={benefit.title}
-                description={benefit.description}
-              />
-            ))}
+          <div className="grid gap-5 lg:grid-cols-3">
+            {content.mainBenefits.items
+              .filter((benefit) => benefit.linkHref)
+              .map((benefit) => (
+                <FeatureCard
+                  key={benefit.title}
+                  icon={benefitIcons[benefit.icon]}
+                  title={benefit.title}
+                  description={benefit.description}
+                  linkHref={benefit.linkHref}
+                  linkLabel={benefit.linkLabel}
+                />
+              ))}
+          </div>
+          <div className="mt-10 sm:mt-12 max-w-4xl">
+            <Accordion
+              items={content.mainBenefits.items
+                .filter((benefit) => !benefit.linkHref)
+                .map((benefit) => ({
+                  question: benefit.title,
+                  answer: benefit.description,
+                }))}
+            />
           </div>
         </div>
       </section>
 
-      <section className="editorial-section bg-paper">
+      <section id="fiscalite" className="editorial-section editorial-anchor bg-paper">
         <div className="container-editorial">
           <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-8 text-center">
-              {content.fiscalComparison.title}
-            </h2>
-            <p className="text-center text-muted mb-12 leading-comfortable">
+            <h2 className="editorial-heading text-ink mb-6">{content.fiscalComparison.title}</h2>
+            <p className="text-muted mb-10 leading-comfortable">
               {content.fiscalComparison.description}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -140,13 +154,15 @@ export default function PourquoiClasser() {
                 <Card
                   key={item.title}
                   hover={false}
-                  className={item.color === 'bg-success-100' ? '!bg-success-100' : '!bg-paper'}
+                  className={
+                    item.color === 'bg-success-100' ? '!bg-ink/5 !border-ink/25' : '!bg-surface'
+                  }
                 >
                   <div className="p-8 text-center">
                     <h3 className="text-2xl font-roboto font-semibold text-ink mb-4">
                       {item.title}
                     </h3>
-                    <div className="text-4xl font-bold text-ink mb-4">{item.allowance}</div>
+                    <div className="text-5xl font-playfair text-ink mb-4">{item.allowance}</div>
                     <p className="text-sm text-muted">{item.allowanceLabel}</p>
                     <div className="mt-6 pt-6 border-t border-ink/20">
                       <p className="text-sm text-muted leading-comfortable">{item.example}</p>
@@ -155,8 +171,8 @@ export default function PourquoiClasser() {
                 </Card>
               ))}
             </div>
-            <div className="mt-8 bg-success-100 border border-success-200 rounded-editorial p-6 text-center">
-              <div className="text-4xl font-bold text-success-500 mb-1">
+            <div className="mt-8 editorial-positive text-center">
+              <div className="text-4xl font-playfair text-ink mb-2">
                 {content.fiscalComparison.result.value}
               </div>
               <p className="text-sm font-semibold text-muted mb-3">
@@ -164,7 +180,7 @@ export default function PourquoiClasser() {
               </p>
               <p className="text-sm text-muted">{content.fiscalComparison.result.description}</p>
             </div>
-            <div className="mt-6 text-xs text-muted leading-relaxed">
+            <div className="mt-6 text-sm text-muted leading-relaxed">
               <p className="mb-2">{content.fiscalComparison.footnote.intro}</p>
               <ul className="list-disc list-inside space-y-1 mb-2">
                 {content.fiscalComparison.footnote.items.map((item) => (
@@ -187,15 +203,11 @@ export default function PourquoiClasser() {
         </div>
       </section>
 
-      <section className="editorial-section bg-surface">
+      <section id="taxe-sejour" className="editorial-section editorial-anchor bg-surface">
         <div className="container-editorial">
           <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-8 text-center">
-              {content.touristTax.title}
-            </h2>
-            <p className="text-muted leading-comfortable mb-10 text-center">
-              {content.touristTax.description}
-            </p>
+            <h2 className="editorial-heading text-ink mb-6">{content.touristTax.title}</h2>
+            <p className="text-muted leading-comfortable mb-10">{content.touristTax.description}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
               <div className="bg-paper rounded-editorial p-6 flex flex-col">
@@ -203,18 +215,18 @@ export default function PourquoiClasser() {
                   {content.touristTax.unclassified.title}
                 </h3>
                 <div className="flex-1 flex flex-col justify-center">
-                  <p className="text-center text-3xl font-bold text-alert-400 mb-1">
+                  <p className="text-center text-3xl font-bold text-copper mb-1">
                     {content.touristTax.unclassified.value}
                   </p>
                   <p className="text-center text-sm text-muted">
                     {content.touristTax.unclassified.label}
                   </p>
-                  <p className="text-center text-xs text-muted mt-3">
+                  <p className="text-center text-sm text-muted mt-3">
                     {content.touristTax.unclassified.note}
                   </p>
                 </div>
               </div>
-              <div className="bg-success-100 rounded-editorial p-6">
+              <div className="bg-ink/5 rounded-editorial p-6">
                 <h3 className="font-semibold text-ink mb-4 text-center">
                   {content.touristTax.classified.title}
                 </h3>
@@ -227,7 +239,7 @@ export default function PourquoiClasser() {
                     <col className="w-1/2" />
                   </colgroup>
                   <thead>
-                    <tr className="border-b border-success-200">
+                    <tr className="border-b border-ink/15">
                       <th className="text-center py-1 text-muted font-medium">
                         {content.touristTax.classified.headerCategory}
                       </th>
@@ -243,7 +255,7 @@ export default function PourquoiClasser() {
                         className={
                           index === content.touristTax.classified.ranges.length - 1
                             ? undefined
-                            : 'border-b border-success-200/50'
+                            : 'border-b border-ink/15'
                         }
                       >
                         <td className="py-1 text-center">{range.label}</td>
@@ -255,63 +267,44 @@ export default function PourquoiClasser() {
               </div>
             </div>
 
-            <div className="bg-paper rounded-editorial p-6 mb-6">
+            <div className="rounded-editorial sm:bg-paper sm:p-6 mb-6">
               <p id="tourist-tax-example-title" className="font-semibold text-ink mb-4">
                 {content.touristTax.example.title}
               </p>
-              <p className="text-xs text-muted mb-4">{content.touristTax.example.note}</p>
-              <div
-                role="region"
-                aria-labelledby="tourist-tax-example-title"
-                tabIndex={0}
-                className="ui-focus overflow-x-auto"
-              >
-                <table className="w-full text-sm">
-                  <colgroup>
-                    <col className="w-1/3" />
-                    <col className="w-1/3" />
-                    <col className="w-1/3" />
-                  </colgroup>
-                  <thead>
-                    <tr className="border-b border-ink/15">
-                      {content.touristTax.example.headers.map((header, index) => (
-                        <th
-                          key={`${header}-${index}`}
-                          className={`text-center py-2 font-medium ${
-                            index === 2 ? 'text-success-500' : 'text-muted'
-                          }`}
-                        >
-                          {header}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="text-muted">
-                    {content.touristTax.example.rows.map((row, index) => {
-                      const isTotal = index >= content.touristTax.example.rows.length - 2;
-                      const isPrimaryTotal = index === content.touristTax.example.rows.length - 2;
-                      return (
-                        <tr
-                          key={row.label}
-                          className={`${
-                            isPrimaryTotal
-                              ? 'font-semibold border-t-2 border-ink/30'
-                              : isTotal
-                                ? 'font-bold'
-                                : 'border-b border-ink/10'
-                          }`}
-                        >
-                          <td className="py-2 text-center">{row.label}</td>
-                          <td className="text-center">{row.unclassified}</td>
-                          <td className="text-center text-success-500">{row.classified}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              <p className="text-sm text-muted mb-4">{content.touristTax.example.note}</p>
+              <ResponsiveComparisonTable
+                appearance="editorial"
+                caption={content.touristTax.example.title}
+                primaryColumnKey="label"
+                columns={[
+                  {
+                    key: 'label',
+                    label: content.touristTax.example.headers[0],
+                    widthClassName: 'w-1/3',
+                  },
+                  {
+                    key: 'unclassified',
+                    label: content.touristTax.example.headers[1],
+                    widthClassName: 'w-1/3',
+                  },
+                  {
+                    key: 'classified',
+                    label: content.touristTax.example.headers[2],
+                    widthClassName: 'w-1/3',
+                    cellClassName: 'bg-ink/5 font-medium',
+                  },
+                ]}
+                rows={content.touristTax.example.rows.map((row) => ({
+                  key: row.label,
+                  cells: {
+                    label: row.label,
+                    unclassified: row.unclassified,
+                    classified: row.classified,
+                  },
+                }))}
+              />
               <div className="mt-4 text-center">
-                <span className="text-2xl font-bold text-success-500">
+                <span className="text-2xl font-bold text-ink">
                   {content.touristTax.example.totalValue}
                 </span>
                 <span className="text-sm text-muted ml-2">
@@ -334,65 +327,71 @@ export default function PourquoiClasser() {
       <section className="editorial-section bg-paper">
         <div className="container-editorial">
           <div className="max-w-4xl mx-auto">
-            <h2 id="social-regime-title" className="editorial-heading text-ink mb-8 text-center">
+            <h2 id="social-regime-title" className="editorial-heading text-ink mb-6">
               {content.socialRegime.title}
             </h2>
-            <p className="text-muted leading-comfortable mb-10 text-center">
+            <p className="text-muted leading-comfortable mb-10">
               {content.socialRegime.description}
             </p>
-            <div
-              role="region"
-              aria-labelledby="social-regime-title"
-              tabIndex={0}
-              className="ui-focus overflow-x-auto mb-2"
-            >
-              <table className="w-full min-w-[640px] text-sm bg-surface rounded-editorial overflow-hidden shadow-sm">
-                <colgroup>
-                  <col className="w-1/4" />
-                  <col className="w-1/4" />
-                  <col className="w-1/4" />
-                  <col className="w-1/4" />
-                </colgroup>
-                <thead>
-                  <tr className="bg-paper text-ink">
-                    {content.socialRegime.headers.map((header) => (
-                      <th key={header} className="text-left px-4 py-3 font-semibold">
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-ink/10">
-                  {content.socialRegime.rows.map((row) => (
-                    <tr key={row.situation} className="text-muted">
-                      <td className="px-4 py-3">{row.situation}</td>
-                      <td
-                        className={`px-4 py-3 ${
-                          row.highlight === 'classified' ? 'bg-success-100' : ''
-                        }`}
-                      >
-                        {row.classified}
-                      </td>
-                      <td
-                        className={`px-4 py-3 ${
-                          row.highlight === 'unclassified' ? 'bg-alert-100 font-medium' : ''
-                        }`}
-                      >
-                        {row.unclassified}
-                      </td>
-                      <td className="px-4 py-3">{row.takeaway}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <p className="text-xs text-muted mb-8 px-1">{content.socialRegime.footnote}</p>
+            <ResponsiveComparisonTable
+              appearance="editorial"
+              className="mb-4"
+              caption={content.socialRegime.title}
+              primaryColumnKey="situation"
+              columns={[
+                {
+                  key: 'situation',
+                  label: content.socialRegime.headers[0],
+                  widthClassName: 'w-1/4',
+                },
+                {
+                  key: 'classified',
+                  label: content.socialRegime.headers[1],
+                  widthClassName: 'w-1/4',
+                  cellClassName: 'bg-ink/5',
+                },
+                {
+                  key: 'unclassified',
+                  label: content.socialRegime.headers[2],
+                  widthClassName: 'w-1/4',
+                },
+                {
+                  key: 'takeaway',
+                  label: content.socialRegime.headers[3],
+                  widthClassName: 'w-1/4',
+                },
+              ]}
+              rows={content.socialRegime.rows.map((row) => ({
+                key: row.situation,
+                cells: {
+                  situation: row.situation,
+                  classified: (
+                    <span
+                      className={row.highlight === 'classified' ? 'font-semibold text-ink' : ''}
+                    >
+                      {row.classified}
+                    </span>
+                  ),
+                  unclassified: (
+                    <span
+                      className={
+                        row.highlight === 'unclassified' ? 'font-semibold text-copper' : ''
+                      }
+                    >
+                      {row.unclassified}
+                    </span>
+                  ),
+                  takeaway: row.takeaway,
+                },
+              }))}
+            />
+            <p className="text-sm text-muted mb-8 px-1">{content.socialRegime.footnote}</p>
 
-            <div className="bg-success-100 border border-success-200 rounded-editorial p-6 mb-6 text-center">
+            <div className="bg-ink/5 border border-ink/15 rounded-editorial p-6 mb-6 text-center">
               <p className="text-ink leading-comfortable">{content.socialRegime.callout}</p>
             </div>
 
-            <p className="text-xs text-muted leading-relaxed">
+            <p className="text-sm text-muted leading-relaxed">
               {content.socialRegime.sources.map((source, index) => (
                 <span key={source.href}>
                   {index > 0 && ' · '}
@@ -411,7 +410,7 @@ export default function PourquoiClasser() {
         </div>
       </section>
 
-      <section className="editorial-section bg-surface">
+      <section id="reconnaissance" className="editorial-section editorial-anchor bg-surface">
         <div className="container-editorial">
           <h2 className="editorial-heading text-ink mb-8 text-center">
             {content.officialSign.title}
@@ -420,7 +419,7 @@ export default function PourquoiClasser() {
             {content.officialSign.description}
           </p>
 
-          <div className="grid grid-cols-3 sm:grid-cols-5 items-start gap-3 sm:gap-6 pb-8">
+          <div className="mx-auto max-w-3xl grid grid-cols-3 sm:grid-cols-5 items-start gap-3 sm:gap-6 pb-8">
             {panonceaux.map(({ src, label }) => (
               <div key={label[locale]} className="min-w-0">
                 <img
@@ -449,7 +448,7 @@ export default function PourquoiClasser() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {content.officialSign.items.map((item) => (
               <div key={item.title} className="flex gap-3">
-                <CheckCircle className="text-success-500 flex-shrink-0 mt-0.5" size={18} />
+                <CheckCircle className="text-ink flex-shrink-0 mt-0.5" size={18} />
                 <div>
                   <p className="font-semibold text-ink mb-1">{item.title}</p>
                   <p className="text-sm text-muted">{item.description}</p>
@@ -462,9 +461,6 @@ export default function PourquoiClasser() {
 
       <section className="editorial-section bg-paper">
         <div className="container-editorial">
-          <h2 className="editorial-heading text-ink mb-10 text-center">
-            {content.tourismReference.title}
-          </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
               <SmartImage
@@ -475,10 +471,11 @@ export default function PourquoiClasser() {
               />
             </div>
             <div className="order-1 lg:order-2">
+              <h2 className="editorial-heading text-ink mb-8">{content.tourismReference.title}</h2>
               <div className="space-y-6">
                 {content.tourismReference.items.map((item) => (
                   <div key={item.title} className="flex gap-3">
-                    <CheckCircle className="text-success-500 flex-shrink-0 mt-0.5" size={18} />
+                    <CheckCircle className="text-ink flex-shrink-0 mt-0.5" size={18} />
                     <div>
                       <p className="font-semibold text-ink mb-1">{item.title}</p>
                       <p className="text-sm text-muted leading-comfortable">

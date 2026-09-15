@@ -1,32 +1,64 @@
 import { useLocation } from 'react-router-dom';
-import { CheckCircle } from 'lucide-react';
+import { Check, CircleAlert } from 'lucide-react';
+import Accordion from '../components/ui/Accordion';
 import Button from '../components/ui/Button';
 import PageCta from '../components/ui/PageCta';
 import PageHero from '../components/ui/PageHero';
+import SectionNav from '../components/ui/SectionNav';
 import { classificationRequirementsPageContent } from '../content/pages/classificationRequirementsPageContent';
 import { getLocaleFromPath } from '../i18n/routeHelpers';
 
 export default function Prerequis() {
-  const location = useLocation();
-  const locale = getLocaleFromPath(location.pathname);
+  const locale = getLocaleFromPath(useLocation().pathname);
   const content = classificationRequirementsPageContent[locale];
 
   return (
     <>
-      <PageHero title={content.hero.title} description={content.hero.description} />
+      <PageHero title={content.hero.title} description={content.hero.description} size="compact">
+        <SectionNav
+          label={content.hero.title}
+          items={[
+            { id: 'checklist', label: content.navigation[0] },
+            { id: 'eligibility', label: content.navigation[1] },
+            { id: 'criteria', label: content.navigation[2] },
+            { id: 'blocking-points', label: content.navigation[3] },
+          ]}
+        />
+      </PageHero>
 
-      <section className="editorial-section bg-surface">
+      <section id="checklist" className="editorial-section editorial-anchor bg-surface">
+        <div className="container-editorial editorial-split">
+          <div>
+            <h2 className="editorial-heading text-ink mb-5">{content.checklist.title}</h2>
+            <p className="text-muted">{content.checklist.description}</p>
+          </div>
+          <ul className="divide-y divide-ink/15 border-y border-ink/15">
+            {content.checklist.items.map((item) => (
+              <li key={item} className="flex gap-4 py-4">
+                <Check size={20} className="text-copper shrink-0 mt-1" aria-hidden="true" />
+                <span className="text-ink">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section id="eligibility" className="editorial-section editorial-anchor bg-paper">
         <div className="container-editorial">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-8">{content.eligibility.title}</h2>
-            <div className="space-y-5 text-muted leading-comfortable mb-8">
+          <h2 className="editorial-heading text-ink max-w-3xl mb-8 sm:mb-12">
+            {content.eligibility.title}
+          </h2>
+          <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-16 items-start">
+            <div className="space-y-5 text-muted">
               {content.eligibility.paragraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
             </div>
-            <div className="bg-paper rounded-editorial p-6">
-              <p className="text-ink leading-comfortable">
-                <span className="font-semibold">{content.eligibility.highlight.lead}</span>
+            <div className="editorial-positive text-muted">
+              <p>
+                <strong className="block text-ink mb-3">
+                  {content.eligibility.highlight.lead}
+                </strong>
                 {content.eligibility.highlight.text}
               </p>
             </div>
@@ -34,91 +66,51 @@ export default function Prerequis() {
         </div>
       </section>
 
-      <section className="editorial-section bg-paper">
-        <div className="container-editorial">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-8 text-center">
-              {content.criteria.title}
-            </h2>
-            <p className="text-muted leading-comfortable mb-10 text-center">
-              {content.criteria.description}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-              {content.criteria.items.map((critere) => (
-                <div key={critere.title} className="flex gap-3">
-                  <CheckCircle className="text-success-500 flex-shrink-0 mt-0.5" size={18} />
-                  <div>
-                    <p className="font-semibold text-ink mb-2">{critere.title}</p>
-                    <div className="space-y-2">
-                      {critere.paragraphs.map((paragraph) => (
-                        <p key={paragraph} className="text-sm text-muted leading-comfortable">
-                          {paragraph}
-                        </p>
-                      ))}
-                    </div>
+      <section id="criteria" className="editorial-section editorial-anchor bg-surface">
+        <div className="container-editorial editorial-split">
+          <div>
+            <h2 className="editorial-heading text-ink mb-5">{content.criteria.title}</h2>
+            <p className="text-muted">{content.criteria.description}</p>
+          </div>
+          <div>
+            <Accordion
+              items={content.criteria.items.map((item) => ({
+                question: item.title,
+                answer: (
+                  <div className="space-y-3">
+                    {item.paragraphs.map((paragraph) => (
+                      <p key={paragraph}>{paragraph}</p>
+                    ))}
                   </div>
-                </div>
-              ))}
-            </div>
-            <div className="bg-surface border border-ink/15 rounded-editorial p-6 text-center">
-              <p className="text-ink leading-comfortable">
-                {content.criteria.summary.beforeStrong}
-                <span className="font-semibold">{content.criteria.summary.strong}</span>
-                {content.criteria.summary.afterStrong}
-              </p>
-            </div>
+                ),
+              }))}
+            />
+            <p className="editorial-positive mt-6 text-sm">
+              {content.criteria.summary.beforeStrong}
+              <strong>{content.criteria.summary.strong}</strong>
+              {content.criteria.summary.afterStrong}
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="editorial-section bg-surface">
+      <section id="blocking-points" className="editorial-section editorial-anchor bg-paper">
         <div className="container-editorial">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-8 text-center">
-              {content.blockingPoints.title}
-            </h2>
-            <p className="text-muted leading-comfortable mb-8 text-center">
-              {content.blockingPoints.description}
-            </p>
-            <div className="bg-warning-100 border border-warning-200 rounded-editorial p-6 mb-6">
-              <ul className="space-y-3">
-                {content.blockingPoints.items.map((point) => (
-                  <li key={point} className="flex gap-2">
-                    <span className="text-warning-500 mt-1 flex-shrink-0">•</span>
-                    <span className="text-ink leading-comfortable">{point}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <p className="text-muted leading-comfortable text-center mb-6">
-              {content.blockingPoints.closing}
-            </p>
-            <div className="bg-success-100 border border-success-200 rounded-editorial p-6">
-              <p className="text-ink leading-comfortable">{content.blockingPoints.resultBox}</p>
-            </div>
+          <div className="max-w-3xl mb-8 sm:mb-12">
+            <h2 className="editorial-heading text-ink mb-5">{content.blockingPoints.title}</h2>
+            <p className="text-muted">{content.blockingPoints.description}</p>
           </div>
-        </div>
-      </section>
-
-      <section className="editorial-section bg-paper">
-        <div className="container-editorial">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-8 text-center">
-              {content.checklist.title}
-            </h2>
-            <p className="text-muted leading-comfortable mb-8 text-center">
-              {content.checklist.description}
-            </p>
-            <div className="bg-surface rounded-editorial p-8 max-w-2xl mx-auto">
-              <ul className="space-y-4">
-                {content.checklist.items.map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <CheckCircle className="text-success-500 flex-shrink-0 mt-0.5" size={18} />
-                    <span className="text-ink leading-comfortable">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <ul className="grid gap-x-10 gap-y-5 sm:grid-cols-2 border-y border-copper/25 py-7 sm:py-9">
+            {content.blockingPoints.items.map((point) => (
+              <li key={point} className="flex gap-3">
+                <CircleAlert size={18} className="text-copper shrink-0 mt-1" aria-hidden="true" />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="grid gap-6 mt-8 lg:grid-cols-2 lg:gap-16 items-start">
+            <p className="text-muted">{content.blockingPoints.closing}</p>
+            <p className="editorial-positive">{content.blockingPoints.resultBox}</p>
           </div>
         </div>
       </section>

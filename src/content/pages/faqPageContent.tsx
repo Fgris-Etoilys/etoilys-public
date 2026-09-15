@@ -409,7 +409,7 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
         'Notre équipe est à votre disposition pour répondre à toutes vos questions sur le classement de votre meublé de tourisme.',
       links: [
         { label: 'Nous contacter', href: '/contact', variant: 'primary' },
-        { label: 'Demander votre classement', href: '/demande-classement', variant: 'secondary' },
+        { label: 'Demander mon classement', href: '/demande-classement', variant: 'secondary' },
       ],
     },
   },

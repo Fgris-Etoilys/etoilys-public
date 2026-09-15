@@ -17,6 +17,7 @@ export default function Procedure() {
   const timelineSteps = content.steps.map((step) => ({
     number: step.number,
     title: step.title,
+    meta: step.meta,
     description: step.inspection ? (
       <>
         <p>
@@ -50,57 +51,36 @@ export default function Procedure() {
 
   return (
     <>
-      <PageHero title={content.hero.title} description={content.hero.description} />
+      <PageHero title={content.hero.title} description={content.hero.description} size="compact" />
 
       <section className="editorial-section bg-surface">
         <div className="container-editorial">
           <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-12 text-center">{content.stepsTitle}</h2>
+            <h2 className="editorial-heading text-ink mb-8 sm:mb-12">{content.stepsTitle}</h2>
             <Timeline steps={timelineSteps} />
           </div>
         </div>
       </section>
 
       <section className="editorial-section bg-paper">
-        <div className="container-editorial">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-12 text-center">
-              {content.keyFigures.title}
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-              {content.keyFigures.items.map((item) => (
-                <div
-                  key={item.value}
-                  className="bg-surface rounded-editorial p-6 flex flex-col items-center justify-center text-center"
-                >
-                  <div className="text-3xl font-bold text-ink mb-2">{item.value}</div>
-                  <p className="text-sm text-muted leading-comfortable">{item.label}</p>
-                </div>
-              ))}
-            </div>
+        <div className="container-editorial editorial-split">
+          <div>
+            <h2 className="editorial-heading text-ink mb-4">{content.certificate.title}</h2>
+            <p className="text-muted leading-comfortable">{content.certificate.description}</p>
           </div>
-        </div>
-      </section>
-
-      <section className="editorial-section bg-surface">
-        <div className="container-editorial">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-4 text-center">
-              {content.certificate.title}
-            </h2>
-            <p className="text-muted leading-comfortable mb-8 text-center">
-              {content.certificate.description}
-            </p>
-            <div className="bg-paper rounded-editorial p-8">
-              <ul className="space-y-4">
-                {content.certificate.items.map((item) => (
-                  <li key={item} className="flex gap-3">
-                    <CheckCircle className="text-success-500 flex-shrink-0 mt-0.5" size={18} />
-                    <span className="text-ink leading-comfortable">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div className="bg-surface border border-ink/10 rounded-editorial p-6 sm:p-8">
+            <ul className="space-y-4">
+              {content.certificate.items.map((item) => (
+                <li key={item} className="flex gap-3">
+                  <CheckCircle
+                    className="text-copper flex-shrink-0 mt-0.5"
+                    size={18}
+                    aria-hidden="true"
+                  />
+                  <span className="text-ink leading-comfortable">{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

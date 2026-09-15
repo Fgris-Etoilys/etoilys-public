@@ -140,12 +140,9 @@ export const layoutContent = {
           ],
         },
         {
-          title: 'Zones d’intervention',
-          links: [{ name: 'Toutes les zones d’intervention', href: '/zones-intervention' }],
-        },
-        {
           title: 'Entreprise',
           links: [
+            { name: 'Toutes les zones d’intervention', href: '/zones-intervention' },
             { name: 'Actualités', href: '/actualites' },
             { name: 'Recrutement', href: '/recrutement' },
             { name: 'FAQ', href: '/faq' },

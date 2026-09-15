@@ -1,13 +1,15 @@
-import type { LucideIcon } from 'lucide-react';
+import { ArrowUpRight, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import Card from './Card';
 
 interface FeatureCardProps {
   icon: LucideIcon;
   title: string;
   description: ReactNode;
-  linkHref?: string;
-  linkLabel?: string;
+  linkHref?: string | undefined;
+  linkLabel?: string | undefined;
+  className?: string;
 }
 
 export default function FeatureCard({
@@ -16,24 +18,40 @@ export default function FeatureCard({
   description,
   linkHref,
   linkLabel,
+  className = '',
 }: FeatureCardProps) {
+  const linkClasses = 'editorial-link ui-focus mt-5 min-h-11 text-sm';
+  const linkContent = (
+    <>
+      {linkLabel}
+      <ArrowUpRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+    </>
+  );
+
   return (
-    <Card hover={false} className="h-full p-6 sm:p-8">
-      <div className="inline-flex items-center justify-center w-12 h-12 rounded-control bg-paper mb-5">
-        <Icon className="h-6 w-6 text-copper" aria-hidden="true" />
+    <Card hover={false} className={`h-full flex flex-col p-6 sm:p-8 ${className}`}>
+      <div className="mb-5">
+        <Icon className="h-7 w-7 text-copper" strokeWidth={1.4} aria-hidden="true" />
       </div>
-      <h3 className="text-xl font-roboto font-semibold tracking-tight text-ink mb-3">{title}</h3>
-      <p className="text-muted leading-comfortable">{description}</p>
-      {linkHref && linkLabel && (
-        <a
-          href={linkHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="editorial-inline-link mt-4 inline-flex min-h-11 items-center text-sm font-medium"
-        >
-          {linkLabel}
-        </a>
-      )}
+      <h3 className="font-roboto text-xl font-semibold leading-snug tracking-tight text-ink mb-3">
+        {title}
+      </h3>
+      <p className="text-muted leading-comfortable flex-1">{description}</p>
+      {linkHref &&
+        linkLabel &&
+        (linkHref.startsWith('#') ? (
+          <a href={linkHref} className={linkClasses}>
+            {linkContent}
+          </a>
+        ) : linkHref.startsWith('/') && !linkHref.startsWith('//') ? (
+          <Link to={linkHref} className={linkClasses}>
+            {linkContent}
+          </Link>
+        ) : (
+          <a href={linkHref} target="_blank" rel="noopener noreferrer" className={linkClasses}>
+            {linkContent}
+          </a>
+        ))}
     </Card>
   );
 }

@@ -241,6 +241,8 @@
   margin-top: 35px;
 }
 .dd-benefit-cards article {
+  display: flex;
+  flex-direction: column;
   padding: 30px;
   border: 1px solid #173d491a;
   border-radius: 6px;
@@ -256,6 +258,7 @@
   margin-bottom: 14px;
 }
 .dd-benefit-cards p {
+  flex: 1;
   font-size: 14px;
   color: rgb(var(--color-muted));
 }

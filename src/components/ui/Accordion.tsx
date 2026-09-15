@@ -1,5 +1,5 @@
 import { useId, useState, type ReactNode } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 interface AccordionItem {
   question: string;
@@ -19,22 +19,22 @@ export default function Accordion({ items }: AccordionProps) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="border-t border-ink/20">
       {items.map((item, index) => (
-        <div key={index} className="bg-surface border border-ink/15 rounded-editorial">
+        <div key={index} className="border-b border-ink/20">
           <button
             type="button"
             id={`${id}-trigger-${index}`}
             aria-controls={`${id}-panel-${index}`}
             onClick={() => toggleItem(index)}
-            className="ui-focus w-full flex items-center justify-between rounded-editorial p-5 sm:p-6 text-left transition-colors duration-200 motion-reduce:transition-none hover:bg-surface-hover"
+            className="ui-focus w-full flex items-center justify-between gap-4 py-5 text-left transition-colors duration-200 motion-reduce:transition-none hover:text-copper"
             aria-expanded={openIndex === index}
           >
-            <span className="text-lg font-semibold text-ink pr-4">{item.question}</span>
-            <ChevronDown
+            <span className="text-base font-medium text-ink sm:text-lg">{item.question}</span>
+            <Plus
               aria-hidden="true"
               className={`h-5 w-5 text-copper flex-shrink-0 transition-transform duration-200 motion-reduce:transition-none ${
-                openIndex === index ? 'rotate-180' : ''
+                openIndex === index ? 'rotate-45' : ''
               }`}
             />
           </button>
@@ -44,7 +44,7 @@ export default function Accordion({ items }: AccordionProps) {
             aria-labelledby={`${id}-trigger-${index}`}
             hidden={openIndex !== index}
           >
-            <div className="px-5 pb-5 sm:px-6 sm:pb-6 text-muted leading-comfortable [&_a]:editorial-inline-link">
+            <div className="pb-6 pr-9 text-muted leading-comfortable [&_a]:editorial-inline-link">
               {item.answer}
             </div>
           </div>

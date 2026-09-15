@@ -48,6 +48,7 @@ describe('ResponsiveComparisonTable', () => {
     render(
       <ResponsiveComparisonTable
         caption="Comparison table caption"
+        appearance="editorial"
         primaryColumnKey="situation"
         columns={[
           { key: 'situation', label: 'Situation' },

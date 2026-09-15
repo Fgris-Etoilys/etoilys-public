@@ -4,7 +4,6 @@ import Button from '../components/ui/Button';
 import PageCta from '../components/ui/PageCta';
 import PageHero from '../components/ui/PageHero';
 import FeatureCard from '../components/ui/FeatureCard';
-import Card from '../components/ui/Card';
 import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
 import { classificationPageContent } from '../content/pages/classificationPageContent';
 import { getLocaleFromPath, getLocalizedPath } from '../i18n/routeHelpers';
@@ -28,15 +27,22 @@ export default function Classement() {
 
   return (
     <>
-      <PageHero title={content.hero.title} description={content.hero.description} />
+      <PageHero title={content.hero.title} description={content.hero.description}>
+        <dl className="editorial-facts">
+          {content.essentials.map((item) => (
+            <div key={item.label}>
+              <dt>{item.label}</dt>
+              <dd>{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </PageHero>
 
       <section className="editorial-section bg-surface">
         <div className="container-editorial">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="editorial-heading text-ink mb-8 text-center">
-              {content.definition.title}
-            </h2>
-            <div className="prose prose-lg max-w-none text-muted leading-comfortable space-y-4">
+          <div className="editorial-split">
+            <h2 className="editorial-heading text-ink">{content.definition.title}</h2>
+            <div className="text-muted leading-comfortable space-y-5">
               <p>
                 {content.definition.paragraph1.beforeCodeLink}
                 <a
@@ -96,12 +102,12 @@ export default function Classement() {
                 </Link>
                 {content.definition.paragraph3.afterRequirementsLink}
               </p>
-            </div>
-            <div className="bg-paper border border-ink/15 rounded-editorial p-4 mt-6">
-              <p className="text-sm text-muted leading-comfortable">
-                <span className="font-semibold text-ink">{content.definition.note.label}</span>
-                {content.definition.note.text}
-              </p>
+              <div className="editorial-notice">
+                <p className="text-sm text-muted leading-comfortable">
+                  <span className="font-semibold text-ink">{content.definition.note.label}</span>
+                  {content.definition.note.text}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -109,20 +115,25 @@ export default function Classement() {
 
       <section className="editorial-section bg-paper">
         <div className="container-editorial">
-          <h2 className="editorial-heading text-ink mb-12 text-center">{content.levelsTitle}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <h2 className="editorial-heading text-ink mb-10">{content.levelsTitle}</h2>
+          <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {content.levels.map((level) => (
-              <Card key={level.title} hover={false} className="p-8">
+              <li key={level.title} className="border-t border-ink/25 pt-6">
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: level.stars }).map((_, i) => (
-                    <Star key={i} className="h-6 w-6 text-warning fill-current" />
+                    <Star
+                      key={i}
+                      className="h-5 w-5 text-copper"
+                      strokeWidth={1.4}
+                      aria-hidden="true"
+                    />
                   ))}
                 </div>
                 <h3 className="text-xl font-roboto font-semibold text-ink mb-3">{level.title}</h3>
                 <p className="text-muted leading-comfortable">{level.description}</p>
-              </Card>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
