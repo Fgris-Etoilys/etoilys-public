@@ -409,6 +409,7 @@ function LocalV6PricingSection({ config }: { config: LocalLandingPageV6Config })
             <LocalPricingProfileSummary
               pricingProfile={getPricingProfile(config.pricing.pricingProfileId)}
               localityLabel={config.city}
+              presentation="direct"
             />
           </div>
         )}
@@ -541,7 +542,7 @@ function LocalV6TaxModuleSection({ module }: { module: LocalV6TaxModule }) {
       <div className="container-editorial local-v6-tax-grid">
         <div className="local-v6-tax-copy">
           <h2 className="editorial-heading" id="local-v6-tax-title">
-            {module.title}
+            <HighlightedTitle title={module.title} highlightedText={module.highlightedTitleText} />
           </h2>
           <div className="space-y-5 text-muted">
             {module.paragraphs.map((paragraph) => (

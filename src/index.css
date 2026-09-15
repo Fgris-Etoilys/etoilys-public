@@ -1032,6 +1032,12 @@
     border-top: 1px solid #deddd2;
   }
 
+  .local-v6-pricing-result-direct {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
   .local-v6-pricing-locality {
     margin-bottom: 10px;
     font-size: 14px;

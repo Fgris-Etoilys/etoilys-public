@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import DepartmentPricingSection from './DepartmentPricingSection';
+import DepartmentPricingSection, { LocalPricingProfileSummary } from './DepartmentPricingSection';
 import { DORDOGNE_DEPARTMENT_PAGE } from '../../content/local/departments/dordogne';
 import { getPricingProfile } from '../../content/local/pricing';
 
@@ -69,5 +69,24 @@ describe('Department pricing picker', () => {
       '/demande-classement'
     );
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps direct pricing compact without picker divider or duplicated note', () => {
+    const profile = getPricingProfile('dordogne-standard');
+    const { container } = render(
+      <MemoryRouter>
+        <LocalPricingProfileSummary
+          pricingProfile={profile}
+          localityLabel="Bergerac"
+          presentation="direct"
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Votre meublé à Bergerac')).toBeInTheDocument();
+    expect(container.querySelector('.local-v6-pricing-result')).toHaveClass(
+      'local-v6-pricing-result-direct'
+    );
+    expect(screen.queryByText(profile.note ?? '')).not.toBeInTheDocument();
   });
 });

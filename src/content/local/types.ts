@@ -270,6 +270,7 @@ export interface LocalV6PickerPricing {
 export interface LocalV6TaxModule {
   type: 'tax-comparison';
   title: string;
+  highlightedTitleText?: string;
   paragraphs: readonly string[];
   exampleLabel: string;
   exampleTitle: string;

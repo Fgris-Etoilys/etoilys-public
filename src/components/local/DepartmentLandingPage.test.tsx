@@ -164,6 +164,18 @@ describe('DepartmentLandingPage', () => {
       '/classement-meuble-tourisme-bergerac'
     );
     expect(document.body).not.toHaveTextContent(/V1|politique tarifaire|repère éditorial/i);
+    expect(
+      screen.getByRole('button', { name: 'Comment me préparer à une visite de classement ?' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Que faire une fois le classement obtenu ?' })
+    ).toBeInTheDocument();
+    expect(
+      document.querySelector('a[href="/actualites/preparer-visite-classement-meuble-tourisme"]')
+    ).toHaveTextContent('Voir notre guide pour préparer la visite de classement');
+    expect(
+      document.querySelector('a[href="/actualites/que-faire-apres-classement-meuble-tourisme"]')
+    ).toHaveTextContent('Voir les démarches à effectuer après le classement');
   });
 
   it('keeps the Dordogne intervention and focus contracts on generic V6 classes', () => {

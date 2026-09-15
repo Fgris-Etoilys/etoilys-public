@@ -25,6 +25,7 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 
 - `scope: 'department'` impose une zone par secteurs et un pricing `mode: 'picker'`.
 - `scope: 'city'` impose une zone par communes proches et un pricing `mode: 'direct'`. Le module local reste facultatif, par exemple pour une comparaison de taxe de séjour quand elle apporte un vrai contexte local.
+- En `city`, le bloc zone peut utiliser un titre court et humain comme `Au plus proche de chez vous`. La précision géographique est portée par l’intro, les communes, le H1 et le maillage ; ne pas forcer artificiellement le nom de la ville dans chaque H2.
 - Les contenus riches de FAQ sont des `ReactNode` pour préserver les liens internes, les ancres et les liens externes avec leurs attributs.
 - Les CTA gardent leur `variant` de tracking ; les ajustements visuels passent par `className`.
 
@@ -53,9 +54,12 @@ Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pend
 - Hero : le suffixe géographique du H1 est mis en cuivre avec `highlightedTitleText`. Le CTA principal reprend le motif Dordogne avec flèche. L’action secondaire est un lien éditorial vers le tarif, jamais un deuxième gros CTA vers le simulateur.
 - Crop hero : chaque config définit un point focal pertinent via `image.className`, puis le vérifie en desktop, tablette et mobile.
 - Tarifs : city et department affichent le même bloc explicatif avec les trois garanties Etoilys et le lien procédure ; seule la partie droite diffère (`mode: 'direct'` ou `mode: 'picker'`).
-- Module local : il est facultatif. Ne pas imposer de surtitre générique `CONTEXTE LOCAL`. Garder un rythme titre -> texte cohérent avec les autres introductions de section ; sur desktop, la partie éditoriale reste plus large que la preuve ou carte chiffrée.
+- Pricing `direct` : pas de divider de résultat ni de note tarifaire dupliquée dans le panneau ville.
+- Pricing `picker` : le divider et la note tarifaire sont conservés après sélection, car ils séparent le formulaire du résultat.
+- Module local : il est facultatif. Ne pas imposer de surtitre générique `CONTEXTE LOCAL`. Garder un rythme titre -> texte cohérent avec les autres introductions de section ; sur desktop, la partie éditoriale reste plus large que la preuve ou carte chiffrée. `highlightedTitleText` peut souligner en cuivre une courte expression importante du H2.
 - Images : une page locale ne réutilise pas par défaut le même asset pour le hero et l’expertise. Utiliser un second visuel local librement réutilisable et documenter son crédit/licence si nécessaire.
 - CTA final : reprendre le motif et la copy du département parent au lieu d’inventer une nouvelle formulation pour chaque ville. Bergerac reprend donc exactement le CTA final Dordogne.
+- FAQ : toutes les pages V6 incluent le socle FAQ commun, auquel s’ajoutent librement les questions propres au territoire. Ne pas uniformiser artificiellement le nombre total de questions.
 - Une migration V6 ne doit jamais appauvrir un motif validé simplement parce qu’un nouveau scope utilise moins de données.
 
 ## Exemples Minimaux
@@ -88,7 +92,7 @@ const CITY_V6: LocalLandingPageV6CityConfig = {
     secondaryAction: { href: '#tarifs', variant: 'secondary', label: 'Connaître mon tarif' },
   },
   serviceArea: {
-    title: 'Votre classement directement dans votre logement',
+    title: 'Au plus proche de chez vous',
     intro: 'Nos inspecteurs interviennent à Bergerac et dans le Bergeracois.',
     communes: ['Bergerac'],
     parentLink: { href: '/classement-meuble-tourisme-dordogne', label: 'Voir la Dordogne' },

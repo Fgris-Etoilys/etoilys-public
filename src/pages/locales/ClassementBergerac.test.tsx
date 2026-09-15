@@ -109,7 +109,7 @@ describe('ClassementBergerac', () => {
     expectHeadingSequence([
       'Classement de meublé de tourisme à Bergerac et dans le Bergeracois',
       'Pourquoi faire classer votre meublé de tourisme ?',
-      'Votre classement directement dans votre logement',
+      'Au plus proche de chez vous',
       'Combien coûte le classement d’un meublé à Bergerac ?',
       'Votre classement en trois étapes',
       'Pourquoi choisir Etoilys pour votre classement à Bergerac ?',
@@ -139,10 +139,7 @@ describe('ClassementBergerac', () => {
 
     expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
     expectHeadingSectionClass('Pourquoi faire classer votre meublé de tourisme ?', 'bg-paper');
-    expectHeadingSectionClass(
-      'Votre classement directement dans votre logement',
-      'local-v6-service-area'
-    );
+    expectHeadingSectionClass('Au plus proche de chez vous', 'local-v6-service-area');
     expectHeadingSectionClass('Combien coûte le classement d’un meublé à Bergerac ?', 'bg-paper');
     expectHeadingSectionClass('Votre classement en trois étapes', 'bg-surface-warm');
     expectHeadingSectionClass(
@@ -195,12 +192,18 @@ describe('ClassementBergerac', () => {
       document.body.textContent?.match(
         /Les tarifs ci-dessous sont tout compris, sans frais de déplacement/g
       ) ?? []
-    ).toHaveLength(1);
+    ).toHaveLength(0);
+    const directPricingResult = document.querySelector('.local-v6-pricing-result');
+    expect(directPricingResult).toHaveClass('local-v6-pricing-result-direct');
     expect(document.body).not.toHaveTextContent('CONTEXTE LOCAL');
     expect(document.querySelector('.local-v6-tax-grid')).toBeInTheDocument();
     expect(document.querySelector('.local-v6-tax-copy h2')).toHaveTextContent(
       'Un exemple concret à Bergerac : l’effet du classement sur la taxe de séjour'
     );
+    const taxHeading = screen.getByRole('heading', {
+      name: 'Un exemple concret à Bergerac : l’effet du classement sur la taxe de séjour',
+    });
+    expect(within(taxHeading).getByText('taxe de séjour')).toHaveClass('text-copper');
 
     expect(
       screen.getByRole('heading', {
@@ -243,6 +246,12 @@ describe('ClassementBergerac', () => {
         screen.getAllByRole('link', { name }).some((link) => link.getAttribute('href') === href)
       ).toBe(true);
     });
+    expect(
+      document.querySelector('a[href="/actualites/preparer-visite-classement-meuble-tourisme"]')
+    ).toHaveTextContent('Voir notre guide pour préparer la visite de classement');
+    expect(
+      document.querySelector('a[href="/actualites/que-faire-apres-classement-meuble-tourisme"]')
+    ).toHaveTextContent('Voir les démarches à effectuer après le classement');
 
     expect(document.body).not.toHaveTextContent(
       /témoignage|partenariat local|agence Etoilys à Bergerac/i
@@ -276,7 +285,7 @@ describe('ClassementBergerac', () => {
     });
     fireEvent.click(finalCta);
     expect(trackCtaClick).toHaveBeenLastCalledWith({
-      ctaId: 'cta_primary_demande_classement',
+      ctaId: 'cta_white_demande_classement',
       destinationPath: '/demande-classement',
     });
 

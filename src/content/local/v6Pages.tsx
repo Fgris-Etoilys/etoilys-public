@@ -63,6 +63,33 @@ const commonProcedure = {
   note: 'Nos inspecteurs vous accompagnent à chaque étape, de votre demande à la remise des documents de classement.',
 } as const;
 
+const COMMON_LOCAL_V6_FAQ_ITEMS = [
+  {
+    question: 'Comment me préparer à une visite de classement ?',
+    answer: (
+      <>
+        Quelques vérifications avant le rendez-vous permettent de préparer sereinement la visite :
+        équipements, informations utiles et principaux critères de la grille.{' '}
+        <Link to="/actualites/preparer-visite-classement-meuble-tourisme">
+          Voir notre guide pour préparer la visite de classement
+        </Link>
+      </>
+    ),
+  },
+  {
+    question: 'Que faire une fois le classement obtenu ?',
+    answer: (
+      <>
+        Une fois votre classement obtenu, quelques démarches restent à effectuer, notamment pour
+        l’affichage, la déclaration, la taxe de séjour et vos annonces.{' '}
+        <Link to="/actualites/que-faire-apres-classement-meuble-tourisme">
+          Voir les démarches à effectuer après le classement
+        </Link>
+      </>
+    ),
+  },
+] as const;
+
 const dordogneQuestions = [
   {
     question: 'Intervenez-vous dans ma commune en Dordogne ?',
@@ -295,7 +322,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
       href: '/contact',
       label: 'Parlons-en',
     },
-    items: dordogneQuestions,
+    items: [...dordogneQuestions, ...COMMON_LOCAL_V6_FAQ_ITEMS],
   },
   finalCta: {
     eyebrow: 'À VOUS DE JOUER',
@@ -378,7 +405,7 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   },
   proofItems: DORDOGNE_LOCAL_LANDING_PAGE_V6.proofItems,
   serviceArea: {
-    title: 'Votre classement directement dans votre logement',
+    title: 'Au plus proche de chez vous',
     intro:
       'Nos inspecteurs interviennent à Bergerac et dans le Bergeracois, sans frais de déplacement, notamment à :',
     communes: BERGERAC_SERVICE_COMMUNES,
@@ -425,6 +452,7 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   localModule: {
     type: 'tax-comparison',
     title: 'Un exemple concret à Bergerac : l’effet du classement sur la taxe de séjour',
+    highlightedTitleText: 'taxe de séjour',
     paragraphs: [
       'Entre le centre historique, la Dordogne et les vignobles du Bergeracois, le secteur accueille de nombreux gîtes, maisons de vacances et appartements proposés en location saisonnière. Dans ce contexte local, l’écart de taxe de séjour entre un meublé non classé et un meublé classé donne un exemple concret de l’intérêt du classement.',
       'À Bergerac, un meublé non classé relève en 2026 d’un tarif proportionnel au prix de la nuitée. Un meublé classé bénéficie au contraire d’un montant fixe par personne.',
@@ -450,7 +478,14 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       href: '/contact',
       label: 'Parlons-en',
     },
-    items: bergeracFaqItems,
+    items: [...bergeracFaqItems, ...COMMON_LOCAL_V6_FAQ_ITEMS],
   },
-  finalCta: DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
+  finalCta: {
+    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
+    primaryAction: {
+      ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta.primaryAction,
+      variant: 'white',
+      className: 'editorial-inverse-button',
+    },
+  },
 };

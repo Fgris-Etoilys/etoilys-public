@@ -355,14 +355,23 @@ export default function DepartmentPricingSection({
 export function LocalPricingProfileSummary({
   pricingProfile,
   localityLabel,
+  presentation = 'picker',
 }: {
   pricingProfile: PricingProfile;
   localityLabel?: string;
+  presentation?: 'direct' | 'picker';
 }) {
   return (
-    <div className="local-v6-pricing-result" aria-live="polite">
+    <div
+      className={`local-v6-pricing-result ${
+        presentation === 'direct' ? 'local-v6-pricing-result-direct' : ''
+      }`}
+      aria-live="polite"
+    >
       {localityLabel && <p className="local-v6-pricing-locality">Votre meublé à {localityLabel}</p>}
-      {pricingProfile.note && <p className="local-v6-pricing-note">{pricingProfile.note}</p>}
+      {presentation === 'picker' && pricingProfile.note && (
+        <p className="local-v6-pricing-note">{pricingProfile.note}</p>
+      )}
       <div className="local-v6-pricing-public">
         <span>{pricingProfile.standard.label}</span>
         <p className="local-v6-pricing-amount">
