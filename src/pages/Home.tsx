@@ -7,12 +7,15 @@ import {
   Users,
   Globe,
   ArrowUpRight,
-  Check,
   type LucideIcon,
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import PageCta from '../components/ui/PageCta';
 import PageHero from '../components/ui/PageHero';
+import EditorialHeroMedia from '../components/ui/EditorialHeroMedia';
+import ClassificationHeroNote from '../components/ui/ClassificationHeroNote';
+import HeroReassurance from '../components/ui/HeroReassurance';
+import ProofStrip from '../components/ui/ProofStrip';
 import FeatureCard from '../components/ui/FeatureCard';
 import ArticleCard from '../components/ui/ArticleCard';
 import SmartImage from '../components/ui/SmartImage';
@@ -73,27 +76,28 @@ export default function Home() {
           </>
         }
         description={content.hero.description}
-        image={{
-          assetKey: 'homeHero',
-          alt: content.hero.imageAlt,
-          sizes: getSeoRouteConfig(location.pathname).lcpImageSizes ?? '100vw',
-        }}
-        imageOverlay={
-          <div className="editorial-hero-note">
-            <div className="mb-3 flex gap-1.5 text-copper" aria-hidden="true">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} size={18} strokeWidth={1.4} />
-              ))}
-            </div>
-            <p className="mb-2 font-semibold text-ink">{content.hero.photoNote.title}</p>
-            <p className="text-sm leading-relaxed text-muted">
-              {content.hero.photoNote.description}
-            </p>
-          </div>
+        media={
+          <EditorialHeroMedia
+            assetKey="homeHero"
+            alt={content.hero.imageAlt}
+            sizes={getSeoRouteConfig(location.pathname).lcpImageSizes ?? '100vw'}
+            priority
+            note={
+              <ClassificationHeroNote
+                title={content.hero.photoNote.title}
+                description={content.hero.photoNote.description}
+              />
+            }
+          />
         }
       >
-        <div className="flex flex-col items-start gap-3">
-          <Button href={content.hero.primaryCta.href} variant="primary" size="lg" className="gap-3">
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+          <Button
+            href={content.hero.primaryCta.href}
+            variant="primary"
+            size="lg"
+            className="editorial-hero-cta"
+          >
             {content.hero.primaryCta.label}
             <ArrowUpRight size={18} aria-hidden="true" />
           </Button>
@@ -106,41 +110,17 @@ export default function Home() {
             {content.hero.secondaryCta.label}
           </Button>
         </div>
-        <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
-          {content.hero.reassurance.map((item) => (
-            <li key={item} className="flex items-center gap-2">
-              <Check size={15} className="shrink-0 text-copper" aria-hidden="true" />
-              {item}
-            </li>
-          ))}
-        </ul>
+        <HeroReassurance items={content.hero.reassurance} />
       </PageHero>
 
-      <div className="border-y border-ink/10 bg-surface">
-        <ul className="container-editorial editorial-proof-strip">
-          {content.proofStrip.map((proof) => {
-            const Icon = homeFeatureIcons[proof.icon];
-            return (
-              <li key={proof.title} className="editorial-proof-item">
-                <Icon
-                  size={27}
-                  strokeWidth={1.4}
-                  className="shrink-0 text-copper"
-                  aria-hidden="true"
-                />
-                <div>
-                  <p className="mb-1 text-sm font-semibold text-ink">{proof.title}</p>
-                  {proof.link ? (
-                    renderFeatureLink(proof.link)
-                  ) : (
-                    <p className="text-sm text-muted">{proof.description}</p>
-                  )}
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      <ProofStrip
+        items={content.proofStrip.map((proof) => ({
+          icon: homeFeatureIcons[proof.icon],
+          title: proof.title,
+          description: proof.description,
+          ...(proof.link ? { link: proof.link } : {}),
+        }))}
+      />
 
       <section className="editorial-section bg-paper">
         <div className="container-editorial">

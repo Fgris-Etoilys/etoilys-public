@@ -116,7 +116,7 @@ export default function Classement() {
       <section className="editorial-section bg-paper">
         <div className="container-editorial">
           <h2 className="editorial-heading text-ink mb-10">{content.levelsTitle}</h2>
-          <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
             {content.levels.map((level) => (
               <li key={level.title} className="border-t border-ink/25 pt-6">
                 <div className="flex gap-1 mb-4">

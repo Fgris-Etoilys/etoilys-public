@@ -105,7 +105,7 @@ export const homePageContent = {
         label: 'Les avantages du classement',
         href: '/les-avantages-du-classement',
       },
-      reassurance: ['Rappel sous 24 h ouvrées', 'Une visite à votre logement'],
+      reassurance: ['Rappel sous 24 h ouvrées', 'Visite en moyenne sous deux semaines'],
       photoNote: {
         title: 'Un classement de 1 à 5 étoiles',
         description: 'Du studio au grand gîte, un repère de qualité pour vos voyageurs.',
@@ -114,7 +114,7 @@ export const homePageContent = {
     proofStrip: [
       {
         icon: 'shield',
-        title: 'Organisme accrédité',
+        title: 'Accréditation Cofrac',
         description: 'Cofrac Inspection n° 3-2394',
         link: {
           label: 'Cofrac Inspection n° 3-2394',
@@ -271,7 +271,7 @@ export const homePageContent = {
         label: 'The benefits of classification',
         href: '/en/benefits-of-furnished-tourist-accommodation-classification',
       },
-      reassurance: ['Callback within 24 business hours', 'An inspection at your property'],
+      reassurance: ['Callback within 24 business hours', 'Inspection usually within two weeks'],
       photoNote: {
         title: 'A classification from 1 to 5 stars',
         description: 'From studios to large holiday homes, a quality reference for your guests.',
@@ -467,7 +467,7 @@ export const homePageContent = {
         label: 'Voordelen van classificatie',
         href: '/nl/voordelen-classificatie-vakantiewoning',
       },
-      reassurance: ['Terugbellen binnen 24 werkuren', 'Een inspectie in uw woning'],
+      reassurance: ['Terugbellen binnen 24 werkuren', 'Inspectie gemiddeld binnen twee weken'],
       photoNote: {
         title: 'Een classificatie van 1 tot 5 sterren',
         description: 'Van studio tot groot vakantiehuis, een kwaliteitskenmerk voor uw gasten.',

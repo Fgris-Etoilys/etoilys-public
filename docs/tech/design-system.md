@@ -24,10 +24,13 @@ Le Header et le Footer sont uniques. Le Footer utilise les contenus FR/EN/NL de 
 
 La Home, Classement, Avantages, Prérequis, Procédure et FAQ utilisent le socle éditorial dans leurs variantes FR/EN/NL. Cette migration part directement d’ETOILYS-394, sans attendre le framework local V6 d’ETOILYS-398.
 
-- `PageHero` accepte une image optionnelle et des enfants. La Home compose ainsi un hero en deux colonnes, avec sa photo LCP sans voile ; les autres pages peuvent y ajouter un sommaire ou leurs repères essentiels. Les `sizes` de la Home viennent de la configuration SEO pour rester identiques au preload.
-- `PageCta` compose un texte et une colonne d’actions sur fond `ink`, empilés sur mobile. Le CTA clair de la FAQ reste local. `editorial-inverse-button` donne une surface ivoire au CTA principal sur fond sombre sans changer son identifiant analytics.
+- `PageHero` reste le shell de hero. Il accepte un slot `media`, un surtitre et des enfants pour les CTA, réassurances ou sommaires. Il ne porte pas de logique locale ou métier.
+- `EditorialHeroMedia` porte la géométrie photo partagée issue de Dordogne : grand arrondi supérieur gauche, autres coins discrets, caption optionnelle, note superposée et index décoratif optionnel. Les crops restent passés par `imageClassName`.
+- `ClassificationHeroNote` unifie le cartouche “1 à 5 étoiles” de la Home et de Dordogne. `HeroReassurance` unifie les petites preuves sous CTA avec coche cuivre.
+- `ProofStrip` unifie les bandeaux de preuves Home/Dordogne : icône ou grande valeur éditoriale, titre, description ou lien.
+- `PageCta` compose un texte et une colonne d’actions sur fond `ink`, empilés sur mobile. Il accepte seulement `eyebrow` en plus du texte et des enfants. `editorial-inverse-button` donne une surface ivoire au CTA principal sur fond sombre sans changer son identifiant analytics.
 - `editorial-title` complète la typographie des héros. `editorial-inline-link` conserve le flux des liens dans les paragraphes et leur focus clavier. `editorial-inverse-button` adapte un bouton secondaire au fond sombre sans changer sa variante, utilisée dans son identifiant analytics.
-- `FeatureCard`, `Timeline`, `Accordion` et `ArticleCard` utilisent la palette partagée. L’ancienne propriété `iconColor` de `FeatureCard` est supprimée. Les autres consommateurs (départements et Recrutement) reçoivent aussi cette apparence, sans migration de leur structure.
+- `FeatureCard`, `Timeline`, `Accordion` et `ArticleCard` utilisent la palette partagée. `FeatureCard` reprend par défaut la densité des cartes bénéfices Dordogne, sans variante locale. Les autres consommateurs (Home, Avantages, pages départementales et Recrutement) reçoivent aussi cette apparence.
 - Les accordéons gardent un seul panneau ouvert par groupe. Les réponses restent montées dans le DOM ; `hidden` retire les panneaux fermés de l’affichage, de l’arbre d’accessibilité et du parcours clavier. Les associations ARIA utilisent `useId` et l’index ; Enter/Espace restent gérés nativement par les boutons.
 - Les avertissements éditoriaux emploient le cuivre, les résultats favorables un fond `ink/5`, avec des libellés explicites. Les erreurs de formulaire gardent leur sémantique d’alerte. Les routes, chiffres métier, variantes analytics et image LCP restent conservés.
 
@@ -37,7 +40,7 @@ Lors du contrôle de référence ETOILYS-395 sur `913becf`, l’erreur d’hydra
 
 ### Pages locales et formulaires
 
-Les règles de contenu `.dd-*`, notamment la variante `isDordogne` du pricing, sont une dette à supprimer dans **ETOILYS-398**. Ne pas ajouter de nouvelle exception de route. La migration des formulaires/simulateurs relève d’ETOILYS-396.
+Les règles `.dd-*` restantes sont réservées aux compositions vraiment locales : pricing, service area, tarif par commune et ajustements de section territoriale. La variante `isDordogne` du pricing, le framework des pages locales, les secteurs/communes, les configs départementales et le pricing par commune restent explicitement délégués à **ETOILYS-398**. Ne pas ajouter de nouvelle exception de route. La migration des formulaires/simulateurs relève d’ETOILYS-396.
 
 ## Validation
 

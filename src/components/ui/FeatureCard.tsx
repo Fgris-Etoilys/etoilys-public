@@ -20,7 +20,7 @@ export default function FeatureCard({
   linkLabel,
   className = '',
 }: FeatureCardProps) {
-  const linkClasses = 'editorial-link ui-focus mt-5 min-h-11 text-sm';
+  const linkClasses = 'editorial-link ui-focus mt-auto pt-5 text-sm';
   const linkContent = (
     <>
       {linkLabel}
@@ -29,14 +29,12 @@ export default function FeatureCard({
   );
 
   return (
-    <Card hover={false} className={`h-full flex flex-col p-6 sm:p-8 ${className}`}>
-      <div className="mb-5">
-        <Icon className="h-7 w-7 text-copper" strokeWidth={1.4} aria-hidden="true" />
+    <Card hover={false} className={`h-full flex flex-col p-6 sm:p-[30px] ${className}`}>
+      <div className="mb-5 sm:mb-6">
+        <Icon className="h-[30px] w-[30px] text-copper" strokeWidth={1.4} aria-hidden="true" />
       </div>
-      <h3 className="font-roboto text-xl font-semibold leading-snug tracking-tight text-ink mb-3">
-        {title}
-      </h3>
-      <p className="text-muted leading-comfortable flex-1">{description}</p>
+      <h3 className="mb-3 font-roboto text-[21px] font-semibold leading-snug text-ink">{title}</h3>
+      <p className="flex-1 text-sm leading-comfortable text-muted">{description}</p>
       {linkHref &&
         linkLabel &&
         (linkHref.startsWith('#') ? (

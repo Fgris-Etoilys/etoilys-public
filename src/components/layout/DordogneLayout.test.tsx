@@ -43,7 +43,10 @@ describe('Shared site layout', () => {
       expect(screen.getByRole('main')).toHaveAttribute('id', 'main-content');
       const sizes = getSeoRouteConfig(path).lcpImageSizes;
       const heroAsset = IMAGE_MANIFEST.dordogneLaRoqueGageac;
-      expect(document.querySelector('.dd-hero-photo img')).toHaveAttribute('src', heroAsset.src);
+      expect(document.querySelector('.editorial-hero-media-photo img')).toHaveAttribute(
+        'src',
+        heroAsset.src
+      );
       expect(document.querySelector('link[data-seo-lcp-preload]')).toHaveAttribute(
         'href',
         heroAsset.src
@@ -62,16 +65,27 @@ describe('Shared site layout', () => {
         'dd-expertise-title',
         'dd-faq-title',
       ]);
-      expect(document.querySelector('.dd-hero-photo source[type="image/avif"]')).toHaveAttribute(
-        'sizes',
-        sizes
-      );
+      expect(
+        document.querySelector('.editorial-hero-media-photo source[type="image/avif"]')
+      ).toHaveAttribute('sizes', sizes);
       expect(document.querySelector('link[data-seo-lcp-preload]')).toHaveAttribute(
         'imagesizes',
         sizes
       );
       expect(document.querySelectorAll('link[hreflang]')).toHaveLength(0);
       expect(screen.getByRole('button', { name: /^Le classement$/ })).toBeInTheDocument();
+      expect(document.querySelector('.dd-benefit-cards')).toBeNull();
+      expect(document.querySelector('.dd-steps')).toBeNull();
+      expect(document.querySelector('.dd-faq details')).toBeNull();
+      const faqButtons = Array.from(document.querySelectorAll('.dd-faq button[aria-expanded]'));
+      expect(faqButtons.length).toBeGreaterThan(1);
+      const [firstFaqButton, secondFaqButton] = faqButtons;
+      if (!firstFaqButton || !secondFaqButton) throw new Error('Missing shared FAQ buttons');
+      fireEvent.click(firstFaqButton);
+      expect(firstFaqButton).toHaveAttribute('aria-expanded', 'true');
+      fireEvent.click(secondFaqButton);
+      expect(firstFaqButton).toHaveAttribute('aria-expanded', 'false');
+      expect(secondFaqButton).toHaveAttribute('aria-expanded', 'true');
 
       const contactLink = screen.getByRole('contentinfo').querySelector('a[href="/contact"]');
       if (!contactLink) throw new Error('The local footer must provide the contact route');

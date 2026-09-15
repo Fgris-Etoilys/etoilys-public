@@ -12,6 +12,15 @@ import {
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import SmartImage from '../../components/ui/SmartImage';
+import PageHero from '../../components/ui/PageHero';
+import EditorialHeroMedia from '../../components/ui/EditorialHeroMedia';
+import ClassificationHeroNote from '../../components/ui/ClassificationHeroNote';
+import HeroReassurance from '../../components/ui/HeroReassurance';
+import ProofStrip from '../../components/ui/ProofStrip';
+import FeatureCard from '../../components/ui/FeatureCard';
+import Timeline from '../../components/ui/Timeline';
+import Accordion from '../../components/ui/Accordion';
+import PageCta from '../../components/ui/PageCta';
 import DepartmentPricingSection from '../../components/local/DepartmentPricingSection';
 import { LocalDepartmentServiceAreaSection } from '../../components/local/LocalLandingSections';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
@@ -22,6 +31,33 @@ const heroImageSizes =
   getSeoRouteConfig('/classement-meuble-tourisme-dordogne').lcpImageSizes ?? '100vw';
 const officialClassificationUrl =
   'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme';
+
+const heroReassurance = [
+  'Rappel sous 24 h ouvrées',
+  'Visite en moyenne sous deux semaines',
+  'Aucun frais de déplacement',
+] as const;
+
+const processSteps = [
+  {
+    number: 1,
+    title: 'Vous nous parlez de votre logement.',
+    description:
+      'Envoyez vos coordonnées et l’adresse du meublé. Nous vous rappelons sous 24 h ouvrées pour préciser votre projet.',
+  },
+  {
+    number: 2,
+    title: 'Nous préparons la visite ensemble.',
+    description:
+      'Nous confirmons le tarif et les modalités, puis convenons d’une date. La visite a lieu en moyenne sous deux semaines.',
+  },
+  {
+    number: 3,
+    title: 'Votre logement est évalué sur place.',
+    description:
+      'Après le contrôle selon la grille officielle, vous recevez les documents et la proposition de classement.',
+  },
+] as const;
 
 const questions = [
   {
@@ -124,97 +160,70 @@ const questions = [
 export default function ClassementDordogne() {
   return (
     <div className="dd-landing">
-      <section className="dd-hero container-editorial" aria-labelledby="dd-title">
-        <div className="dd-hero-copy">
-          <p className="dd-eyebrow">
-            <span /> PROPRIÉTAIRES EN DORDOGNE
-          </p>
-          <h1 id="dd-title">
-            Classement de gîtes et meublés de tourisme <em>en Dordogne</em>
-          </h1>
-          <p className="dd-hero-description">
-            Faites classer votre gîte, maison ou appartement de 1 à 5 étoiles avec Etoilys,
-            organisme accrédité Cofrac. Nous réalisons la visite officielle dans votre logement.
-          </p>
-          <Button href="/demande-classement" size="lg" className="dd-button">
+      <PageHero
+        eyebrow="Propriétaires en Dordogne"
+        title={
+          <>
+            Classement de gîtes et meublés de tourisme{' '}
+            <span className="text-copper">en Dordogne</span>
+          </>
+        }
+        description="Faites classer votre gîte, maison ou appartement de 1 à 5 étoiles avec Etoilys, organisme accrédité Cofrac. Nous réalisons la visite officielle dans votre logement."
+        media={
+          <EditorialHeroMedia
+            assetKey="dordogneLaRoqueGageac"
+            alt="Les maisons de pierre de La Roque-Gageac au bord de la Dordogne"
+            priority
+            sizes={heroImageSizes}
+            imageClassName="h-full w-full object-cover object-[38%_center] max-[680px]:object-[center_48%]"
+            caption={
+              <>
+                <MapPin size={14} aria-hidden="true" /> La Roque-Gageac, Dordogne
+              </>
+            }
+            note={
+              <ClassificationHeroNote
+                title="Un classement de 1 à 5 étoiles"
+                description="Du studio au grand gîte, un repère de qualité pour vos voyageurs."
+              />
+            }
+            index="24 / LE PÉRIGORD"
+          />
+        }
+      >
+        <div className="flex flex-col items-start gap-3">
+          <Button href="/demande-classement" size="lg" className="editorial-hero-cta">
             Demander mon classement <ArrowUpRight size={20} aria-hidden="true" />
           </Button>
           <a href="#department-pricing-locality" className="editorial-link ui-focus dd-hero-price">
             Connaître mon tarif <ArrowDown size={16} aria-hidden="true" />
           </a>
-          <ul className="dd-hero-reassurance">
-            <li>
-              <Check size={15} aria-hidden="true" />
-              Rappel sous 24 h ouvrées
-            </li>
-            <li>
-              <Check size={15} aria-hidden="true" />
-              Visite en moyenne sous deux semaines
-            </li>
-            <li>
-              <Check size={15} aria-hidden="true" />
-              Aucun frais de déplacement
-            </li>
-          </ul>
         </div>
-        <div className="dd-hero-visual">
-          <figure className="dd-hero-photo">
-            <SmartImage
-              assetKey="dordogneLaRoqueGageac"
-              alt="Les maisons de pierre de La Roque-Gageac au bord de la Dordogne"
-              priority
-              sizes={heroImageSizes}
-            />
-            <figcaption>
-              <MapPin size={14} aria-hidden="true" /> La Roque-Gageac, Dordogne
-            </figcaption>
-          </figure>
-          <div className="dd-photo-note">
-            <span className="dd-star-line" aria-hidden="true">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star key={star} size={19} />
-              ))}
-            </span>
-            <p>
-              Du studio au grand gîte,
-              <br />
-              <strong>un classement de 1 à 5 étoiles.</strong>
-            </p>
-            <span>Un repère de qualité pour vos voyageurs.</span>
-          </div>
-          <span className="dd-photo-index" aria-hidden="true">
-            24 / LE PÉRIGORD
-          </span>
-        </div>
-      </section>
+        <HeroReassurance items={heroReassurance} />
+      </PageHero>
 
-      <div className="dd-proof-strip">
-        <div className="container-editorial dd-proof-inner">
-          <div>
-            <ShieldCheck size={27} strokeWidth={1.3} aria-hidden="true" />
-            <p>
-              <strong>Organisme accrédité</strong>
-              <a href={COFRAC_ACCREDITATION_URL} target="_blank" rel="noopener noreferrer">
-                Cofrac Inspection n° 3-2394 <ArrowUpRight size={13} aria-hidden="true" />
-              </a>
-            </p>
-          </div>
-          <div>
-            <span className="dd-proof-number">5</span>
-            <p>
-              <strong>ans de validité</strong>
-              <span>Une fois le classement acquis</span>
-            </p>
-          </div>
-          <div>
-            <MapPin size={26} strokeWidth={1.3} aria-hidden="true" />
-            <p>
-              <strong>Une équipe qui connaît votre secteur</strong>
-              <span>À votre écoute, réactive à chaque étape.</span>
-            </p>
-          </div>
-        </div>
-      </div>
+      <ProofStrip
+        items={[
+          {
+            icon: ShieldCheck,
+            title: 'Organisme accrédité',
+            link: {
+              href: COFRAC_ACCREDITATION_URL,
+              label: 'Cofrac Inspection n° 3-2394',
+            },
+          },
+          {
+            value: '5',
+            title: 'ans de validité',
+            description: 'Une fois le classement acquis',
+          },
+          {
+            icon: MapPin,
+            title: 'Une équipe qui connaît votre secteur',
+            description: 'À votre écoute, réactive à chaque étape.',
+          },
+        ]}
+      />
 
       <section
         id="le-classement"
@@ -222,42 +231,33 @@ export default function ClassementDordogne() {
         aria-labelledby="dd-benefits-title"
       >
         <div className="dd-section-intro">
-          <p className="dd-eyebrow">LE CLASSEMENT, POUR VOUS</p>
+          <p className="editorial-eyebrow">LE CLASSEMENT, POUR VOUS</p>
           <h2 className="editorial-heading" id="dd-benefits-title">
             Pourquoi faire classer votre meublé de tourisme ?
           </h2>
         </div>
-        <div className="dd-benefit-cards">
-          <article>
-            <Calculator size={30} strokeWidth={1.4} aria-hidden="true" />
-            <h3>Une fiscalité micro-BIC plus favorable</h3>
-            <p>
-              Profitez d’un abattement fiscal plus élevé et d’un plafond de recettes supérieur à
-              ceux d’un meublé non classé.
-            </p>
-            <Link to="/simulateur-fiscal-classement" className="dd-small-link">
-              Sous conditions : estimer mon avantage <ArrowUpRight size={14} aria-hidden="true" />
-            </Link>
-          </article>
-          <article>
-            <Receipt size={30} strokeWidth={1.4} aria-hidden="true" />
-            <h3>Une taxe de séjour maîtrisée</h3>
-            <p>
-              Un tarif fixé selon vos étoiles, indépendant du prix de la nuitée. Une taxe qui peut
-              être moins élevée pour vos voyageurs, selon le barème local.
-            </p>
-            <Link to="/simulateur-taxe-sejour" className="dd-small-link">
-              Comparer pour ma location <ArrowUpRight size={14} aria-hidden="true" />
-            </Link>
-          </article>
-          <article>
-            <Star size={30} strokeWidth={1.4} aria-hidden="true" />
-            <h3>Un repère officiel de qualité</h3>
-            <p>Des étoiles reconnues pour valoriser votre logement et rassurer vos voyageurs.</p>
-            <Link to="/les-avantages-du-classement" className="dd-small-link">
-              Découvrir les avantages du classement <ArrowUpRight size={14} aria-hidden="true" />
-            </Link>
-          </article>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+          <FeatureCard
+            icon={Calculator}
+            title="Une fiscalité micro-BIC plus favorable"
+            description="Profitez d’un abattement fiscal plus élevé et d’un plafond de recettes supérieur à ceux d’un meublé non classé."
+            linkHref="/simulateur-fiscal-classement"
+            linkLabel="Sous conditions : estimer mon avantage"
+          />
+          <FeatureCard
+            icon={Receipt}
+            title="Une taxe de séjour maîtrisée"
+            description="Un tarif fixé selon vos étoiles, indépendant du prix de la nuitée. Une taxe qui peut être moins élevée pour vos voyageurs, selon le barème local."
+            linkHref="/simulateur-taxe-sejour"
+            linkLabel="Comparer pour ma location"
+          />
+          <FeatureCard
+            icon={Star}
+            title="Un repère officiel de qualité"
+            description="Des étoiles reconnues pour valoriser votre logement et rassurer vos voyageurs."
+            linkHref="/les-avantages-du-classement"
+            linkLabel="Découvrir les avantages du classement"
+          />
         </div>
       </section>
 
@@ -285,7 +285,7 @@ export default function ClassementDordogne() {
         aria-labelledby="dd-tariff-title"
       >
         <div className="dd-tariff-copy">
-          <p className="dd-eyebrow">VOTRE LOGEMENT, VOTRE TARIF</p>
+          <p className="editorial-eyebrow">VOTRE LOGEMENT, VOTRE TARIF</p>
           <h2 className="editorial-heading" id="dd-tariff-title">
             Quel tarif pour classer votre meublé en Dordogne ?
           </h2>
@@ -328,7 +328,7 @@ export default function ClassementDordogne() {
         <div className="container-editorial">
           <div className="dd-process-heading">
             <div>
-              <p className="dd-eyebrow">DE LA DEMANDE AUX ÉTOILES</p>
+              <p className="editorial-eyebrow">DE LA DEMANDE AUX ÉTOILES</p>
               <h2 className="editorial-heading" id="dd-process-title">
                 Votre classement en trois étapes
               </h2>
@@ -337,32 +337,7 @@ export default function ClassementDordogne() {
               La procédure en détail <ArrowUpRight size={17} aria-hidden="true" />
             </Link>
           </div>
-          <ol className="dd-steps">
-            <li>
-              <span>01</span>
-              <h3>Vous nous parlez de votre logement.</h3>
-              <p>
-                Envoyez vos coordonnées et l’adresse du meublé. Nous vous rappelons sous 24 h
-                ouvrées pour préciser votre projet.
-              </p>
-            </li>
-            <li>
-              <span>02</span>
-              <h3>Nous préparons la visite ensemble.</h3>
-              <p>
-                Nous confirmons le tarif et les modalités, puis convenons d’une date. La visite a
-                lieu en moyenne sous deux semaines.
-              </p>
-            </li>
-            <li>
-              <span>03</span>
-              <h3>Votre logement est évalué sur place.</h3>
-              <p>
-                Après le contrôle selon la grille officielle, vous recevez les documents et la
-                proposition de classement.
-              </p>
-            </li>
-          </ol>
+          <Timeline layout="horizontal" steps={processSteps} />
           <p className="dd-process-note">
             Nos inspecteurs vous accompagnent à chaque étape, de votre demande à la remise des
             documents de classement.
@@ -370,13 +345,14 @@ export default function ClassementDordogne() {
         </div>
       </section>
 
-      <section className="dd-expertise" aria-labelledby="dd-expertise-title">
-        <div className="container-editorial dd-expertise-grid">
-          <figure className="dd-stone-photo">
+      <section className="dd-expertise bg-surface" aria-labelledby="dd-expertise-title">
+        <div className="container-editorial editorial-media-split">
+          <figure className="editorial-expertise-photo dd-stone-photo">
             <SmartImage
               assetKey="dordogneLandscape"
               alt="Architecture de pierre et végétation dans un village du Périgord"
               sizes="(min-width: 900px) 35vw, 100vw"
+              className="h-full w-full object-cover object-[center_55%] max-[680px]:object-[center_40%]"
             />
             <figcaption>Les pierres du Périgord.</figcaption>
           </figure>
@@ -437,7 +413,7 @@ export default function ClassementDordogne() {
         aria-labelledby="dd-faq-title"
       >
         <div>
-          <p className="dd-eyebrow">AVANT DE VOUS LANCER</p>
+          <p className="editorial-eyebrow">AVANT DE VOUS LANCER</p>
           <h2 className="editorial-heading" id="dd-faq-title">
             Questions fréquentes sur le classement en Dordogne
           </h2>
@@ -447,39 +423,27 @@ export default function ClassementDordogne() {
           </Link>
         </div>
         <div className="dd-faq-list">
-          {questions.map(({ question, answer }) => (
-            <details key={question}>
-              <summary>
-                {question}
-                <span aria-hidden="true">+</span>
-              </summary>
-              <div>{answer}</div>
-            </details>
-          ))}
+          <Accordion items={questions} />
         </div>
       </section>
 
-      <section className="dd-final" aria-labelledby="dd-final-title">
-        <div className="container-editorial dd-final-inner">
-          <div>
-            <p className="dd-eyebrow">À VOUS DE JOUER</p>
-            <h2 className="editorial-heading" id="dd-final-title">
-              Demandez le classement de votre meublé en Dordogne
-            </h2>
-            <p>
-              Parlez-nous de votre projet. Rappel sous 24 h ouvrées,
-              <br />
-              visite en moyenne sous deux semaines.
-            </p>
-          </div>
-          <div className="dd-final-action">
-            <Button href="/demande-classement" size="lg" className="dd-button dd-button-light">
-              Demander mon classement <ArrowRight size={20} aria-hidden="true" />
-            </Button>
-            <span>Tarif confirmé avant tout engagement.</span>
-          </div>
-        </div>
-      </section>
+      <PageCta
+        eyebrow="À VOUS DE JOUER"
+        title="Demandez le classement de votre meublé en Dordogne"
+        description="Parlez-nous de votre projet. Rappel sous 24 h ouvrées, visite en moyenne sous deux semaines."
+      >
+        <Button
+          href="/demande-classement"
+          size="lg"
+          variant="secondary"
+          className="editorial-inverse-button editorial-hero-cta"
+        >
+          Demander mon classement <ArrowRight size={20} aria-hidden="true" />
+        </Button>
+        <span className="text-center text-xs text-white/75">
+          Tarif confirmé avant tout engagement.
+        </span>
+      </PageCta>
     </div>
   );
 }

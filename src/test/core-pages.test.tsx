@@ -128,4 +128,23 @@ describe('core pages', () => {
       });
     }
   );
+
+  it.each([
+    ['/', '/les-avantages-du-classement#reconnaissance'],
+    ['/en', '/en/benefits-of-furnished-tourist-accommodation-classification#reconnaissance'],
+    ['/nl', '/nl/voordelen-classificatie-vakantiewoning#reconnaissance'],
+  ])('links Home feature cards to the recognition anchor on %s', (pathname, href) => {
+    const { container } = render(
+      <MemoryRouter initialEntries={[pathname]}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+    const link = container.querySelector<HTMLAnchorElement>(`a[href="${href}"]`);
+    expect(link).not.toBeNull();
+    if (!link) throw new Error('Missing recognition link');
+
+    fireEvent.click(link);
+
+    expect(container.querySelector('#reconnaissance')).not.toBeNull();
+  });
 });
