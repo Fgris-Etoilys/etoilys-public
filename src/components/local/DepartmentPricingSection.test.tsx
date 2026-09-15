@@ -10,7 +10,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('Dordogne pricing variant', () => {
+describe('Department pricing picker', () => {
   it('requires a commune selection and preserves pricing, keyboard search and fallback paths', async () => {
     const config = DORDOGNE_DEPARTMENT_PAGE.pricing;
     if (!config) throw new Error('Dordogne pricing config is required');
@@ -26,11 +26,11 @@ describe('Dordogne pricing variant', () => {
 
     const { container } = render(
       <MemoryRouter>
-        <DepartmentPricingSection config={config} variant="dordogne" />
+        <DepartmentPricingSection config={config} presentation="panel" />
       </MemoryRouter>
     );
     const input = screen.getByRole('combobox', { name: 'Commune' });
-    expect(container.querySelector('.dd-pricing-amount')).toBeNull();
+    expect(container.querySelector('.local-v6-pricing-amount')).toBeNull();
     fireEvent.focus(input);
     expect(screen.getByRole('status')).toBeInTheDocument();
     expect(await screen.findByRole('alert')).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('Dordogne pricing variant', () => {
     fireEvent.change(input, { target: { value: 'per' } });
     expect(await screen.findByRole('option', { name: 'Périgueux' })).toBeInTheDocument();
     fireEvent.keyDown(input, { key: 'Enter' });
-    expect(container.querySelector('.dd-pricing-amount')).toHaveTextContent(
+    expect(container.querySelector('.local-v6-pricing-amount')).toHaveTextContent(
       profile.standard.amount
     );
     expect(screen.getByRole('link', { name: 'Demander mon classement' })).toHaveAttribute(
@@ -52,7 +52,7 @@ describe('Dordogne pricing variant', () => {
     profile.multiProperty?.rows.forEach((row) => expect(multiple).toHaveTextContent(row.amount));
 
     fireEvent.change(input, { target: { value: 'Commune absente' } });
-    expect(container.querySelector('.dd-pricing-amount')).toBeNull();
+    expect(container.querySelector('.local-v6-pricing-amount')).toBeNull();
     expect(screen.getByRole('status')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /indiquez votre adresse/i })).toHaveAttribute(
       'href',

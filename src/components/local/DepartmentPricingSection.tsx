@@ -4,7 +4,11 @@ import { Euro } from 'lucide-react';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 import { parseCommuneIndexDataset, type CommuneIndexEntry } from '../../content/local/communeIndex';
-import { getPricingProfile, type PricingProfileId } from '../../content/local/pricing';
+import {
+  getPricingProfile,
+  type PricingProfile,
+  type PricingProfileId,
+} from '../../content/local/pricing';
 import type { DepartmentPricingResolutionConfig } from '../../content/local/types';
 import {
   normalizeLocalitySearchTerm,
@@ -12,13 +16,12 @@ import {
   searchPreparedLocalities,
   type LocalitySearchItem,
 } from '../../utils/localitySearch';
-import { LocalTariffsProfileContent } from './LocalLandingSections';
 
 const MAX_LOCALITY_SUGGESTIONS = 8;
 
 interface DepartmentPricingSectionProps {
   config: DepartmentPricingResolutionConfig;
-  variant?: 'default' | 'dordogne';
+  presentation?: 'section' | 'panel';
 }
 
 interface PricingSearchItem extends LocalitySearchItem {
@@ -41,11 +44,8 @@ function buildSearchItems(communes: readonly CommuneIndexEntry[]): PricingSearch
 
 export default function DepartmentPricingSection({
   config,
-  variant = 'default',
+  presentation = 'section',
 }: DepartmentPricingSectionProps) {
-  // ponytail: local pricing presentation retained until ETOILYS-398 unifies department pages.
-  const isDordogne = variant === 'dordogne';
-  const Heading = isDordogne ? 'h3' : 'h2';
   const [communes, setCommunes] = useState<CommuneIndexEntry[] | null>(null);
   const [isLoadingCommunes, setIsLoadingCommunes] = useState(false);
   const [loadingError, setLoadingError] = useState<string | null>(null);
@@ -212,199 +212,194 @@ export default function DepartmentPricingSection({
     }
   }
 
-  return (
-    <section className={isDordogne ? 'dd-pricing' : 'bg-white py-section'}>
-      <div className={isDordogne ? undefined : 'container-adaptive'}>
-        <div className={isDordogne ? undefined : 'mx-auto max-w-6xl'}>
-          <div
-            className={
-              isDordogne
-                ? 'dd-pricing-eyebrow'
-                : 'mb-5 inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-2 text-sm font-semibold text-primary-400'
-            }
-          >
-            <Euro className="h-4 w-4" aria-hidden="true" />
-            Tarifs
-          </div>
-          <Heading className={isDordogne ? 'dd-pricing-title' : 'mb-5'}>
-            {isDordogne ? 'Sélectionnez votre commune' : config.title}
-          </Heading>
-          <p
-            className={
-              isDordogne ? 'dd-pricing-intro' : 'mb-8 max-w-5xl text-textLight leading-comfortable'
-            }
-          >
-            {config.intro}
-          </p>
+  const content = (
+    <>
+      <div className="local-v6-pricing-eyebrow">
+        <Euro className="h-4 w-4" aria-hidden="true" />
+        Tarifs
+      </div>
+      <h2 className={presentation === 'panel' ? 'local-v6-pricing-title' : 'mb-5'}>
+        {presentation === 'panel' ? 'Sélectionnez votre commune' : config.title}
+      </h2>
+      <p
+        className={
+          presentation === 'panel'
+            ? 'local-v6-pricing-intro'
+            : 'mb-8 max-w-5xl text-textLight leading-comfortable'
+        }
+      >
+        {config.intro}
+      </p>
 
-          <Card hover={false} className={isDordogne ? 'dd-pricing-search' : 'mb-8 p-6'}>
-            <div className="relative max-w-2xl">
-              <label
-                htmlFor="department-pricing-locality"
-                className="mb-2 block text-sm font-medium text-gray-700"
-              >
-                {config.inputLabel}
-              </label>
-              <input
-                id="department-pricing-locality"
-                type="text"
-                value={query}
-                onChange={(event) => handleQueryChange(event.target.value)}
-                onFocus={handleInputFocus}
-                onBlur={handleInputBlur}
-                onKeyDown={handleInputKeyDown}
-                placeholder={config.placeholder}
-                autoComplete="off"
-                inputMode="search"
-                role="combobox"
-                aria-autocomplete="list"
-                aria-expanded={isListOpen && suggestions.length > 0}
-                aria-controls={listId}
-                aria-activedescendant={
-                  highlightedIndex >= 0
-                    ? `department-pricing-option-${highlightedIndex}`
-                    : undefined
-                }
-                aria-busy={isLoadingCommunes}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary-300"
-              />
-              {isListOpen && suggestions.length > 0 && (
-                <ul
-                  id={listId}
-                  role="listbox"
-                  className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow-card"
+      <Card
+        hover={false}
+        className={presentation === 'panel' ? 'local-v6-pricing-search' : 'mb-8 p-6'}
+      >
+        <div className="relative max-w-2xl">
+          <label
+            htmlFor="department-pricing-locality"
+            className="mb-2 block text-sm font-medium text-gray-700"
+          >
+            {config.inputLabel}
+          </label>
+          <input
+            id="department-pricing-locality"
+            type="text"
+            value={query}
+            onChange={(event) => handleQueryChange(event.target.value)}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            onKeyDown={handleInputKeyDown}
+            placeholder={config.placeholder}
+            autoComplete="off"
+            inputMode="search"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded={isListOpen && suggestions.length > 0}
+            aria-controls={listId}
+            aria-activedescendant={
+              highlightedIndex >= 0 ? `department-pricing-option-${highlightedIndex}` : undefined
+            }
+            aria-busy={isLoadingCommunes}
+            className="ui-field"
+          />
+          {isListOpen && suggestions.length > 0 && (
+            <ul
+              id={listId}
+              role="listbox"
+              className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-editorial border border-ink/15 bg-white shadow-[0_12px_30px_rgb(var(--color-ink)/0.12)]"
+            >
+              {suggestions.map((item, index) => (
+                <li
+                  id={`department-pricing-option-${index}`}
+                  key={item.id}
+                  role="option"
+                  aria-selected={highlightedIndex === index}
+                  className={`cursor-pointer px-4 py-3 text-sm ${
+                    highlightedIndex === index
+                      ? 'bg-surface-neutral text-ink'
+                      : 'text-ink hover:bg-surface-hover'
+                  }`}
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                    selectSuggestion(item);
+                  }}
                 >
-                  {suggestions.map((item, index) => (
-                    <li
-                      id={`department-pricing-option-${index}`}
-                      key={item.id}
-                      role="option"
-                      aria-selected={highlightedIndex === index}
-                      className={`cursor-pointer px-4 py-2 text-sm ${
-                        highlightedIndex === index
-                          ? 'bg-primary-100 text-primary-500'
-                          : 'text-gray-700 hover:bg-gray-50'
-                      }`}
-                      onMouseDown={(event) => {
-                        event.preventDefault();
-                        selectSuggestion(item);
-                      }}
-                    >
-                      {item.label}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <p className="mt-3 text-sm leading-comfortable text-textLight">
-              Votre meublé se situe dans un autre département ?{' '}
-              <Link
-                to="/zones-intervention"
-                className="font-medium text-primary-300 underline hover:text-primary-400"
-              >
-                Découvrez toutes nos zones d’intervention.
-              </Link>
-            </p>
-            {isDordogne && isLoadingCommunes && (
-              <p className="dd-pricing-feedback" role="status">
-                Chargement des communes…
-              </p>
-            )}
-            {loadingError && (!isDordogne || !isLoadingCommunes) && (
-              <p
-                className={
-                  isDordogne ? 'dd-pricing-feedback dd-pricing-error' : 'mt-2 text-sm text-red-600'
-                }
-                role={isDordogne ? 'alert' : undefined}
-              >
-                {loadingError}
-                {isDordogne && (
-                  <>
-                    {' '}
-                    <button type="button" onClick={requestCommunes}>
-                      Réessayer
-                    </button>
-                  </>
-                )}
-              </p>
-            )}
-            {isDordogne &&
-              communes &&
-              !resolution &&
-              normalizeLocalitySearchTerm(query) &&
-              suggestions.length === 0 && (
-                <p className="dd-pricing-feedback" role="status">
-                  Commune introuvable dans notre liste.{' '}
-                  <Link to="/demande-classement">Indiquez votre adresse dans une demande</Link> pour
-                  vérifier les possibilités d’intervention.
-                </p>
-              )}
-          </Card>
-
-          {resolution &&
-            resolvedPricingProfile &&
-            (isDordogne ? (
-              <div className="dd-pricing-result" aria-live="polite">
-                <p className="dd-pricing-locality">Votre meublé à {resolution.label}</p>
-                {resolvedPricingProfile.note && (
-                  <p className="dd-pricing-note">{resolvedPricingProfile.note}</p>
-                )}
-                <div className="dd-pricing-public">
-                  <span>{resolvedPricingProfile.standard.label}</span>
-                  <p className="dd-pricing-amount">
-                    {resolvedPricingProfile.standard.amount}{' '}
-                    <small>{resolvedPricingProfile.standard.qualifier}</small>
-                  </p>
-                </div>
-                {resolvedPricingProfile.partner && (
-                  <div className="dd-pricing-partner">
-                    <strong>
-                      {resolvedPricingProfile.partner.amount}{' '}
-                      {resolvedPricingProfile.partner.qualifier}
-                    </strong>
-                    <p>
-                      Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.
-                      {resolvedPricingProfile.partner.conditions && (
-                        <> {resolvedPricingProfile.partner.conditions}</>
-                      )}
-                    </p>
-                  </div>
-                )}
-                {resolvedPricingProfile.multiProperty && (
-                  <details className="dd-pricing-multiple">
-                    <summary>Plusieurs logements dans le même secteur ?</summary>
-                    <dl>
-                      {resolvedPricingProfile.multiProperty.rows.map((row) => (
-                        <div key={row.key}>
-                          <dt>{row.label}</dt>
-                          <dd>{row.amount} TTC</dd>
-                        </div>
-                      ))}
-                    </dl>
-                  </details>
-                )}
-                <p className="dd-pricing-note">
-                  La possibilité d’intervention est confirmée avec vous avant de fixer la visite.
-                </p>
-                <Button href="/demande-classement" className="dd-pricing-cta">
-                  Demander mon classement
-                </Button>
-              </div>
-            ) : (
-              <div className="rounded-card border border-gray-200 bg-white p-6 shadow-card">
-                <p className="mb-5 text-sm font-semibold uppercase tracking-wide text-primary-500">
-                  Tarif applicable à {resolution.label}
-                </p>
-                <LocalTariffsProfileContent pricingProfile={resolvedPricingProfile} />
-              </div>
-            ))}
-          {isDordogne && !resolution && (
-            <p className="dd-pricing-hint">
-              Sélectionnez une commune pour découvrir le tarif de votre visite.
-            </p>
+                  {item.label}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
+        <p className="mt-3 text-sm leading-comfortable text-muted">
+          Votre meublé se situe dans un autre département ?{' '}
+          <Link to="/zones-intervention" className="editorial-inline-link">
+            Découvrez toutes nos zones d’intervention.
+          </Link>
+        </p>
+        {isLoadingCommunes && (
+          <p className="local-v6-pricing-feedback" role="status">
+            Chargement des communes…
+          </p>
+        )}
+        {loadingError && !isLoadingCommunes && (
+          <p className="local-v6-pricing-feedback local-v6-pricing-error" role="alert">
+            {loadingError}{' '}
+            <button type="button" onClick={requestCommunes}>
+              Réessayer
+            </button>
+          </p>
+        )}
+        {communes &&
+          !resolution &&
+          normalizeLocalitySearchTerm(query) &&
+          suggestions.length === 0 && (
+            <p className="local-v6-pricing-feedback" role="status">
+              Commune introuvable dans notre liste.{' '}
+              <Link to="/demande-classement" className="editorial-inline-link">
+                Indiquez votre adresse dans une demande
+              </Link>{' '}
+              pour vérifier les possibilités d’intervention.
+            </p>
+          )}
+      </Card>
+
+      {resolution && resolvedPricingProfile && (
+        <LocalPricingProfileSummary
+          pricingProfile={resolvedPricingProfile}
+          localityLabel={resolution.label}
+        />
+      )}
+      {!resolution && (
+        <p className="local-v6-pricing-hint">
+          Sélectionnez une commune pour découvrir le tarif de votre visite.
+        </p>
+      )}
+    </>
+  );
+
+  if (presentation === 'panel') {
+    return <div className="local-v6-pricing">{content}</div>;
+  }
+
+  return (
+    <section className="bg-white py-section">
+      <div className="container-adaptive">
+        <div className="mx-auto max-w-6xl">{content}</div>
       </div>
     </section>
+  );
+}
+
+export function LocalPricingProfileSummary({
+  pricingProfile,
+  localityLabel,
+}: {
+  pricingProfile: PricingProfile;
+  localityLabel?: string;
+}) {
+  return (
+    <div className="local-v6-pricing-result" aria-live="polite">
+      {localityLabel && (
+        <p className="local-v6-pricing-locality">Tarif applicable à {localityLabel}</p>
+      )}
+      {pricingProfile.note && <p className="local-v6-pricing-note">{pricingProfile.note}</p>}
+      <div className="local-v6-pricing-public">
+        <span>{pricingProfile.standard.label}</span>
+        <p className="local-v6-pricing-amount">
+          {pricingProfile.standard.amount} <small>{pricingProfile.standard.qualifier}</small>
+        </p>
+      </div>
+      {pricingProfile.partner && (
+        <div className="local-v6-pricing-partner">
+          <strong>
+            {pricingProfile.partner.amount} {pricingProfile.partner.qualifier}
+          </strong>
+          <p>
+            {pricingProfile.partner.label}
+            {pricingProfile.partner.conditions && <> {pricingProfile.partner.conditions}</>}
+          </p>
+        </div>
+      )}
+      {pricingProfile.multiProperty && (
+        <details className="local-v6-pricing-multiple">
+          <summary>Plusieurs logements dans le même secteur ?</summary>
+          <dl>
+            {pricingProfile.multiProperty.rows.map((row) => (
+              <div key={row.key}>
+                <dt>{row.label}</dt>
+                <dd>{row.amount} TTC</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+      )}
+      <p className="local-v6-pricing-note">
+        La possibilité d’intervention est confirmée avec vous avant de fixer la visite.
+      </p>
+      <Button href="/demande-classement" className="local-v6-pricing-cta">
+        Demander mon classement
+      </Button>
+    </div>
   );
 }

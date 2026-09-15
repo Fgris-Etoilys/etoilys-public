@@ -149,6 +149,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-dordogne'],
     ogImageKey: 'bergeracHero',
     lcpImageKey: 'bergeracHero',
+    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 681px) 45vw, 100vw',
   },
   '/classement-meuble-tourisme-bordeaux': {
     lastModified: '2026-07-24',

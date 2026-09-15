@@ -25,6 +25,7 @@ function expectSingleLayoutAndSeo(path: string) {
   expect(screen.getByRole('banner')).toHaveClass('fixed');
   expect(screen.getByRole('contentinfo')).toHaveClass('site-footer');
   expect(document.querySelector('.dordogne-shell')).toBeNull();
+  expect(document.querySelector('.dd-landing')).toBeNull();
   expect(document.querySelectorAll('link[rel="canonical"]')).toHaveLength(1);
   expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
     'href',
@@ -62,15 +63,16 @@ describe('Shared site layout', () => {
         'content',
         `https://www.etoilys.fr${heroAsset.src}`
       );
-      const sectionIds = Array.from(document.querySelectorAll('.dd-landing > section')).map(
-        (section) => section.getAttribute('aria-labelledby')
-      );
-      const tariffIndex = sectionIds.indexOf('dd-tariff-title');
-      expect(sectionIds.slice(tariffIndex, tariffIndex + 4)).toEqual([
-        'dd-tariff-title',
-        'dd-process-title',
-        'dd-expertise-title',
-        'dd-faq-title',
+      const sectionIds = Array.from(document.querySelectorAll('.local-v6-landing > section'))
+        .map((section) => section.getAttribute('aria-labelledby'))
+        .filter(Boolean);
+      expect(sectionIds).toEqual([
+        'local-v6-benefits-title',
+        'local-v6-service-area-title',
+        'local-v6-pricing-title',
+        'local-v6-process-title',
+        'local-v6-expertise-title',
+        'local-v6-faq-title',
       ]);
       expect(
         document.querySelector('.editorial-hero-media-photo source[type="image/avif"]')
@@ -81,11 +83,7 @@ describe('Shared site layout', () => {
       );
       expect(document.querySelectorAll('link[hreflang]')).toHaveLength(0);
       expect(screen.getByRole('button', { name: /^Le classement$/ })).toBeInTheDocument();
-      expect(document.querySelector('.dd-benefit-cards')).toBeNull();
-      expect(document.querySelector('.dd-steps')).toBeNull();
-      expect(document.querySelector('.dd-faq details')).toBeNull();
       expect(document.querySelectorAll('.editorial-eyebrow-marked')).toHaveLength(1);
-      expect(document.querySelector('.dd-faq .editorial-eyebrow-marked')).toBeNull();
       const proofValue = document.querySelector('.editorial-proof-value');
       expect(proofValue).toHaveTextContent('5');
       expect(proofValue).not.toHaveAttribute('aria-hidden');
@@ -109,7 +107,9 @@ describe('Shared site layout', () => {
         ctaId: 'cta_primary_demande_classement',
         destinationPath: '/demande-classement',
       });
-      const faqButtons = Array.from(document.querySelectorAll('.dd-faq button[aria-expanded]'));
+      const faqButtons = Array.from(
+        document.querySelectorAll('.local-v6-faq button[aria-expanded]')
+      );
       expect(faqButtons.length).toBeGreaterThan(1);
       const [firstFaqButton, secondFaqButton] = faqButtons;
       if (!firstFaqButton || !secondFaqButton) throw new Error('Missing shared FAQ buttons');

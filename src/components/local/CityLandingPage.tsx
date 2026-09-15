@@ -2,7 +2,9 @@ import Button from '../ui/Button';
 import Card from '../ui/Card';
 import { getPricingProfile } from '../../content/local/pricing';
 import type { CityLandingPageConfig } from '../../content/cityLandingPages';
+import type { LocalLandingPageV6CityConfig } from '../../content/local/types';
 import { renderLocalMarkdownLinks } from './renderLocalMarkdownLinks';
+import LocalLandingPageV6 from './LocalLandingPageV6';
 import {
   LocalCityServiceAreaSection,
   LocalEtoilysReasonsSection,
@@ -15,10 +17,14 @@ import {
 } from './LocalLandingSections';
 
 interface CityLandingPageProps {
-  config: CityLandingPageConfig;
+  config: CityLandingPageConfig | LocalLandingPageV6CityConfig;
 }
 
 export default function CityLandingPage({ config }: CityLandingPageProps) {
+  if (config.layoutVersion === 'v6') {
+    return <LocalLandingPageV6 config={config} />;
+  }
+
   const localWarningPlacement = config.localWarningPlacement ?? 'afterServiceArea';
   const hasAfterTaxLocalWarning =
     localWarningPlacement === 'afterTax' && config.localWarning !== undefined;

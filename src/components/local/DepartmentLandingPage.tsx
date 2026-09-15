@@ -10,6 +10,8 @@ import DepartmentPricingSection from './DepartmentPricingSection';
 import { renderLocalMarkdownLinks } from './renderLocalMarkdownLinks';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
 import type { DepartmentLandingPageConfig } from '../../content/local/types';
+import type { LocalLandingPageV6DepartmentConfig } from '../../content/local/types';
+import LocalLandingPageV6 from './LocalLandingPageV6';
 import {
   LocalDepartmentServiceAreaSection,
   LocalEtoilysReasonsSection,
@@ -21,10 +23,14 @@ import {
 } from './LocalLandingSections';
 
 interface DepartmentLandingPageProps {
-  config: DepartmentLandingPageConfig;
+  config: DepartmentLandingPageConfig | LocalLandingPageV6DepartmentConfig;
 }
 
 export default function DepartmentLandingPage({ config }: DepartmentLandingPageProps) {
+  if (config.layoutVersion === 'v6') {
+    return <LocalLandingPageV6 config={config} />;
+  }
+
   const faqItems = config.faq.items.map((item) => ({
     ...item,
     answer: renderLocalMarkdownLinks(item.answer),

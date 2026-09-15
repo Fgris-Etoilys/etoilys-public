@@ -56,7 +56,7 @@ interface CityFinalCtaContent {
 }
 
 export interface CityLandingPageConfig {
-  layoutVersion?: 'v3' | 'v4';
+  layoutVersion?: 'v4';
   localWarningPlacement?: 'afterServiceArea' | 'afterTax';
   pricingProfileId: PricingProfileId;
   city: string;
