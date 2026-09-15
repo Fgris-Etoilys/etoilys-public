@@ -13,7 +13,7 @@ Le socle ETOILYS-394 reprend la direction Dordogne. Les composants partagés uti
 
 ## Composants et shell
 
-`Button` conserve ses variantes, tailles, navigation et événements analytics. Les CTA Dordogne gardent leurs ajustements dimensionnels locaux. `Card` n’est plus déplacée au survol.
+`Button` conserve ses variantes, tailles, navigation et événements analytics. Les dimensions des CTA Dordogne sont portées par les primitives partagées. `Card` n’est plus déplacée au survol.
 
 Les champs conservent leurs propriétés et les attributs ARIA fournis par leurs appelants. Leurs labels et messages sont associés en interne ; les formulaires n’ont pas besoin de modifier leurs usages.
 

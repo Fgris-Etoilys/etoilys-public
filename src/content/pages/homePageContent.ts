@@ -34,7 +34,7 @@ export type HomePageContent = {
     title: { lead: string; accent: string };
     description: string;
     reassurance: readonly string[];
-    photoNote: { title: string; description: string };
+    photoNote: { lead: string; title: string; caption: string };
     primaryCta: {
       label: string;
       href: string;
@@ -115,8 +115,9 @@ export const homePageContent = {
       },
       reassurance: ['Rappel sous 24 h ouvrées', 'Visite en moyenne sous deux semaines'],
       photoNote: {
-        title: 'Un classement de 1 à 5 étoiles',
-        description: 'Du studio au grand gîte, un repère de qualité pour vos voyageurs.',
+        lead: 'Du studio au grand gîte,',
+        title: 'un classement de 1 à 5 étoiles.',
+        caption: 'Un repère de qualité pour vos voyageurs.',
       },
     },
     proofStrip: [
@@ -281,8 +282,9 @@ export const homePageContent = {
       },
       reassurance: ['Callback within 24 business hours', 'Inspection usually within two weeks'],
       photoNote: {
-        title: 'A classification from 1 to 5 stars',
-        description: 'From studios to large holiday homes, a quality reference for your guests.',
+        lead: 'From studios to large holiday homes,',
+        title: 'a classification from 1 to 5 stars.',
+        caption: 'A quality reference for your guests.',
       },
     },
     proofStrip: [
@@ -477,8 +479,9 @@ export const homePageContent = {
       },
       reassurance: ['Terugbellen binnen 24 werkuren', 'Inspectie gemiddeld binnen twee weken'],
       photoNote: {
-        title: 'Een classificatie van 1 tot 5 sterren',
-        description: 'Van studio tot groot vakantiehuis, een kwaliteitskenmerk voor uw gasten.',
+        lead: 'Van studio tot groot vakantiehuis,',
+        title: 'een classificatie van 1 tot 5 sterren.',
+        caption: 'Een kwaliteitskenmerk voor uw gasten.',
       },
     },
     proofStrip: [

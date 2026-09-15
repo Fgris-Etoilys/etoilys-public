@@ -39,24 +39,6 @@ const homeFeatureIcons = {
   globe: Globe,
 } as const satisfies Record<HomeIconKey, LucideIcon>;
 
-const classificationNoteContent = {
-  fr: {
-    lead: 'Du studio au grand gîte,',
-    title: 'un classement de 1 à 5 étoiles.',
-    caption: 'Un repère de qualité pour vos voyageurs.',
-  },
-  en: {
-    lead: 'From studios to large holiday homes,',
-    title: 'a classification from 1 to 5 stars.',
-    caption: 'A quality reference for your guests.',
-  },
-  nl: {
-    lead: 'Van studio tot groot vakantiehuis,',
-    title: 'een classificatie van 1 tot 5 sterren.',
-    caption: 'Een kwaliteitskenmerk voor uw gasten.',
-  },
-} as const;
-
 function renderFeatureLink(link: NonNullable<HomeFeature['link']>) {
   const className = 'editorial-link ui-focus inline-flex items-center gap-2 text-sm';
   const label = (
@@ -103,9 +85,9 @@ export default function Home() {
             priority
             note={
               <ClassificationHeroNote
-                lead={classificationNoteContent[locale].lead}
-                title={classificationNoteContent[locale].title}
-                caption={classificationNoteContent[locale].caption}
+                lead={content.hero.photoNote.lead}
+                title={content.hero.photoNote.title}
+                caption={content.hero.photoNote.caption}
               />
             }
           />

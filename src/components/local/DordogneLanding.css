@@ -48,6 +48,13 @@
 }
 .dd-service-area h2 {
   max-width: 810px;
+  font-size: var(--editorial-heading-size);
+  line-height: 1.16;
+  letter-spacing: -0.04em;
+}
+.dd-service-area h3 {
+  font-family: inherit;
+  letter-spacing: -0.025em;
 }
 .dd-service-area p {
   color: rgb(var(--color-muted));

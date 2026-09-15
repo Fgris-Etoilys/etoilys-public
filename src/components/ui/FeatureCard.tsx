@@ -34,7 +34,7 @@ export default function FeatureCard({
       hover={false}
       className={`h-full flex flex-col border-ink/10 p-[26px] min-[681px]:p-[22px] min-[900px]:p-[30px] ${className}`}
     >
-      <div className="mb-4 min-[900px]:mb-[23px]">
+      <div className="mb-4 min-[681px]:mb-[23px]">
         <Icon className="h-[30px] w-[30px] text-copper" strokeWidth={1.4} aria-hidden="true" />
       </div>
       <h3 className="mb-[14px] font-roboto text-[18px] font-semibold leading-[1.4] tracking-[-0.025em] text-ink min-[900px]:text-[21px]">
