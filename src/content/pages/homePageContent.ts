@@ -3,14 +3,22 @@ import { COFRAC_ACCREDITATION_URL } from '../accreditationLinks';
 
 export type HomeIconKey = 'shield' | 'star' | 'clock' | 'calculator' | 'users' | 'globe';
 
-export type HomeFeature = {
-  icon: HomeIconKey;
+type HomeFeatureBase = {
   title: string;
   description: string;
   link?: {
     label: string;
     href: string;
   };
+};
+
+export type HomeFeature = HomeFeatureBase & {
+  icon: HomeIconKey;
+};
+
+export type HomeProofFeature = HomeFeatureBase & {
+  icon?: HomeIconKey;
+  value?: string;
 };
 
 export type HomeServiceLink = {
@@ -36,7 +44,7 @@ export type HomePageContent = {
       href: string;
     };
   };
-  proofStrip: readonly HomeFeature[];
+  proofStrip: readonly HomeProofFeature[];
   features: {
     eyebrow: string;
     imageAlt: string;
@@ -114,7 +122,7 @@ export const homePageContent = {
     proofStrip: [
       {
         icon: 'shield',
-        title: 'Accréditation Cofrac',
+        title: 'Organisme accrédité',
         description: 'Cofrac Inspection n° 3-2394',
         link: {
           label: 'Cofrac Inspection n° 3-2394',
@@ -122,8 +130,8 @@ export const homePageContent = {
         },
       },
       {
-        icon: 'clock',
-        title: '5 ans de validité',
+        value: '5',
+        title: 'ans de validité',
         description: 'Une fois le classement acquis',
       },
       {
@@ -280,7 +288,7 @@ export const homePageContent = {
     proofStrip: [
       {
         icon: 'shield',
-        title: 'Accredited inspection body',
+        title: 'Accredited body',
         description: 'Cofrac Inspection no. 3-2394',
         link: {
           label: 'Cofrac Inspection no. 3-2394',
@@ -288,8 +296,8 @@ export const homePageContent = {
         },
       },
       {
-        icon: 'clock',
-        title: 'Valid for 5 years',
+        value: '5',
+        title: 'years of validity',
         description: 'Once classification has been awarded',
       },
       {
@@ -484,8 +492,8 @@ export const homePageContent = {
         },
       },
       {
-        icon: 'clock',
-        title: '5 jaar geldig',
+        value: '5',
+        title: 'jaar geldig',
         description: 'Zodra de classificatie is toegekend',
       },
       {

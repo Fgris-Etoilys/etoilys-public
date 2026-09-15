@@ -32,12 +32,12 @@ export default function FeatureCard({
   return (
     <Card
       hover={false}
-      className={`h-full flex flex-col rounded-[6px] border-ink/10 !bg-[#fffefa] p-[26px] sm:p-[30px] ${className}`}
+      className={`h-full flex flex-col border-ink/10 p-[26px] min-[681px]:p-[22px] min-[900px]:p-[30px] ${className}`}
     >
-      <div className="mb-4 sm:mb-[23px]">
+      <div className="mb-4 min-[900px]:mb-[23px]">
         <Icon className="h-[30px] w-[30px] text-copper" strokeWidth={1.4} aria-hidden="true" />
       </div>
-      <h3 className="mb-[14px] font-roboto text-[21px] font-semibold leading-[1.4] tracking-[-0.025em] text-ink">
+      <h3 className="mb-[14px] font-roboto text-[18px] font-semibold leading-[1.4] tracking-[-0.025em] text-ink min-[900px]:text-[21px]">
         {title}
       </h3>
       <p className="flex-1 text-[14px] leading-[1.75] text-muted">{description}</p>

@@ -26,11 +26,11 @@ La Home, Classement, Avantages, Prérequis, Procédure et FAQ utilisent le socle
 
 - `PageHero` reste le shell de hero. Il accepte un slot `media`, un surtitre, `eyebrowMarked` pour le point cuivre des heroes Home/Dordogne, et des enfants pour les CTA, réassurances ou sommaires. Il ne porte pas de logique locale ou métier.
 - `EditorialHeroMedia` porte la géométrie photo partagée issue de Dordogne : grand arrondi supérieur gauche, autres coins discrets, caption optionnelle, note superposée et index décoratif optionnel. Les crops restent passés par `imageClassName`.
-- `ClassificationHeroNote` unifie le cartouche “1 à 5 étoiles” de la Home et de Dordogne. `HeroReassurance` unifie les petites preuves sous CTA avec coche cuivre.
+- `ClassificationHeroNote` unifie le cartouche “1 à 5 étoiles” de la Home et de Dordogne, avec la densité mobile Dordogne sous 680 px. `HeroReassurance` reprend par défaut l’ancien motif Dordogne : liste verticale, 12 px, espacement court et coche cuivre.
 - `ProofStrip` unifie les bandeaux de preuves Home/Dordogne sur les proportions de l’ancien Dordogne : colonnes `1fr / .8fr / 1fr` sur desktop, premier item pleine largeur puis deux colonnes sur mobile, icône ou grande valeur Playfair lisible par les lecteurs d’écran.
-- `PageCta` compose un texte et une colonne d’actions sur fond `ink`, empilés sur mobile. Il accepte `eyebrow` et `density="compact"` pour retrouver la densité du CTA final Dordogne sans CSS local. `editorial-inverse-button` donne une surface ivoire au CTA principal sur fond sombre sans changer son identifiant analytics.
+- `PageCta` compose un texte et une colonne d’actions sur fond `ink`, empilés sur mobile. Il accepte `eyebrow` et `density="compact"` pour retrouver la densité du CTA final Dordogne sans CSS local. `editorial-inverse-button` donne une surface ivoire au CTA final Dordogne tout en conservant `Button variant="primary"` et donc l’identifiant analytics historique.
 - `editorial-title` complète la typographie des héros. `editorial-inline-link` conserve le flux des liens dans les paragraphes et leur focus clavier. `editorial-inverse-button` adapte un bouton secondaire au fond sombre sans changer sa variante, utilisée dans son identifiant analytics.
-- `FeatureCard`, `Timeline`, `Accordion` et `ArticleCard` utilisent la palette partagée. `FeatureCard` reprend par défaut la densité exacte des anciennes cartes bénéfices Dordogne, liens bas inclus, sans variante locale. Les autres consommateurs (Home, Avantages, pages départementales et Recrutement) reçoivent aussi cette apparence.
+- `FeatureCard`, `Timeline`, `Accordion` et `ArticleCard` utilisent la palette partagée. `FeatureCard` reprend par défaut la densité exacte des anciennes cartes bénéfices Dordogne, liens bas inclus, sans variante locale : desktop validé à 30 px / titre 21 px, 681-899 px à 22 px / titre 18 px, mobile à 26 px / titre 18 px. Les autres consommateurs (Home, Avantages, pages départementales et Recrutement) reçoivent aussi cette apparence.
 - Les accordéons gardent un seul panneau ouvert par groupe. Les réponses restent montées dans le DOM ; `hidden` retire les panneaux fermés de l’affichage, de l’arbre d’accessibilité et du parcours clavier. Les associations ARIA utilisent `useId` et l’index ; Enter/Espace restent gérés nativement par les boutons. `density="compact"` sert uniquement à reprendre la densité FAQ Dordogne dans la primitive partagée.
 - Les avertissements éditoriaux emploient le cuivre, les résultats favorables un fond `ink/5`, avec des libellés explicites. Les erreurs de formulaire gardent leur sémantique d’alerte. Les routes, chiffres métier, variantes analytics et image LCP restent conservés.
 
@@ -44,32 +44,15 @@ Les règles `.dd-*` restantes sont réservées aux compositions vraiment locales
 
 ## Validation
 
-La deuxième passe du spike a été validée uniquement par `npm run typecheck`, conformément au périmètre demandé. Les tests, le lint, les builds et les contrôles navigateur n’ont pas été relancés ; aucun asset ni manifeste d’image n’a été généré. Les résultats détaillés ci-dessous correspondent à la première passe.
+Passe post-review ETOILYS-395 sur `spike/ETOILYS-395-premium-polish`. Le hash exact du commit final est communiqué dans le rapport de livraison : l'écrire ici avant commit modifierait ce hash.
 
-### Spike premium depuis ETOILYS-395
+Résultats réels de cette passe :
 
-La branche `spike/ETOILYS-395-premium-polish` part de `fe12aad` sur `feat/ETOILYS-395-core-pages-redesign`.
+- `npm.cmd run lint` : OK, avec l'avertissement préexistant `src/pages/SimulationClassement.tsx:970 react-hooks/exhaustive-deps`.
+- `npm.cmd run typecheck` : OK.
+- Tests ciblés : `npx.cmd vitest run src/components/layout/DordogneLayout.test.tsx src/test/core-pages.test.tsx src/components/ui/Accordion.test.tsx src/components/ui/ProofStrip.test.tsx` : OK, 4 fichiers / 43 tests.
+- Re-test ciblé après correction TypeScript : `npx.cmd vitest run src/components/layout/DordogneLayout.test.tsx` : OK, 1 fichier / 3 tests.
+- Follow-up Home ProofStrip : `npm.cmd run typecheck` OK, `npx.cmd vitest run src/test/core-pages.test.tsx` OK, 1 fichier / 36 tests, puis `npm.cmd run lint` OK avec le même avertissement préexistant.
+- Non relancés à la demande : `npm run test:run`, `npm run build:seo`, Playwright et `verify:i18n-release`.
 
-- `SectionNav` compose des ancres natives, nommées et accessibles, pour Avantages, Prérequis et FAQ. Les cibles utilisent `editorial-anchor`, décalé selon la hauteur du header.
-- `editorial-split` partage la grille titre/contenu ; `editorial-facts`, `editorial-notice`, `editorial-positive` et `editorial-form` restent des classes de présentation sans logique métier.
-- `FeatureCard` réserve une typographie sans-serif aux titres des petites cartes et garde leurs liens alignés en bas. Les liens internes passent par le routeur, les ancres de section restent natives et les liens externes ouvrent un nouvel onglet. `Timeline` utilise une liste ordonnée et des numéros cuivre ; `Accordion` conserve son comportement avec une présentation à filets et un signe plus.
-- `ResponsiveComparisonTable appearance="editorial"` réutilise la même structure et les mêmes données pour les cartes mobiles et les tableaux desktop. Ses autres consommateurs conservent leurs réglages actuels. Aucun tableau métier n’est dupliqué dans une page pour gérer le responsive.
-- La Home présente successivement le hero, un bandeau de preuves compact, les bénéfices avec leurs actions, une section d’expertise illustrée, trois étapes titrées, les actualités ou liens localisés, puis le CTA. Le bloc de présence locale est supprimé. L’image du hero est conservée ; la section d’expertise réutilise la photo de salon déjà disponible sous la clé `articleDpeMeublesTourisme`, avec un texte alternatif adapté.
-- `PageHero` accepte un titre composé, un surtitre et une carte superposée optionnels. Sa taille `compact` réduit les introductions de FAQ, Prérequis et Procédure ainsi que l’espace avant leur premier contenu. La carte du hero revient dans le flux sur mobile, avec un léger chevauchement de l’image.
-- `Timeline layout="horizontal"` présente les trois étapes de la Home en colonnes sur desktop, empilées sur mobile. La présentation verticale est conservée par défaut. La métadonnée optionnelle `meta` rattache les délais et repères à leurs étapes sur Procédure ; le bloc récapitulatif séparé est supprimé.
-- Avantages présente trois bénéfices principaux immédiatement visibles et réserve les accordéons aux trois arguments secondaires. Les textes et données réglementaires restent conservés. Les Prérequis alternent checklist, contenu éditorial, détails et points bloquants.
-- `editorial-eyebrow`, `editorial-eyebrow-marked`, `editorial-proof-strip`, `editorial-media-split` et les classes de présentation des images partagent le vocabulaire Dordogne sans condition de route. L’eyebrow simple n’ajoute pas de point ; le modifier marqué le réserve aux heroes. `ArticleCard.imageSizes` permet d’annoncer la largeur des deux cartes égales de la Home tout en conservant le défaut de la grille d’actualités.
-- Les Prérequis commencent par la checklist ; les explications des critères restent montées dans les accordéons. Les pages conservent les contenus FR/EN/NL, y compris les sources et réserves fiscales.
-- Le footer regroupe le lien des zones avec les liens d’entreprise et augmente les tailles de texte. Header et Footer utilisent `public/logo-etoilys-editorial.svg`, une variante SVG éditoriale désaturée ; les logos originaux restent disponibles pour les autres usages.
-- La demande de classement et les enveloppes des deux formulaires utilisent les primitives communes. Validation, consentement, Turnstile, API et analytics restent inchangés. Leur migration fonctionnelle reste hors de ce spike.
-- La Dordogne conserve sa composition validée. Ses liens de cartes s’alignent en bas et le lien de tarif du hero cible directement le champ commune.
-
-Les tests des pages cœur vérifient aussi les cibles des sommaires et la présence de toutes les valeurs des comparatifs dans les deux présentations, sans figer les textes éditoriaux.
-
-Contrôles du spike : 539 tests réussis ; tests ciblés des comparatifs, ancres et CTA relancés après ajustements ; `build:seo` réussi (typecheck et 54 pages prérendues). Le lint conserve uniquement l’avertissement préexistant de `SimulationClassement.tsx:970`. Les 18 routes cœur ont été parcourues à 390, 768, 1024 et 1440 px : un H1, bonne langue et aucun débordement horizontal. Dordogne et Demande ont aussi été contrôlées aux quatre largeurs ; menu mobile, navigation vers la demande, accordéons au clavier et sélection du tarif de Périgueux fonctionnent. Les CTA français des pages cœur reprennent « Demander mon classement ».
-
-Le contrôle `verify:i18n-release` a réussi contre le site déployé (sa cible par défaut). La validation locale repose séparément sur les 54 fichiers prérendus : langue, H1 unique, canonical unique et cibles d’ancres. Les fichiers modifiés ont été vérifiés en UTF-8 sans BOM ni mojibake. Aucun formulaire réel n’a été envoyé.
-
-Exécuter `npm run lint`, `npm run test:run`, `npm run verify:i18n-release`, puis `npm run build:seo` (typecheck inclus). `verify:i18n-release` contrôle par défaut le site déployé ; il ne valide pas les modifications locales. Comparer la Dordogne à 390, 768, 1024 et 1440 px, puis les parcours du shell en FR/EN/NL.
-
-Lors de cette extraction, une erreur React d’hydratation #418 a été reproduite sur la Dordogne prérendue, également dans un build isolé de la référence `e66446c`. Elle préexiste au nouveau shell et reste à traiter séparément.
+Les tests Dordogne couvrent le comportement single-open de l'Accordion, le CTA hero blanc, la valeur lisible de `ProofStrip`, et les deux CTA Dordogne vers `/demande-classement` avec `cta_primary_demande_classement`. Les fichiers modifiés ont été vérifiés en UTF-8 sans BOM ni mojibake avant livraison.

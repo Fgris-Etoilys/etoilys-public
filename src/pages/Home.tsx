@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
-  Shield,
+  ShieldCheck,
   Star,
   Clock,
   Calculator,
@@ -31,7 +31,7 @@ import {
 import { getLocaleFromPath } from '../i18n/routeHelpers';
 
 const homeFeatureIcons = {
-  shield: Shield,
+  shield: ShieldCheck,
   star: Star,
   clock: Clock,
   calculator: Calculator,
@@ -116,7 +116,8 @@ export default function Home() {
 
       <ProofStrip
         items={content.proofStrip.map((proof) => ({
-          icon: homeFeatureIcons[proof.icon],
+          ...(proof.icon ? { icon: homeFeatureIcons[proof.icon] } : {}),
+          ...(proof.value ? { value: proof.value } : {}),
           title: proof.title,
           description: proof.description,
           ...(proof.link ? { link: proof.link } : {}),

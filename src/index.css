@@ -395,11 +395,19 @@
   }
 
   .hero-reassurance {
-    @apply mt-5 grid list-none gap-2 p-0 text-sm text-muted sm:flex sm:flex-wrap sm:gap-x-6 sm:gap-y-2;
+    display: grid;
+    gap: 7px;
+    margin: 21px 0 0;
+    padding: 0;
+    list-style: none;
+    color: rgb(var(--color-muted));
+    font-size: 12px;
   }
 
   .hero-reassurance li {
-    @apply flex items-center gap-2;
+    display: flex;
+    align-items: center;
+    gap: 9px;
   }
 
   .hero-reassurance svg {
@@ -683,6 +691,13 @@
     .editorial-section {
       padding-block: 53px;
     }
+    .editorial-hero-cta {
+      width: 100%;
+      min-height: 54px;
+      justify-content: space-between;
+      padding: 16px 20px;
+      font-size: 14px;
+    }
     .editorial-hero-featured {
       padding-block: 37px 28px;
     }
@@ -704,6 +719,17 @@
     .editorial-hero-media-note {
       width: min(264px, calc(100% - 14px));
       margin-top: -28px;
+    }
+    .classification-hero-note-stars svg {
+      width: 14px;
+      height: 14px;
+    }
+    .classification-hero-note-title {
+      font-size: 12px;
+      margin-block: 7px 4px;
+    }
+    .classification-hero-note-description {
+      font-size: 11px;
     }
   }
 

@@ -1,13 +1,20 @@
-import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../../App';
 import { IMAGE_MANIFEST } from '../../content/imageManifest';
 import { getCanonicalUrl, getSeoRouteConfig, getSeoTitle } from '../../content/seoRoutes';
+import { trackCtaClick } from '../../utils/analytics';
+
+vi.mock('../../utils/analytics', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../utils/analytics')>()),
+  trackCtaClick: vi.fn(),
+}));
 
 const DORDOGNE_PATH = '/classement-meuble-tourisme-dordogne';
 
 afterEach(() => {
   cleanup();
+  vi.mocked(trackCtaClick).mockClear();
   window.history.replaceState({}, '', '/');
 });
 
@@ -82,8 +89,26 @@ describe('Shared site layout', () => {
       const proofValue = document.querySelector('.editorial-proof-value');
       expect(proofValue).toHaveTextContent('5');
       expect(proofValue).not.toHaveAttribute('aria-hidden');
-      const heroCta = screen.getAllByRole('link', { name: /Demander mon classement/i })[0];
+      const main = screen.getByRole('main');
+      const conversionLinks = within(main).getAllByRole('link', {
+        name: /Demander mon classement/i,
+      });
+      const heroCta = conversionLinks[0];
+      const finalCta = conversionLinks[conversionLinks.length - 1];
+      if (!heroCta || !finalCta) throw new Error('Missing Dordogne conversion links');
       expect(heroCta).toHaveClass('bg-ink', 'text-white', 'hover:text-white');
+      heroCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
+      finalCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
+      fireEvent.click(heroCta);
+      expect(trackCtaClick).toHaveBeenLastCalledWith({
+        ctaId: 'cta_primary_demande_classement',
+        destinationPath: '/demande-classement',
+      });
+      fireEvent.click(finalCta);
+      expect(trackCtaClick).toHaveBeenLastCalledWith({
+        ctaId: 'cta_primary_demande_classement',
+        destinationPath: '/demande-classement',
+      });
       const faqButtons = Array.from(document.querySelectorAll('.dd-faq button[aria-expanded]'));
       expect(faqButtons.length).toBeGreaterThan(1);
       const [firstFaqButton, secondFaqButton] = faqButtons;

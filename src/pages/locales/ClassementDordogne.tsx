@@ -437,7 +437,7 @@ export default function ClassementDordogne() {
         <Button
           href="/demande-classement"
           size="lg"
-          variant="secondary"
+          variant="primary"
           className="editorial-inverse-button editorial-hero-cta"
         >
           Demander mon classement <ArrowRight size={20} aria-hidden="true" />
