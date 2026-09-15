@@ -1,43 +1,61 @@
-import type { LucideIcon } from 'lucide-react';
+import { ArrowUpRight, type LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
+import Card from './Card';
 
 interface FeatureCardProps {
   icon: LucideIcon;
   title: string;
   description: ReactNode;
-  iconColor?: 'primary' | 'bicolor';
-  linkHref?: string;
-  linkLabel?: string;
+  linkHref?: string | undefined;
+  linkLabel?: string | undefined;
+  className?: string;
 }
 
 export default function FeatureCard({
   icon: Icon,
   title,
   description,
-  iconColor = 'primary',
   linkHref,
   linkLabel,
+  className = '',
 }: FeatureCardProps) {
-  const iconClasses =
-    iconColor === 'primary' ? 'text-primary-300' : 'text-primary-300 group-hover:text-tertiary-1';
+  const linkClasses =
+    'ui-focus mt-auto inline-flex min-h-[30px] items-center gap-[7px] pt-[6px] text-[11px] font-normal text-ink underline decoration-ink/40 underline-offset-4 hover:text-ink-hover hover:decoration-current';
+  const linkContent = (
+    <>
+      {linkLabel}
+      <ArrowUpRight className="h-[14px] w-[14px] shrink-0" aria-hidden="true" />
+    </>
+  );
 
   return (
-    <div className="group text-center p-6">
-      <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 mb-4 transition-all duration-300 group-hover:scale-110">
-        <Icon className={`h-8 w-8 ${iconClasses} transition-colors duration-300`} />
+    <Card
+      hover={false}
+      className={`h-full flex flex-col border-ink/10 p-[26px] min-[681px]:p-[22px] min-[900px]:p-[30px] ${className}`}
+    >
+      <div className="mb-4 min-[681px]:mb-[23px]">
+        <Icon className="h-[30px] w-[30px] text-copper" strokeWidth={1.4} aria-hidden="true" />
       </div>
-      <h3 className="text-xl font-playfair font-semibold text-gray-900 mb-3">{title}</h3>
-      <p className="text-textLight leading-comfortable">{description}</p>
-      {linkHref && linkLabel && (
-        <a
-          href={linkHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex text-sm font-medium text-primary-300 underline hover:text-primary-400"
-        >
-          {linkLabel}
-        </a>
-      )}
-    </div>
+      <h3 className="mb-[14px] font-roboto text-[18px] font-semibold leading-[1.4] tracking-[-0.025em] text-ink min-[900px]:text-[21px]">
+        {title}
+      </h3>
+      <p className="flex-1 text-[14px] leading-[1.75] text-muted">{description}</p>
+      {linkHref &&
+        linkLabel &&
+        (linkHref.startsWith('#') ? (
+          <a href={linkHref} className={linkClasses}>
+            {linkContent}
+          </a>
+        ) : linkHref.startsWith('/') && !linkHref.startsWith('//') ? (
+          <Link to={linkHref} className={linkClasses}>
+            {linkContent}
+          </Link>
+        ) : (
+          <a href={linkHref} target="_blank" rel="noopener noreferrer" className={linkClasses}>
+            {linkContent}
+          </a>
+        ))}
+    </Card>
   );
 }

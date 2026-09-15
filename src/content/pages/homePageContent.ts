@@ -1,15 +1,24 @@
 import type { Locale } from '../../i18n/locales';
+import { COFRAC_ACCREDITATION_URL } from '../accreditationLinks';
 
-export type HomeIconKey = 'shield' | 'zap' | 'clock' | 'calculator' | 'users' | 'globe';
+export type HomeIconKey = 'shield' | 'star' | 'clock' | 'calculator' | 'users' | 'globe';
 
-export type HomeFeature = {
-  icon: HomeIconKey;
+type HomeFeatureBase = {
   title: string;
   description: string;
   link?: {
     label: string;
     href: string;
   };
+};
+
+export type HomeFeature = HomeFeatureBase & {
+  icon: HomeIconKey;
+};
+
+export type HomeProofFeature = HomeFeatureBase & {
+  icon?: HomeIconKey;
+  value?: string;
 };
 
 export type HomeServiceLink = {
@@ -21,8 +30,11 @@ export type HomeServiceLink = {
 export type HomePageContent = {
   hero: {
     imageAlt: string;
-    title: string;
+    eyebrow: string;
+    title: { lead: string; accent: string };
     description: string;
+    reassurance: readonly string[];
+    photoNote: { lead: string; title: string; caption: string };
     primaryCta: {
       label: string;
       href: string;
@@ -32,12 +44,16 @@ export type HomePageContent = {
       href: string;
     };
   };
+  proofStrip: readonly HomeProofFeature[];
   features: {
+    eyebrow: string;
+    imageAlt: string;
     title: string;
     description: string;
     items: readonly HomeFeature[];
   };
   benefits: {
+    eyebrow: string;
     title: string;
     description: string;
     items: readonly HomeFeature[];
@@ -47,9 +63,9 @@ export type HomePageContent = {
     };
   };
   procedure: {
-    imageAlt: string;
+    eyebrow: string;
     title: string;
-    paragraphs: readonly string[];
+    steps: readonly { title: string; description: string }[];
     cta: {
       label: string;
       href: string;
@@ -81,49 +97,87 @@ export type HomePageContent = {
 export const homePageContent = {
   fr: {
     hero: {
+      eyebrow: 'Propriétaires de meublés de tourisme',
       imageAlt: "Terrasse avec piscine d'un meublé de tourisme",
-      title: 'Classement officiel de votre meublé de tourisme',
+      title: {
+        lead: 'Classement officiel de votre',
+        accent: 'meublé de tourisme',
+      },
       description:
         'Etoilys vous accompagne pour obtenir le classement officiel en étoiles de votre meublé de tourisme.',
       primaryCta: {
-        label: 'Demander votre classement',
+        label: 'Demander mon classement',
         href: '/demande-classement',
       },
       secondaryCta: {
         label: 'Les avantages du classement',
         href: '/les-avantages-du-classement',
       },
+      reassurance: ['Rappel sous 24 h ouvrées', 'Visite en moyenne sous deux semaines'],
+      photoNote: {
+        lead: 'Du studio au grand gîte,',
+        title: 'un classement de 1 à 5 étoiles.',
+        caption: 'Un repère de qualité pour vos voyageurs.',
+      },
     },
+    proofStrip: [
+      {
+        icon: 'shield',
+        title: 'Organisme accrédité',
+        description: 'Cofrac Inspection n° 3-2394',
+        link: {
+          label: 'Cofrac Inspection n° 3-2394',
+          href: COFRAC_ACCREDITATION_URL,
+        },
+      },
+      {
+        value: '5',
+        title: 'ans de validité',
+        description: 'Une fois le classement acquis',
+      },
+      {
+        icon: 'users',
+        title: 'Un inspecteur à vos côtés',
+        description: 'De la demande aux documents de classement',
+      },
+    ],
     features: {
+      eyebrow: 'Une expertise dédiée à votre logement',
+      imageAlt: 'Salon lumineux avec canapé gris, fauteuil en bois et mur vert doux',
       title: 'Pourquoi choisir Etoilys ?',
       description:
-        'Un accompagnement simple, réactif et de proximité pour obtenir le classement officiel de votre meublé de tourisme.',
+        'Des spécialistes du classement, des outils pour vous préparer et un accompagnement à chaque étape.',
       items: [
         {
-          icon: 'shield',
-          title: 'Organisme accrédité Cofrac',
+          icon: 'star',
+          title: '100 % spécialisés dans le classement des meublés de tourisme',
           description:
-            'Etoilys est accrédité Cofrac Inspection n°3-2394 pour le classement des meublés de tourisme. La portée d’accréditation est ',
+            'Etoilys se consacre exclusivement au classement des meublés de tourisme. Nos inspecteurs connaissent en profondeur la réglementation, la grille officielle et les points qui font réellement la différence pour atteindre la catégorie visée.',
+        },
+        {
+          icon: 'calculator',
+          title: 'Des outils pour préparer votre visite',
+          description:
+            'Notre simulateur vous aide à estimer la catégorie visée et à repérer les points à préparer.',
           link: {
-            label: 'consultable en ligne',
-            href: 'cofrac',
+            label: 'Estimer mon classement',
+            href: '/simulateur',
           },
         },
         {
-          icon: 'zap',
-          title: 'Un parcours simplifié',
+          icon: 'shield',
+          title: 'Un organisme accrédité Cofrac',
           description:
-            "Nos outils internes simplifient la démarche : pas de dossier complexe à constituer, un suivi clair et un accompagnement fluide jusqu'à la décision de classement.",
-        },
-        {
-          icon: 'clock',
-          title: 'Proximité et réactivité',
-          description:
-            'Nos inspecteurs proches de chez vous vous accompagnent personnellement pour un classement rapide et efficace.',
+            'Etoilys réalise les visites officielles de classement dans le cadre de son accréditation Cofrac Inspection n° 3-2394.',
+          link: {
+            label: 'Consulter notre portée d’accréditation',
+            href: COFRAC_ACCREDITATION_URL,
+          },
         },
       ],
     },
     benefits: {
+      eyebrow: 'Le classement, pour vous',
       title: "Les bénéfices d'un classement officiel",
       description:
         'Un classement en étoiles apporte de nombreux avantages pour votre activité de location saisonnière.',
@@ -133,18 +187,30 @@ export const homePageContent = {
           title: 'Régime fiscal avantageux',
           description:
             'Pour les revenus 2026 déclarés en 2027, un meublé classé bénéficie d’un abattement micro-BIC de 50 %, contre 30 % pour un meublé non classé.',
+          link: {
+            label: 'Estimer mon avantage fiscal',
+            href: '/simulateur-fiscal-classement',
+          },
         },
         {
           icon: 'users',
           title: 'Confiance des voyageurs',
           description:
             'Le classement en étoiles est un gage de qualité et de transparence pour les locataires.',
+          link: {
+            label: 'Comprendre les étoiles',
+            href: '/classement',
+          },
         },
         {
           icon: 'globe',
           title: 'Référencement officiel',
           description:
             "Les meublés classés sont référencés dans les réseaux officiels du tourisme et bénéficient d'une meilleure visibilité.",
+          link: {
+            label: 'Découvrir les atouts du classement',
+            href: '/les-avantages-du-classement#reconnaissance',
+          },
         },
       ],
       cta: {
@@ -153,12 +219,24 @@ export const homePageContent = {
       },
     },
     procedure: {
-      imageAlt: "Interieur d'un meuble de tourisme moderne",
-      title: 'Une procédure simple et rapide',
-      paragraphs: [
-        'La démarche est simple : vous déposez votre demande, puis un inspecteur vous contacte sous 24 heures pour vérifier les informations utiles et organiser la visite selon vos disponibilités.',
-        'La visite se déroule à votre logement, sur rendez-vous, à une date qui vous convient.',
-        "Sous 7 jours suivant la visite, vous recevez une proposition de classement en étoiles, que vous êtes libre d'accepter ou de refuser.",
+      eyebrow: 'De la demande aux étoiles',
+      title: 'Votre classement en trois étapes',
+      steps: [
+        {
+          title: 'Vous nous parlez de votre logement.',
+          description:
+            'Envoyez vos coordonnées et l’adresse du meublé. Nous vous rappelons sous 24 h ouvrées pour préciser votre projet.',
+        },
+        {
+          title: 'Nous préparons la visite ensemble.',
+          description:
+            'Nous confirmons le tarif et les modalités, puis convenons d’une date. La visite a lieu en moyenne sous deux semaines.',
+        },
+        {
+          title: 'Votre logement est évalué sur place.',
+          description:
+            'Après le contrôle selon la grille officielle, vous recevez sous 7 jours les documents et la proposition de classement.',
+        },
       ],
       cta: {
         label: 'Découvrir la procédure',
@@ -179,15 +257,19 @@ export const homePageContent = {
       description:
         "Etoilys prend en charge l'intégralité de la procédure. Un inspecteur de proximité vous accompagne de la première prise de contact jusqu'à la délivrance de votre certificat officiel.",
       cta: {
-        label: 'Demander votre classement',
+        label: 'Demander mon classement',
         href: '/demande-classement',
       },
     },
   },
   en: {
     hero: {
+      eyebrow: 'Owners of furnished tourist accommodation',
       imageAlt: 'Terrace with swimming pool at furnished tourist accommodation',
-      title: 'Official classification of your furnished tourist accommodation',
+      title: {
+        lead: 'Official classification of your',
+        accent: 'furnished tourist accommodation',
+      },
       description:
         'Etoilys supports you in obtaining the official star classification of your furnished tourist accommodation.',
       primaryCta: {
@@ -198,37 +280,71 @@ export const homePageContent = {
         label: 'The benefits of classification',
         href: '/en/benefits-of-furnished-tourist-accommodation-classification',
       },
+      reassurance: ['Callback within 24 business hours', 'Inspection usually within two weeks'],
+      photoNote: {
+        lead: 'From studios to large holiday homes,',
+        title: 'a classification from 1 to 5 stars.',
+        caption: 'A quality reference for your guests.',
+      },
     },
+    proofStrip: [
+      {
+        icon: 'shield',
+        title: 'Accredited body',
+        description: 'Cofrac Inspection no. 3-2394',
+        link: {
+          label: 'Cofrac Inspection no. 3-2394',
+          href: COFRAC_ACCREDITATION_URL,
+        },
+      },
+      {
+        value: '5',
+        title: 'years of validity',
+        description: 'Once classification has been awarded',
+      },
+      {
+        icon: 'users',
+        title: 'An inspector by your side',
+        description: 'From your request to the classification documents',
+      },
+    ],
     features: {
+      eyebrow: 'Expertise dedicated to your property',
+      imageAlt: 'Sunlit living room with a grey sofa, wooden armchair and soft green wall',
       title: 'Why choose Etoilys?',
       description:
-        'Simple, responsive and local support to obtain the official classification of your furnished tourist accommodation.',
+        'Classification specialists, resources to prepare your property and support at every stage.',
       items: [
         {
-          icon: 'shield',
-          title: 'Cofrac accredited inspection body',
+          icon: 'star',
+          title: '100% specialised in furnished tourist accommodation classification',
           description:
-            'Etoilys is Cofrac Inspection accredited, no. 3-2394, for furnished tourist accommodation classification. The accreditation scope is ',
+            'Etoilys focuses exclusively on furnished tourist accommodation classification. Our inspectors know the regulations, the official assessment framework and the details that truly make the difference in reaching the target category.',
+        },
+        {
+          icon: 'calculator',
+          title: 'Tools to prepare your inspection',
+          description:
+            'Our requirements guide helps you identify the points to check before requesting an inspection.',
           link: {
-            label: 'available online',
-            href: 'cofrac',
+            label: 'Check the requirements',
+            href: '/en/classification-requirements',
           },
         },
         {
-          icon: 'zap',
-          title: 'A simplified process',
+          icon: 'shield',
+          title: 'A Cofrac-accredited body',
           description:
-            'Our internal tools simplify the process: no complex file to prepare, clear follow-up and smooth support through to the classification decision.',
-        },
-        {
-          icon: 'clock',
-          title: 'Local presence and responsiveness',
-          description:
-            'Inspectors located near you provide personal support for a fast and efficient classification process.',
+            'Etoilys carries out official classification inspections under its Cofrac Inspection accreditation no. 3-2394.',
+          link: {
+            label: 'View our accreditation scope',
+            href: COFRAC_ACCREDITATION_URL,
+          },
         },
       ],
     },
     benefits: {
+      eyebrow: 'What classification brings you',
       title: 'The benefits of an official classification',
       description: 'A star classification brings many benefits for your seasonal rental activity.',
       items: [
@@ -237,17 +353,29 @@ export const homePageContent = {
           title: 'Advantageous tax regime',
           description:
             'For 2026 income declared in 2027, classified furnished tourist accommodation benefits from a 50% micro-BIC tax allowance, compared with 30% for non-classified accommodation.',
+          link: {
+            label: 'Compare the tax rules',
+            href: '/en/benefits-of-furnished-tourist-accommodation-classification#fiscalite',
+          },
         },
         {
           icon: 'users',
           title: 'Traveller trust',
           description: 'The star classification is a sign of quality and transparency for tenants.',
+          link: {
+            label: 'Understand the star categories',
+            href: '/en/furnished-tourist-accommodation-classification',
+          },
         },
         {
           icon: 'globe',
           title: 'Official tourism listing',
           description:
             'Classified furnished tourist accommodation is listed in official tourism networks and benefits from better visibility.',
+          link: {
+            label: 'Explore official recognition',
+            href: '/en/benefits-of-furnished-tourist-accommodation-classification#reconnaissance',
+          },
         },
       ],
       cta: {
@@ -256,12 +384,24 @@ export const homePageContent = {
       },
     },
     procedure: {
-      imageAlt: 'Interior of modern furnished tourist accommodation',
-      title: 'A simple and fast procedure',
-      paragraphs: [
-        'The process is simple: you submit your request, then an inspector contacts you within 24 hours to check the useful information and organize the visit according to your availability.',
-        'The visit takes place at your accommodation, by appointment, on a date that suits you.',
-        'Within 7 days after the visit, you receive a star classification proposal, which you are free to accept or refuse.',
+      eyebrow: 'From request to stars',
+      title: 'Your classification in three steps',
+      steps: [
+        {
+          title: 'You tell us about your property.',
+          description:
+            'Send us your contact details and the address of the furnished accommodation. We call you back within 24 business hours to clarify your project.',
+        },
+        {
+          title: 'We prepare the inspection together.',
+          description:
+            'We confirm the price and practical details, then agree on a date. The inspection usually takes place within two weeks.',
+        },
+        {
+          title: 'Your accommodation is assessed on site.',
+          description:
+            'After the inspection using the official framework, you receive the documents and classification proposal within 7 days.',
+        },
       ],
       cta: {
         label: 'Discover the procedure',
@@ -321,8 +461,12 @@ export const homePageContent = {
   },
   nl: {
     hero: {
+      eyebrow: 'Eigenaren van vakantiewoningen in Frankrijk',
       imageAlt: 'Terras met zwembad bij een Franse vakantiewoning',
-      title: 'Officiële classificatie van uw vakantiewoning in Frankrijk',
+      title: {
+        lead: 'Officiële classificatie van uw',
+        accent: 'vakantiewoning in Frankrijk',
+      },
       description:
         'Etoilys begeleidt u in de momenteel bediende gebieden bij het verkrijgen van de officiële sterrenclassificatie van uw vakantiewoning, juridisch aangeduid als een “meublé de tourisme” in Frankrijk.',
       primaryCta: {
@@ -333,37 +477,71 @@ export const homePageContent = {
         label: 'Voordelen van classificatie',
         href: '/nl/voordelen-classificatie-vakantiewoning',
       },
+      reassurance: ['Terugbellen binnen 24 werkuren', 'Inspectie gemiddeld binnen twee weken'],
+      photoNote: {
+        lead: 'Van studio tot groot vakantiehuis,',
+        title: 'een classificatie van 1 tot 5 sterren.',
+        caption: 'Een kwaliteitskenmerk voor uw gasten.',
+      },
     },
+    proofStrip: [
+      {
+        icon: 'shield',
+        title: 'Geaccrediteerde inspectie-instelling',
+        description: 'Cofrac Inspection nr. 3-2394',
+        link: {
+          label: 'Cofrac Inspection nr. 3-2394',
+          href: COFRAC_ACCREDITATION_URL,
+        },
+      },
+      {
+        value: '5',
+        title: 'jaar geldig',
+        description: 'Zodra de classificatie is toegekend',
+      },
+      {
+        icon: 'users',
+        title: 'Een inspecteur die u begeleidt',
+        description: 'Van aanvraag tot classificatiedocumenten',
+      },
+    ],
     features: {
+      eyebrow: 'Expertise voor uw vakantiewoning',
+      imageAlt: 'Lichte woonkamer met grijze bank, houten fauteuil en zachtgroene muur',
       title: 'Waarom Etoilys?',
       description:
-        'Duidelijke, persoonlijke begeleiding door een lokale specialist voor de officiële classificatie van uw vakantiewoning in Frankrijk.',
+        'Classificatiespecialisten, hulpmiddelen ter voorbereiding en begeleiding bij elke stap.',
       items: [
         {
-          icon: 'shield',
-          title: 'Door Cofrac geaccrediteerde inspectie-instelling',
+          icon: 'star',
+          title: '100% gespecialiseerd in de classificatie van vakantiewoningen',
           description:
-            'Etoilys is geaccrediteerd door Cofrac Inspection, nr. 3-2394, voor de classificatie van vakantiewoningen. De reikwijdte van de accreditatie is ',
+            'Etoilys richt zich uitsluitend op de classificatie van vakantiewoningen. Onze inspecteurs kennen de regelgeving, het officiële beoordelingskader en de punten die echt het verschil maken om de beoogde categorie te bereiken.',
+        },
+        {
+          icon: 'calculator',
+          title: 'Hulpmiddelen om uw bezoek voor te bereiden',
+          description:
+            'Onze gids met voorwaarden helpt u de aandachtspunten te controleren voordat u een inspectie aanvraagt.',
           link: {
-            label: 'online beschikbaar',
-            href: 'cofrac',
+            label: 'De voorwaarden bekijken',
+            href: '/nl/voorwaarden-classificatie-vakantiewoning',
           },
         },
         {
-          icon: 'zap',
-          title: 'Een vereenvoudigd traject',
+          icon: 'shield',
+          title: 'Geaccrediteerd door Cofrac',
           description:
-            'Onze interne tools maken de procedure eenvoudiger: geen complex dossier om samen te stellen, een duidelijk verloop en persoonlijke begeleiding tot aan het classificatiebesluit.',
-        },
-        {
-          icon: 'clock',
-          title: 'Lokale aanwezigheid en snelle reactie',
-          description:
-            'Inspecteurs in de buurt begeleiden u persoonlijk voor een snelle en betrouwbare classificatieprocedure.',
+            'Etoilys voert officiële classificatiebezoeken uit binnen zijn Cofrac Inspection-accreditatie nr. 3-2394.',
+          link: {
+            label: 'De reikwijdte van onze accreditatie bekijken',
+            href: COFRAC_ACCREDITATION_URL,
+          },
         },
       ],
     },
     benefits: {
+      eyebrow: 'Wat classificatie u biedt',
       title: 'De voordelen van een officiële classificatie',
       description:
         'Een sterrenclassificatie heeft verschillende concrete effecten voor een seizoensverhuur in Frankrijk.',
@@ -373,18 +551,30 @@ export const homePageContent = {
           title: 'Fiscaal regime',
           description:
             'Voor inkomsten over 2026 die in 2027 worden aangegeven, geldt voor een geclassificeerde vakantiewoning een micro-BIC-aftrek van 50%, tegenover 30% voor een niet-geclassificeerde woning.',
+          link: {
+            label: 'De fiscale regels vergelijken',
+            href: '/nl/voordelen-classificatie-vakantiewoning#fiscalite',
+          },
         },
         {
           icon: 'users',
           title: 'Herkenningspunt voor reizigers',
           description:
             'De sterrenclassificatie is een officieel kwaliteitskenmerk dat reizigers duidelijkheid geeft over het comfort en de uitrusting.',
+          link: {
+            label: 'De sterrencategorieën begrijpen',
+            href: '/nl/classificatie-vakantiewoning-frankrijk',
+          },
         },
         {
           icon: 'globe',
           title: 'Officiële toeristische vermelding',
           description:
             'Geclassificeerde vakantiewoningen kunnen worden opgenomen in officiële toeristische netwerken en krijgen een gestandaardiseerd sterrenniveau.',
+          link: {
+            label: 'Officiële erkenning ontdekken',
+            href: '/nl/voordelen-classificatie-vakantiewoning#reconnaissance',
+          },
         },
       ],
       cta: {
@@ -393,12 +583,24 @@ export const homePageContent = {
       },
     },
     procedure: {
-      imageAlt: 'Interieur van een moderne vakantiewoning',
-      title: 'Een eenvoudige en snelle procedure',
-      paragraphs: [
-        'De procedure is eenvoudig: u dient uw aanvraag in, waarna een inspecteur binnen 24 uur contact met u opneemt om de nuttige informatie te controleren en het bezoek volgens uw beschikbaarheid te organiseren.',
-        'Het bezoek vindt op afspraak plaats in de woning, op een datum die met u wordt afgestemd.',
-        'Binnen 7 dagen na het bezoek ontvangt u een voorstel voor sterrenclassificatie, dat u vrij kunt accepteren of weigeren.',
+      eyebrow: 'Van aanvraag tot sterren',
+      title: 'Uw classificatie in drie stappen',
+      steps: [
+        {
+          title: 'U vertelt ons over uw woning.',
+          description:
+            'Stuur uw contactgegevens en het adres van de vakantiewoning. Wij bellen u binnen 24 werkuren terug om uw project te verduidelijken.',
+        },
+        {
+          title: 'Wij bereiden het bezoek samen voor.',
+          description:
+            'Wij bevestigen het tarief en de praktische modaliteiten, en spreken daarna een datum af. Het bezoek vindt gemiddeld binnen twee weken plaats.',
+        },
+        {
+          title: 'Uw woning wordt ter plaatse beoordeeld.',
+          description:
+            'Na de controle volgens het officiële beoordelingskader ontvangt u binnen 7 dagen de documenten en het classificatievoorstel.',
+        },
       ],
       cta: {
         label: 'De procedure bekijken',

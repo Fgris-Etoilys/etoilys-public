@@ -1,34 +1,41 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface TimelineStep {
   number: number;
   title: string;
   description: ReactNode;
+  meta?: ReactNode;
 }
 
 interface TimelineProps {
   steps: readonly TimelineStep[];
+  layout?: 'vertical' | 'horizontal';
 }
 
-export default function Timeline({ steps }: TimelineProps) {
+export default function Timeline({ steps, layout = 'vertical' }: TimelineProps) {
   return (
-    <div className="space-y-8">
-      {steps.map((step, index) => (
-        <div key={step.number} className="flex gap-6">
-          <div className="flex flex-col items-center flex-shrink-0">
-            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary-300 text-white font-bold text-lg">
-              {step.number}
+    <ol
+      className={`editorial-timeline ${layout === 'horizontal' ? 'editorial-timeline-horizontal' : ''}`}
+    >
+      {steps.map((step) => (
+        <li key={step.number} className="editorial-timeline-step">
+          <span
+            className="editorial-step-number w-12 flex-shrink-0 font-playfair text-4xl text-copper"
+            aria-hidden="true"
+          >
+            {String(step.number).padStart(2, '0')}
+          </span>
+          <div className="min-w-0 flex-1">
+            <h3 className="editorial-step-title font-roboto text-xl font-semibold leading-snug tracking-tight text-ink mb-3">
+              {step.title}
+            </h3>
+            {step.meta && <div className="editorial-step-meta mb-3">{step.meta}</div>}
+            <div className="editorial-step-description text-muted leading-comfortable">
+              {step.description}
             </div>
-            {index < steps.length - 1 && (
-              <div className="w-0.5 h-full bg-primary-200 mt-2 min-h-[60px]"></div>
-            )}
           </div>
-          <div className="flex-1 pb-8">
-            <h3 className="text-xl font-playfair font-semibold text-gray-900 mb-2">{step.title}</h3>
-            <div className="text-textLight leading-comfortable">{step.description}</div>
-          </div>
-        </div>
+        </li>
       ))}
-    </div>
+    </ol>
   );
 }

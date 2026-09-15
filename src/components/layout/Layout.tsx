@@ -43,16 +43,29 @@ export default function Layout() {
 
   useEffect(() => {
     if (location.hash) {
-      try {
+      let frameId: number | null = null;
+      const scrollToHashTarget = () => {
         const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
         target?.scrollIntoView();
+        return Boolean(target);
+      };
+
+      try {
+        if (!scrollToHashTarget()) {
+          frameId = window.requestAnimationFrame(scrollToHashTarget);
+        }
       } catch {
         // Ignore malformed URL fragments and preserve the current scroll position.
       }
-      return;
+      return () => {
+        if (frameId !== null) {
+          window.cancelAnimationFrame(frameId);
+        }
+      };
     }
 
     window.scrollTo(0, 0);
+    return undefined;
   }, [location.pathname, location.hash]);
 
   return (

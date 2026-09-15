@@ -89,7 +89,6 @@ export default function DepartmentLandingPage({ config }: DepartmentLandingPageP
                   icon={benefit.icon}
                   title={benefit.title}
                   description={benefit.description}
-                  iconColor="bicolor"
                 />
               ))}
             </div>

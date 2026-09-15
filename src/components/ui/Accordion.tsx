@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { useId, useState, type ReactNode } from 'react';
+import { Plus } from 'lucide-react';
 
 interface AccordionItem {
   question: string;
@@ -8,39 +8,57 @@ interface AccordionItem {
 
 interface AccordionProps {
   items: readonly AccordionItem[];
+  density?: 'default' | 'compact';
 }
 
-export default function Accordion({ items }: AccordionProps) {
+export default function Accordion({ items, density = 'default' }: AccordionProps) {
+  const id = useId();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const isCompact = density === 'compact';
+  const triggerClasses = isCompact
+    ? 'ui-focus w-full flex items-center justify-between gap-[25px] py-[22px] text-left transition-colors duration-200 motion-reduce:transition-none hover:text-copper max-[680px]:py-[18px]'
+    : 'ui-focus w-full flex items-center justify-between gap-4 py-5 text-left transition-colors duration-200 motion-reduce:transition-none hover:text-copper';
+  const questionClasses = isCompact
+    ? 'text-[14px] font-[550] leading-[1.6] text-ink max-[680px]:text-[13px]'
+    : 'text-base font-medium text-ink sm:text-lg';
+  const answerClasses = isCompact
+    ? 'pb-[23px] pr-[30px] text-[13px] leading-[1.8] text-muted [&_a]:editorial-inline-link'
+    : 'pb-6 pr-9 text-muted leading-comfortable [&_a]:editorial-inline-link';
+  const iconClasses = isCompact ? 'h-[23px] w-[23px]' : 'h-5 w-5';
+  const iconColorClasses = isCompact ? 'text-ink' : 'text-copper';
 
   const toggleItem = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+    setOpenIndex((current) => (current === index ? null : index));
   };
 
   return (
-    <div className="space-y-4">
+    <div className="border-t border-ink/20">
       {items.map((item, index) => (
-        <div key={index} className="bg-white border border-gray-200 rounded-card overflow-hidden">
+        <div key={index} className="border-b border-ink/20">
           <button
+            type="button"
+            id={`${id}-trigger-${index}`}
+            aria-controls={`${id}-panel-${index}`}
             onClick={() => toggleItem(index)}
-            className="w-full flex items-center justify-between p-6 text-left transition-colors duration-200 hover:bg-gray-50"
+            className={triggerClasses}
             aria-expanded={openIndex === index}
           >
-            <span className="text-lg font-playfair font-semibold text-gray-900 pr-4">
-              {item.question}
-            </span>
-            <ChevronDown
-              className={`h-5 w-5 text-primary-300 flex-shrink-0 transition-transform duration-300 ${
-                openIndex === index ? 'rotate-180' : ''
+            <span className={questionClasses}>{item.question}</span>
+            <Plus
+              aria-hidden="true"
+              strokeWidth={isCompact ? 1.25 : undefined}
+              className={`${iconClasses} ${iconColorClasses} flex-shrink-0 transition-transform duration-200 motion-reduce:transition-none ${
+                openIndex === index ? 'rotate-45' : ''
               }`}
             />
           </button>
           <div
-            className={`transition-all duration-300 ease-in-out ${
-              openIndex === index ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'
-            } overflow-hidden`}
+            id={`${id}-panel-${index}`}
+            role="region"
+            aria-labelledby={`${id}-trigger-${index}`}
+            hidden={openIndex !== index}
           >
-            <div className="px-6 pb-6 text-textLight leading-comfortable">{item.answer}</div>
+            <div className={answerClasses}>{item.answer}</div>
           </div>
         </div>
       ))}

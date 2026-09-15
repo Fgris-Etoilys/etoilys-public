@@ -221,8 +221,8 @@ export default function ContactForm({
   };
 
   return (
-    <div className="bg-white rounded-card border border-gray-200 p-8">
-      <h3 className="text-2xl font-playfair font-semibold text-gray-900 mb-6">{displayedTitle}</h3>
+    <div className="editorial-form">
+      <h3 className="text-3xl text-ink mb-6">{displayedTitle}</h3>
 
       {isSuccess && (
         <div className="mb-6 p-4 bg-success-100 border border-success-200 rounded-lg text-success-500">
@@ -275,7 +275,7 @@ export default function ContactForm({
           label={
             <>
               {contactContent.consentPrefix}{' '}
-              <Link to={privacyPath} className="text-primary-300 hover:text-primary-400">
+              <Link to={privacyPath} className="editorial-inline-link">
                 {contactContent.privacyLinkLabel}
               </Link>
             </>

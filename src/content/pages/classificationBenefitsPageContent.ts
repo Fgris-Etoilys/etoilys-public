@@ -6,6 +6,8 @@ type BenefitCard = {
   icon: BenefitsIconKey;
   title: string;
   description: string;
+  linkHref?: string;
+  linkLabel?: string;
 };
 
 type FiscalComparisonItem = {
@@ -41,6 +43,7 @@ type CheckItem = {
 };
 
 export type ClassificationBenefitsPageContent = {
+  navigation: readonly [string, string, string];
   hero: {
     title: string;
     description: string;
@@ -143,6 +146,7 @@ const OFFICIAL_FISCAL_SOURCE_HREF =
 
 export const classificationBenefitsPageContent = {
   fr: {
+    navigation: ['Fiscalité', 'Taxe de séjour', 'Reconnaissance officielle'],
     hero: {
       title: 'Pourquoi faire classer son meublé de tourisme ?',
       description:
@@ -153,12 +157,16 @@ export const classificationBenefitsPageContent = {
       items: [
         {
           icon: 'calculator',
+          linkHref: '#fiscalite',
+          linkLabel: 'Comparer les régimes fiscaux',
           title: 'Abattement fiscal majoré',
           description:
             'Pour les revenus 2026 déclarés en 2027, un meublé classé bénéficie d’un abattement micro-BIC de 50 % jusqu’à 83 600 € de recettes, contre 30 % jusqu’à 15 000 € pour un meublé non classé.',
         },
         {
           icon: 'percent',
+          linkHref: '#taxe-sejour',
+          linkLabel: 'Comprendre le calcul de la taxe',
           title: 'Taxe de séjour avantageuse',
           description:
             "Les meublés classés bénéficient d'un tarif forfaitaire de taxe de séjour par personne et par nuit, généralement inférieur à celui appliqué aux meublés non classés.",
@@ -171,6 +179,8 @@ export const classificationBenefitsPageContent = {
         },
         {
           icon: 'award',
+          linkHref: '#reconnaissance',
+          linkLabel: 'Découvrir le repère en étoiles',
           title: 'Repère officiel en étoiles',
           description:
             "Le loueur peut demander un panonceau officiel du ministère chargé du Tourisme (1 à 5 étoiles), apposable sur le bien et mentionnable dans toutes les annonces. Il atteste du respect de critères de confort et d'équipement du logement.",
@@ -256,7 +266,7 @@ export const classificationBenefitsPageContent = {
       example: {
         title: 'Exemple à Paris — meublé 3★, loué 120 € / nuit à 2 personnes (60 € HT / pers)',
         note: 'Paris applique une surtaxe départementale (+10 %) et une surtaxe Île-de-France Mobilités (+200 %) sur la base de la taxe de séjour.',
-        headers: ['', 'Non classé', 'Classé 3★'],
+        headers: ['Détail', 'Non classé', 'Classé 3★'],
         rows: [
           {
             label: 'Base taxe de séjour',
@@ -384,7 +394,7 @@ export const classificationBenefitsPageContent = {
           variant: 'ghost',
         },
         {
-          label: 'Demander votre classement',
+          label: 'Demander mon classement',
           href: '/demande-classement',
           variant: 'white',
         },
@@ -392,6 +402,7 @@ export const classificationBenefitsPageContent = {
     },
   },
   en: {
+    navigation: ['Tax benefits', 'Tourist tax', 'Official recognition'],
     hero: {
       title: 'Why classify furnished tourist accommodation in France?',
       description:
@@ -402,12 +413,16 @@ export const classificationBenefitsPageContent = {
       items: [
         {
           icon: 'calculator',
+          linkHref: '#fiscalite',
+          linkLabel: 'Compare tax regimes',
           title: 'Increased tax allowance',
           description:
             'For 2026 income declared in 2027, classified furnished tourist accommodation benefits from a 50% micro-BIC tax allowance on revenue of up to €83,600, compared with 30% on revenue of up to €15,000 for non-classified accommodation.',
         },
         {
           icon: 'percent',
+          linkHref: '#taxe-sejour',
+          linkLabel: 'Understand the tourist tax',
           title: 'Advantageous tourist tax',
           description:
             'Classified furnished tourist accommodation benefits from a fixed tourist tax amount per person and per night, generally lower than the amount applied to non-classified furnished accommodation.',
@@ -420,6 +435,8 @@ export const classificationBenefitsPageContent = {
         },
         {
           icon: 'award',
+          linkHref: '#reconnaissance',
+          linkLabel: 'Explore the official star rating',
           title: 'Official star reference',
           description:
             'The owner may request the official sign issued by the ministry in charge of Tourism (1 to 5 stars), which can be displayed at the property and mentioned in all listings. It attests that the accommodation meets comfort and equipment criteria.',
@@ -506,7 +523,7 @@ export const classificationBenefitsPageContent = {
         title:
           'Example in Paris — 3★ accommodation, rented for €120 / night for 2 people (€60 excl. tax / person)',
         note: 'Paris applies a departmental surtax (+10%) and an Île-de-France Mobilités surtax (+200%) on the tourist tax base.',
-        headers: ['', 'Non-classified', 'Classified 3★'],
+        headers: ['Item', 'Non-classified', 'Classified 3★'],
         rows: [
           { label: 'Tourist tax base', unclassified: '5% × €60 = €3.00', classified: '€1.70' },
           { label: '+ Departmental surtax (10%)', unclassified: '€0.30', classified: '€0.17' },
@@ -636,6 +653,7 @@ export const classificationBenefitsPageContent = {
     },
   },
   nl: {
+    navigation: ['Fiscaliteit', 'Toeristenbelasting', 'Officiële erkenning'],
     hero: {
       title: 'Waarom een vakantiewoning in Frankrijk laten classificeren?',
       description:
@@ -646,12 +664,16 @@ export const classificationBenefitsPageContent = {
       items: [
         {
           icon: 'calculator',
+          linkHref: '#fiscalite',
+          linkLabel: 'Fiscale regimes vergelijken',
           title: 'Verhoogde fiscale aftrek',
           description:
             'Voor inkomsten over 2026 die in 2027 worden aangegeven, geldt voor een geclassificeerde vakantiewoning een micro-BIC-aftrek van 50% tot 83.600 euro omzet, tegenover 30% tot 15.000 euro voor een niet-geclassificeerde woning.',
         },
         {
           icon: 'percent',
+          linkHref: '#taxe-sejour',
+          linkLabel: 'De toeristenbelasting begrijpen',
           title: 'Toeristenbelasting',
           description:
             'Geclassificeerde vakantiewoningen vallen onder een vast bedrag toeristenbelasting per persoon en per nacht, meestal lager dan het bedrag voor niet-geclassificeerde vakantiewoningen.',
@@ -664,6 +686,8 @@ export const classificationBenefitsPageContent = {
         },
         {
           icon: 'award',
+          linkHref: '#reconnaissance',
+          linkLabel: 'De sterrenclassificatie ontdekken',
           title: 'Officiële sterrenclassificatie',
           description:
             'De verhuurder kan het officiële bord van het ministerie belast met Toerisme aanvragen (1 tot 5 sterren), dat bij de woning kan worden aangebracht en in advertenties kan worden vermeld. Het bevestigt dat de woning voldoet aan comfort- en uitrustingscriteria.',
@@ -750,7 +774,7 @@ export const classificationBenefitsPageContent = {
         title:
           'Voorbeeld in Parijs — 3★-woning, verhuurd voor 120 euro / nacht aan 2 personen (60 euro excl. btw / pers.)',
         note: 'Parijs past een departementale toeslag (+10%) en een Île-de-France Mobilités-toeslag (+200%) toe op de basis van de toeristenbelasting.',
-        headers: ['', 'Niet geclassificeerd', 'Geclassificeerd 3★'],
+        headers: ['Onderdeel', 'Niet geclassificeerd', 'Geclassificeerd 3★'],
         rows: [
           {
             label: 'Basis toeristenbelasting',

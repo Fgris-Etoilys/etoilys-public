@@ -90,21 +90,21 @@ export default function Header() {
   return (
     <>
       <header ref={headerRef} className={headerClasses}>
-        <nav className="container-adaptive py-2">
+        <nav className="container-editorial py-2">
           <div className="flex items-center justify-between">
             <Link to={content.homeHref} className="ui-focus flex items-center">
               <img
-                src="/Logo complet - site web copy.svg"
+                src="/logo-etoilys-editorial.svg"
                 alt="Etoilys"
                 width={1025}
                 height={576}
                 loading="eager"
                 decoding="async"
-                className="h-14 w-auto origin-left scale-110 md:h-14 xl:h-16"
+                className="h-14 w-auto origin-left scale-110 md:h-14 min-[1280px]:h-16"
               />
             </Link>
 
-            <div className="hidden items-center gap-2 xl:flex" ref={dropdownRef}>
+            <div className="hidden items-center gap-2 min-[1280px]:flex" ref={dropdownRef}>
               {navigation.map((item) => {
                 const hasSubmenu = Boolean(item.submenu);
                 const isActive =
@@ -219,7 +219,7 @@ export default function Header() {
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="ui-focus rounded-control p-2 text-ink transition-colors duration-200 hover:bg-surface-hover hover:text-ink xl:hidden"
+              className="ui-focus rounded-control p-2 text-ink transition-colors duration-200 hover:bg-surface-hover hover:text-ink min-[1280px]:hidden"
               aria-label={content.menuToggleLabel}
               aria-expanded={isMobileMenuOpen}
               aria-controls={isMobileMenuOpen ? 'site-mobile-menu' : undefined}
@@ -233,7 +233,7 @@ export default function Header() {
       {isMobileMenuOpen && (
         <div
           id="site-mobile-menu"
-          className="fixed inset-0 z-[60] overflow-y-auto bg-paper pt-[var(--etoilys-header-height,73px)] xl:hidden"
+          className="fixed inset-0 z-[60] overflow-y-auto bg-paper pt-[var(--etoilys-header-height,73px)] min-[1280px]:hidden"
         >
           <nav className="container-adaptive py-6">
             <div className="flex flex-col gap-2">
