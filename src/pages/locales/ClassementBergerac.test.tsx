@@ -109,7 +109,7 @@ describe('ClassementBergerac', () => {
     expectHeadingSequence([
       'Classement de meublé de tourisme à Bergerac et dans le Bergeracois',
       'Pourquoi faire classer votre meublé de tourisme ?',
-      'Au plus proche de chez vous',
+      /Où intervenons-nous autour de Bergerac\s*\?/,
       'Combien coûte le classement d’un meublé à Bergerac ?',
       'Votre classement en trois étapes',
       'Pourquoi choisir Etoilys pour votre classement à Bergerac ?',
@@ -139,7 +139,10 @@ describe('ClassementBergerac', () => {
 
     expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
     expectHeadingSectionClass('Pourquoi faire classer votre meublé de tourisme ?', 'bg-paper');
-    expectHeadingSectionClass('Au plus proche de chez vous', 'local-v6-service-area');
+    expectHeadingSectionClass(
+      /Où intervenons-nous autour de Bergerac\s*\?/,
+      'local-v6-service-area'
+    );
     expectHeadingSectionClass('Combien coûte le classement d’un meublé à Bergerac ?', 'bg-paper');
     expectHeadingSectionClass('Votre classement en trois étapes', 'bg-surface-warm');
     expectHeadingSectionClass(

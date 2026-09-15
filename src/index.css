@@ -308,6 +308,10 @@
     @apply !border-paper !bg-paper !text-ink hover:!bg-white;
   }
 
+  .editorial-dark-button {
+    @apply !border-ink !bg-ink !text-white hover:!bg-ink-hover hover:!text-white;
+  }
+
   .editorial-hero-cta {
     min-height: 56px;
     gap: 26px;

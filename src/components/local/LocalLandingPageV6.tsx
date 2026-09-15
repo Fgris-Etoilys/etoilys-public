@@ -81,6 +81,33 @@ const expertiseReasons = [
   },
 ] as const;
 
+const COMMON_LOCAL_V6_FAQ_ITEMS = [
+  {
+    question: 'Comment me préparer à une visite de classement ?',
+    answer: (
+      <>
+        Quelques vérifications avant le rendez-vous permettent de préparer sereinement la visite :
+        équipements, informations utiles et principaux critères de la grille.{' '}
+        <Link to="/actualites/preparer-visite-classement-meuble-tourisme">
+          Voir notre guide pour préparer la visite de classement
+        </Link>
+      </>
+    ),
+  },
+  {
+    question: 'Que faire une fois le classement obtenu ?',
+    answer: (
+      <>
+        Une fois votre classement obtenu, quelques démarches restent à effectuer, notamment pour
+        l’affichage, la déclaration, la taxe de séjour et vos annonces.{' '}
+        <Link to="/actualites/que-faire-apres-classement-meuble-tourisme">
+          Voir les démarches à effectuer après le classement
+        </Link>
+      </>
+    ),
+  },
+] as const;
+
 export default function LocalLandingPageV6({ config }: { config: LocalLandingPageV6Config }) {
   return (
     <div className="local-v6-landing">
@@ -605,7 +632,10 @@ function LocalV6FaqSection({ config }: { config: LocalLandingPageV6Config }) {
           </Link>
         </div>
         <div>
-          <Accordion items={config.faq.items} density="compact" />
+          <Accordion
+            items={[...config.faq.items, ...COMMON_LOCAL_V6_FAQ_ITEMS]}
+            density="compact"
+          />
         </div>
       </div>
     </section>

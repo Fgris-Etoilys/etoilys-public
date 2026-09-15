@@ -63,33 +63,6 @@ const commonProcedure = {
   note: 'Nos inspecteurs vous accompagnent à chaque étape, de votre demande à la remise des documents de classement.',
 } as const;
 
-const COMMON_LOCAL_V6_FAQ_ITEMS = [
-  {
-    question: 'Comment me préparer à une visite de classement ?',
-    answer: (
-      <>
-        Quelques vérifications avant le rendez-vous permettent de préparer sereinement la visite :
-        équipements, informations utiles et principaux critères de la grille.{' '}
-        <Link to="/actualites/preparer-visite-classement-meuble-tourisme">
-          Voir notre guide pour préparer la visite de classement
-        </Link>
-      </>
-    ),
-  },
-  {
-    question: 'Que faire une fois le classement obtenu ?',
-    answer: (
-      <>
-        Une fois votre classement obtenu, quelques démarches restent à effectuer, notamment pour
-        l’affichage, la déclaration, la taxe de séjour et vos annonces.{' '}
-        <Link to="/actualites/que-faire-apres-classement-meuble-tourisme">
-          Voir les démarches à effectuer après le classement
-        </Link>
-      </>
-    ),
-  },
-] as const;
-
 const dordogneQuestions = [
   {
     question: 'Intervenez-vous dans ma commune en Dordogne ?',
@@ -322,7 +295,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
       href: '/contact',
       label: 'Parlons-en',
     },
-    items: [...dordogneQuestions, ...COMMON_LOCAL_V6_FAQ_ITEMS],
+    items: dordogneQuestions,
   },
   finalCta: {
     eyebrow: 'À VOUS DE JOUER',
@@ -384,7 +357,7 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
     primaryAction: {
       href: '/demande-classement',
       variant: 'white',
-      className: '!border-ink !bg-ink !text-white hover:!bg-ink-hover hover:!text-white',
+      className: 'editorial-dark-button',
       label: (
         <>
           Demander mon classement <ArrowUpRight size={20} aria-hidden="true" />
@@ -405,7 +378,7 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   },
   proofItems: DORDOGNE_LOCAL_LANDING_PAGE_V6.proofItems,
   serviceArea: {
-    title: 'Au plus proche de chez vous',
+    title: 'Où intervenons-nous autour de Bergerac\u00a0?',
     intro:
       'Nos inspecteurs interviennent à Bergerac et dans le Bergeracois, sans frais de déplacement, notamment à :',
     communes: BERGERAC_SERVICE_COMMUNES,
@@ -478,7 +451,7 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       href: '/contact',
       label: 'Parlons-en',
     },
-    items: [...bergeracFaqItems, ...COMMON_LOCAL_V6_FAQ_ITEMS],
+    items: bergeracFaqItems,
   },
   finalCta: {
     ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,

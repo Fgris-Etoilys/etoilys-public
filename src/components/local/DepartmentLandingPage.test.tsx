@@ -215,6 +215,10 @@ describe('DepartmentLandingPage', () => {
   });
 
   it('renders a second department V6 config without a route-specific structure fork', () => {
+    const syntheticFaqQuestions = SECOND_DEPARTMENT_V6.faq.items.map((item) => item.question);
+    expect(syntheticFaqQuestions).not.toContain('Comment me préparer à une visite de classement ?');
+    expect(syntheticFaqQuestions).not.toContain('Que faire une fois le classement obtenu ?');
+
     renderDepartmentPage(SECOND_DEPARTMENT_V6);
 
     expect(
@@ -231,6 +235,12 @@ describe('DepartmentLandingPage', () => {
       screen.getByRole('heading', {
         name: 'Demandez le classement de votre meublé en département test',
       })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Comment me préparer à une visite de classement ?' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Que faire une fois le classement obtenu ?' })
     ).toBeInTheDocument();
     expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
   });
