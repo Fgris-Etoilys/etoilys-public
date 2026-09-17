@@ -20,6 +20,7 @@ const CHECK_MODE = process.argv.includes('--check');
 const HERO_ASSET_KEYS = new Set([
   'homeHero',
   'dordogneHero',
+  'dordogneLaRoqueGageac',
   'girondeHero',
   'lotEtGaronneHero',
   'bergeracHero',

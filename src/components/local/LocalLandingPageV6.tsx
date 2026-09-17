@@ -21,6 +21,7 @@ import type {
   LocalV6Action,
   LocalV6CityServiceArea,
   LocalV6DepartmentServiceArea,
+  LocalV6EditorialNotice,
   LocalV6Hero,
   LocalV6TaxModule,
 } from '../../content/local/types';
@@ -123,6 +124,7 @@ export default function LocalLandingPageV6({ config }: { config: LocalLandingPag
       <LocalV6ProcedureSection config={config} />
       <LocalV6ExpertiseSection config={config} />
       {config.localModule && <LocalV6TaxModuleSection module={config.localModule} />}
+      {config.localNotice && <LocalV6EditorialNoticeSection notice={config.localNotice} />}
       <LocalV6FaqSection config={config} />
       <LocalV6FinalCta config={config} />
     </div>
@@ -612,6 +614,46 @@ function LocalV6TaxModuleSection({ module }: { module: LocalV6TaxModule }) {
         <Button href="/simulateur-taxe-sejour" variant="primary" className="lg:hidden">
           Comparer la taxe de séjour de mon logement
         </Button>
+      </div>
+    </section>
+  );
+}
+
+function LocalV6EditorialNoticeSection({ notice }: { notice: LocalV6EditorialNotice }) {
+  return (
+    <section
+      className="editorial-section local-v6-notice-section bg-surface-neutral"
+      aria-labelledby="local-v6-notice-title"
+    >
+      <div className="container-editorial">
+        <div className="editorial-notice local-v6-notice">
+          <h2 className="editorial-heading" id="local-v6-notice-title">
+            {notice.title}
+          </h2>
+          <div className="space-y-5 text-muted">
+            {notice.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+            {notice.items && (
+              <ul>
+                {notice.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            )}
+            {notice.conclusion && <p>{notice.conclusion}</p>}
+          </div>
+          {notice.source && (
+            <a
+              href={notice.source.href}
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="editorial-link ui-focus"
+            >
+              {notice.source.label} <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          )}
+        </div>
       </div>
     </section>
   );

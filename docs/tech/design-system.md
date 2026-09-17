@@ -1,6 +1,6 @@
 # Socle visuel du site public
 
-Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et à la page Dordogne. La page Dordogne du commit `913becf` reste la référence visuelle de la direction artistique ; l'implémentation courante du spike reste la référence d'architecture et d'API.
+Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et aux pages locales V6. La page Dordogne du commit `913becf` reste la référence visuelle de la direction artistique ; l'implémentation courante V6 reste la référence d'architecture et d'API.
 
 ## Mode D'Emploi Durable
 
@@ -89,7 +89,7 @@ CTA final sur fond sombre :
 - **ETOILYS-395** : socle premium, pages cœur, Home/Dordogne harmonisées, amorce des enveloppes de formulaires via `editorial-form`.
 - **ETOILYS-396** : terminer les formulaires et simulateurs. Ne pas leur imposer la densité visuelle d'une landing page ; préserver leurs exigences d'état, validation, API, Turnstile et accessibilité.
 - **ETOILYS-396** couvre aussi les états transverses des outils interactifs : `Toast`, enveloppe Turnstile, combobox/listbox, dialogs, tabs et comparatifs. Les états succès, avertissement et erreur restent sémantiques ; les usages décoratifs ou de marque migrent vers `ink`, `paper`, `surface` et `copper`.
-- **ETOILYS-398** : industrialiser les compositions locales, pricing et pages départementales encore spécifiques avec `LocalLandingPageV6`. Voir `docs/tech/local-framework-v6.md`.
+- **ETOILYS-414** : les routes locales publiques Dordogne, Bergerac, Gironde, Bordeaux et Lot-et-Garonne passent par `LocalLandingPageV6` via les wrappers fins `CityLandingPage` / `DepartmentLandingPage`. Voir `docs/tech/local-framework-v6.md`.
 
 ## Compte Rendu Daté Des Validations
 

@@ -1,13 +1,22 @@
 import { ArrowDown, ArrowRight, ArrowUpRight, MapPin, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type {
+  DepartmentSector,
   LocalLandingPageV6CityConfig,
   LocalLandingPageV6DepartmentConfig,
   LocalProcedureStep,
 } from './types';
 import { COFRAC_ACCREDITATION_URL } from '../accreditationLinks';
 import { BERGERAC_FAQ, BERGERAC_SERVICE_COMMUNES } from './cities/bergerac';
-import { DORDOGNE_DEPARTMENT_PAGE, DORDOGNE_V5_SERVICE_SECTORS } from './departments/dordogne';
+import {
+  BORDEAUX_FAQ,
+  BORDEAUX_LOCAL_NOTICE,
+  BORDEAUX_SERVICE_COMMUNES,
+  BORDEAUX_TAX_MODULE,
+} from './cities/bordeaux';
+import { DORDOGNE_V5_SERVICE_SECTORS } from './departments/dordogne';
+import { GIRONDE_FAQ, GIRONDE_SERVICE_SECTORS } from './departments/gironde';
+import { LOT_ET_GARONNE_FAQ, LOT_ET_GARONNE_SERVICE_SECTORS } from './departments/lot-et-garonne';
 import { getSeoRouteConfig } from '../seoRoutes';
 
 function getLocalHeroImageSizes(path: string) {
@@ -16,8 +25,21 @@ function getLocalHeroImageSizes(path: string) {
 
 const dordogneHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-dordogne');
 const bergeracHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-bergerac');
+const girondeHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-gironde');
+const bordeauxHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-bordeaux');
+const lotEtGaronneHeroImageSizes = getLocalHeroImageSizes(
+  '/classement-meuble-tourisme-lot-et-garonne'
+);
 const officialClassificationUrl =
   'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/les-meubles-de-tourisme';
+
+function toCollapsedSectors(sectors: readonly DepartmentSector[], visibleCount = 5) {
+  return sectors.map((sector) => ({
+    name: sector.name,
+    visibleCommunes: (sector.communes ?? []).slice(0, visibleCount),
+    collapsedCommunes: (sector.communes ?? []).slice(visibleCount),
+  }));
+}
 
 const heroReassurance = [
   'Rappel sous 24 h ouvrées',
@@ -251,7 +273,8 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
   ],
   serviceArea: {
     title: 'Dans quelles communes de Dordogne intervenons-nous ?',
-    intro: DORDOGNE_DEPARTMENT_PAGE.serviceArea.intro,
+    intro:
+      'Etoilys intervient en Dordogne sur une large zone couvrant notamment le Bergeracois, le Périgord Noir, la vallée de la Dordogne, la vallée de la Vézère, le Grand Périgueux, la vallée de l’Isle, le Ribéracois et une partie du nord-ouest du département.',
     sectors: DORDOGNE_V5_SERVICE_SECTORS,
     communeLinks: {
       Bergerac: {
@@ -274,7 +297,15 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
       href: '/procedure',
       label: 'Les modalités de la visite',
     },
-    picker: DORDOGNE_DEPARTMENT_PAGE.pricing!,
+    picker: {
+      title: 'Quel tarif pour classer votre meublé en Dordogne ?',
+      intro: 'Sélectionnez la commune de votre meublé pour afficher le tarif applicable.',
+      inputLabel: 'Commune',
+      placeholder: 'Ex. Périgueux, Ribérac, Monbazillac',
+      communeIndexUrl: '/data/communes-dordogne-index.v1.json',
+      defaultPricingProfileId: 'dordogne-standard',
+      overrides: {},
+    },
   },
   procedure: commonProcedure,
   expertise: {
@@ -460,5 +491,313 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       variant: 'white',
       className: 'editorial-inverse-button',
     },
+  },
+};
+
+export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
+  layoutVersion: 'v6',
+  scope: 'department',
+  departmentId: 'gironde',
+  hero: {
+    eyebrow: 'Propriétaires en Gironde',
+    title: 'Classement de gîtes et meublés de tourisme en Gironde',
+    highlightedTitleText: 'en Gironde',
+    description:
+      'Vous louez un appartement, une maison de vacances, un gîte ou une location saisonnière en Gironde ? Etoilys accompagne les propriétaires qui souhaitent demander le classement officiel de leur meublé de tourisme.',
+    image: {
+      assetKey: 'girondeHero',
+      alt: 'Vue de Saint-Émilion en Gironde',
+      sizes: girondeHeroImageSizes,
+      className: 'h-full w-full object-cover object-center',
+      caption: (
+        <>
+          <MapPin size={14} aria-hidden="true" /> Gironde
+        </>
+      ),
+      note: DORDOGNE_LOCAL_LANDING_PAGE_V6.hero.image.note,
+      index: '33 / GIRONDE',
+    },
+    primaryAction: DORDOGNE_LOCAL_LANDING_PAGE_V6.hero.primaryAction,
+    secondaryAction: {
+      href: '#department-pricing-locality',
+      variant: 'secondary',
+      className: 'editorial-link ui-focus local-v6-hero-price',
+      label: (
+        <>
+          Connaître mon tarif <ArrowDown size={16} aria-hidden="true" />
+        </>
+      ),
+    },
+    reassuranceItems: heroReassurance,
+  },
+  proofItems: DORDOGNE_LOCAL_LANDING_PAGE_V6.proofItems,
+  serviceArea: {
+    title: 'Dans quelles communes de Gironde intervenons-nous ?',
+    intro:
+      'Etoilys intervient en Gironde sur une zone concentrée autour du Libournais, de la Haute-Gironde, de Bordeaux Métropole, de l’Entre-deux-Mers, de Montesquieu, de la vallée de la Garonne et du nord du Sud-Gironde.',
+    sectors: toCollapsedSectors(GIRONDE_SERVICE_SECTORS),
+    communeLinks: {
+      Bordeaux: {
+        label: 'Bordeaux →',
+        href: '/classement-meuble-tourisme-bordeaux',
+      },
+    },
+    parentLink: {
+      href: '/zones-intervention',
+      label: 'Voir toutes nos zones d’intervention',
+    },
+  },
+  pricing: {
+    mode: 'picker',
+    title: 'Quel tarif pour classer votre meublé en Gironde ?',
+    intro:
+      'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.',
+    checklist: pricingChecklist,
+    procedureLink: {
+      href: '/procedure',
+      label: 'Les modalités de la visite',
+    },
+    picker: {
+      title: 'Quel tarif pour classer votre meublé en Gironde ?',
+      intro: 'Sélectionnez la commune de votre meublé pour afficher le tarif applicable.',
+      inputLabel: 'Commune',
+      placeholder: 'Ex. Bordeaux, Libourne, Saint-Émilion',
+      communeIndexUrl: '/data/communes-gironde-index.v1.json',
+      defaultPricingProfileId: 'gironde-standard',
+      overrides: {
+        '33063': 'bordeaux-standard',
+      },
+    },
+  },
+  procedure: commonProcedure,
+  expertise: {
+    title: 'Pourquoi choisir Etoilys pour votre classement en Gironde ?',
+    image: {
+      assetKey: 'girondeTerritory',
+      alt: 'Promenade littorale en Gironde',
+      sizes: '(min-width: 900px) 35vw, 100vw',
+      className: 'h-full w-full object-cover object-center',
+      caption: 'Gironde.',
+    },
+  },
+  faq: {
+    eyebrow: 'AVANT DE VOUS LANCER',
+    title: 'Questions fréquentes sur le classement en Gironde',
+    intro: 'Un point particulier sur votre logement ?',
+    contactLink: {
+      href: '/contact',
+      label: 'Parlons-en',
+    },
+    items: GIRONDE_FAQ,
+  },
+  finalCta: {
+    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
+    title: 'Demandez le classement de votre meublé en Gironde',
+  },
+};
+
+export const BORDEAUX_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
+  layoutVersion: 'v6',
+  scope: 'city',
+  city: 'Bordeaux',
+  hero: {
+    eyebrow: 'Bordeaux et Bordeaux Métropole',
+    title: 'Classement de meublé de tourisme à Bordeaux et dans la métropole',
+    highlightedTitleText: 'à Bordeaux et dans la métropole',
+    description:
+      'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Bordeaux ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
+    image: {
+      assetKey: 'bordeauxHero',
+      alt: 'Place de la Bourse et miroir d’eau à Bordeaux',
+      sizes: bordeauxHeroImageSizes,
+      className: 'h-full w-full object-cover object-[center_55%] max-[899px]:object-[center_45%]',
+      caption: (
+        <>
+          <MapPin size={14} aria-hidden="true" /> Bordeaux Métropole
+        </>
+      ),
+      note: DORDOGNE_LOCAL_LANDING_PAGE_V6.hero.image.note,
+      credit: {
+        sourceLabel: 'Miguel Cuenca / Pexels',
+        sourceHref: 'https://www.pexels.com/photo/place-de-la-bourse-in-bordeaux-france-17356595/',
+        licenseLabel: 'Pexels License',
+        licenseHref: 'https://www.pexels.com/license/',
+      },
+    },
+    primaryAction: {
+      href: '/demande-classement',
+      variant: 'white',
+      className: 'editorial-dark-button',
+      label: (
+        <>
+          Demander mon classement <ArrowUpRight size={20} aria-hidden="true" />
+        </>
+      ),
+    },
+    secondaryAction: {
+      href: '#tarifs',
+      variant: 'secondary',
+      className: 'editorial-link ui-focus local-v6-hero-price',
+      label: (
+        <>
+          Connaître mon tarif <ArrowDown size={16} aria-hidden="true" />
+        </>
+      ),
+    },
+    reassuranceItems: ['Demande en 30 secondes', ...heroReassurance.slice(1)],
+  },
+  proofItems: GIRONDE_LOCAL_LANDING_PAGE_V6.proofItems,
+  serviceArea: {
+    title: 'Où intervenons-nous autour de Bordeaux ?',
+    intro:
+      'Nos inspecteurs interviennent à Bordeaux et dans Bordeaux Métropole, sans frais de déplacement, notamment à :',
+    communes: BORDEAUX_SERVICE_COMMUNES,
+    parentLink: {
+      label: 'Voir notre zone d’intervention en Gironde',
+      href: '/classement-meuble-tourisme-gironde',
+    },
+  },
+  pricing: {
+    mode: 'direct',
+    title: 'Combien coûte le classement d’un meublé à Bordeaux ?',
+    checklist: pricingChecklist,
+    procedureLink: {
+      href: '/procedure',
+      label: 'Les modalités de la visite',
+    },
+    pricingProfileId: 'bordeaux-standard',
+  },
+  procedure: {
+    ...commonProcedure,
+    link: {
+      ...commonProcedure.link,
+      variant: 'secondary',
+      className: 'editorial-link ui-focus',
+    },
+  },
+  expertise: {
+    title: 'Pourquoi choisir Etoilys pour votre classement à Bordeaux ?',
+    image: {
+      assetKey: 'girondeTerritory',
+      alt: 'Promenade littorale en Gironde',
+      sizes: '(min-width: 900px) 35vw, 100vw',
+      className: 'h-full w-full object-cover object-center',
+      caption: 'Gironde.',
+    },
+  },
+  localModule: BORDEAUX_TAX_MODULE,
+  localNotice: BORDEAUX_LOCAL_NOTICE,
+  faq: {
+    eyebrow: 'AVANT DE VOUS LANCER',
+    title: 'Questions fréquentes sur le classement à Bordeaux',
+    intro: 'Un point particulier sur votre logement ?',
+    contactLink: {
+      href: '/contact',
+      label: 'Parlons-en',
+    },
+    items: BORDEAUX_FAQ,
+  },
+  finalCta: {
+    ...GIRONDE_LOCAL_LANDING_PAGE_V6.finalCta,
+    title: 'Demandez le classement de votre meublé à Bordeaux',
+    primaryAction: {
+      ...GIRONDE_LOCAL_LANDING_PAGE_V6.finalCta.primaryAction,
+      variant: 'white',
+      className: 'editorial-inverse-button',
+    },
+  },
+};
+
+export const LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
+  layoutVersion: 'v6',
+  scope: 'department',
+  departmentId: 'lot-et-garonne',
+  hero: {
+    eyebrow: 'Propriétaires en Lot-et-Garonne',
+    title: 'Classement de gîtes et meublés de tourisme dans le Lot-et-Garonne',
+    highlightedTitleText: 'dans le Lot-et-Garonne',
+    description:
+      'Vous louez un gîte, une maison de vacances ou un meublé de tourisme dans le Lot-et-Garonne ? Etoilys vous accompagne pour organiser la visite de classement officielle de votre logement.',
+    image: {
+      assetKey: 'lotEtGaronneHero',
+      alt: 'Village du Lot-et-Garonne au bord de l’eau',
+      sizes: lotEtGaronneHeroImageSizes,
+      className: 'h-full w-full object-cover object-center',
+      caption: (
+        <>
+          <MapPin size={14} aria-hidden="true" /> Lot-et-Garonne
+        </>
+      ),
+      note: DORDOGNE_LOCAL_LANDING_PAGE_V6.hero.image.note,
+      index: '47 / LOT-ET-GARONNE',
+    },
+    primaryAction: DORDOGNE_LOCAL_LANDING_PAGE_V6.hero.primaryAction,
+    secondaryAction: {
+      href: '#department-pricing-locality',
+      variant: 'secondary',
+      className: 'editorial-link ui-focus local-v6-hero-price',
+      label: (
+        <>
+          Connaître mon tarif <ArrowDown size={16} aria-hidden="true" />
+        </>
+      ),
+    },
+    reassuranceItems: heroReassurance,
+  },
+  proofItems: DORDOGNE_LOCAL_LANDING_PAGE_V6.proofItems,
+  serviceArea: {
+    title: 'Dans quelles communes du Lot-et-Garonne intervenons-nous ?',
+    intro:
+      'Etoilys intervient dans le Lot-et-Garonne sur une zone couvrant notamment l’Agenais, la vallée de la Garonne, le Val de Garonne, le Villeneuvois, la vallée du Lot, le Fumélois, les bastides du Haut-Agenais, le Pays de Lauzun, le Pays de Duras et le secteur de Casteljaloux.',
+    sectors: toCollapsedSectors(LOT_ET_GARONNE_SERVICE_SECTORS),
+    parentLink: {
+      href: '/zones-intervention',
+      label: 'Voir toutes nos zones d’intervention',
+    },
+  },
+  pricing: {
+    mode: 'picker',
+    title: 'Quel tarif pour classer votre meublé dans le Lot-et-Garonne ?',
+    intro:
+      'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.',
+    checklist: pricingChecklist,
+    procedureLink: {
+      href: '/procedure',
+      label: 'Les modalités de la visite',
+    },
+    picker: {
+      title: 'Quel tarif pour classer votre meublé dans le Lot-et-Garonne ?',
+      intro: 'Sélectionnez la commune de votre meublé pour afficher le tarif applicable.',
+      inputLabel: 'Commune',
+      placeholder: 'Ex. Agen, Marmande, Villeneuve-sur-Lot',
+      communeIndexUrl: '/data/communes-lot-et-garonne-index.v1.json',
+      defaultPricingProfileId: 'lot-et-garonne-standard',
+      overrides: {},
+    },
+  },
+  procedure: commonProcedure,
+  expertise: {
+    title: 'Pourquoi choisir Etoilys pour votre classement dans le Lot-et-Garonne ?',
+    image: {
+      assetKey: 'lotEtGaronneTerritory',
+      alt: 'Maison et territoire touristique dans le Lot-et-Garonne',
+      sizes: '(min-width: 900px) 35vw, 100vw',
+      className: 'h-full w-full object-cover object-center',
+      caption: 'Lot-et-Garonne.',
+    },
+  },
+  faq: {
+    eyebrow: 'AVANT DE VOUS LANCER',
+    title: 'Questions fréquentes sur le classement dans le Lot-et-Garonne',
+    intro: 'Un point particulier sur votre logement ?',
+    contactLink: {
+      href: '/contact',
+      label: 'Parlons-en',
+    },
+    items: LOT_ET_GARONNE_FAQ,
+  },
+  finalCta: {
+    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
+    title: 'Demandez le classement de votre meublé dans le Lot-et-Garonne',
   },
 };

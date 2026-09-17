@@ -67,69 +67,11 @@ export interface LocalSource {
   href: string;
 }
 
-export interface DepartmentBenefitItem {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-}
-
 export interface DepartmentSector {
   name: string;
   communes?: string[];
   visibleCommunes?: string[];
   collapsedCommunes?: string[];
-}
-
-export interface DepartmentHeroConfig {
-  assetKey: ImageAssetKey;
-  alt: string;
-  eyebrow: string;
-  h1: string;
-  paragraphs: string[];
-  imageClassName: string;
-  overlayClassName: string;
-}
-
-export interface DepartmentTourismConfig {
-  title: string;
-  introParagraphs: string[];
-  image: {
-    assetKey: ImageAssetKey;
-    alt: string;
-  };
-  cardTitle: string;
-  rows: LocalTableRow[];
-  sourceNote: string;
-  afterTitle?: string;
-  afterParagraphs: string[];
-}
-
-export interface DepartmentServiceAreaConfig {
-  title: string;
-  intro: string;
-  sectors: DepartmentSector[];
-  sectorLinks?: Record<string, { label: string; href: string }>;
-  communeLinks?: Record<string, { href: string; label?: string }>;
-  outro: string;
-}
-
-export interface DepartmentProcedureConfig {
-  title: string;
-  intro: string;
-  image: {
-    assetKey: ImageAssetKey;
-    alt: string;
-  };
-  steps: LocalProcedureStep[];
-  simulatorPrompt: {
-    title: string;
-    description: string;
-  };
-}
-
-export interface DepartmentTariffConfig {
-  title: string;
-  paragraphs: string[];
 }
 
 export interface DepartmentPricingResolutionConfig {
@@ -140,35 +82,6 @@ export interface DepartmentPricingResolutionConfig {
   communeIndexUrl: string;
   defaultPricingProfileId: PricingProfileId;
   overrides: Record<string, PricingProfileId>;
-}
-
-export interface DepartmentFinalCtaConfig {
-  title: string;
-  paragraphs: string[];
-}
-
-export interface DepartmentLandingPageConfig {
-  departmentId: DepartmentAreaId;
-  layoutVersion?: 'v5';
-  hero: DepartmentHeroConfig;
-  benefits: {
-    title: string;
-    paragraphs: string[];
-    items: DepartmentBenefitItem[];
-    cofracDescription: string;
-  };
-  tourism: DepartmentTourismConfig;
-  serviceArea: DepartmentServiceAreaConfig;
-  procedure: DepartmentProcedureConfig;
-  tariff: DepartmentTariffConfig;
-  pricing?: DepartmentPricingResolutionConfig;
-  faq: {
-    title: string;
-    items: LocalFaqItem[];
-    sectionClassName: string;
-  };
-  finalCta: DepartmentFinalCtaConfig;
-  sources: LocalSource[];
 }
 
 export type LocalV6ButtonVariant = 'primary' | 'secondary' | 'white' | 'ghost';
@@ -281,6 +194,17 @@ export interface LocalV6TaxModule {
   sourceNote: string;
 }
 
+export interface LocalV6EditorialNotice {
+  title: string;
+  paragraphs: readonly string[];
+  items?: readonly string[];
+  conclusion?: string;
+  source?: {
+    label: string;
+    href: string;
+  };
+}
+
 export interface LocalV6Procedure {
   title: string;
   eyebrow: string;
@@ -331,6 +255,7 @@ interface LocalLandingPageV6Base {
   proofItems: readonly [LocalV6ProofItem, LocalV6ProofItem, LocalV6ProofItem];
   procedure: LocalV6Procedure;
   expertise: LocalV6Expertise;
+  localNotice?: LocalV6EditorialNotice;
   faq: LocalV6Faq;
   finalCta: LocalV6FinalCta;
 }

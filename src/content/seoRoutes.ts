@@ -124,24 +124,24 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'procedure',
   },
   '/zones-intervention': {
-    lastModified: '2026-09-07',
+    lastModified: '2026-09-17',
     title: 'Zones d’intervention pour le classement des meublés de tourisme',
     description:
       'Découvrez les secteurs actuellement couverts par Etoilys pour les visites de classement des meublés de tourisme.',
     breadcrumbLabel: 'Zones d’intervention',
   },
   '/classement-meuble-tourisme-dordogne': {
-    lastModified: '2026-09-14',
+    lastModified: '2026-09-17',
     title: 'Classement de meublé de tourisme en Dordogne',
     description:
       'Classez votre gîte ou meublé de tourisme en Dordogne avec Etoilys, organisme accrédité Cofrac. Consultez les tarifs. Rappel sous 24 h ouvrées.',
     breadcrumbLabel: 'Dordogne',
     ogImageKey: 'dordogneLaRoqueGageac',
     lcpImageKey: 'dordogneLaRoqueGageac',
-    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 681px) 45vw, 100vw',
+    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
   },
   '/classement-meuble-tourisme-bergerac': {
-    lastModified: '2026-07-23',
+    lastModified: '2026-09-17',
     title: 'Classement meublé de tourisme à Bergerac',
     description:
       'Faites classer votre meublé de tourisme à Bergerac et dans le Bergeracois. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
@@ -149,10 +149,10 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-dordogne'],
     ogImageKey: 'bergeracHero',
     lcpImageKey: 'bergeracHero',
-    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 681px) 45vw, 100vw',
+    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
   },
   '/classement-meuble-tourisme-bordeaux': {
-    lastModified: '2026-07-24',
+    lastModified: '2026-09-17',
     title: 'Classement meublé de tourisme à Bordeaux',
     description:
       'Faites classer votre meublé de tourisme à Bordeaux et dans la métropole. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
@@ -160,24 +160,27 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-gironde'],
     ogImageKey: 'bordeauxHero',
     lcpImageKey: 'bordeauxHero',
+    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
   },
   '/classement-meuble-tourisme-gironde': {
-    lastModified: '2026-06-07',
+    lastModified: '2026-09-17',
     title: 'Classement gîte, Airbnb et meublé de tourisme en Gironde',
     description:
       'Etoilys accompagne les propriétaires de meublés de tourisme en Gironde : classement officiel, zones d’intervention, procédure, fiscalité, taxe de séjour et demande en ligne.',
     breadcrumbLabel: 'Gironde',
     ogImageKey: 'girondeHero',
     lcpImageKey: 'girondeHero',
+    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
   },
   '/classement-meuble-tourisme-lot-et-garonne': {
-    lastModified: '2026-06-07',
+    lastModified: '2026-09-17',
     title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot-et-Garonne',
     description:
       'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot-et-Garonne pour leur classement officiel.',
     breadcrumbLabel: 'Classement en Lot-et-Garonne',
     ogImageKey: 'lotEtGaronneHero',
     lcpImageKey: 'lotEtGaronneHero',
+    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
   },
   '/simulateur': {
     lastModified: '2026-06-24',

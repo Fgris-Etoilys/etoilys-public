@@ -1,4 +1,8 @@
-export type PricingProfileId = 'dordogne-standard' | 'bordeaux-standard';
+export type PricingProfileId =
+  | 'dordogne-standard'
+  | 'gironde-standard'
+  | 'lot-et-garonne-standard'
+  | 'bordeaux-standard';
 
 export interface PricingAmount {
   label: string;
@@ -71,6 +75,14 @@ const standardProfileValues = {
 export const PRICING_PROFILES: Record<PricingProfileId, PricingProfile> = {
   'dordogne-standard': {
     id: 'dordogne-standard',
+    ...standardProfileValues,
+  },
+  'gironde-standard': {
+    id: 'gironde-standard',
+    ...standardProfileValues,
+  },
+  'lot-et-garonne-standard': {
+    id: 'lot-et-garonne-standard',
     ...standardProfileValues,
   },
   'bordeaux-standard': {

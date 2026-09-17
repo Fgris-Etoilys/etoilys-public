@@ -1,7 +1,6 @@
 export type {
   DepartmentAreaId,
   DepartmentInterventionArea,
-  DepartmentLandingPageConfig,
   DepartmentPublicationStatus,
   DepartmentRegionGroup,
   LocalFaqItem,
@@ -24,7 +23,6 @@ export {
 } from './local/registry';
 
 export {
-  DORDOGNE_DEPARTMENT_PAGE,
   DORDOGNE_FAQ,
   DORDOGNE_LOCAL_CHECK_ROWS,
   DORDOGNE_MICRO_BIC_ROWS,
@@ -36,7 +34,6 @@ export {
 } from './local/departments/dordogne';
 
 export {
-  GIRONDE_DEPARTMENT_PAGE,
   GIRONDE_FAQ,
   GIRONDE_PROCEDURE_STEPS,
   GIRONDE_SERVICE_SECTORS,
@@ -45,7 +42,6 @@ export {
 } from './local/departments/gironde';
 
 export {
-  LOT_ET_GARONNE_DEPARTMENT_PAGE,
   LOT_ET_GARONNE_FAQ,
   LOT_ET_GARONNE_PROCEDURE_STEPS,
   LOT_ET_GARONNE_SERVICE_SECTORS,

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DORDOGNE_LOCAL_LANDING_PAGE_V6,
+  GIRONDE_LOCAL_LANDING_PAGE_V6,
+  LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+} from '../content/local/v6Pages';
+import {
   DEPARTMENT_INTERVENTION_AREAS,
   DEPARTMENT_REGIONS,
   getActiveDepartmentInterventionAreas,
@@ -7,9 +12,6 @@ import {
   groupActiveDepartmentsByRegion,
 } from '../content/local/registry';
 import type { DepartmentAreaId, DepartmentInterventionArea } from '../content/local/types';
-import { DORDOGNE_DEPARTMENT_PAGE } from '../content/local/departments/dordogne';
-import { GIRONDE_DEPARTMENT_PAGE } from '../content/local/departments/gironde';
-import { LOT_ET_GARONNE_DEPARTMENT_PAGE } from '../content/local/departments/lot-et-garonne';
 import { getIndexablePaths } from '../content/seoRoutes';
 import { extractActiveAppPaths } from './routeGovernance';
 
@@ -18,9 +20,9 @@ function expectUnique(values: string[]) {
 }
 
 const departmentPageConfigs = [
-  DORDOGNE_DEPARTMENT_PAGE,
-  GIRONDE_DEPARTMENT_PAGE,
-  LOT_ET_GARONNE_DEPARTMENT_PAGE,
+  DORDOGNE_LOCAL_LANDING_PAGE_V6,
+  GIRONDE_LOCAL_LANDING_PAGE_V6,
+  LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 ];
 
 describe('local service areas data', () => {

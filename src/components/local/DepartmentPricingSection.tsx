@@ -55,6 +55,7 @@ export default function DepartmentPricingSection({
   const [resolution, setResolution] = useState<PricingResolution | null>(null);
   const closeTimerRef = useRef<number | null>(null);
   const controllerRef = useRef<AbortController | null>(null);
+  const isInputFocusedRef = useRef(false);
   const listId = 'department-pricing-locality-listbox';
 
   const searchItems = useMemo(() => buildSearchItems(communes ?? []), [communes]);
@@ -79,7 +80,7 @@ export default function DepartmentPricingSection({
   }, []);
 
   useEffect(() => {
-    if (!query.trim() || resolution) {
+    if (!query.trim() || resolution || !isInputFocusedRef.current) {
       return;
     }
 
@@ -156,6 +157,11 @@ export default function DepartmentPricingSection({
   }
 
   function handleInputFocus() {
+    isInputFocusedRef.current = true;
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
     requestCommunes();
     if (suggestions.length > 0) {
       setIsListOpen(true);
@@ -164,6 +170,7 @@ export default function DepartmentPricingSection({
   }
 
   function handleInputBlur() {
+    isInputFocusedRef.current = false;
     closeTimerRef.current = window.setTimeout(() => {
       setIsListOpen(false);
       setHighlightedIndex(-1);
