@@ -130,7 +130,7 @@ describe('routing', () => {
   it('renders Gironde local landing page', () => {
     renderAt('/classement-meuble-tourisme-gironde');
     expectPageHeading(/classement/i, /gironde/i);
-    expect(screen.getByRole('link', { name: 'Voir la page Bordeaux →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bordeaux →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bordeaux'
     );

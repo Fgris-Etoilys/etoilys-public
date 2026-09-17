@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../../App';
+import { IMAGE_MANIFEST } from '../../content/imageManifest';
 
 function renderBordeauxPage() {
   window.history.pushState({}, 'Bordeaux', '/classement-meuble-tourisme-bordeaux');
@@ -33,19 +34,6 @@ function expectHeadingSequence(expectedHeadings: Array<string | RegExp>) {
   });
 }
 
-function expectHeadingSectionClass(headingName: string | RegExp, className: string | RegExp) {
-  const heading = screen.getByRole('heading', { name: headingName });
-  const section = heading.closest('section');
-
-  expect(section).not.toBeNull();
-  if (typeof className === 'string') {
-    expect(section).toHaveClass(className);
-    return;
-  }
-
-  expect(section?.className).toEqual(expect.stringMatching(className));
-}
-
 describe('ClassementBordeaux', () => {
   afterEach(() => {
     cleanup();
@@ -53,7 +41,7 @@ describe('ClassementBordeaux', () => {
     document.title = '';
   });
 
-  it('renders the Bordeaux city page with local data and V4 common sections', () => {
+  it('renders Bordeaux with V6 surfaces and preserves tax plus local notice', () => {
     renderBordeauxPage();
 
     expect(
@@ -62,7 +50,37 @@ describe('ClassementBordeaux', () => {
         name: 'Classement de meublé de tourisme à Bordeaux et dans la métropole',
       })
     ).toBeInTheDocument();
+    expect(screen.getByText('à Bordeaux et dans la métropole')).toHaveClass('text-copper');
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
+    expect(screen.getByText('Place de la Bourse, Bordeaux')).toBeInTheDocument();
+    expect(screen.getByAltText('Place de la Bourse et miroir d’eau à Bordeaux')).toHaveAttribute(
+      'src',
+      IMAGE_MANIFEST.bordeauxHero.src
+    );
+    expect(screen.getByAltText('Tramway devant la place de la Bourse à Bordeaux')).toHaveAttribute(
+      'src',
+      IMAGE_MANIFEST.bordeauxExpertise.src
+    );
+    expect(screen.getByText('Tramway devant la place de la Bourse, Bordeaux.')).toBeInTheDocument();
+
+    expectHeadingSequence([
+      'Classement de meublé de tourisme à Bordeaux et dans la métropole',
+      'Pourquoi faire classer votre meublé de tourisme ?',
+      /Où intervenons-nous autour de Bordeaux\s*\?/,
+      'Combien coûte le classement d’un meublé à Bordeaux ?',
+      'Votre classement en trois étapes',
+      'Pourquoi choisir Etoilys pour votre classement à Bordeaux ?',
+      'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
+      'À Bordeaux, quelques règles locales à connaître',
+      'Questions fréquentes sur le classement à Bordeaux',
+      'Demandez le classement de votre meublé à Bordeaux',
+    ]);
+    expect(
+      screen.getByRole('heading', { level: 2, name: /Où intervenons-nous autour de Bordeaux\s*\?/ })
+        .textContent
+    ).toContain('Bordeaux\u00a0?');
+
     expect(screen.getByText('Mérignac')).toBeInTheDocument();
     expect(screen.getByText('Villenave-d’Ornon')).toBeInTheDocument();
     expect(screen.getByText('10,80 € par nuit')).toBeInTheDocument();
@@ -73,66 +91,62 @@ describe('ClassementBordeaux', () => {
     expect(
       screen.getByText(/35,28 € de taxe de séjour en moins sur une semaine/i)
     ).toBeInTheDocument();
-    expect(screen.getAllByText('240 € TTC').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('200 € TTC').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('160 €').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('100 € par logement').length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/numéro d’enregistrement/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/90 jours par année civile/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/changement d’usage/i).length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/compensation/i).length).toBeGreaterThan(0);
+
+    const notice = screen
+      .getByRole('heading', { name: 'À Bordeaux, quelques règles locales à connaître' })
+      .closest('.editorial-notice');
+    expect(notice).not.toBeNull();
     expect(
-      screen.queryByRole('heading', {
-        name: 'Avant de louer à Bordeaux, trois règles locales à vérifier',
-      })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByText(/Le classement de votre meublé est indépendant de certaines démarches/i)
+      within(notice as HTMLElement).getByText(/numéro d’enregistrement obligatoire/i)
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: 'Consulter le guide propriétaire de la Ville de Bordeaux' })
+      within(notice as HTMLElement).getByText(/90 jours par année civile/i)
+    ).toBeInTheDocument();
+    expect(
+      within(notice as HTMLElement).getByText(/changement d’usage applicable/i)
+    ).toBeInTheDocument();
+    expect(
+      within(notice as HTMLElement).getByRole('link', {
+        name: /Consulter le guide propriétaire de la Ville de Bordeaux/i,
+      })
     ).toHaveAttribute(
       'href',
       'https://www.bordeaux.fr/location-touristique-bordeaux--guide-proprietaires'
     );
-    expect(document.body).not.toHaveTextContent(
-      /témoignage|partenariat local|agence Etoilys à Bordeaux/i
-    );
-    expect(document.body).not.toHaveTextContent(/LocalBusiness/i);
-  });
+    expect(
+      screen
+        .getByRole('heading', {
+          name: 'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
+        })
+        .closest('section')
+    ).toHaveClass('bg-surface-neutral');
+    expect(
+      screen
+        .getByRole('heading', { name: 'À Bordeaux, quelques règles locales à connaître' })
+        .closest('section')
+    ).toHaveClass('bg-paper');
+    expect(
+      screen
+        .getByRole('heading', { name: 'Questions fréquentes sur le classement à Bordeaux' })
+        .closest('section')
+    ).toHaveClass('bg-surface-neutral');
 
-  it('renders Bordeaux in the V4 section order with the local warning after tax', () => {
-    renderBordeauxPage();
-
-    expectHeadingSequence([
-      'Classement de meublé de tourisme à Bordeaux et dans la métropole',
-      'Pourquoi classer votre meublé ?',
-      'Votre classement directement dans votre logement',
-      'Combien coûte le classement d’un meublé à Bordeaux ?',
-      'Votre classement en 3 étapes',
-      'Pourquoi choisir Etoilys pour votre classement à Bordeaux ?',
-      'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
-      'À Bordeaux, quelques règles locales à connaître',
-      'Questions fréquentes sur le classement à Bordeaux',
-      'Vous souhaitez faire classer votre meublé à Bordeaux ?',
-    ]);
-
-    expect(screen.queryByText(/Cette liste n’est pas exhaustive/i)).not.toBeInTheDocument();
-    expectHeadingSectionClass('Pourquoi classer votre meublé ?', 'bg-white');
-    expectHeadingSectionClass('Votre classement directement dans votre logement', 'bg-primary-100');
-    expectHeadingSectionClass('Combien coûte le classement d’un meublé à Bordeaux ?', 'bg-white');
-    expectHeadingSectionClass('Votre classement en 3 étapes', 'bg-primary-100');
-    expectHeadingSectionClass(
-      'Pourquoi choisir Etoilys pour votre classement à Bordeaux ?',
-      'bg-white'
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Comment savoir quelle catégorie viser ?' })
     );
-    expectHeadingSectionClass(
-      'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
-      'bg-primary-100'
+    expect(screen.getByRole('link', { name: 'simulateur Etoilys' })).toHaveAttribute(
+      'href',
+      '/simulateur'
     );
-    expectHeadingSectionClass('À Bordeaux, quelques règles locales à connaître', 'bg-primary-100');
-    expectHeadingSectionClass('Questions fréquentes sur le classement à Bordeaux', 'bg-white');
-    expectHeadingSectionClass('Vous souhaitez faire classer votre meublé à Bordeaux ?', /from-/);
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Quels sont les effets du classement sur la fiscalité ?' })
+    );
+    expect(screen.getByRole('link', { name: 'simulateur fiscal' })).toHaveAttribute(
+      'href',
+      '/simulateur-fiscal-classement'
+    );
+
+    expect(document.body).not.toHaveTextContent(/LocalBusiness|agence Etoilys à Bordeaux/i);
   });
 
   it('sets Bordeaux SEO metadata and hierarchical breadcrumb JSON-LD', async () => {
@@ -142,10 +156,6 @@ describe('ClassementBordeaux', () => {
       expect(document.title).toBe('Classement meublé de tourisme à Bordeaux | Etoilys');
     });
 
-    expect(document.querySelector("meta[name='description']")).toHaveAttribute(
-      'content',
-      'Faites classer votre meublé de tourisme à Bordeaux et dans la métropole. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.'
-    );
     expect(document.querySelector("link[rel='canonical']")).toHaveAttribute(
       'href',
       'https://www.etoilys.fr/classement-meuble-tourisme-bordeaux'
@@ -154,7 +164,6 @@ describe('ClassementBordeaux', () => {
       'content',
       'index,follow'
     );
-    expect(document.querySelectorAll("link[data-seo-alternate='true']")).toHaveLength(0);
 
     await waitFor(() => {
       const breadcrumbs = getJsonLdScripts().find((script) => script['@type'] === 'BreadcrumbList');

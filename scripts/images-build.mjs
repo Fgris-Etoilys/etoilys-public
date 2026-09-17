@@ -20,6 +20,7 @@ const CHECK_MODE = process.argv.includes('--check');
 const HERO_ASSET_KEYS = new Set([
   'homeHero',
   'dordogneHero',
+  'dordogneLaRoqueGageac',
   'girondeHero',
   'lotEtGaronneHero',
   'bergeracHero',
@@ -100,6 +101,11 @@ const IMAGE_ASSETS = [
     key: 'bordeauxHero',
     fileName: 'pexels-miguel-cuenca-67882473-17356595.jpg',
     outputName: 'bordeaux-place-de-la-bourse',
+  },
+  {
+    key: 'bordeauxExpertise',
+    fileName: 'pexels-charldurand-6506986.jpg',
+    outputName: 'bordeaux-place-de-la-bourse-tram',
   },
 ];
 

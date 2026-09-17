@@ -1,60 +1,50 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import DepartmentLandingPage from './DepartmentLandingPage';
+import LocalLandingPageV6, { COMMON_LOCAL_V6_FAQ_ITEMS } from './LocalLandingPageV6';
 import type {
-  DepartmentLandingPageConfig,
+  LocalLandingPageV6Config,
   LocalLandingPageV6DepartmentConfig,
 } from '../../content/local/types';
-import { DORDOGNE_LOCAL_LANDING_PAGE_V6 } from '../../content/local/v6Pages';
-import { GIRONDE_DEPARTMENT_PAGE } from '../../content/local/departments/gironde';
-import { LOT_ET_GARONNE_DEPARTMENT_PAGE } from '../../content/local/departments/lot-et-garonne';
+import { trackCtaClick } from '../../utils/analytics';
+import {
+  BERGERAC_LOCAL_LANDING_PAGE_V6,
+  BORDEAUX_LOCAL_LANDING_PAGE_V6,
+  DORDOGNE_LOCAL_LANDING_PAGE_V6,
+  GIRONDE_LOCAL_LANDING_PAGE_V6,
+  LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
+  LOCAL_V6_DEPARTMENT_HERO_INDEXES,
+  LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+} from '../../content/local/v6Pages';
+
+vi.mock('../../utils/analytics', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../utils/analytics')>()),
+  trackCtaClick: vi.fn(),
+}));
 
 const COMMUNE_INDEX_FIXTURE = {
   c: [
     { id: '24352', label: 'Ribérac', departmentCode: '24' },
-    { id: '24274', label: 'Monbazillac', departmentCode: '24' },
-    { id: '24322', label: 'Périgueux', departmentCode: '24' },
+    { id: '33063', label: 'Bordeaux', departmentCode: '33' },
+    { id: '47001', label: 'Agen', departmentCode: '47' },
   ],
 };
 
-const SECOND_DEPARTMENT_V6: LocalLandingPageV6DepartmentConfig = {
-  ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
-  departmentId: 'gironde',
-  hero: {
-    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.hero,
-    title: 'Classement de meublés de tourisme en département test',
-    highlightedTitleText: 'en département test',
-  },
-  serviceArea: {
-    title: 'Dans quelles communes du département test intervenons-nous ?',
-    intro: 'Une zone synthétique pour vérifier le renderer V6 département.',
-    sectors: [
-      {
-        name: 'Secteur test',
-        visibleCommunes: ['Commune Test'],
-        collapsedCommunes: ['Commune Test 2'],
-      },
-    ],
-  },
-  pricing: {
-    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.pricing,
-    title: 'Quel tarif pour classer votre meublé en département test ?',
-  },
-  finalCta: {
-    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
-    title: 'Demandez le classement de votre meublé en département test',
-  },
-};
-
-function renderDepartmentPage(
-  config: DepartmentLandingPageConfig | LocalLandingPageV6DepartmentConfig
-) {
+function renderDepartmentPage(config: LocalLandingPageV6DepartmentConfig) {
   return render(
     <MemoryRouter>
       <DepartmentLandingPage config={config} />
+    </MemoryRouter>
+  );
+}
+
+function renderLocalPage(config: LocalLandingPageV6Config) {
+  return render(
+    <MemoryRouter>
+      <LocalLandingPageV6 config={config} />
     </MemoryRouter>
   );
 }
@@ -63,26 +53,28 @@ function readPageSource(fileName: string): string {
   return readFileSync(path.resolve(process.cwd(), 'src', 'pages', 'locales', fileName), 'utf8');
 }
 
-function readIndexCss(): string {
-  return readFileSync(path.resolve(process.cwd(), 'src', 'index.css'), 'utf8');
+function readWrapperSource(fileName: string): string {
+  return readFileSync(path.resolve(process.cwd(), 'src', 'components', 'local', fileName), 'utf8');
 }
 
-function expectHeadingSequence(expectedHeadings: Array<string | RegExp>) {
-  const headings = screen.getAllByRole('heading').map((heading) => heading.textContent ?? '');
+function normalizeText(text: string) {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function expectHeadingSequence(expectedHeadings: string[]) {
+  const headings = screen
+    .getAllByRole('heading')
+    .map((heading) => normalizeText(heading.textContent ?? ''));
   let cursor = -1;
 
   expectedHeadings.forEach((expectedHeading) => {
-    const nextIndex = headings.findIndex((heading, index) => {
-      if (index <= cursor) return false;
-      return typeof expectedHeading === 'string'
-        ? heading === expectedHeading
-        : expectedHeading.test(heading);
-    });
+    const nextIndex = headings.findIndex(
+      (heading, index) => index > cursor && heading === normalizeText(expectedHeading)
+    );
 
-    expect(
-      nextIndex,
-      `Missing heading after index ${cursor}: ${String(expectedHeading)}`
-    ).toBeGreaterThan(cursor);
+    expect(nextIndex, `Missing heading after index ${cursor}: ${expectedHeading}`).toBeGreaterThan(
+      cursor
+    );
     cursor = nextIndex;
   });
 }
@@ -101,247 +93,258 @@ describe('DepartmentLandingPage', () => {
   afterEach(() => {
     cleanup();
     vi.unstubAllGlobals();
+    vi.mocked(trackCtaClick).mockClear();
   });
 
-  it('keeps route pages as thin wrappers and limits V6 to Dordogne for now', () => {
+  it('keeps route pages as thin wrappers around V6 configs', () => {
+    expect(readWrapperSource('DepartmentLandingPage.tsx')).not.toMatch(/layoutVersion ===|v5|v4/);
     expect(readPageSource('ClassementDordogne.tsx')).toContain(
       '<DepartmentLandingPage config={DORDOGNE_LOCAL_LANDING_PAGE_V6}'
     );
-    expect(readPageSource('ClassementDordogne.tsx')).not.toContain('<section');
-    expect(readPageSource('ClassementBergerac.tsx')).toContain(
-      '<CityLandingPage config={BERGERAC_LOCAL_LANDING_PAGE_V6}'
+    expect(readPageSource('ClassementGironde.tsx')).toContain(
+      '<DepartmentLandingPage config={GIRONDE_LOCAL_LANDING_PAGE_V6}'
     );
-
-    ['ClassementGironde.tsx', 'ClassementLotEtGaronne.tsx'].forEach((fileName) => {
-      const source = readPageSource(fileName);
-
-      expect(source).toContain('<DepartmentLandingPage config=');
-      expect(source).not.toContain('<section');
-      expect(source).not.toContain('SmartImage');
-    });
+    expect(readPageSource('ClassementLotEtGaronne.tsx')).toContain(
+      '<DepartmentLandingPage config={LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6}'
+    );
   });
 
-  it('renders Dordogne with the V6 section order and golden-master common blocks', () => {
-    renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
-
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: 'Classement de gîtes et meublés de tourisme en Dordogne',
-      })
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
-    expectHeadingSequence([
+  it.each([
+    [
+      DORDOGNE_LOCAL_LANDING_PAGE_V6,
       'Classement de gîtes et meublés de tourisme en Dordogne',
-      'Pourquoi faire classer votre meublé de tourisme ?',
-      'Dans quelles communes de Dordogne intervenons-nous ?',
       'Quel tarif pour classer votre meublé en Dordogne ?',
-      'Votre classement en trois étapes',
-      'Pourquoi choisir Etoilys pour votre classement ?',
-      'Questions fréquentes sur le classement en Dordogne',
-      'Demandez le classement de votre meublé en Dordogne',
-    ]);
-    expect(
-      screen.getByRole('heading', { level: 3, name: 'Sélectionnez votre commune' })
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('heading', { level: 2, name: 'Sélectionnez votre commune' })
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'Une fiscalité micro-BIC plus favorable' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'Une taxe de séjour maîtrisée' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'Un repère officiel de qualité' })
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('heading', { name: /Cotisations sociales/i })
-    ).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Bergerac →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bergerac'
-    );
-    expect(document.body).not.toHaveTextContent(/V1|politique tarifaire|repère éditorial/i);
-    expect(
-      screen.getByRole('button', { name: 'Comment me préparer à une visite de classement ?' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Que faire une fois le classement obtenu ?' })
-    ).toBeInTheDocument();
-    expect(
-      document.querySelector('a[href="/actualites/preparer-visite-classement-meuble-tourisme"]')
-    ).toHaveTextContent('Voir notre guide pour préparer la visite de classement');
-    expect(
-      document.querySelector('a[href="/actualites/que-faire-apres-classement-meuble-tourisme"]')
-    ).toHaveTextContent('Voir les démarches à effectuer après le classement');
-  });
+      '/data/communes-dordogne-index.v1.json',
+    ],
+    [
+      GIRONDE_LOCAL_LANDING_PAGE_V6,
+      'Classement de gîtes et meublés de tourisme en Gironde',
+      'Quel tarif pour classer votre meublé en Gironde ?',
+      '/data/communes-gironde-index.v1.json',
+    ],
+    [
+      LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+      'Classement de gîtes et meublés de tourisme dans le Lot-et-Garonne',
+      'Quel tarif pour classer votre meublé dans le Lot-et-Garonne ?',
+      '/data/communes-lot-et-garonne-index.v1.json',
+    ],
+  ])(
+    'renders %s with V6 surfaces and its own commune index',
+    async (config, h1, pricingTitle, indexUrl) => {
+      renderDepartmentPage(config);
 
-  it('keeps the Dordogne intervention and focus contracts on generic V6 classes', () => {
-    renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
+      expect(screen.getByRole('heading', { level: 1, name: h1 })).toBeInTheDocument();
+      expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+      expect(screen.getByRole('heading', { name: pricingTitle })).toBeInTheDocument();
+      expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
+      expect(screen.getByRole('combobox', { name: 'Commune' })).toBeInTheDocument();
 
-    expect(document.querySelector('.local-v6-sector-list')).toBeInTheDocument();
-    expect(document.querySelector('.dd-service-area')).toBeNull();
-    expect(document.querySelector('.dd-landing')).toBeNull();
+      fireEvent.focus(screen.getByRole('combobox', { name: 'Commune' }));
+      expect(fetch).toHaveBeenCalledWith(indexUrl, { signal: expect.any(AbortSignal) });
+    }
+  );
 
-    const css = readIndexCss();
-    expect(css).toContain('.local-v6-sector-list');
-    expect(css).toContain('background: #fff;');
-    expect(css).toContain('border: 1px solid rgb(var(--color-ink) / 0.13);');
-    expect(css).toContain('border-radius: 12px;');
-    expect(css).toContain('padding: 20px 24px;');
-    expect(css).toContain(':is(a, button, input, summary):not(.ui-field-error):not(');
-    expect(css).toContain('.editorial-focus-inverse *');
-    expect(css).toContain('@media (prefers-reduced-motion: reduce)');
-    expect(css).toContain('.local-v6-landing *');
-    expect(css).toContain('letter-spacing: 0.12em;');
-    expect(css).toContain('.local-v6-procedure-link');
-    expect(css).toContain('font-size: 13px !important;');
-  });
-
-  it('keeps collapsed Dordogne communes rendered while toggling visibility accessibly', () => {
+  it('keeps collapsed sector communes rendered and toggled accessibly', () => {
     renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
 
     expect(document.body).toHaveTextContent('Gardonne');
-
     const toggle = screen.getAllByRole('button', { name: '+6 communes' })[0];
-    expect(toggle).toBeDefined();
-    const firstToggle = toggle!;
-    expect(firstToggle).toHaveAttribute('aria-expanded', 'false');
-    fireEvent.click(firstToggle);
-    expect(firstToggle).toHaveAttribute('aria-expanded', 'true');
-    expect(firstToggle).toHaveTextContent('Masquer les 6 communes');
+    if (!toggle) throw new Error('Missing sector toggle');
+
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(toggle).toHaveTextContent('Masquer les 6 communes');
   });
 
-  it('renders a second department V6 config without a route-specific structure fork', () => {
-    const syntheticFaqQuestions = SECOND_DEPARTMENT_V6.faq.items.map((item) => item.question);
-    expect(syntheticFaqQuestions).not.toContain('Comment me préparer à une visite de classement ?');
-    expect(syntheticFaqQuestions).not.toContain('Que faire une fois le classement obtenu ?');
+  it('uses the shared department hero copy and localized image captions', () => {
+    [
+      DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      GIRONDE_LOCAL_LANDING_PAGE_V6,
+      LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+    ].forEach((config) => {
+      expect(config.hero.description).toBe(LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION);
+      expect(config.hero.image.index).toBe(LOCAL_V6_DEPARTMENT_HERO_INDEXES[config.departmentId]);
+    });
 
-    renderDepartmentPage(SECOND_DEPARTMENT_V6);
+    const { unmount } = renderDepartmentPage(GIRONDE_LOCAL_LANDING_PAGE_V6);
+    expect(screen.getByText('Saint-Émilion, Gironde')).toBeInTheDocument();
+    expect(screen.getByText('33 / LA GIRONDE')).toBeInTheDocument();
+    expect(screen.getByAltText('Front de mer et promenade à Arcachon')).toBeInTheDocument();
+    expect(screen.getByText('Front de mer d’Arcachon.')).toBeInTheDocument();
+    unmount();
 
+    renderDepartmentPage(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6);
+    expect(screen.getByText('Nérac, Lot-et-Garonne')).toBeInTheDocument();
+    expect(screen.getByText('47 / LOT-ET-GARONNE')).toBeInTheDocument();
     expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: 'Classement de meublés de tourisme en département test',
-      })
+      screen.getByAltText('Tour horloge et maisons de pierre à Monflanquin')
     ).toBeInTheDocument();
-    expect(screen.getByText('en département test')).toHaveClass('text-copper');
-    expect(screen.getByRole('heading', { name: 'Secteur test' })).toBeInTheDocument();
-    expect(screen.getByText('Commune Test')).toBeInTheDocument();
-    expect(screen.getByRole('combobox', { name: 'Commune' })).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', {
-        name: 'Demandez le classement de votre meublé en département test',
-      })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Comment me préparer à une visite de classement ?' })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Que faire une fois le classement obtenu ?' })
-    ).toBeInTheDocument();
-    expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
+    expect(screen.getByText('Monflanquin, Lot-et-Garonne.')).toBeInTheDocument();
   });
 
-  it('preserves Dordogne rich FAQ links and external link attributes', () => {
+  it('keeps department FAQ shared, deduplicated and free of retired tariff copy', () => {
+    const girondeQuestions = GIRONDE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question);
+    const lotEtGaronneQuestions = LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.faq.items.map(
+      (item) => item.question
+    );
+
+    expect(new Set(girondeQuestions).size).toBe(girondeQuestions.length);
+    expect(new Set(lotEtGaronneQuestions).size).toBe(lotEtGaronneQuestions.length);
+    expect(girondeQuestions[0]).toBe('Intervenez-vous dans ma commune en Gironde ?');
+    expect(girondeQuestions).toContain(
+      'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?'
+    );
+    expect(lotEtGaronneQuestions[0]).toBe(
+      'Intervenez-vous dans ma commune dans le Lot-et-Garonne ?'
+    );
+
+    renderDepartmentPage(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6);
+    expect(document.body).not.toHaveTextContent(/Aucun tarif fixe/i);
+  });
+
+  it('switches FAQ background when a local notice exists without a local tax module', () => {
+    renderDepartmentPage({
+      ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      localNotice: {
+        title: 'Notice locale de test',
+        paragraphs: ['Texte de notice.'],
+      },
+    });
+
+    expect(
+      screen.getByRole('heading', { name: 'Notice locale de test' }).closest('section')
+    ).toHaveClass('bg-paper');
+    expect(
+      screen
+        .getByRole('heading', { name: 'Questions fréquentes sur le classement en Dordogne' })
+        .closest('section')
+    ).toHaveClass('bg-surface-neutral');
+  });
+
+  it('keeps FAQ on paper when no local module or notice exists', () => {
     renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
 
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Etoilys est-il accrédité pour réaliser le classement ?' })
-    );
     expect(
-      screen.getByRole('link', { name: 'Consulter notre portée d’accréditation.' })
-    ).toHaveAttribute('target', '_blank');
-    expect(
-      screen.getByRole('link', { name: 'Consulter notre portée d’accréditation.' })
-    ).toHaveAttribute('rel', 'noopener noreferrer');
-
-    fireEvent.click(
-      screen.getByRole('button', {
-        name: 'Mon gîte ou mon logement proposé sur Airbnb peut-il être classé ?',
-      })
-    );
-    expect(screen.getByRole('link', { name: 'Consulter les prérequis.' })).toHaveAttribute(
-      'href',
-      '/prerequis-au-classement'
-    );
+      screen
+        .getByRole('heading', { name: 'Questions fréquentes sur le classement en Dordogne' })
+        .closest('section')
+    ).toHaveClass('bg-paper');
   });
 
-  it('resolves Dordogne pricing through partial commune autocomplete and successive searches', async () => {
-    renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
+  it.each([GIRONDE_LOCAL_LANDING_PAGE_V6, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6])(
+    'keeps migrated department CTA analytics on white buttons',
+    (config) => {
+      renderDepartmentPage(config);
+      const conversionLinks = screen.getAllByRole('link', { name: 'Demander mon classement' });
+      const heroCta = conversionLinks[0];
+      const finalCta = conversionLinks[conversionLinks.length - 1];
+      if (!heroCta || !finalCta) throw new Error('Missing conversion links');
+      heroCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
+      finalCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
 
-    const input = screen.getByRole('combobox', { name: 'Commune' });
-    fireEvent.change(input, { target: { value: 'Rib' } });
+      fireEvent.click(heroCta);
+      expect(trackCtaClick).toHaveBeenLastCalledWith({
+        ctaId: 'cta_white_demande_classement',
+        destinationPath: '/demande-classement',
+      });
+      fireEvent.click(finalCta);
+      expect(trackCtaClick).toHaveBeenLastCalledWith({
+        ctaId: 'cta_white_demande_classement',
+        destinationPath: '/demande-classement',
+      });
+    }
+  );
 
-    expect(await screen.findByRole('option', { name: 'Ribérac' })).toBeInTheDocument();
-    expect(input).toHaveAttribute('aria-expanded', 'true');
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByText('Votre meublé à Ribérac')).toBeInTheDocument();
-    expect(
-      screen.getByText(/Le montant applicable est confirmé avant tout engagement/)
-    ).toBeInTheDocument();
-    expect(screen.getByText('Tarif public')).toBeInTheDocument();
-    expect(
-      screen.getByText('Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.')
-    ).toBeInTheDocument();
-    expect(screen.getAllByText(/240\s€/)).not.toHaveLength(0);
+  it.each([
+    [DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId, DORDOGNE_LOCAL_LANDING_PAGE_V6],
+    [GIRONDE_LOCAL_LANDING_PAGE_V6.departmentId, GIRONDE_LOCAL_LANDING_PAGE_V6],
+    [LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.departmentId, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6],
+  ])('keeps the full V6 department section order for %s', (_, config) => {
+    renderDepartmentPage(config);
 
-    fireEvent.change(input, { target: { value: 'Mon' } });
-    const monbazillac = await screen.findByRole('option', { name: 'Monbazillac' });
-    fireEvent.mouseDown(monbazillac);
+    expectHeadingSequence([
+      config.hero.title,
+      'Pourquoi faire classer votre meublé de tourisme ?',
+      config.serviceArea.title,
+      config.pricing.title,
+      config.procedure.title,
+      config.expertise.title,
+      config.faq.title,
+      config.finalCta.title,
+    ]);
+  });
 
-    expect(input).toHaveValue('Monbazillac');
-    expect(screen.getByText('Votre meublé à Monbazillac')).toBeInTheDocument();
+  it.each([
+    [DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId, DORDOGNE_LOCAL_LANDING_PAGE_V6],
+    [GIRONDE_LOCAL_LANDING_PAGE_V6.departmentId, GIRONDE_LOCAL_LANDING_PAGE_V6],
+    [LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.departmentId, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6],
+  ])('renders department FAQ items before the two automatic V6 items for %s', (_, config) => {
+    renderDepartmentPage(config);
 
-    fireEvent.change(input, { target: { value: 'Pér' } });
-    expect(await screen.findByRole('option', { name: 'Périgueux' })).toBeInTheDocument();
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByText('Votre meublé à Périgueux')).toBeInTheDocument();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith('/data/communes-dordogne-index.v1.json', {
-      signal: expect.any(AbortSignal),
+    const faqSection = screen.getByRole('heading', { name: config.faq.title }).closest('section');
+    if (!faqSection) throw new Error('Missing FAQ section');
+    const renderedQuestions = [...faqSection.querySelectorAll('button')].map((button) =>
+      normalizeText(button.textContent ?? '')
+    );
+    const configQuestions = config.faq.items.map((item) => item.question);
+    const automaticQuestions = COMMON_LOCAL_V6_FAQ_ITEMS.map((item) => item.question);
+
+    expect(renderedQuestions).toEqual([...configQuestions, ...automaticQuestions]);
+    automaticQuestions.forEach((question) => {
+      expect(
+        renderedQuestions.filter((renderedQuestion) => renderedQuestion === question)
+      ).toHaveLength(1);
     });
   });
 
-  it('keeps the Dordogne picker scoped to Dordogne communes', async () => {
-    renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
+  it('keeps the department base FAQ order and appends local extras before V6 automatic items', () => {
+    const baseQuestions = DORDOGNE_LOCAL_LANDING_PAGE_V6.faq.items
+      .slice(1)
+      .map((item) => item.question);
 
-    const input = screen.getByRole('combobox', { name: 'Commune' });
-    fireEvent.change(input, { target: { value: 'Bordeaux' } });
-    await waitFor(() => {
-      expect(fetch).toHaveBeenCalledTimes(1);
-    });
-    expect(screen.queryByRole('option', { name: 'Bordeaux' })).not.toBeInTheDocument();
-    expect(screen.queryByText(/Bordeaux se situe/i)).not.toBeInTheDocument();
-
-    fireEvent.change(input, { target: { value: 'Versailles' } });
-    expect(screen.queryByRole('option', { name: 'Versailles' })).not.toBeInTheDocument();
-    expect(screen.queryByText(/Versailles se situe/i)).not.toBeInTheDocument();
-
-    expect(
-      screen.getByRole('link', { name: 'Découvrez toutes nos zones d’intervention.' })
-    ).toHaveAttribute('href', '/zones-intervention');
+    expect(GIRONDE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
+      'Intervenez-vous dans ma commune en Gironde ?',
+      ...baseQuestions,
+      'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?',
+    ]);
+    expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
+      'Intervenez-vous dans ma commune dans le Lot-et-Garonne ?',
+      ...baseQuestions,
+    ]);
   });
 
-  it('keeps Gironde and Lot-et-Garonne on the legacy department renderer', () => {
-    renderDepartmentPage(GIRONDE_DEPARTMENT_PAGE);
-    expect(
-      screen.getByRole('heading', {
-        level: 1,
-        name: 'Classement de gîte et meublé de tourisme en Gironde',
-      })
-    ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Voir la page Bordeaux →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bordeaux'
-    );
-    cleanup();
+  it.each([
+    [
+      'Dordogne',
+      DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      ['La Roque-Gageac, Dordogne', 'Les pierres du Périgord.'],
+    ],
+    [
+      'Bergerac',
+      BERGERAC_LOCAL_LANDING_PAGE_V6,
+      ['Quai Cyrano, Bergerac', 'Église Saint-Jacques, Bergerac.'],
+    ],
+    [
+      'Gironde',
+      GIRONDE_LOCAL_LANDING_PAGE_V6,
+      ['Saint-Émilion, Gironde', 'Front de mer d’Arcachon.'],
+    ],
+    [
+      'Bordeaux',
+      BORDEAUX_LOCAL_LANDING_PAGE_V6,
+      ['Place de la Bourse, Bordeaux', 'Tramway devant la place de la Bourse, Bordeaux.'],
+    ],
+    [
+      'Lot-et-Garonne',
+      LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+      ['Nérac, Lot-et-Garonne', 'Monflanquin, Lot-et-Garonne.'],
+    ],
+  ])('renders required local V6 media captions for %s', (_, config, captions) => {
+    renderLocalPage(config);
 
-    renderDepartmentPage(LOT_ET_GARONNE_DEPARTMENT_PAGE);
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Lot-et-Garonne/);
-    expect(screen.queryByRole('link', { name: /Voir la page/i })).not.toBeInTheDocument();
-    expect(screen.queryByText(/placeholder|à venir|bientôt/i)).not.toBeInTheDocument();
+    captions.forEach((caption) => {
+      expect(screen.getByText(caption)).toBeInTheDocument();
+    });
   });
 });

@@ -21,6 +21,7 @@ import type {
   LocalV6Action,
   LocalV6CityServiceArea,
   LocalV6DepartmentServiceArea,
+  LocalV6EditorialNotice,
   LocalV6Hero,
   LocalV6TaxModule,
 } from '../../content/local/types';
@@ -81,7 +82,7 @@ const expertiseReasons = [
   },
 ] as const;
 
-const COMMON_LOCAL_V6_FAQ_ITEMS = [
+export const COMMON_LOCAL_V6_FAQ_ITEMS = [
   {
     question: 'Comment me préparer à une visite de classement ?',
     answer: (
@@ -108,6 +109,10 @@ const COMMON_LOCAL_V6_FAQ_ITEMS = [
   },
 ] as const;
 
+function formatFrenchTitle(title: string) {
+  return title.replace(/ ([?!:;])/g, '\u00a0$1');
+}
+
 export default function LocalLandingPageV6({ config }: { config: LocalLandingPageV6Config }) {
   return (
     <div className="local-v6-landing">
@@ -123,6 +128,7 @@ export default function LocalLandingPageV6({ config }: { config: LocalLandingPag
       <LocalV6ProcedureSection config={config} />
       <LocalV6ExpertiseSection config={config} />
       {config.localModule && <LocalV6TaxModuleSection module={config.localModule} />}
+      {config.localNotice && <LocalV6EditorialNoticeSection notice={config.localNotice} />}
       <LocalV6FaqSection config={config} />
       <LocalV6FinalCta config={config} />
     </div>
@@ -266,7 +272,7 @@ function LocalV6DepartmentServiceAreaSection({
       <div className="container-editorial">
         <LocalV6SectionEyebrow icon={MapPin}>Intervention locale</LocalV6SectionEyebrow>
         <h2 className="editorial-heading" id="local-v6-service-area-title">
-          {serviceArea.title}
+          {formatFrenchTitle(serviceArea.title)}
         </h2>
         <p>{serviceArea.intro}</p>
         <LocalV6DepartmentSectorList
@@ -364,7 +370,7 @@ function LocalV6CityServiceAreaSection({ serviceArea }: { serviceArea: LocalV6Ci
       <div className="container-editorial">
         <LocalV6SectionEyebrow icon={MapPin}>Intervention locale</LocalV6SectionEyebrow>
         <h2 className="editorial-heading" id="local-v6-service-area-title">
-          {serviceArea.title}
+          {formatFrenchTitle(serviceArea.title)}
         </h2>
         <p>{serviceArea.intro}</p>
         <ul className="local-v6-commune-list">
@@ -617,9 +623,52 @@ function LocalV6TaxModuleSection({ module }: { module: LocalV6TaxModule }) {
   );
 }
 
+function LocalV6EditorialNoticeSection({ notice }: { notice: LocalV6EditorialNotice }) {
+  return (
+    <section
+      className="editorial-section local-v6-notice-section bg-paper"
+      aria-labelledby="local-v6-notice-title"
+    >
+      <div className="container-editorial">
+        <div className="editorial-notice local-v6-notice">
+          <h2 className="editorial-heading" id="local-v6-notice-title">
+            {notice.title}
+          </h2>
+          <div className="space-y-5 text-muted">
+            {notice.paragraphs.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+            {notice.items && (
+              <ul>
+                {notice.items.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            )}
+            {notice.conclusion && <p>{notice.conclusion}</p>}
+          </div>
+          {notice.source && (
+            <a
+              href={notice.source.href}
+              target="_blank"
+              rel="nofollow noopener noreferrer"
+              className="editorial-link ui-focus"
+            >
+              {notice.source.label} <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function LocalV6FaqSection({ config }: { config: LocalLandingPageV6Config }) {
   return (
-    <section className="editorial-section bg-paper" aria-labelledby="local-v6-faq-title">
+    <section
+      className={`editorial-section ${config.localNotice ? 'bg-surface-neutral' : 'bg-paper'}`}
+      aria-labelledby="local-v6-faq-title"
+    >
       <div className="container-editorial local-v6-faq">
         <div>
           <p className="editorial-eyebrow">{config.faq.eyebrow}</p>

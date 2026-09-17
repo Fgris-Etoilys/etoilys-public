@@ -1,4 +1,5 @@
 import Button from '../components/ui/Button';
+import PageHero from '../components/ui/PageHero';
 import InterventionAreaCards from '../components/local/InterventionAreaCards';
 import { groupActiveDepartmentsByRegion } from '../content/local/registry';
 
@@ -9,31 +10,16 @@ export default function ZonesIntervention() {
 
   return (
     <>
-      <section className="bg-gradient-to-br from-themePrimary-1 to-primary-300 py-16 text-white md:py-24 lg:py-28">
-        <div className="container-adaptive">
-          <div className="max-w-4xl">
-            <p className="mb-5 inline-flex rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white">
-              Zones d&rsquo;intervention
-            </p>
-            <h1 className="mb-6 text-white">
-              Zones d’intervention pour le classement des meublés de tourisme
-            </h1>
-            <p className="max-w-3xl text-xl leading-comfortable text-white/90">
-              Etoilys réalise des visites de classement dans plusieurs départements, avec un réseau
-              d’inspecteurs qui s’étend progressivement à de nouveaux territoires. Retrouvez
-              ci-dessous les secteurs actuellement couverts.
-            </p>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Button href="/demande-classement" variant="white" size="lg">
-                Faire une demande de classement
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Zones d’intervention"
+        eyebrowMarked
+        title="Zones d’intervention pour le classement des meublés de tourisme"
+        description="Etoilys réalise des visites de classement dans plusieurs départements, avec un réseau d’inspecteurs qui s’étend progressivement à de nouveaux territoires. Retrouvez ci-dessous les secteurs actuellement couverts."
+        size="compact"
+      />
 
       <section className="bg-white py-section">
-        <div className="container-adaptive">
+        <div className="container-editorial">
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 max-w-3xl">
               <h2 className="mb-4">Nos zones d’intervention actuelles</h2>
@@ -57,7 +43,7 @@ export default function ZonesIntervention() {
               ))}
             </div>
 
-            <div className="mt-10 overflow-hidden rounded-card border border-primary-200 bg-primary-100">
+            <div className="mt-10 overflow-hidden rounded-md border border-ink/10 bg-surface">
               <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.45fr)]">
                 <div className="p-6 md:p-8">
                   <h2 className="mb-4 text-h3">Votre département n’apparaît pas encore ?</h2>

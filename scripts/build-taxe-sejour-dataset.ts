@@ -12,6 +12,18 @@ const OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH = path.join(
   'communes-dordogne-index.v1.json'
 );
 
+const DEPARTMENT_COMMUNE_INDEX_OUTPUTS = [
+  { departmentCode: '24', outputPath: OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH },
+  {
+    departmentCode: '33',
+    outputPath: path.join(OUTPUT_DIR, 'communes-gironde-index.v1.json'),
+  },
+  {
+    departmentCode: '47',
+    outputPath: path.join(OUTPUT_DIR, 'communes-lot-et-garonne-index.v1.json'),
+  },
+] as const;
+
 const CLASSIFIED_NATURE_ID = '4';
 const UNCLASSIFIED_NATURE_ID = '10';
 const TAX_MASK_DEPARTMENTAL_10 = 1;
@@ -500,21 +512,21 @@ export function buildCompactDatasetFromXml(
 async function main() {
   const xml = await readFile(INPUT_XML_PATH, 'utf8');
   const dataset = buildCompactDatasetFromXml(xml);
-  const communeIndex = buildDepartmentCommuneIndexFromCompactDataset(dataset, '24');
 
   await mkdir(OUTPUT_DIR, { recursive: true });
   await writeFile(OUTPUT_JSON_PATH, JSON.stringify(dataset), 'utf8');
-  await writeFile(OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH, JSON.stringify(communeIndex), 'utf8');
 
   console.log(
     `Generated ${dataset.c.length} cities in ${path.relative(ROOT_DIR, OUTPUT_JSON_PATH)}.`
   );
-  console.log(
-    `Generated ${communeIndex.c.length} communes in ${path.relative(
-      ROOT_DIR,
-      OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH
-    )}.`
-  );
+
+  for (const { departmentCode, outputPath } of DEPARTMENT_COMMUNE_INDEX_OUTPUTS) {
+    const communeIndex = buildDepartmentCommuneIndexFromCompactDataset(dataset, departmentCode);
+    await writeFile(outputPath, JSON.stringify(communeIndex), 'utf8');
+    console.log(
+      `Generated ${communeIndex.c.length} communes in ${path.relative(ROOT_DIR, outputPath)}.`
+    );
+  }
 }
 
 const isDirectExecution =

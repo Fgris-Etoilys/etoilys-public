@@ -1,6 +1,6 @@
 # Socle visuel du site public
 
-Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et à la page Dordogne. La page Dordogne du commit `913becf` reste la référence visuelle de la direction artistique ; l'implémentation courante du spike reste la référence d'architecture et d'API.
+Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et aux pages locales V6. Les implémentations courantes Dordogne et Bergerac sont les références locales V6 : Dordogne pour le département, Bergerac pour la ville. Les anciens spikes et SHA ne servent plus que d’historique.
 
 ## Mode D'Emploi Durable
 
@@ -89,7 +89,8 @@ CTA final sur fond sombre :
 - **ETOILYS-395** : socle premium, pages cœur, Home/Dordogne harmonisées, amorce des enveloppes de formulaires via `editorial-form`.
 - **ETOILYS-396** : terminer les formulaires et simulateurs. Ne pas leur imposer la densité visuelle d'une landing page ; préserver leurs exigences d'état, validation, API, Turnstile et accessibilité.
 - **ETOILYS-396** couvre aussi les états transverses des outils interactifs : `Toast`, enveloppe Turnstile, combobox/listbox, dialogs, tabs et comparatifs. Les états succès, avertissement et erreur restent sémantiques ; les usages décoratifs ou de marque migrent vers `ink`, `paper`, `surface` et `copper`.
-- **ETOILYS-398** : industrialiser les compositions locales, pricing et pages départementales encore spécifiques avec `LocalLandingPageV6`. Voir `docs/tech/local-framework-v6.md`.
+- **ETOILYS-414** : les routes locales publiques Dordogne, Bergerac, Gironde, Bordeaux et Lot-et-Garonne passent par `LocalLandingPageV6` via les wrappers fins `CityLandingPage` / `DepartmentLandingPage`. Voir `docs/tech/local-framework-v6.md`.
+- En V6 locale, `editorial-notice` occupe la largeur du conteneur éditorial, avec son texte limité en lecture. Une notice est rendue sur `bg-paper`; la FAQ qui suit bascule sur `bg-surface-neutral` pour conserver l’alternance des surfaces.
 
 ## Compte Rendu Daté Des Validations
 
@@ -105,4 +106,4 @@ CTA final sur fond sombre :
 - Le fallback 404 reste `noindex,follow`.
 - Les routes actives doivent rester couvertes par `src/content/seoRoutes.ts`.
 - Les images critiques doivent continuer à passer par `SmartImage` et le manifeste d'images.
-- La page Dordogne `913becf` guide la finesse visuelle, mais les composants restaurés doivent vivre dans les primitives partagées, pas dans de nouveaux forks locaux.
+- Les références visuelles locales sont les pages V6 courantes Dordogne et Bergerac ; les composants restaurés doivent vivre dans les primitives partagées, pas dans de nouveaux forks locaux.

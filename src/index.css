@@ -1202,6 +1202,26 @@
     line-height: 1.75;
   }
 
+  .local-v6-notice {
+    display: grid;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .local-v6-notice h2,
+  .local-v6-notice > .space-y-5 {
+    max-width: 720px;
+  }
+
+  .local-v6-notice ul {
+    margin: 0 0 0 1.2rem;
+    padding: 0;
+  }
+
+  .local-v6-notice li + li {
+    margin-top: 8px;
+  }
+
   .local-v6-faq {
     display: grid;
     grid-template-columns: 0.75fr 1.25fr;

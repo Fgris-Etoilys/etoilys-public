@@ -1,7 +1,10 @@
 import { IMAGE_MANIFEST } from './imageManifest';
 import { SITE_URL, type BreadcrumbItem } from './seoRoutes';
 import { getArticleAuthor, type ArticleAuthorId } from './articleAuthors';
-import { getClassificationAreaServed } from './local/registry';
+import {
+  getActiveDepartmentInterventionAreas,
+  getClassificationAreaServed,
+} from './local/registry';
 
 export type JsonLdObject = Record<string, unknown>;
 
@@ -44,11 +47,6 @@ const SERVICE_COMPACT_GRAPH_PATHS = new Set([
   '/prerequis-au-classement',
   '/procedure',
   '/zones-intervention',
-  '/classement-meuble-tourisme-dordogne',
-  '/classement-meuble-tourisme-bergerac',
-  '/classement-meuble-tourisme-bordeaux',
-  '/classement-meuble-tourisme-gironde',
-  '/classement-meuble-tourisme-lot-et-garonne',
   '/demande-classement',
   '/contact',
   '/en/benefits-of-furnished-tourist-accommodation-classification',
@@ -62,6 +60,12 @@ const SERVICE_COMPACT_GRAPH_PATHS = new Set([
   '/nl/classificatie-aanvragen',
   '/nl/contact',
 ]);
+const LOCAL_SERVICE_GRAPH_PATHS = new Set(
+  getActiveDepartmentInterventionAreas().flatMap((area) => [
+    area.path,
+    ...area.localPages.map((localPage) => localPage.path),
+  ])
+);
 const ORGANIZATION_COMPACT_GRAPH_PATHS = new Set([
   '/mentions-legales',
   '/confidentialite',
@@ -249,7 +253,10 @@ export function buildPageStructuredData(pathname: string): JsonLdObject | null {
     ]);
   }
 
-  if (SERVICE_COMPACT_GRAPH_PATHS.has(normalizedPath)) {
+  if (
+    SERVICE_COMPACT_GRAPH_PATHS.has(normalizedPath) ||
+    LOCAL_SERVICE_GRAPH_PATHS.has(normalizedPath)
+  ) {
     return graphData([buildCompactOrganization(), buildClassificationService()]);
   }
 

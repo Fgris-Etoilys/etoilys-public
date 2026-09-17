@@ -1,14 +1,16 @@
-export type PricingProfileId = 'dordogne-standard' | 'bordeaux-standard';
+export type PricingProfileId =
+  | 'dordogne-standard'
+  | 'gironde-standard'
+  | 'lot-et-garonne-standard'
+  | 'bordeaux-standard';
 
 export interface PricingAmount {
   label: string;
   amount: string;
   qualifier: 'TTC' | 'HT';
-  description?: string;
 }
 
 export interface PartnerPricing {
-  label: string;
   amount: string;
   qualifier: 'TTC' | 'HT';
   conditions?: string;
@@ -25,11 +27,8 @@ export interface PricingProfile {
   standard: PricingAmount;
   partner?: PartnerPricing;
   multiProperty?: {
-    title: string;
-    caption: string;
     rows: MultiPropertyPricingRow[];
   };
-  travelFees?: string;
   note?: string;
 }
 
@@ -40,13 +39,10 @@ const standardProfileValues = {
     qualifier: 'TTC',
   },
   partner: {
-    label: 'Adhérent à un office de tourisme partenaire',
     amount: '200 €',
     qualifier: 'TTC',
   },
   multiProperty: {
-    title: 'Tarifs dégressifs pour plusieurs logements sur le même secteur',
-    caption: 'Tarifs dégressifs Etoilys pour plusieurs logements',
     rows: [
       {
         key: 'first',
@@ -68,15 +64,23 @@ const standardProfileValues = {
   note: 'Les tarifs ci-dessous sont tout compris, sans frais de déplacement. Le montant applicable est confirmé avant tout engagement.',
 } as const satisfies Omit<PricingProfile, 'id'>;
 
+function createStandardPricingProfile(id: PricingProfileId): PricingProfile {
+  return {
+    id,
+    standard: { ...standardProfileValues.standard },
+    partner: { ...standardProfileValues.partner },
+    multiProperty: {
+      rows: standardProfileValues.multiProperty.rows.map((row) => ({ ...row })),
+    },
+    note: standardProfileValues.note,
+  };
+}
+
 export const PRICING_PROFILES: Record<PricingProfileId, PricingProfile> = {
-  'dordogne-standard': {
-    id: 'dordogne-standard',
-    ...standardProfileValues,
-  },
-  'bordeaux-standard': {
-    id: 'bordeaux-standard',
-    ...standardProfileValues,
-  },
+  'dordogne-standard': createStandardPricingProfile('dordogne-standard'),
+  'gironde-standard': createStandardPricingProfile('gironde-standard'),
+  'lot-et-garonne-standard': createStandardPricingProfile('lot-et-garonne-standard'),
+  'bordeaux-standard': createStandardPricingProfile('bordeaux-standard'),
 };
 
 export function getPricingProfile(profileId: PricingProfileId): PricingProfile {
