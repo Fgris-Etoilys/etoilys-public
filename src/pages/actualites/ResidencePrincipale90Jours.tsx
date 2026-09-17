@@ -248,6 +248,7 @@ export default function ArticleResidencePrincipale90Jours() {
           href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623378/2026-05-20"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           article L. 324-1-1 du code du tourisme
         </a>
@@ -259,6 +260,7 @@ export default function ArticleResidencePrincipale90Jours() {
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           loi du 19 novembre 2024
         </a>
@@ -343,6 +345,7 @@ export default function ArticleResidencePrincipale90Jours() {
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           loi du 19 novembre 2024
         </a>{' '}

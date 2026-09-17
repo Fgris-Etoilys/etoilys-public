@@ -94,7 +94,7 @@ function CriterionStatus({ status }: { status: 'optional' | 'required' }) {
 
   return (
     <span
-      className={`inline-flex min-w-[6.75rem] justify-center rounded-full border px-3 py-1 text-xs font-semibold ${classes}`}
+      className={`inline-flex justify-center rounded-full border px-2.5 py-1 text-xs font-semibold ${classes}`}
     >
       {label}
     </span>
@@ -253,42 +253,42 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
             key: 'critere',
             label: 'Exemple de critère',
             mobileLabel: 'Exemple de critère',
-            widthClassName: 'w-1/3',
+            widthClassName: 'w-[28%]',
           },
           {
             key: 'one',
             label: '1 étoile',
             mobileLabel: '1 étoile',
             align: 'center',
-            widthClassName: 'w-[13.4%]',
+            widthClassName: 'w-[14.4%]',
           },
           {
             key: 'two',
             label: '2 étoiles',
             mobileLabel: '2 étoiles',
             align: 'center',
-            widthClassName: 'w-[13.4%]',
+            widthClassName: 'w-[14.4%]',
           },
           {
             key: 'three',
             label: '3 étoiles',
             mobileLabel: '3 étoiles',
             align: 'center',
-            widthClassName: 'w-[13.4%]',
+            widthClassName: 'w-[14.4%]',
           },
           {
             key: 'four',
             label: '4 étoiles',
             mobileLabel: '4 étoiles',
             align: 'center',
-            widthClassName: 'w-[13.4%]',
+            widthClassName: 'w-[14.4%]',
           },
           {
             key: 'five',
             label: '5 étoiles',
             mobileLabel: '5 étoiles',
             align: 'center',
-            widthClassName: 'w-[13.4%]',
+            widthClassName: 'w-[14.4%]',
           },
         ]}
         rows={[
@@ -327,6 +327,10 @@ export default function ArticlePreparerVisiteClassementMeubleTourisme() {
           },
         ]}
         caption="Exemples de critères selon la catégorie de classement demandée"
+        desktopWrapperClassName="hidden lg:block"
+        headerCellClassName="p-2.5 font-semibold break-words"
+        cellClassName="border-b border-ink/15 p-2.5 align-middle break-words text-muted"
+        mobileContainerClassName="space-y-3 lg:hidden"
       />
 
       <p className="text-muted leading-comfortable mb-4">

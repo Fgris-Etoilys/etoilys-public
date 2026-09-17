@@ -262,6 +262,7 @@ export default function ArticleMeubles20252026() {
           href="https://www.classement.atout-france.fr/documents/20142/1515299/Note%2Bde%2Bclarification%2B-%2BMeubl%C3%A9s%2Bde%2Btourisme%2B-%2BSeptembre%2B2025.pdf/0e816e66-0a27-dd43-12db-a4a607aea165?download=true&version=2.4"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           note de clarification utile pour l'interprétation pratique de certains critères
         </a>
@@ -270,6 +271,7 @@ export default function ArticleMeubles20252026() {
           href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053525578"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           décret du 20 février 2026
         </a>{' '}
@@ -298,6 +300,7 @@ export default function ArticleMeubles20252026() {
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           loi du 19 novembre 2024
         </a>{' '}
@@ -343,6 +346,7 @@ export default function ArticleMeubles20252026() {
           href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           FAQ fiscale DGFiP mise à jour le 18 mars 2026
         </a>
@@ -437,6 +441,7 @@ export default function ArticleMeubles20252026() {
           href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623427"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           l'article L631-10 du CCH sur Légifrance
         </a>
@@ -472,6 +477,7 @@ export default function ArticleMeubles20252026() {
           href="https://www.service-public.fr/particuliers/vosdroits/F2589"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           règlements de copropriété
         </a>{' '}
@@ -511,6 +517,7 @@ export default function ArticleMeubles20252026() {
           href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050650414"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           article L. 324-1-1 du Code du tourisme
         </a>{' '}
@@ -523,6 +530,7 @@ export default function ArticleMeubles20252026() {
           href="https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           API Meublés
         </a>{' '}

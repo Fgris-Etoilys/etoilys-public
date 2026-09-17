@@ -267,6 +267,7 @@ export default function ArticleMicroBic2026() {
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           loi du 19 novembre 2024
         </a>{' '}
@@ -286,6 +287,7 @@ export default function ArticleMicroBic2026() {
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           loi du 19 novembre 2024
         </a>
@@ -296,6 +298,7 @@ export default function ArticleMicroBic2026() {
           href="https://www.impots.gouv.fr/particulier/questions/je-suis-proprietaire-dune-location-meublee-de-tourisme-quel-est-le-nouveau"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           FAQ fiscale DGFiP mise à jour le 18 mars 2026
         </a>{' '}
@@ -304,6 +307,7 @@ export default function ArticleMicroBic2026() {
           href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048844097/2023-12-31"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           article 50-0 du CGI
         </a>
@@ -436,6 +440,7 @@ export default function ArticleMicroBic2026() {
           href="https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           page économie.gouv.fr sur la location meublée de tourisme
         </a>
@@ -544,6 +549,7 @@ export default function ArticleMicroBic2026() {
           href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000048844097/2023-12-31"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           article 50-0 du Code général des impôts
         </a>
@@ -578,6 +584,7 @@ export default function ArticleMicroBic2026() {
           href="https://entreprendre.service-public.fr/vosdroits/F39451"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           Service-Public Entreprendre
         </a>{' '}
@@ -628,6 +635,7 @@ export default function ArticleMicroBic2026() {
           href="https://www.economie.gouv.fr/entreprises/gerer-sa-fiscalite-et-ses-impots/limpot-sur-les-benefices-ir-et/impot-sur-le-revenu-bic-bnc-comment-ca-marche"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           economie.gouv.fr explique les principes de l'impôt sur le revenu BIC/BNC
         </a>

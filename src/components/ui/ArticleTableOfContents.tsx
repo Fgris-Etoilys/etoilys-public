@@ -122,7 +122,7 @@ export default function ArticleTableOfContents({ items, variant }: ArticleTableO
               aria-current={isActive ? 'location' : undefined}
               className={`ui-focus block rounded-control px-3 py-2 text-sm leading-snug no-underline transition-colors motion-reduce:transition-none ${
                 isActive
-                  ? 'bg-paper font-semibold text-ink'
+                  ? 'bg-paper font-semibold text-ink hover:text-ink active:text-ink'
                   : 'text-muted hover:bg-paper hover:text-ink'
               }`}
               onClick={(event) => handleLinkClick(event, item.id)}

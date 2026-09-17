@@ -25,16 +25,16 @@ export default function InterventionAreaCards({
         return (
           <Card key={area.id} className="flex min-h-[320px] flex-col p-6">
             <div className="mb-5 flex items-start justify-between gap-4">
-              <DepartmentHeading className="text-2xl font-playfair font-semibold text-gray-900">
+              <DepartmentHeading className="text-2xl font-playfair font-semibold text-ink">
                 {area.name}
               </DepartmentHeading>
             </div>
-            <p className="mb-4 text-sm leading-comfortable text-textLight">{area.description}</p>
+            <p className="mb-4 text-sm leading-comfortable text-muted">{area.description}</p>
 
             {visibleLocalPages.length === 1 && singleLocalPage && (
               <Link
                 to={singleLocalPage.path}
-                className="mb-6 inline-flex text-sm font-medium leading-comfortable text-primary-300 underline-offset-4 hover:text-primary-400 hover:underline focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
+                className="editorial-inline-link ui-focus mb-6 inline-flex rounded-sm text-sm font-medium leading-comfortable"
               >
                 {singleLocalPage.hubLabel ?? singleLocalPage.label} →
               </Link>
@@ -42,13 +42,13 @@ export default function InterventionAreaCards({
 
             {visibleLocalPages.length > 1 && (
               <div className="mb-6 border-t border-gray-200 pt-5">
-                <p className="mb-3 text-sm font-semibold text-gray-900">Pages locales</p>
+                <p className="mb-3 text-sm font-semibold text-ink">Pages locales</p>
                 <ul className="space-y-2">
                   {visibleLocalPages.map((localPage) => (
                     <li key={localPage.id}>
                       <Link
                         to={localPage.path}
-                        className="inline-flex text-sm font-medium leading-comfortable text-primary-300 underline-offset-4 hover:text-primary-400 hover:underline focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
+                        className="editorial-inline-link ui-focus inline-flex rounded-sm text-sm font-medium leading-comfortable"
                       >
                         {localPage.hubLabel ?? localPage.label} →
                       </Link>

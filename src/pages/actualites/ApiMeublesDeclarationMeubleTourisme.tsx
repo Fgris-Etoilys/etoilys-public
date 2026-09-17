@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -324,56 +325,52 @@ export default function ArticleApiMeubles() {
         du logement.
       </p>
       <p className="text-muted leading-comfortable mb-6">Il faut donc distinguer deux choses :</p>
-      <div className="overflow-x-auto mb-6">
-        <table className="article-table">
-          <caption className="sr-only">
-            Calendrier de transition vers la déclaration nationale API Meublés
-          </caption>
-          <colgroup>
-            <col className="w-[30%]" />
-            <col className="w-[70%]" />
-          </colgroup>
-          <thead>
-            <tr className="article-table-header">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Date ou période
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                Ce que cela signifie pour le propriétaire
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-surface border-b border-ink/10">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Jusqu&apos;au 20 mai 2026
-              </th>
-              <td className="p-3 text-muted">
-                La déclaration peut encore passer par la démarche en ligne actuelle de
-                Service-Public, par un formulaire ou par le service propre de certaines mairies.
-              </td>
-            </tr>
-            <tr className="bg-paper border-b border-ink/10">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Depuis le 20 mai 2026
-              </th>
-              <td className="p-3 text-muted">
-                Le nouveau cadre légal est en vigueur, mais le téléservice final API Meublés destiné
-                aux loueurs n&apos;est pas encore ouvert.
-              </td>
-            </tr>
-            <tr className="bg-surface">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Second semestre 2026
-              </th>
-              <td className="p-3 text-muted">
-                Le téléservice national relié à API Meublés doit permettre aux loueurs de demander
-                leur nouveau numéro d&apos;enregistrement national.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-6"
+        caption="Calendrier de transition vers la déclaration nationale API Meublés"
+        primaryColumnKey="periode"
+        columns={[
+          {
+            key: 'periode',
+            label: 'Date ou période',
+            mobileLabel: 'Date ou période',
+            widthClassName: 'w-[30%]',
+          },
+          {
+            key: 'effet',
+            label: 'Ce que cela signifie pour le propriétaire',
+            mobileLabel: 'Ce que cela signifie pour le propriétaire',
+            widthClassName: 'w-[70%]',
+          },
+        ]}
+        rows={[
+          {
+            key: 'avant-20-mai-2026',
+            cells: {
+              periode: 'Jusqu’au 20 mai 2026',
+              effet:
+                'La déclaration peut encore passer par la démarche en ligne actuelle de Service-Public, par un formulaire ou par le service propre de certaines mairies.',
+            },
+          },
+          {
+            key: 'depuis-20-mai-2026',
+            cells: {
+              periode: 'Depuis le 20 mai 2026',
+              effet:
+                'Le nouveau cadre légal est en vigueur, mais le téléservice final API Meublés destiné aux loueurs n’est pas encore ouvert.',
+            },
+          },
+          {
+            key: 'second-semestre-2026',
+            cells: {
+              periode: 'Second semestre 2026',
+              effet:
+                'Le téléservice national relié à API Meublés doit permettre aux loueurs de demander leur nouveau numéro d’enregistrement national.',
+            },
+          },
+        ]}
+      />
       <p className="text-muted leading-comfortable mb-4">
         Le bon réflexe est de comprendre la période de transition et de se préparer à demander un
         nouveau numéro dès que le service national sera ouvert.

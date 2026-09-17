@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -223,6 +224,7 @@ export default function ArticleCoproprieteLocationTouristique() {
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           loi du 19 novembre 2024
         </a>{' '}
@@ -271,6 +273,7 @@ export default function ArticleCoproprieteLocationTouristique() {
           href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050617303"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           article 8-1-1 de la loi du 10 juillet 1965
         </a>
@@ -296,81 +299,88 @@ export default function ArticleCoproprieteLocationTouristique() {
         les quatre situations à distinguer.
       </p>
 
-      {/* Tableau */}
-      <div className="overflow-x-auto mb-8">
-        <table className="article-table">
-          <caption className="sr-only">
-            Règles de copropriété applicables aux meublés de tourisme selon la situation
-          </caption>
-          <thead>
-            <tr className="article-table-header">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Situation
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                Ce que le règlement / la copro peut faire
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                Condition ou majorité
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                Ce que cela change pour vous
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-surface border-b border-ink/15">
-              <th scope="row" className="p-3 font-semibold text-copper">
-                Règlement établi depuis le 21 novembre 2024
-              </th>
-              <td className="p-3 text-muted">
-                Doit mentionner explicitement l'autorisation ou l'interdiction des meublés de
-                tourisme
-              </td>
-              <td className="p-3 text-muted">Mention expresse dans le règlement</td>
-              <td className="p-3 text-muted">
-                Il faut vérifier le texte exact avant de louer ou d'acheter
-              </td>
-            </tr>
-            <tr className="bg-paper border-b border-ink/15">
-              <th scope="row" className="p-3 font-semibold text-ink">
-                Règlement plus ancien
-              </th>
-              <td className="p-3 text-muted">
-                Peut déjà contenir des clauses liées à la destination de l'immeuble ou à
-                l'interdiction d'activités commerciales
-              </td>
-              <td className="p-3 text-muted">Lecture du règlement existant</td>
-              <td className="p-3 text-muted">
-                L'absence du mot "Airbnb" ne signifie pas forcément que tout est permis
-              </td>
-            </tr>
-            <tr className="bg-surface border-b border-ink/15">
-              <th scope="row" className="p-3 font-semibold text-ink">
-                Modification du règlement existant
-              </th>
-              <td className="p-3 text-muted">
-                Peut, dans certains cas, interdire certains meublés de tourisme (lots d'habitation
-                hors résidence principale, si le règlement interdit déjà toute activité commerciale)
-              </td>
-              <td className="p-3 text-muted">Majorité de l'article 26 + conditions légales</td>
-              <td className="p-3 text-muted">
-                La copro ne peut pas interdire n'importe quoi dans n'importe quel immeuble
-              </td>
-            </tr>
-            <tr className="bg-paper">
-              <th scope="row" className="p-3 font-semibold text-ink">
-                Lot déclaré en meublé de tourisme
-              </th>
-              <td className="p-3 text-muted">Obligation d'information du syndic</td>
-              <td className="p-3 text-muted">Déclaration du lot au titre du code du tourisme</td>
-              <td className="p-3 text-muted">
-                Le sujet sera porté à l'ordre du jour de la prochaine AG sous forme d'information
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-8"
+        caption="Règles de copropriété applicables aux meublés de tourisme selon la situation"
+        primaryColumnKey="situation"
+        columns={[
+          {
+            key: 'situation',
+            label: 'Situation',
+            mobileLabel: 'Situation',
+            widthClassName: 'w-1/4',
+          },
+          {
+            key: 'reglement',
+            label: 'Ce que le règlement / la copro peut faire',
+            mobileLabel: 'Ce que le règlement / la copro peut faire',
+            widthClassName: 'w-1/4',
+          },
+          {
+            key: 'condition',
+            label: 'Condition ou majorité',
+            mobileLabel: 'Condition ou majorité',
+            widthClassName: 'w-1/4',
+          },
+          {
+            key: 'effet',
+            label: 'Ce que cela change pour vous',
+            mobileLabel: 'Ce que cela change pour vous',
+            widthClassName: 'w-1/4',
+          },
+        ]}
+        rows={[
+          {
+            key: 'reglement-recent',
+            cells: {
+              situation: (
+                <span className="font-semibold text-copper">
+                  Règlement établi depuis le 21 novembre 2024
+                </span>
+              ),
+              reglement:
+                "Doit mentionner explicitement l'autorisation ou l'interdiction des meublés de tourisme",
+              condition: 'Mention expresse dans le règlement',
+              effet: "Il faut vérifier le texte exact avant de louer ou d'acheter",
+            },
+          },
+          {
+            key: 'reglement-ancien',
+            cells: {
+              situation: <span className="font-semibold text-ink">Règlement plus ancien</span>,
+              reglement:
+                "Peut déjà contenir des clauses liées à la destination de l'immeuble ou à l'interdiction d'activités commerciales",
+              condition: 'Lecture du règlement existant',
+              effet: 'L’absence du mot "Airbnb" ne signifie pas forcément que tout est permis',
+            },
+          },
+          {
+            key: 'modification',
+            cells: {
+              situation: (
+                <span className="font-semibold text-ink">Modification du règlement existant</span>
+              ),
+              reglement:
+                "Peut, dans certains cas, interdire certains meublés de tourisme (lots d'habitation hors résidence principale, si le règlement interdit déjà toute activité commerciale)",
+              condition: "Majorité de l'article 26 + conditions légales",
+              effet: "La copro ne peut pas interdire n'importe quoi dans n'importe quel immeuble",
+            },
+          },
+          {
+            key: 'lot-declare',
+            cells: {
+              situation: (
+                <span className="font-semibold text-ink">Lot déclaré en meublé de tourisme</span>
+              ),
+              reglement: "Obligation d'information du syndic",
+              condition: 'Déclaration du lot au titre du code du tourisme',
+              effet:
+                "Le sujet sera porté à l'ordre du jour de la prochaine AG sous forme d'information",
+            },
+          },
+        ]}
+      />
 
       <p className="text-muted leading-comfortable mb-4">
         Un règlement plus ancien pouvait déjà, avant la réforme, contenir des clauses limitant
@@ -395,6 +405,7 @@ export default function ArticleCoproprieteLocationTouristique() {
           href="https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000050623612"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           article 26 de la loi du 10 juillet 1965
         </a>
@@ -443,6 +454,7 @@ export default function ArticleCoproprieteLocationTouristique() {
           href="https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000053704054"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           décision n° 2025-1186 QPC
         </a>
@@ -461,6 +473,7 @@ export default function ArticleCoproprieteLocationTouristique() {
           href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050618105"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           article 9-2 de la loi du 10 juillet 1965
         </a>

@@ -3,6 +3,7 @@ import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
 import { getArticleAuthor } from '../../content/articleAuthors';
@@ -384,66 +385,49 @@ export default function ArticleFacturationElectronique2026() {
       <p className="text-muted leading-comfortable mb-4">
         Le tableau suivant résume les obligations selon votre situation&nbsp;:
       </p>
-      <div className="overflow-x-auto mb-8">
-        <table className="article-table">
-          <caption className="sr-only">
-            Obligations de facturation électronique selon la situation du loueur
-          </caption>
-          <colgroup>
-            <col className="w-[28%]" />
-            <col className="w-[18%]" />
-            <col className="w-[18%]" />
-            <col className="w-[16%]" />
-            <col className="w-[20%]" />
-          </colgroup>
-          <thead>
-            <tr className="article-table-header">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Situation
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
-                Réception depuis le 01/09/2026
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
-                Émission
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
-                E-reporting
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                Ce que vous devez faire
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-surface border-b border-ink/10">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Loueur en meublé classique exonéré
-              </th>
-              <td className="p-3 text-center text-muted">Oui, si vous avez un SIREN</td>
-              <td className="p-3 text-center text-muted">Non pour les séjours exonérés</td>
-              <td className="p-3 text-center text-muted">Non pour ces opérations exonérées</td>
-              <td className="p-3 text-muted">
-                Avoir choisi une plateforme agréée pour recevoir les factures fournisseurs
-              </td>
-            </tr>
-            <tr className="bg-paper">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Loueur avec activité taxable à la TVA
-              </th>
-              <td className="p-3 text-center text-muted">Oui</td>
-              <td className="p-3 text-center text-muted">
-                Oui selon le calendrier de taille d'entreprise
-              </td>
-              <td className="p-3 text-center text-muted">Oui selon la nature des opérations</td>
-              <td className="p-3 text-muted">
-                Vérifier le champ TVA réel de l'activité, choisir une plateforme, organiser
-                l'émission et les flux de données
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-8"
+        caption="Obligations de facturation électronique selon la situation du loueur"
+        primaryColumnKey="situation"
+        desktopWrapperClassName="hidden xl:block"
+        mobileContainerClassName="space-y-3 xl:hidden"
+        columns={[
+          { key: 'situation', label: 'Situation', widthClassName: 'w-[28%]' },
+          {
+            key: 'reception',
+            label: 'Réception depuis le 01/09/2026',
+            widthClassName: 'w-[18%]',
+            align: 'center',
+          },
+          { key: 'emission', label: 'Émission', widthClassName: 'w-[18%]', align: 'center' },
+          { key: 'reporting', label: 'E-reporting', widthClassName: 'w-[16%]', align: 'center' },
+          { key: 'action', label: 'Ce que vous devez faire', widthClassName: 'w-[20%]' },
+        ]}
+        rows={[
+          {
+            key: 'loueur-exonere',
+            cells: {
+              situation: 'Loueur en meublé classique exonéré',
+              reception: 'Oui, si vous avez un SIREN',
+              emission: 'Non pour les séjours exonérés',
+              reporting: 'Non pour ces opérations exonérées',
+              action: 'Avoir choisi une plateforme agréée pour recevoir les factures fournisseurs',
+            },
+          },
+          {
+            key: 'loueur-taxable',
+            cells: {
+              situation: 'Loueur avec activité taxable à la TVA',
+              reception: 'Oui',
+              emission: "Oui selon le calendrier de taille d'entreprise",
+              reporting: 'Oui selon la nature des opérations',
+              action:
+                "Vérifier le champ TVA réel de l'activité, choisir une plateforme, organiser l'émission et les flux de données",
+            },
+          },
+        ]}
+      />
 
       {/* Section 4 */}
       <ArticleSectionHeading id="le-calendrier-precis-a-retenir">

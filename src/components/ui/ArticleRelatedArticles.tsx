@@ -50,7 +50,7 @@ export default function ArticleRelatedArticles({ articles }: ArticleRelatedArtic
                 <h3 className="mb-2 text-lg font-playfair font-semibold leading-snug text-ink">
                   <Link
                     to={article.href}
-                    className="ui-focus rounded-sm no-underline hover:text-ink-hover"
+                    className="ui-focus rounded-sm text-ink no-underline hover:text-ink-hover"
                   >
                     {article.title}
                   </Link>
@@ -64,7 +64,7 @@ export default function ArticleRelatedArticles({ articles }: ArticleRelatedArtic
                 <Link
                   to={article.href}
                   aria-label={`Lire l’article ${article.title}`}
-                  className="editorial-link"
+                  className="editorial-link ui-focus min-h-11 rounded-control motion-reduce:transition-none"
                 >
                   Lire l’article
                   <ArrowRight aria-hidden="true" className="h-4 w-4" />

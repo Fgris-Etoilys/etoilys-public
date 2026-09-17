@@ -94,6 +94,8 @@ export default function ArticleReadingUtilities({
     scheduleMeasure();
     window.addEventListener('scroll', scheduleMeasure, { passive: true });
     window.addEventListener('resize', scheduleMeasure);
+    window.addEventListener('hashchange', scheduleMeasure);
+    window.addEventListener('pageshow', scheduleMeasure);
 
     const resizeObserver =
       typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(scheduleMeasure);
@@ -104,6 +106,8 @@ export default function ArticleReadingUtilities({
     return () => {
       window.removeEventListener('scroll', scheduleMeasure);
       window.removeEventListener('resize', scheduleMeasure);
+      window.removeEventListener('hashchange', scheduleMeasure);
+      window.removeEventListener('pageshow', scheduleMeasure);
       resizeObserver?.disconnect();
 
       if (animationFrameRef.current !== null && typeof window.cancelAnimationFrame === 'function') {
@@ -130,7 +134,7 @@ export default function ArticleReadingUtilities({
   return (
     <>
       <div
-        className={`pointer-events-none fixed inset-x-0 top-[var(--etoilys-header-height,4.5rem)] z-[55] h-1 bg-paper/80 transition-opacity duration-150 motion-reduce:transition-none ${
+        className={`pointer-events-none fixed inset-x-0 top-[var(--etoilys-header-height,73px)] z-[65] h-1.5 bg-paper/95 shadow-[0_1px_3px_rgb(var(--color-ink)/0.08)] transition-opacity duration-150 motion-reduce:transition-none ${
           isProgressVisible ? 'opacity-100' : 'opacity-0'
         }`}
         aria-hidden="true"

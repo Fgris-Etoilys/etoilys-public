@@ -419,9 +419,15 @@ export default function PourquoiClasser() {
             {content.officialSign.description}
           </p>
 
-          <div className="mx-auto max-w-3xl grid grid-cols-3 sm:grid-cols-5 items-start gap-3 sm:gap-6 pb-8">
-            {panonceaux.map(({ src, label }) => (
-              <div key={label[locale]} className="min-w-0">
+          <div className="mx-auto flex max-w-[min(100%,50rem)] flex-nowrap items-start justify-center overflow-visible px-4 pb-14 pt-2 sm:pb-16">
+            {panonceaux.map(({ src, label }, index) => (
+              <div
+                key={label[locale]}
+                className={`relative -mx-[clamp(0.65rem,2.8vw,1.55rem)] flex-shrink-0 ${
+                  index % 2 === 1 ? 'translate-y-[clamp(1.25rem,4vw,2.5rem)]' : ''
+                }`}
+                style={{ zIndex: index === 2 ? 10 : 5 - Math.abs(2 - index) }}
+              >
                 <img
                   src={src}
                   alt={`${content.officialSign.panonceauAltPrefix} ${label[locale]}`}
@@ -429,7 +435,7 @@ export default function PourquoiClasser() {
                   height={1191}
                   loading="lazy"
                   decoding="async"
-                  className="w-full object-contain"
+                  className="w-[clamp(5.2rem,18vw,11.5rem)] object-contain drop-shadow-[0_14px_22px_rgb(var(--color-ink)/0.16)]"
                 />
               </div>
             ))}

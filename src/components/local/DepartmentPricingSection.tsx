@@ -233,7 +233,7 @@ export default function DepartmentPricingSection({
         className={
           presentation === 'panel'
             ? 'local-v6-pricing-intro'
-            : 'mb-8 max-w-5xl text-textLight leading-comfortable'
+            : 'mb-8 max-w-5xl text-muted leading-comfortable'
         }
       >
         {config.intro}

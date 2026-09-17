@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -228,6 +229,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
                 href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042159220/"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="article-inline-link"
               >
                 article 50-0 du CGI
               </a>
@@ -247,6 +249,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
                 href="https://www.impots.gouv.fr/www2/fichiers/documentation/brochure/ir_2026/pdf_integral/Brochure-IR-2026.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="article-inline-link"
               >
                 brochure pratique IR 2026
               </a>
@@ -263,6 +266,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
                 href="https://entreprendre.service-public.fr/vosdroits/F23267"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="article-inline-link"
               >
                 régime fiscal de la micro-entreprise
               </a>
@@ -278,57 +282,77 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
         recettes :
       </p>
 
-      <div className="overflow-x-auto mb-4">
-        <table className="article-table">
-          <caption className="sr-only">
-            Seuils et abattements micro-BIC applicables selon la catégorie de recettes
-          </caption>
-          <colgroup>
-            <col className="w-2/5" />
-            <col className="w-1/5" />
-            <col className="w-1/5" />
-            <col className="w-1/5" />
-          </colgroup>
-          <thead>
-            <tr className="article-table-header">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Catégorie de recettes
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-4"
+        caption="Seuils et abattements micro-BIC applicables selon la catégorie de recettes"
+        primaryColumnKey="categorie"
+        columns={[
+          {
+            key: 'categorie',
+            label: 'Catégorie de recettes',
+            mobileLabel: 'Catégorie de recettes',
+            widthClassName: 'w-2/5',
+          },
+          {
+            key: 'revenus2025',
+            label: (
+              <>
                 Revenus 2025
                 <br />
-                <span className="font-normal text-xs">(déclarés en 2026)</span>
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
+                <span className="text-xs font-normal">(déclarés en 2026)</span>
+              </>
+            ),
+            mobileLabel: 'Revenus 2025 (déclarés en 2026)',
+            align: 'center',
+            widthClassName: 'w-1/5',
+          },
+          {
+            key: 'revenus2026',
+            label: (
+              <>
                 Revenus 2026
                 <br />
-                <span className="font-normal text-xs">(déclarés en 2027)</span>
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
-                Abattement micro
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-surface border-b border-ink/10">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Meublés de tourisme non classés
-              </th>
-              <td className="p-3 text-center text-muted">15&nbsp;000&nbsp;€</td>
-              <td className="p-3 text-center text-muted">15&nbsp;000&nbsp;€</td>
-              <td className="p-3 text-center font-semibold text-muted">30&nbsp;%</td>
-            </tr>
-            <tr className="bg-paper">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Meublés de tourisme classés
-              </th>
-              <td className="p-3 text-center text-muted">77&nbsp;700&nbsp;€</td>
-              <td className="p-3 text-center font-semibold text-copper">83&nbsp;600&nbsp;€</td>
-              <td className="p-3 text-center font-semibold text-muted">50&nbsp;%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                <span className="text-xs font-normal">(déclarés en 2027)</span>
+              </>
+            ),
+            mobileLabel: 'Revenus 2026 (déclarés en 2027)',
+            align: 'center',
+            widthClassName: 'w-1/5',
+          },
+          {
+            key: 'abattement',
+            label: 'Abattement micro',
+            mobileLabel: 'Abattement micro',
+            align: 'center',
+            widthClassName: 'w-1/5',
+          },
+        ]}
+        rows={[
+          {
+            key: 'non-classes',
+            cells: {
+              categorie: 'Meublés de tourisme non classés',
+              revenus2025: '15 000 €',
+              revenus2026: '15 000 €',
+              abattement: <span className="font-semibold">30 %</span>,
+            },
+          },
+          {
+            key: 'classes',
+            cells: {
+              categorie: 'Meublés de tourisme classés',
+              revenus2025: <span aria-label="Revenus 2025 : 77 700 €">77 700 €</span>,
+              revenus2026: (
+                <span aria-label="Revenus 2026 : 83 600 €" className="font-semibold text-copper">
+                  83 600 €
+                </span>
+              ),
+              abattement: <span className="font-semibold">50 %</span>,
+            },
+          },
+        ]}
+      />
       <p className="text-muted leading-comfortable mb-8">
         En pratique, si vous avez des recettes des deux côtés, il faut les lire séparément, puis
         vérifier aussi le cadre global applicable à votre activité.

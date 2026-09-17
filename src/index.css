@@ -1596,7 +1596,7 @@
   }
 
   .article-table {
-    @apply w-full border-collapse bg-surface text-sm;
+    @apply w-full border-collapse bg-surface text-sm text-muted;
   }
 
   .article-table thead tr,
@@ -1614,7 +1614,7 @@
   }
 
   .article-table td {
-    @apply text-muted;
+    color: inherit;
   }
 
   .article-lede > :last-child {
@@ -1713,7 +1713,7 @@
 
   .table-of-contents-scrollbar:hover,
   .table-of-contents-scrollbar:focus-within {
-    scrollbar-color: rgba(86, 111, 143, 0.45) transparent;
+    scrollbar-color: rgb(var(--color-copper) / 0.45) transparent;
   }
 
   .table-of-contents-scrollbar::-webkit-scrollbar {
@@ -1734,6 +1734,6 @@
 
   .table-of-contents-scrollbar:hover::-webkit-scrollbar-thumb,
   .table-of-contents-scrollbar:focus-within::-webkit-scrollbar-thumb {
-    background-color: rgba(86, 111, 143, 0.45);
+    background-color: rgb(var(--color-copper) / 0.45);
   }
 }

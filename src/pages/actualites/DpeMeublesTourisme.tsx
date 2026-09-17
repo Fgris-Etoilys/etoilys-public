@@ -1,6 +1,7 @@
 import Button from '../../components/ui/Button';
 import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -358,71 +359,63 @@ export default function ArticleDpeMeublesTourisme() {
         <em>le DPE s&apos;applique aux meublés de tourisme</em> en général, mais de regarder dans
         quelle situation précise se trouve votre logement.
       </p>
-      <div className="overflow-x-auto mb-6">
-        <table className="article-table">
-          <caption className="sr-only">
-            Règles DPE selon la situation du logement en 2026 et à partir de 2034
-          </caption>
-          <colgroup>
-            <col className="w-[30%]" />
-            <col className="w-[35%]" />
-            <col className="w-[35%]" />
-          </colgroup>
-          <thead>
-            <tr className="article-table-header">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Situation
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                En 2026
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                À partir du 1er janvier 2034
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-surface border-b border-ink/10">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Résidence principale louée occasionnellement
-              </th>
-              <td className="p-3 text-muted">
-                Pas d&apos;obligation générale de DPE liée au seul fait de louer en meublé de
-                tourisme. Il faut vérifier les règles locales applicables.
-              </td>
-              <td className="p-3 text-muted">
-                La règle de décence énergétique des meublés hors résidence principale ne vise pas ce
-                cas.
-              </td>
-            </tr>
-            <tr className="bg-paper border-b border-ink/10">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Logement soumis à autorisation préalable de changement d&apos;usage
-              </th>
-              <td className="p-3 text-muted">
-                DPE à présenter pour obtenir l&apos;autorisation. En métropole, le niveau exigé est
-                compris entre A et E.
-              </td>
-              <td className="p-3 text-muted">
-                Le niveau exigé pour cette autorisation passera de A à D.
-              </td>
-            </tr>
-            <tr className="bg-surface">
-              <th scope="row" className="p-3 text-muted font-medium">
-                Meublé de tourisme qui n&apos;est pas la résidence principale du loueur
-              </th>
-              <td className="p-3 text-muted">
-                Pas encore soumis à la règle générale de décence énergétique du code du tourisme.
-                Attention toutefois aux règles locales et au changement d&apos;usage.
-              </td>
-              <td className="p-3 text-muted">
-                Le logement devra respecter les niveaux de performance énergétique d&apos;un
-                logement décent.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-6"
+        caption="Règles DPE selon la situation du logement en 2026 et à partir de 2034"
+        primaryColumnKey="situation"
+        columns={[
+          {
+            key: 'situation',
+            label: 'Situation',
+            mobileLabel: 'Situation',
+            widthClassName: 'w-[30%]',
+          },
+          {
+            key: 'en2026',
+            label: 'En 2026',
+            mobileLabel: 'En 2026',
+            widthClassName: 'w-[35%]',
+          },
+          {
+            key: 'en2034',
+            label: 'À partir du 1er janvier 2034',
+            mobileLabel: 'À partir du 1er janvier 2034',
+            widthClassName: 'w-[35%]',
+          },
+        ]}
+        rows={[
+          {
+            key: 'residence-principale',
+            cells: {
+              situation: 'Résidence principale louée occasionnellement',
+              en2026:
+                'Pas d’obligation générale de DPE liée au seul fait de louer en meublé de tourisme. Il faut vérifier les règles locales applicables.',
+              en2034:
+                'La règle de décence énergétique des meublés hors résidence principale ne vise pas ce cas.',
+            },
+          },
+          {
+            key: 'changement-usage',
+            cells: {
+              situation: 'Logement soumis à autorisation préalable de changement d’usage',
+              en2026:
+                'DPE à présenter pour obtenir l’autorisation. En métropole, le niveau exigé est compris entre A et E.',
+              en2034: 'Le niveau exigé pour cette autorisation passera de A à D.',
+            },
+          },
+          {
+            key: 'hors-residence-principale',
+            cells: {
+              situation: 'Meublé de tourisme qui n’est pas la résidence principale du loueur',
+              en2026:
+                'Pas encore soumis à la règle générale de décence énergétique du code du tourisme. Attention toutefois aux règles locales et au changement d’usage.',
+              en2034:
+                'Le logement devra respecter les niveaux de performance énergétique d’un logement décent.',
+            },
+          },
+        ]}
+      />
 
       {/* Section 5 */}
       <ArticleSectionHeading id="ce-qui-changera-en-2034-pour-les-meubles-hors-residence-principale">
