@@ -1205,10 +1205,11 @@
   .local-v6-notice {
     display: grid;
     gap: 20px;
-    max-width: 860px;
+    width: 100%;
   }
 
-  .local-v6-notice h2 {
+  .local-v6-notice h2,
+  .local-v6-notice > .space-y-5 {
     max-width: 720px;
   }
 

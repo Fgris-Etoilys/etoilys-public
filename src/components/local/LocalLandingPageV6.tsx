@@ -109,6 +109,10 @@ const COMMON_LOCAL_V6_FAQ_ITEMS = [
   },
 ] as const;
 
+function formatFrenchTitle(title: string) {
+  return title.replace(/ ([?!:;])/g, '\u00a0$1');
+}
+
 export default function LocalLandingPageV6({ config }: { config: LocalLandingPageV6Config }) {
   return (
     <div className="local-v6-landing">
@@ -268,7 +272,7 @@ function LocalV6DepartmentServiceAreaSection({
       <div className="container-editorial">
         <LocalV6SectionEyebrow icon={MapPin}>Intervention locale</LocalV6SectionEyebrow>
         <h2 className="editorial-heading" id="local-v6-service-area-title">
-          {serviceArea.title}
+          {formatFrenchTitle(serviceArea.title)}
         </h2>
         <p>{serviceArea.intro}</p>
         <LocalV6DepartmentSectorList
@@ -366,7 +370,7 @@ function LocalV6CityServiceAreaSection({ serviceArea }: { serviceArea: LocalV6Ci
       <div className="container-editorial">
         <LocalV6SectionEyebrow icon={MapPin}>Intervention locale</LocalV6SectionEyebrow>
         <h2 className="editorial-heading" id="local-v6-service-area-title">
-          {serviceArea.title}
+          {formatFrenchTitle(serviceArea.title)}
         </h2>
         <p>{serviceArea.intro}</p>
         <ul className="local-v6-commune-list">
@@ -622,7 +626,7 @@ function LocalV6TaxModuleSection({ module }: { module: LocalV6TaxModule }) {
 function LocalV6EditorialNoticeSection({ notice }: { notice: LocalV6EditorialNotice }) {
   return (
     <section
-      className="editorial-section local-v6-notice-section bg-surface-neutral"
+      className="editorial-section local-v6-notice-section bg-paper"
       aria-labelledby="local-v6-notice-title"
     >
       <div className="container-editorial">
@@ -661,7 +665,10 @@ function LocalV6EditorialNoticeSection({ notice }: { notice: LocalV6EditorialNot
 
 function LocalV6FaqSection({ config }: { config: LocalLandingPageV6Config }) {
   return (
-    <section className="editorial-section bg-paper" aria-labelledby="local-v6-faq-title">
+    <section
+      className={`editorial-section ${config.localNotice ? 'bg-surface-neutral' : 'bg-paper'}`}
+      aria-labelledby="local-v6-faq-title"
+    >
       <div className="container-editorial local-v6-faq">
         <div>
           <p className="editorial-eyebrow">{config.faq.eyebrow}</p>

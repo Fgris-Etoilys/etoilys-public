@@ -1,4 +1,4 @@
-import type { LocalFaqItem, LocalProcedureStep, LocalSource, LocalTableRow } from '../types';
+import type { LocalSource, LocalTableRow } from '../types';
 
 export const DORDOGNE_SERVICE_SECTORS = [
   {
@@ -117,7 +117,7 @@ export const DORDOGNE_STATISTICS = [
 
 const DORDOGNE_VISIBLE_COMMUNE_COUNT = 5;
 
-export const DORDOGNE_V5_SERVICE_SECTORS = DORDOGNE_SERVICE_SECTORS.map((sector) => ({
+export const DORDOGNE_V6_SERVICE_SECTORS = DORDOGNE_SERVICE_SECTORS.map((sector) => ({
   name: sector.name,
   visibleCommunes: sector.communes.slice(0, DORDOGNE_VISIBLE_COMMUNE_COUNT),
   collapsedCommunes: sector.communes.slice(DORDOGNE_VISIBLE_COMMUNE_COUNT),
@@ -147,146 +147,6 @@ export const DORDOGNE_TOURISM_ROWS: LocalTableRow[] = [
     key: 'part-meubles',
     label: 'Part des meublés saisonniers dans les lits marchands',
     value: '32 %',
-  },
-];
-
-export const DORDOGNE_PROCEDURE_STEPS: LocalProcedureStep[] = [
-  {
-    number: 1,
-    title: 'Vous déposez une demande en ligne',
-    description:
-      'Vous indiquez les informations principales : logement, adresse, capacité, situation, coordonnées.',
-  },
-  {
-    number: 2,
-    title: 'Un inspecteur local reprend contact avec vous sous 24h',
-    description:
-      'L’objectif est de vérifier le périmètre, la catégorie visée, les délais et les modalités d’intervention.',
-  },
-  {
-    number: 3,
-    title: 'Votre logement est évalué selon la grille officielle',
-    description:
-      'L’inspecteur se déplace dans votre logement et effectue la visite de contrôle avec vous.',
-  },
-  {
-    number: 4,
-    title: 'Vous ajustez votre demande si nécessaire',
-    description:
-      'À l’issue de la visite, Etoilys vous indique si la catégorie demandée semble atteignable et, si besoin, les points à corriger ou à ajuster.',
-  },
-  {
-    number: 5,
-    title: 'Vous recevez les documents de classement',
-    description:
-      'Après la visite, vous recevez le rapport de contrôle, la grille complétée et la proposition de décision de classement.',
-  },
-  {
-    number: 6,
-    title: 'Le classement est valable 5 ans',
-    description:
-      'Une fois acquis, le classement est valable 5 ans. Vous pouvez ensuite l’utiliser dans vos démarches, vos annonces et vos échanges avec la collectivité.',
-  },
-];
-
-export const DORDOGNE_FAQ: LocalFaqItem[] = [
-  {
-    question: 'Quels logements peuvent être concernés ?',
-    answer:
-      'En Dordogne, le classement peut concerner des logements très variés : gîte rural, maison de vacances en Périgord, appartement à Bergerac, logement familial près de Sarlat ou résidence secondaire louée à la saison. Le nom utilisé dans l’annonce n’est pas déterminant : la procédure officielle porte sur le logement en tant que meublé de tourisme.',
-  },
-  {
-    question: 'Peut-on faire classer un gîte en Dordogne ?',
-    answer:
-      'Oui. Un gîte situé en Dordogne peut faire l’objet d’une demande de classement s’il correspond à un logement meublé proposé à une clientèle de passage. Le terme « gîte » est très courant en Périgord, mais le classement officiel reste celui des meublés de tourisme.',
-  },
-  {
-    question: 'Peut-on faire classer un logement Airbnb en Dordogne ?',
-    answer:
-      'Oui. Un logement diffusé sur Airbnb peut être classé si le logement lui-même répond au cadre du meublé de tourisme. La même logique vaut pour une annonce publiée sur Booking ou Abritel : la plateforme ne change pas la nature de la visite de classement.',
-  },
-  {
-    question: 'Un appartement ou un studio en Dordogne peut-il être classé ?',
-    answer:
-      'Oui. Un appartement à Bergerac, un studio, une petite maison de vacances ou un logement proche de Sarlat peuvent être classés si les critères applicables sont réunis. La visite tient compte de la configuration réelle du logement, de ses équipements et de sa capacité.',
-  },
-  {
-    question: 'Le classement d’un meublé de tourisme est-il obligatoire en Dordogne ?',
-    answer:
-      'Non. Le classement est une démarche facultative. Un logement peut être un meublé de tourisme même s’il n’est pas classé. En revanche, le classement peut présenter un intérêt pour la lisibilité du logement, la taxe de séjour et la fiscalité micro-BIC selon la situation du propriétaire.',
-  },
-  {
-    question: 'Le classement remplace-t-il la déclaration en mairie ?',
-    answer:
-      'Non. Le classement ne remplace pas les formalités déclaratives ou d’enregistrement applicables localement. Avant de déposer une demande, vous pouvez consulter les [prérequis au classement](/prerequis-au-classement).',
-  },
-  {
-    question: 'Le classement est-il valable partout en France ?',
-    answer:
-      'Oui, le classement est une démarche officielle nationale. Il attribue une catégorie de 1 à 5 étoiles selon une grille nationale. Les règles locales de location restent toutefois à vérifier commune par commune.',
-  },
-  {
-    question: 'Combien de temps le classement est-il valable ?',
-    answer:
-      'Le classement est valable 5 ans. Passé ce délai, une nouvelle demande est nécessaire pour conserver le classement.',
-  },
-  {
-    question: 'Etoilys intervient-il à Sarlat, Bergerac et Périgueux ?',
-    answer:
-      'Oui, Etoilys intervient en Dordogne, notamment autour de Bergerac, Sarlat-la-Canéda, Périgueux et dans les secteurs touristiques proches. La zone exacte d’intervention est confirmée après votre demande.',
-  },
-  {
-    question: 'Peut-on faire classer plusieurs logements en même temps ?',
-    answer:
-      'Oui, mais chaque meublé doit être visité séparément et évalué selon la grille applicable. Si vous avez plusieurs logements, indiquez-le dans votre demande pour organiser la tournée de façon efficace.',
-  },
-  {
-    question: 'Le classement garantit-il plus de réservations ?',
-    answer:
-      'Non. Le classement donne un repère officiel de confort et de services, mais il ne garantit pas un taux d’occupation, un prix moyen ou une hausse automatique des réservations.',
-  },
-  {
-    question: 'Le classement change-t-il la taxe de séjour ?',
-    answer:
-      'Il peut changer la façon dont la taxe de séjour est calculée. Les meublés classés relèvent d’un barème par étoile, tandis que les hébergements sans classement ou en attente de classement relèvent en principe d’un calcul proportionnel compris entre 1 % et 5 % du prix de la nuitée par personne, dans la limite du tarif le plus élevé adopté localement.',
-  },
-];
-
-export const DORDOGNE_V5_FAQ: LocalFaqItem[] = [
-  {
-    question: 'Etoilys intervient-il dans ma commune en Dordogne ?',
-    answer:
-      'Etoilys intervient en Dordogne, notamment dans le Bergeracois, le Périgord Noir, le Grand Périgueux, la vallée de la Dordogne et plusieurs secteurs proches. Indiquez votre commune dans le module tarifs pour vérifier le cas de votre logement.',
-  },
-  {
-    question: 'Comment connaître le tarif exact pour mon logement ?',
-    answer:
-      'Recherchez votre commune dans le module tarifs. Le tarif applicable s’affiche avant la demande, et il reste confirmé par Etoilys avant toute validation de visite.',
-  },
-  {
-    question: 'Combien de temps faut-il pour organiser la visite ?',
-    answer:
-      'Après votre demande, Etoilys vous recontacte sous 24h ouvrées pour confirmer le tarif et les disponibilités. La visite est organisée en moyenne sous deux semaines.',
-  },
-  {
-    question: 'Que se passe-t-il si des critères manquent ?',
-    answer:
-      'L’inspecteur vous indique les points constatés pendant la visite. Selon la nature du critère, certains justificatifs ou compléments peuvent être transmis après la visite lorsque le référentiel le permet.',
-  },
-  {
-    question: 'Peut-on regrouper plusieurs logements ?',
-    answer:
-      'Oui. Si plusieurs logements sont situés dans le même secteur, les visites peuvent être regroupées et bénéficier des tarifs dégressifs affichés ci-dessus. Chaque meublé fait néanmoins l’objet de sa propre visite de classement.',
-  },
-  {
-    question: 'Le classement est-il obligatoire ?',
-    answer:
-      'Non. Le classement d’un meublé de tourisme reste une démarche volontaire. Il peut toutefois avoir un intérêt pour la fiscalité micro-BIC, la taxe de séjour et la lisibilité de votre annonce.',
-  },
-  {
-    question: 'Etoilys est-il habilité pour réaliser le classement ?',
-    answer:
-      'Oui. Etoilys est accrédité Cofrac Inspection n°3-2394 pour réaliser les visites officielles de classement des meublés de tourisme.',
   },
 ];
 

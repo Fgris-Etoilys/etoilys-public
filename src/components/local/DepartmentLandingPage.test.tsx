@@ -5,11 +5,19 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import DepartmentLandingPage from './DepartmentLandingPage';
 import type { LocalLandingPageV6DepartmentConfig } from '../../content/local/types';
+import { trackCtaClick } from '../../utils/analytics';
 import {
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
+  LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
+  LOCAL_V6_DEPARTMENT_HERO_INDEXES,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
+
+vi.mock('../../utils/analytics', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../utils/analytics')>()),
+  trackCtaClick: vi.fn(),
+}));
 
 const COMMUNE_INDEX_FIXTURE = {
   c: [
@@ -49,6 +57,7 @@ describe('DepartmentLandingPage', () => {
   afterEach(() => {
     cleanup();
     vi.unstubAllGlobals();
+    vi.mocked(trackCtaClick).mockClear();
   });
 
   it('keeps route pages as thin wrappers around V6 configs', () => {
@@ -111,4 +120,103 @@ describe('DepartmentLandingPage', () => {
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(toggle).toHaveTextContent('Masquer les 6 communes');
   });
+
+  it('uses the shared department hero copy and localized image captions', () => {
+    [
+      DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      GIRONDE_LOCAL_LANDING_PAGE_V6,
+      LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+    ].forEach((config) => {
+      expect(config.hero.description).toBe(LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION);
+      expect(config.hero.image.index).toBe(LOCAL_V6_DEPARTMENT_HERO_INDEXES[config.departmentId]);
+    });
+
+    const { unmount } = renderDepartmentPage(GIRONDE_LOCAL_LANDING_PAGE_V6);
+    expect(screen.getByText('Saint-Émilion, Gironde')).toBeInTheDocument();
+    expect(screen.getByText('33 / LA GIRONDE')).toBeInTheDocument();
+    expect(screen.getByAltText('Front de mer et promenade à Arcachon')).toBeInTheDocument();
+    expect(screen.getByText('Front de mer d’Arcachon.')).toBeInTheDocument();
+    unmount();
+
+    renderDepartmentPage(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6);
+    expect(screen.getByText('Nérac, Lot-et-Garonne')).toBeInTheDocument();
+    expect(screen.getByText('47 / LOT-ET-GARONNE')).toBeInTheDocument();
+    expect(
+      screen.getByAltText('Tour horloge et maisons de pierre à Monflanquin')
+    ).toBeInTheDocument();
+    expect(screen.getByText('Monflanquin, Lot-et-Garonne.')).toBeInTheDocument();
+  });
+
+  it('keeps department FAQ shared, deduplicated and free of retired tariff copy', () => {
+    const girondeQuestions = GIRONDE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question);
+    const lotEtGaronneQuestions = LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.faq.items.map(
+      (item) => item.question
+    );
+
+    expect(new Set(girondeQuestions).size).toBe(girondeQuestions.length);
+    expect(new Set(lotEtGaronneQuestions).size).toBe(lotEtGaronneQuestions.length);
+    expect(girondeQuestions[0]).toBe('Intervenez-vous dans ma commune en Gironde ?');
+    expect(girondeQuestions).toContain(
+      'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?'
+    );
+    expect(lotEtGaronneQuestions[0]).toBe(
+      'Intervenez-vous dans ma commune dans le Lot-et-Garonne ?'
+    );
+
+    renderDepartmentPage(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6);
+    expect(document.body).not.toHaveTextContent(/Aucun tarif fixe/i);
+  });
+
+  it('switches FAQ background when a local notice exists without a local tax module', () => {
+    renderDepartmentPage({
+      ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      localNotice: {
+        title: 'Notice locale de test',
+        paragraphs: ['Texte de notice.'],
+      },
+    });
+
+    expect(
+      screen.getByRole('heading', { name: 'Notice locale de test' }).closest('section')
+    ).toHaveClass('bg-paper');
+    expect(
+      screen
+        .getByRole('heading', { name: 'Questions fréquentes sur le classement en Dordogne' })
+        .closest('section')
+    ).toHaveClass('bg-surface-neutral');
+  });
+
+  it('keeps FAQ on paper when no local module or notice exists', () => {
+    renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
+
+    expect(
+      screen
+        .getByRole('heading', { name: 'Questions fréquentes sur le classement en Dordogne' })
+        .closest('section')
+    ).toHaveClass('bg-paper');
+  });
+
+  it.each([GIRONDE_LOCAL_LANDING_PAGE_V6, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6])(
+    'keeps migrated department CTA analytics on white buttons',
+    (config) => {
+      renderDepartmentPage(config);
+      const conversionLinks = screen.getAllByRole('link', { name: 'Demander mon classement' });
+      const heroCta = conversionLinks[0];
+      const finalCta = conversionLinks[conversionLinks.length - 1];
+      if (!heroCta || !finalCta) throw new Error('Missing conversion links');
+      heroCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
+      finalCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
+
+      fireEvent.click(heroCta);
+      expect(trackCtaClick).toHaveBeenLastCalledWith({
+        ctaId: 'cta_white_demande_classement',
+        destinationPath: '/demande-classement',
+      });
+      fireEvent.click(finalCta);
+      expect(trackCtaClick).toHaveBeenLastCalledWith({
+        ctaId: 'cta_white_demande_classement',
+        destinationPath: '/demande-classement',
+      });
+    }
+  );
 });

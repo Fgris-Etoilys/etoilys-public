@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import DepartmentPricingSection, { LocalPricingProfileSummary } from './DepartmentPricingSection';
-import { getPricingProfile } from '../../content/local/pricing';
+import { getPricingProfile, PRICING_PROFILES } from '../../content/local/pricing';
 import {
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
@@ -112,6 +112,12 @@ describe('Department pricing picker', () => {
   });
 
   it('resolves Gironde and Lot-et-Garonne through independent business profile ids', async () => {
+    const girondeAmount = PRICING_PROFILES['gironde-standard'].standard.amount;
+    const bordeauxAmount = PRICING_PROFILES['bordeaux-standard'].standard.amount;
+    const lotEtGaronneAmount = PRICING_PROFILES['lot-et-garonne-standard'].standard.amount;
+    PRICING_PROFILES['gironde-standard'].standard.amount = '111 €';
+    PRICING_PROFILES['bordeaux-standard'].standard.amount = '222 €';
+    PRICING_PROFILES['lot-et-garonne-standard'].standard.amount = '333 €';
     vi.stubGlobal(
       'fetch',
       vi.fn(async (url: string) => ({
@@ -123,50 +129,59 @@ describe('Department pricing picker', () => {
       }))
     );
 
-    const { unmount } = render(
-      <MemoryRouter>
-        <DepartmentPricingSection
-          config={GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker}
-          presentation="panel"
-        />
-      </MemoryRouter>
-    );
-    let input = screen.getByRole('combobox', { name: 'Commune' });
-    fireEvent.focus(input);
-    fireEvent.change(input, {
-      target: { value: 'bor' },
-    });
-    expect(await screen.findByRole('option', { name: 'Bordeaux' })).toBeInTheDocument();
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByText('Votre meublé à Bordeaux')).toBeInTheDocument();
-    expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
-      'gironde-standard'
-    );
-    expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides['33063']).toBe(
-      'bordeaux-standard'
-    );
-    unmount();
+    try {
+      const { unmount } = render(
+        <MemoryRouter>
+          <DepartmentPricingSection
+            config={GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker}
+            presentation="panel"
+          />
+        </MemoryRouter>
+      );
+      let input = screen.getByRole('combobox', { name: 'Commune' });
+      fireEvent.focus(input);
+      fireEvent.change(input, {
+        target: { value: 'bor' },
+      });
+      expect(await screen.findByRole('option', { name: 'Bordeaux' })).toBeInTheDocument();
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(screen.getByText('Votre meublé à Bordeaux')).toBeInTheDocument();
+      expect(screen.getByText(/222\s€/)).toBeInTheDocument();
+      expect(screen.queryByText(/111\s€/)).not.toBeInTheDocument();
+      expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
+        'gironde-standard'
+      );
+      expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides['33063']).toBe(
+        'bordeaux-standard'
+      );
+      unmount();
 
-    render(
-      <MemoryRouter>
-        <DepartmentPricingSection
-          config={LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker}
-          presentation="panel"
-        />
-      </MemoryRouter>
-    );
-    input = screen.getByRole('combobox', { name: 'Commune' });
-    fireEvent.focus(input);
-    fireEvent.change(input, {
-      target: { value: 'age' },
-    });
-    expect(await screen.findByRole('option', { name: 'Agen' })).toBeInTheDocument();
-    fireEvent.keyDown(input, { key: 'Enter' });
-    expect(screen.getByText('Votre meublé à Agen')).toBeInTheDocument();
-    expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
-      'lot-et-garonne-standard'
-    );
-    expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides).toEqual({});
+      render(
+        <MemoryRouter>
+          <DepartmentPricingSection
+            config={LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker}
+            presentation="panel"
+          />
+        </MemoryRouter>
+      );
+      input = screen.getByRole('combobox', { name: 'Commune' });
+      fireEvent.focus(input);
+      fireEvent.change(input, {
+        target: { value: 'age' },
+      });
+      expect(await screen.findByRole('option', { name: 'Agen' })).toBeInTheDocument();
+      fireEvent.keyDown(input, { key: 'Enter' });
+      expect(screen.getByText('Votre meublé à Agen')).toBeInTheDocument();
+      expect(screen.getByText(/333\s€/)).toBeInTheDocument();
+      expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
+        'lot-et-garonne-standard'
+      );
+      expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides).toEqual({});
+    } finally {
+      PRICING_PROFILES['gironde-standard'].standard.amount = girondeAmount;
+      PRICING_PROFILES['bordeaux-standard'].standard.amount = bordeauxAmount;
+      PRICING_PROFILES['lot-et-garonne-standard'].standard.amount = lotEtGaronneAmount;
+    }
   });
 
   it('keeps direct pricing compact without picker divider or duplicated note', () => {

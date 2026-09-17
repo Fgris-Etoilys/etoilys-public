@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "e40ab36a591d9aacc9d8123f90c78ac02b356fe730c66c100c6ed84dba48c79c",
+  "pipelineSignature": "16661bb68b55beb1704ab704a3c219620ae0e7994e743bdaa5dc1ee123ce8092",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "22a64323b7ba65b1ee0003c79e828f1a93d3a44ae70a87a228041426d0b40026"
+    "sha256": "16710d9764c6b74442ba580dc012edda8ad10361cc026f4f69bc9679cc77c5da"
   },
   "sources": [
     {
@@ -125,6 +125,11 @@
       "key": "simulateurTaxeSejour",
       "path": "src/assets/seo-images/source/pexels-arnaud-32767039.jpg",
       "sha256": "cabe963bb75fe2f8e6c17122f96afc0ee726c6f0497f451136c381025930c75a"
+    },
+    {
+      "key": "bordeauxExpertise",
+      "path": "src/assets/seo-images/source/pexels-charldurand-6506986.jpg",
+      "sha256": "8782db60baa6a3e27ed5bb62dcbb9be9e4d952203fde7ecf2834e3e5ee486882"
     },
     {
       "key": "lotEtGaronneTerritory",
@@ -1137,6 +1142,61 @@
       "path": "/images/optimized/bordeaux-place-de-la-bourse-768.webp",
       "bytes": 35934,
       "sha256": "c7f39727d90461c0c0e7ef00a34a118a7b2a606f811a18116fe2e9efbf26f698"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1200.avif",
+      "bytes": 173631,
+      "sha256": "578815c48715993e542faf44116d4f0312682c074582b66b775abe2cfa41eeef"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1200.jpg",
+      "bytes": 178901,
+      "sha256": "3e7e4d027357c7fc5231ac52d7e535992ebb9d4c28b0608d487297861e206589"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1200.webp",
+      "bytes": 171242,
+      "sha256": "3fb34506db11e20953306a0482f06c7be91cfaf7b997755f75400f092abee980"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1600.avif",
+      "bytes": 279517,
+      "sha256": "93fe6b5f175632f2685a2c96d139646ee3530414e2896bb52ed82e53f4331d57"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1600.webp",
+      "bytes": 270920,
+      "sha256": "3272521d03b89917f351604e41707a7c4f0bc6b30c9250315458630b60dcc9ab"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1920.avif",
+      "bytes": 374910,
+      "sha256": "5598ce7a9c0106fabc2c5d67cbd26ac0a19a28a94b36da074a2f546553ac6440"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1920.webp",
+      "bytes": 372014,
+      "sha256": "b22dcc2c6362ad56bb5b12a40a9327ae0eed995bfd7fd317b6780c0e3d213d79"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-480.avif",
+      "bytes": 33872,
+      "sha256": "5e314355f0cd8085009b4bd298dba0deaa7be57b73a6bcd3b4de1ea4d9fc074f"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-480.webp",
+      "bytes": 33524,
+      "sha256": "77a2b3b78797d38ce498a3e69a31ff1c525729a5dbe2ec25f4dc8f2a754b7c30"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-768.avif",
+      "bytes": 80390,
+      "sha256": "6a964a0f975a237d45339f5a0b5cf1b0a45c67ad413a3cb10ff8982a8811ba21"
+    },
+    {
+      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-768.webp",
+      "bytes": 78628,
+      "sha256": "3523ff0ff73a42666a3b44a1f623cf37c448da6e572720442a490a7938a24dc5"
     },
     {
       "path": "/images/optimized/home-hero-1200.avif",

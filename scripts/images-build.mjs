@@ -102,6 +102,11 @@ const IMAGE_ASSETS = [
     fileName: 'pexels-miguel-cuenca-67882473-17356595.jpg',
     outputName: 'bordeaux-place-de-la-bourse',
   },
+  {
+    key: 'bordeauxExpertise',
+    fileName: 'pexels-charldurand-6506986.jpg',
+    outputName: 'bordeaux-place-de-la-bourse-tram',
+  },
 ];
 
 function formatSrcSet(baseName, widths, format) {

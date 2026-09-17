@@ -75,6 +75,7 @@ describe('ClassementBergerac', () => {
     expect(screen.getAllByText('Demande en 30 secondes').length).toBeGreaterThan(0);
     expect(screen.getByText('Visite en moyenne sous deux semaines')).toBeInTheDocument();
     expect(screen.getAllByText('Aucun frais de déplacement').length).toBeGreaterThan(0);
+    expect(screen.getByText('Quai Cyrano, Bergerac')).toBeInTheDocument();
     const heroGrid = document.querySelector('.editorial-hero-grid');
     expect(heroGrid?.children).toHaveLength(2);
     const mediaColumn = heroGrid?.children[1];

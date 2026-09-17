@@ -51,17 +51,26 @@ Les routes publiques importent les wrappers fins `CityLandingPage` ou `Departmen
 Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pendant une migration V6. Toute nouvelle page locale doit fournir une config complète typée, une route fine, une entrée SEO et les tests minimaux de rendu, maillage, pricing et CTA.
 
 - Hero : le suffixe géographique du H1 est mis en cuivre avec `highlightedTitleText`. Ce champ correspond actuellement à un suffixe du titre. Le CTA principal reprend le motif Dordogne avec flèche. L’action secondaire est un lien éditorial vers le tarif, jamais un deuxième gros CTA vers le simulateur.
+- Hero département : `image.caption` décrit le lieu photographié ; `image.index` reste un repère de territoire au format code + destination, par exemple `24 / LE PÉRIGORD`, `33 / LA GIRONDE`, `47 / LOT-ET-GARONNE`. Ne pas y répéter le lieu de la photo.
 - Crop hero : chaque config définit un point focal pertinent via `image.className`, puis le vérifie en desktop, tablette et mobile.
 - Tarifs : city et department affichent le même bloc explicatif avec les trois garanties Etoilys et le lien procédure ; seule la partie droite diffère (`mode: 'direct'` ou `mode: 'picker'`).
 - Pricing `direct` : pas de divider de résultat ni de note tarifaire dupliquée dans le panneau ville.
 - Pricing `picker` : le divider et la note tarifaire sont conservés après sélection, car ils séparent le formulaire du résultat.
 - Module local : il est facultatif. Ne pas imposer de surtitre générique `CONTEXTE LOCAL`. Garder un rythme titre -> texte cohérent avec les autres introductions de section ; sur desktop, la partie éditoriale reste plus large que la preuve ou carte chiffrée. `highlightedTitleText` correspond actuellement à un suffixe du titre mis en cuivre.
-- Notice locale : utiliser `localNotice` pour une notice réglementaire ou éditoriale placée après le module local et avant la FAQ. Garder le motif `editorial-notice`; ne pas ajouter de moteur de sections.
+- Notice locale : utiliser `localNotice` pour une notice réglementaire ou éditoriale placée après le module local et avant la FAQ. Garder le motif `editorial-notice`; ne pas ajouter de moteur de sections. Le fond de la notice est `bg-paper`; quand une notice existe, la FAQ suivante passe sur `bg-surface-neutral`.
 - Index communes : générer les index départementaux depuis `scripts/build-taxe-sejour-dataset.ts` et la source INSEE/taxe de séjour, puis référencer le JSON par le picker. Ne pas maintenir manuellement `public/data/communes-*-index.v1.json`.
-- Images : une page locale ne réutilise pas par défaut le même asset pour le hero et l’expertise. Utiliser un second visuel local librement réutilisable et documenter son crédit/licence si nécessaire.
+- Images : une page locale ne réutilise pas par défaut le même asset pour le hero et l’expertise. Utiliser un second visuel local librement réutilisable et documenter son crédit/licence si nécessaire. Les libellés actifs sont Saint-Émilion + Arcachon pour la Gironde, place de la Bourse pour le hero Bordeaux, Nérac + Monflanquin pour le Lot-et-Garonne.
 - CTA final : reprendre le motif et la copy du département parent au lieu d’inventer une nouvelle formulation pour chaque ville, mais conserver le `Button.variant` analytics historique d’une page existante.
-- FAQ : toutes les pages V6 incluent le socle FAQ commun, auquel s’ajoutent librement les questions propres au territoire. Le socle est ajouté automatiquement par `LocalLandingPageV6` et ne doit pas être recopié dans les configs. Ne pas uniformiser artificiellement le nombre total de questions.
+- FAQ : toutes les pages V6 incluent le socle FAQ commun ajouté automatiquement par `LocalLandingPageV6`. Les départements utilisent en plus le socle métier commun de `v6Pages.tsx` avec une première question de couverture territoriale et, si utile, une question locale. Ne pas recopier les anciennes FAQ V4/V5 ni uniformiser artificiellement le nombre total de questions.
 - Une migration V6 ne doit jamais appauvrir un motif validé simplement parce qu’un nouveau scope utilise moins de données.
+
+Checklist nouvelle page locale :
+
+- Ajouter ou réutiliser une config V6 typée, puis brancher la route sur `CityLandingPage` ou `DepartmentLandingPage`.
+- Ajouter l’entrée SEO centralisée, le `lcpImageKey`, les `lcpImageSizes` et le sitemap généré si la route est publique.
+- Déclarer les images locales dans `scripts/images-build.mjs`, lancer `npm run images:build`, puis vérifier `npm run images:check`.
+- Pour un département, générer l’index communes depuis la source INSEE/taxe de séjour et définir un `PricingProfileId` métier propre.
+- Couvrir par tests le rendu V6, le pricing, les liens FAQ, les CTA analytics et les données structurées locales.
 
 ## Exemples Minimaux
 

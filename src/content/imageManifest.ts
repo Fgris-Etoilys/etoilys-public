@@ -30,7 +30,8 @@ export type ImageAssetKey =
   | 'lotEtGaronneCanal'
   | 'bergeracHero'
   | 'bergeracSaintJacquesCyrano'
-  | 'bordeauxHero';
+  | 'bordeauxHero'
+  | 'bordeauxExpertise';
 
 export interface ImageManifestEntry {
   width: number;
@@ -328,5 +329,14 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/bordeaux-place-de-la-bourse-480.webp 480w, /images/optimized/bordeaux-place-de-la-bourse-768.webp 768w, /images/optimized/bordeaux-place-de-la-bourse-1200.webp 1200w, /images/optimized/bordeaux-place-de-la-bourse-1600.webp 1600w, /images/optimized/bordeaux-place-de-la-bourse-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/bordeaux-place-de-la-bourse-480.avif 480w, /images/optimized/bordeaux-place-de-la-bourse-768.avif 768w, /images/optimized/bordeaux-place-de-la-bourse-1200.avif 1200w, /images/optimized/bordeaux-place-de-la-bourse-1600.avif 1600w, /images/optimized/bordeaux-place-de-la-bourse-1920.avif 1920w',
+  },
+  bordeauxExpertise: {
+    width: 5704,
+    height: 3803,
+    src: '/images/optimized/bordeaux-place-de-la-bourse-tram-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/bordeaux-place-de-la-bourse-tram-480.webp 480w, /images/optimized/bordeaux-place-de-la-bourse-tram-768.webp 768w, /images/optimized/bordeaux-place-de-la-bourse-tram-1200.webp 1200w, /images/optimized/bordeaux-place-de-la-bourse-tram-1600.webp 1600w, /images/optimized/bordeaux-place-de-la-bourse-tram-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/bordeaux-place-de-la-bourse-tram-480.avif 480w, /images/optimized/bordeaux-place-de-la-bourse-tram-768.avif 768w, /images/optimized/bordeaux-place-de-la-bourse-tram-1200.avif 1200w, /images/optimized/bordeaux-place-de-la-bourse-tram-1600.avif 1600w, /images/optimized/bordeaux-place-de-la-bourse-tram-1920.avif 1920w',
   },
 };

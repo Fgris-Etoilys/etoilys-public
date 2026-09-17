@@ -90,6 +90,7 @@ CTA final sur fond sombre :
 - **ETOILYS-396** : terminer les formulaires et simulateurs. Ne pas leur imposer la densité visuelle d'une landing page ; préserver leurs exigences d'état, validation, API, Turnstile et accessibilité.
 - **ETOILYS-396** couvre aussi les états transverses des outils interactifs : `Toast`, enveloppe Turnstile, combobox/listbox, dialogs, tabs et comparatifs. Les états succès, avertissement et erreur restent sémantiques ; les usages décoratifs ou de marque migrent vers `ink`, `paper`, `surface` et `copper`.
 - **ETOILYS-414** : les routes locales publiques Dordogne, Bergerac, Gironde, Bordeaux et Lot-et-Garonne passent par `LocalLandingPageV6` via les wrappers fins `CityLandingPage` / `DepartmentLandingPage`. Voir `docs/tech/local-framework-v6.md`.
+- En V6 locale, `editorial-notice` occupe la largeur du conteneur éditorial, avec son texte limité en lecture. Une notice est rendue sur `bg-paper`; la FAQ qui suit bascule sur `bg-surface-neutral` pour conserver l’alternance des surfaces.
 
 ## Compte Rendu Daté Des Validations
 

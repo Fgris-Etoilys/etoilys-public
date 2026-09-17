@@ -59,7 +59,7 @@ export interface LocalProcedureStep {
 
 export interface LocalFaqItem {
   question: string;
-  answer: string;
+  answer: ReactNode;
 }
 
 export interface LocalSource {

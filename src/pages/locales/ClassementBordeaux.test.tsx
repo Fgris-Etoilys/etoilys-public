@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../../App';
+import { IMAGE_MANIFEST } from '../../content/imageManifest';
 
 function renderBordeauxPage() {
   window.history.pushState({}, 'Bordeaux', '/classement-meuble-tourisme-bordeaux');
@@ -52,6 +53,16 @@ describe('ClassementBordeaux', () => {
     expect(screen.getByText('à Bordeaux et dans la métropole')).toHaveClass('text-copper');
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
+    expect(screen.getByText('Place de la Bourse, Bordeaux')).toBeInTheDocument();
+    expect(screen.getByAltText('Place de la Bourse et miroir d’eau à Bordeaux')).toHaveAttribute(
+      'src',
+      IMAGE_MANIFEST.bordeauxHero.src
+    );
+    expect(screen.getByAltText('Tramway devant la place de la Bourse à Bordeaux')).toHaveAttribute(
+      'src',
+      IMAGE_MANIFEST.bordeauxExpertise.src
+    );
+    expect(screen.getByText('Tramway devant la place de la Bourse, Bordeaux.')).toBeInTheDocument();
 
     expectHeadingSequence([
       'Classement de meublé de tourisme à Bordeaux et dans la métropole',
@@ -65,6 +76,10 @@ describe('ClassementBordeaux', () => {
       'Questions fréquentes sur le classement à Bordeaux',
       'Demandez le classement de votre meublé à Bordeaux',
     ]);
+    expect(
+      screen.getByRole('heading', { level: 2, name: /Où intervenons-nous autour de Bordeaux\s*\?/ })
+        .textContent
+    ).toContain('Bordeaux\u00a0?');
 
     expect(screen.getByText('Mérignac')).toBeInTheDocument();
     expect(screen.getByText('Villenave-d’Ornon')).toBeInTheDocument();
@@ -97,6 +112,38 @@ describe('ClassementBordeaux', () => {
     ).toHaveAttribute(
       'href',
       'https://www.bordeaux.fr/location-touristique-bordeaux--guide-proprietaires'
+    );
+    expect(
+      screen
+        .getByRole('heading', {
+          name: 'À Bordeaux, mieux se différencier peut aussi coûter moins cher à vos voyageurs',
+        })
+        .closest('section')
+    ).toHaveClass('bg-surface-neutral');
+    expect(
+      screen
+        .getByRole('heading', { name: 'À Bordeaux, quelques règles locales à connaître' })
+        .closest('section')
+    ).toHaveClass('bg-paper');
+    expect(
+      screen
+        .getByRole('heading', { name: 'Questions fréquentes sur le classement à Bordeaux' })
+        .closest('section')
+    ).toHaveClass('bg-surface-neutral');
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Comment savoir quelle catégorie viser ?' })
+    );
+    expect(screen.getByRole('link', { name: 'simulateur Etoilys' })).toHaveAttribute(
+      'href',
+      '/simulateur'
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Quels sont les effets du classement sur la fiscalité ?' })
+    );
+    expect(screen.getByRole('link', { name: 'simulateur fiscal' })).toHaveAttribute(
+      'href',
+      '/simulateur-fiscal-classement'
     );
 
     expect(document.body).not.toHaveTextContent(/LocalBusiness|agence Etoilys à Bordeaux/i);
