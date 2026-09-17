@@ -1,6 +1,7 @@
 import Button from '../../components/ui/Button';
 import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -158,7 +159,7 @@ export default function ArticleDpeMeublesTourisme() {
       lede={
         <>
           {/* Chapô */}
-          <p className="text-xl leading-comfortable text-gray-700 mb-10">
+          <p className="text-xl leading-comfortable text-muted mb-10">
             Faut-il déjà un DPE pour louer un meublé de tourisme ? En 2026, la réponse dépend
             surtout de votre situation : le DPE est déjà exigé dans certains cas de{' '}
             <strong>changement d&apos;usage</strong>, mais il n&apos;existe pas encore
@@ -173,9 +174,9 @@ export default function ArticleDpeMeublesTourisme() {
       footerCta={
         <>
           {/* CTA */}
-          <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+          <div className="article-cta-panel mb-12 mt-12 p-8">
             <h2 className="text-h4 mb-3">Un doute sur votre situation ?</h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-muted mb-6">
               Retrouvez les réponses générales dans la FAQ ou échangez avec Etoilys sur le
               classement de votre meublé.
             </p>
@@ -198,29 +199,29 @@ export default function ArticleDpeMeublesTourisme() {
       <ArticleSectionHeading id="faut-il-deja-un-dpe-pour-louer-un-meuble-de-tourisme">
         Faut-il déjà un DPE pour louer un meublé de tourisme ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le point important est simple : il n&apos;existe pas, en 2026, une obligation générale de
         DPE qui s&apos;appliquerait automatiquement à tous les meublés de tourisme, partout en
         France.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En revanche, le DPE est déjà un vrai sujet dans certains cas. C&apos;est notamment le cas
         lorsqu&apos;un logement est soumis à une{' '}
         <strong>autorisation préalable de changement d&apos;usage</strong> en vue d&apos;une mise en
         location de meublé de tourisme.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La confusion vient souvent du fait que deux règles différentes sont mélangées :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>la règle déjà applicable pour certaines demandes de changement d&apos;usage ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -230,12 +231,12 @@ export default function ArticleDpeMeublesTourisme() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, il faut donc éviter deux erreurs :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -243,7 +244,7 @@ export default function ArticleDpeMeublesTourisme() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>croire que le sujet ne commencera qu&apos;en 2034.</span>
@@ -254,23 +255,23 @@ export default function ArticleDpeMeublesTourisme() {
       <ArticleSectionHeading id="ce-qui-s-applique-deja-le-dpe-dans-certains-cas-de-changement-d-usage">
         Ce qui s&apos;applique déjà : le DPE dans certains cas de changement d&apos;usage
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le texte central se trouve dans le <strong>CCH</strong>, c&apos;est-à-dire le{' '}
         <strong>code de la construction et de l&apos;habitation</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         L&apos;article <strong>L.&nbsp;631-10</strong> prévoit que, pour obtenir l&apos;autorisation
         préalable prévue à l&apos;article <strong>L.&nbsp;631-7</strong> ou à l&apos;article{' '}
         <strong>L.&nbsp;631-7-1&nbsp;A</strong> en vue d&apos;une mise en location de meublé de
         tourisme, les propriétaires des locaux concernés doivent présenter un{' '}
         <strong>diagnostic de performance énergétique</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En France métropolitaine, le niveau exigé est :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -278,7 +279,7 @@ export default function ArticleDpeMeublesTourisme() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -286,8 +287,8 @@ export default function ArticleDpeMeublesTourisme() {
           </span>
         </li>
       </ul>
-      <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-6">
-        <p className="text-gray-700 leading-comfortable">
+      <div className="article-callout-muted mb-6 p-5">
+        <p className="text-muted leading-comfortable">
           Cette exigence ne s&apos;applique donc pas à tous les meublés de tourisme par principe.
           Elle s&apos;applique lorsque le logement entre dans une situation où une{' '}
           <strong>autorisation préalable de changement d&apos;usage</strong> est requise.
@@ -298,24 +299,24 @@ export default function ArticleDpeMeublesTourisme() {
       <ArticleSectionHeading id="changement-d-usage-de-quoi-parle-t-on-concretement">
         Changement d&apos;usage : de quoi parle-t-on concrètement ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le changement d&apos;usage correspond au fait de prendre un logement normalement destiné à
         l&apos;habitation et de l&apos;utiliser, de manière répétée, pour des locations de courte
         durée à une clientèle de passage qui n&apos;y élit pas domicile.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Dit plus simplement : un logement d&apos;habitation peut être considéré comme ayant changé
         d&apos;usage lorsqu&apos;il est exploité comme meublé de tourisme.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Ce changement d&apos;usage ne suppose pas forcément des travaux. Il peut exister même si le
         logement n&apos;a pas été modifié physiquement. C&apos;est l&apos;usage réel du bien qui
         compte.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">Concrètement, cela peut concerner :</p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <p className="text-muted leading-comfortable mb-4">Concrètement, cela peut concerner :</p>
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -324,7 +325,7 @@ export default function ArticleDpeMeublesTourisme() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -333,7 +334,7 @@ export default function ArticleDpeMeublesTourisme() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -342,7 +343,7 @@ export default function ArticleDpeMeublesTourisme() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         À l&apos;inverse, la location ponctuelle de sa résidence principale n&apos;entraîne pas
         automatiquement le même raisonnement. Il faut toujours regarder la situation précise du bien
         et la règle locale applicable.
@@ -353,96 +354,88 @@ export default function ArticleDpeMeublesTourisme() {
         Résidence principale, résidence secondaire, changement d&apos;usage : le tableau pour
         s&apos;y retrouver
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-6">
+      <p className="text-muted leading-comfortable mb-6">
         Le bon réflexe n&apos;est pas de demander si{' '}
         <em>le DPE s&apos;applique aux meublés de tourisme</em> en général, mais de regarder dans
         quelle situation précise se trouve votre logement.
       </p>
-      <div className="overflow-x-auto mb-6">
-        <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
-          <caption className="sr-only">
-            Règles DPE selon la situation du logement en 2026 et à partir de 2034
-          </caption>
-          <colgroup>
-            <col className="w-[30%]" />
-            <col className="w-[35%]" />
-            <col className="w-[35%]" />
-          </colgroup>
-          <thead>
-            <tr className="bg-primary-300 text-white">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Situation
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                En 2026
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                À partir du 1er janvier 2034
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-white border-b border-gray-100">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Résidence principale louée occasionnellement
-              </th>
-              <td className="p-3 text-gray-600">
-                Pas d&apos;obligation générale de DPE liée au seul fait de louer en meublé de
-                tourisme. Il faut vérifier les règles locales applicables.
-              </td>
-              <td className="p-3 text-gray-600">
-                La règle de décence énergétique des meublés hors résidence principale ne vise pas ce
-                cas.
-              </td>
-            </tr>
-            <tr className="bg-gray-50 border-b border-gray-100">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Logement soumis à autorisation préalable de changement d&apos;usage
-              </th>
-              <td className="p-3 text-gray-600">
-                DPE à présenter pour obtenir l&apos;autorisation. En métropole, le niveau exigé est
-                compris entre A et E.
-              </td>
-              <td className="p-3 text-gray-600">
-                Le niveau exigé pour cette autorisation passera de A à D.
-              </td>
-            </tr>
-            <tr className="bg-white">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Meublé de tourisme qui n&apos;est pas la résidence principale du loueur
-              </th>
-              <td className="p-3 text-gray-600">
-                Pas encore soumis à la règle générale de décence énergétique du code du tourisme.
-                Attention toutefois aux règles locales et au changement d&apos;usage.
-              </td>
-              <td className="p-3 text-gray-600">
-                Le logement devra respecter les niveaux de performance énergétique d&apos;un
-                logement décent.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-6"
+        caption="Règles DPE selon la situation du logement en 2026 et à partir de 2034"
+        primaryColumnKey="situation"
+        columns={[
+          {
+            key: 'situation',
+            label: 'Situation',
+            mobileLabel: 'Situation',
+            widthClassName: 'w-[30%]',
+          },
+          {
+            key: 'en2026',
+            label: 'En 2026',
+            mobileLabel: 'En 2026',
+            widthClassName: 'w-[35%]',
+          },
+          {
+            key: 'en2034',
+            label: 'À partir du 1er janvier 2034',
+            mobileLabel: 'À partir du 1er janvier 2034',
+            widthClassName: 'w-[35%]',
+          },
+        ]}
+        rows={[
+          {
+            key: 'residence-principale',
+            cells: {
+              situation: 'Résidence principale louée occasionnellement',
+              en2026:
+                'Pas d’obligation générale de DPE liée au seul fait de louer en meublé de tourisme. Il faut vérifier les règles locales applicables.',
+              en2034:
+                'La règle de décence énergétique des meublés hors résidence principale ne vise pas ce cas.',
+            },
+          },
+          {
+            key: 'changement-usage',
+            cells: {
+              situation: 'Logement soumis à autorisation préalable de changement d’usage',
+              en2026:
+                'DPE à présenter pour obtenir l’autorisation. En métropole, le niveau exigé est compris entre A et E.',
+              en2034: 'Le niveau exigé pour cette autorisation passera de A à D.',
+            },
+          },
+          {
+            key: 'hors-residence-principale',
+            cells: {
+              situation: 'Meublé de tourisme qui n’est pas la résidence principale du loueur',
+              en2026:
+                'Pas encore soumis à la règle générale de décence énergétique du code du tourisme. Attention toutefois aux règles locales et au changement d’usage.',
+              en2034:
+                'Le logement devra respecter les niveaux de performance énergétique d’un logement décent.',
+            },
+          },
+        ]}
+      />
 
       {/* Section 5 */}
       <ArticleSectionHeading id="ce-qui-changera-en-2034-pour-les-meubles-hors-residence-principale">
         Ce qui changera en 2034 pour les meublés hors résidence principale
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La règle plus large se trouve dans l&apos;article{' '}
         <strong>L.&nbsp;324-2-2 du code du tourisme</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         À partir du <strong>1er janvier 2034</strong>, les meublés de tourisme devront respecter les
         niveaux de performance énergétique d&apos;un logement décent, sauf lorsque le local loué
         constitue la résidence principale du loueur.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, cela vise surtout les meublés de tourisme qui ne sont pas la résidence
         principale du loueur : résidences secondaires, logements dédiés à la location touristique ou
         biens exploités principalement en courte durée.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         À cette échéance, le maire pourra demander au propriétaire de transmettre un DPE en cours de
         validité. L&apos;absence de transmission ou le maintien en location d&apos;un meublé ne
         respectant pas les niveaux requis pourra entraîner des sanctions administratives.
@@ -452,40 +445,40 @@ export default function ArticleDpeMeublesTourisme() {
       <ArticleSectionHeading id="comment-savoir-si-votre-commune-est-concernee">
         Comment savoir si votre commune est concernée ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Il n&apos;existe pas, à ce stade, de carte nationale unique permettant de savoir
         instantanément si chaque commune applique une procédure de changement d&apos;usage.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Depuis la mise en place du nouveau cadre d&apos;enregistrement, un DPE peut aussi être
         demandé dans la procédure administrative lorsque le logement est concerné par une
         autorisation de changement d&apos;usage. Cette demande ne signifie pas que tous les meublés
         de tourisme doivent fournir un DPE en 2026 : elle vise les cas où le bien entre déjà dans le
         champ du changement d&apos;usage.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si la commune demande un DPE dans le cadre de l&apos;enregistrement, vérifiez d&apos;abord
         si cette demande est liée à une autorisation de changement d&apos;usage. C&apos;est souvent
         cette condition qui déclenche l&apos;exigence énergétique dès 2026.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La vérification doit donc se faire à partir de sources fiables :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>le site officiel de la mairie ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>les pages urbanisme, logement ou meublés de tourisme de la commune ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -494,7 +487,7 @@ export default function ArticleDpeMeublesTourisme() {
               href="https://lannuaire.service-public.fr/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary-400 underline hover:no-underline"
+              className="article-inline-link"
             >
               annuaire officiel de l&apos;administration
             </a>{' '}
@@ -502,42 +495,42 @@ export default function ArticleDpeMeublesTourisme() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>les informations disponibles sur Service-Public et les pages ministérielles.</span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, avant de louer un logement en meublé de tourisme, il faut vérifier :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>si le logement est votre résidence principale ou non ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>si la commune impose une déclaration ou un numéro d&apos;enregistrement ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>si une autorisation préalable de changement d&apos;usage est exigée ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>si un DPE doit être présenté pour cette autorisation ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -551,11 +544,11 @@ export default function ArticleDpeMeublesTourisme() {
       <ArticleSectionHeading id="que-verifier-avant-de-louer">
         Que vérifier avant de louer ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le sujet DPE n&apos;est pas une règle unique applicable partout, mais une vérification à
         faire selon la situation du logement et la commune.
       </p>
-      <div className="space-y-4 mb-8 text-gray-700">
+      <div className="space-y-4 mb-8 text-muted">
         {[
           'Identifier le statut réel du logement : résidence principale, résidence secondaire ou logement dédié à la location touristique.',
           'Vérifier les règles de la commune : déclaration, enregistrement, changement d’usage.',
@@ -564,17 +557,15 @@ export default function ArticleDpeMeublesTourisme() {
           'Vérifier le règlement de copropriété si le bien est en immeuble collectif.',
         ].map((item, index) => (
           <div className="flex gap-4" key={item}>
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {index + 1}
-            </div>
+            <div className="article-step-marker">{index + 1}</div>
             <p className="leading-comfortable">{item}</p>
           </div>
         ))}
       </div>
 
       {/* Conclusion */}
-      <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-10">
-        <p className="text-gray-700 leading-comfortable">
+      <div className="article-callout-muted mb-10 p-5">
+        <p className="text-muted leading-comfortable">
           Avant de louer, le plus important est donc de qualifier correctement votre situation :
           résidence principale, résidence secondaire, logement soumis ou non à changement
           d&apos;usage. Une fois ce point clarifié, vous saurez si le DPE est déjà nécessaire

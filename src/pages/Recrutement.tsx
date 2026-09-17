@@ -11,6 +11,8 @@ import type { LucideIcon } from 'lucide-react';
 import Accordion from '../components/ui/Accordion';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import PageCta from '../components/ui/PageCta';
+import PageHero from '../components/ui/PageHero';
 import SmartImage from '../components/ui/SmartImage';
 import Timeline from '../components/ui/Timeline';
 
@@ -214,7 +216,7 @@ function SectionHeader({
   return (
     <div className={`mx-auto mb-12 max-w-3xl text-center ${className}`}>
       <h2 className="mb-4">{title}</h2>
-      {subtitle && <p className="text-lg leading-comfortable text-textLight">{subtitle}</p>}
+      {subtitle && <p className="text-lg leading-comfortable text-muted">{subtitle}</p>}
     </div>
   );
 }
@@ -223,12 +225,12 @@ function IconCard({ icon: Icon, title, text }: { icon: LucideIcon; title: string
   return (
     <Card className="h-full p-6" hover={false}>
       <div className="mb-4 flex items-center gap-4">
-        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary-100">
-          <Icon className="h-6 w-6 text-primary-300" aria-hidden="true" />
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-paper">
+          <Icon className="h-6 w-6 text-copper" aria-hidden="true" />
         </div>
-        <h3 className="text-xl font-playfair font-semibold text-gray-900">{title}</h3>
+        <h3 className="text-xl font-playfair font-semibold text-ink">{title}</h3>
       </div>
-      <p className="leading-comfortable text-textLight">{text}</p>
+      <p className="leading-comfortable text-muted">{text}</p>
     </Card>
   );
 }
@@ -240,37 +242,29 @@ function scrollToSection(sectionId: string) {
 export default function Recrutement() {
   return (
     <>
-      <section className="bg-gradient-to-br from-themePrimary-1 to-primary-300 py-section text-white">
-        <div className="container-adaptive">
-          <div className="max-w-5xl">
-            <h1 className="mb-6 text-white">
-              Rejoignez Etoilys comme consultant indépendant en classement de meublés de tourisme
-            </h1>
-            <p className="max-w-3xl text-xl leading-comfortable text-white/90">
-              Réalisez des visites de classement dans votre région, évaluez des logements
-              touristiques et accompagnez les propriétaires dans une démarche officielle, concrète
-              et utile.
-            </p>
-            <div className="mt-8 flex">
-              <Button
-                href="#candidature"
-                variant="white"
-                size="lg"
-                onClick={() => scrollToSection('candidature')}
-              >
-                Candidater
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        title="Rejoignez Etoilys comme consultant indépendant en classement de meublés de tourisme"
+        description="Réalisez des visites de classement dans votre région, évaluez des logements touristiques et accompagnez les propriétaires dans une démarche officielle, concrète et utile."
+        eyebrow="Recrutement"
+        eyebrowMarked
+      >
+        <Button
+          href="#candidature"
+          variant="primary"
+          size="lg"
+          analyticsId="cta_white_home"
+          onClick={() => scrollToSection('candidature')}
+        >
+          Candidater
+        </Button>
+      </PageHero>
 
-      <section className="bg-white py-section">
-        <div className="container-adaptive">
+      <section className="bg-surface py-section">
+        <div className="container-editorial">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.86fr)] lg:items-start">
             <div>
               <h2 className="mb-4">Qui sommes-nous ?</h2>
-              <div className="space-y-5 text-gray-800">
+              <div className="space-y-5 text-muted">
                 <p className="leading-comfortable">
                   Chez Etoilys, nous aidons les propriétaires de logements touristiques à faire
                   classer leur meublé de tourisme.
@@ -293,7 +287,7 @@ export default function Recrutement() {
                 </p>
               </div>
             </div>
-            <div className="aspect-[4/3] overflow-hidden rounded-card shadow-card lg:max-w-[585px] lg:justify-self-end">
+            <div className="aspect-[4/3] overflow-hidden rounded-editorial shadow-[0_18px_45px_rgb(var(--color-ink)/0.10)] lg:max-w-[585px] lg:justify-self-end">
               <SmartImage
                 assetKey="recrutementInspection"
                 alt="Consultante Etoilys réalisant une visite de classement dans un hébergement touristique"
@@ -305,13 +299,13 @@ export default function Recrutement() {
         </div>
       </section>
 
-      <section id="role" className="bg-primary-100 py-section scroll-mt-24">
-        <div className="container-adaptive">
+      <section id="role" className="bg-paper py-section scroll-mt-24">
+        <div className="container-editorial">
           <SectionHeader
             title="Votre rôle comme consultant Etoilys"
             subtitle="Devenir le relais local d’Etoilys sur votre secteur."
           />
-          <div className="mx-auto max-w-4xl space-y-5 text-center text-gray-800">
+          <div className="mx-auto max-w-4xl space-y-5 text-center text-muted">
             <p className="leading-comfortable">
               En tant que consultant indépendant en classement de meublés de tourisme, vous
               développez votre activité sur un secteur défini ensemble, au plus près des
@@ -326,8 +320,8 @@ export default function Recrutement() {
         </div>
       </section>
 
-      <section id="missions" className="bg-white py-section scroll-mt-24">
-        <div className="container-adaptive">
+      <section id="missions" className="bg-surface py-section scroll-mt-24">
+        <div className="container-editorial">
           <SectionHeader
             title="Vos missions"
             subtitle="Vous assurez l’ensemble du processus de classement, de la prospection à la finalisation du dossier, dans une logique de qualité, d’autonomie et de proximité."
@@ -338,20 +332,20 @@ export default function Recrutement() {
         </div>
       </section>
 
-      <section className="bg-primary-100 py-section">
-        <div className="container-adaptive">
+      <section className="bg-paper py-section">
+        <div className="container-editorial">
           <SectionHeader
             title="Le profil que nous recherchons"
             subtitle="Un profil autonome, rigoureux et à l’aise sur le terrain."
           />
-          <p className="mx-auto mb-10 max-w-4xl text-center leading-comfortable text-gray-800">
+          <p className="mx-auto mb-10 max-w-4xl text-center leading-comfortable text-muted">
             Ce rôle peut vous convenir si vous aimez le terrain, les échanges avec les
             propriétaires, le travail précis et l’autonomie. Il demande à la fois de la méthode, un
             bon relationnel et une vraie capacité à développer un réseau local.
           </p>
           <div className="grid gap-6 lg:grid-cols-2">
             <Card className="p-6" hover={false}>
-              <h3 className="mb-6 text-2xl font-playfair font-semibold text-gray-900">
+              <h3 className="mb-6 text-2xl font-playfair font-semibold text-ink">
                 Les qualités attendues
               </h3>
               <ul className="space-y-4">
@@ -361,26 +355,23 @@ export default function Recrutement() {
                       className="mt-0.5 h-5 w-5 flex-shrink-0 text-success-400"
                       aria-hidden="true"
                     />
-                    <span className="leading-comfortable text-gray-800">
-                      <strong className="font-semibold text-gray-900">{item.label} :</strong>{' '}
-                      {item.text}
+                    <span className="leading-comfortable text-muted">
+                      <strong className="font-semibold text-ink">{item.label} :</strong> {item.text}
                     </span>
                   </li>
                 ))}
               </ul>
             </Card>
             <Card className="p-6" hover={false}>
-              <h3 className="mb-6 text-2xl font-playfair font-semibold text-gray-900">
-                Les prérequis
-              </h3>
+              <h3 className="mb-6 text-2xl font-playfair font-semibold text-ink">Les prérequis</h3>
               <ul className="space-y-4">
                 {prerequisites.map((item) => (
                   <li key={item} className="flex gap-3">
                     <CheckCircle
-                      className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary-300"
+                      className="mt-0.5 h-5 w-5 flex-shrink-0 text-copper"
                       aria-hidden="true"
                     />
-                    <span className="leading-comfortable text-gray-800">{item}</span>
+                    <span className="leading-comfortable text-muted">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -389,8 +380,8 @@ export default function Recrutement() {
         </div>
       </section>
 
-      <section className="bg-white py-section">
-        <div className="container-adaptive">
+      <section className="bg-surface py-section">
+        <div className="container-editorial">
           <SectionHeader
             title="Ce que vous trouverez chez Etoilys"
             subtitle="Des outils, de la visibilité et un cadre pensé pour développer votre activité."
@@ -403,8 +394,8 @@ export default function Recrutement() {
         </div>
       </section>
 
-      <section className="bg-primary-100 py-section">
-        <div className="container-adaptive">
+      <section className="bg-paper py-section">
+        <div className="container-editorial">
           <SectionHeader
             title="Comment se passe l’intégration ?"
             subtitle="Un parcours simple pour vérifier l’adéquation, se former puis démarrer sur votre secteur."
@@ -415,8 +406,8 @@ export default function Recrutement() {
         </div>
       </section>
 
-      <section className="bg-white py-section">
-        <div className="container-adaptive">
+      <section className="bg-surface py-section">
+        <div className="container-editorial">
           <SectionHeader title="Questions fréquentes" className="mb-8" />
           <div className="mx-auto max-w-3xl">
             <Accordion items={faqItems} />
@@ -424,24 +415,16 @@ export default function Recrutement() {
         </div>
       </section>
 
-      <section id="candidature" className="bg-primary-100 py-section scroll-mt-24">
-        <div className="container-adaptive">
-          <div className="rounded-card bg-gradient-to-br from-themePrimary-1 to-primary-300 px-6 py-10 text-center text-white shadow-[0_18px_45px_rgba(1,50,176,0.16)] sm:px-10 lg:px-16">
-            <h2 className="mb-6 text-white">
-              Vous souhaitez développer votre activité avec Etoilys ?
-            </h2>
-            <p className="mx-auto mb-8 max-w-3xl text-lg leading-comfortable text-white/90">
-              Présentez-nous votre profil, votre secteur et votre expérience. Nous reviendrons vers
-              vous pour échanger sur le cadre de collaboration et les prochaines étapes.
-            </p>
-            <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <Button href="/contact?objet=recrutement" variant="white" size="lg">
-                Candidater
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <div id="candidature" className="scroll-mt-24">
+        <PageCta
+          title="Vous souhaitez développer votre activité avec Etoilys ?"
+          description="Présentez-nous votre profil, votre secteur et votre expérience. Nous reviendrons vers vous pour échanger sur le cadre de collaboration et les prochaines étapes."
+        >
+          <Button href="/contact?objet=recrutement" variant="white" size="lg">
+            Candidater
+          </Button>
+        </PageCta>
+      </div>
     </>
   );
 }

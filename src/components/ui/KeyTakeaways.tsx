@@ -71,10 +71,10 @@ function validateComparisonRows(rows: readonly unknown[]) {
 
 function BulletList({ items }: { items: readonly KeyTakeawaysTextItem[] }) {
   return (
-    <ul className="space-y-3 text-gray-700">
+    <ul className="space-y-3 text-muted">
       {items.map((item) => (
         <li key={item.id} className="flex gap-3">
-          <span className="mt-0.5 shrink-0 font-bold text-primary-400" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>{item.content}</span>
@@ -93,29 +93,17 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
     validateMaxItems(props.items, 'KeyTakeaways comparison');
 
     return (
-      <section
-        aria-labelledby={headingId}
-        className={`mb-12 rounded-card border-l-4 border-primary-300 bg-primary-100 p-6 ${className}`}
-      >
+      <section aria-labelledby={headingId} className={`article-callout mb-12 ${className}`}>
         <h2 id={headingId} className="mb-4 text-h4">
           À retenir
         </h2>
         <ResponsiveComparisonTable
+          appearance="editorial"
           className={props.items && props.items.length > 0 ? 'mb-6' : ''}
           {...(props.columns[0] ? { primaryColumnKey: props.columns[0].key } : {})}
           columns={[...props.columns]}
           rows={[...props.rows]}
           caption={props.caption}
-          tableClassName="w-full table-fixed border-collapse text-sm"
-          desktopWrapperClassName="hidden overflow-x-auto md:block"
-          headerRowClassName="bg-primary-300 text-white"
-          headerCellClassName="p-3 font-semibold break-words"
-          cellClassName="p-3 align-top break-words"
-          mobileContainerClassName="space-y-3 md:hidden"
-          mobileCardClassName="rounded-card border border-primary-200 bg-white p-4 shadow-sm"
-          mobileTitleClassName="mb-3 text-sm font-semibold text-gray-900"
-          mobileLabelClassName="text-xs font-medium text-gray-600"
-          mobileValueClassName="text-sm text-gray-900 text-right"
         />
         {props.items && props.items.length > 0 && <BulletList items={props.items} />}
       </section>
@@ -126,20 +114,17 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
     validateMaxItems(props.items, 'KeyTakeaways metrics');
 
     return (
-      <section
-        aria-labelledby={headingId}
-        className={`mb-12 rounded-card border-l-4 border-primary-300 bg-primary-100 p-6 ${className}`}
-      >
+      <section aria-labelledby={headingId} className={`article-callout mb-12 ${className}`}>
         <h2 id={headingId} className="mb-4 text-h4">
           À retenir
         </h2>
         <dl className="grid gap-4 sm:grid-cols-2">
           {props.items.map((item) => (
-            <div key={item.id} className="rounded-card border border-primary-200 bg-white p-4">
-              <dt className="text-sm font-medium text-gray-600">{item.label}</dt>
+            <div key={item.id} className="border border-ink/15 bg-surface p-4">
+              <dt className="text-sm font-medium text-muted">{item.label}</dt>
               <dd className="mt-2">
-                <div className="text-2xl font-semibold text-themePrimary-1">{item.value}</div>
-                {item.detail && <div className="mt-2 text-sm text-gray-700">{item.detail}</div>}
+                <div className="text-2xl font-semibold text-ink">{item.value}</div>
+                {item.detail && <div className="mt-2 text-sm text-muted">{item.detail}</div>}
               </dd>
             </div>
           ))}
@@ -154,7 +139,7 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
     return (
       <aside
         aria-labelledby={headingId}
-        className={`mb-12 rounded-card border-l-4 border-warning-400 bg-warning-100 p-6 ${className}`}
+        className={`mb-12 rounded-editorial border-l-4 border-warning-400 bg-warning-100 p-6 ${className}`}
       >
         <div className="mb-4 flex items-center gap-3">
           <AlertTriangle className="h-5 w-5 shrink-0 text-warning-500" aria-hidden="true" />
@@ -162,7 +147,7 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
             À retenir
           </h2>
         </div>
-        <p className="mb-4 font-medium leading-comfortable text-gray-900">{props.message}</p>
+        <p className="mb-4 font-medium leading-comfortable text-ink">{props.message}</p>
         {props.items && props.items.length > 0 && <BulletList items={props.items} />}
       </aside>
     );
@@ -171,10 +156,7 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
   validateMaxItems(props.items, 'KeyTakeaways bullets');
 
   return (
-    <section
-      aria-labelledby={headingId}
-      className={`mb-12 rounded-card border-l-4 border-primary-300 bg-primary-100 p-6 ${className}`}
-    >
+    <section aria-labelledby={headingId} className={`article-callout mb-12 ${className}`}>
       <h2 id={headingId} className="mb-4 text-h4">
         À retenir
       </h2>

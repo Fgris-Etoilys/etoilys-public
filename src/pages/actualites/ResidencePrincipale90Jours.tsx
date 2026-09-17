@@ -65,9 +65,8 @@ const keyTakeawaysBlock = (
     rows={[
       {
         key: '120-jours',
-        rowClassName: 'border-b border-primary-200 bg-white',
         cells: {
-          regle: <span className="font-semibold text-primary-400">120 jours / an</span>,
+          regle: <span className="font-semibold text-copper">120 jours / an</span>,
           portee: 'Règle nationale',
           signification:
             'Plafond de base pour toute résidence principale louée en meublé de tourisme',
@@ -75,18 +74,16 @@ const keyTakeawaysBlock = (
       },
       {
         key: '90-119-jours',
-        rowClassName: 'border-b border-primary-200 bg-primary-100',
         cells: {
-          regle: <span className="font-semibold text-gray-900">90 à 119 jours / an</span>,
+          regle: <span className="font-semibold text-ink">90 à 119 jours / an</span>,
           portee: 'Règle locale (si délibération)',
           signification: 'La commune peut abaisser le plafond annuel par délibération motivée',
         },
       },
       {
         key: '90-jours-consecutifs',
-        rowClassName: 'bg-white',
         cells: {
-          regle: <span className="font-semibold text-gray-900">90 jours consécutifs</span>,
+          regle: <span className="font-semibold text-ink">90 jours consécutifs</span>,
           portee: 'Autre règle (différente)',
           signification:
             "Durée maximale d'une même location à un même client : ne se confond pas avec le plafond annuel",
@@ -187,7 +184,7 @@ export default function ArticleResidencePrincipale90Jours() {
       lede={
         <>
           {/* Chapô */}
-          <p className="text-xl leading-comfortable text-gray-700 mb-10">
+          <p className="text-xl leading-comfortable text-muted mb-10">
             Non, la limite des <strong>90 jours</strong> ne s'applique pas automatiquement à toutes
             les résidences principales partout en France. La règle de base reste{' '}
             <strong>120 jours par an</strong>, mais une commune peut décider d'abaisser ce plafond,
@@ -203,12 +200,12 @@ export default function ArticleResidencePrincipale90Jours() {
       footerCta={
         <>
           {/* CTA */}
-          <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+          <div className="article-cta-panel mb-12 mt-12 p-8">
             <h2 className="text-h4 mb-3">
               Vous voulez savoir si votre logement peut être loué en meublé de tourisme et si le
               classement reste pertinent dans votre situation ?
             </h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-muted mb-6">
               Consultez notre page sur la procédure de classement, notre FAQ, ou faites directement
               une demande de classement avec Etoilys.
             </p>
@@ -234,15 +231,15 @@ export default function ArticleResidencePrincipale90Jours() {
       <ArticleSectionHeading id="la-reponse-courte-non-tout-le-monde-n-est-pas-limite-a-90-jours">
         La réponse courte : non, tout le monde n'est pas limité à 90 jours
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         C'est probablement la confusion la plus fréquente depuis la réforme de 2024.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Beaucoup de propriétaires ont retenu une formule simplifiée du type : "Airbnb, c'est
         désormais 90 jours maximum en résidence principale." En réalité, cette formule est
         incomplète.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La règle nationale de base reste la suivante : lorsqu'un logement constitue la{' '}
         <strong>résidence principale</strong> du loueur, il peut être loué comme meublé de tourisme
         dans la limite de <strong>120 jours par année civile</strong>, sauf obligation
@@ -251,17 +248,19 @@ export default function ArticleResidencePrincipale90Jours() {
           href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050623378/2026-05-20"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           article L. 324-1-1 du code du tourisme
         </a>
         .
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La nouveauté depuis la{' '}
         <a
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           loi du 19 novembre 2024
         </a>
@@ -269,10 +268,10 @@ export default function ArticleResidencePrincipale90Jours() {
         <strong>délibération motivée</strong>, d'abaisser cette limite. Le plafond local peut alors
         être fixé dans une fourchette allant de <strong>90 à 119 jours</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">Le bon message est donc simple :</p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <p className="text-muted leading-comfortable mb-4">Le bon message est donc simple :</p>
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -280,7 +279,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -288,7 +287,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -301,33 +300,33 @@ export default function ArticleResidencePrincipale90Jours() {
       <ArticleSectionHeading id="qui-est-concerne-par-cette-limite">
         Qui est concerné par cette limite ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Cette limite concerne les logements qui sont{' '}
         <strong>vraiment la résidence principale</strong> du loueur. La résidence principale est
         définie comme le logement occupé <strong>au moins huit mois par an</strong>, sauf obligation
         professionnelle, raison de santé ou cas de force majeure.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Concrètement, cela vise surtout le propriétaire — ou parfois le locataire avec accord écrit
         du bailleur — qui loue ponctuellement son logement pendant des vacances, quelques week-ends
         ou certaines périodes de l'année via Airbnb, Abritel, Booking ou un autre canal.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En revanche, il faut bien distinguer ce cas de la <strong>résidence secondaire</strong>. Une
         résidence secondaire n'entre pas dans ce régime "résidence principale louée ponctuellement".
         Elle peut être soumise à des règles beaucoup plus contraignantes, notamment en matière de{' '}
         <strong>déclaration</strong>, de <strong>numéro d'enregistrement</strong> ou de{' '}
         <strong>changement d'usage</strong> selon la commune.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Autrement dit, la question "suis-je concerné par la limite des 90 jours ?" doit d'abord être
         reformulée ainsi :
       </p>
-      <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
+      <blockquote className="article-quote italic">
         Mon logement est-il réellement ma résidence principale, et ma commune a-t-elle abaissé le
         plafond ?
       </blockquote>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour en savoir plus sur ce que le classement peut apporter à votre situation, consultez
         notre page{' '}
         <Link to="/les-avantages-du-classement" className="article-inline-link">
@@ -340,12 +339,13 @@ export default function ArticleResidencePrincipale90Jours() {
       <ArticleSectionHeading id="ce-que-la-commune-peut-faire-depuis-la-reforme">
         Ce que la commune peut faire depuis la réforme
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La{' '}
         <a
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
           target="_blank"
           rel="noopener noreferrer"
+          className="article-inline-link"
         >
           loi du 19 novembre 2024
         </a>{' '}
@@ -353,12 +353,12 @@ export default function ArticleResidencePrincipale90Jours() {
         la possibilité, pour la commune, d'abaisser la durée maximale de location d'une résidence
         principale comme meublé de tourisme.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Ce point mérite une explication claire :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -367,7 +367,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -375,7 +375,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -383,7 +383,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -391,25 +391,25 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, il ne faut pas partir du principe que la règle locale existe forcément, ni
         qu'elle est identique d'une commune à l'autre. Le bon réflexe est de vérifier :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>si la commune a adopté une délibération en ce sens ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>à partir de quelle date elle s'applique ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -417,7 +417,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
       </ul>
-      <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
+      <blockquote className="article-quote italic">
         Cette règle dépend de la commune concernée. Le plafond de 90 jours n'est donc pas une règle
         automatique applicable partout : il faut vérifier la délibération locale et la
         réglementation en vigueur dans la commune du logement.
@@ -427,7 +427,7 @@ export default function ArticleResidencePrincipale90Jours() {
       <ArticleSectionHeading id="le-piege-des-90-jours-il-y-a-en-realite-plusieurs-regles-differentes">
         Le piège des "90 jours" : il y a en réalité plusieurs règles différentes
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         C'est la partie la plus importante. Quand vous lisez "90 jours", cela peut désigner au moins{' '}
         <strong>trois choses différentes</strong>.
       </p>
@@ -453,23 +453,21 @@ export default function ArticleResidencePrincipale90Jours() {
           ] as { num: string; title: string; desc: string }[]
         ).map(({ num, title, desc }) => (
           <div key={num} className="flex gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {num}
-            </div>
+            <div className="article-step-marker">{num}</div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1 text-base leading-snug">{title}</h3>
-              <p className="text-gray-700 leading-comfortable">{desc}</p>
+              <h3 className="font-semibold text-ink mb-1 text-base leading-snug">{title}</h3>
+              <p className="text-muted leading-comfortable">{desc}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Cette confusion conduit à des erreurs fréquentes :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -478,7 +476,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -487,7 +485,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -496,7 +494,7 @@ export default function ArticleResidencePrincipale90Jours() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Ce ne sont pas les bonnes lectures. Chaque règle a sa logique propre et son champ
         d'application.
       </p>
@@ -505,20 +503,20 @@ export default function ArticleResidencePrincipale90Jours() {
       <ArticleSectionHeading id="depasser-le-plafond-dans-une-commune-qui-l-a-abaisse-qu-est-ce-que-cela-change">
         Dépasser le plafond dans une commune qui l'a abaissé : qu'est-ce que cela change ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Lorsqu'une commune a abaissé le plafond, un logement loué au-delà du nombre de jours
         autorisé peut exposer le loueur à une <strong>sanction</strong>. Le code du tourisme prévoit
         une <strong>amende civile pouvant aller jusqu'à 15 000 €</strong> en cas de non-respect de
         cette obligation.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En revanche, dépasser 90 ou 100 jours dans une commune ayant abaissé le plafond ne
         transforme pas automatiquement le logement en résidence secondaire. La définition de la
         résidence principale repose sur le fait d'occuper le logement{' '}
         <strong>au moins huit mois par an</strong> — c'est ce critère qui détermine la qualification
         du logement, pas le seul dépassement du plafond de location.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Dans son fonctionnement cible, le contrôle ne repose plus uniquement sur des demandes
         adressées séparément à chaque plateforme. L&apos;API Meublés doit permettre aux
         collectivités inscrites de rapprocher les jours loués par intermédiaire ;{' '}
@@ -530,7 +528,7 @@ export default function ArticleResidencePrincipale90Jours() {
         </Link>{' '}
         détaille ce fonctionnement et son calendrier.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, il faut raisonner en deux temps :
       </p>
       <div className="space-y-4 mb-8">
@@ -549,12 +547,10 @@ export default function ArticleResidencePrincipale90Jours() {
           ] as { num: string; title: string; desc: string }[]
         ).map(({ num, title, desc }) => (
           <div key={num} className="flex gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {num}
-            </div>
+            <div className="article-step-marker">{num}</div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1 text-base leading-snug">{title}</h3>
-              <p className="text-gray-700 leading-comfortable">{desc}</p>
+              <h3 className="font-semibold text-ink mb-1 text-base leading-snug">{title}</h3>
+              <p className="text-muted leading-comfortable">{desc}</p>
             </div>
           </div>
         ))}
@@ -564,40 +560,40 @@ export default function ArticleResidencePrincipale90Jours() {
       <ArticleSectionHeading id="le-classement-change-t-il-quelque-chose-a-cette-limite">
         Le classement change-t-il quelque chose à cette limite ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">Non.</p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">Non.</p>
+      <p className="text-muted leading-comfortable mb-4">
         Un meublé de tourisme <strong>classé</strong> peut tout à fait être une résidence
         principale. Mais s'il est loué ponctuellement comme meublé de tourisme, il reste soumis au
         même plafond de durée : <strong>120 jours</strong> dans le cadre général, ou le plafond
         localement abaissé si la commune a pris une délibération en ce sens.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le classement ne sert donc pas à contourner les règles locales de durée.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En revanche, le classement garde un intérêt réel sur d'autres points :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>fiscalité micro-BIC (abattement et plafond plus favorables) ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>taxe de séjour ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>lisibilité et positionnement de l'offre.</span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le classement reste utile, mais il ne remplace jamais le respect des règles locales sur la
         durée de location. Pour comprendre tous les avantages du classement,{' '}
         <Link to="/les-avantages-du-classement" className="article-inline-link">
@@ -610,7 +606,7 @@ export default function ArticleResidencePrincipale90Jours() {
       <ArticleSectionHeading id="ce-qu-un-proprietaire-doit-verifier-avant-de-louer">
         Ce qu'un propriétaire doit vérifier avant de louer
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-6">
+      <p className="text-muted leading-comfortable mb-6">
         Avant de louer votre résidence principale en meublé de tourisme, voici ce qu'il faut
         vérifier au minimum :
       </p>
@@ -662,18 +658,16 @@ export default function ArticleResidencePrincipale90Jours() {
           ] as { num: string; title: string; desc: ReactNode }[]
         ).map(({ num, title, desc }) => (
           <div key={num} className="flex gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {num}
-            </div>
+            <div className="article-step-marker">{num}</div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1 text-base leading-snug">{title}</h3>
-              <div className="text-gray-700 leading-comfortable">{desc}</div>
+              <h3 className="font-semibold text-ink mb-1 text-base leading-snug">{title}</h3>
+              <div className="text-muted leading-comfortable">{desc}</div>
             </div>
           </div>
         ))}
       </div>
 
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Des réponses aux questions les plus fréquentes sur le classement et les obligations
         associées sont disponibles dans notre{' '}
         <Link to="/faq" className="article-inline-link">
@@ -684,17 +678,17 @@ export default function ArticleResidencePrincipale90Jours() {
 
       {/* Conclusion */}
       <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La limite des <strong>90 jours</strong> n'est pas une règle automatique qui s'applique
         partout à toutes les résidences principales. En pratique, il faut distinguer la règle
         générale des <strong>120 jours</strong>, la possibilité pour la <strong>commune</strong>{' '}
         d'abaisser ce plafond, et les autres règles qui gravitent autour de la location saisonnière.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En matière de résidence principale, la vraie question n'est pas "Airbnb est-il limité à 90
         jours partout ?", mais plutôt :
       </p>
-      <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic font-medium">
+      <blockquote className="article-quote italic font-medium">
         Ma commune a-t-elle décidé d'abaisser le plafond, et est-ce que je respecte bien l'ensemble
         des règles applicables à mon logement ?
       </blockquote>

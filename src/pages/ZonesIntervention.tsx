@@ -18,12 +18,12 @@ export default function ZonesIntervention() {
         size="compact"
       />
 
-      <section className="bg-white py-section">
+      <section className="bg-surface py-section">
         <div className="container-editorial">
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 max-w-3xl">
               <h2 className="mb-4">Nos zones d’intervention actuelles</h2>
-              <p className="text-textLight leading-comfortable">
+              <p className="text-muted leading-comfortable">
                 Retrouvez les pages locales disponibles et les secteurs dans lesquels Etoilys peut
                 réaliser votre visite de classement.
               </p>
@@ -34,7 +34,7 @@ export default function ZonesIntervention() {
                 <section key={group.region.id} aria-labelledby={`region-${group.region.id}`}>
                   <h3
                     id={`region-${group.region.id}`}
-                    className="mb-5 text-2xl font-playfair font-semibold text-gray-900"
+                    className="mb-5 text-2xl font-playfair font-semibold text-ink"
                   >
                     {group.region.label}
                   </h3>
@@ -47,7 +47,7 @@ export default function ZonesIntervention() {
               <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.45fr)]">
                 <div className="p-6 md:p-8">
                   <h2 className="mb-4 text-h3">Votre département n’apparaît pas encore ?</h2>
-                  <p className="mb-6 text-textLight leading-comfortable">
+                  <p className="mb-6 text-muted leading-comfortable">
                     Etoilys développe progressivement son réseau d’inspecteurs pour accompagner
                     davantage de propriétaires sur le territoire. Si votre logement se situe hors
                     des zones déjà présentées, vous pouvez déposer une demande : nous vous

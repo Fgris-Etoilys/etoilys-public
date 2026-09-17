@@ -10,20 +10,20 @@ export default function Confidentialite() {
 
   return (
     <>
-      <section className="py-section bg-white">
-        <div className="container-adaptive max-w-4xl">
+      <section className="py-section bg-surface">
+        <div className="container-editorial max-w-4xl">
           <h1 className="mb-3">{content.title}</h1>
-          <p className="text-sm text-textLight mb-10">{content.lastUpdated}</p>
+          <p className="text-sm text-muted mb-10">{content.lastUpdated}</p>
 
           {content.body ? (
-            <div className="space-y-10 text-textLight leading-comfortable">
+            <div className="space-y-10 text-muted leading-comfortable">
               {content.body}
-              <CookiePreferencesButton className="inline-flex text-sm font-medium text-primary-300 hover:text-primary-400">
+              <CookiePreferencesButton className="inline-flex text-sm font-medium text-ink hover:text-ink-hover">
                 {content.cookiePreferencesLabel}
               </CookiePreferencesButton>
             </div>
           ) : (
-            <div className="space-y-10 text-textLight leading-comfortable">
+            <div className="space-y-10 text-muted leading-comfortable">
               {/* Intro */}
               <div className="space-y-4">
                 <p>
@@ -31,7 +31,7 @@ export default function Confidentialite() {
                   et traite les données personnelles des utilisateurs du site{' '}
                   <a
                     href="https://www.etoilys.fr"
-                    className="text-primary hover:underline"
+                    className="article-inline-link"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -49,24 +49,24 @@ export default function Confidentialite() {
 
               {/* 1. Responsable du traitement */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
+                <h2 className="text-h4 font-semibold text-ink mb-3">
                   1. Responsable du traitement
                 </h2>
                 <p className="mb-4">Le responsable du traitement est :</p>
-                <div className="bg-primary-100 rounded-card p-6 text-sm space-y-0.5 mb-4">
-                  <p className="font-semibold text-gray-800">ETOILYS</p>
+                <div className="bg-paper rounded-editorial p-6 text-sm space-y-0.5 mb-4">
+                  <p className="font-semibold text-ink">ETOILYS</p>
                   <p>SAS au capital social de 2&nbsp;000&nbsp;€</p>
                   <p>RCS Bergerac 939&nbsp;330&nbsp;809</p>
                   <p>Siège social : 1345 route de Dautres, 24150 Mauzac-et-Grand-Castang, France</p>
                   <p>
                     E-mail :{' '}
-                    <a href="mailto:contact@etoilys.fr" className="text-primary hover:underline">
+                    <a href="mailto:contact@etoilys.fr" className="article-inline-link">
                       contact@etoilys.fr
                     </a>
                   </p>
                   <p>
                     Téléphone :{' '}
-                    <a href="tel:+33649551540" className="text-primary hover:underline">
+                    <a href="tel:+33649551540" className="article-inline-link">
                       06 49 55 15 40
                     </a>
                   </p>
@@ -74,7 +74,7 @@ export default function Confidentialite() {
                 <p>
                   Pour toute question relative à la présente politique ou au traitement de vos
                   données personnelles, vous pouvez nous contacter à l&apos;adresse suivante :{' '}
-                  <a href="mailto:contact@etoilys.fr" className="text-primary hover:underline">
+                  <a href="mailto:contact@etoilys.fr" className="article-inline-link">
                     contact@etoilys.fr
                   </a>
                   .
@@ -83,7 +83,7 @@ export default function Confidentialite() {
 
               {/* 2. Données collectées */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
+                <h2 className="text-h4 font-semibold text-ink mb-3">
                   2. Données personnelles collectées
                 </h2>
                 <p className="mb-3">
@@ -92,36 +92,35 @@ export default function Confidentialite() {
                 </p>
                 <ul className="list-disc list-inside space-y-1.5 pl-2 mb-4">
                   <li>
-                    <strong className="text-gray-700">
+                    <strong className="text-ink">
                       données d&apos;identification et de contact
                     </strong>{' '}
                     : nom, prénom, adresse e-mail, numéro de téléphone ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">données relatives à votre demande</strong> :
-                    objet de la demande, contenu du message, informations sur votre projet de
-                    classement ;
+                    <strong className="text-ink">données relatives à votre demande</strong> : objet
+                    de la demande, contenu du message, informations sur votre projet de classement ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">données relatives au meublé concerné</strong>{' '}
-                    : adresse du bien, caractéristiques utiles à l&apos;étude de la demande, et plus
+                    <strong className="text-ink">données relatives au meublé concerné</strong> :
+                    adresse du bien, caractéristiques utiles à l&apos;étude de la demande, et plus
                     largement toute information que vous choisissez de nous transmettre ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">
+                    <strong className="text-ink">
                       données techniques liées à l&apos;utilisation du site
                     </strong>{' '}
                     : adresse IP, journaux techniques, données de sécurité, informations nécessaires
                     à la prévention des abus et au fonctionnement des formulaires ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">
+                    <strong className="text-ink">
                       données issues d&apos;un dispositif anti-spam ou anti-bot
                     </strong>
                     , lorsque ce mécanisme est utilisé pour sécuriser l&apos;envoi des formulaires.
                   </li>
                   <li>
-                    <strong className="text-gray-700">données de mesure d&apos;audience</strong> :
+                    <strong className="text-ink">données de mesure d&apos;audience</strong> :
                     parcours détaillé, acquisition et interactions uniquement après acceptation du
                     consentement analytics ; après un refus explicite, un comptage facultatif sans
                     cookie peut contenir uniquement la page d&apos;entrée sans paramètres et la
@@ -136,7 +135,7 @@ export default function Confidentialite() {
 
               {/* 3. Finalités et bases légales */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
+                <h2 className="text-h4 font-semibold text-ink mb-3">
                   3. Finalités et bases légales des traitements
                 </h2>
                 <p className="mb-4">
@@ -144,7 +143,7 @@ export default function Confidentialite() {
                 </p>
                 <div className="space-y-4">
                   <div>
-                    <p className="font-medium text-gray-700 mb-1">
+                    <p className="font-medium text-ink mb-1">
                       a) Répondre à vos demandes envoyées via le formulaire de contact
                     </p>
                     <p className="text-sm">
@@ -154,7 +153,7 @@ export default function Confidentialite() {
                     </p>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-700 mb-1">
+                    <p className="font-medium text-ink mb-1">
                       b) Étudier et traiter vos demandes de classement ou de devis
                     </p>
                     <p className="text-sm">
@@ -164,7 +163,7 @@ export default function Confidentialite() {
                     </p>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-700 mb-1">
+                    <p className="font-medium text-ink mb-1">
                       c) Assurer le suivi administratif et commercial de la relation
                     </p>
                     <p className="text-sm">
@@ -173,7 +172,7 @@ export default function Confidentialite() {
                     </p>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-700 mb-1">
+                    <p className="font-medium text-ink mb-1">
                       d) Sécuriser le site, prévenir le spam, les envois automatisés et les usages
                       abusifs
                     </p>
@@ -185,7 +184,7 @@ export default function Confidentialite() {
                     </p>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-700 mb-1">
+                    <p className="font-medium text-ink mb-1">
                       e) Respecter les obligations légales, comptables, fiscales ou probatoires
                       applicables
                     </p>
@@ -198,7 +197,7 @@ export default function Confidentialite() {
 
               {/* 4. Destinataires */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
+                <h2 className="text-h4 font-semibold text-ink mb-3">
                   4. Destinataires des données
                 </h2>
                 <p className="mb-3">
@@ -223,29 +222,29 @@ export default function Confidentialite() {
                 </p>
                 <ul className="list-disc list-inside space-y-1 pl-2 mb-4">
                   <li>
-                    <strong className="text-gray-700">Vercel</strong> pour l&apos;hébergement et
+                    <strong className="text-ink">Vercel</strong> pour l&apos;hébergement et
                     l&apos;exploitation du site ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">Railway</strong> pour l&apos;hébergement et
+                    <strong className="text-ink">Railway</strong> pour l&apos;hébergement et
                     l&apos;exploitation technique du backend Starsmanager ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">Resend</strong> pour l&apos;acheminement de
+                    <strong className="text-ink">Resend</strong> pour l&apos;acheminement de
                     courriels ;
                   </li>
                   <li>
-                    <strong className="text-gray-700">Cloudflare Turnstile</strong> pour la
-                    protection anti-bot des formulaires.
+                    <strong className="text-ink">Cloudflare Turnstile</strong> pour la protection
+                    anti-bot des formulaires.
                   </li>
                   <li>
-                    <strong className="text-gray-700">PostHog</strong> pour la mesure détaillée de
+                    <strong className="text-ink">PostHog</strong> pour la mesure détaillée de
                     l&apos;audience, de l&apos;acquisition et des parcours après consentement, ou
                     pour une mesure minimale facultative sans cookie après un refus explicite.
                   </li>
                   <li>
-                    <strong className="text-gray-700">OpenAI Ads</strong> pour mesurer, avec votre
-                    accord distinct, si une demande de classement fait suite à une publicité Etoilys
+                    <strong className="text-ink">OpenAI Ads</strong> pour mesurer, avec votre accord
+                    distinct, si une demande de classement fait suite à une publicité Etoilys
                     diffusée sur ChatGPT.
                   </li>
                 </ul>
@@ -259,7 +258,7 @@ export default function Confidentialite() {
 
               {/* 5. Transferts hors UE */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
+                <h2 className="text-h4 font-semibold text-ink mb-3">
                   5. Transferts de données hors Union européenne
                 </h2>
                 <p className="mb-3">
@@ -284,9 +283,7 @@ export default function Confidentialite() {
 
               {/* 6. Durées de conservation */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
-                  6. Durées de conservation
-                </h2>
+                <h2 className="text-h4 font-semibold text-ink mb-3">6. Durées de conservation</h2>
                 <p className="mb-3">
                   ETOILYS ne conserve vos données personnelles que pendant la durée nécessaire aux
                   finalités poursuivies, puis pendant les durées requises pour satisfaire à ses
@@ -319,9 +316,7 @@ export default function Confidentialite() {
 
               {/* 7. Sécurité */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
-                  7. Sécurité des données
-                </h2>
+                <h2 className="text-h4 font-semibold text-ink mb-3">7. Sécurité des données</h2>
                 <p>
                   ETOILYS met en œuvre des mesures techniques et organisationnelles appropriées afin
                   de préserver la sécurité, l&apos;intégrité et la confidentialité des données
@@ -332,7 +327,7 @@ export default function Confidentialite() {
 
               {/* 8. Vos droits */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">8. Vos droits</h2>
+                <h2 className="text-h4 font-semibold text-ink mb-3">8. Vos droits</h2>
                 <p className="mb-3">
                   Conformément à la réglementation applicable, vous disposez, selon les cas, des
                   droits suivants :
@@ -351,7 +346,7 @@ export default function Confidentialite() {
                 </ul>
                 <p className="mb-3">
                   Vous pouvez exercer vos droits en écrivant à :{' '}
-                  <a href="mailto:contact@etoilys.fr" className="text-primary hover:underline">
+                  <a href="mailto:contact@etoilys.fr" className="article-inline-link">
                     contact@etoilys.fr
                   </a>
                 </p>
@@ -369,7 +364,7 @@ export default function Confidentialite() {
                   vous pouvez introduire une réclamation auprès de la{' '}
                   <a
                     href="https://www.cnil.fr"
-                    className="text-primary hover:underline"
+                    className="article-inline-link"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -381,7 +376,7 @@ export default function Confidentialite() {
 
               {/* 9. Cookies */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
+                <h2 className="text-h4 font-semibold text-ink mb-3">
                   9. Cookies et autres traceurs
                 </h2>
                 <p className="mb-3">
@@ -430,14 +425,14 @@ export default function Confidentialite() {
                   contexte d&apos;acquisition conservé en mémoire et ne peut pas être raccordé à une
                   conversion ultérieure.
                 </p>
-                <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-primary-300 hover:text-primary-400">
+                <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-ink hover:text-ink-hover">
                   Gérer mes cookies
                 </CookiePreferencesButton>
               </div>
 
               {/* 10. Modification */}
               <div>
-                <h2 className="text-h4 font-semibold text-gray-800 mb-3">
+                <h2 className="text-h4 font-semibold text-ink mb-3">
                   10. Modification de la politique
                 </h2>
                 <p className="mb-3">

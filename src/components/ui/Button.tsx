@@ -7,6 +7,7 @@ interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onC
   variant?: 'primary' | 'secondary' | 'white' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
+  analyticsId?: string;
   state?: LinkProps['state'];
   className?: string;
   onClick?: () => void;
@@ -17,6 +18,7 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   href,
+  analyticsId,
   state,
   className = '',
   onClick,
@@ -43,9 +45,10 @@ export default function Button({
   if (href) {
     const destinationPath = normalizeAnalyticsPath(href);
     const ctaId =
-      destinationPath === '/'
+      analyticsId ??
+      (destinationPath === '/'
         ? `cta_${variant}_home`
-        : `cta_${variant}_${destinationPath.replace(/^\/+/, '').replace(/[^a-z0-9]+/gi, '_')}`;
+        : `cta_${variant}_${destinationPath.replace(/^\/+/, '').replace(/[^a-z0-9]+/gi, '_')}`);
 
     return (
       <Link

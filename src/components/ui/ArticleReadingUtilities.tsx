@@ -94,6 +94,8 @@ export default function ArticleReadingUtilities({
     scheduleMeasure();
     window.addEventListener('scroll', scheduleMeasure, { passive: true });
     window.addEventListener('resize', scheduleMeasure);
+    window.addEventListener('hashchange', scheduleMeasure);
+    window.addEventListener('pageshow', scheduleMeasure);
 
     const resizeObserver =
       typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(scheduleMeasure);
@@ -104,10 +106,15 @@ export default function ArticleReadingUtilities({
     return () => {
       window.removeEventListener('scroll', scheduleMeasure);
       window.removeEventListener('resize', scheduleMeasure);
+      window.removeEventListener('hashchange', scheduleMeasure);
+      window.removeEventListener('pageshow', scheduleMeasure);
       resizeObserver?.disconnect();
 
-      if (animationFrameRef.current !== null && typeof window.cancelAnimationFrame === 'function') {
-        window.cancelAnimationFrame(animationFrameRef.current);
+      if (animationFrameRef.current !== null) {
+        if (typeof window.cancelAnimationFrame === 'function') {
+          window.cancelAnimationFrame(animationFrameRef.current);
+        }
+        animationFrameRef.current = null;
       }
     };
   }, [startRef, endRef]);
@@ -130,14 +137,14 @@ export default function ArticleReadingUtilities({
   return (
     <>
       <div
-        className={`pointer-events-none fixed inset-x-0 top-[var(--etoilys-header-height,4.5rem)] z-[55] h-1 bg-primary-100/70 transition-opacity duration-150 motion-reduce:transition-none ${
+        className={`pointer-events-none fixed inset-x-0 top-[var(--etoilys-header-height,73px)] z-[65] h-1 bg-copper/10 transition-opacity duration-150 motion-reduce:transition-none ${
           isProgressVisible ? 'opacity-100' : 'opacity-0'
         }`}
         aria-hidden="true"
         data-testid="article-reading-progress"
       >
         <div
-          className="h-full bg-primary-400 transition-[width] duration-150 motion-reduce:transition-none"
+          className="h-full bg-copper shadow-[0_0_8px_rgb(var(--color-copper)/0.28)] transition-[width] duration-150 motion-reduce:transition-none"
           data-testid="article-reading-progress-bar"
           style={{ width: `${progress}%` }}
         />
@@ -148,7 +155,7 @@ export default function ArticleReadingUtilities({
         aria-label="Retour en haut de l’article"
         aria-hidden={isBackToTopVisible ? undefined : 'true'}
         tabIndex={isBackToTopVisible ? 0 : -1}
-        className={`fixed bottom-[calc(var(--etoilys-cookie-banner-offset,0px)+5rem+env(safe-area-inset-bottom))] right-4 z-[50] inline-flex h-12 w-12 items-center justify-center rounded-full border border-primary-200 bg-white text-primary-500 shadow-card transition-[opacity,transform,background-color,border-color,color] duration-200 hover:border-primary-300 hover:bg-primary-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2 motion-reduce:transition-none sm:right-6 xl:hidden ${
+        className={`ui-focus fixed bottom-[calc(var(--etoilys-cookie-banner-offset,0px)+5rem+env(safe-area-inset-bottom))] right-4 z-[50] inline-flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 bg-surface text-ink shadow-[0_4px_16px_rgb(var(--color-ink)/0.08)] transition-[opacity,transform,background-color,border-color,color] duration-200 hover:bg-surface-hover motion-reduce:transition-none sm:right-6 xl:hidden ${
           isBackToTopVisible
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-3 opacity-0'
