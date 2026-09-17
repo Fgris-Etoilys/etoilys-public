@@ -130,14 +130,14 @@ export default function ArticleReadingUtilities({
   return (
     <>
       <div
-        className={`pointer-events-none fixed inset-x-0 top-[var(--etoilys-header-height,4.5rem)] z-[55] h-1 bg-primary-100/70 transition-opacity duration-150 motion-reduce:transition-none ${
+        className={`pointer-events-none fixed inset-x-0 top-[var(--etoilys-header-height,4.5rem)] z-[55] h-1 bg-paper/80 transition-opacity duration-150 motion-reduce:transition-none ${
           isProgressVisible ? 'opacity-100' : 'opacity-0'
         }`}
         aria-hidden="true"
         data-testid="article-reading-progress"
       >
         <div
-          className="h-full bg-primary-400 transition-[width] duration-150 motion-reduce:transition-none"
+          className="h-full bg-copper transition-[width] duration-150 motion-reduce:transition-none"
           data-testid="article-reading-progress-bar"
           style={{ width: `${progress}%` }}
         />
@@ -148,7 +148,7 @@ export default function ArticleReadingUtilities({
         aria-label="Retour en haut de l’article"
         aria-hidden={isBackToTopVisible ? undefined : 'true'}
         tabIndex={isBackToTopVisible ? 0 : -1}
-        className={`fixed bottom-[calc(var(--etoilys-cookie-banner-offset,0px)+5rem+env(safe-area-inset-bottom))] right-4 z-[50] inline-flex h-12 w-12 items-center justify-center rounded-full border border-primary-200 bg-white text-primary-500 shadow-card transition-[opacity,transform,background-color,border-color,color] duration-200 hover:border-primary-300 hover:bg-primary-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2 motion-reduce:transition-none sm:right-6 xl:hidden ${
+        className={`ui-focus fixed bottom-[calc(var(--etoilys-cookie-banner-offset,0px)+5rem+env(safe-area-inset-bottom))] right-4 z-[50] inline-flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 bg-surface text-ink shadow-[0_4px_16px_rgb(var(--color-ink)/0.08)] transition-[opacity,transform,background-color,border-color,color] duration-200 hover:bg-surface-hover motion-reduce:transition-none sm:right-6 xl:hidden ${
           isBackToTopVisible
             ? 'translate-y-0 opacity-100'
             : 'pointer-events-none translate-y-3 opacity-0'

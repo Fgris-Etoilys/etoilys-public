@@ -194,7 +194,7 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       tableOfContents={tableOfContents}
       lede={
         <>
-          <p className="text-xl leading-comfortable text-gray-700 mb-10">
+          <p className="text-xl leading-comfortable text-muted mb-10">
             Vous venez de recevoir votre décision de classement ? Voici les principales démarches à
             effectuer : afficher la décision dans le logement, actualiser votre déclaration, mettre
             à jour votre classement pour la taxe de séjour et le renseigner sur les plateformes qui
@@ -205,9 +205,9 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       keyTakeaways={keyTakeawaysBlock}
       footerCta={
         <>
-          <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+          <div className="article-cta-panel mb-12 mt-12 p-8">
             <h2 className="text-h4 mb-3">Vérifiez maintenant votre taxe de séjour</h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-muted mb-6">
               Une fois votre classement renseigné, utilisez le simulateur Etoilys pour contrôler le
               tarif applicable dans votre commune. La FAQ répond également aux principales questions
               sur les démarches qui suivent le classement.
@@ -230,28 +230,28 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       <ArticleSectionHeading id="affichez-la-decision-de-classement-dans-le-logement">
         Affichez la décision de classement dans le logement
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le Code du tourisme distingue deux éléments. La décision de classement doit être affichée de
         manière visible à l’intérieur du meublé. Le panonceau extérieur, lui, permet de signaler le
         classement, mais il reste facultatif pour un meublé de tourisme.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, l’emplacement doit être simple à repérer : entrée, panneau d’informations,
         espace d’accueil ou porte-document visible. Le rapport de contrôle et la grille de contrôle
         n’ont pas à être affichés ; ils doivent seulement rester conservés avec vos documents de
         classement.
       </p>
       <div className="grid gap-4 md:grid-cols-2 mb-6">
-        <div className="rounded-card border border-primary-200 bg-primary-100 p-5">
-          <p className="font-semibold text-gray-900 mb-1">Obligatoire</p>
-          <p className="text-gray-700">La décision de classement à l’intérieur du logement.</p>
+        <div className="article-callout p-5">
+          <p className="font-semibold text-ink mb-1">Obligatoire</p>
+          <p className="text-muted">La décision de classement à l’intérieur du logement.</p>
         </div>
-        <div className="rounded-card border border-gray-200 bg-gray-50 p-5">
-          <p className="font-semibold text-gray-900 mb-1">Facultatif</p>
-          <p className="text-gray-700">Le panonceau extérieur.</p>
+        <div className="article-callout-muted p-5">
+          <p className="font-semibold text-ink mb-1">Facultatif</p>
+          <p className="text-muted">Le panonceau extérieur.</p>
         </div>
       </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Atout France met à disposition les{' '}
         <a
           href="https://www.atout-france.fr/fr/classement/meuble-de-tourisme"
@@ -267,38 +267,36 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       <ArticleSectionHeading id="actualisez-la-declaration-ou-l-enregistrement-du-meuble">
         Actualisez la déclaration ou l’enregistrement du meublé
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La date de la décision et la catégorie de classement font partie des informations déclarées
         pour un meublé de tourisme. Après obtention du classement, vérifiez donc si la déclaration
         ou l’enregistrement doit être mis à jour selon la procédure prévue par la commune du
         logement.
       </p>
-      <div className="space-y-4 mb-6 text-gray-700">
+      <div className="space-y-4 mb-6 text-muted">
         {declarationSteps.map((step, index) => (
           <div className="flex gap-4" key={step}>
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {index + 1}
-            </div>
+            <div className="article-step-marker">{index + 1}</div>
             <p className="leading-comfortable">{step}</p>
           </div>
         ))}
       </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Les interfaces diffèrent selon les collectivités. Certaines communes utilisent un
         téléservice local, d’autres demandent un formulaire ou une prise de contact avec la mairie.
         Si aucune fonction de modification n’est proposée, contactez la mairie ou le service indiqué
         par le portail.
       </p>
-      <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-6">
-        <p className="text-h4 font-playfair font-semibold text-gray-900 mb-3">
+      <div className="article-callout-muted mb-6 p-5">
+        <p className="text-h4 font-playfair font-semibold text-ink mb-3">
           Attention au calendrier 2026
         </p>
-        <p className="text-gray-700 leading-comfortable">
+        <p className="text-muted leading-comfortable">
           Au 8 juillet 2026, le téléservice national définitif n’est pas encore ouvert aux loueurs.
           Continuez à suivre la procédure indiquée par votre commune. Un nouveau numéro national
           devra être demandé lorsque le téléservice sera lancé.
         </p>
-        <p className="text-gray-700 leading-comfortable mt-3">
+        <p className="text-muted leading-comfortable mt-3">
           Pour situer cette transition, vous pouvez{' '}
           <Link
             to="/actualites/api-meubles-declaration-meuble-tourisme"
@@ -313,21 +311,21 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       <ArticleSectionHeading id="verifiez-la-mise-a-jour-de-votre-taxe-de-sejour">
         Vérifiez la mise à jour de votre taxe de séjour
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Etoilys transmet la décision de classement à l’office de tourisme du secteur. Vous n’avez
         donc pas à renvoyer systématiquement la décision à ce même office de tourisme.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Vérifiez que votre classement est bien enregistré auprès de l’organisme chargé de la taxe de
         séjour dans votre secteur, afin que le tarif correspondant à votre nombre d’étoiles soit
         appliqué. Selon le territoire, il peut s’agir de l’office de tourisme, de la commune ou de
         la communauté de communes.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si votre catégorie n’est pas à jour sur le portail local, contactez le service indiqué par
         ce portail et transmettez la décision si nécessaire.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour aller plus loin, vous pouvez{' '}
         <Link
           to="/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne"
@@ -345,36 +343,36 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       <ArticleSectionHeading id="renseignez-votre-classement-sur-les-plateformes-de-reservation">
         Renseignez votre classement sur les plateformes de réservation
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Les intitulés peuvent varier selon la version de l’application, le type de compte et les
         évolutions de chaque plateforme.
       </p>
 
       <h3 className="mt-8 mb-3">Sur Airbnb</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Airbnb collecte et reverse automatiquement la taxe de séjour pour les réservations
         concernées en France. Le tarif est calculé à partir du type d’hébergement et de la catégorie
         de classement renseignés par l’hôte. Si le classement n’est pas renseigné, Airbnb applique
         le tarif d’un meublé non classé.
       </p>
-      <ol className="space-y-3 mb-6 text-gray-700">
+      <ol className="space-y-3 mb-6 text-muted">
         {airbnbSteps.map((step) => (
           <li key={step} className="list-decimal ml-6 pl-1 leading-comfortable">
             {step}
           </li>
         ))}
       </ol>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La taxe est collectée au moment de la réservation.
       </p>
 
       <h3 className="mt-8 mb-3">Sur Abritel</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Abritel indique calculer, percevoir et reverser la taxe de séjour pour les hébergements
         publiés en France. Le classement déclaré détermine le tarif utilisé, et le propriétaire
         reste responsable de la mise à jour de son classement.
       </p>
-      <ol className="space-y-3 mb-6 text-gray-700">
+      <ol className="space-y-3 mb-6 text-muted">
         {abritelSteps.map((step) => (
           <li key={step} className="list-decimal ml-6 pl-1 leading-comfortable">
             {step}
@@ -383,22 +381,22 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       </ol>
 
       <h3 className="mt-8 mb-3">Sur Booking.com</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Booking.com permet de modifier le type ou la catégorie de l’hébergement dans les paramètres
         de calcul de la taxe de séjour. La mise à jour se fait depuis l’extranet :
       </p>
-      <ol className="space-y-3 mb-6 text-gray-700">
+      <ol className="space-y-3 mb-6 text-muted">
         {bookingSteps.map((step) => (
           <li key={step} className="list-decimal ml-6 pl-1 leading-comfortable">
             {step}
           </li>
         ))}
       </ol>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Après l’enregistrement, contrôlez que la catégorie et le tarif affichés sur les prochaines
         réservations correspondent au classement obtenu.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour les autres plateformes de réservation, recherchez la rubrique liée aux taxes,
         réglementations locales ou informations de l’hébergement, puis vérifiez la catégorie de
         classement et le tarif de taxe de séjour affiché.
@@ -407,25 +405,25 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       <ArticleSectionHeading id="conservez-vos-documents-et-anticipez-le-renouvellement">
         Conservez vos documents et anticipez le renouvellement
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Conservez ces documents dans un même dossier pendant toute la durée du classement : décision
         de classement, rapport de contrôle, grille de contrôle, accusé de réception de la
         déclaration mise à jour et éventuels échanges avec le service de taxe de séjour.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le classement est valable cinq ans et ne se renouvelle pas automatiquement. Notez dès
         maintenant sa date d’expiration, prévoyez une nouvelle visite avant l’échéance si vous
         souhaitez conserver le classement, et maintenez le logement et ses équipements pendant toute
         la durée du classement.
       </p>
 
-      <div className="mt-12 mb-10 rounded-card border border-primary-200 bg-primary-100 p-6">
+      <div className="mt-12 mb-10 article-callout p-6">
         <h2 className="text-h4 mb-4">Votre checklist après classement</h2>
-        <ul className="space-y-3 text-gray-700">
+        <ul className="space-y-3 text-muted">
           {finalChecklist.map((item) => (
             <li key={item} className="flex gap-3">
               <span
-                className="mt-1 h-4 w-4 shrink-0 rounded border-2 border-primary-300 bg-white"
+                className="mt-1 h-4 w-4 shrink-0 rounded border-2 border-copper bg-surface"
                 aria-hidden="true"
               />
               <span>{item}</span>
@@ -437,12 +435,12 @@ export default function ArticleQueFaireApresClassementMeubleTourisme() {
       <ArticleSectionHeading id="une-demarche-facultative-accepter-les-cheques-vacances">
         Une démarche facultative : accepter les Chèques-Vacances
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le classement permet à un propriétaire de location meublée de déposer une demande de
         conventionnement auprès de l’ANCV. Ce conventionnement est nécessaire pour accepter les
         Chèques-Vacances, mais il n’est pas automatique.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         L’ANCV demande notamment une activité éligible, un numéro SIRET, un compte bancaire
         domicilié dans l’Union européenne et une preuve de classement pour une location meublée. La
         procédure est détaillée dans la{' '}

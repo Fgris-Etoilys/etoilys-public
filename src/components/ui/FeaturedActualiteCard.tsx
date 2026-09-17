@@ -5,6 +5,7 @@ import {
   getArticleCategoryLabel,
   type ActualiteArticle,
 } from '../../content/actualitesArticles';
+import Card from './Card';
 import SmartImage from './SmartImage';
 
 interface FeaturedActualiteCardProps {
@@ -30,40 +31,39 @@ export default function FeaturedActualiteCard({ article }: FeaturedActualiteCard
   const hasImage = Boolean(article.imageKey);
 
   return (
-    <article
-      className={`group overflow-hidden rounded-card border border-gray-200 bg-white shadow-card ${
+    <Card
+      as="article"
+      hover={false}
+      className={`group overflow-hidden ${
         hasImage ? 'grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]' : ''
       }`}
     >
       <div className="flex min-w-0 flex-col p-6 sm:p-8 lg:p-10">
-        <span className="mb-4 inline-flex w-fit rounded-full bg-primary-100 px-3 py-1 text-sm font-semibold text-primary-500">
+        <span className="mb-4 inline-flex w-fit rounded-control bg-paper px-3 py-1 text-sm font-semibold text-ink">
           {getArticleCategoryLabel(article.category)}
         </span>
-        <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-textLight">
+        <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
           <time dateTime={dateMetadata.dateTime}>{dateMetadata.label}</time>
           <span aria-hidden="true">·</span>
           <span>{formatReadingTime(article.readingTimeMinutes)}</span>
         </div>
-        <h2 className="mb-4 text-h3 leading-tight text-gray-900">
-          <Link
-            to={article.href}
-            className="rounded-sm no-underline hover:text-primary-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
-          >
+        <h2 className="mb-4 text-h3 leading-tight text-ink">
+          <Link to={article.href} className="ui-focus rounded-sm no-underline hover:text-ink-hover">
             {article.title}
           </Link>
         </h2>
-        <p className="mb-6 text-lg leading-comfortable text-textLight">{article.excerpt}</p>
+        <p className="mb-6 text-lg leading-comfortable text-muted">{article.excerpt}</p>
         <Link
           to={article.href}
           aria-label={`Lire l’article ${article.title}`}
-          className="mt-auto inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-primary-400 px-5 py-2.5 text-sm font-semibold text-white no-underline transition-colors duration-200 hover:bg-primary-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2 motion-reduce:transition-none"
+          className="ui-focus mt-auto inline-flex min-h-11 w-fit items-center gap-2 rounded-control bg-ink px-5 py-2.5 text-sm font-semibold text-white no-underline transition-colors duration-200 hover:bg-ink-hover hover:text-white motion-reduce:transition-none"
         >
           Lire l’article
           <ArrowRight aria-hidden="true" className="h-4 w-4" />
         </Link>
       </div>
       {hasImage && (
-        <div className="aspect-[16/9] overflow-hidden bg-primary-100 lg:aspect-auto lg:min-h-full">
+        <div className="aspect-[16/9] overflow-hidden bg-paper lg:aspect-auto lg:min-h-full">
           <SmartImage
             assetKey={article.imageKey}
             alt={article.title}
@@ -73,6 +73,6 @@ export default function FeaturedActualiteCard({ article }: FeaturedActualiteCard
           />
         </div>
       )}
-    </article>
+    </Card>
   );
 }

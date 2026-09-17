@@ -154,7 +154,7 @@ export default function ArticleTaxeDeSejour2026() {
       lede={
         <>
           {/* Chapô */}
-          <p className="text-xl leading-comfortable text-gray-700 mb-10">
+          <p className="text-xl leading-comfortable text-muted mb-10">
             En 2026, le classement change bien la taxe de séjour, mais pas de la façon que beaucoup
             imaginent. Un <strong>meublé classé</strong> relève d'un <strong>tarif fixe</strong> par
             personne et par nuitée selon son nombre d'étoiles, alors qu'un{' '}
@@ -171,9 +171,9 @@ export default function ArticleTaxeDeSejour2026() {
       footerCta={
         <>
           {/* CTA */}
-          <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+          <div className="article-cta-panel mb-12 mt-12 p-8">
             <h2 className="text-h4 mb-3">Simuler l’impact du classement sur la taxe de séjour</h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-muted mb-6">
               Utilisez le simulateur pour comparer un meublé classé et non classé selon la commune,
               la durée du séjour et les taxes additionnelles applicables.
             </p>
@@ -192,9 +192,9 @@ export default function ArticleTaxeDeSejour2026() {
       relatedArticles={getRelatedArticles(article)}
       author={getArticleAuthor(article.authorId)}
     >
-      <div className="bg-accent-1 rounded-card p-6 md:p-8 mb-12">
+      <div className="article-callout-muted mb-12 p-6 md:p-8">
         <h2 className="text-h4 mb-3">Simulateur taxe de séjour</h2>
-        <p className="text-gray-700 leading-comfortable mb-5">
+        <p className="text-muted leading-comfortable mb-5">
           Un simulateur est disponible pour estimer le montant de taxe de séjour sur un séjour type,
           par commune et par catégorie de classement, avec les taxes additionnelles applicables.
         </p>
@@ -207,17 +207,17 @@ export default function ArticleTaxeDeSejour2026() {
       <ArticleSectionHeading id="la-vraie-difference-classe-tarif-fixe-non-classe-taux-proportionnel">
         La vraie différence : classé = tarif fixe, non classé = taux proportionnel
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En 2026, le classement change d'abord <strong>la manière de calculer</strong> la taxe de
         séjour.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un <strong>meublé de tourisme classé</strong>, la taxe de séjour est calculée selon un{' '}
         <strong>tarif fixe</strong> par personne et par nuitée. Ce tarif dépend :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -225,7 +225,7 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -234,14 +234,14 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un <strong>meublé de tourisme non classé</strong> ou{' '}
         <strong>en attente de classement</strong>, la logique n'est plus la même : la taxe est en
         principe calculée selon un <strong>taux entre 1 % et 5 %</strong> du{' '}
         <strong>coût par personne de la nuitée HT</strong>, avec une <strong>limite</strong> fixée
         par le tarif le plus élevé adopté par la collectivité.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le classement ne change donc pas juste une « case administrative » : il change directement
         la mécanique de calcul.
       </p>
@@ -250,14 +250,14 @@ export default function ArticleTaxeDeSejour2026() {
       <ArticleSectionHeading id="pourquoi-le-classement-change-concretement-la-donne">
         Pourquoi le classement change concrètement la donne
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le classement ne signifie pas que le bien sera <strong>toujours moins taxé</strong>. Ce
         serait trop simpliste et parfois inexact.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">Ce qui change concrètement :</p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <p className="text-muted leading-comfortable mb-4">Ce qui change concrètement :</p>
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -265,7 +265,7 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -274,12 +274,12 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, cela change plusieurs choses :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -287,7 +287,7 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -296,7 +296,7 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -305,7 +305,7 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         C'est aussi pour cela que le classement garde un intérêt concret, au-delà du seul sujet
         micro-BIC. Pour un panorama plus large des effets du classement, consultez la page{' '}
         <Link to="/les-avantages-du-classement" className="article-inline-link">
@@ -318,7 +318,7 @@ export default function ArticleTaxeDeSejour2026() {
       <ArticleSectionHeading id="le-bareme-2026-a-retenir-pour-les-meubles-classes">
         Le barème 2026 à retenir pour les meublés classés
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Les bornes nationales 2026 pour les <strong>meublés de tourisme classés</strong> sont les
         suivantes (source :{' '}
         <a
@@ -331,7 +331,7 @@ export default function ArticleTaxeDeSejour2026() {
         ) :
       </p>
       <div className="overflow-x-auto mb-6">
-        <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+        <table className="article-table">
           <caption className="sr-only">
             Fourchettes nationales 2026 de taxe de séjour pour les meublés classés
           </caption>
@@ -341,7 +341,7 @@ export default function ArticleTaxeDeSejour2026() {
             <col className="w-1/3" />
           </colgroup>
           <thead>
-            <tr className="bg-primary-300 text-white">
+            <tr className="article-table-header">
               <th scope="col" className="p-3 text-center font-semibold">
                 Catégorie
               </th>
@@ -365,24 +365,24 @@ export default function ArticleTaxeDeSejour2026() {
             ).map(({ cat, min, max }, i) => (
               <tr
                 key={cat}
-                className={i % 2 === 0 ? 'bg-white border-b border-gray-100' : 'bg-gray-50'}
+                className={i % 2 === 0 ? 'bg-surface border-b border-ink/10' : 'bg-paper'}
               >
-                <th scope="row" className="p-3 text-center text-gray-700 font-medium">
+                <th scope="row" className="p-3 text-center text-muted font-medium">
                   {cat}
                 </th>
-                <td className="p-3 text-center text-gray-600">{min}</td>
-                <td className="p-3 text-center font-semibold text-primary-400">{max}</td>
+                <td className="p-3 text-center text-muted">{min}</td>
+                <td className="p-3 text-center font-semibold text-copper">{max}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Ces fourchettes sont fixées au niveau national. C'est ensuite la <strong>commune</strong> ou
         l'<strong>EPCI</strong> qui choisit le tarif réellement appliqué dans la fourchette
         autorisée.
       </p>
-      <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
+      <blockquote className="article-quote italic">
         Le classement ne fixe pas le montant exact partout en France. Il fait entrer le bien dans
         une catégorie de barème local plus lisible.
       </blockquote>
@@ -391,13 +391,13 @@ export default function ArticleTaxeDeSejour2026() {
       <ArticleSectionHeading id="les-taxes-additionnelles-le-detail-qu-il-ne-faut-surtout-pas-oublier">
         Les taxes additionnelles : le détail qu'il ne faut surtout pas oublier
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La taxe de séjour ne se limite pas au seul tarif de base de la commune. Selon le territoire,
         des <strong>taxes additionnelles</strong> peuvent s'y ajouter.
       </p>
 
       <h3 className="mt-8 mb-3">1. Une taxe additionnelle départementale de 10 %</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le <strong>conseil départemental</strong> peut instituer une taxe additionnelle de{' '}
         <strong>10 %</strong> à la taxe de séjour ou à la taxe de séjour forfaitaire (
         <a
@@ -412,13 +412,13 @@ export default function ArticleTaxeDeSejour2026() {
       </p>
 
       <h3 className="mt-8 mb-3">2. En Île-de-France, deux taxes additionnelles spécifiques</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En <strong>Île-de-France</strong>, deux taxes additionnelles s'ajoutent à la taxe de séjour
         :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -434,7 +434,7 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -450,13 +450,13 @@ export default function ArticleTaxeDeSejour2026() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Ces deux majorations concernent l'ensemble de la <strong>région Île-de-France</strong>, pas
         uniquement Paris.
       </p>
 
       <h3 className="mt-8 mb-3">3. Dans certains départements, une taxe additionnelle de 34 %</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le CGCT prévoit aussi, dans certains départements précis, une taxe additionnelle de{' '}
         <strong>34 %</strong> à la taxe de séjour ou à la taxe de séjour forfaitaire. Cela concerne
         des départements visés par les{' '}
@@ -469,7 +469,7 @@ export default function ArticleTaxeDeSejour2026() {
         </a>
         , notamment pour le financement de certains grands projets d'infrastructure.
       </p>
-      <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
+      <blockquote className="article-quote italic">
         Le bon réflexe n'est pas de raisonner uniquement avec le barème national. Il faut toujours
         vérifier le tarif réellement appliqué dans la commune du bien et les taxes additionnelles
         qui s'y ajoutent.
@@ -477,7 +477,7 @@ export default function ArticleTaxeDeSejour2026() {
 
       {/* Section 5 – Tableau */}
       <ArticleSectionHeading id="exemples-concrets">Exemples concrets</ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-6">
+      <p className="text-muted leading-comfortable mb-6">
         Le tableau suivant illustre comment le classement, le tarif local et les majorations
         éventuelles se combinent. Les exemples 1 et 2 sont{' '}
         <strong>hypothétiques et pédagogiques</strong> ; les exemples 3 et 4 s'appuient sur les{' '}
@@ -491,12 +491,12 @@ export default function ArticleTaxeDeSejour2026() {
         .
       </p>
       <div className="overflow-x-auto mb-6">
-        <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
+        <table className="article-table">
           <caption className="sr-only">
             Exemples de calcul de taxe de séjour pour un meublé classé et non classé
           </caption>
           <thead>
-            <tr className="bg-primary-300 text-white">
+            <tr className="article-table-header">
               <th scope="col" className="p-3 text-left font-semibold">
                 Situation
               </th>
@@ -515,91 +515,83 @@ export default function ArticleTaxeDeSejour2026() {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b border-gray-100 align-top">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
+            <tr className="bg-surface border-b border-ink/10 align-top">
+              <th scope="row" className="p-3 text-muted font-medium">
                 Meublé classé 3★
                 <br />
-                <span className="text-gray-500 font-normal text-xs">
+                <span className="text-muted font-normal text-xs">
                   (hypothétique, hors taxes additionnelles)
                 </span>
               </th>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-muted">
                 Commune hors Île-de-France, sans taxe additionnelle. Tarif local voté : 1,20 € par
                 adulte et par nuitée. Séjour de 2 adultes pendant 2 nuits.
               </td>
-              <td className="p-3 text-gray-600">1,20 € × 2 adultes × 2 nuits</td>
-              <td className="p-3 text-center font-semibold text-primary-400 whitespace-nowrap">
+              <td className="p-3 text-muted">1,20 € × 2 adultes × 2 nuits</td>
+              <td className="p-3 text-center font-semibold text-copper whitespace-nowrap">
                 4,80 €
               </td>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-muted">
                 Avec un meublé classé, le calcul est direct et prévisible.
               </td>
             </tr>
-            <tr className="bg-gray-50 border-b border-gray-100 align-top">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
+            <tr className="bg-paper border-b border-ink/10 align-top">
+              <th scope="row" className="p-3 text-muted font-medium">
                 Meublé non classé
                 <br />
-                <span className="text-gray-500 font-normal text-xs">
-                  (hypothétique, même commune)
-                </span>
+                <span className="text-muted font-normal text-xs">(hypothétique, même commune)</span>
               </th>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-muted">
                 Séjour à 240 € HT pour 2 adultes pendant 2 nuits. Coût par personne et par nuitée :
                 60 €. Taux voté : 5 %. Plafond local maximal : 2,60 €.
               </td>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-muted">
                 60 € × 5 % = 3,00 € théoriques, mais plafonné à 2,60 €. Soit 2,60 € × 2 adultes × 2
                 nuits.
               </td>
-              <td className="p-3 text-center font-semibold text-gray-900 whitespace-nowrap">
-                10,40 €
-              </td>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-center font-semibold text-ink whitespace-nowrap">10,40 €</td>
+              <td className="p-3 text-muted">
                 Le non classé peut coûter nettement plus cher, et le plafond local devient
                 essentiel.
               </td>
             </tr>
-            <tr className="bg-white border-b border-gray-100 align-top">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
+            <tr className="bg-surface border-b border-ink/10 align-top">
+              <th scope="row" className="p-3 text-muted font-medium">
                 Paris 2026, meublé classé 3★
                 <br />
-                <span className="text-gray-500 font-normal text-xs">(exemple officiel)</span>
+                <span className="text-muted font-normal text-xs">(exemple officiel)</span>
               </th>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-muted">
                 Tarif de base : 1,70 €. Taxe additionnelle départementale (10 %) : 0,17 €.
                 Majoration régionale 15 % : 0,26 €. Majoration 200 % : 3,40 €.
               </td>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-muted">
                 Total officiel : 5,53 € par adulte et par nuitée. Pour 2 adultes pendant 2 nuits :
                 5,53 € × 2 × 2.
               </td>
-              <td className="p-3 text-center font-semibold text-gray-900 whitespace-nowrap">
-                22,12 €
-              </td>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-center font-semibold text-ink whitespace-nowrap">22,12 €</td>
+              <td className="p-3 text-muted">
                 En Île-de-France, les majorations changent fortement le montant final.
               </td>
             </tr>
-            <tr className="bg-gray-50 align-top">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
+            <tr className="bg-paper align-top">
+              <th scope="row" className="p-3 text-muted font-medium">
                 Paris 2026, meublé non classé
                 <br />
-                <span className="text-gray-500 font-normal text-xs">
+                <span className="text-muted font-normal text-xs">
                   (pédagogique, règles officielles Paris)
                 </span>
               </th>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-muted">
                 2 adultes, 1 nuit, 200 € HT au total. Coût par personne/nuit : 100 €. Taux appliqué
                 : 5 %. Base théorique : 5 €/adulte/nuit.
               </td>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-muted">
                 5,00 € × 3,25 = 16,25 € théoriques par adulte/nuit, mais plafond officiel 2026 à
                 Paris (non classé) : 15,93 €. Soit 15,93 € × 2 adultes.
               </td>
-              <td className="p-3 text-center font-semibold text-gray-900 whitespace-nowrap">
-                31,86 €
-              </td>
-              <td className="p-3 text-gray-600">
+              <td className="p-3 text-center font-semibold text-ink whitespace-nowrap">31,86 €</td>
+              <td className="p-3 text-muted">
                 Sur un non classé à prix élevé, le calcul proportionnel peut vite atteindre le
                 plafond local.
               </td>
@@ -607,7 +599,7 @@ export default function ArticleTaxeDeSejour2026() {
           </tbody>
         </table>
       </div>
-      <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
+      <blockquote className="article-quote italic">
         Ces exemples montrent pourquoi il faut éviter les raccourcis. Le classement change la
         logique de calcul, mais le montant final dépend aussi du prix de la nuitée, du taux local et
         des taxes additionnelles applicables.
@@ -617,7 +609,7 @@ export default function ArticleTaxeDeSejour2026() {
       <ArticleSectionHeading id="le-bon-reflexe-avant-de-comparer-deux-biens">
         Le bon réflexe avant de comparer deux biens
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-6">
+      <p className="text-muted leading-comfortable mb-6">
         Pour évaluer l'impact du classement sur la taxe de séjour dans un cas précis, il faut
         vérifier dans cet ordre :
       </p>
@@ -662,17 +654,15 @@ export default function ArticleTaxeDeSejour2026() {
           ] as { num: string; title: string; desc: string }[]
         ).map(({ num, title, desc }) => (
           <div key={num} className="flex gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {num}
-            </div>
+            <div className="article-step-marker">{num}</div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1 text-base leading-snug">{title}</h3>
-              <p className="text-gray-700 leading-comfortable">{desc}</p>
+              <h3 className="font-semibold text-ink mb-1 text-base leading-snug">{title}</h3>
+              <p className="text-muted leading-comfortable">{desc}</p>
             </div>
           </div>
         ))}
       </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si vous avez des questions sur votre situation, la{' '}
         <Link to="/faq" className="article-inline-link">
           FAQ Etoilys
@@ -684,7 +674,7 @@ export default function ArticleTaxeDeSejour2026() {
       <ArticleSectionHeading id="le-lien-avec-le-classement-etoilys">
         Le lien avec le classement Etoilys
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le classement ne change pas seulement le calcul de la taxe de séjour. Il conserve aussi un
         effet distinct sur le micro-BIC, détaillé dans{' '}
         <Link
@@ -695,13 +685,13 @@ export default function ArticleTaxeDeSejour2026() {
         </Link>
         .
       </p>
-      <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
+      <blockquote className="article-quote italic">
         Si vous hésitez à faire classer votre meublé, la taxe de séjour fait partie des sujets
         concrets à regarder. Elle ne se résume pas à un avantage automatique, mais le classement
         peut rendre le cadre plus lisible et, selon le positionnement du bien et le territoire, plus
         favorable.
       </blockquote>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour en savoir plus sur la démarche concrète, consultez{' '}
         <Link to="/procedure" className="article-inline-link">
           la procédure de classement
@@ -715,7 +705,7 @@ export default function ArticleTaxeDeSejour2026() {
 
       {/* Conclusion */}
       <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En 2026, le classement change bien la donne sur la taxe de séjour, parce qu'il fait passer
         le bien d'un calcul proportionnel à un barème fixe. Mais pour connaître l'impact réel, il
         faut toujours regarder le territoire du bien, le tarif local et les majorations applicables.

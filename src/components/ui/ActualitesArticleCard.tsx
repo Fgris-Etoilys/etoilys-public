@@ -5,6 +5,7 @@ import {
   getArticleCategoryLabel,
   type ActualiteArticle,
 } from '../../content/actualitesArticles';
+import Card from './Card';
 import SmartImage from './SmartImage';
 
 interface ActualitesArticleCardProps {
@@ -29,9 +30,9 @@ export default function ActualitesArticleCard({ article }: ActualitesArticleCard
   const dateMetadata = getDateMetadata(article);
 
   return (
-    <article className="group flex h-full min-w-0 flex-col overflow-hidden rounded-card border border-gray-200 bg-white shadow-card transition-shadow duration-200 hover:shadow-card-hover motion-reduce:transition-none">
+    <Card as="article" className="group flex h-full min-w-0 flex-col overflow-hidden" hover={false}>
       {article.imageKey && (
-        <div className="aspect-[16/9] overflow-hidden bg-primary-100">
+        <div className="aspect-[16/9] overflow-hidden bg-paper">
           <SmartImage
             assetKey={article.imageKey}
             alt={article.title}
@@ -41,32 +42,29 @@ export default function ActualitesArticleCard({ article }: ActualitesArticleCard
         </div>
       )}
       <div className="flex flex-1 flex-col p-6">
-        <span className="mb-3 inline-flex w-fit rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-500">
+        <span className="mb-3 inline-flex w-fit rounded-control bg-paper px-3 py-1 text-xs font-semibold text-ink">
           {getArticleCategoryLabel(article.category)}
         </span>
-        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-textLight">
+        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
           <time dateTime={dateMetadata.dateTime}>{dateMetadata.label}</time>
           <span aria-hidden="true">·</span>
           <span>{formatReadingTime(article.readingTimeMinutes)}</span>
         </div>
-        <h2 className="mb-3 text-xl font-playfair font-semibold leading-snug text-gray-900">
-          <Link
-            to={article.href}
-            className="rounded-sm no-underline hover:text-primary-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
-          >
+        <h2 className="mb-3 text-xl font-playfair font-semibold leading-snug text-ink">
+          <Link to={article.href} className="ui-focus rounded-sm no-underline hover:text-ink-hover">
             {article.title}
           </Link>
         </h2>
-        <p className="mb-5 flex-1 text-textLight leading-comfortable">{article.excerpt}</p>
+        <p className="mb-5 flex-1 text-muted leading-comfortable">{article.excerpt}</p>
         <Link
           to={article.href}
           aria-label={`Lire l’article ${article.title}`}
-          className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full text-sm font-semibold text-primary-400 no-underline transition-colors duration-200 hover:text-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 motion-reduce:transition-none"
+          className="editorial-link w-fit"
         >
           Lire l’article
           <ArrowRight aria-hidden="true" className="h-4 w-4" />
         </Link>
       </div>
-    </article>
+    </Card>
   );
 }

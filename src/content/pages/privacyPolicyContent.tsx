@@ -8,9 +8,9 @@ type PrivacyPolicyContent = {
   body?: ReactNode;
 };
 
-const linkClassName = 'text-primary hover:underline';
-const sectionTitleClassName = 'text-h4 font-semibold text-gray-800 mb-3';
-const strongClassName = 'text-gray-700';
+const linkClassName = 'article-inline-link';
+const sectionTitleClassName = 'text-h4 font-semibold text-ink mb-3';
+const strongClassName = 'text-ink';
 
 export const privacyPolicyContent = {
   fr: {
@@ -49,8 +49,8 @@ export const privacyPolicyContent = {
         <div>
           <h2 className={sectionTitleClassName}>1. Data controller</h2>
           <p className="mb-4">The data controller is:</p>
-          <div className="bg-primary-100 rounded-card p-6 text-sm space-y-0.5 mb-4">
-            <p className="font-semibold text-gray-800">ETOILYS</p>
+          <div className="bg-paper rounded-editorial p-6 text-sm space-y-0.5 mb-4">
+            <p className="font-semibold text-ink">ETOILYS</p>
             <p>SAS with share capital of EUR 2,000</p>
             <p>RCS Bergerac 939 330 809</p>
             <p>Registered office: 1345 route de Dautres, 24150 Mauzac-et-Grand-Castang, France</p>
@@ -126,7 +126,7 @@ export const privacyPolicyContent = {
           <p className="mb-4">Your personal data is processed for the following purposes:</p>
           <div className="space-y-4">
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 a) Replying to requests sent through the contact form
               </p>
               <p className="text-sm">
@@ -136,7 +136,7 @@ export const privacyPolicyContent = {
               </p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 b) Reviewing and processing classification or quotation requests
               </p>
               <p className="text-sm">
@@ -146,7 +146,7 @@ export const privacyPolicyContent = {
               </p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 c) Administrative and commercial follow-up of the relationship
               </p>
               <p className="text-sm">
@@ -156,7 +156,7 @@ export const privacyPolicyContent = {
               </p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 d) Securing the site, preventing spam, automated submissions and abusive use
               </p>
               <p className="text-sm">
@@ -166,7 +166,7 @@ export const privacyPolicyContent = {
               </p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 e) Complying with applicable legal, accounting, tax or evidentiary obligations
               </p>
               <p className="text-sm">
@@ -416,8 +416,8 @@ export const privacyPolicyContent = {
         <div>
           <h2 className={sectionTitleClassName}>1. Verwerkingsverantwoordelijke</h2>
           <p className="mb-4">De verwerkingsverantwoordelijke is:</p>
-          <div className="bg-primary-100 rounded-card p-6 text-sm space-y-0.5 mb-4">
-            <p className="font-semibold text-gray-800">ETOILYS</p>
+          <div className="bg-paper rounded-editorial p-6 text-sm space-y-0.5 mb-4">
+            <p className="font-semibold text-ink">ETOILYS</p>
             <p>SAS met aandelenkapitaal van 2.000 euro</p>
             <p>RCS Bergerac 939 330 809</p>
             <p>Statutaire zetel: 1345 route de Dautres, 24150 Mauzac-et-Grand-Castang, Frankrijk</p>
@@ -499,7 +499,7 @@ export const privacyPolicyContent = {
           <p className="mb-4">Uw persoonsgegevens worden verwerkt voor de volgende doeleinden:</p>
           <div className="space-y-4">
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 a) Beantwoorden van aanvragen via het contactformulier
               </p>
               <p className="text-sm">
@@ -509,7 +509,7 @@ export const privacyPolicyContent = {
               </p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 b) Onderzoeken en behandelen van classificatie- of offerteaanvragen
               </p>
               <p className="text-sm">
@@ -519,7 +519,7 @@ export const privacyPolicyContent = {
               </p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 c) Administratieve en commerciële afhandeling van de relatie
               </p>
               <p className="text-sm">
@@ -529,7 +529,7 @@ export const privacyPolicyContent = {
               </p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 d) Beveiliging van de site en preventie van spam, geautomatiseerde verzendingen en
                 misbruik
               </p>
@@ -541,7 +541,7 @@ export const privacyPolicyContent = {
               </p>
             </div>
             <div>
-              <p className="font-medium text-gray-700 mb-1">
+              <p className="font-medium text-ink mb-1">
                 e) Naleving van toepasselijke wettelijke, boekhoudkundige, fiscale of
                 bewijsverplichtingen
               </p>

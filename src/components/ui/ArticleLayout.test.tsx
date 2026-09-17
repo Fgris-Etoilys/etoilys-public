@@ -94,7 +94,7 @@ describe('ArticleLayout', () => {
     const lede = screen.getByText('Chapô de test').parentElement;
 
     expect(article).toHaveAttribute('aria-labelledby', heading.id);
-    expect(backLink).toHaveClass('inline-flex', 'min-h-11', 'rounded-full');
+    expect(backLink).toHaveClass('inline-flex', 'min-h-11', 'rounded-control', 'bg-surface');
     expect(lede).toHaveClass('article-lede', 'mb-10', 'sm:mb-12');
     expect(takeawaysHeading.compareDocumentPosition(bodyHeading)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING

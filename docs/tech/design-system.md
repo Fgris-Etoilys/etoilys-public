@@ -10,7 +10,7 @@ Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et au
 - `container-editorial` fixe la largeur éditoriale commune : 1240 px maximum, marges de 48 px, 32 px jusqu'à 1150 px et 20 px jusqu'à 680 px.
 - `editorial-heading`, `editorial-title`, `editorial-link`, `editorial-inline-link`, `editorial-section` et les tons de surface sont des primitives partagées, pas des variantes de route.
 - Le focus cuivre reste le comportement par défaut sur fond clair. Les surfaces `ink` utilisent `editorial-focus-inverse`, avec un contour `paper`. Les champs en erreur gardent leurs styles `ui-field-error`.
-- `Button` conserve ses variantes, tailles, navigation et événements analytics. Pour changer le rendu d'un CTA, ajouter une classe contextuelle partagée sans changer `variant`, `href` ni le libellé analytics dérivé.
+- `Button` conserve ses variantes, tailles, navigation et événements analytics. Pour changer le rendu d'un CTA, ajouter une classe contextuelle partagée sans changer `variant`, `href` ni le libellé analytics dérivé. Si un changement d'apparence impose de changer `variant`, passer `analyticsId` avec l'identifiant historique calculé.
 
 ### Besoin → Composant → Règle D'Usage
 
@@ -30,6 +30,7 @@ Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et au
 | FAQ et listes repliables     | `Accordion`                                        | Single-open, `hidden`, ARIA via `useId`. `density="compact"` reprend la FAQ Dordogne.                                                                     |
 | CTA final                    | `PageCta`                                          | Fond `ink`, focus inverse. `density="compact"` pour la composition Dordogne. Les boutons gardent leurs variantes analytics.                               |
 | Tableau comparatif éditorial | `ResponsiveComparisonTable appearance="editorial"` | Utiliser explicitement l'apparence éditoriale quand le tableau appartient à une page éditoriale. Ce n'est pas encore le défaut global.                    |
+| Article d'actualité          | `ArticleLayout` + composants article               | Garder le shell existant, les ancres et l'ordre éditorial. Les encarts directs utilisent les classes article partagées de `src/index.css`.                |
 | Split éditorial              | `editorial-split`                                  | Deux colonnes texte/contenu pour introductions et comparaisons, sans card imbriquée.                                                                      |
 | Faits clés                   | `editorial-facts`                                  | Liste de chiffres ou statuts courts en `dl`, avec séparation horizontale.                                                                                 |
 | Notice éditoriale            | `editorial-notice`                                 | Bloc d'attention neutre, bord cuivre.                                                                                                                     |

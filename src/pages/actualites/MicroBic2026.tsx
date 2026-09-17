@@ -85,7 +85,6 @@ const keyTakeawaysBlock = (
     rows={[
       {
         key: '2025',
-        rowClassName: 'border-b border-primary-200 bg-white',
         cells: {
           periode: (
             <>
@@ -94,10 +93,10 @@ const keyTakeawaysBlock = (
               (déclarés en 2026)
             </>
           ),
-          nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
+          nonClassePlafond: <span className="font-semibold text-ink">15 000 €</span>,
           nonClasseAbattement: '30 %',
           classePlafond: (
-            <span className="font-semibold text-primary-400">
+            <span className="font-semibold text-copper">
               77 700 €<span className="sr-only"> pour les revenus 2025 déclarés en 2026</span>
             </span>
           ),
@@ -106,7 +105,6 @@ const keyTakeawaysBlock = (
       },
       {
         key: '2026',
-        rowClassName: 'bg-primary-100',
         cells: {
           periode: (
             <>
@@ -115,10 +113,10 @@ const keyTakeawaysBlock = (
               (déclarés en 2027)
             </>
           ),
-          nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
+          nonClassePlafond: <span className="font-semibold text-ink">15 000 €</span>,
           nonClasseAbattement: '30 %',
           classePlafond: (
-            <span className="font-semibold text-primary-400">
+            <span className="font-semibold text-copper">
               83 600 €<span className="sr-only"> pour les revenus 2026 déclarés en 2027</span>
             </span>
           ),
@@ -215,7 +213,7 @@ export default function ArticleMicroBic2026() {
       lede={
         <>
           {/* Chapô */}
-          <p className="text-xl leading-comfortable text-gray-700 mb-10">
+          <p className="text-xl leading-comfortable text-muted mb-10">
             En 2026, le classement d'un meublé de tourisme garde un intérêt fiscal concret : il
             permet encore de rester dans un cadre micro-BIC nettement moins dégradé que celui d'un
             meublé non classé. Le point essentiel à comprendre est simple : entre 2025 et 2026,
@@ -229,12 +227,12 @@ export default function ArticleMicroBic2026() {
       footerCta={
         <>
           {/* CTA */}
-          <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+          <div className="article-cta-panel mb-12 mt-12 p-8">
             <h2 className="text-h4 mb-3">
               Vous voulez savoir si le classement de votre meublé change réellement votre situation
               fiscale ?
             </h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-muted mb-6">
               Consultez notre page sur la procédure de classement ou faites directement une demande
               de classement avec Etoilys.
             </p>
@@ -257,13 +255,13 @@ export default function ArticleMicroBic2026() {
       <ArticleSectionHeading id="la-vraie-question-en-2026-le-classement-garde-t-il-encore-un-avantage-fiscal">
         La vraie question en 2026 : le classement garde-t-il encore un avantage fiscal ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">Oui, clairement.</p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">Oui, clairement.</p>
+      <p className="text-muted leading-comfortable mb-4">
         Le classement d'un meublé de tourisme n'est pas qu'un repère commercial ou administratif. En
         2026, il garde un effet fiscal concret, parce qu'il permet encore de bénéficier d'un cadre
         micro-BIC beaucoup moins dégradé que celui des meublés non classés.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La{' '}
         <a
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
@@ -282,7 +280,7 @@ export default function ArticleMicroBic2026() {
       <ArticleSectionHeading id="seuils-et-abattements-micro-bic-le-detail-par-annee">
         Seuils et abattements micro-BIC : le détail par année
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-6">
+      <p className="text-muted leading-comfortable mb-6">
         Depuis la réforme issue de la{' '}
         <a
           href="https://www.vie-publique.fr/loi/292100-loi-du-19-novembre-2024-airbnb-desequilibres-du-marche-locatif-le-meur"
@@ -313,6 +311,7 @@ export default function ArticleMicroBic2026() {
       </p>
 
       <ResponsiveComparisonTable
+        appearance="editorial"
         className="mb-8"
         caption="Comparatif des seuils et abattements micro-BIC selon la période"
         primaryColumnKey="periode"
@@ -380,7 +379,6 @@ export default function ArticleMicroBic2026() {
         rows={[
           {
             key: '2025',
-            rowClassName: 'bg-white border-b border-gray-100',
             cells: {
               periode: (
                 <>
@@ -389,10 +387,10 @@ export default function ArticleMicroBic2026() {
                   (déclarés en 2026)
                 </>
               ),
-              nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
+              nonClassePlafond: <span className="font-semibold text-ink">15 000 €</span>,
               nonClasseAbattement: '30 %',
               classePlafond: (
-                <span className="font-semibold text-primary-400">
+                <span className="font-semibold text-copper">
                   77 700 €<span className="sr-only"> pour les revenus 2025 déclarés en 2026</span>
                 </span>
               ),
@@ -401,7 +399,6 @@ export default function ArticleMicroBic2026() {
           },
           {
             key: '2026',
-            rowClassName: 'bg-gray-50',
             cells: {
               periode: (
                 <>
@@ -410,10 +407,10 @@ export default function ArticleMicroBic2026() {
                   (déclarés en 2027)
                 </>
               ),
-              nonClassePlafond: <span className="font-semibold text-gray-900">15 000 €</span>,
+              nonClassePlafond: <span className="font-semibold text-ink">15 000 €</span>,
               nonClasseAbattement: '30 %',
               classePlafond: (
-                <span className="font-semibold text-primary-400">
+                <span className="font-semibold text-copper">
                   83 600 €<span className="sr-only"> pour les revenus 2026 déclarés en 2027</span>
                 </span>
               ),
@@ -421,19 +418,14 @@ export default function ArticleMicroBic2026() {
             },
           },
         ]}
-        tableClassName="w-full table-fixed text-sm border-collapse rounded-card overflow-hidden shadow-sm"
         desktopWrapperClassName="hidden md:block"
-        headerRowClassName="bg-primary-300 text-white"
         headerCellClassName="p-3 font-semibold break-words"
-        cellClassName="p-3 align-top break-words"
         mobileContainerClassName="md:hidden space-y-3"
-        mobileCardClassName="rounded-card border border-gray-200 bg-white p-4 shadow-sm"
-        mobileTitleClassName="text-sm font-semibold text-gray-900 mb-3"
-        mobileLabelClassName="text-xs font-medium text-gray-600"
-        mobileValueClassName="text-sm text-gray-900 text-right"
+        mobileTitleClassName="text-sm font-semibold text-ink mb-3"
+        mobileLabelClassName="text-xs font-medium text-muted"
       />
 
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         L'écart est structurant. Avant la réforme, de nombreux propriétaires raisonnaient encore
         avec les anciens seuils (188 700 € et 71 % d'abattement pour les classés). Ce n'est plus le
         bon cadre de référence depuis la déclaration 2026. Et l'écart ne disparaît pas pour les
@@ -449,7 +441,7 @@ export default function ArticleMicroBic2026() {
         </a>
         .
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour comprendre ce que le classement apporte concrètement au-delà de la fiscalité, consultez
         notre page{' '}
         <Link to="/les-avantages-du-classement" className="article-inline-link">
@@ -462,41 +454,41 @@ export default function ArticleMicroBic2026() {
       <ArticleSectionHeading id="pourquoi-cet-ecart-fiscal-change-vraiment-la-donne-pour-un-proprietaire">
         Pourquoi cet écart fiscal change vraiment la donne pour un propriétaire
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, le classement peut permettre à un propriétaire :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>de rester plus facilement dans le régime micro-BIC ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>de bénéficier d'un abattement forfaitaire plus favorable ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>d'éviter de basculer trop vite dans un cadre déclaratif plus lourd.</span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         À l'inverse, un meublé non classé se retrouve très vite confronté à un plafond bas. Le seuil
         de <strong>15 000 €</strong> devient le seuil de référence à surveiller : si les conditions
         de chiffre d'affaires du régime micro ne sont plus respectées sur les années prises en
         compte par l'administration, le propriétaire sort du micro-BIC et bascule au réel.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Attention toutefois : un dépassement isolé ne suffit pas toujours à faire sortir
         immédiatement du régime micro. L'administration apprécie l'accès au micro-BIC à partir des
         années de référence prévues par le régime micro, notamment N-1 et N-2.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si vous exploitez à la fois un meublé classé et un meublé non classé, la lecture des seuils
         demande une distinction supplémentaire :{' '}
         <Link
@@ -508,7 +500,7 @@ export default function ArticleMicroBic2026() {
         </Link>
         .
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         L'effet concret, pour un propriétaire, est donc moins théorique qu'il n'y paraît : selon le
         niveau de recettes, le classement peut faire la différence entre un régime simplifié encore
         accessible et une sortie rapide vers le régime réel. Pour en savoir plus sur la procédure,{' '}
@@ -522,30 +514,30 @@ export default function ArticleMicroBic2026() {
       <ArticleSectionHeading id="le-point-que-beaucoup-confondent-micro-bic-micro-entreprise-et-regime-reel">
         Le point que beaucoup confondent : micro-BIC, micro-entreprise et régime réel
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         C'est probablement la partie la plus importante pédagogiquement.
       </p>
 
       <h3 className="mt-8 mb-3">1. Le micro-BIC fiscal</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le micro-BIC est un <strong>régime fiscal</strong> au sens de l'imposition sur le revenu. Il
         détermine :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>le plafond de recettes à ne pas dépasser ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>et l'abattement forfaitaire appliqué par l'administration.</span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour les meublés de tourisme, ce régime dépend désormais très fortement du fait que le bien
         soit classé ou non. La base légale est l'
         <a
@@ -559,19 +551,19 @@ export default function ArticleMicroBic2026() {
       </p>
 
       <h3 className="mt-8 mb-3">2. La micro-entreprise</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La micro-entreprise ajoute une dimension <strong>sociale</strong> au sujet. Il faut surtout
         ne pas mélanger :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>le seuil fiscal du micro-BIC ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -579,7 +571,7 @@ export default function ArticleMicroBic2026() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour les meublés non classés, la situation devient particulièrement contraignante. À compter
         du <strong>1er janvier 2026</strong>,{' '}
         <a
@@ -594,20 +586,20 @@ export default function ArticleMicroBic2026() {
         veut dire que le seuil applicable est désormais très bas, et qu'il faut vérifier les
         conditions d'éligibilité sur les années de référence.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Autrement dit : un loueur non classé ne peut plus raisonner avec le seuil de 77 700 € qui
         s’appliquait avant la réforme. Depuis les revenus 2025, son seuil micro-BIC est fixé à 15
         000 €.
       </p>
 
       <h3 className="mt-8 mb-3">3. Le régime réel</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le régime réel s'applique lorsque les conditions d'accès au micro-BIC ne sont plus remplies,
         ou lorsque le loueur y opte. Il ne constitue pas une bonne ou mauvaise solution universelle.
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -616,13 +608,13 @@ export default function ArticleMicroBic2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>il implique une comptabilité et des obligations déclaratives plus lourdes ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -630,7 +622,7 @@ export default function ArticleMicroBic2026() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour comprendre les implications du régime BIC,{' '}
         <a
           href="https://www.economie.gouv.fr/entreprises/gerer-sa-fiscalite-et-ses-impots/limpot-sur-les-benefices-ir-et/impot-sur-le-revenu-bic-bnc-comment-ca-marche"
@@ -673,12 +665,10 @@ export default function ArticleMicroBic2026() {
           ] as { num: string; title: string; desc: string }[]
         ).map(({ num, title, desc }) => (
           <div key={num} className="flex gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {num}
-            </div>
+            <div className="article-step-marker">{num}</div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1 text-base leading-snug">{title}</h3>
-              <p className="text-gray-700 leading-comfortable">{desc}</p>
+              <h3 className="font-semibold text-ink mb-1 text-base leading-snug">{title}</h3>
+              <p className="text-muted leading-comfortable">{desc}</p>
             </div>
           </div>
         ))}
@@ -688,7 +678,7 @@ export default function ArticleMicroBic2026() {
       <ArticleSectionHeading id="concretement-que-doit-verifier-un-proprietaire-en-2026">
         Concrètement, que doit vérifier un propriétaire en 2026 ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-6">En pratique, il faut vérifier :</p>
+      <p className="text-muted leading-comfortable mb-6">En pratique, il faut vérifier :</p>
       <div className="space-y-6 mb-8">
         {(
           [
@@ -720,17 +710,15 @@ export default function ArticleMicroBic2026() {
           ] as { num: string; title: string; desc: string }[]
         ).map(({ num, title, desc }) => (
           <div key={num} className="flex gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {num}
-            </div>
+            <div className="article-step-marker">{num}</div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1 text-base leading-snug">{title}</h3>
-              <p className="text-gray-700 leading-comfortable">{desc}</p>
+              <h3 className="font-semibold text-ink mb-1 text-base leading-snug">{title}</h3>
+              <p className="text-muted leading-comfortable">{desc}</p>
             </div>
           </div>
         ))}
       </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si vous avez des questions sur votre situation, la{' '}
         <Link to="/faq" className="article-inline-link">
           FAQ Etoilys
@@ -742,16 +730,16 @@ export default function ArticleMicroBic2026() {
       <ArticleSectionHeading id="pourquoi-le-classement-reste-pertinent-dans-ce-contexte">
         Pourquoi le classement reste pertinent dans ce contexte
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Dans un environnement devenu plus strict, le classement garde un intérêt concret pour les
         propriétaires qui veulent structurer leur activité proprement.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le classement n'est pas un miracle fiscal, mais il conserve un avantage clair par rapport à
         un meublé non classé quand on parle du micro-BIC, et il s'inscrit dans une démarche plus
         lisible et plus professionnelle.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour mieux comprendre les étapes concrètes,{' '}
         <Link to="/procedure" className="article-inline-link">
           consultez la page sur la procédure de classement
@@ -761,12 +749,12 @@ export default function ArticleMicroBic2026() {
 
       {/* Conclusion */}
       <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En 2026, la bonne question n'est plus seulement «micro ou réel ?», mais aussi «classé ou non
         classé ?». C'est cette distinction qui structure désormais une grande partie de l'écart
         fiscal entre deux meublés de tourisme comparables.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour beaucoup de propriétaires, elle change très concrètement le seuil applicable,
         l'abattement et la possibilité de rester dans un cadre simplifié. Et la première vraie
         rupture s'applique déjà à la déclaration 2026 portant sur les revenus 2025.

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { getArticleCategoryLabel, type ActualiteArticle } from '../../content/actualitesArticles';
+import Card from './Card';
 
 interface ArticleRelatedArticlesProps {
   articles: readonly ActualiteArticle[];
@@ -28,12 +29,12 @@ export default function ArticleRelatedArticles({ articles }: ArticleRelatedArtic
   const visibleArticles = articles.slice(0, 3);
 
   return (
-    <section className="mt-9 border-t border-gray-200 pt-8" aria-labelledby="related-heading">
+    <section className="mt-9 border-t border-ink/15 pt-8" aria-labelledby="related-heading">
       <h2 id="related-heading" className="mb-5 text-h4">
         À lire aussi
       </h2>
       <ul
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 md:grid md:grid-cols-3 md:overflow-visible md:pb-0"
+        className="ui-focus flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 md:grid md:grid-cols-3 md:overflow-visible md:pb-0"
         aria-label="Articles connexes"
         tabIndex={0}
       >
@@ -42,33 +43,33 @@ export default function ArticleRelatedArticles({ articles }: ArticleRelatedArtic
 
           return (
             <li key={article.href} className="min-w-[78%] snap-start sm:min-w-[20rem] md:min-w-0">
-              <article className="flex h-full flex-col rounded-card border border-gray-200 bg-white p-4 shadow-card md:p-3">
-                <span className="mb-2 inline-flex w-fit rounded-full bg-primary-100 px-3 py-1 text-xs font-semibold text-primary-500">
+              <Card as="article" className="flex h-full flex-col p-4 md:p-3" hover={false}>
+                <span className="mb-2 inline-flex w-fit rounded-control bg-paper px-3 py-1 text-xs font-semibold text-ink">
                   {getArticleCategoryLabel(article.category)}
                 </span>
-                <h3 className="mb-2 text-lg font-playfair font-semibold leading-snug text-gray-900">
+                <h3 className="mb-2 text-lg font-playfair font-semibold leading-snug text-ink">
                   <Link
                     to={article.href}
-                    className="rounded-sm no-underline hover:text-primary-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+                    className="ui-focus rounded-sm no-underline hover:text-ink-hover"
                   >
                     {article.title}
                   </Link>
                 </h3>
-                <time className="mb-2 text-sm text-textLight" dateTime={dateMetadata.dateTime}>
+                <time className="mb-2 text-sm text-muted" dateTime={dateMetadata.dateTime}>
                   {dateMetadata.label}
                 </time>
-                <p className="mb-3 flex-1 text-[11px] leading-relaxed text-textLight">
+                <p className="mb-3 flex-1 text-[11px] leading-relaxed text-muted">
                   {article.relatedSummary}
                 </p>
                 <Link
                   to={article.href}
                   aria-label={`Lire l’article ${article.title}`}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full text-sm font-semibold text-primary-400 no-underline transition-colors duration-200 hover:text-primary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 motion-reduce:transition-none"
+                  className="editorial-link"
                 >
                   Lire l’article
                   <ArrowRight aria-hidden="true" className="h-4 w-4" />
                 </Link>
-              </article>
+              </Card>
             </li>
           );
         })}
