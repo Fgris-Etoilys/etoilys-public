@@ -4,9 +4,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import DepartmentLandingPage from './DepartmentLandingPage';
-import type { LocalLandingPageV6DepartmentConfig } from '../../content/local/types';
+import LocalLandingPageV6, { COMMON_LOCAL_V6_FAQ_ITEMS } from './LocalLandingPageV6';
+import type {
+  LocalLandingPageV6Config,
+  LocalLandingPageV6DepartmentConfig,
+} from '../../content/local/types';
 import { trackCtaClick } from '../../utils/analytics';
 import {
+  BERGERAC_LOCAL_LANDING_PAGE_V6,
+  BORDEAUX_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
@@ -35,12 +41,42 @@ function renderDepartmentPage(config: LocalLandingPageV6DepartmentConfig) {
   );
 }
 
+function renderLocalPage(config: LocalLandingPageV6Config) {
+  return render(
+    <MemoryRouter>
+      <LocalLandingPageV6 config={config} />
+    </MemoryRouter>
+  );
+}
+
 function readPageSource(fileName: string): string {
   return readFileSync(path.resolve(process.cwd(), 'src', 'pages', 'locales', fileName), 'utf8');
 }
 
 function readWrapperSource(fileName: string): string {
   return readFileSync(path.resolve(process.cwd(), 'src', 'components', 'local', fileName), 'utf8');
+}
+
+function normalizeText(text: string) {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function expectHeadingSequence(expectedHeadings: string[]) {
+  const headings = screen
+    .getAllByRole('heading')
+    .map((heading) => normalizeText(heading.textContent ?? ''));
+  let cursor = -1;
+
+  expectedHeadings.forEach((expectedHeading) => {
+    const nextIndex = headings.findIndex(
+      (heading, index) => index > cursor && heading === normalizeText(expectedHeading)
+    );
+
+    expect(nextIndex, `Missing heading after index ${cursor}: ${expectedHeading}`).toBeGreaterThan(
+      cursor
+    );
+    cursor = nextIndex;
+  });
 }
 
 describe('DepartmentLandingPage', () => {
@@ -219,4 +255,96 @@ describe('DepartmentLandingPage', () => {
       });
     }
   );
+
+  it.each([
+    [DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId, DORDOGNE_LOCAL_LANDING_PAGE_V6],
+    [GIRONDE_LOCAL_LANDING_PAGE_V6.departmentId, GIRONDE_LOCAL_LANDING_PAGE_V6],
+    [LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.departmentId, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6],
+  ])('keeps the full V6 department section order for %s', (_, config) => {
+    renderDepartmentPage(config);
+
+    expectHeadingSequence([
+      config.hero.title,
+      'Pourquoi faire classer votre meublé de tourisme ?',
+      config.serviceArea.title,
+      config.pricing.title,
+      config.procedure.title,
+      config.expertise.title,
+      config.faq.title,
+      config.finalCta.title,
+    ]);
+  });
+
+  it.each([
+    [DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId, DORDOGNE_LOCAL_LANDING_PAGE_V6],
+    [GIRONDE_LOCAL_LANDING_PAGE_V6.departmentId, GIRONDE_LOCAL_LANDING_PAGE_V6],
+    [LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.departmentId, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6],
+  ])('renders department FAQ items before the two automatic V6 items for %s', (_, config) => {
+    renderDepartmentPage(config);
+
+    const faqSection = screen.getByRole('heading', { name: config.faq.title }).closest('section');
+    if (!faqSection) throw new Error('Missing FAQ section');
+    const renderedQuestions = [...faqSection.querySelectorAll('button')].map((button) =>
+      normalizeText(button.textContent ?? '')
+    );
+    const configQuestions = config.faq.items.map((item) => item.question);
+    const automaticQuestions = COMMON_LOCAL_V6_FAQ_ITEMS.map((item) => item.question);
+
+    expect(renderedQuestions).toEqual([...configQuestions, ...automaticQuestions]);
+    automaticQuestions.forEach((question) => {
+      expect(
+        renderedQuestions.filter((renderedQuestion) => renderedQuestion === question)
+      ).toHaveLength(1);
+    });
+  });
+
+  it('keeps the department base FAQ order and appends local extras before V6 automatic items', () => {
+    const baseQuestions = DORDOGNE_LOCAL_LANDING_PAGE_V6.faq.items
+      .slice(1)
+      .map((item) => item.question);
+
+    expect(GIRONDE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
+      'Intervenez-vous dans ma commune en Gironde ?',
+      ...baseQuestions,
+      'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?',
+    ]);
+    expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
+      'Intervenez-vous dans ma commune dans le Lot-et-Garonne ?',
+      ...baseQuestions,
+    ]);
+  });
+
+  it.each([
+    [
+      'Dordogne',
+      DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      ['La Roque-Gageac, Dordogne', 'Les pierres du Périgord.'],
+    ],
+    [
+      'Bergerac',
+      BERGERAC_LOCAL_LANDING_PAGE_V6,
+      ['Quai Cyrano, Bergerac', 'Église Saint-Jacques, Bergerac.'],
+    ],
+    [
+      'Gironde',
+      GIRONDE_LOCAL_LANDING_PAGE_V6,
+      ['Saint-Émilion, Gironde', 'Front de mer d’Arcachon.'],
+    ],
+    [
+      'Bordeaux',
+      BORDEAUX_LOCAL_LANDING_PAGE_V6,
+      ['Place de la Bourse, Bordeaux', 'Tramway devant la place de la Bourse, Bordeaux.'],
+    ],
+    [
+      'Lot-et-Garonne',
+      LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+      ['Nérac, Lot-et-Garonne', 'Monflanquin, Lot-et-Garonne.'],
+    ],
+  ])('renders required local V6 media captions for %s', (_, config, captions) => {
+    renderLocalPage(config);
+
+    captions.forEach((caption) => {
+      expect(screen.getByText(caption)).toBeInTheDocument();
+    });
+  });
 });

@@ -1,5 +1,5 @@
 import type { LocalFaqItem, LocalV6EditorialNotice, LocalV6TaxModule } from '../types';
-import { BERGERAC_FAQ } from './bergerac';
+import { CITY_COMMON_FAQ } from './sharedCityFaq';
 
 export const BORDEAUX_SERVICE_COMMUNES = [
   'Bordeaux',
@@ -56,7 +56,7 @@ export const BORDEAUX_LOCAL_NOTICE: LocalV6EditorialNotice = {
 };
 
 export const BORDEAUX_FAQ: LocalFaqItem[] = [
-  ...BERGERAC_FAQ,
+  ...CITY_COMMON_FAQ,
   {
     question: 'Le classement me permet-il automatiquement de louer mon logement à Bordeaux ?',
     answer:

@@ -1,6 +1,6 @@
 # Socle visuel du site public
 
-Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et aux pages locales V6. La page Dordogne du commit `913becf` reste la référence visuelle de la direction artistique ; l'implémentation courante V6 reste la référence d'architecture et d'API.
+Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et aux pages locales V6. Les implémentations courantes Dordogne et Bergerac sont les références locales V6 : Dordogne pour le département, Bergerac pour la ville. Les anciens spikes et SHA ne servent plus que d’historique.
 
 ## Mode D'Emploi Durable
 
@@ -106,4 +106,4 @@ CTA final sur fond sombre :
 - Le fallback 404 reste `noindex,follow`.
 - Les routes actives doivent rester couvertes par `src/content/seoRoutes.ts`.
 - Les images critiques doivent continuer à passer par `SmartImage` et le manifeste d'images.
-- La page Dordogne `913becf` guide la finesse visuelle, mais les composants restaurés doivent vivre dans les primitives partagées, pas dans de nouveaux forks locaux.
+- Les références visuelles locales sont les pages V6 courantes Dordogne et Bergerac ; les composants restaurés doivent vivre dans les primitives partagées, pas dans de nouveaux forks locaux.

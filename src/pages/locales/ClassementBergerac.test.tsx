@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import App from '../../App';
+import LocalLandingPageV6 from '../../components/local/LocalLandingPageV6';
 import { IMAGE_MANIFEST } from '../../content/imageManifest';
+import { buildCityCommonFaqItems } from '../../content/local/cities/sharedCityFaq';
+import { BERGERAC_LOCAL_LANDING_PAGE_V6 } from '../../content/local/v6Pages';
 import { trackCtaClick } from '../../utils/analytics';
 
 vi.mock('../../utils/analytics', async (importOriginal) => ({
@@ -261,6 +265,49 @@ describe('ClassementBergerac', () => {
       /témoignage|partenariat local|agence Etoilys à Bergerac/i
     );
     expect(document.body).not.toHaveTextContent(/LocalBusiness/i);
+  });
+
+  it('keeps rich city FAQ links when a shared question is relabeled', () => {
+    render(
+      <MemoryRouter>
+        <LocalLandingPageV6
+          config={{
+            ...BERGERAC_LOCAL_LANDING_PAGE_V6,
+            faq: {
+              ...BERGERAC_LOCAL_LANDING_PAGE_V6.faq,
+              items: buildCityCommonFaqItems({
+                'target-category': 'Quelle catégorie viser avant la visite ?',
+                'fiscal-effects': 'Quel impact fiscal attendre du classement ?',
+              }),
+            },
+          }}
+        />
+      </MemoryRouter>
+    );
+
+    const categoryButton = screen.getByRole('button', {
+      name: 'Quelle catégorie viser avant la visite ?',
+    });
+    fireEvent.click(categoryButton);
+    const categoryPanel = document.getElementById(
+      categoryButton.getAttribute('aria-controls') ?? ''
+    );
+    if (!categoryPanel) throw new Error('Missing category FAQ panel');
+    expect(within(categoryPanel).getByRole('link', { name: 'simulateur Etoilys' })).toHaveAttribute(
+      'href',
+      '/simulateur'
+    );
+
+    const fiscalButton = screen.getByRole('button', {
+      name: 'Quel impact fiscal attendre du classement ?',
+    });
+    fireEvent.click(fiscalButton);
+    const fiscalPanel = document.getElementById(fiscalButton.getAttribute('aria-controls') ?? '');
+    if (!fiscalPanel) throw new Error('Missing fiscal FAQ panel');
+    expect(within(fiscalPanel).getByRole('link', { name: 'simulateur fiscal' })).toHaveAttribute(
+      'href',
+      '/simulateur-fiscal-classement'
+    );
   });
 
   it('preserves Bergerac CTA analytics variants after reusing the Dordogne final CTA', () => {

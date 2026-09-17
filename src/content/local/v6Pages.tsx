@@ -216,37 +216,12 @@ const dordogneQuestions = [
   },
 ] as const satisfies readonly LocalFaqItem[];
 
-function enrichCityFaqItems(items: readonly LocalFaqItem[]) {
-  return items.map((item) => ({
-    question: item.question,
-    answer:
-      item.question === 'Comment savoir quelle catégorie viser ?' ? (
-        <>
-          Le <Link to="/simulateur">simulateur Etoilys</Link> permet d’obtenir une première
-          estimation à partir des caractéristiques du logement. Il aide à situer la catégorie visée
-          avant la visite officielle.
-        </>
-      ) : item.question === 'Quels sont les effets du classement sur la fiscalité ?' ? (
-        <>
-          Le classement peut ouvrir un cadre fiscal plus favorable pour les meublés de tourisme,
-          notamment en micro-BIC. Vous pouvez estimer l’impact avec le{' '}
-          <Link to="/simulateur-fiscal-classement">simulateur fiscal</Link>.
-        </>
-      ) : (
-        item.answer
-      ),
-  }));
-}
-
 function buildDepartmentFaqItems(
   coverageItem: LocalFaqItem,
   localItems: readonly LocalFaqItem[] = []
 ) {
   return [coverageItem, ...dordogneQuestions.slice(1), ...localItems] satisfies LocalFaqItem[];
 }
-
-const bergeracFaqItems = enrichCityFaqItems(BERGERAC_FAQ);
-const bordeauxFaqItems = enrichCityFaqItems(BORDEAUX_FAQ);
 
 export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
   layoutVersion: 'v6',
@@ -526,7 +501,7 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       href: '/contact',
       label: 'Parlons-en',
     },
-    items: bergeracFaqItems,
+    items: BERGERAC_FAQ,
   },
   finalCta: {
     ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
@@ -777,7 +752,7 @@ export const BORDEAUX_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       href: '/contact',
       label: 'Parlons-en',
     },
-    items: bordeauxFaqItems,
+    items: BORDEAUX_FAQ,
   },
   finalCta: {
     ...GIRONDE_LOCAL_LANDING_PAGE_V6.finalCta,

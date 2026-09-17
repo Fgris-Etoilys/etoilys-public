@@ -82,7 +82,7 @@ const expertiseReasons = [
   },
 ] as const;
 
-const COMMON_LOCAL_V6_FAQ_ITEMS = [
+export const COMMON_LOCAL_V6_FAQ_ITEMS = [
   {
     question: 'Comment me préparer à une visite de classement ?',
     answer: (

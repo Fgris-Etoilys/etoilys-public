@@ -110,7 +110,7 @@ export interface LocalV6Hero {
     alt: string;
     sizes?: string;
     className: string;
-    caption?: ReactNode;
+    caption: ReactNode;
     note: {
       lead: string;
       title: string;
@@ -225,7 +225,7 @@ export interface LocalV6Expertise {
     alt: string;
     sizes: string;
     className: string;
-    caption?: string;
+    caption: string;
     credit?: LocalV6HeroImageCredit;
   };
 }
