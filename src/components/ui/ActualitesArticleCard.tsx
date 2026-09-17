@@ -37,7 +37,7 @@ export default function ActualitesArticleCard({ article }: ActualitesArticleCard
         className="ui-focus flex h-full flex-col rounded-editorial text-ink no-underline hover:text-ink"
       >
         {article.imageKey && (
-          <div className="aspect-[16/9] overflow-hidden bg-paper">
+          <div className="aspect-[16/9] overflow-hidden rounded-t-editorial bg-paper">
             <SmartImage
               assetKey={article.imageKey}
               alt={article.title}

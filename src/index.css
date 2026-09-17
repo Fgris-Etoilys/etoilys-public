@@ -1595,28 +1595,6 @@
     @apply flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-ink text-sm font-semibold text-white;
   }
 
-  .article-table {
-    @apply w-full border-collapse bg-surface text-sm text-muted;
-  }
-
-  .article-table thead tr,
-  .article-table-header {
-    @apply border-y border-ink/25 text-ink;
-  }
-
-  .article-table th,
-  .article-table td {
-    @apply border-b border-ink/15 p-3 align-top break-words;
-  }
-
-  .article-table tbody th {
-    @apply text-ink;
-  }
-
-  .article-table td {
-    color: inherit;
-  }
-
   .article-lede > :last-child {
     margin-bottom: 0;
   }

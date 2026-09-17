@@ -59,7 +59,7 @@ export default function FeaturedActualiteCard({ article }: FeaturedActualiteCard
           </span>
         </div>
         {hasImage && (
-          <div className="aspect-[16/9] overflow-hidden bg-paper lg:aspect-auto lg:min-h-full">
+          <div className="aspect-[16/9] overflow-hidden rounded-b-editorial bg-paper lg:aspect-auto lg:min-h-full lg:rounded-b-none lg:rounded-r-editorial">
             <SmartImage
               assetKey={article.imageKey}
               alt={article.title}

@@ -110,8 +110,11 @@ export default function ArticleReadingUtilities({
       window.removeEventListener('pageshow', scheduleMeasure);
       resizeObserver?.disconnect();
 
-      if (animationFrameRef.current !== null && typeof window.cancelAnimationFrame === 'function') {
-        window.cancelAnimationFrame(animationFrameRef.current);
+      if (animationFrameRef.current !== null) {
+        if (typeof window.cancelAnimationFrame === 'function') {
+          window.cancelAnimationFrame(animationFrameRef.current);
+        }
+        animationFrameRef.current = null;
       }
     };
   }, [startRef, endRef]);
@@ -134,14 +137,14 @@ export default function ArticleReadingUtilities({
   return (
     <>
       <div
-        className={`pointer-events-none fixed inset-x-0 top-[var(--etoilys-header-height,73px)] z-[65] h-1.5 bg-paper/95 shadow-[0_1px_3px_rgb(var(--color-ink)/0.08)] transition-opacity duration-150 motion-reduce:transition-none ${
+        className={`pointer-events-none fixed inset-x-0 top-[var(--etoilys-header-height,73px)] z-[65] h-1 bg-copper/10 transition-opacity duration-150 motion-reduce:transition-none ${
           isProgressVisible ? 'opacity-100' : 'opacity-0'
         }`}
         aria-hidden="true"
         data-testid="article-reading-progress"
       >
         <div
-          className="h-full bg-copper transition-[width] duration-150 motion-reduce:transition-none"
+          className="h-full bg-copper shadow-[0_0_8px_rgb(var(--color-copper)/0.28)] transition-[width] duration-150 motion-reduce:transition-none"
           data-testid="article-reading-progress-bar"
           style={{ width: `${progress}%` }}
         />
