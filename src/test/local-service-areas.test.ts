@@ -40,17 +40,17 @@ const fixtureSeo = {
 } as const;
 
 const draftDepartment: LocalRegistryEntry = {
-  id: 'aveyron' as DepartmentAreaId,
+  id: 'fixture-draft-department' as DepartmentAreaId,
   kind: 'department',
-  name: 'Aveyron',
-  path: '/classement-meuble-tourisme-aveyron',
+  name: 'Département brouillon',
+  path: '/classement-meuble-tourisme-fixture-draft',
   departmentCode: '12',
   regionId: 'occitanie',
   status: 'draft',
   coverageMode: 'sectors',
   displayOrder: 50,
   hubDescription: 'Draft department.',
-  hubLinkLabel: 'Classement en Aveyron →',
+  hubLinkLabel: 'Classement fixture brouillon →',
   seo: fixtureSeo,
 };
 

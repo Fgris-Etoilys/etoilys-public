@@ -6,9 +6,12 @@ import { MemoryRouter } from 'react-router-dom';
 import DepartmentLandingPage from './DepartmentLandingPage';
 import LocalLandingPageV6, { COMMON_LOCAL_V6_FAQ_ITEMS } from './LocalLandingPageV6';
 import type {
+  DepartmentAreaId,
   LocalLandingPageV6Config,
   LocalLandingPageV6DepartmentConfig,
+  LocalRegistryEntry,
 } from '../../content/local/types';
+import { LOCAL_REGISTRY } from '../../content/local/registry';
 import { trackCtaClick } from '../../utils/analytics';
 import {
   DEPARTMENT_LOCAL_V6_FAQ_ITEMS,
@@ -34,6 +37,29 @@ const COMMUNE_INDEX_FIXTURE = {
     { id: '46042', label: 'Cahors', departmentCode: '46' },
     { id: '47001', label: 'Agen', departmentCode: '47' },
   ],
+};
+
+const draftDepartmentRegistryFixture: LocalRegistryEntry = {
+  id: 'fixture-draft-department' as DepartmentAreaId,
+  kind: 'department',
+  name: 'Département brouillon',
+  path: '/classement-meuble-tourisme-fixture-draft',
+  departmentCode: '99',
+  regionId: 'occitanie',
+  status: 'draft',
+  coverageMode: 'sectors',
+  displayOrder: 99,
+  hubDescription: 'Fixture non publiée.',
+  hubLinkLabel: 'Classement fixture →',
+  seo: {
+    lastModified: '2026-09-18',
+    title: 'Fixture brouillon',
+    description: 'Fixture brouillon.',
+    breadcrumbLabel: 'Fixture',
+    ogImageKey: 'homeHero',
+    lcpImageKey: 'homeHero',
+    lcpImageSizes: '100vw',
+  },
 };
 
 function renderDepartmentPage(config: LocalLandingPageV6DepartmentConfig) {
@@ -116,10 +142,15 @@ describe('DepartmentLandingPage', () => {
   });
 
   it('renders NotFound instead of a local landing when the registry entry is not published', () => {
-    renderDepartmentPage({
-      ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
-      departmentId: 'aveyron' as typeof DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId,
-    });
+    LOCAL_REGISTRY.push(draftDepartmentRegistryFixture);
+    try {
+      renderDepartmentPage({
+        ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
+        departmentId: draftDepartmentRegistryFixture.id,
+      });
+    } finally {
+      LOCAL_REGISTRY.splice(LOCAL_REGISTRY.indexOf(draftDepartmentRegistryFixture), 1);
+    }
 
     expect(screen.getByRole('heading', { name: /page non trouvée/i })).toBeInTheDocument();
     expect(

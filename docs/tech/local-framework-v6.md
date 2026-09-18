@@ -109,16 +109,28 @@ La source technique reste `scripts/images-build.mjs` pour l’asset local et le 
 
 Checklist nouvelle page locale :
 
-1. Ajouter ou réutiliser une config V6 typée dans `src/content/local/departments/*Page.tsx` ou `src/content/local/cities/*Page.tsx`; `v6Pages.tsx` ne sert qu’au réexport compat.
-2. Brancher la route sur le wrapper fin `CityLandingPage` ou `DepartmentLandingPage`.
-3. Ajouter l’entrée `src/content/local/registry.ts` pour publier la hiérarchie locale, le hub, le SEO local, les scripts et les données structurées.
-4. Vérifier que les métadonnées registry reprennent le `lcpImageKey`, les `lcpImageSizes`, les dates et les libellés de breadcrumb attendus.
-5. Déclarer les images locales dans `scripts/images-build.mjs`, lancer `npm run images:build`, puis vérifier `npm run images:check`.
-6. Renseigner des captions média non vides et distinguer caption photographique / index territorial.
-7. Pour un département, générer l’index communes depuis la source INSEE/taxe de séjour et définir un `PricingProfileId` métier propre.
+À renseigner manuellement :
+
+1. Ajouter l'ID dans `DepartmentAreaId` ou `CityAreaId` (`src/content/local/types.ts`) et, seulement si nécessaire, la région dans `RegionId` + `DEPARTMENT_REGIONS`.
+2. Créer une config V6 typée dans `src/content/local/departments/*Page.tsx` ou `src/content/local/cities/*Page.tsx`; `v6Pages.tsx` ne sert qu’au réexport compat.
+3. Brancher une route explicite dans `src/AppRoutes.tsx` via `DepartmentLandingPage` ou `CityLandingPage`.
+4. Ajouter l’entrée `src/content/local/registry.ts` avec `kind`, `id`, `path`, `departmentCode` opaque, région, parent éventuel, statut, ordre, hub, SEO, images LCP/OG et `coverageMode` pour un département.
+5. Pour un département, ajouter l’index territorial dans `LOCAL_V6_DEPARTMENT_HERO_INDEXES`, le `PricingProfileId` métier dans `pricing.ts`, puis l’index communes registry si le picker doit être alimenté.
+6. Déclarer les images locales dans `scripts/images-build.mjs`, lancer `npm run images:build`, puis vérifier `npm run images:check`.
+7. Renseigner des captions média non vides et distinguer caption photographique / index territorial.
 8. Pour une ville, réutiliser `sharedCityFaq.ts` pour le socle FAQ riche, puis ajouter uniquement les questions vraiment locales.
 9. Préserver les `variant` CTA analytics historiques quand une page est migrée.
 10. Couvrir par tests le rendu V6, le pricing, les liens FAQ, les CTA analytics, l’ordre FAQ, la publication registry, les breadcrumbs et les données structurées locales dérivées du registre.
+
+Dérivé automatiquement depuis le registre :
+
+- Hub `/zones-intervention`, régions masquées si vides, cartes départementales et liens villes enfants publiés.
+- SEO local dans `src/content/seoRoutes.ts`, breadcrumbs JSON-LD et breadcrumbs visibles via `PageHero`.
+- Sitemap et pré-rendu via `getIndexablePaths()` / `getPrerenderPaths()`.
+- Index communes produits par `scripts/build-taxe-sejour-dataset.ts` pour les départements publiés qui déclarent `communeIndex`.
+- Sélection IndexNow locale par les chemins génériques de `scripts/indexnow-submit.ts`, sans mapping par territoire.
+
+Ne pas créer de donnée Aveyron avant la page dédiée : une fixture de test doit rester locale au test et ne jamais entrer dans le registre de production.
 
 ## Contrat carte future
 
@@ -136,19 +148,16 @@ Les snippets ci-dessous sont des exemples abrégés / pseudo-code pour illustrer
 
 ```tsx
 const CITY_V6: LocalLandingPageV6CityConfig = {
-  ...COMMON_LOCAL_V6,
   layoutVersion: 'v6',
   scope: 'city',
+  localEntryId: 'bergerac',
   city: 'Bergerac',
   hero: {
-    ...COMMON_LOCAL_V6.hero,
     eyebrow: 'Bergerac et le Bergeracois',
     title: 'Classement de meublé de tourisme à Bergerac et dans le Bergeracois',
     highlightedTitleText: 'à Bergerac et dans le Bergeracois',
     image: {
-      ...COMMON_LOCAL_V6.hero.image,
       assetKey: 'bergeracHero',
-      sizes: getSeoRouteConfig(path).lcpImageSizes,
     },
     primaryAction: {
       href: '/demande-classement',
@@ -172,26 +181,20 @@ const CITY_V6: LocalLandingPageV6CityConfig = {
     mode: 'direct',
     title: 'Combien coûte le classement d’un meublé à Bergerac ?',
     pricingProfileId: 'dordogne-standard',
-    checklist,
-    procedureLink,
   },
 };
 ```
 
 ```tsx
 const DEPARTMENT_V6: LocalLandingPageV6DepartmentConfig = {
-  ...COMMON_LOCAL_V6,
   layoutVersion: 'v6',
   scope: 'department',
   departmentId: 'dordogne',
   hero: {
-    ...COMMON_LOCAL_V6.hero,
     title: 'Classement de gîtes et meublés de tourisme en Dordogne',
     highlightedTitleText: 'en Dordogne',
     image: {
-      ...COMMON_LOCAL_V6.hero.image,
       assetKey: 'dordogneLaRoqueGageac',
-      sizes: getSeoRouteConfig(path).lcpImageSizes,
     },
     primaryAction: {
       href: '/demande-classement',
@@ -228,8 +231,6 @@ const DEPARTMENT_V6: LocalLandingPageV6DepartmentConfig = {
       defaultPricingProfileId: 'dordogne-standard',
       overrides: {},
     },
-    checklist,
-    procedureLink,
   },
 };
 ```
