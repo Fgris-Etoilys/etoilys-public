@@ -31,7 +31,7 @@ export const LOT_SERVICE_SECTORS = [
     name: 'Figeac et la Vallée du Célé',
     communes: [
       'Figeac',
-      'Capdenac',
+      'Capdenac-le-Haut',
       'Cajarc',
       'Cardaillac',
       'Marcilhac-sur-Célé',

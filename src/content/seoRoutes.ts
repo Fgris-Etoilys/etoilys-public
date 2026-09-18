@@ -124,7 +124,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'procedure',
   },
   '/zones-intervention': {
-    lastModified: '2026-09-17',
+    lastModified: '2026-09-18',
     title: 'Zones d’intervention pour le classement des meublés de tourisme',
     description:
       'Découvrez les secteurs actuellement couverts par Etoilys pour les visites de classement des meublés de tourisme.',

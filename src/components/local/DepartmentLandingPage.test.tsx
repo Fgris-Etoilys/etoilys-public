@@ -171,7 +171,8 @@ describe('DepartmentLandingPage', () => {
   it('renders Lot sectors as representative coverage for the whole department', () => {
     renderDepartmentPage(LOT_LOCAL_LANDING_PAGE_V6);
 
-    expect(document.body).toHaveTextContent('l’ensemble du département du Lot');
+    expect(document.body).toHaveTextContent('Nos inspecteurs interviennent dans tout le Lot');
+    expect(document.body).toHaveTextContent('votre commune reste couverte');
     [
       'Cahors et la Vallée du Lot',
       'Rocamadour et la Vallée de la Dordogne',
@@ -186,7 +187,7 @@ describe('DepartmentLandingPage', () => {
       'Puy-l’Évêque',
       'Rocamadour',
       'Saint-Céré',
-      'Capdenac',
+      'Capdenac-le-Haut',
       'Bagnac-sur-Célé',
       'Cœur de Causse',
       'Castelnau-Montratier',

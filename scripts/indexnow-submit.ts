@@ -296,10 +296,16 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
       }
 
       if (
+        normalizedPath === 'src/content/local/registry.ts' ||
         normalizedPath === 'src/content/local/v6Pages.tsx' ||
         normalizedPath.startsWith('src/content/local/cities/') ||
         normalizedPath.startsWith('src/content/local/departments/')
       ) {
+        if (normalizedPath === 'src/content/local/registry.ts') {
+          urls.push(...allIndexableUrls());
+          continue;
+        }
+
         urls.push(routeUrl('/classement-meuble-tourisme-dordogne'));
         urls.push(routeUrl('/classement-meuble-tourisme-bergerac'));
         urls.push(routeUrl('/classement-meuble-tourisme-bordeaux'));

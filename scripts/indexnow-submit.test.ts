@@ -100,4 +100,13 @@ describe('indexnow-submit helpers', () => {
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-lot');
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-lot-et-garonne');
   });
+
+  it('maps registry changes to the intervention hub and structured-data consumers', () => {
+    const changedFiles = parseChangedFileEntries(['M\tsrc/content/local/registry.ts'].join('\n'));
+    const urls = dedupeAndValidateUrls(getUrlsForChangedFiles(changedFiles));
+
+    expect(urls).toContain('https://www.etoilys.fr/zones-intervention');
+    expect(urls).toContain('https://www.etoilys.fr/');
+    expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-lot');
+  });
 });

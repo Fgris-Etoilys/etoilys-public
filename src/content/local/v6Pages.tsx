@@ -808,7 +808,7 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
   serviceArea: {
     title: 'Dans quelles communes du Lot intervenons-nous ?',
     intro:
-      'Etoilys intervient dans l’ensemble du département du Lot. Les secteurs ci-dessous structurent la zone d’intervention avec des communes représentatives ; ils ne limitent pas la couverture et ne créent aucune différence de tarif.',
+      'Nos inspecteurs interviennent dans tout le Lot. Les communes ci-dessous sont regroupées par grands secteurs pour vous donner des repères ; votre commune reste couverte même si elle n’apparaît pas dans cette sélection.',
     sectors: toCollapsedSectors(LOT_SERVICE_SECTORS),
     parentLink: {
       href: '/zones-intervention',
@@ -819,7 +819,7 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
     mode: 'picker',
     title: 'Quel tarif pour classer votre meublé dans le Lot ?',
     intro:
-      'Indiquez la commune de votre logement pour consulter le tarif prévu. Le sélecteur couvre les communes du Lot présentes dans l’index officiel généré.',
+      'Indiquez la commune de votre logement pour consulter le tarif prévu. Le sélecteur couvre l’ensemble des communes du Lot.',
     checklist: pricingChecklist,
     procedureLink: {
       href: '/procedure',
