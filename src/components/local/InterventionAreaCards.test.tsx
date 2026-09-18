@@ -11,8 +11,10 @@ const dordogneArea: DepartmentInterventionArea = {
   departmentCode: '24',
   regionId: 'nouvelle-aquitaine',
   status: 'published',
+  coverageMode: 'sectors',
   displayOrder: 10,
   description: 'Page départementale Dordogne.',
+  hubLinkLabel: 'Classement en Dordogne →',
   localPages: [
     {
       id: 'bergeracois',
@@ -29,8 +31,10 @@ const girondeArea: DepartmentInterventionArea = {
   departmentCode: '33',
   regionId: 'nouvelle-aquitaine',
   status: 'published',
+  coverageMode: 'sectors',
   displayOrder: 20,
   description: 'Page départementale Gironde.',
+  hubLinkLabel: 'Classement en Gironde →',
   localPages: [],
 };
 
@@ -41,8 +45,10 @@ const lotEtGaronneArea: DepartmentInterventionArea = {
   departmentCode: '47',
   regionId: 'nouvelle-aquitaine',
   status: 'published',
+  coverageMode: 'sectors',
   displayOrder: 30,
   description: 'Page départementale Lot-et-Garonne.',
+  hubLinkLabel: 'Classement dans le Lot-et-Garonne →',
   localPages: [
     {
       id: 'agenais',
@@ -77,8 +83,10 @@ const fiveDepartmentFixture: DepartmentInterventionArea[] = [
     departmentCode: '46',
     regionId: 'occitanie',
     status: 'published',
+    coverageMode: 'department',
     displayOrder: 40,
     description: 'Page départementale Lot.',
+    hubLinkLabel: 'Classement dans le Lot →',
     localPages: [],
   },
   {
@@ -88,8 +96,10 @@ const fiveDepartmentFixture: DepartmentInterventionArea[] = [
     departmentCode: '12',
     regionId: 'occitanie',
     status: 'published',
+    coverageMode: 'sectors',
     displayOrder: 50,
     description: 'Page départementale Aveyron.',
+    hubLinkLabel: 'Classement en Aveyron →',
     localPages: [],
   },
 ];
@@ -134,7 +144,7 @@ describe('InterventionAreaCards', () => {
     expect(link).toHaveAttribute('href', '/classement-meuble-tourisme-bergerac');
   });
 
-  it('renders a subtitle for multiple local pages and limits links to three', () => {
+  it('renders multiple local page links without a subtitle', () => {
     renderCards(fixtureAreas);
 
     const girondeHeading = screen.getByRole('heading', { name: 'Gironde' });
@@ -144,7 +154,7 @@ describe('InterventionAreaCards', () => {
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
-    expect(screen.getByText('Pages locales')).toBeInTheDocument();
+    expect(screen.queryByText('Pages locales')).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Agen et l’Agenais →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-agen'
@@ -156,7 +166,10 @@ describe('InterventionAreaCards', () => {
       'href',
       '/classement-meuble-tourisme-marmande'
     );
-    expect(screen.queryByRole('link', { name: 'Nérac et l’Albret →' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Nérac et l’Albret →' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-nerac'
+    );
     expect(girondeCard).toBeDefined();
     expect(within(girondeCard as HTMLElement).queryByText('Pages locales')).not.toBeInTheDocument();
   });
@@ -165,11 +178,11 @@ describe('InterventionAreaCards', () => {
     renderCards(fiveDepartmentFixture);
 
     expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(5);
-    expect(screen.getByRole('link', { name: 'Consulter la page Dordogne' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Classement en Dordogne →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-dordogne'
     );
-    expect(screen.getByRole('link', { name: 'Consulter la page Aveyron' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Classement en Aveyron →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-aveyron'
     );

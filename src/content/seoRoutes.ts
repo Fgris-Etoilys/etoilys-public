@@ -7,6 +7,7 @@ import {
   getRouteIdFromPath,
 } from '../i18n/routeHelpers';
 import type { LocalizedRouteId } from '../i18n/localizedRoutes';
+import { getLocalRegistryEntryByPath, getPublishedLocalSeoEntries } from './local/registry';
 
 export interface SeoRouteConfig {
   title: string;
@@ -74,6 +75,34 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
   prerender: false,
 };
 
+const publishedLocalSeoEntries = getPublishedLocalSeoEntries();
+
+const LOCAL_SEO_ROUTES: Record<string, SeoRouteConfig> = Object.fromEntries(
+  publishedLocalSeoEntries.map((entry) => {
+    const parentEntry =
+      entry.kind === 'city'
+        ? publishedLocalSeoEntries.find((candidate) => candidate.id === entry.parentId)
+        : undefined;
+
+    return [
+      entry.path,
+      {
+        lastModified: entry.seo.lastModified,
+        title: entry.seo.title,
+        description: entry.seo.description,
+        breadcrumbLabel: entry.seo.breadcrumbLabel,
+        breadcrumbParentPaths:
+          entry.kind === 'city' && parentEntry
+            ? ['/zones-intervention', parentEntry.path]
+            : ['/zones-intervention'],
+        ogImageKey: entry.seo.ogImageKey,
+        lcpImageKey: entry.seo.lcpImageKey,
+        lcpImageSizes: entry.seo.lcpImageSizes,
+      } satisfies SeoRouteConfig,
+    ];
+  })
+);
+
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/': {
     lastModified: '2026-09-07',
@@ -130,68 +159,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Découvrez les secteurs actuellement couverts par Etoilys pour les visites de classement des meublés de tourisme.',
     breadcrumbLabel: 'Zones d’intervention',
   },
-  '/classement-meuble-tourisme-dordogne': {
-    lastModified: '2026-09-17',
-    title: 'Classement de meublé de tourisme en Dordogne',
-    description:
-      'Classez votre gîte ou meublé de tourisme en Dordogne avec Etoilys, organisme accrédité Cofrac. Consultez les tarifs. Rappel sous 24 h ouvrées.',
-    breadcrumbLabel: 'Dordogne',
-    ogImageKey: 'dordogneLaRoqueGageac',
-    lcpImageKey: 'dordogneLaRoqueGageac',
-    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
-  },
-  '/classement-meuble-tourisme-bergerac': {
-    lastModified: '2026-09-17',
-    title: 'Classement meublé de tourisme à Bergerac',
-    description:
-      'Faites classer votre meublé de tourisme à Bergerac et dans le Bergeracois. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
-    breadcrumbLabel: 'Bergerac et le Bergeracois',
-    breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-dordogne'],
-    ogImageKey: 'bergeracHero',
-    lcpImageKey: 'bergeracHero',
-    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
-  },
-  '/classement-meuble-tourisme-bordeaux': {
-    lastModified: '2026-09-17',
-    title: 'Classement meublé de tourisme à Bordeaux',
-    description:
-      'Faites classer votre meublé de tourisme à Bordeaux et dans la métropole. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
-    breadcrumbLabel: 'Bordeaux',
-    breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-gironde'],
-    ogImageKey: 'bordeauxHero',
-    lcpImageKey: 'bordeauxHero',
-    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
-  },
-  '/classement-meuble-tourisme-gironde': {
-    lastModified: '2026-09-17',
-    title: 'Classement gîte, Airbnb et meublé de tourisme en Gironde',
-    description:
-      'Etoilys accompagne les propriétaires de meublés de tourisme en Gironde : classement officiel, zones d’intervention, procédure, fiscalité, taxe de séjour et demande en ligne.',
-    breadcrumbLabel: 'Gironde',
-    ogImageKey: 'girondeHero',
-    lcpImageKey: 'girondeHero',
-    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
-  },
-  '/classement-meuble-tourisme-lot-et-garonne': {
-    lastModified: '2026-09-17',
-    title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot-et-Garonne',
-    description:
-      'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot-et-Garonne pour leur classement officiel.',
-    breadcrumbLabel: 'Classement en Lot-et-Garonne',
-    ogImageKey: 'lotEtGaronneHero',
-    lcpImageKey: 'lotEtGaronneHero',
-    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
-  },
-  '/classement-meuble-tourisme-lot': {
-    lastModified: '2026-09-18',
-    title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot',
-    description:
-      'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot pour leur classement officiel.',
-    breadcrumbLabel: 'Lot',
-    ogImageKey: 'lotHero',
-    lcpImageKey: 'lotHero',
-    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
-  },
+  ...LOCAL_SEO_ROUTES,
   '/simulateur': {
     lastModified: '2026-06-24',
     title: 'Simulateur de classement meublé de tourisme',
@@ -775,4 +743,13 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
       url: getCanonicalUrl(normalizedPath),
     },
   ];
+}
+
+export function shouldRenderVisibleBreadcrumbs(pathname: string): boolean {
+  const normalizedPath = normalizePath(pathname);
+  if (normalizedPath === '/zones-intervention') {
+    return true;
+  }
+
+  return getLocalRegistryEntryByPath(normalizedPath)?.status === 'published';
 }

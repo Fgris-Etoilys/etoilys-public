@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { getCanonicalUrl, getIndexablePaths, SITE_URL } from '../src/content/seoRoutes.ts';
+import { getPublishedLocalPaths } from '../src/content/local/registry.ts';
 
 const SITE_HOST = 'www.etoilys.fr';
 const INDEXNOW_KEY = 'a4f9bc0d1e4b47b9b0e2b438d9d8f2aa';
@@ -197,6 +198,10 @@ function routeUrl(pathname: string): string {
   return getCanonicalUrl(pathname);
 }
 
+function localPublicUrls(): string[] {
+  return ['/zones-intervention', ...getPublishedLocalPaths()].map(routeUrl);
+}
+
 function articlePathFromPage(filePath: string): string | null {
   const articlePageRoutes: Record<string, string> = {
     'src/pages/actualites/MeublesChangements20252026.tsx':
@@ -297,6 +302,7 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
 
       if (
         normalizedPath === 'src/content/local/registry.ts' ||
+        normalizedPath === 'src/content/local/sharedLocalContent.ts' ||
         normalizedPath === 'src/content/local/v6Pages.tsx' ||
         normalizedPath.startsWith('src/content/local/cities/') ||
         normalizedPath.startsWith('src/content/local/departments/')
@@ -306,12 +312,7 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
           continue;
         }
 
-        urls.push(routeUrl('/classement-meuble-tourisme-dordogne'));
-        urls.push(routeUrl('/classement-meuble-tourisme-bergerac'));
-        urls.push(routeUrl('/classement-meuble-tourisme-bordeaux'));
-        urls.push(routeUrl('/classement-meuble-tourisme-gironde'));
-        urls.push(routeUrl('/classement-meuble-tourisme-lot'));
-        urls.push(routeUrl('/classement-meuble-tourisme-lot-et-garonne'));
+        urls.push(...localPublicUrls());
         continue;
       }
 

@@ -5,9 +5,61 @@ import type { PricingProfileId } from './pricing';
 
 export type DepartmentAreaId = 'dordogne' | 'gironde' | 'lot' | 'lot-et-garonne';
 
+export type CityAreaId = 'bergerac' | 'bordeaux';
+
+export type LocalAreaId = DepartmentAreaId | CityAreaId;
+
 export type RegionId = 'nouvelle-aquitaine' | 'occitanie';
 
 export type DepartmentPublicationStatus = 'published' | 'draft';
+
+export type LocalAreaKind = 'department' | 'city';
+
+export type LocalCoverageMode = 'department' | 'sectors' | 'on-request';
+
+export interface LocalSeoMetadata {
+  title: string;
+  description: string;
+  lastModified: string;
+  breadcrumbLabel: string;
+  ogImageKey: ImageAssetKey;
+  lcpImageKey: ImageAssetKey;
+  lcpImageSizes: string;
+}
+
+interface LocalRegistryEntryBase {
+  id: LocalAreaId;
+  kind: LocalAreaKind;
+  name: string;
+  path: string;
+  departmentCode: string;
+  regionId: RegionId;
+  status: DepartmentPublicationStatus;
+  displayOrder: number;
+  seo: LocalSeoMetadata;
+}
+
+export interface DepartmentRegistryEntry extends LocalRegistryEntryBase {
+  id: DepartmentAreaId;
+  kind: 'department';
+  coverageMode: LocalCoverageMode;
+  hubDescription: string;
+  hubLinkLabel: string;
+  communeIndex?: {
+    departmentCode: string;
+    outputFileName: string;
+  };
+}
+
+export interface CityRegistryEntry extends LocalRegistryEntryBase {
+  id: CityAreaId;
+  kind: 'city';
+  parentId: DepartmentAreaId;
+  hubLabel: string;
+  departmentLabel?: string;
+}
+
+export type LocalRegistryEntry = DepartmentRegistryEntry | CityRegistryEntry;
 
 export interface LocalInterventionPage {
   id: string;
@@ -30,8 +82,10 @@ export interface DepartmentInterventionArea {
   departmentCode: string;
   regionId: RegionId;
   status: DepartmentPublicationStatus;
+  coverageMode: LocalCoverageMode;
   displayOrder: number;
   description: string;
+  hubLinkLabel: string;
   localPages: LocalInterventionPage[];
 }
 
@@ -262,6 +316,7 @@ interface LocalLandingPageV6Base {
 
 export interface LocalLandingPageV6CityConfig extends LocalLandingPageV6Base {
   scope: 'city';
+  localEntryId: CityAreaId;
   city: string;
   serviceArea: LocalV6CityServiceArea;
   pricing: LocalV6DirectPricing;

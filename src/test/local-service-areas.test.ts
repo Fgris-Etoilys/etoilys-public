@@ -6,19 +6,76 @@ import {
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 } from '../content/local/v6Pages';
 import {
-  DEPARTMENT_INTERVENTION_AREAS,
   DEPARTMENT_REGIONS,
   getActiveDepartmentInterventionAreas,
   getClassificationAreaServed,
+  getDepartmentEntryByCode,
+  getDepartmentInterventionArea,
+  getPublishedCityEntriesForDepartment,
+  getPublishedLocalPaths,
   groupActiveDepartmentsByRegion,
 } from '../content/local/registry';
-import type { DepartmentAreaId, DepartmentInterventionArea } from '../content/local/types';
-import { getIndexablePaths } from '../content/seoRoutes';
+import type { CityAreaId, DepartmentAreaId, LocalRegistryEntry } from '../content/local/types';
+import { getIndexablePaths, getPrerenderPaths, getSeoRouteConfig } from '../content/seoRoutes';
 import { extractActiveAppPaths } from './routeGovernance';
 
 function expectUnique(values: string[]) {
   expect(new Set(values).size).toBe(values.length);
 }
+
+const fixtureSeo = {
+  lastModified: '2026-09-18',
+  title: 'Fixture',
+  description: 'Fixture.',
+  breadcrumbLabel: 'Fixture',
+  ogImageKey: 'homeHero',
+  lcpImageKey: 'homeHero',
+  lcpImageSizes: '100vw',
+} as const;
+
+const draftDepartment: LocalRegistryEntry = {
+  id: 'aveyron' as DepartmentAreaId,
+  kind: 'department',
+  name: 'Aveyron',
+  path: '/classement-meuble-tourisme-aveyron',
+  departmentCode: '12',
+  regionId: 'occitanie',
+  status: 'draft',
+  coverageMode: 'sectors',
+  displayOrder: 50,
+  hubDescription: 'Draft department.',
+  hubLinkLabel: 'Classement en Aveyron →',
+  seo: fixtureSeo,
+};
+
+const publishedCorsicaDepartment: LocalRegistryEntry = {
+  id: 'corse-du-sud' as DepartmentAreaId,
+  kind: 'department',
+  name: 'Corse-du-Sud',
+  path: '/classement-meuble-tourisme-corse-du-sud',
+  departmentCode: '2A',
+  regionId: 'occitanie',
+  status: 'published',
+  coverageMode: 'on-request',
+  displayOrder: 60,
+  hubDescription: 'Fixture department.',
+  hubLinkLabel: 'Classement en Corse-du-Sud →',
+  seo: fixtureSeo,
+};
+
+const publishedCorsicaCity: LocalRegistryEntry = {
+  id: 'ajaccio' as CityAreaId,
+  kind: 'city',
+  name: 'Ajaccio',
+  path: '/classement-meuble-tourisme-ajaccio',
+  departmentCode: '2A',
+  regionId: 'occitanie',
+  parentId: 'corse-du-sud' as DepartmentAreaId,
+  status: 'published',
+  displayOrder: 10,
+  hubLabel: 'Ajaccio',
+  seo: fixtureSeo,
+};
 
 const departmentPageConfigs = [
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
@@ -34,106 +91,106 @@ describe('local service areas data', () => {
     expect(ids).toEqual(['dordogne', 'gironde', 'lot-et-garonne', 'lot']);
   });
 
-  it('keeps department paths unique and publicly routable when published', () => {
+  it('keeps published local paths unique, routable, indexable and prerenderable', () => {
     const activeAppPaths = new Set(extractActiveAppPaths());
     const indexablePaths = new Set(getIndexablePaths());
-    const departmentPaths = getActiveDepartmentInterventionAreas().map((area) => area.path);
+    const prerenderPaths = new Set(getPrerenderPaths());
+    const paths = getPublishedLocalPaths();
 
-    expectUnique(departmentPaths);
-    departmentPaths.forEach((path) => {
+    expectUnique(paths);
+    paths.forEach((path) => {
       expect(activeAppPaths.has(path), `${path} must be declared in AppRoutes.tsx`).toBe(true);
       expect(indexablePaths.has(path), `${path} must be indexable in seoRoutes.ts`).toBe(true);
+      expect(prerenderPaths.has(path), `${path} must be prerenderable`).toBe(true);
     });
   });
 
-  it('requires every department to declare a known region, status and deterministic order', () => {
-    const regionIds = new Set(DEPARTMENT_REGIONS.map((region) => region.id));
-    const displayOrders = DEPARTMENT_INTERVENTION_AREAS.map((area) => area.displayOrder);
-
-    expectUnique(DEPARTMENT_REGIONS.map((region) => region.id));
-    expectUnique(DEPARTMENT_INTERVENTION_AREAS.map((area) => area.id));
-    expectUnique(displayOrders.map(String));
-    DEPARTMENT_INTERVENTION_AREAS.forEach((area) => {
-      expect(regionIds.has(area.regionId)).toBe(true);
-      expect(['published', 'draft']).toContain(area.status);
-      expect(Array.isArray(area.localPages)).toBe(true);
-    });
-  });
-
-  it('derives region groups and areaServed from published departments only', () => {
-    const fixtureAreas: DepartmentInterventionArea[] = [
-      ...DEPARTMENT_INTERVENTION_AREAS,
-      {
-        id: 'aveyron' as DepartmentAreaId,
-        name: 'Aveyron',
-        path: '/classement-meuble-tourisme-aveyron',
-        departmentCode: '12',
-        regionId: 'occitanie',
-        status: 'draft',
-        displayOrder: 40,
-        description: 'Draft department.',
-        localPages: [],
-      },
-    ];
-
-    expect(getActiveDepartmentInterventionAreas(fixtureAreas).map((area) => area.name)).toEqual([
-      'Dordogne',
-      'Gironde',
-      'Lot-et-Garonne',
-      'Lot',
+  it('derives city children from parentId and published status', () => {
+    expect(getPublishedCityEntriesForDepartment('dordogne').map((entry) => entry.id)).toEqual([
+      'bergerac',
     ]);
-    expect(groupActiveDepartmentsByRegion(DEPARTMENT_REGIONS, fixtureAreas)).toHaveLength(2);
-    expect(getClassificationAreaServed(fixtureAreas)).toBe(
-      'Dordogne, Gironde, Lot-et-Garonne et Lot'
-    );
-    expect(getClassificationAreaServed()).toBe('Dordogne, Gironde, Lot-et-Garonne et Lot');
+    expect(getPublishedCityEntriesForDepartment('gironde').map((entry) => entry.id)).toEqual([
+      'bordeaux',
+    ]);
+
+    const fixtureEntries: LocalRegistryEntry[] = [
+      publishedCorsicaDepartment,
+      publishedCorsicaCity,
+      {
+        ...publishedCorsicaCity,
+        id: 'draft-city' as CityAreaId,
+        status: 'draft',
+        path: '/draft-city',
+      },
+    ];
+
+    expect(
+      getPublishedCityEntriesForDepartment('corse-du-sud' as DepartmentAreaId, fixtureEntries).map(
+        (entry) => entry.path
+      )
+    ).toEqual(['/classement-meuble-tourisme-ajaccio']);
   });
 
-  it('groups published departments by region without rendering empty regions', () => {
-    const fixtureAreas: DepartmentInterventionArea[] = [
-      {
-        id: 'aveyron' as DepartmentAreaId,
-        name: 'Aveyron',
-        path: '/classement-meuble-tourisme-aveyron',
-        departmentCode: '12',
-        regionId: 'occitanie',
-        status: 'published',
-        displayOrder: 50,
-        description: 'Published department.',
-        localPages: [],
-      },
-      ...DEPARTMENT_INTERVENTION_AREAS,
-    ];
-    const groups = groupActiveDepartmentsByRegion(DEPARTMENT_REGIONS, fixtureAreas);
+  it('groups published departments by region without rendering empty regions or drafts', () => {
+    const fixtureEntries: LocalRegistryEntry[] = [draftDepartment, publishedCorsicaDepartment];
+    const groups = groupActiveDepartmentsByRegion(DEPARTMENT_REGIONS, fixtureEntries);
 
-    expect(groups.map((group) => group.region.label)).toEqual(['Nouvelle-Aquitaine', 'Occitanie']);
+    expect(groups.map((group) => group.region.label)).toEqual(['Occitanie']);
     expect(groups.flatMap((group) => group.departments.map((area) => area.name))).toEqual([
-      'Dordogne',
-      'Gironde',
-      'Lot-et-Garonne',
-      'Lot',
-      'Aveyron',
+      'Corse-du-Sud',
     ]);
     expect(groups.every((group) => group.departments.length > 0)).toBe(true);
   });
 
-  it('keeps local page paths unique and backed by public indexable routes when declared', () => {
-    const activeAppPaths = new Set(extractActiveAppPaths());
-    const indexablePaths = new Set(getIndexablePaths());
-    const localPagePaths = getActiveDepartmentInterventionAreas().flatMap((area) =>
-      area.localPages.map((localPage) => localPage.path)
-    );
+  it('keeps department code lookup limited to departments and accepts opaque codes', () => {
+    const fixtureEntries: LocalRegistryEntry[] = [
+      publishedCorsicaDepartment,
+      publishedCorsicaCity,
+      {
+        ...publishedCorsicaDepartment,
+        id: 'guadeloupe' as DepartmentAreaId,
+        departmentCode: '971',
+      },
+      { ...publishedCorsicaDepartment, id: 'ain' as DepartmentAreaId, departmentCode: '01' },
+      {
+        ...publishedCorsicaDepartment,
+        id: 'haute-corse' as DepartmentAreaId,
+        departmentCode: '2B',
+      },
+    ];
 
-    expectUnique(localPagePaths);
-    localPagePaths.forEach((path) => {
-      expect(activeAppPaths.has(path), `${path} must be declared in AppRoutes.tsx`).toBe(true);
-      expect(indexablePaths.has(path), `${path} must be indexable in seoRoutes.ts`).toBe(true);
-    });
+    expect(getDepartmentEntryByCode('2A', fixtureEntries)?.id).toBe('corse-du-sud');
+    expect(getDepartmentEntryByCode('971', fixtureEntries)?.kind).toBe('department');
+    expect(getDepartmentEntryByCode('01', fixtureEntries)?.kind).toBe('department');
+    expect(getDepartmentEntryByCode('2B', fixtureEntries)?.kind).toBe('department');
+    expect(getDepartmentEntryByCode('99', fixtureEntries)).toBeUndefined();
+  });
+
+  it('excludes drafts from public outputs and lets unknown paths use NotFound SEO', () => {
+    expect(getPublishedLocalPaths([draftDepartment])).toEqual([]);
+    expect(getSeoRouteConfig(draftDepartment.path).isNotFound).toBe(true);
+    expect(getIndexablePaths()).not.toContain(draftDepartment.path);
+    expect(getPrerenderPaths()).not.toContain(draftDepartment.path);
+  });
+
+  it('keeps local page paths derived under their department', () => {
+    const dordogne = getDepartmentInterventionArea('dordogne');
+    const gironde = getDepartmentInterventionArea('gironde');
+
+    expect(dordogne.localPages.map((localPage) => localPage.id)).toEqual(['bergerac']);
+    expect(gironde.localPages.map((localPage) => localPage.id)).toEqual(['bordeaux']);
+    expect(dordogne.localPages.find((localPage) => localPage.id === 'bordeaux')).toBeUndefined();
+    expect(gironde.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();
+  });
+
+  it('keeps structured data areaServed derived from published departments only', () => {
+    expect(getClassificationAreaServed()).toBe('Dordogne, Gironde, Lot-et-Garonne et Lot');
+    expect(getClassificationAreaServed([draftDepartment, publishedCorsicaDepartment])).toBe(
+      'Corse-du-Sud'
+    );
   });
 
   it('keeps department landing configs linked to registry entries', () => {
-    const registryIds = new Set(DEPARTMENT_INTERVENTION_AREAS.map((area) => area.id));
-
     expect(departmentPageConfigs.map((config) => config.departmentId)).toEqual([
       'dordogne',
       'gironde',
@@ -141,17 +198,7 @@ describe('local service areas data', () => {
       'lot-et-garonne',
     ]);
     departmentPageConfigs.forEach((config) => {
-      expect(registryIds.has(config.departmentId)).toBe(true);
+      expect(getDepartmentInterventionArea(config.departmentId).id).toBe(config.departmentId);
     });
-  });
-
-  it('registers city pages under their department only', () => {
-    const dordogne = DEPARTMENT_INTERVENTION_AREAS.find((area) => area.id === 'dordogne');
-    const gironde = DEPARTMENT_INTERVENTION_AREAS.find((area) => area.id === 'gironde');
-
-    expect(dordogne?.localPages.map((localPage) => localPage.id)).toEqual(['bergerac']);
-    expect(gironde?.localPages.map((localPage) => localPage.id)).toEqual(['bordeaux']);
-    expect(dordogne?.localPages.find((localPage) => localPage.id === 'bordeaux')).toBeUndefined();
-    expect(gironde?.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();
   });
 });

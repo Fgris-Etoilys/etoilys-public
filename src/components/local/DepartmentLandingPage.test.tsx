@@ -114,6 +114,20 @@ describe('DepartmentLandingPage', () => {
     );
   });
 
+  it('renders NotFound instead of a local landing when the registry entry is not published', () => {
+    renderDepartmentPage({
+      ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      departmentId: 'aveyron' as typeof DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId,
+    });
+
+    expect(screen.getByRole('heading', { name: /page non trouvée/i })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', {
+        name: DORDOGNE_LOCAL_LANDING_PAGE_V6.hero.title,
+      })
+    ).not.toBeInTheDocument();
+  });
+
   it.each([
     [
       DORDOGNE_LOCAL_LANDING_PAGE_V6,

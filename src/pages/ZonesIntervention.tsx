@@ -1,9 +1,7 @@
-import Button from '../components/ui/Button';
 import PageHero from '../components/ui/PageHero';
 import InterventionAreaCards from '../components/local/InterventionAreaCards';
+import Button from '../components/ui/Button';
 import { groupActiveDepartmentsByRegion } from '../content/local/registry';
-
-const carteFranceExpansion = '/images/carte-france-expansion-card.webp';
 
 export default function ZonesIntervention() {
   const departmentGroups = groupActiveDepartmentsByRegion();
@@ -14,7 +12,7 @@ export default function ZonesIntervention() {
         eyebrow="Zones d’intervention"
         eyebrowMarked
         title="Zones d’intervention pour le classement des meublés de tourisme"
-        description="Etoilys réalise des visites de classement dans plusieurs départements, avec un réseau d’inspecteurs qui s’étend progressivement à de nouveaux territoires. Retrouvez ci-dessous les secteurs actuellement couverts."
+        description="Retrouvez les départements dans lesquels Etoilys propose des visites de classement, puis consultez les secteurs d’intervention et les tarifs."
         size="compact"
       />
 
@@ -22,14 +20,10 @@ export default function ZonesIntervention() {
         <div className="container-editorial">
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 max-w-3xl">
-              <h2 className="mb-4">Nos zones d’intervention actuelles</h2>
-              <p className="text-muted leading-comfortable">
-                Retrouvez les pages locales disponibles et les secteurs dans lesquels Etoilys peut
-                réaliser votre visite de classement.
-              </p>
+              <h2 className="mb-4">Trouvez votre département</h2>
             </div>
 
-            <div className="space-y-12">
+            <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
               {departmentGroups.map((group) => (
                 <section key={group.region.id} aria-labelledby={`region-${group.region.id}`}>
                   <h3
@@ -43,34 +37,19 @@ export default function ZonesIntervention() {
               ))}
             </div>
 
-            <div className="mt-10 overflow-hidden rounded-md border border-ink/10 bg-surface">
-              <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.45fr)]">
-                <div className="p-6 md:p-8">
-                  <h2 className="mb-4 text-h3">Votre département n’apparaît pas encore ?</h2>
-                  <p className="mb-6 text-muted leading-comfortable">
-                    Etoilys développe progressivement son réseau d’inspecteurs pour accompagner
-                    davantage de propriétaires sur le territoire. Si votre logement se situe hors
-                    des zones déjà présentées, vous pouvez déposer une demande : nous vous
-                    confirmerons les possibilités d’intervention avant toute validation.
-                  </p>
-                  <div className="flex flex-col gap-4 sm:flex-row">
-                    <Button href="/demande-classement" variant="primary">
-                      Faire une demande de classement
-                    </Button>
-                    <Button href="/contact" variant="secondary">
-                      Nous contacter
-                    </Button>
-                  </div>
-                </div>
-                <div className="min-h-[280px] bg-white/45 lg:min-h-full">
-                  <img
-                    src={carteFranceExpansion}
-                    alt="Carte de France illustrant le développement des zones d’intervention Etoilys"
-                    loading="lazy"
-                    decoding="async"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+            <div className="mt-10 rounded-md border border-ink/10 bg-paper p-6 md:p-8">
+              <h2 className="mb-4 text-h3">Votre département n’apparaît pas ?</h2>
+              <p className="mb-6 text-muted leading-comfortable">
+                Indiquez-nous la commune de votre logement. Nous vous confirmerons les possibilités
+                d’intervention avant tout engagement.
+              </p>
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <Button href="/demande-classement" variant="primary">
+                  Faire une demande de classement
+                </Button>
+                <Button href="/contact" variant="secondary">
+                  Nous contacter
+                </Button>
               </div>
             </div>
           </div>

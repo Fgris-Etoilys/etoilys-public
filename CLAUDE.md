@@ -64,7 +64,7 @@ Whenever you write code, apply this instruction:
   - `WebSite`
 - Business fields (`legalName`, SIRET `identifier`, contact, address) must match `MentionsLegales`.
 - Do not add `sameAs` until official social profiles are provided and validated.
-- Breadcrumbs are JSON-LD only (no visible breadcrumb UI), generated from `getBreadcrumbItems` in `src/content/seoRoutes.ts`.
+- Breadcrumbs are generated from `getBreadcrumbItems` in `src/content/seoRoutes.ts`. Visible breadcrumb UI is allowed only on `/zones-intervention` and local pages; other page families keep JSON-LD only.
 - Home and 404 must not output `BreadcrumbList`.
 - Articles must use `ArticleStructuredData` + `src/content/articleStructuredData.ts`; no manual `useEffect` JSON-LD in article pages.
 - Article JSON-LD (`headline`, `description`) must stay coherent with the rendered H1/meta wording and keep proper French UTF-8 accents; do not replace accents with ASCII approximations.

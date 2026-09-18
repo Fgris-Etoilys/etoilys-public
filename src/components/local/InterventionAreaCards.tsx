@@ -1,6 +1,4 @@
 import { Link } from 'react-router-dom';
-import Button from '../ui/Button';
-import Card from '../ui/Card';
 import type { DepartmentInterventionArea } from '../../content/local/types';
 
 type DepartmentHeadingLevel = 3 | 4 | 5 | 6;
@@ -17,53 +15,49 @@ export default function InterventionAreaCards({
   const DepartmentHeading = `h${departmentHeadingLevel}` as const;
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div className="divide-y divide-ink/10 border-y border-ink/10">
       {areas.map((area) => {
-        const visibleLocalPages = area.localPages.slice(0, 3);
-        const singleLocalPage = visibleLocalPages[0];
-
         return (
-          <Card key={area.id} className="flex min-h-[320px] flex-col p-6">
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <DepartmentHeading className="text-2xl font-playfair font-semibold text-ink">
-                {area.name}
+          <article
+            key={area.id}
+            className="grid gap-4 py-5 md:grid-cols-[minmax(0,0.25fr)_minmax(0,1fr)] md:gap-6"
+          >
+            <div>
+              <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">
+                Département {area.departmentCode}
+              </p>
+              <DepartmentHeading className="text-xl font-playfair font-semibold text-ink">
+                <Link to={area.path} className="ui-focus rounded-sm hover:text-ink-hover">
+                  {area.name}
+                </Link>
               </DepartmentHeading>
             </div>
-            <p className="mb-4 text-sm leading-comfortable text-muted">{area.description}</p>
-
-            {visibleLocalPages.length === 1 && singleLocalPage && (
-              <Link
-                to={singleLocalPage.path}
-                className="editorial-inline-link ui-focus mb-6 inline-flex rounded-sm text-sm font-medium leading-comfortable"
-              >
-                {singleLocalPage.hubLabel ?? singleLocalPage.label} →
-              </Link>
-            )}
-
-            {visibleLocalPages.length > 1 && (
-              <div className="mb-6 border-t border-gray-200 pt-5">
-                <p className="mb-3 text-sm font-semibold text-ink">Pages locales</p>
-                <ul className="space-y-2">
-                  {visibleLocalPages.map((localPage) => (
-                    <li key={localPage.id}>
-                      <Link
-                        to={localPage.path}
-                        className="editorial-inline-link ui-focus inline-flex rounded-sm text-sm font-medium leading-comfortable"
-                      >
-                        {localPage.hubLabel ?? localPage.label} →
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+            <div>
+              <p className="text-sm leading-comfortable text-muted">{area.description}</p>
+              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+                <Link
+                  to={area.path}
+                  className="editorial-inline-link ui-focus inline-flex rounded-sm text-sm font-semibold leading-comfortable"
+                >
+                  {area.hubLinkLabel}
+                </Link>
+                {area.localPages.length > 0 && (
+                  <ul className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                    {area.localPages.map((localPage) => (
+                      <li key={localPage.id}>
+                        <Link
+                          to={localPage.path}
+                          className="editorial-inline-link ui-focus inline-flex rounded-sm text-sm font-medium leading-comfortable"
+                        >
+                          {localPage.hubLabel ?? localPage.label} →
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
-            )}
-
-            <div className="mt-auto">
-              <Button href={area.path} variant="primary">
-                Consulter la page {area.name}
-              </Button>
             </div>
-          </Card>
+          </article>
         );
       })}
     </div>

@@ -6,7 +6,6 @@ import type {
   LocalV6Action,
   LocalLandingPageV6CityConfig,
   LocalLandingPageV6DepartmentConfig,
-  LocalProcedureStep,
 } from './types';
 import { COFRAC_ACCREDITATION_URL } from '../accreditationLinks';
 import { BERGERAC_FAQ, BERGERAC_SERVICE_COMMUNES } from './cities/bergerac';
@@ -21,6 +20,11 @@ import { GIRONDE_SERVICE_SECTORS } from './departments/gironde';
 import { LOT_SERVICE_SECTORS } from './departments/lot';
 import { LOT_ET_GARONNE_SERVICE_SECTORS } from './departments/lot-et-garonne';
 import { getSeoRouteConfig } from '../seoRoutes';
+import {
+  LOCAL_V6_COMMON_PROCEDURE,
+  LOCAL_V6_HERO_REASSURANCE,
+  LOCAL_V6_PRICING_CHECKLIST,
+} from './sharedLocalContent';
 
 function getLocalHeroImageSizes(path: string) {
   return getSeoRouteConfig(path).lcpImageSizes ?? '100vw';
@@ -80,49 +84,9 @@ function toCollapsedSectors(sectors: readonly DepartmentSector[], visibleCount =
   }));
 }
 
-const heroReassurance = [
-  'Rappel sous 24 h ouvrées',
-  'Visite en moyenne sous deux semaines',
-  'Aucun frais de déplacement',
-] as const;
-
-const pricingChecklist = [
-  'Aucun frais de déplacement : la visite et les documents de classement sont inclus.',
-  'Des tarifs dégressifs pour plusieurs meublés visités le même jour dans le même secteur.',
-  'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
-] as const;
-
-const processSteps: readonly LocalProcedureStep[] = [
-  {
-    number: 1,
-    title: 'Vous nous parlez de votre logement.',
-    description:
-      'Envoyez vos coordonnées et l’adresse du meublé. Nous vous rappelons sous 24 h ouvrées pour préciser votre projet.',
-  },
-  {
-    number: 2,
-    title: 'Nous préparons la visite ensemble.',
-    description:
-      'Nous confirmons le tarif et les modalités, puis convenons d’une date. La visite a lieu en moyenne sous deux semaines.',
-  },
-  {
-    number: 3,
-    title: 'Votre logement est évalué sur place.',
-    description:
-      'Après le contrôle selon la grille officielle, vous recevez les documents et la proposition de classement.',
-  },
-];
-
-const commonProcedure = {
-  title: 'Votre classement en trois étapes',
-  eyebrow: 'DE LA DEMANDE AUX ÉTOILES',
-  steps: processSteps,
-  link: {
-    href: '/procedure',
-    label: 'La procédure en détail',
-  },
-  note: 'Nos inspecteurs vous accompagnent à chaque étape, de votre demande à la remise des documents de classement.',
-} as const;
+const heroReassurance = LOCAL_V6_HERO_REASSURANCE;
+const pricingChecklist = LOCAL_V6_PRICING_CHECKLIST;
+const commonProcedure = LOCAL_V6_COMMON_PROCEDURE;
 
 const dordogneQuestions = [
   {
@@ -379,6 +343,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
 export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   layoutVersion: 'v6',
   scope: 'city',
+  localEntryId: 'bergerac',
   city: 'Bergerac',
   hero: {
     eyebrow: 'Bergerac et le Bergeracois',
@@ -654,6 +619,7 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
 export const BORDEAUX_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   layoutVersion: 'v6',
   scope: 'city',
+  localEntryId: 'bordeaux',
   city: 'Bordeaux',
   hero: {
     eyebrow: 'Bordeaux et Bordeaux Métropole',

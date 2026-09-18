@@ -58,7 +58,7 @@ Quand tu dois écrire du code, applique cette instruction:
   - `WebSite`
 - Les donnees business (`legalName`, `identifier`/SIRET, contact, adresse) doivent rester alignees avec `MentionsLegales`.
 - Ne pas ajouter `sameAs` sans profils officiels verifies.
-- Les breadcrumbs doivent etre uniquement en JSON-LD (pas de breadcrumb UI), generes depuis `getBreadcrumbItems` dans `src/content/seoRoutes.ts`.
+- Les breadcrumbs sont generes depuis `getBreadcrumbItems` dans `src/content/seoRoutes.ts`. Un breadcrumb UI visible est autorise uniquement sur `/zones-intervention` et les pages locales ; les autres familles restent en JSON-LD uniquement.
 - Home et 404: aucun `BreadcrumbList`.
 - Articles: utiliser `ArticleStructuredData` + `src/content/articleStructuredData.ts`, sans injection manuelle `useEffect` dans les pages article.
 

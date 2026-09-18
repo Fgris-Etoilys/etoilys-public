@@ -33,6 +33,17 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 - Les CTA gardent leur `variant` de tracking ; les ajustements visuels passent par `className`.
 - Les espaces insécables de ponctuation française visibles dans les titres rendus sont gérés par `formatFrenchTitle` dans `LocalLandingPageV6.tsx`.
 
+## Registre local
+
+`src/content/local/registry.ts` est le catalogue local unique pour les métadonnées non React. Il porte les départements et les villes publiables : identité, type (`department` ou `city`), code département, région, URL, statut, ordre, mode de couverture, données hub et métadonnées SEO locales.
+
+- Les routes React restent explicites dans `AppRoutes.tsx`.
+- Les enfants ville sont dérivés de `parentId` + `status`, sans liste parallèle à maintenir dans les départements.
+- Un brouillon n’est pas listé, indexable, pré-rendu, soumis à IndexNow, ni rendu comme landing publique ; une route encore déclarée affiche la 404 tant que l’entrée registry n’est pas publiée.
+- `departmentCode` est une chaîne opaque. Ne pas le convertir en nombre : `01`, `2A`, `2B` et `971` sont des codes valides pour le contrat.
+- Le lookup par code département retourne exclusivement une entrée département. Les villes peuvent partager le même code sans devenir une cible de lookup cartographique.
+- Le registre reste indépendant des configs V6 React : pas d’import de `v6Pages.tsx`, pas de contenu JSX.
+
 ## Pricing
 
 Les montants et conditions restent dans `src/content/local/pricing.ts`. Le département résout le profil via le picker de communes existant ; la ville affiche directement son profil. Les IDs métier (`dordogne-standard`, `gironde-standard`, `lot-standard`, `lot-et-garonne-standard`, `bordeaux-standard`) restent indépendants même si leurs valeurs initiales partagent une base interne.
@@ -50,10 +61,13 @@ V6 active :
 
 Les routes publiques importent les wrappers fins `CityLandingPage` ou `DepartmentLandingPage`, pas directement `LocalLandingPageV6`.
 
+Le hub `/zones-intervention`, les entrées SEO locales, le sitemap, le pré-rendu, les index de communes et IndexNow consomment le registre pour éviter les listes locales divergentes. Le hub affiche une liste compacte par région et conserve les vrais liens HTML même si une carte est ajoutée plus tard.
+
 ## Garde-fous
 
-Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pendant une migration V6. Toute nouvelle page locale doit fournir une config complète typée, une route fine, une entrée SEO et les tests minimaux de rendu, maillage, pricing et CTA.
+Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pendant une migration V6. Toute nouvelle page locale doit fournir une config complète typée, une route fine, une entrée registry et les tests minimaux de rendu, maillage, pricing et CTA.
 
+- Les pages locales et le hub ont un fil d’Ariane visible discret en plus du `BreadcrumbList` JSON-LD. Les autres familles de pages restent sans breadcrumb UI.
 - Hero : le suffixe géographique du H1 est mis en cuivre avec `highlightedTitleText`. Ce champ correspond actuellement à un suffixe du titre. Le CTA principal reprend le motif Dordogne avec flèche. L’action secondaire est un lien éditorial vers le tarif, jamais un deuxième gros CTA vers le simulateur.
 - Hero département : `image.caption` décrit le lieu photographié ; `image.index` reste un repère de territoire au format code + destination, par exemple `24 / LE PÉRIGORD`, `33 / LA GIRONDE`, `47 / LOT-ET-GARONNE`. Ne pas y répéter le lieu de la photo.
 - Crop hero : chaque config définit un point focal pertinent via `image.className`, puis le vérifie en desktop, tablette et mobile.
@@ -62,7 +76,7 @@ Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pend
 - Pricing `picker` : le divider et la note tarifaire sont conservés après sélection, car ils séparent le formulaire du résultat.
 - Module local : il est facultatif. Ne pas imposer de surtitre générique `CONTEXTE LOCAL`. Garder un rythme titre -> texte cohérent avec les autres introductions de section ; sur desktop, la partie éditoriale reste plus large que la preuve ou carte chiffrée. `highlightedTitleText` correspond actuellement à un suffixe du titre mis en cuivre.
 - Notice locale : utiliser `localNotice` pour une notice réglementaire ou éditoriale placée après le module local et avant la FAQ. Garder le motif `editorial-notice`; ne pas ajouter de moteur de sections. Le fond de la notice est `bg-paper`; quand une notice existe, la FAQ suivante passe sur `bg-surface-neutral`.
-- Index communes : générer les index départementaux depuis `scripts/build-taxe-sejour-dataset.ts` et la source INSEE/taxe de séjour, puis référencer le JSON par le picker. Ne pas maintenir manuellement `public/data/communes-*-index.v1.json`.
+- Index communes : générer les index départementaux depuis `scripts/build-taxe-sejour-dataset.ts` et la source INSEE/taxe de séjour. La liste des index à produire vient du registre. Ne pas maintenir manuellement `public/data/communes-*-index.v1.json`.
 - Images : une page locale ne réutilise pas par défaut le même asset pour le hero et l’expertise. `image.caption` et `expertise.image.caption` sont obligatoires dans la config V6 locale. La caption décrit le lieu photographié ; l’index département reste le repère territorial (`24 / LE PÉRIGORD`, `33 / LA GIRONDE`, `47 / LOT-ET-GARONNE`). La provenance/licence d’un asset externe doit toujours être documentée dans la table de traçabilité. Le champ `credit` de la config V6 est nécessaire lorsqu’une attribution visible est requise ; ne pas forcer de crédit visible pour Pexels lorsque la licence ne l’exige pas. Les libellés actifs sont Saint-Émilion + Arcachon pour la Gironde, place de la Bourse pour le hero Bordeaux, Nérac + Monflanquin pour le Lot-et-Garonne.
 - CTA final : reprendre le motif et la copy du département parent au lieu d’inventer une nouvelle formulation pour chaque ville, mais conserver le `Button.variant` analytics historique d’une page existante.
 - FAQ : toutes les pages V6 incluent le socle FAQ commun ajouté automatiquement par `LocalLandingPageV6`. Les départements utilisent en plus le socle métier commun de `v6Pages.tsx` avec une première question de couverture territoriale et, si utile, une question locale avant les deux FAQ automatiques. Les villes utilisent le socle riche `sharedCityFaq.ts`; ne pas réécrire des liens en markdown ni déclencher une réponse riche par comparaison de texte de question.
@@ -92,14 +106,24 @@ Checklist nouvelle page locale :
 
 1. Ajouter ou réutiliser une config V6 typée dans `src/content/local/v6Pages.tsx`.
 2. Brancher la route sur le wrapper fin `CityLandingPage` ou `DepartmentLandingPage`.
-3. Ajouter l’entrée `src/content/local/registry.ts` pour publier la hiérarchie locale et nourrir les données structurées.
-4. Ajouter l’entrée SEO centralisée, le `lcpImageKey`, les `lcpImageSizes` et le sitemap généré si la route est publique.
+3. Ajouter l’entrée `src/content/local/registry.ts` pour publier la hiérarchie locale, le hub, le SEO local, les scripts et les données structurées.
+4. Vérifier que les métadonnées registry reprennent le `lcpImageKey`, les `lcpImageSizes`, les dates et les libellés de breadcrumb attendus.
 5. Déclarer les images locales dans `scripts/images-build.mjs`, lancer `npm run images:build`, puis vérifier `npm run images:check`.
 6. Renseigner des captions média non vides et distinguer caption photographique / index territorial.
 7. Pour un département, générer l’index communes depuis la source INSEE/taxe de séjour et définir un `PricingProfileId` métier propre.
 8. Pour une ville, réutiliser `sharedCityFaq.ts` pour le socle FAQ riche, puis ajouter uniquement les questions vraiment locales.
 9. Préserver les `variant` CTA analytics historiques quand une page est migrée.
-10. Couvrir par tests le rendu V6, le pricing, les liens FAQ, les CTA analytics, l’ordre FAQ et les données structurées locales dérivées de la registry.
+10. Couvrir par tests le rendu V6, le pricing, les liens FAQ, les CTA analytics, l’ordre FAQ, la publication registry, les breadcrumbs et les données structurées locales dérivées du registre.
+
+## Contrat carte future
+
+La future carte de France consommera le même registre que la liste du hub. La jointure se fera par `departmentCode`, jamais par libellé affiché ni URL reconstruite.
+
+- Un code absent renvoie une absence exploitable, sans faux lien ni exception visible.
+- Un département ne devient cliquable que si son entrée département est publiée.
+- Le mode de couverture (`department`, `sectors`, `on-request`) décrit la promesse éditoriale sans inventer de frontière opérationnelle stricte.
+- Les géométries SVG/GeoJSON seront un asset séparé. Le registre ne contient pas de coordonnées, paths SVG, couleurs, état de survol ou dépendance cartographique.
+- La liste compacte reste présente dans le HTML pré-rendu, utilisable au clavier et sur mobile après l’ajout de la carte.
 
 ## Exemples Minimaux
 

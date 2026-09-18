@@ -2,31 +2,16 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { XMLParser } from 'fast-xml-parser';
+import { getDepartmentCommuneIndexOutputs } from '../src/content/local/registry.ts';
 
 const ROOT_DIR = process.cwd();
 const INPUT_XML_PATH = path.join(ROOT_DIR, 'docs', 'data', 'taxe_sejour_donnees_deliberations.xml');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public', 'data');
 const OUTPUT_JSON_PATH = path.join(OUTPUT_DIR, 'taxe-sejour-dataset.v1.json');
-const OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH = path.join(
-  OUTPUT_DIR,
-  'communes-dordogne-index.v1.json'
-);
-
-const DEPARTMENT_COMMUNE_INDEX_OUTPUTS = [
-  { departmentCode: '24', outputPath: OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH },
-  {
-    departmentCode: '33',
-    outputPath: path.join(OUTPUT_DIR, 'communes-gironde-index.v1.json'),
-  },
-  {
-    departmentCode: '46',
-    outputPath: path.join(OUTPUT_DIR, 'communes-lot-index.v1.json'),
-  },
-  {
-    departmentCode: '47',
-    outputPath: path.join(OUTPUT_DIR, 'communes-lot-et-garonne-index.v1.json'),
-  },
-] as const;
+const DEPARTMENT_COMMUNE_INDEX_OUTPUTS = getDepartmentCommuneIndexOutputs().map((entry) => ({
+  departmentCode: entry.departmentCode,
+  outputPath: path.join(OUTPUT_DIR, entry.outputFileName),
+}));
 
 const CLASSIFIED_NATURE_ID = '4';
 const UNCLASSIFIED_NATURE_ID = '10';
