@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
 import { EN_MVP_PATHS, NL_MVP_PATHS } from './i18nMvpTestData';
 
@@ -120,6 +120,51 @@ describe('routing', () => {
     expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bordeaux'
+    );
+  });
+
+  it('renders visible breadcrumbs only for the local perimeter and keeps them aligned with JSON-LD', async () => {
+    renderAt('/classement-meuble-tourisme-bergerac');
+
+    const nav = screen.getByRole('navigation', { name: 'Fil d’Ariane' });
+    expect(screen.getAllByRole('navigation', { name: 'Fil d’Ariane' })).toHaveLength(1);
+    expect(within(nav).getByRole('link', { name: 'Accueil' })).toHaveAttribute('href', '/');
+    expect(within(nav).getByRole('link', { name: 'Zones d’intervention' })).toHaveAttribute(
+      'href',
+      '/zones-intervention'
+    );
+    expect(within(nav).getByRole('link', { name: 'Dordogne' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-dordogne'
+    );
+    expect(within(nav).getByText('Bergerac')).toHaveAttribute('aria-current', 'page');
+
+    await waitFor(() =>
+      expect(document.querySelector('#structured-data-breadcrumbs')).toBeInTheDocument()
+    );
+    const breadcrumbs = JSON.parse(
+      document.querySelector('#structured-data-breadcrumbs')?.textContent ?? '{}'
+    );
+    const jsonLabels = breadcrumbs.itemListElement.map((item: { name: string }) => item.name);
+    const visibleLabels = [
+      ...within(nav)
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+      within(nav).getByText('Bergerac').textContent,
+    ];
+
+    expect(visibleLabels).toEqual(jsonLabels);
+
+    cleanup();
+    renderAt('/classement');
+    expect(screen.queryByRole('navigation', { name: 'Fil d’Ariane' })).not.toBeInTheDocument();
+
+    cleanup();
+    renderAt('/actualites/preparer-visite-classement-meuble-tourisme');
+    expect(screen.queryByRole('navigation', { name: 'Fil d’Ariane' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /retour aux actualités/i })).toHaveAttribute(
+      'href',
+      '/actualites'
     );
   });
 

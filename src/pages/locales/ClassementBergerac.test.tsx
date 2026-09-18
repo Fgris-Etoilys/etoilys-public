@@ -395,7 +395,7 @@ describe('ClassementBergerac', () => {
         {
           '@type': 'ListItem',
           position: 4,
-          name: 'Bergerac et le Bergeracois',
+          name: 'Bergerac',
           item: 'https://www.etoilys.fr/classement-meuble-tourisme-bergerac',
         },
       ]);

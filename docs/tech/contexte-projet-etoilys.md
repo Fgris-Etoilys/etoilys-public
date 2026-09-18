@@ -163,7 +163,7 @@ Règles obligatoires :
 - Les routes inconnues doivent rester `noindex,follow` via `NOT_FOUND_SEO`.
 - Pas de `meta keywords`.
 - Les URLs SEO absolues doivent rester sur `https://www.etoilys.fr`.
-- Les breadcrumbs sont générés par `getBreadcrumbItems` en JSON-LD. Un fil d’Ariane visible discret existe uniquement pour le hub `/zones-intervention` et les pages locales.
+- Les breadcrumbs sont générés par `getBreadcrumbItems` en JSON-LD. Un fil d’Ariane visible discret existe uniquement pour le hub `/zones-intervention` et les pages locales, intégré dans le haut du hero via `PageHero`.
 - Home et 404 ne doivent pas sortir de `BreadcrumbList`.
 - Les articles utilisent `ArticleStructuredData` et `src/content/articleStructuredData.ts`.
 - Ne pas injecter manuellement de JSON-LD dans une page.

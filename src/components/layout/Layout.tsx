@@ -19,7 +19,6 @@ import {
   getBreadcrumbItems,
   getSeoAlternateLinks,
   SITE_URL,
-  shouldRenderVisibleBreadcrumbs,
 } from '../../content/seoRoutes';
 import { getArticleStructuredData } from '../../content/articleStructuredData';
 import { IMAGE_MANIFEST } from '../../content/imageManifest';
@@ -30,9 +29,6 @@ export default function Layout() {
   const seoConfig = getSeoRouteConfig(location.pathname);
   const alternateLinks = getSeoAlternateLinks(location.pathname);
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
-  const visibleBreadcrumbItems = shouldRenderVisibleBreadcrumbs(location.pathname)
-    ? breadcrumbItems
-    : [];
   const articleData = getArticleStructuredData(location.pathname);
   const defaultOgImageUrl = `${SITE_URL}${IMAGE_MANIFEST.homeHero.src}`;
   const routeOgImageUrl = seoConfig.ogImageKey
@@ -106,34 +102,6 @@ export default function Layout() {
         </a>
         <Header />
         <main id="main-content" tabIndex={-1} className="flex-grow site-main">
-          {visibleBreadcrumbItems.length > 0 && (
-            <nav
-              aria-label="Fil d’Ariane"
-              className="bg-surface border-b border-ink/10 py-3 text-xs text-muted"
-            >
-              <ol className="container-editorial flex flex-wrap items-center gap-2">
-                {visibleBreadcrumbItems.map((item, index) => {
-                  const isCurrent = index === visibleBreadcrumbItems.length - 1;
-                  const pathname = new URL(item.url).pathname;
-
-                  return (
-                    <li key={item.url} className="flex items-center gap-2">
-                      {index > 0 && <span aria-hidden="true">/</span>}
-                      {isCurrent ? (
-                        <span aria-current="page" className="font-medium text-ink">
-                          {item.name}
-                        </span>
-                      ) : (
-                        <a href={pathname} className="editorial-inline-link ui-focus rounded-sm">
-                          {item.name}
-                        </a>
-                      )}
-                    </li>
-                  );
-                })}
-              </ol>
-            </nav>
-          )}
           <Outlet />
         </main>
         <Footer />

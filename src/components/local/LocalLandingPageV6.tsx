@@ -94,6 +94,31 @@ function formatFrenchTitle(title: string) {
   return title.replace(/ ([?!:;])/g, '\u00a0$1');
 }
 
+function getRenderedDepartmentCommunes(sectors: readonly DepartmentSector[]): string[] {
+  return sectors.flatMap((sector) => [
+    ...(sector.visibleCommunes ?? sector.communes ?? []),
+    ...(sector.collapsedCommunes ?? []),
+  ]);
+}
+
+function getRenderedLinkedCityIds(
+  sectors: readonly DepartmentSector[],
+  communeLinks: Record<string, { localEntryId: CityAreaId; label?: string }> | undefined
+) {
+  const linkedCityIds = new Set<CityAreaId>();
+
+  getRenderedDepartmentCommunes(sectors).forEach((commune) => {
+    const link = communeLinks?.[commune];
+    const entry = link ? getLocalRegistryEntry(link.localEntryId) : undefined;
+
+    if (entry?.kind === 'city' && isLocalRegistryEntryPublished(entry.id)) {
+      linkedCityIds.add(entry.id);
+    }
+  });
+
+  return linkedCityIds;
+}
+
 export default function LocalLandingPageV6({ config }: { config: LocalLandingPageV6Config }) {
   return (
     <div className="local-v6-landing">
@@ -245,11 +270,7 @@ function LocalV6DepartmentServiceAreaSection({
   config: Extract<LocalLandingPageV6Config, { scope: 'department' }>;
 }) {
   const { serviceArea } = config;
-  const linkedCityIds = new Set(
-    Object.values(serviceArea.communeLinks ?? {})
-      .map((link) => link.localEntryId)
-      .filter((id) => isLocalRegistryEntryPublished(id))
-  );
+  const linkedCityIds = getRenderedLinkedCityIds(serviceArea.sectors, serviceArea.communeLinks);
   const extraLocalPages = getPublishedCityEntriesForDepartment(config.departmentId)
     .filter((entry) => !linkedCityIds.has(entry.id))
     .map(

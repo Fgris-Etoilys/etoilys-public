@@ -196,18 +196,19 @@ export const heroReassurance = LOCAL_V6_HERO_REASSURANCE;
 export const pricingChecklist = LOCAL_V6_PRICING_CHECKLIST;
 export const commonProcedure = LOCAL_V6_COMMON_PROCEDURE;
 
-export const dordogneQuestions = [
-  {
-    question: 'Intervenez-vous dans ma commune en Dordogne ?',
-    answer: (
-      <>
-        Nous couvrons les sept secteurs présentés sur cette page, du Bergeracois au Périgord Noir,
-        ainsi que le Grand Périgueux, la vallée de l’Isle et le Ribéracois. Consultez les{' '}
-        <a href="#communes">communes de nos secteurs</a> ou indiquez votre adresse dans votre
-        demande pour confirmer notre intervention.
-      </>
-    ),
-  },
+export const dordogneCoverageQuestion = {
+  question: 'Intervenez-vous dans ma commune en Dordogne ?',
+  answer: (
+    <>
+      Nous couvrons les sept secteurs présentés sur cette page, du Bergeracois au Périgord Noir,
+      ainsi que le Grand Périgueux, la vallée de l’Isle et le Ribéracois. Consultez les{' '}
+      <a href="#communes">communes de nos secteurs</a> ou indiquez votre adresse dans votre demande
+      pour confirmer notre intervention.
+    </>
+  ),
+} satisfies LocalFaqItem;
+
+export const DEPARTMENT_LOCAL_V6_FAQ_ITEMS = [
   {
     question: 'Quel est le prix d’une visite de classement ?',
     answer: (
@@ -294,9 +295,14 @@ export const dordogneQuestions = [
   },
 ] as const satisfies readonly LocalFaqItem[];
 
+export const dordogneQuestions = [
+  dordogneCoverageQuestion,
+  ...DEPARTMENT_LOCAL_V6_FAQ_ITEMS,
+] as const satisfies readonly LocalFaqItem[];
+
 export function buildDepartmentFaqItems(
   coverageItem: LocalFaqItem,
   localItems: readonly LocalFaqItem[] = []
 ) {
-  return [coverageItem, ...dordogneQuestions.slice(1), ...localItems] satisfies LocalFaqItem[];
+  return [coverageItem, ...DEPARTMENT_LOCAL_V6_FAQ_ITEMS, ...localItems] satisfies LocalFaqItem[];
 }

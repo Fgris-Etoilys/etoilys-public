@@ -20,12 +20,12 @@ export default function InterventionAreaCards({
       {areas.map((area) => (
         <article
           key={area.id}
-          className="overflow-hidden rounded-editorial border border-ink/15 bg-paper transition-colors hover:border-copper/45"
+          className="flex h-full flex-col overflow-hidden rounded-editorial border border-ink/15 bg-paper transition-colors hover:border-copper/45"
         >
           <Link
             to={area.path}
             aria-label={area.hubLinkLabel.replace(/\s*→\s*$/, '')}
-            className="ui-focus block p-5 text-ink no-underline hover:text-ink"
+            className="flex flex-1 flex-col p-5 text-ink no-underline outline-copper outline-offset-[-3px] hover:text-ink focus-visible:outline focus-visible:outline-3"
           >
             <div className="mb-4 flex items-start gap-3">
               <span className="mt-0.5 rounded-control border border-copper/20 bg-surface-warm px-2.5 py-1 text-xs font-medium text-copper">
@@ -39,7 +39,7 @@ export default function InterventionAreaCards({
             <p className="text-sm leading-comfortable text-muted">{area.description}</p>
           </Link>
           {area.localPages.length > 0 && (
-            <footer className="border-t border-ink/10 bg-surface-warm/55 px-5 py-4">
+            <footer className="shrink-0 border-t border-ink/10 bg-surface-warm/55 px-5 py-4">
               <p className="mb-2 text-xs font-medium text-muted">Dans ce département</p>
               <ul className="flex flex-col gap-2">
                 {area.localPages.map((localPage) => (

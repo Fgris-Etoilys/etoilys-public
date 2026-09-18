@@ -82,13 +82,25 @@ describe('InterventionAreaCards', () => {
 
     const card = screen.getByRole('heading', { name: 'Dordogne' }).closest('article');
     expect(card).toBeTruthy();
+    expect(card).toHaveClass('flex', 'h-full', 'flex-col');
+    expect(screen.getByRole('link', { name: 'Classement en Dordogne' })).toHaveClass('flex-1');
     const footer = within(card as HTMLElement)
       .getByText('Dans ce département')
       .closest('footer');
     expect(footer).toBeTruthy();
+    expect(footer).toHaveClass('shrink-0');
     expect(within(footer as HTMLElement).getByRole('link', { name: /Bergerac/ })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
+    );
+  });
+
+  it('keeps the department focus ring inside the clipped card', () => {
+    renderCards([dordogneArea]);
+
+    expect(screen.getByRole('link', { name: 'Classement en Dordogne' })).toHaveClass(
+      'outline-offset-[-3px]',
+      'focus-visible:outline'
     );
   });
 

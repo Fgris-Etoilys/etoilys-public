@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { getBreadcrumbItems, shouldRenderVisibleBreadcrumbs } from '../../content/seoRoutes';
 
 interface PageHeroProps {
   title: ReactNode;
@@ -19,6 +21,10 @@ export default function PageHero({
   size = 'default',
   children,
 }: PageHeroProps) {
+  const location = useLocation();
+  const breadcrumbItems = shouldRenderVisibleBreadcrumbs(location.pathname)
+    ? getBreadcrumbItems(location.pathname)
+    : [];
   const isSplit = Boolean(media);
   const eyebrowClasses = `editorial-eyebrow ${eyebrowMarked ? 'editorial-eyebrow-marked ' : ''}mb-6`;
   const descriptionClasses = isSplit
@@ -28,8 +34,9 @@ export default function PageHero({
 
   return (
     <section
-      className={`${size === 'compact' ? 'editorial-hero-compact' : isSplit ? 'editorial-hero-featured' : 'editorial-section'} bg-paper text-ink`}
+      className={`${size === 'compact' ? 'editorial-hero-compact' : isSplit ? 'editorial-hero-featured' : 'editorial-section'} ${breadcrumbItems.length > 0 ? 'page-hero-with-breadcrumb' : ''} bg-paper text-ink`}
     >
+      {breadcrumbItems.length > 0 && <VisibleBreadcrumbs items={breadcrumbItems} />}
       <div className={`container-editorial ${isSplit ? 'editorial-hero-grid' : ''}`}>
         <div className={isSplit ? 'min-w-0' : 'max-w-4xl'}>
           {eyebrow && <p className={eyebrowClasses}>{eyebrow}</p>}
@@ -40,5 +47,33 @@ export default function PageHero({
         {media}
       </div>
     </section>
+  );
+}
+
+function VisibleBreadcrumbs({ items }: { items: ReturnType<typeof getBreadcrumbItems> }) {
+  return (
+    <nav aria-label="Fil d’Ariane" className="local-visible-breadcrumb">
+      <ol>
+        {items.map((item, index) => {
+          const isCurrent = index === items.length - 1;
+          const pathname = new URL(item.url).pathname;
+
+          return (
+            <li key={item.url}>
+              {index > 0 && (
+                <span aria-hidden="true" className="local-visible-breadcrumb-separator">
+                  ›
+                </span>
+              )}
+              {isCurrent ? (
+                <span aria-current="page">{item.name}</span>
+              ) : (
+                <Link to={pathname}>{item.name}</Link>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
   );
 }

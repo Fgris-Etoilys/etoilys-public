@@ -11,6 +11,7 @@ import type {
 } from '../../content/local/types';
 import { trackCtaClick } from '../../utils/analytics';
 import {
+  DEPARTMENT_LOCAL_V6_FAQ_ITEMS,
   BERGERAC_LOCAL_LANDING_PAGE_V6,
   BORDEAUX_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
@@ -180,6 +181,88 @@ describe('DepartmentLandingPage', () => {
     fireEvent.click(toggle);
     expect(toggle).toHaveAttribute('aria-expanded', 'true');
     expect(toggle).toHaveTextContent('Masquer les 6 communes');
+  });
+
+  it('deduplicates complementary city links from communes that are actually rendered', () => {
+    renderDepartmentPage({
+      ...GIRONDE_LOCAL_LANDING_PAGE_V6,
+      serviceArea: {
+        ...GIRONDE_LOCAL_LANDING_PAGE_V6.serviceArea,
+        sectors: [
+          {
+            name: 'Bordeaux Métropole',
+            visibleCommunes: ['Bordeaux'],
+            collapsedCommunes: [],
+          },
+        ],
+        communeLinks: {
+          Bordeaux: {
+            label: 'Bordeaux →',
+            localEntryId: 'bordeaux',
+          },
+        },
+      },
+    });
+
+    expect(
+      document.querySelectorAll('a[href="/classement-meuble-tourisme-bordeaux"]')
+    ).toHaveLength(1);
+    expect(
+      screen.queryByRole('link', { name: 'Bordeaux et sa métropole' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps collapsed commune links from creating complementary duplicates', () => {
+    renderDepartmentPage({
+      ...GIRONDE_LOCAL_LANDING_PAGE_V6,
+      serviceArea: {
+        ...GIRONDE_LOCAL_LANDING_PAGE_V6.serviceArea,
+        sectors: [
+          {
+            name: 'Bordeaux Métropole',
+            visibleCommunes: ['Libourne'],
+            collapsedCommunes: ['Bordeaux'],
+          },
+        ],
+        communeLinks: {
+          Bordeaux: {
+            label: 'Bordeaux →',
+            localEntryId: 'bordeaux',
+          },
+        },
+      },
+    });
+
+    expect(
+      document.querySelectorAll('a[href="/classement-meuble-tourisme-bordeaux"]')
+    ).toHaveLength(1);
+  });
+
+  it('renders a complementary city link when a commune association is not used by rendered sectors', () => {
+    renderDepartmentPage({
+      ...GIRONDE_LOCAL_LANDING_PAGE_V6,
+      serviceArea: {
+        ...GIRONDE_LOCAL_LANDING_PAGE_V6.serviceArea,
+        sectors: [
+          {
+            name: 'Libournais',
+            visibleCommunes: ['Libourne'],
+            collapsedCommunes: [],
+          },
+        ],
+        communeLinks: {
+          Bordeaux: {
+            label: 'Bordeaux →',
+            localEntryId: 'bordeaux',
+          },
+        },
+      },
+    });
+
+    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bordeaux'
+    );
   });
 
   it('renders Lot sectors as representative coverage for the whole department', () => {
@@ -374,10 +457,12 @@ describe('DepartmentLandingPage', () => {
   });
 
   it('keeps the department base FAQ order and appends local extras before V6 automatic items', () => {
-    const baseQuestions = DORDOGNE_LOCAL_LANDING_PAGE_V6.faq.items
-      .slice(1)
-      .map((item) => item.question);
+    const baseQuestions = DEPARTMENT_LOCAL_V6_FAQ_ITEMS.map((item) => item.question);
 
+    expect(DORDOGNE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
+      'Intervenez-vous dans ma commune en Dordogne ?',
+      ...baseQuestions,
+    ]);
     expect(GIRONDE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
       'Intervenez-vous dans ma commune en Gironde ?',
       ...baseQuestions,

@@ -68,7 +68,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       title: 'Classement meublé de tourisme à Bergerac',
       description:
         'Faites classer votre meublé de tourisme à Bergerac et dans le Bergeracois. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
-      breadcrumbLabel: 'Bergerac et le Bergeracois',
+      breadcrumbLabel: 'Bergerac',
       ogImageKey: 'bergeracHero',
       lcpImageKey: 'bergeracHero',
       lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
@@ -147,7 +147,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot-et-Garonne',
       description:
         'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot-et-Garonne pour leur classement officiel.',
-      breadcrumbLabel: 'Classement en Lot-et-Garonne',
+      breadcrumbLabel: 'Lot-et-Garonne',
       ogImageKey: 'lotEtGaronneHero',
       lcpImageKey: 'lotEtGaronneHero',
       lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',

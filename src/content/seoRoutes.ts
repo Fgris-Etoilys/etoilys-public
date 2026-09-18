@@ -608,6 +608,12 @@ function applyLocaleIndexing(route: SeoRouteConfig): SeoRouteConfig {
 
 export function getSeoRouteConfig(pathname: string): SeoRouteConfig {
   const normalizedPath = normalizePath(pathname);
+  const localEntry = getLocalRegistryEntryByPath(normalizedPath);
+
+  if (localEntry !== undefined && !isLocalRegistryEntryPublished(localEntry.id)) {
+    return applyLocaleIndexing(NOT_FOUND_SEO);
+  }
+
   const route =
     SEO_ROUTES[normalizedPath] ??
     DYNAMIC_SEO_ROUTES.find((route) => route.pattern.test(normalizedPath))?.config ??

@@ -142,7 +142,7 @@ describe('seo governance', () => {
       { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
       { name: 'Dordogne', url: `${SITE_URL}/classement-meuble-tourisme-dordogne` },
       {
-        name: 'Bergerac et le Bergeracois',
+        name: 'Bergerac',
         url: `${SITE_URL}/classement-meuble-tourisme-bergerac`,
       },
     ]);
