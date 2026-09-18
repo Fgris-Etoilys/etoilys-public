@@ -101,23 +101,23 @@ describe('routing', () => {
       screen.getByRole('heading', { level: 3, name: 'Nouvelle-Aquitaine' })
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Dordogne' })).toBeInTheDocument();
-    expect(screen.getByText('Département 24')).toBeInTheDocument();
+    expect(screen.getByText('24')).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Gironde' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Lot-et-Garonne' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 3, name: 'Occitanie' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Lot' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Classement en Dordogne →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Classement en Dordogne' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-dordogne'
     );
     expect(screen.queryByRole('link', { name: /consulter la page/i })).not.toBeInTheDocument();
     expect(screen.queryByText('Pages locales')).not.toBeInTheDocument();
     expect(screen.queryByAltText(/carte de france/i)).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
-    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bordeaux'
     );

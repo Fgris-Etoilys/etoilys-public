@@ -198,6 +198,22 @@ function isPublished(entry: LocalRegistryEntry): boolean {
   return entry.status === 'published';
 }
 
+export function isLocalRegistryEntryEffectivelyPublished(
+  entry: LocalRegistryEntry,
+  entries: LocalRegistryEntry[] = LOCAL_REGISTRY
+): boolean {
+  if (!isPublished(entry)) {
+    return false;
+  }
+
+  if (entry.kind === 'department') {
+    return true;
+  }
+
+  const parent = entries.find((candidate) => candidate.id === entry.parentId);
+  return parent?.kind === 'department' && isPublished(parent);
+}
+
 function joinFrenchList(items: string[]): string {
   if (items.length <= 2) {
     return items.join(' et ');
@@ -261,13 +277,17 @@ export function getDepartmentInterventionArea(id: DepartmentAreaId): DepartmentI
 }
 
 export function isLocalRegistryEntryPublished(id: string): boolean {
-  return getLocalRegistryEntry(id)?.status === 'published';
+  const entry = getLocalRegistryEntry(id);
+  return entry === undefined ? false : isLocalRegistryEntryEffectivelyPublished(entry);
 }
 
 export function getPublishedLocalRegistryEntries(
   entries: LocalRegistryEntry[] = LOCAL_REGISTRY
 ): LocalRegistryEntry[] {
-  return entries.filter(isPublished).slice().sort(compareByDisplayOrder);
+  return getPublishedDepartmentEntries(entries).flatMap((department) => [
+    department,
+    ...getPublishedCityEntriesForDepartment(department.id, entries),
+  ]);
 }
 
 export function getPublishedDepartmentEntries(
@@ -286,7 +306,10 @@ export function getPublishedCityEntriesForDepartment(
 ): CityRegistryEntry[] {
   return entries
     .filter((entry): entry is CityRegistryEntry => entry.kind === 'city')
-    .filter((entry) => entry.parentId === parentId && entry.status === 'published')
+    .filter(
+      (entry) =>
+        entry.parentId === parentId && isLocalRegistryEntryEffectivelyPublished(entry, entries)
+    )
     .slice()
     .sort(compareByDisplayOrder);
 }

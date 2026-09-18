@@ -92,9 +92,16 @@ describe('indexnow-submit helpers', () => {
   });
 
   it('maps local V6 content changes to every local public route', () => {
-    const changedFiles = parseChangedFileEntries(['M\tsrc/content/local/v6Pages.tsx'].join('\n'));
+    const changedFiles = parseChangedFileEntries(
+      [
+        'M\tsrc/content/local/v6Pages.tsx',
+        'M\tsrc/content/local/departments/dordognePage.tsx',
+        'M\tsrc/pages/locales/ClassementDordogne.tsx',
+      ].join('\n')
+    );
     const urls = dedupeAndValidateUrls(getUrlsForChangedFiles(changedFiles));
 
+    expect(urls).toContain('https://www.etoilys.fr/zones-intervention');
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-dordogne');
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-gironde');
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-lot');

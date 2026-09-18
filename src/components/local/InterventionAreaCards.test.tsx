@@ -38,71 +38,7 @@ const girondeArea: DepartmentInterventionArea = {
   localPages: [],
 };
 
-const lotEtGaronneArea: DepartmentInterventionArea = {
-  id: 'lot-et-garonne',
-  name: 'Lot-et-Garonne',
-  path: '/classement-meuble-tourisme-lot-et-garonne',
-  departmentCode: '47',
-  regionId: 'nouvelle-aquitaine',
-  status: 'published',
-  coverageMode: 'sectors',
-  displayOrder: 30,
-  description: 'Page départementale Lot-et-Garonne.',
-  hubLinkLabel: 'Classement dans le Lot-et-Garonne →',
-  localPages: [
-    {
-      id: 'agenais',
-      label: 'Agen et l’Agenais',
-      path: '/classement-meuble-tourisme-agen',
-    },
-    {
-      id: 'villeneuvois',
-      label: 'Villeneuve-sur-Lot et le Villeneuvois',
-      path: '/classement-meuble-tourisme-villeneuve-sur-lot',
-    },
-    {
-      id: 'marmandais',
-      label: 'Marmande et le Marmandais',
-      path: '/classement-meuble-tourisme-marmande',
-    },
-    {
-      id: 'albret',
-      label: 'Nérac et l’Albret',
-      path: '/classement-meuble-tourisme-nerac',
-    },
-  ],
-};
-
-const fixtureAreas = [dordogneArea, girondeArea, lotEtGaronneArea];
-const fiveDepartmentFixture: DepartmentInterventionArea[] = [
-  ...fixtureAreas,
-  {
-    id: 'lot' as DepartmentInterventionArea['id'],
-    name: 'Lot',
-    path: '/classement-meuble-tourisme-lot',
-    departmentCode: '46',
-    regionId: 'occitanie',
-    status: 'published',
-    coverageMode: 'department',
-    displayOrder: 40,
-    description: 'Page départementale Lot.',
-    hubLinkLabel: 'Classement dans le Lot →',
-    localPages: [],
-  },
-  {
-    id: 'aveyron' as DepartmentInterventionArea['id'],
-    name: 'Aveyron',
-    path: '/classement-meuble-tourisme-aveyron',
-    departmentCode: '12',
-    regionId: 'occitanie',
-    status: 'published',
-    coverageMode: 'sectors',
-    displayOrder: 50,
-    description: 'Page départementale Aveyron.',
-    hubLinkLabel: 'Classement en Aveyron →',
-    localPages: [],
-  },
-];
+const fixtureAreas = [dordogneArea, girondeArea];
 
 function renderCards(
   areas: DepartmentInterventionArea[],
@@ -125,67 +61,48 @@ describe('InterventionAreaCards', () => {
     cleanup();
   });
 
-  it('does not render an empty local pages block for departments without children', () => {
-    renderCards([girondeArea]);
-
-    expect(screen.getByRole('heading', { name: 'Gironde' })).toBeInTheDocument();
-    expect(screen.queryByText('Pages locales')).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('link', { name: /agen|bergerac|villeneuve/i })
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders a single local page link directly without subtitle', () => {
-    renderCards([dordogneArea]);
-
-    const link = screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' });
-
-    expect(screen.queryByText('Pages locales')).not.toBeInTheDocument();
-    expect(link).toHaveAttribute('href', '/classement-meuble-tourisme-bergerac');
-  });
-
-  it('renders multiple local page links without a subtitle', () => {
+  it('renders one focusable department destination per entry', () => {
     renderCards(fixtureAreas);
 
-    const girondeHeading = screen.getByRole('heading', { name: 'Gironde' });
-    const girondeCard = girondeHeading.parentElement?.parentElement;
-
-    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bergerac'
-    );
-    expect(screen.queryByText('Pages locales')).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Agen et l’Agenais →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-agen'
-    );
-    expect(
-      screen.getByRole('link', { name: 'Villeneuve-sur-Lot et le Villeneuvois →' })
-    ).toHaveAttribute('href', '/classement-meuble-tourisme-villeneuve-sur-lot');
-    expect(screen.getByRole('link', { name: 'Marmande et le Marmandais →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-marmande'
-    );
-    expect(screen.getByRole('link', { name: 'Nérac et l’Albret →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-nerac'
-    );
-    expect(girondeCard).toBeDefined();
-    expect(within(girondeCard as HTMLElement).queryByText('Pages locales')).not.toBeInTheDocument();
-  });
-
-  it('renders five department cards without dropping department links', () => {
-    renderCards(fiveDepartmentFixture);
-
-    expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(5);
-    expect(screen.getByRole('link', { name: 'Classement en Dordogne →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Classement en Dordogne' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-dordogne'
     );
-    expect(screen.getByRole('link', { name: 'Classement en Aveyron →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Classement en Gironde' })).toHaveAttribute(
       'href',
-      '/classement-meuble-tourisme-aveyron'
+      '/classement-meuble-tourisme-gironde'
     );
+    expect(
+      document.querySelectorAll('a[href="/classement-meuble-tourisme-dordogne"]')
+    ).toHaveLength(1);
+  });
+
+  it('keeps city links in a separate tinted footer', () => {
+    renderCards([dordogneArea]);
+
+    const card = screen.getByRole('heading', { name: 'Dordogne' }).closest('article');
+    expect(card).toBeTruthy();
+    const footer = within(card as HTMLElement)
+      .getByText('Dans ce département')
+      .closest('footer');
+    expect(footer).toBeTruthy();
+    expect(within(footer as HTMLElement).getByRole('link', { name: /Bergerac/ })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bergerac'
+    );
+  });
+
+  it('does not render an empty city footer for departments without children', () => {
+    renderCards([girondeArea]);
+
+    const card = screen.getByRole('heading', { name: 'Gironde' }).closest('article');
+    expect(within(card as HTMLElement).queryByText('Dans ce département')).not.toBeInTheDocument();
+  });
+
+  it('does not nest anchors', () => {
+    renderCards([dordogneArea]);
+
+    expect(document.querySelector('a a')).toBeNull();
   });
 
   it('can render department titles below a regional heading level', () => {

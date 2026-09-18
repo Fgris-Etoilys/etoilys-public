@@ -90,6 +90,8 @@ Les pages `Notre équipe` et `Recrutement` existent encore dans `src/pages`, mai
 | `/les-avantages-du-classement`  | `PourquoiClasser`                 | Effets factuels du classement : cadre officiel, fiscalité, taxe de séjour. |
 | `/prerequis-au-classement`      | `Prerequis`                       | Conditions et points préalables avant une demande de classement.           |
 | `/procedure`                    | `Procedure`                       | Étapes de la procédure de classement.                                      |
+| `/zones-intervention`           | `ZonesIntervention`               | Hub compact des zones locales publiées, dérivé du registre local.          |
+| `/classement-meuble-tourisme-*` | pages dans `src/pages/locales`    | Landings locales publiées via le registre local.                           |
 | `/simulateur`                   | `Simulateur`                      | Entrée du simulateur public de classement.                                 |
 | `/simulateur/:simulationId`     | `SimulationClassement`            | Détail d’une simulation publique, route dynamique `noindex`.               |
 | `/simulateur-taxe-sejour`       | `SimulateurTaxeSejour`            | Outil de comparaison taxe de séjour classé/non classé.                     |

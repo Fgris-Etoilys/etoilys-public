@@ -195,7 +195,7 @@ export interface LocalV6CityServiceArea {
   communes: readonly string[];
   parentLink: {
     label: string;
-    href: string;
+    localEntryId: DepartmentAreaId;
   };
 }
 
@@ -203,7 +203,7 @@ export interface LocalV6DepartmentServiceArea {
   title: string;
   intro: string;
   sectors: readonly DepartmentSector[];
-  communeLinks?: Record<string, { href: string; label?: string }>;
+  communeLinks?: Record<string, { localEntryId: CityAreaId; label?: string }>;
   parentLink?: {
     label: string;
     href: string;

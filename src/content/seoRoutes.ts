@@ -7,7 +7,12 @@ import {
   getRouteIdFromPath,
 } from '../i18n/routeHelpers';
 import type { LocalizedRouteId } from '../i18n/localizedRoutes';
-import { getLocalRegistryEntryByPath, getPublishedLocalSeoEntries } from './local/registry';
+import {
+  getLocalRegistryEntryByPath,
+  getPublishedLocalSeoEntries,
+  isLocalRegistryEntryPublished,
+} from './local/registry';
+import type { LocalRegistryEntry } from './local/types';
 
 export interface SeoRouteConfig {
   title: string;
@@ -75,33 +80,39 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
   prerender: false,
 };
 
-const publishedLocalSeoEntries = getPublishedLocalSeoEntries();
+export function buildLocalSeoRoutes(
+  entries?: LocalRegistryEntry[]
+): Record<string, SeoRouteConfig> {
+  const publishedLocalSeoEntries = getPublishedLocalSeoEntries(entries);
 
-const LOCAL_SEO_ROUTES: Record<string, SeoRouteConfig> = Object.fromEntries(
-  publishedLocalSeoEntries.map((entry) => {
-    const parentEntry =
-      entry.kind === 'city'
-        ? publishedLocalSeoEntries.find((candidate) => candidate.id === entry.parentId)
-        : undefined;
+  return Object.fromEntries(
+    publishedLocalSeoEntries.map((entry) => {
+      const parentEntry =
+        entry.kind === 'city'
+          ? publishedLocalSeoEntries.find((candidate) => candidate.id === entry.parentId)
+          : undefined;
 
-    return [
-      entry.path,
-      {
-        lastModified: entry.seo.lastModified,
-        title: entry.seo.title,
-        description: entry.seo.description,
-        breadcrumbLabel: entry.seo.breadcrumbLabel,
-        breadcrumbParentPaths:
-          entry.kind === 'city' && parentEntry
-            ? ['/zones-intervention', parentEntry.path]
-            : ['/zones-intervention'],
-        ogImageKey: entry.seo.ogImageKey,
-        lcpImageKey: entry.seo.lcpImageKey,
-        lcpImageSizes: entry.seo.lcpImageSizes,
-      } satisfies SeoRouteConfig,
-    ];
-  })
-);
+      return [
+        entry.path,
+        {
+          lastModified: entry.seo.lastModified,
+          title: entry.seo.title,
+          description: entry.seo.description,
+          breadcrumbLabel: entry.seo.breadcrumbLabel,
+          breadcrumbParentPaths:
+            entry.kind === 'city' && parentEntry
+              ? ['/zones-intervention', parentEntry.path]
+              : ['/zones-intervention'],
+          ogImageKey: entry.seo.ogImageKey,
+          lcpImageKey: entry.seo.lcpImageKey,
+          lcpImageSizes: entry.seo.lcpImageSizes,
+        } satisfies SeoRouteConfig,
+      ];
+    })
+  );
+}
+
+const LOCAL_SEO_ROUTES = buildLocalSeoRoutes();
 
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/': {
@@ -751,5 +762,6 @@ export function shouldRenderVisibleBreadcrumbs(pathname: string): boolean {
     return true;
   }
 
-  return getLocalRegistryEntryByPath(normalizedPath)?.status === 'published';
+  const entry = getLocalRegistryEntryByPath(normalizedPath);
+  return entry === undefined ? false : isLocalRegistryEntryPublished(entry.id);
 }

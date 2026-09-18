@@ -14,18 +14,26 @@ import ProofStrip from '../ui/ProofStrip';
 import SmartImage from '../ui/SmartImage';
 import Timeline from '../ui/Timeline';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
+import {
+  getLocalRegistryEntry,
+  getPublishedCityEntriesForDepartment,
+  isLocalRegistryEntryPublished,
+} from '../../content/local/registry';
 import { getPricingProfile } from '../../content/local/pricing';
+import { COMMON_LOCAL_V6_FAQ_ITEMS } from '../../content/local/sharedLocalContent';
 import type {
+  CityAreaId,
   DepartmentSector,
+  LocalInterventionPage,
   LocalLandingPageV6Config,
   LocalV6Action,
-  LocalV6CityServiceArea,
-  LocalV6DepartmentServiceArea,
   LocalV6EditorialNotice,
   LocalV6Hero,
   LocalV6TaxModule,
 } from '../../content/local/types';
 import DepartmentPricingSection, { LocalPricingProfileSummary } from './DepartmentPricingSection';
+
+export { COMMON_LOCAL_V6_FAQ_ITEMS } from '../../content/local/sharedLocalContent';
 
 const classificationBenefits = [
   {
@@ -82,33 +90,6 @@ const expertiseReasons = [
   },
 ] as const;
 
-export const COMMON_LOCAL_V6_FAQ_ITEMS = [
-  {
-    question: 'Comment me préparer à une visite de classement ?',
-    answer: (
-      <>
-        Quelques vérifications avant le rendez-vous permettent de préparer sereinement la visite :
-        équipements, informations utiles et principaux critères de la grille.{' '}
-        <Link to="/actualites/preparer-visite-classement-meuble-tourisme">
-          Voir notre guide pour préparer la visite de classement
-        </Link>
-      </>
-    ),
-  },
-  {
-    question: 'Que faire une fois le classement obtenu ?',
-    answer: (
-      <>
-        Une fois votre classement obtenu, quelques démarches restent à effectuer, notamment pour
-        l’affichage, la déclaration, la taxe de séjour et vos annonces.{' '}
-        <Link to="/actualites/que-faire-apres-classement-meuble-tourisme">
-          Voir les démarches à effectuer après le classement
-        </Link>
-      </>
-    ),
-  },
-] as const;
-
 function formatFrenchTitle(title: string) {
   return title.replace(/ ([?!:;])/g, '\u00a0$1');
 }
@@ -120,9 +101,9 @@ export default function LocalLandingPageV6({ config }: { config: LocalLandingPag
       <ProofStrip items={config.proofItems} />
       <LocalV6BenefitsSection />
       {config.scope === 'department' ? (
-        <LocalV6DepartmentServiceAreaSection serviceArea={config.serviceArea} />
+        <LocalV6DepartmentServiceAreaSection config={config} />
       ) : (
-        <LocalV6CityServiceAreaSection serviceArea={config.serviceArea} />
+        <LocalV6CityServiceAreaSection config={config} />
       )}
       <LocalV6PricingSection config={config} />
       <LocalV6ProcedureSection config={config} />
@@ -259,10 +240,26 @@ function LocalV6BenefitsSection() {
 }
 
 function LocalV6DepartmentServiceAreaSection({
-  serviceArea,
+  config,
 }: {
-  serviceArea: LocalV6DepartmentServiceArea;
+  config: Extract<LocalLandingPageV6Config, { scope: 'department' }>;
 }) {
+  const { serviceArea } = config;
+  const linkedCityIds = new Set(
+    Object.values(serviceArea.communeLinks ?? {})
+      .map((link) => link.localEntryId)
+      .filter((id) => isLocalRegistryEntryPublished(id))
+  );
+  const extraLocalPages = getPublishedCityEntriesForDepartment(config.departmentId)
+    .filter((entry) => !linkedCityIds.has(entry.id))
+    .map(
+      (entry): LocalInterventionPage => ({
+        id: entry.id,
+        label: entry.departmentLabel ?? entry.hubLabel ?? entry.name,
+        path: entry.path,
+      })
+    );
+
   return (
     <section
       id="communes"
@@ -279,6 +276,17 @@ function LocalV6DepartmentServiceAreaSection({
           sectors={serviceArea.sectors}
           {...(serviceArea.communeLinks ? { communeLinks: serviceArea.communeLinks } : {})}
         />
+        {extraLocalPages.length > 0 && (
+          <ul className="local-v6-commune-list">
+            {extraLocalPages.map((localPage) => (
+              <li key={localPage.id}>
+                <Link to={localPage.path} className="editorial-inline-link">
+                  {localPage.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
         {serviceArea.parentLink && (
           <Link to={serviceArea.parentLink.href} className="editorial-link ui-focus">
             {serviceArea.parentLink.label} <ArrowUpRight size={16} aria-hidden="true" />
@@ -294,7 +302,7 @@ function LocalV6DepartmentSectorList({
   communeLinks,
 }: {
   sectors: readonly DepartmentSector[];
-  communeLinks?: Record<string, { href: string; label?: string }>;
+  communeLinks?: Record<string, { localEntryId: CityAreaId; label?: string }>;
 }) {
   const [expandedSectors, setExpandedSectors] = useState<ReadonlySet<string>>(new Set());
 
@@ -364,7 +372,14 @@ function LocalV6DepartmentSectorList({
   );
 }
 
-function LocalV6CityServiceAreaSection({ serviceArea }: { serviceArea: LocalV6CityServiceArea }) {
+function LocalV6CityServiceAreaSection({
+  config,
+}: {
+  config: Extract<LocalLandingPageV6Config, { scope: 'city' }>;
+}) {
+  const { serviceArea } = config;
+  const parentEntry = getLocalRegistryEntry(serviceArea.parentLink.localEntryId);
+
   return (
     <section className="local-v6-service-area" aria-labelledby="local-v6-service-area-title">
       <div className="container-editorial">
@@ -378,9 +393,11 @@ function LocalV6CityServiceAreaSection({ serviceArea }: { serviceArea: LocalV6Ci
             <li key={commune}>{commune}</li>
           ))}
         </ul>
-        <Link to={serviceArea.parentLink.href} className="editorial-link ui-focus">
-          {serviceArea.parentLink.label} <ArrowUpRight size={16} aria-hidden="true" />
-        </Link>
+        {parentEntry?.kind === 'department' && isLocalRegistryEntryPublished(parentEntry.id) && (
+          <Link to={parentEntry.path} className="editorial-link ui-focus">
+            {serviceArea.parentLink.label} <ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
+        )}
       </div>
     </section>
   );
@@ -392,15 +409,19 @@ function LocalV6CommuneName({
   prefix,
 }: {
   commune: string;
-  link?: { href: string; label?: string } | undefined;
+  link?: { localEntryId: CityAreaId; label?: string } | undefined;
   prefix?: string | undefined;
 }) {
+  const entry = link ? getLocalRegistryEntry(link.localEntryId) : undefined;
+  const href =
+    entry?.kind === 'city' && isLocalRegistryEntryPublished(entry.id) ? entry.path : undefined;
+
   return (
     <>
       {prefix}
-      {link ? (
-        <Link to={link.href} className="editorial-inline-link">
-          {link.label ?? commune}
+      {href ? (
+        <Link to={href} className="editorial-inline-link">
+          {link?.label ?? commune}
         </Link>
       ) : (
         <span>{commune}</span>

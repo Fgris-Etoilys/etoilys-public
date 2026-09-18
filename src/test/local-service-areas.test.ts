@@ -12,11 +12,17 @@ import {
   getDepartmentEntryByCode,
   getDepartmentInterventionArea,
   getPublishedCityEntriesForDepartment,
+  getPublishedLocalRegistryEntries,
   getPublishedLocalPaths,
   groupActiveDepartmentsByRegion,
 } from '../content/local/registry';
 import type { CityAreaId, DepartmentAreaId, LocalRegistryEntry } from '../content/local/types';
-import { getIndexablePaths, getPrerenderPaths, getSeoRouteConfig } from '../content/seoRoutes';
+import {
+  buildLocalSeoRoutes,
+  getIndexablePaths,
+  getPrerenderPaths,
+  getSeoRouteConfig,
+} from '../content/seoRoutes';
 import { extractActiveAppPaths } from './routeGovernance';
 
 function expectUnique(values: string[]) {
@@ -77,6 +83,29 @@ const publishedCorsicaCity: LocalRegistryEntry = {
   seo: fixtureSeo,
 };
 
+const draftCorsicaCity: LocalRegistryEntry = {
+  ...publishedCorsicaCity,
+  id: 'draft-city' as CityAreaId,
+  status: 'draft',
+  path: '/draft-city',
+};
+
+const publishedCityWithDraftParent: LocalRegistryEntry = {
+  ...publishedCorsicaCity,
+  id: 'rodez' as CityAreaId,
+  name: 'Rodez',
+  path: '/classement-meuble-tourisme-rodez',
+  parentId: draftDepartment.id,
+};
+
+const publishedCityWithoutParent: LocalRegistryEntry = {
+  ...publishedCorsicaCity,
+  id: 'orphan-city' as CityAreaId,
+  name: 'Ville orpheline',
+  path: '/classement-meuble-tourisme-ville-orpheline',
+  parentId: 'missing-department' as DepartmentAreaId,
+};
+
 const departmentPageConfigs = [
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
@@ -116,12 +145,7 @@ describe('local service areas data', () => {
     const fixtureEntries: LocalRegistryEntry[] = [
       publishedCorsicaDepartment,
       publishedCorsicaCity,
-      {
-        ...publishedCorsicaCity,
-        id: 'draft-city' as CityAreaId,
-        status: 'draft',
-        path: '/draft-city',
-      },
+      draftCorsicaCity,
     ];
 
     expect(
@@ -129,6 +153,30 @@ describe('local service areas data', () => {
         (entry) => entry.path
       )
     ).toEqual(['/classement-meuble-tourisme-ajaccio']);
+  });
+
+  it('applies effective publication to cities across helpers and local SEO', () => {
+    const fixtureEntries: LocalRegistryEntry[] = [
+      draftDepartment,
+      publishedCorsicaDepartment,
+      publishedCorsicaCity,
+      draftCorsicaCity,
+      publishedCityWithDraftParent,
+      publishedCityWithoutParent,
+    ];
+    const publicPaths = getPublishedLocalPaths(fixtureEntries);
+    const publicSeoPaths = Object.keys(buildLocalSeoRoutes(fixtureEntries));
+    const publicEntries = getPublishedLocalRegistryEntries(fixtureEntries).map((entry) => entry.id);
+
+    expect(publicEntries).toEqual(['corse-du-sud', 'ajaccio']);
+    expect(publicPaths).toEqual([
+      '/classement-meuble-tourisme-corse-du-sud',
+      '/classement-meuble-tourisme-ajaccio',
+    ]);
+    expect(publicSeoPaths).toEqual(publicPaths);
+    expect(publicPaths).not.toContain('/classement-meuble-tourisme-rodez');
+    expect(publicPaths).not.toContain('/classement-meuble-tourisme-ville-orpheline');
+    expect(publicPaths).not.toContain('/draft-city');
   });
 
   it('groups published departments by region without rendering empty regions or drafts', () => {

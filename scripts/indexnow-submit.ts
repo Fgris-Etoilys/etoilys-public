@@ -247,12 +247,6 @@ function staticRoutesFromPage(filePath: string): string[] {
     'src/pages/Prerequis.tsx': ['/prerequis-au-classement', '/en/classification-requirements'],
     'src/pages/Procedure.tsx': ['/procedure', '/en/classification-process'],
     'src/pages/ZonesIntervention.tsx': ['/zones-intervention'],
-    'src/pages/locales/ClassementBergerac.tsx': ['/classement-meuble-tourisme-bergerac'],
-    'src/pages/locales/ClassementBordeaux.tsx': ['/classement-meuble-tourisme-bordeaux'],
-    'src/pages/locales/ClassementDordogne.tsx': ['/classement-meuble-tourisme-dordogne'],
-    'src/pages/locales/ClassementGironde.tsx': ['/classement-meuble-tourisme-gironde'],
-    'src/pages/locales/ClassementLot.tsx': ['/classement-meuble-tourisme-lot'],
-    'src/pages/locales/ClassementLotEtGaronne.tsx': ['/classement-meuble-tourisme-lot-et-garonne'],
     'src/pages/Simulateur.tsx': ['/simulateur'],
     'src/pages/SimulateurTaxeSejour.tsx': ['/simulateur-taxe-sejour'],
     'src/pages/SimulateurFiscalClassement.tsx': ['/simulateur-fiscal-classement'],
@@ -303,9 +297,11 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
       if (
         normalizedPath === 'src/content/local/registry.ts' ||
         normalizedPath === 'src/content/local/sharedLocalContent.ts' ||
+        normalizedPath === 'src/content/local/sharedLocalContent.tsx' ||
         normalizedPath === 'src/content/local/v6Pages.tsx' ||
         normalizedPath.startsWith('src/content/local/cities/') ||
-        normalizedPath.startsWith('src/content/local/departments/')
+        normalizedPath.startsWith('src/content/local/departments/') ||
+        normalizedPath.startsWith('src/pages/locales/')
       ) {
         if (normalizedPath === 'src/content/local/registry.ts') {
           urls.push(...allIndexableUrls());

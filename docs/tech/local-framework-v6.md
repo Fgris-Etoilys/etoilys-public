@@ -26,10 +26,10 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 
 - `scope: 'department'` impose une zone par secteurs et un pricing `mode: 'picker'`.
 - `scope: 'city'` impose une zone par communes proches et un pricing `mode: 'direct'`. Le module local et la notice éditoriale restent facultatifs, par exemple pour une comparaison de taxe de séjour ou une notice réglementaire quand elle apporte un vrai contexte local.
-- La description hero département commune vit dans `LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION` (`src/content/local/v6Pages.tsx`).
+- La description hero département commune vit dans `LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION` (`src/content/local/sharedLocalContent.tsx`).
 - Les index hero département vivent dans `LOCAL_V6_DEPARTMENT_HERO_INDEXES`. Ils sont territoriaux, pas photographiques.
 - En `city`, le H2 de zone doit rester court, naturel et explicitement territorial. Privilégier quand c’est pertinent une formulation du type `Où intervenons-nous autour de [ville] ?`. Ne pas chercher à bourrer ce H2 de mots-clés : le H1, l’intro, les communes et le maillage portent déjà le contexte SEO local. La formulation peut varier lorsque la géographie réelle ne correspond pas à un simple périmètre autour de la ville.
-- Les contenus riches de FAQ sont des `ReactNode` pour préserver les liens internes, les ancres et les liens externes avec leurs attributs. Les villes réutilisent `src/content/local/cities/sharedCityFaq.ts` ; les départements réutilisent `dordogneQuestions` via `buildDepartmentFaqItems` dans `v6Pages.tsx`.
+- Les contenus riches de FAQ sont des `ReactNode` pour préserver les liens internes, les ancres et les liens externes avec leurs attributs. Les villes réutilisent `src/content/local/cities/sharedCityFaq.ts` ; les départements réutilisent `dordogneQuestions` via `buildDepartmentFaqItems` dans `src/content/local/sharedLocalContent.tsx`.
 - Les CTA gardent leur `variant` de tracking ; les ajustements visuels passent par `className`.
 - Les espaces insécables de ponctuation française visibles dans les titres rendus sont gérés par `formatFrenchTitle` dans `LocalLandingPageV6.tsx`.
 
@@ -39,7 +39,8 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 
 - Les routes React restent explicites dans `AppRoutes.tsx`.
 - Les enfants ville sont dérivés de `parentId` + `status`, sans liste parallèle à maintenir dans les départements.
-- Un brouillon n’est pas listé, indexable, pré-rendu, soumis à IndexNow, ni rendu comme landing publique ; une route encore déclarée affiche la 404 tant que l’entrée registry n’est pas publiée.
+- Publication effective : un département est public si son entrée est `published` ; une ville est publique seulement si son entrée est `published` et si son parent existe, est un département et est lui-même `published`.
+- Un brouillon, une ville orpheline ou une ville rattachée à un parent brouillon n’est pas listé, indexable, pré-rendu, soumis à IndexNow, ni rendu comme landing publique ; une route encore déclarée affiche la 404 tant que l’entrée registry n’est pas effectivement publiée.
 - `departmentCode` est une chaîne opaque. Ne pas le convertir en nombre : `01`, `2A`, `2B` et `971` sont des codes valides pour le contrat.
 - Le lookup par code département retourne exclusivement une entrée département. Les villes peuvent partager le même code sans devenir une cible de lookup cartographique.
 - Le registre reste indépendant des configs V6 React : pas d’import de `v6Pages.tsx`, pas de contenu JSX.
@@ -52,16 +53,18 @@ Les montants et conditions restent dans `src/content/local/pricing.ts`. Le dépa
 
 V6 active :
 
-- Dordogne : `DORDOGNE_LOCAL_LANDING_PAGE_V6`, golden master courant.
-- Bergerac : `BERGERAC_LOCAL_LANDING_PAGE_V6`, golden master ville.
-- Gironde : `GIRONDE_LOCAL_LANDING_PAGE_V6`.
-- Bordeaux : `BORDEAUX_LOCAL_LANDING_PAGE_V6`.
-- Lot-et-Garonne : `LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6`.
-- Lot : `LOT_LOCAL_LANDING_PAGE_V6`.
+- Dordogne : `DORDOGNE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/dordognePage.tsx`.
+- Bergerac : `BERGERAC_LOCAL_LANDING_PAGE_V6` dans `src/content/local/cities/bergeracPage.tsx`.
+- Gironde : `GIRONDE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/girondePage.tsx`.
+- Bordeaux : `BORDEAUX_LOCAL_LANDING_PAGE_V6` dans `src/content/local/cities/bordeauxPage.tsx`.
+- Lot-et-Garonne : `LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/lotEtGaronnePage.tsx`.
+- Lot : `LOT_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/lotPage.tsx`.
+
+`src/content/local/v6Pages.tsx` reste un point de réexport compat uniquement. Il ne doit plus contenir les configurations.
 
 Les routes publiques importent les wrappers fins `CityLandingPage` ou `DepartmentLandingPage`, pas directement `LocalLandingPageV6`.
 
-Le hub `/zones-intervention`, les entrées SEO locales, le sitemap, le pré-rendu, les index de communes et IndexNow consomment le registre pour éviter les listes locales divergentes. Le hub affiche une liste compacte par région et conserve les vrais liens HTML même si une carte est ajoutée plus tard.
+Le hub `/zones-intervention`, les entrées SEO locales, le sitemap, le pré-rendu, les index de communes et IndexNow consomment le registre pour éviter les listes locales divergentes. Le hub affiche les régions empilées verticalement. Chaque région contient sa grille de cartes départementales (`xl:grid-cols-3`, `md:grid-cols-2`, une colonne mobile). Une carte départementale n’est pas interactive elle-même : seul le bloc principal est un `Link` vers le département, et le pied teinté contient les liens villes séparés quand il existe des enfants publiés.
 
 ## Garde-fous
 
@@ -79,13 +82,13 @@ Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pend
 - Index communes : générer les index départementaux depuis `scripts/build-taxe-sejour-dataset.ts` et la source INSEE/taxe de séjour. La liste des index à produire vient du registre. Ne pas maintenir manuellement `public/data/communes-*-index.v1.json`.
 - Images : une page locale ne réutilise pas par défaut le même asset pour le hero et l’expertise. `image.caption` et `expertise.image.caption` sont obligatoires dans la config V6 locale. La caption décrit le lieu photographié ; l’index département reste le repère territorial (`24 / LE PÉRIGORD`, `33 / LA GIRONDE`, `47 / LOT-ET-GARONNE`). La provenance/licence d’un asset externe doit toujours être documentée dans la table de traçabilité. Le champ `credit` de la config V6 est nécessaire lorsqu’une attribution visible est requise ; ne pas forcer de crédit visible pour Pexels lorsque la licence ne l’exige pas. Les libellés actifs sont Saint-Émilion + Arcachon pour la Gironde, place de la Bourse pour le hero Bordeaux, Nérac + Monflanquin pour le Lot-et-Garonne.
 - CTA final : reprendre le motif et la copy du département parent au lieu d’inventer une nouvelle formulation pour chaque ville, mais conserver le `Button.variant` analytics historique d’une page existante.
-- FAQ : toutes les pages V6 incluent le socle FAQ commun ajouté automatiquement par `LocalLandingPageV6`. Les départements utilisent en plus le socle métier commun de `v6Pages.tsx` avec une première question de couverture territoriale et, si utile, une question locale avant les deux FAQ automatiques. Les villes utilisent le socle riche `sharedCityFaq.ts`; ne pas réécrire des liens en markdown ni déclencher une réponse riche par comparaison de texte de question.
+- FAQ : toutes les pages V6 incluent le socle FAQ commun ajouté automatiquement par `LocalLandingPageV6`. Les départements utilisent en plus le socle métier commun de `sharedLocalContent.tsx` avec une première question de couverture territoriale et, si utile, une question locale avant les deux FAQ automatiques. Les villes utilisent le socle riche `sharedCityFaq.ts`; ne pas réécrire des liens en markdown ni déclencher une réponse riche par comparaison de texte de question.
 - Une migration V6 ne doit jamais appauvrir un motif validé simplement parce qu’un nouveau scope utilise moins de données.
 - Les anciennes données tourisme/statistiques inventoriées pendant une migration peuvent rester dans les fichiers de contenu source si elles gardent une utilité éditoriale future, mais elles ne sont pas réexportées ni rendues en V6 sans motif V6 validé.
 
 ## Traçabilité Images Locales
 
-La source technique reste `scripts/images-build.mjs` pour l’asset local et `src/content/local/v6Pages.tsx` pour le crédit affiché. Cette table ne duplique pas le manifeste généré ; elle donne seulement la trace éditoriale.
+La source technique reste `scripts/images-build.mjs` pour l’asset local et le fichier de config territoire (`src/content/local/departments/*Page.tsx` ou `src/content/local/cities/*Page.tsx`) pour le crédit affiché. Cette table ne duplique pas le manifeste généré ; elle donne seulement la trace éditoriale.
 
 | Page           | Usage     | Asset key                    | Fichier source                   | Lieu/caption                                   | Trace                                                                    |
 | -------------- | --------- | ---------------------------- | -------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
@@ -104,7 +107,7 @@ La source technique reste `scripts/images-build.mjs` pour l’asset local et `sr
 
 Checklist nouvelle page locale :
 
-1. Ajouter ou réutiliser une config V6 typée dans `src/content/local/v6Pages.tsx`.
+1. Ajouter ou réutiliser une config V6 typée dans `src/content/local/departments/*Page.tsx` ou `src/content/local/cities/*Page.tsx`; `v6Pages.tsx` ne sert qu’au réexport compat.
 2. Brancher la route sur le wrapper fin `CityLandingPage` ou `DepartmentLandingPage`.
 3. Ajouter l’entrée `src/content/local/registry.ts` pour publier la hiérarchie locale, le hub, le SEO local, les scripts et les données structurées.
 4. Vérifier que les métadonnées registry reprennent le `lcpImageKey`, les `lcpImageSizes`, les dates et les libellés de breadcrumb attendus.
@@ -161,7 +164,7 @@ const CITY_V6: LocalLandingPageV6CityConfig = {
     title: 'Où intervenons-nous autour de Bergerac ?',
     intro: 'Nos inspecteurs interviennent à Bergerac et dans le Bergeracois.',
     communes: ['Bergerac'],
-    parentLink: { href: '/classement-meuble-tourisme-dordogne', label: 'Voir la Dordogne' },
+    parentLink: { localEntryId: 'dordogne', label: 'Voir la Dordogne' },
   },
   pricing: {
     mode: 'direct',
@@ -207,6 +210,7 @@ const DEPARTMENT_V6: LocalLandingPageV6DepartmentConfig = {
     title: 'Dans quelles communes de Dordogne intervenons-nous ?',
     intro: 'Nos inspecteurs interviennent par secteurs.',
     sectors,
+    communeLinks: { Bergerac: { localEntryId: 'bergerac', label: 'Bergerac →' } },
     parentLink: { href: '/zones-intervention', label: 'Voir toutes nos zones' },
   },
   pricing: {

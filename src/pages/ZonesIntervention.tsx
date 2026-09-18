@@ -23,14 +23,16 @@ export default function ZonesIntervention() {
               <h2 className="mb-4">Trouvez votre département</h2>
             </div>
 
-            <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-2">
+            <div className="space-y-10">
               {departmentGroups.map((group) => (
                 <section key={group.region.id} aria-labelledby={`region-${group.region.id}`}>
                   <h3
                     id={`region-${group.region.id}`}
-                    className="mb-5 text-2xl font-playfair font-semibold text-ink"
+                    className="mb-5 flex items-center gap-4 text-2xl font-playfair font-semibold text-ink"
                   >
-                    {group.region.label}
+                    <span className="h-5 w-0.5 rounded-full bg-copper" aria-hidden="true" />
+                    <span>{group.region.label}</span>
+                    <span className="h-px flex-1 bg-ink/10" aria-hidden="true" />
                   </h3>
                   <InterventionAreaCards areas={group.departments} departmentHeadingLevel={4} />
                 </section>
