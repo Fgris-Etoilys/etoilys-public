@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import DepartmentPricingSection, { LocalPricingProfileSummary } from './DepartmentPricingSection';
 import { getPricingProfile, PRICING_PROFILES } from '../../content/local/pricing';
 import {
+  AVEYRON_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOT_LOCAL_LANDING_PAGE_V6,
@@ -216,6 +217,51 @@ describe('Department pricing picker', () => {
     expect(screen.getByText('Deuxième logement et suivants')).toBeInTheDocument();
     expect(screen.getByText('160 € par logement TTC')).toBeInTheDocument();
     expect(screen.queryByText(/office de tourisme partenaire/i)).not.toBeInTheDocument();
+  });
+
+  it('resolves Aveyron through its independent standard profile id', async () => {
+    const aveyronAmount = PRICING_PROFILES['aveyron-standard'].standard.amount;
+    const dordogneAmount = PRICING_PROFILES['dordogne-standard'].standard.amount;
+    PRICING_PROFILES['aveyron-standard'].standard.amount = '444 €';
+    PRICING_PROFILES['dordogne-standard'].standard.amount = '555 €';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ c: [{ id: '12202', label: 'Rodez', departmentCode: '12' }] }),
+      }))
+    );
+
+    try {
+      render(
+        <MemoryRouter>
+          <DepartmentPricingSection
+            config={AVEYRON_LOCAL_LANDING_PAGE_V6.pricing.picker}
+            presentation="panel"
+          />
+        </MemoryRouter>
+      );
+
+      const input = screen.getByRole('combobox', { name: 'Commune' });
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: 'rod' } });
+      expect(await screen.findByRole('option', { name: 'Rodez' })).toBeInTheDocument();
+      fireEvent.keyDown(input, { key: 'Enter' });
+
+      expect(AVEYRON_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
+        'aveyron-standard'
+      );
+      expect(AVEYRON_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides).toEqual({});
+      expect(PRICING_PROFILES['aveyron-standard']).not.toBe(PRICING_PROFILES['dordogne-standard']);
+      expect(PRICING_PROFILES['aveyron-standard'].id).toBe('aveyron-standard');
+      expect(PRICING_PROFILES['dordogne-standard'].id).toBe('dordogne-standard');
+      expect(screen.getByText('Votre meublé à Rodez')).toBeInTheDocument();
+      expect(screen.getByText(/444\s€/)).toBeInTheDocument();
+      expect(screen.queryByText(/555\s€/)).not.toBeInTheDocument();
+    } finally {
+      PRICING_PROFILES['aveyron-standard'].standard.amount = aveyronAmount;
+      PRICING_PROFILES['dordogne-standard'].standard.amount = dordogneAmount;
+    }
   });
 
   it('keeps direct pricing compact without picker divider or duplicated note', () => {

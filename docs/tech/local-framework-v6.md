@@ -44,10 +44,12 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 - `departmentCode` est une chaîne opaque. Ne pas le convertir en nombre : `01`, `2A`, `2B` et `971` sont des codes valides pour le contrat.
 - Le lookup par code département retourne exclusivement une entrée département. Les villes peuvent partager le même code sans devenir une cible de lookup cartographique.
 - Le registre reste indépendant des configs V6 React : pas d’import de `v6Pages.tsx`, pas de contenu JSX.
+- `hubDescription` est un contenu éditorial spécifique à chaque département. Il présente le territoire, pas la couverture opérationnelle d’Etoilys : ne pas le générer depuis un template du type `Etoilys intervient dans…`.
+- Un bon `hubDescription` comporte généralement deux phrases courtes : la première fait ressortir l’identité géographique ou touristique du département ; la seconde apporte, quand c’est naturel, un angle sur les séjours, gîtes, maisons de vacances ou meublés de tourisme. Varier la construction entre départements et éviter les slogans touristiques génériques, le keyword stuffing et les formulations interchangeables.
 
 ## Pricing
 
-Les montants et conditions restent dans `src/content/local/pricing.ts`. Le département résout le profil via le picker de communes existant ; la ville affiche directement son profil. Les IDs métier (`dordogne-standard`, `gironde-standard`, `lot-standard`, `lot-et-garonne-standard`, `bordeaux-standard`) restent indépendants même si leurs valeurs initiales partagent une base interne.
+Les montants et conditions restent dans `src/content/local/pricing.ts`. Le département résout le profil via le picker de communes existant ; la ville affiche directement son profil. Les IDs métier (`aveyron-standard`, `dordogne-standard`, `gironde-standard`, `lot-standard`, `lot-et-garonne-standard`, `bordeaux-standard`) restent indépendants même si leurs valeurs initiales partagent une base interne.
 
 ## Consommateurs
 
@@ -117,7 +119,7 @@ Checklist nouvelle page locale :
 1. Ajouter l'ID dans `DepartmentAreaId` ou `CityAreaId` (`src/content/local/types.ts`) et, seulement si nécessaire, la région dans `RegionId` + `DEPARTMENT_REGIONS`.
 2. Créer une config V6 typée dans `src/content/local/departments/*Page.tsx` ou `src/content/local/cities/*Page.tsx`; `v6Pages.tsx` ne sert qu’au réexport compat.
 3. Brancher une route explicite dans `src/AppRoutes.tsx` via `DepartmentLandingPage` ou `CityLandingPage`.
-4. Ajouter l’entrée `src/content/local/registry.ts` avec `kind`, `id`, `path`, `departmentCode` opaque, région, parent éventuel, statut, ordre, hub, SEO, images LCP/OG et `coverageMode` pour un département.
+4. Ajouter l’entrée `src/content/local/registry.ts` avec `kind`, `id`, `path`, `departmentCode` opaque, région, parent éventuel, statut, ordre, hub, SEO, images LCP/OG et `coverageMode` pour un département. Le `hubDescription` doit rester éditorial et spécifique au territoire : pas de template de couverture opérationnelle, généralement deux phrases courtes, une identité géographique/touristique puis un angle séjour/gîte/meublé si pertinent.
 5. Pour un département, ajouter l’index territorial dans `LOCAL_V6_DEPARTMENT_HERO_INDEXES`, le `PricingProfileId` métier dans `pricing.ts`, puis l’index communes registry si le picker doit être alimenté.
 6. Déclarer les images locales dans `scripts/images-build.mjs`, lancer `npm run images:build`, puis vérifier `npm run images:check`.
 7. Renseigner des captions média non vides et distinguer caption photographique / index territorial.

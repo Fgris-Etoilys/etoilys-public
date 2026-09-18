@@ -35,7 +35,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
     coverageMode: 'sectors',
     displayOrder: 10,
     hubDescription:
-      'Etoilys intervient dans une large partie du département, notamment dans le Bergeracois, le Périgord Noir, le Grand Périgueux et les vallées de la Dordogne et de la Vézère.',
+      'Vallées, bastides et villages de pierre dessinent les différents visages du Périgord, du Bergeracois au Périgord Noir. Gîtes, maisons de vacances et locations saisonnières y font depuis longtemps partie du paysage touristique.',
     hubLinkLabel: 'Classement en Dordogne →',
     communeIndex: {
       departmentCode: '24',
@@ -85,7 +85,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
     coverageMode: 'sectors',
     displayOrder: 20,
     hubDescription:
-      'Les visites sont organisées notamment autour de Bordeaux, du Libournais, de l’Entre-deux-Mers, de la Haute-Gironde et de la vallée de la Garonne.',
+      'Entre Bordeaux, les vignobles du Libournais et les paysages de l’Entre-deux-Mers, la Gironde mêle tourisme urbain, viticole et rural. Les meublés de tourisme y prennent des formes très différentes, de l’appartement en ville à la maison au cœur des vignes.',
     hubLinkLabel: 'Classement en Gironde →',
     communeIndex: {
       departmentCode: '33',
@@ -136,7 +136,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
     coverageMode: 'sectors',
     displayOrder: 30,
     hubDescription:
-      'Etoilys intervient autour d’Agen, Villeneuve-sur-Lot, Marmande et dans les principaux secteurs touristiques du département.',
+      'Bastides, vallées du Lot et de la Garonne et campagnes vallonnées donnent au Lot-et-Garonne un caractère profondément rural. Une destination où gîtes, maisons familiales et locations de vacances occupent naturellement une place importante.',
     hubLinkLabel: 'Classement dans le Lot-et-Garonne →',
     communeIndex: {
       departmentCode: '47',
@@ -164,7 +164,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
     coverageMode: 'department',
     displayOrder: 40,
     hubDescription:
-      'Etoilys intervient dans l’ensemble du département, avec des secteurs de repère autour de Cahors, Rocamadour, Figeac, Saint-Cirq-Lapopie, Gourdon et du Quercy Blanc.',
+      'Causses, falaises et vallées entourent quelques-uns des villages les plus emblématiques du Quercy, de Rocamadour à Saint-Cirq-Lapopie. Le tourisme y repose largement sur des séjours en gîte, maison de vacances ou petit meublé au cœur des villages et de la campagne.',
     hubLinkLabel: 'Classement dans le Lot →',
     communeIndex: {
       departmentCode: '46',
@@ -192,7 +192,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
     coverageMode: 'department',
     displayOrder: 50,
     hubDescription:
-      'Etoilys intervient dans l’ensemble du département, avec des repères autour de Rodez, Belcastel, Conques-en-Rouergue, Millau, Laguiole, Espalion, Villefranche-de-Rouergue et Najac.',
+      'De l’Aubrac aux gorges du Tarn, l’Aveyron change de visage au fil des plateaux, vallées et villages de caractère. Un territoire de grands espaces où gîtes ruraux, maisons de vacances et hébergements indépendants accompagnent naturellement le tourisme de découverte.',
     hubLinkLabel: 'Classement en Aveyron →',
     communeIndex: {
       departmentCode: '12',

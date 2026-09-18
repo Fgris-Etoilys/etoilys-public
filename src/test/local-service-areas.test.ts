@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
 import {
   AVEYRON_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
@@ -11,6 +12,7 @@ import {
   getActiveDepartmentInterventionAreas,
   getClassificationAreaServed,
   getDepartmentEntryByCode,
+  getDepartmentRegistryEntry,
   getDepartmentInterventionArea,
   getPublishedCityEntriesForDepartment,
   getPublishedLocalRegistryEntries,
@@ -28,6 +30,24 @@ import { extractActiveAppPaths } from './routeGovernance';
 
 function expectUnique(values: string[]) {
   expect(new Set(values).size).toBe(values.length);
+}
+
+function normalizeCommuneName(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[’']/g, ' ')
+    .replace(/[-\s]+/g, ' ')
+    .trim();
+}
+
+function readCommuneIndexLabels(outputFileName: string) {
+  const payload = JSON.parse(readFileSync(`public/data/${outputFileName}`, 'utf8')) as {
+    c: Array<{ label: string }>;
+  };
+
+  return new Set(payload.c.map((commune) => normalizeCommuneName(commune.label)));
 }
 
 const fixtureSeo = {
@@ -114,6 +134,8 @@ const departmentPageConfigs = [
   LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 ];
+
+const strictCommuneIndexDepartmentPageConfigs = [AVEYRON_LOCAL_LANDING_PAGE_V6];
 
 describe('local service areas data', () => {
   it('keeps stable published department ids in display order', () => {
@@ -250,6 +272,29 @@ describe('local service areas data', () => {
     ]);
     departmentPageConfigs.forEach((config) => {
       expect(getDepartmentInterventionArea(config.departmentId).id).toBe(config.departmentId);
+    });
+  });
+
+  it('keeps department sector communes present in their generated commune indexes', () => {
+    strictCommuneIndexDepartmentPageConfigs.forEach((config) => {
+      const registryEntry = getDepartmentRegistryEntry(config.departmentId);
+      const communeIndex = registryEntry?.communeIndex;
+      expect(communeIndex).toBeDefined();
+      if (!communeIndex) {
+        throw new Error(`${config.departmentId} must declare a commune index`);
+      }
+
+      const indexedCommunes = readCommuneIndexLabels(communeIndex.outputFileName);
+      const sectorCommunes = config.serviceArea.sectors.flatMap((sector) => [
+        ...(sector.communes ?? []),
+        ...(sector.visibleCommunes ?? []),
+        ...(sector.collapsedCommunes ?? []),
+      ]);
+      const missingCommunes = sectorCommunes.filter(
+        (commune) => !indexedCommunes.has(normalizeCommuneName(commune))
+      );
+
+      expect(missingCommunes, `${config.departmentId} sector communes`).toEqual([]);
     });
   });
 });
