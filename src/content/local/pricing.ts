@@ -1,6 +1,7 @@
 export type PricingProfileId =
   | 'dordogne-standard'
   | 'gironde-standard'
+  | 'lot-standard'
   | 'lot-et-garonne-standard'
   | 'bordeaux-standard';
 
@@ -76,9 +77,34 @@ function createStandardPricingProfile(id: PricingProfileId): PricingProfile {
   };
 }
 
+const lotPricingProfile: PricingProfile = {
+  id: 'lot-standard',
+  standard: {
+    label: 'Tarif public',
+    amount: '200 €',
+    qualifier: 'TTC',
+  },
+  multiProperty: {
+    rows: [
+      {
+        key: 'first',
+        label: 'Premier logement',
+        amount: '200 €',
+      },
+      {
+        key: 'second-and-next',
+        label: 'Deuxième logement et suivants',
+        amount: '160 € par logement',
+      },
+    ],
+  },
+  note: standardProfileValues.note,
+};
+
 export const PRICING_PROFILES: Record<PricingProfileId, PricingProfile> = {
   'dordogne-standard': createStandardPricingProfile('dordogne-standard'),
   'gironde-standard': createStandardPricingProfile('gironde-standard'),
+  'lot-standard': lotPricingProfile,
   'lot-et-garonne-standard': createStandardPricingProfile('lot-et-garonne-standard'),
   'bordeaux-standard': createStandardPricingProfile('bordeaux-standard'),
 };

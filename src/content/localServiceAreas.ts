@@ -37,6 +37,8 @@ export {
   GIRONDE_TOURISM_ROWS,
 } from './local/departments/gironde';
 
+export { LOT_SERVICE_SECTORS } from './local/departments/lot';
+
 export {
   LOT_ET_GARONNE_SERVICE_SECTORS,
   LOT_ET_GARONNE_SOURCES,

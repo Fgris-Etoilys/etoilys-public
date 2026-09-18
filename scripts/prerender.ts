@@ -52,7 +52,7 @@ const FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS = [
   /^\/actualites(?:\/|$)/,
   /^\/simulateur(?:\/|-|$)/,
   /^\/zones-intervention(?:\/|$)/,
-  /^\/classement-meuble-tourisme-(?:dordogne|gironde|lot-et-garonne)(?:\/|$)/,
+  /^\/classement-meuble-tourisme-(?:dordogne|gironde|lot|lot-et-garonne)(?:\/|$)/,
   /^\/recrutement(?:\/|$)/,
   /^\/mentions-legales(?:\/|$)/,
   /^\/en\/actualites(?:\/|$)/,

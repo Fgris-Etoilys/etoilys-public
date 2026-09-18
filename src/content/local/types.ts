@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import type { ImageAssetKey } from '../imageManifest';
 import type { PricingProfileId } from './pricing';
 
-export type DepartmentAreaId = 'dordogne' | 'gironde' | 'lot-et-garonne';
+export type DepartmentAreaId = 'dordogne' | 'gironde' | 'lot' | 'lot-et-garonne';
 
 export type RegionId = 'nouvelle-aquitaine' | 'occitanie';
 

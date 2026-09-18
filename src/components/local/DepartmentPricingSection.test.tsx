@@ -6,6 +6,7 @@ import { getPricingProfile, PRICING_PROFILES } from '../../content/local/pricing
 import {
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
+  LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
 
@@ -182,6 +183,39 @@ describe('Department pricing picker', () => {
       PRICING_PROFILES['bordeaux-standard'].standard.amount = bordeauxAmount;
       PRICING_PROFILES['lot-et-garonne-standard'].standard.amount = lotEtGaronneAmount;
     }
+  });
+
+  it('renders the Lot pricing profile without partner tariff', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ c: [{ id: '46042', label: 'Cahors', departmentCode: '46' }] }),
+      }))
+    );
+
+    render(
+      <MemoryRouter>
+        <DepartmentPricingSection
+          config={LOT_LOCAL_LANDING_PAGE_V6.pricing.picker}
+          presentation="panel"
+        />
+      </MemoryRouter>
+    );
+
+    const input = screen.getByRole('combobox', { name: 'Commune' });
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'cah' } });
+    expect(await screen.findByRole('option', { name: 'Cahors' })).toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(LOT_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe('lot-standard');
+    expect(LOT_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides).toEqual({});
+    expect(screen.getByText('Votre meublé à Cahors')).toBeInTheDocument();
+    expect(screen.getAllByText(/200\s€/)).toHaveLength(2);
+    expect(screen.getByText('Deuxième logement et suivants')).toBeInTheDocument();
+    expect(screen.getByText('160 € par logement TTC')).toBeInTheDocument();
+    expect(screen.queryByText(/office de tourisme partenaire/i)).not.toBeInTheDocument();
   });
 
   it('keeps direct pricing compact without picker divider or duplicated note', () => {

@@ -97,7 +97,7 @@ describe('structured data graph', () => {
 
     expect(asObject(website.publisher)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
     expect(asObject(service.provider)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
-    expect(service.areaServed).toBe('Dordogne, Gironde et Lot-et-Garonne');
+    expect(service.areaServed).toBe('Dordogne, Gironde, Lot-et-Garonne et Lot');
     expect(service.offers).toBeUndefined();
 
     expect(certification.certificationIdentification).toBe('3-2394');

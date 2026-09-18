@@ -69,6 +69,18 @@ export const DEPARTMENT_INTERVENTION_AREAS: DepartmentInterventionArea[] = [
       'Etoilys intervient autour d’Agen, Villeneuve-sur-Lot, Marmande et dans les principaux secteurs touristiques du département.',
     localPages: [],
   },
+  {
+    id: 'lot',
+    name: 'Lot',
+    path: '/classement-meuble-tourisme-lot',
+    departmentCode: '46',
+    regionId: 'occitanie',
+    status: 'published',
+    displayOrder: 40,
+    description:
+      'Etoilys intervient dans l’ensemble du département, avec des secteurs de repère autour de Cahors, Rocamadour, Figeac, Saint-Cirq-Lapopie, Gourdon et du Quercy Blanc.',
+    localPages: [],
+  },
 ];
 
 function compareByDisplayOrder<T extends { displayOrder: number; id: string }>(

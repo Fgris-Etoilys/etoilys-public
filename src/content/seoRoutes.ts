@@ -182,6 +182,16 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     lcpImageKey: 'lotEtGaronneHero',
     lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
   },
+  '/classement-meuble-tourisme-lot': {
+    lastModified: '2026-09-18',
+    title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot',
+    description:
+      'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot pour leur classement officiel.',
+    breadcrumbLabel: 'Lot',
+    ogImageKey: 'lotHero',
+    lcpImageKey: 'lotHero',
+    lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
+  },
   '/simulateur': {
     lastModified: '2026-06-24',
     title: 'Simulateur de classement meublé de tourisme',

@@ -246,6 +246,7 @@ function staticRoutesFromPage(filePath: string): string[] {
     'src/pages/locales/ClassementBordeaux.tsx': ['/classement-meuble-tourisme-bordeaux'],
     'src/pages/locales/ClassementDordogne.tsx': ['/classement-meuble-tourisme-dordogne'],
     'src/pages/locales/ClassementGironde.tsx': ['/classement-meuble-tourisme-gironde'],
+    'src/pages/locales/ClassementLot.tsx': ['/classement-meuble-tourisme-lot'],
     'src/pages/locales/ClassementLotEtGaronne.tsx': ['/classement-meuble-tourisme-lot-et-garonne'],
     'src/pages/Simulateur.tsx': ['/simulateur'],
     'src/pages/SimulateurTaxeSejour.tsx': ['/simulateur-taxe-sejour'],
@@ -303,6 +304,7 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
         urls.push(routeUrl('/classement-meuble-tourisme-bergerac'));
         urls.push(routeUrl('/classement-meuble-tourisme-bordeaux'));
         urls.push(routeUrl('/classement-meuble-tourisme-gironde'));
+        urls.push(routeUrl('/classement-meuble-tourisme-lot'));
         urls.push(routeUrl('/classement-meuble-tourisme-lot-et-garonne'));
         continue;
       }

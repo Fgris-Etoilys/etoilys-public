@@ -100,7 +100,8 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { level: 4, name: 'Dordogne' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Gironde' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Lot-et-Garonne' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Occitanie' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'Occitanie' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Lot' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
@@ -151,6 +152,12 @@ describe('routing', () => {
     expectPageHeading(/classement/i, /lot-et-garonne/i);
   });
 
+  it('renders Lot local landing page', () => {
+    renderAt('/classement-meuble-tourisme-lot');
+    expectPageHeading(/classement/i, /lot/i);
+    expect(screen.getByText('46 / LE LOT')).toBeInTheDocument();
+  });
+
   it('exposes service areas in classement navigation and keeps footer hub-focused', () => {
     renderAt('/');
 
@@ -169,6 +176,7 @@ describe('routing', () => {
     );
     expect(screen.queryByRole('link', { name: /classement en dordogne/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement en gironde/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /classement dans le lot/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement en lot-et-garonne/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /bergerac et le bergeracois/i })).toBeNull();
   });

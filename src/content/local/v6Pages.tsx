@@ -18,6 +18,7 @@ import {
 } from './cities/bordeaux';
 import { DORDOGNE_V6_SERVICE_SECTORS } from './departments/dordogne';
 import { GIRONDE_SERVICE_SECTORS } from './departments/gironde';
+import { LOT_SERVICE_SECTORS } from './departments/lot';
 import { LOT_ET_GARONNE_SERVICE_SECTORS } from './departments/lot-et-garonne';
 import { getSeoRouteConfig } from '../seoRoutes';
 
@@ -29,6 +30,7 @@ const dordogneHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-touris
 const bergeracHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-bergerac');
 const girondeHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-gironde');
 const bordeauxHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-bordeaux');
+const lotHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-lot');
 const lotEtGaronneHeroImageSizes = getLocalHeroImageSizes(
   '/classement-meuble-tourisme-lot-et-garonne'
 );
@@ -41,6 +43,7 @@ export const LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION =
 export const LOCAL_V6_DEPARTMENT_HERO_INDEXES = {
   dordogne: '24 / LE PÉRIGORD',
   gironde: '33 / LA GIRONDE',
+  lot: '46 / LE LOT',
   'lot-et-garonne': '47 / LOT-ET-GARONNE',
 } as const;
 
@@ -762,6 +765,118 @@ export const BORDEAUX_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       variant: 'white',
       className: 'editorial-inverse-button',
     },
+  },
+};
+
+export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
+  layoutVersion: 'v6',
+  scope: 'department',
+  departmentId: 'lot',
+  hero: {
+    eyebrow: 'Propriétaires dans le Lot',
+    title: 'Classement de gîtes et meublés de tourisme dans le Lot',
+    highlightedTitleText: 'dans le Lot',
+    description: LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
+    image: {
+      assetKey: 'lotHero',
+      alt: 'Vue sur la vallée du Lot depuis Saint-Cirq-Lapopie',
+      sizes: lotHeroImageSizes,
+      className:
+        'h-full w-full object-cover object-[55%_center] max-[899px]:object-[57%_center] max-[680px]:object-[59%_center]',
+      caption: (
+        <>
+          <MapPin size={14} aria-hidden="true" /> Saint-Cirq-Lapopie, Lot
+        </>
+      ),
+      note: DORDOGNE_LOCAL_LANDING_PAGE_V6.hero.image.note,
+      index: LOCAL_V6_DEPARTMENT_HERO_INDEXES.lot,
+    },
+    primaryAction: localV6HeroPrimaryAction,
+    secondaryAction: {
+      href: '#department-pricing-locality',
+      variant: 'secondary',
+      className: 'editorial-link ui-focus local-v6-hero-price',
+      label: (
+        <>
+          Connaître mon tarif <ArrowDown size={16} aria-hidden="true" />
+        </>
+      ),
+    },
+    reassuranceItems: heroReassurance,
+  },
+  proofItems: DORDOGNE_LOCAL_LANDING_PAGE_V6.proofItems,
+  serviceArea: {
+    title: 'Dans quelles communes du Lot intervenons-nous ?',
+    intro:
+      'Etoilys intervient dans l’ensemble du département du Lot. Les secteurs ci-dessous structurent la zone d’intervention avec des communes représentatives ; ils ne limitent pas la couverture et ne créent aucune différence de tarif.',
+    sectors: toCollapsedSectors(LOT_SERVICE_SECTORS),
+    parentLink: {
+      href: '/zones-intervention',
+      label: 'Voir toutes nos zones d’intervention',
+    },
+  },
+  pricing: {
+    mode: 'picker',
+    title: 'Quel tarif pour classer votre meublé dans le Lot ?',
+    intro:
+      'Indiquez la commune de votre logement pour consulter le tarif prévu. Le sélecteur couvre les communes du Lot présentes dans l’index officiel généré.',
+    checklist: pricingChecklist,
+    procedureLink: {
+      href: '/procedure',
+      label: 'Les modalités de la visite',
+    },
+    picker: {
+      title: 'Quel tarif pour classer votre meublé dans le Lot ?',
+      intro: 'Sélectionnez la commune de votre meublé pour afficher le tarif applicable.',
+      inputLabel: 'Commune',
+      placeholder: 'Ex. Cahors, Rocamadour, Figeac',
+      communeIndexUrl: '/data/communes-lot-index.v1.json',
+      defaultPricingProfileId: 'lot-standard',
+      overrides: {},
+    },
+  },
+  procedure: commonProcedure,
+  expertise: {
+    title: 'Pourquoi choisir Etoilys pour votre classement dans le Lot ?',
+    image: {
+      assetKey: 'lotRocamadour',
+      alt: 'Cité religieuse de Rocamadour dans le Lot',
+      sizes: '(min-width: 900px) 35vw, 100vw',
+      className: 'h-full w-full object-cover object-[center_42%]',
+      caption: 'Rocamadour, Lot.',
+      credit: {
+        sourceLabel: 'Franck-fnba / Wikimedia Commons',
+        sourceHref: 'https://commons.wikimedia.org/wiki/File:Rocamadour_2025-114909.jpg',
+        licenseLabel: 'CC BY-SA 4.0',
+        licenseHref: 'https://creativecommons.org/licenses/by-sa/4.0/',
+      },
+    },
+  },
+  faq: {
+    eyebrow: 'AVANT DE VOUS LANCER',
+    title: 'Questions fréquentes sur le classement dans le Lot',
+    intro: 'Un point particulier sur votre logement ?',
+    contactLink: {
+      href: '/contact',
+      label: 'Parlons-en',
+    },
+    items: buildDepartmentFaqItems({
+      question: 'Intervenez-vous dans ma commune dans le Lot ?',
+      answer: (
+        <>
+          Oui. Etoilys intervient dans l’ensemble du département du Lot. Les secteurs présentés sur
+          cette page donnent des repères autour de Cahors, Rocamadour, Figeac, Saint-Cirq-Lapopie,
+          Gourdon et du Quercy Blanc, avec des communes représentatives. Consultez les{' '}
+          <a href="#communes">communes de nos secteurs</a> ou indiquez l’adresse de votre logement
+          dans votre demande pour confirmer l’organisation de la visite.
+        </>
+      ),
+    }),
+  },
+  finalCta: {
+    ...DORDOGNE_LOCAL_LANDING_PAGE_V6.finalCta,
+    title: 'Demandez le classement de votre meublé dans le Lot',
+    primaryAction: localV6FinalPrimaryAction,
   },
 };
 

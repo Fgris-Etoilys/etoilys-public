@@ -90,4 +90,14 @@ describe('indexnow-submit helpers', () => {
     expect(urls).toContain('https://www.etoilys.fr/en/contact');
     expect(urls).toContain('https://www.etoilys.fr/en/request-a-classification');
   });
+
+  it('maps local V6 content changes to every local public route', () => {
+    const changedFiles = parseChangedFileEntries(['M\tsrc/content/local/v6Pages.tsx'].join('\n'));
+    const urls = dedupeAndValidateUrls(getUrlsForChangedFiles(changedFiles));
+
+    expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-dordogne');
+    expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-gironde');
+    expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-lot');
+    expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-lot-et-garonne');
+  });
 });

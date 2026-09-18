@@ -25,6 +25,8 @@ export type ImageAssetKey =
   | 'girondeHero'
   | 'girondeTerritory'
   | 'girondeCoast'
+  | 'lotHero'
+  | 'lotRocamadour'
   | 'lotEtGaronneHero'
   | 'lotEtGaronneTerritory'
   | 'lotEtGaronneCanal'
@@ -275,6 +277,24 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.webp 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.webp 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.webp 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.webp 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.avif 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.avif 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.avif 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.avif 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.avif 1920w',
+  },
+  lotHero: {
+    width: 5472,
+    height: 3648,
+    src: '/images/optimized/pexels-tyvalloire-35860040-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/pexels-tyvalloire-35860040-480.webp 480w, /images/optimized/pexels-tyvalloire-35860040-768.webp 768w, /images/optimized/pexels-tyvalloire-35860040-1200.webp 1200w, /images/optimized/pexels-tyvalloire-35860040-1600.webp 1600w, /images/optimized/pexels-tyvalloire-35860040-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/pexels-tyvalloire-35860040-480.avif 480w, /images/optimized/pexels-tyvalloire-35860040-768.avif 768w, /images/optimized/pexels-tyvalloire-35860040-1200.avif 1200w, /images/optimized/pexels-tyvalloire-35860040-1600.avif 1600w, /images/optimized/pexels-tyvalloire-35860040-1920.avif 1920w',
+  },
+  lotRocamadour: {
+    width: 4080,
+    height: 3060,
+    src: '/images/optimized/rocamadour-2025-114909-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/rocamadour-2025-114909-480.webp 480w, /images/optimized/rocamadour-2025-114909-768.webp 768w, /images/optimized/rocamadour-2025-114909-1200.webp 1200w, /images/optimized/rocamadour-2025-114909-1600.webp 1600w, /images/optimized/rocamadour-2025-114909-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/rocamadour-2025-114909-480.avif 480w, /images/optimized/rocamadour-2025-114909-768.avif 768w, /images/optimized/rocamadour-2025-114909-1200.avif 1200w, /images/optimized/rocamadour-2025-114909-1600.avif 1600w, /images/optimized/rocamadour-2025-114909-1920.avif 1920w',
   },
   lotEtGaronneHero: {
     width: 3888,

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "16661bb68b55beb1704ab704a3c219620ae0e7994e743bdaa5dc1ee123ce8092",
+  "pipelineSignature": "b463fa32af27de2c2f2ccd206bcd0a2eed5eb0813d8f157dff67430ea513233f",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "16710d9764c6b74442ba580dc012edda8ad10361cc026f4f69bc9679cc77c5da"
+    "sha256": "8847f24d13b08a2b35372b13925f7b2796e7a4af361ef27f23d2aa5a297ed8d2"
   },
   "sources": [
     {
@@ -162,9 +162,19 @@
       "sha256": "9ae363f6e2bec43ab11a5ad336bdda713b67df7145da27797e3b80741b42aca2"
     },
     {
+      "key": "lotHero",
+      "path": "src/assets/seo-images/source/pexels-tyvalloire-35860040.jpg",
+      "sha256": "9bfc0fcf3d8ba13be010cd56bcc8ef6c05446ceacaa95836e64d9803347ae2ba"
+    },
+    {
       "key": "pourquoiReferencement",
       "path": "src/assets/seo-images/source/pourquoi-referencement.jpg",
       "sha256": "45b5562e9e3d90c930754a6e3265012b20f8709c744a2ef42818ffba1a89292d"
+    },
+    {
+      "key": "lotRocamadour",
+      "path": "src/assets/seo-images/source/rocamadour-2025-114909.jpg",
+      "sha256": "bd477e3027f939f4831e629b329f540155f65d34af6328792e0da603a1c46968"
     },
     {
       "key": "articleFacturationElectronique2026",
@@ -1674,6 +1684,61 @@
       "sha256": "0c34a204ea936f0225538dcd872b2abc10afb3489d6351e700b249540609dfd3"
     },
     {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1200.avif",
+      "bytes": 202989,
+      "sha256": "d19d5031665194e91700a13db43aca21565444dde10e2c8c30a263d19aa68185"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1200.jpg",
+      "bytes": 219072,
+      "sha256": "013ae41783524970623c4771fa845e4f66f7027d53a080d61c4246bf157b22d0"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1200.webp",
+      "bytes": 235530,
+      "sha256": "b7ccb61979fe7ab6e31dc7b82b73a4ff1b6a9a2e1e1cabe13a8d5da0b36191f8"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1600.avif",
+      "bytes": 381432,
+      "sha256": "74b44955b2819f1cb50e4d6d7175c973c320b9082de38f8aa08ee397ea620322"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1600.webp",
+      "bytes": 407936,
+      "sha256": "383ce2ebabebd6bd270cf8b5f58fcfb59a15b3dcc4ea309e4e4b129fb81b5ac7"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1920.avif",
+      "bytes": 543907,
+      "sha256": "85db986f376b0ebf4e1de3b149c2014f7f4ad860c6e8d58ff5ee1cbd89521b78"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1920.webp",
+      "bytes": 587216,
+      "sha256": "baa10e1b5956b570d3890fab68f2e56d3fa406049f9613c477abe99c620c330e"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-480.avif",
+      "bytes": 26304,
+      "sha256": "f84ea2e90fe5ffb287304563fefe12184b7e99d1c597309efbbda7cb98e1f3fe"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-480.webp",
+      "bytes": 33824,
+      "sha256": "1c623be9c2aa19d77de0e4c3b761ba18361380e1793af40ecdc150d036902b5e"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-768.avif",
+      "bytes": 68464,
+      "sha256": "a62e5b91f17ccce15b67becd1a7224870af4b1f509ad8a1c599e8ad21ee911e6"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-768.webp",
+      "bytes": 85926,
+      "sha256": "cdd55f9c76b11c68042ae75ec4b0ef94c0b39fa3f853ab6bc814741fad9c8830"
+    },
+    {
       "path": "/images/optimized/pourquoi-referencement-1200.avif",
       "bytes": 59698,
       "sha256": "32c52471db3fffcfb42efd40bfa14a11ff11584675685323c32e19af7334007d"
@@ -1727,6 +1792,61 @@
       "path": "/images/optimized/pourquoi-referencement-768.webp",
       "bytes": 38290,
       "sha256": "7acb4d4618a0379a6321cd5b137c11f40848043da51161ecfa7063e538f84233"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1200.avif",
+      "bytes": 260539,
+      "sha256": "bd4af598bd4c099eddcc91764ec6f3634863b52b0508af309c897b36a9a9f703"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1200.jpg",
+      "bytes": 250510,
+      "sha256": "1bf5eb829ac3e5636cb994da49332bc0a4b59a18dbc9edf4791ee6023a8bc7b3"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1200.webp",
+      "bytes": 282314,
+      "sha256": "86fbd9a2432ad6866f75e3f467d7969287e34f25f525bbd8235d7d7863f7a62d"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1600.avif",
+      "bytes": 394051,
+      "sha256": "f4af32e0f35cdf25270a5eb3d3b73557039bbc860daf0172f09a3f881cb5c491"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1600.webp",
+      "bytes": 436042,
+      "sha256": "245a064c22105897f05e0ab371b5daf0c865393eaa0a8c84d9a804fb9669fe8b"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1920.avif",
+      "bytes": 491308,
+      "sha256": "e5714cbcdea27c02e83a58695ee500736b9ce84b91b946a133d2a6f97c4276d6"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1920.webp",
+      "bytes": 559812,
+      "sha256": "9bd232962e1530c314196539abd911e2be072b2563bf91e3ad02c62a2d67f9f0"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-480.avif",
+      "bytes": 54738,
+      "sha256": "6491d0b1d5eac3c69608a6ffa4aa5e1814eb428381406bd5e28870b96f38a710"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-480.webp",
+      "bytes": 56234,
+      "sha256": "c8f23ace2415e4ac54db273335d8ad9db56476b7006dd8539bf07c8a0756b64d"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-768.avif",
+      "bytes": 124044,
+      "sha256": "076eb35f7daa201428b34e33dc4cf284e9cf3d09750066251d818fbc6f2a169c"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-768.webp",
+      "bytes": 128092,
+      "sha256": "5150b92bd670ea045925b16c6def864c22569b60c92b2d02b40b9015f7ddcfdf"
     },
     {
       "path": "/images/optimized/simulateur-classement-og-1200.avif",

@@ -19,6 +19,10 @@ const DEPARTMENT_COMMUNE_INDEX_OUTPUTS = [
     outputPath: path.join(OUTPUT_DIR, 'communes-gironde-index.v1.json'),
   },
   {
+    departmentCode: '46',
+    outputPath: path.join(OUTPUT_DIR, 'communes-lot-index.v1.json'),
+  },
+  {
     departmentCode: '47',
     outputPath: path.join(OUTPUT_DIR, 'communes-lot-et-garonne-index.v1.json'),
   },
@@ -84,6 +88,17 @@ const COMMUNE_LABEL_OVERRIDES_BY_INSEE: Record<string, string> = {
   '24274': 'Monbazillac',
   '24322': 'Périgueux',
   '24352': 'Ribérac',
+  '46015': 'Bagnac-sur-Célé',
+  '46063': 'Castelnau-Montratier',
+  '46037': 'Bouziès',
+  '46138': 'Cœur de Causse',
+  '46173': 'Limogne-en-Quercy',
+  '46183': 'Marcilhac-sur-Célé',
+  '46191': 'Mercuès',
+  '46201': 'Montcuq-en-Quercy-Blanc',
+  '46231': 'Puy-l’Évêque',
+  '46251': 'Saint-Céré',
+  '46320': 'Tour-de-Faure',
 };
 
 interface TextNode {

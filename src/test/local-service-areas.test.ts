@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
+  LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 } from '../content/local/v6Pages';
 import {
@@ -22,6 +23,7 @@ function expectUnique(values: string[]) {
 const departmentPageConfigs = [
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
+  LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 ];
 
@@ -29,7 +31,7 @@ describe('local service areas data', () => {
   it('keeps stable published department ids in display order', () => {
     const ids = getActiveDepartmentInterventionAreas().map((area) => area.id);
 
-    expect(ids).toEqual(['dordogne', 'gironde', 'lot-et-garonne']);
+    expect(ids).toEqual(['dordogne', 'gironde', 'lot-et-garonne', 'lot']);
   });
 
   it('keeps department paths unique and publicly routable when published', () => {
@@ -78,25 +80,17 @@ describe('local service areas data', () => {
       'Dordogne',
       'Gironde',
       'Lot-et-Garonne',
+      'Lot',
     ]);
-    expect(groupActiveDepartmentsByRegion(DEPARTMENT_REGIONS, fixtureAreas)).toHaveLength(1);
-    expect(getClassificationAreaServed(fixtureAreas)).toBe('Dordogne, Gironde et Lot-et-Garonne');
-    expect(getClassificationAreaServed()).toBe('Dordogne, Gironde et Lot-et-Garonne');
+    expect(groupActiveDepartmentsByRegion(DEPARTMENT_REGIONS, fixtureAreas)).toHaveLength(2);
+    expect(getClassificationAreaServed(fixtureAreas)).toBe(
+      'Dordogne, Gironde, Lot-et-Garonne et Lot'
+    );
+    expect(getClassificationAreaServed()).toBe('Dordogne, Gironde, Lot-et-Garonne et Lot');
   });
 
   it('groups published departments by region without rendering empty regions', () => {
     const fixtureAreas: DepartmentInterventionArea[] = [
-      {
-        id: 'lot' as DepartmentAreaId,
-        name: 'Lot',
-        path: '/classement-meuble-tourisme-lot',
-        departmentCode: '46',
-        regionId: 'occitanie',
-        status: 'published',
-        displayOrder: 40,
-        description: 'Published department.',
-        localPages: [],
-      },
       {
         id: 'aveyron' as DepartmentAreaId,
         name: 'Aveyron',
@@ -143,6 +137,7 @@ describe('local service areas data', () => {
     expect(departmentPageConfigs.map((config) => config.departmentId)).toEqual([
       'dordogne',
       'gironde',
+      'lot',
       'lot-et-garonne',
     ]);
     departmentPageConfigs.forEach((config) => {

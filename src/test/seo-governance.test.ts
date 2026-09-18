@@ -287,6 +287,7 @@ describe('seo governance', () => {
       '/classement-meuble-tourisme-bergerac',
       '/classement-meuble-tourisme-bordeaux',
       '/classement-meuble-tourisme-gironde',
+      '/classement-meuble-tourisme-lot',
       '/classement-meuble-tourisme-lot-et-garonne',
       '/recrutement',
       '/mentions-legales',

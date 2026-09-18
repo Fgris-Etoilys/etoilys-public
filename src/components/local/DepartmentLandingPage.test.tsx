@@ -17,6 +17,7 @@ import {
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
   LOCAL_V6_DEPARTMENT_HERO_INDEXES,
+  LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
 
@@ -29,6 +30,7 @@ const COMMUNE_INDEX_FIXTURE = {
   c: [
     { id: '24352', label: 'Ribérac', departmentCode: '24' },
     { id: '33063', label: 'Bordeaux', departmentCode: '33' },
+    { id: '46042', label: 'Cahors', departmentCode: '46' },
     { id: '47001', label: 'Agen', departmentCode: '47' },
   ],
 };
@@ -104,6 +106,9 @@ describe('DepartmentLandingPage', () => {
     expect(readPageSource('ClassementGironde.tsx')).toContain(
       '<DepartmentLandingPage config={GIRONDE_LOCAL_LANDING_PAGE_V6}'
     );
+    expect(readPageSource('ClassementLot.tsx')).toContain(
+      '<DepartmentLandingPage config={LOT_LOCAL_LANDING_PAGE_V6}'
+    );
     expect(readPageSource('ClassementLotEtGaronne.tsx')).toContain(
       '<DepartmentLandingPage config={LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6}'
     );
@@ -121,6 +126,12 @@ describe('DepartmentLandingPage', () => {
       'Classement de gîtes et meublés de tourisme en Gironde',
       'Quel tarif pour classer votre meublé en Gironde ?',
       '/data/communes-gironde-index.v1.json',
+    ],
+    [
+      LOT_LOCAL_LANDING_PAGE_V6,
+      'Classement de gîtes et meublés de tourisme dans le Lot',
+      'Quel tarif pour classer votre meublé dans le Lot ?',
+      '/data/communes-lot-index.v1.json',
     ],
     [
       LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
@@ -157,10 +168,38 @@ describe('DepartmentLandingPage', () => {
     expect(toggle).toHaveTextContent('Masquer les 6 communes');
   });
 
+  it('renders Lot sectors as representative coverage for the whole department', () => {
+    renderDepartmentPage(LOT_LOCAL_LANDING_PAGE_V6);
+
+    expect(document.body).toHaveTextContent('l’ensemble du département du Lot');
+    [
+      'Cahors et la Vallée du Lot',
+      'Rocamadour et la Vallée de la Dordogne',
+      'Figeac et la Vallée du Célé',
+      'Saint-Cirq-Lapopie et les Causses du Quercy',
+      'Gourdon, la Bouriane et le Quercy Blanc',
+    ].forEach((sectorName) => {
+      expect(screen.getByRole('heading', { level: 3, name: sectorName })).toBeInTheDocument();
+    });
+    [
+      'Cahors',
+      'Puy-l’Évêque',
+      'Rocamadour',
+      'Saint-Céré',
+      'Capdenac',
+      'Bagnac-sur-Célé',
+      'Cœur de Causse',
+      'Castelnau-Montratier',
+    ].forEach((commune) => {
+      expect(document.body).toHaveTextContent(commune);
+    });
+  });
+
   it('uses the shared department hero copy and localized image captions', () => {
     [
       DORDOGNE_LOCAL_LANDING_PAGE_V6,
       GIRONDE_LOCAL_LANDING_PAGE_V6,
+      LOT_LOCAL_LANDING_PAGE_V6,
       LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
     ].forEach((config) => {
       expect(config.hero.description).toBe(LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION);
@@ -174,6 +213,21 @@ describe('DepartmentLandingPage', () => {
     expect(screen.getByText('Front de mer d’Arcachon.')).toBeInTheDocument();
     unmount();
 
+    const lotRender = renderDepartmentPage(LOT_LOCAL_LANDING_PAGE_V6);
+    expect(screen.getByText('Saint-Cirq-Lapopie, Lot')).toBeInTheDocument();
+    expect(screen.getByText('46 / LE LOT')).toBeInTheDocument();
+    expect(screen.getByAltText('Cité religieuse de Rocamadour dans le Lot')).toBeInTheDocument();
+    expect(screen.getByText('Rocamadour, Lot.')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Franck-fnba / Wikimedia Commons' })).toHaveAttribute(
+      'href',
+      'https://commons.wikimedia.org/wiki/File:Rocamadour_2025-114909.jpg'
+    );
+    expect(screen.getByRole('link', { name: 'CC BY-SA 4.0' })).toHaveAttribute(
+      'href',
+      'https://creativecommons.org/licenses/by-sa/4.0/'
+    );
+    lotRender.unmount();
+
     renderDepartmentPage(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6);
     expect(screen.getByText('Nérac, Lot-et-Garonne')).toBeInTheDocument();
     expect(screen.getByText('47 / LOT-ET-GARONNE')).toBeInTheDocument();
@@ -185,16 +239,19 @@ describe('DepartmentLandingPage', () => {
 
   it('keeps department FAQ shared, deduplicated and free of retired tariff copy', () => {
     const girondeQuestions = GIRONDE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question);
+    const lotQuestions = LOT_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question);
     const lotEtGaronneQuestions = LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.faq.items.map(
       (item) => item.question
     );
 
     expect(new Set(girondeQuestions).size).toBe(girondeQuestions.length);
+    expect(new Set(lotQuestions).size).toBe(lotQuestions.length);
     expect(new Set(lotEtGaronneQuestions).size).toBe(lotEtGaronneQuestions.length);
     expect(girondeQuestions[0]).toBe('Intervenez-vous dans ma commune en Gironde ?');
     expect(girondeQuestions).toContain(
       'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?'
     );
+    expect(lotQuestions[0]).toBe('Intervenez-vous dans ma commune dans le Lot ?');
     expect(lotEtGaronneQuestions[0]).toBe(
       'Intervenez-vous dans ma commune dans le Lot-et-Garonne ?'
     );
@@ -232,33 +289,35 @@ describe('DepartmentLandingPage', () => {
     ).toHaveClass('bg-paper');
   });
 
-  it.each([GIRONDE_LOCAL_LANDING_PAGE_V6, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6])(
-    'keeps migrated department CTA analytics on white buttons',
-    (config) => {
-      renderDepartmentPage(config);
-      const conversionLinks = screen.getAllByRole('link', { name: 'Demander mon classement' });
-      const heroCta = conversionLinks[0];
-      const finalCta = conversionLinks[conversionLinks.length - 1];
-      if (!heroCta || !finalCta) throw new Error('Missing conversion links');
-      heroCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
-      finalCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
+  it.each([
+    GIRONDE_LOCAL_LANDING_PAGE_V6,
+    LOT_LOCAL_LANDING_PAGE_V6,
+    LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+  ])('keeps migrated department CTA analytics on white buttons', (config) => {
+    renderDepartmentPage(config);
+    const conversionLinks = screen.getAllByRole('link', { name: 'Demander mon classement' });
+    const heroCta = conversionLinks[0];
+    const finalCta = conversionLinks[conversionLinks.length - 1];
+    if (!heroCta || !finalCta) throw new Error('Missing conversion links');
+    heroCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
+    finalCta.addEventListener('click', (event: MouseEvent) => event.preventDefault());
 
-      fireEvent.click(heroCta);
-      expect(trackCtaClick).toHaveBeenLastCalledWith({
-        ctaId: 'cta_white_demande_classement',
-        destinationPath: '/demande-classement',
-      });
-      fireEvent.click(finalCta);
-      expect(trackCtaClick).toHaveBeenLastCalledWith({
-        ctaId: 'cta_white_demande_classement',
-        destinationPath: '/demande-classement',
-      });
-    }
-  );
+    fireEvent.click(heroCta);
+    expect(trackCtaClick).toHaveBeenLastCalledWith({
+      ctaId: 'cta_white_demande_classement',
+      destinationPath: '/demande-classement',
+    });
+    fireEvent.click(finalCta);
+    expect(trackCtaClick).toHaveBeenLastCalledWith({
+      ctaId: 'cta_white_demande_classement',
+      destinationPath: '/demande-classement',
+    });
+  });
 
   it.each([
     [DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId, DORDOGNE_LOCAL_LANDING_PAGE_V6],
     [GIRONDE_LOCAL_LANDING_PAGE_V6.departmentId, GIRONDE_LOCAL_LANDING_PAGE_V6],
+    [LOT_LOCAL_LANDING_PAGE_V6.departmentId, LOT_LOCAL_LANDING_PAGE_V6],
     [LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.departmentId, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6],
   ])('keeps the full V6 department section order for %s', (_, config) => {
     renderDepartmentPage(config);
@@ -278,6 +337,7 @@ describe('DepartmentLandingPage', () => {
   it.each([
     [DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId, DORDOGNE_LOCAL_LANDING_PAGE_V6],
     [GIRONDE_LOCAL_LANDING_PAGE_V6.departmentId, GIRONDE_LOCAL_LANDING_PAGE_V6],
+    [LOT_LOCAL_LANDING_PAGE_V6.departmentId, LOT_LOCAL_LANDING_PAGE_V6],
     [LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.departmentId, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6],
   ])('renders department FAQ items before the two automatic V6 items for %s', (_, config) => {
     renderDepartmentPage(config);
@@ -308,6 +368,10 @@ describe('DepartmentLandingPage', () => {
       ...baseQuestions,
       'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?',
     ]);
+    expect(LOT_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
+      'Intervenez-vous dans ma commune dans le Lot ?',
+      ...baseQuestions,
+    ]);
     expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
       'Intervenez-vous dans ma commune dans le Lot-et-Garonne ?',
       ...baseQuestions,
@@ -335,6 +399,7 @@ describe('DepartmentLandingPage', () => {
       BORDEAUX_LOCAL_LANDING_PAGE_V6,
       ['Place de la Bourse, Bordeaux', 'Tramway devant la place de la Bourse, Bordeaux.'],
     ],
+    ['Lot', LOT_LOCAL_LANDING_PAGE_V6, ['Saint-Cirq-Lapopie, Lot', 'Rocamadour, Lot.']],
     [
       'Lot-et-Garonne',
       LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
