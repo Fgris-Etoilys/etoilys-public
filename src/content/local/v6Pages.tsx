@@ -40,6 +40,9 @@ const officialClassificationUrl =
 export const LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION =
   'Faites classer votre gîte, maison ou appartement de 1 à 5 étoiles avec Etoilys, organisme accrédité Cofrac. Nous réalisons la visite officielle dans votre logement.';
 
+export const LOCAL_V6_DEPARTMENT_PRICING_INTRO =
+  'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.';
+
 export const LOCAL_V6_DEPARTMENT_HERO_INDEXES = {
   dordogne: '24 / LE PÉRIGORD',
   gironde: '33 / LA GIRONDE',
@@ -312,8 +315,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
   pricing: {
     mode: 'picker',
     title: 'Quel tarif pour classer votre meublé en Dordogne ?',
-    intro:
-      'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.',
+    intro: LOCAL_V6_DEPARTMENT_PRICING_INTRO,
     checklist: pricingChecklist,
     procedureLink: {
       href: '/procedure',
@@ -577,8 +579,7 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
   pricing: {
     mode: 'picker',
     title: 'Quel tarif pour classer votre meublé en Gironde ?',
-    intro:
-      'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.',
+    intro: LOCAL_V6_DEPARTMENT_PRICING_INTRO,
     checklist: pricingChecklist,
     procedureLink: {
       href: '/procedure',
@@ -818,8 +819,7 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
   pricing: {
     mode: 'picker',
     title: 'Quel tarif pour classer votre meublé dans le Lot ?',
-    intro:
-      'Indiquez la commune de votre logement pour consulter le tarif prévu. Le sélecteur couvre l’ensemble des communes du Lot.',
+    intro: LOCAL_V6_DEPARTMENT_PRICING_INTRO,
     checklist: pricingChecklist,
     procedureLink: {
       href: '/procedure',
@@ -935,8 +935,7 @@ export const LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentC
   pricing: {
     mode: 'picker',
     title: 'Quel tarif pour classer votre meublé dans le Lot-et-Garonne ?',
-    intro:
-      'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.',
+    intro: LOCAL_V6_DEPARTMENT_PRICING_INTRO,
     checklist: pricingChecklist,
     procedureLink: {
       href: '/procedure',
