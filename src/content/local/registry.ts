@@ -181,6 +181,34 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
     },
   },
+  {
+    id: 'aveyron',
+    kind: 'department',
+    name: 'Aveyron',
+    path: '/classement-meuble-tourisme-aveyron',
+    departmentCode: '12',
+    regionId: 'occitanie',
+    status: 'published',
+    coverageMode: 'department',
+    displayOrder: 50,
+    hubDescription:
+      'Etoilys intervient dans l’ensemble du département, avec des repères autour de Rodez, Belcastel, Conques-en-Rouergue, Millau, Laguiole, Espalion, Villefranche-de-Rouergue et Najac.',
+    hubLinkLabel: 'Classement en Aveyron →',
+    communeIndex: {
+      departmentCode: '12',
+      outputFileName: 'communes-aveyron-index.v1.json',
+    },
+    seo: {
+      lastModified: '2026-09-18',
+      title: 'Classement gîte, Airbnb et meublé de tourisme en Aveyron',
+      description:
+        'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme en Aveyron pour leur classement officiel.',
+      breadcrumbLabel: 'Aveyron',
+      ogImageKey: 'aveyronHero',
+      lcpImageKey: 'aveyronHero',
+      lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
+    },
+  },
 ];
 
 export const DEPARTMENT_INTERVENTION_AREAS = LOCAL_REGISTRY.filter(

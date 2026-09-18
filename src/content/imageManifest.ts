@@ -20,6 +20,8 @@ export type ImageAssetKey =
   | 'articlePreparerVisiteClassement'
   | 'articleRipostVoyageurRefuseQuitter'
   | 'dordogneHero'
+  | 'aveyronHero'
+  | 'aveyronTerritory'
   | 'dordogneLaRoqueGageac'
   | 'dordogneLandscape'
   | 'girondeHero'
@@ -232,6 +234,24 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pexels-slimmars-13-197677686-14298615-480.webp 480w, /images/optimized/pexels-slimmars-13-197677686-14298615-768.webp 768w, /images/optimized/pexels-slimmars-13-197677686-14298615-1200.webp 1200w, /images/optimized/pexels-slimmars-13-197677686-14298615-1600.webp 1600w, /images/optimized/pexels-slimmars-13-197677686-14298615-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/pexels-slimmars-13-197677686-14298615-480.avif 480w, /images/optimized/pexels-slimmars-13-197677686-14298615-768.avif 768w, /images/optimized/pexels-slimmars-13-197677686-14298615-1200.avif 1200w, /images/optimized/pexels-slimmars-13-197677686-14298615-1600.avif 1600w, /images/optimized/pexels-slimmars-13-197677686-14298615-1920.avif 1920w',
+  },
+  aveyronHero: {
+    width: 5200,
+    height: 3500,
+    src: '/images/optimized/belcastel-4-kallerna-wikimedia-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/belcastel-4-kallerna-wikimedia-480.webp 480w, /images/optimized/belcastel-4-kallerna-wikimedia-768.webp 768w, /images/optimized/belcastel-4-kallerna-wikimedia-1200.webp 1200w, /images/optimized/belcastel-4-kallerna-wikimedia-1600.webp 1600w, /images/optimized/belcastel-4-kallerna-wikimedia-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/belcastel-4-kallerna-wikimedia-480.avif 480w, /images/optimized/belcastel-4-kallerna-wikimedia-768.avif 768w, /images/optimized/belcastel-4-kallerna-wikimedia-1200.avif 1200w, /images/optimized/belcastel-4-kallerna-wikimedia-1600.avif 1600w, /images/optimized/belcastel-4-kallerna-wikimedia-1920.avif 1920w',
+  },
+  aveyronTerritory: {
+    width: 3024,
+    height: 4032,
+    src: '/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-480.webp 480w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-768.webp 768w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.webp 1200w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1600.webp 1600w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-480.avif 480w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-768.avif 768w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.avif 1200w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1600.avif 1600w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1920.avif 1920w',
   },
   dordogneLaRoqueGageac: {
     width: 3158,

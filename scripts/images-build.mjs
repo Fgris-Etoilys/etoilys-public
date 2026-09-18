@@ -19,6 +19,7 @@ const FORCE_REBUILD = process.argv.includes('--force');
 const CHECK_MODE = process.argv.includes('--check');
 const HERO_ASSET_KEYS = new Set([
   'homeHero',
+  'aveyronHero',
   'dordogneHero',
   'dordogneLaRoqueGageac',
   'girondeHero',
@@ -88,6 +89,8 @@ const IMAGE_ASSETS = [
     fileName: 'article-ripost-voyageur-refuse-quitter.png',
   },
   { key: 'dordogneHero', fileName: 'pexels-slimmars-13-197677686-14298615.jpg' },
+  { key: 'aveyronHero', fileName: 'belcastel-4-kallerna-wikimedia.jpg' },
+  { key: 'aveyronTerritory', fileName: 'joran-quinten-wYzuwwLKmGM-unsplash.jpg' },
   { key: 'dordogneLaRoqueGageac', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
   { key: 'dordogneLandscape', fileName: 'le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg' },
   { key: 'girondeHero', fileName: 'axel-delansorne-fSpupJ0C95E-unsplash.jpg' },

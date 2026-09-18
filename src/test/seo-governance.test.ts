@@ -284,6 +284,7 @@ describe('seo governance', () => {
       '/simulateur',
       '/zones-intervention',
       '/classement-meuble-tourisme-dordogne',
+      '/classement-meuble-tourisme-aveyron',
       '/classement-meuble-tourisme-bergerac',
       '/classement-meuble-tourisme-bordeaux',
       '/classement-meuble-tourisme-gironde',

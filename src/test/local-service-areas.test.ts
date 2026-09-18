@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AVEYRON_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOT_LOCAL_LANDING_PAGE_V6,
@@ -107,6 +108,7 @@ const publishedCityWithoutParent: LocalRegistryEntry = {
 };
 
 const departmentPageConfigs = [
+  AVEYRON_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOT_LOCAL_LANDING_PAGE_V6,
@@ -117,7 +119,7 @@ describe('local service areas data', () => {
   it('keeps stable published department ids in display order', () => {
     const ids = getActiveDepartmentInterventionAreas().map((area) => area.id);
 
-    expect(ids).toEqual(['dordogne', 'gironde', 'lot-et-garonne', 'lot']);
+    expect(ids).toEqual(['dordogne', 'gironde', 'lot-et-garonne', 'lot', 'aveyron']);
   });
 
   it('keeps published local paths unique, routable, indexable and prerenderable', () => {
@@ -232,7 +234,7 @@ describe('local service areas data', () => {
   });
 
   it('keeps structured data areaServed derived from published departments only', () => {
-    expect(getClassificationAreaServed()).toBe('Dordogne, Gironde, Lot-et-Garonne et Lot');
+    expect(getClassificationAreaServed()).toBe('Dordogne, Gironde, Lot-et-Garonne, Lot et Aveyron');
     expect(getClassificationAreaServed([draftDepartment, publishedCorsicaDepartment])).toBe(
       'Corse-du-Sud'
     );
@@ -240,6 +242,7 @@ describe('local service areas data', () => {
 
   it('keeps department landing configs linked to registry entries', () => {
     expect(departmentPageConfigs.map((config) => config.departmentId)).toEqual([
+      'aveyron',
       'dordogne',
       'gironde',
       'lot',

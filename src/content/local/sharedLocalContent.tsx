@@ -175,6 +175,7 @@ export const LOCAL_V6_DEPARTMENT_PRICING_INTRO =
   'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.';
 
 export const LOCAL_V6_DEPARTMENT_HERO_INDEXES = {
+  aveyron: '12 / L’AVEYRON',
   dordogne: '24 / LE PÉRIGORD',
   gironde: '33 / LA GIRONDE',
   lot: '46 / LE LOT',

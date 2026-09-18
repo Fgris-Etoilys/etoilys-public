@@ -59,6 +59,7 @@ V6 active :
 - Bordeaux : `BORDEAUX_LOCAL_LANDING_PAGE_V6` dans `src/content/local/cities/bordeauxPage.tsx`.
 - Lot-et-Garonne : `LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/lotEtGaronnePage.tsx`.
 - Lot : `LOT_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/lotPage.tsx`.
+- Aveyron : `AVEYRON_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/aveyronPage.tsx`.
 
 `src/content/local/v6Pages.tsx` reste un point de réexport compat uniquement. Il ne doit plus contenir les configurations.
 
@@ -92,20 +93,22 @@ Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pend
 
 La source technique reste `scripts/images-build.mjs` pour l’asset local et le fichier de config territoire (`src/content/local/departments/*Page.tsx` ou `src/content/local/cities/*Page.tsx`) pour le crédit affiché. Cette table ne duplique pas le manifeste généré ; elle donne seulement la trace éditoriale.
 
-| Page           | Usage     | Asset key                    | Fichier source                   | Lieu/caption                                   | Trace                                                                    |
-| -------------- | --------- | ---------------------------- | -------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
-| Dordogne       | Hero      | `dordogneLaRoqueGageac`      | source pipeline images           | La Roque-Gageac, Dordogne                      | Asset propriétaire/local déjà validé.                                    |
-| Dordogne       | Expertise | `dordogneLandscape`          | source pipeline images           | Les pierres du Périgord                        | Asset propriétaire/local déjà validé.                                    |
-| Bergerac       | Hero      | `bergeracHero`               | source pipeline images           | Quai Cyrano, Bergerac                          | Wikimedia Commons, Benjamin Smith, CC BY-SA 4.0.                         |
-| Bergerac       | Expertise | `bergeracSaintJacquesCyrano` | source pipeline images           | Église Saint-Jacques, Bergerac                 | Wikimedia Commons, JGS25, CC BY-SA 4.0.                                  |
-| Gironde        | Hero      | `girondeHero`                | source pipeline images           | Saint-Émilion, Gironde                         | Unsplash, Axel Delansorne.                                               |
-| Gironde        | Expertise | `girondeTerritory`           | source pipeline images           | Front de mer d’Arcachon                        | Unsplash, Árpád Czapp.                                                   |
-| Bordeaux       | Hero      | `bordeauxHero`               | source pipeline images           | Place de la Bourse, Bordeaux                   | Pexels, Miguel Cuenca.                                                   |
-| Bordeaux       | Expertise | `bordeauxExpertise`          | source pipeline images           | Tramway devant la place de la Bourse, Bordeaux | Pexels, Charl Durand.                                                    |
-| Lot-et-Garonne | Hero      | `lotEtGaronneHero`           | `AdobeStock_1364523535.jpeg`     | Nérac, Lot-et-Garonne                          | Adobe Stock ID 1364523535 ; fiche publique exacte non confirmée.         |
-| Lot-et-Garonne | Expertise | `lotEtGaronneTerritory`      | source pipeline images           | Monflanquin, Lot-et-Garonne                    | Pexels, D Goth.                                                          |
-| Lot            | Hero      | `lotHero`                    | `pexels-tyvalloire-35860040.jpg` | Saint-Cirq-Lapopie, Lot                        | Pexels ; fiche publique exacte non retrouvée, lieu vérifié visuellement. |
-| Lot            | Expertise | `lotRocamadour`              | `rocamadour-2025-114909.jpg`     | Rocamadour, Lot                                | Wikimedia Commons, Franck-fnba, CC BY-SA 4.0.                            |
+| Page           | Usage     | Asset key                    | Fichier source                           | Lieu/caption                                   | Trace                                                                    |
+| -------------- | --------- | ---------------------------- | ---------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
+| Dordogne       | Hero      | `dordogneLaRoqueGageac`      | source pipeline images                   | La Roque-Gageac, Dordogne                      | Asset propriétaire/local déjà validé.                                    |
+| Dordogne       | Expertise | `dordogneLandscape`          | source pipeline images                   | Les pierres du Périgord                        | Asset propriétaire/local déjà validé.                                    |
+| Bergerac       | Hero      | `bergeracHero`               | source pipeline images                   | Quai Cyrano, Bergerac                          | Wikimedia Commons, Benjamin Smith, CC BY-SA 4.0.                         |
+| Bergerac       | Expertise | `bergeracSaintJacquesCyrano` | source pipeline images                   | Église Saint-Jacques, Bergerac                 | Wikimedia Commons, JGS25, CC BY-SA 4.0.                                  |
+| Gironde        | Hero      | `girondeHero`                | source pipeline images                   | Saint-Émilion, Gironde                         | Unsplash, Axel Delansorne.                                               |
+| Gironde        | Expertise | `girondeTerritory`           | source pipeline images                   | Front de mer d’Arcachon                        | Unsplash, Árpád Czapp.                                                   |
+| Bordeaux       | Hero      | `bordeauxHero`               | source pipeline images                   | Place de la Bourse, Bordeaux                   | Pexels, Miguel Cuenca.                                                   |
+| Bordeaux       | Expertise | `bordeauxExpertise`          | source pipeline images                   | Tramway devant la place de la Bourse, Bordeaux | Pexels, Charl Durand.                                                    |
+| Lot-et-Garonne | Hero      | `lotEtGaronneHero`           | `AdobeStock_1364523535.jpeg`             | Nérac, Lot-et-Garonne                          | Adobe Stock ID 1364523535 ; fiche publique exacte non confirmée.         |
+| Lot-et-Garonne | Expertise | `lotEtGaronneTerritory`      | source pipeline images                   | Monflanquin, Lot-et-Garonne                    | Pexels, D Goth.                                                          |
+| Lot            | Hero      | `lotHero`                    | `pexels-tyvalloire-35860040.jpg`         | Saint-Cirq-Lapopie, Lot                        | Pexels ; fiche publique exacte non retrouvée, lieu vérifié visuellement. |
+| Lot            | Expertise | `lotRocamadour`              | `rocamadour-2025-114909.jpg`             | Rocamadour, Lot                                | Wikimedia Commons, Franck-fnba, CC BY-SA 4.0.                            |
+| Aveyron        | Hero      | `aveyronHero`                | `belcastel-4-kallerna-wikimedia.jpg`     | Belcastel, Aveyron                             | Wikimedia Commons, Kallerna, CC BY-SA 4.0.                               |
+| Aveyron        | Expertise | `aveyronTerritory`           | `joran-quinten-wYzuwwLKmGM-unsplash.jpg` | Conques-en-Rouergue, Aveyron                   | Unsplash, Joran Quinten, licence Unsplash.                               |
 
 Checklist nouvelle page locale :
 

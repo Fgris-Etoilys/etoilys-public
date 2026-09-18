@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "b463fa32af27de2c2f2ccd206bcd0a2eed5eb0813d8f157dff67430ea513233f",
+  "pipelineSignature": "6bee7ac778b7afe2a7268f2deb54f121f9e711efdaa08ee4e3a657a229ada893",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "8847f24d13b08a2b35372b13925f7b2796e7a4af361ef27f23d2aa5a297ed8d2"
+    "sha256": "5528ff89c402d895d7dff1fc9c57b282f2a6f9b990eddda70c405435d96dad8c"
   },
   "sources": [
     {
@@ -82,6 +82,11 @@
       "sha256": "a8e0c49cfac48775bb77e664de93b39e5a658a3032a8d4b41bdb0088b2efd0b1"
     },
     {
+      "key": "aveyronHero",
+      "path": "src/assets/seo-images/source/belcastel-4-kallerna-wikimedia.jpg",
+      "sha256": "1705aa4c979aeec97c89007778d8705660eb31f371597a9c387979a4a19ada47"
+    },
+    {
       "key": "girondeCoast",
       "path": "src/assets/seo-images/source/benjamin-esteves-A_JaVydOsRk-unsplash.jpg",
       "sha256": "b088e60360c513993e56b84b5a2e2a5af6dabd24aac5636bf26d9c3a075ffe2f"
@@ -110,6 +115,11 @@
       "key": "dordogneLaRoqueGageac",
       "path": "src/assets/seo-images/source/jametlene-reskp-0MF_yWx470o-unsplash.jpg",
       "sha256": "ada5d2ff88b2bc0677b7158edf9027ef5729a7713b52a384d4e232d7992cc8f6"
+    },
+    {
+      "key": "aveyronTerritory",
+      "path": "src/assets/seo-images/source/joran-quinten-wYzuwwLKmGM-unsplash.jpg",
+      "sha256": "9b1eb3ad6e9464887e3fa9ca0956fd648e0a287442fa030ef84ace08baf1a34c"
     },
     {
       "key": "simulateurFiscalClassement",
@@ -934,6 +944,61 @@
       "sha256": "6fc3a2335a293ff5f53be312253cb9ad01d4a1f48f6a7409933e4f1698c12795"
     },
     {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1200.avif",
+      "bytes": 222279,
+      "sha256": "3955856ebd4e72e68f8a246505093da5677efe111132cbce01acda6ec80aaad6"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1200.jpg",
+      "bytes": 226937,
+      "sha256": "75f113c53f21d4081bccf9ea795fc37f299ee9b3f2ac32199b9f22808286a58e"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1200.webp",
+      "bytes": 247192,
+      "sha256": "8df9009ed374ffedeb1dae7265d675edb949a1a551dddd8d1e7ae43fd275ebd1"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1600.avif",
+      "bytes": 427220,
+      "sha256": "d6dae0fae9734689f12c6aee5ab5eab23d92e6fdc7e8f8c803e5589499dfff4a"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1600.webp",
+      "bytes": 448342,
+      "sha256": "1ebc94f96eb7d71ac97615315c406f316c58101c753f55f8e9787087660e2fca"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1920.avif",
+      "bytes": 644187,
+      "sha256": "3e9682c7031d55bf35b0eb341c8540795efb0ece83ebe0e11d1220e6c2dad59e"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1920.webp",
+      "bytes": 677788,
+      "sha256": "c4a907425d6f68582b1054bc6b463e04665a5b733bb542fd00ed169a4677c901"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-480.avif",
+      "bytes": 27564,
+      "sha256": "8f582a6a2e8d379b1c4b17fceb886e03435d8c203d836b84170ac67c7b4031a6"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-480.webp",
+      "bytes": 33634,
+      "sha256": "aeaf5a2c79bdcd0d67dae34ef8248edd64afe167d426002ed106eeb4db39b8a8"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-768.avif",
+      "bytes": 74038,
+      "sha256": "f524cc466d6516a6d951cfa06adfe1679bd0b4bddf0b0812078414602d1a776c"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-768.webp",
+      "bytes": 87796,
+      "sha256": "ef1eb599eaf482c9b974e744e15e581b8e85445aa07f2b54c66ccb6a489a7a49"
+    },
+    {
       "path": "/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.avif",
       "bytes": 156554,
       "sha256": "de705657edff627531f679122a66ea647b0b161982a36a7db89e0b5851206d33"
@@ -1372,6 +1437,61 @@
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-768.webp",
       "bytes": 105544,
       "sha256": "af7c1d7712ec4706a63f8a5d1b1c48cfb5e26f2c627d619fd9ca282b9bd8f2ba"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.avif",
+      "bytes": 367814,
+      "sha256": "f3840176f751f0e578a5430996e62c365383ed48b761fb6e6b50a49a5e7d651b"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.jpg",
+      "bytes": 351459,
+      "sha256": "c674c3939a25e6a9fa88add13aa9cf12a4b7a5d94097192a6e2e7ad773084648"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.webp",
+      "bytes": 387062,
+      "sha256": "60c9d40118bca7b5f74d00217e412edc5b5b98c7d6d900acb83f58315cb7fea2"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1600.avif",
+      "bytes": 605715,
+      "sha256": "7a9748f6da69177b66926ff0913284d4a5f3a2ad4eea34924fa26167992d356c"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1600.webp",
+      "bytes": 633142,
+      "sha256": "4b4bd9ae2e1f0756900cbb21381b06126bff15fc9625c1cb82d04c315cbf6f8e"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1920.avif",
+      "bytes": 819983,
+      "sha256": "ef9fff81a59615aeef82692f4801b2b9865fc3270cb12031f1f56c0c41924afd"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1920.webp",
+      "bytes": 872576,
+      "sha256": "f87188fe4dd702ffbdcdee66a5d47946b6e70bf47b03c09d678e8c673427f233"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-480.avif",
+      "bytes": 62338,
+      "sha256": "cd6dc4b91a9166245395650087ef7c737d67bd9fe2d93c6a49a31667decece1d"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-480.webp",
+      "bytes": 65164,
+      "sha256": "7a3df773055b0e84518138622f82ae0447025d3be8350c598733b97a2081d4e4"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-768.avif",
+      "bytes": 159493,
+      "sha256": "4d3b068640f1292734fd29214cd7c31adc2263a959ab79c27e6f3607dc80af48"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-768.webp",
+      "bytes": 166402,
+      "sha256": "56b7673fd90df22b646f466687b46cbb36b815ae8709a36f88d0a24002ae87cf"
     },
     {
       "path": "/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1200.avif",

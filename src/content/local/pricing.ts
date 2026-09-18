@@ -1,4 +1,5 @@
 export type PricingProfileId =
+  | 'aveyron-standard'
   | 'dordogne-standard'
   | 'gironde-standard'
   | 'lot-standard'
@@ -102,6 +103,7 @@ const lotPricingProfile: PricingProfile = {
 };
 
 export const PRICING_PROFILES: Record<PricingProfileId, PricingProfile> = {
+  'aveyron-standard': createStandardPricingProfile('aveyron-standard'),
   'dordogne-standard': createStandardPricingProfile('dordogne-standard'),
   'gironde-standard': createStandardPricingProfile('gironde-standard'),
   'lot-standard': lotPricingProfile,

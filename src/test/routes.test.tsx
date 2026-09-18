@@ -106,6 +106,7 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { level: 4, name: 'Lot-et-Garonne' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 3, name: 'Occitanie' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Lot' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Aveyron' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Classement en Dordogne' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-dordogne'
@@ -120,6 +121,10 @@ describe('routing', () => {
     expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bordeaux'
+    );
+    expect(screen.getByRole('link', { name: 'Classement en Aveyron' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-aveyron'
     );
   });
 
@@ -214,6 +219,12 @@ describe('routing', () => {
     expect(screen.getByText('46 / LE LOT')).toBeInTheDocument();
   });
 
+  it('renders Aveyron local landing page', () => {
+    renderAt('/classement-meuble-tourisme-aveyron');
+    expectPageHeading(/classement/i, /aveyron/i);
+    expect(screen.getByText('12 / L’AVEYRON')).toBeInTheDocument();
+  });
+
   it('exposes service areas in classement navigation and keeps footer hub-focused', () => {
     renderAt('/');
 
@@ -233,6 +244,7 @@ describe('routing', () => {
     expect(screen.queryByRole('link', { name: /classement en dordogne/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement en gironde/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement dans le lot/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /classement en aveyron/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement en lot-et-garonne/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /bergerac et le bergeracois/i })).toBeNull();
   });
