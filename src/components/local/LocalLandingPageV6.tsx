@@ -16,14 +16,14 @@ import Timeline from '../ui/Timeline';
 import { COFRAC_ACCREDITATION_URL } from '../../content/accreditationLinks';
 import {
   getLocalRegistryEntry,
-  getPublishedCityEntriesForDepartment,
+  getPublishedLocalChildEntriesForDepartment,
   isLocalRegistryEntryPublished,
 } from '../../content/local/registry';
 import { getPricingProfile } from '../../content/local/pricing';
 import { COMMON_LOCAL_V6_FAQ_ITEMS } from '../../content/local/sharedLocalContent';
 import type {
-  CityAreaId,
   DepartmentSector,
+  LocalChildAreaId,
   LocalInterventionPage,
   LocalLandingPageV6Config,
   LocalV6Action,
@@ -101,22 +101,26 @@ function getRenderedDepartmentCommunes(sectors: readonly DepartmentSector[]): st
   ]);
 }
 
-function getRenderedLinkedCityIds(
+function getRenderedLinkedLocalChildIds(
   sectors: readonly DepartmentSector[],
-  communeLinks: Record<string, { localEntryId: CityAreaId; label?: string }> | undefined
+  communeLinks: Record<string, { localEntryId: LocalChildAreaId; label?: string }> | undefined
 ) {
-  const linkedCityIds = new Set<CityAreaId>();
+  const linkedLocalChildIds = new Set<LocalChildAreaId>();
 
   getRenderedDepartmentCommunes(sectors).forEach((commune) => {
     const link = communeLinks?.[commune];
     const entry = link ? getLocalRegistryEntry(link.localEntryId) : undefined;
 
-    if (entry?.kind === 'city' && isLocalRegistryEntryPublished(entry.id)) {
-      linkedCityIds.add(entry.id);
+    if (
+      entry !== undefined &&
+      entry.kind !== 'department' &&
+      isLocalRegistryEntryPublished(entry.id)
+    ) {
+      linkedLocalChildIds.add(entry.id);
     }
   });
 
-  return linkedCityIds;
+  return linkedLocalChildIds;
 }
 
 export default function LocalLandingPageV6({ config }: { config: LocalLandingPageV6Config }) {
@@ -128,7 +132,7 @@ export default function LocalLandingPageV6({ config }: { config: LocalLandingPag
       {config.scope === 'department' ? (
         <LocalV6DepartmentServiceAreaSection config={config} />
       ) : (
-        <LocalV6CityServiceAreaSection config={config} />
+        <LocalV6LocalServiceAreaSection config={config} />
       )}
       <LocalV6PricingSection config={config} />
       <LocalV6ProcedureSection config={config} />
@@ -270,9 +274,12 @@ function LocalV6DepartmentServiceAreaSection({
   config: Extract<LocalLandingPageV6Config, { scope: 'department' }>;
 }) {
   const { serviceArea } = config;
-  const linkedCityIds = getRenderedLinkedCityIds(serviceArea.sectors, serviceArea.communeLinks);
-  const extraLocalPages = getPublishedCityEntriesForDepartment(config.departmentId)
-    .filter((entry) => !linkedCityIds.has(entry.id))
+  const linkedLocalChildIds = getRenderedLinkedLocalChildIds(
+    serviceArea.sectors,
+    serviceArea.communeLinks
+  );
+  const extraLocalPages = getPublishedLocalChildEntriesForDepartment(config.departmentId)
+    .filter((entry) => !linkedLocalChildIds.has(entry.id))
     .map(
       (entry): LocalInterventionPage => ({
         id: entry.id,
@@ -323,7 +330,7 @@ function LocalV6DepartmentSectorList({
   communeLinks,
 }: {
   sectors: readonly DepartmentSector[];
-  communeLinks?: Record<string, { localEntryId: CityAreaId; label?: string }>;
+  communeLinks?: Record<string, { localEntryId: LocalChildAreaId; label?: string }>;
 }) {
   const [expandedSectors, setExpandedSectors] = useState<ReadonlySet<string>>(new Set());
 
@@ -393,10 +400,10 @@ function LocalV6DepartmentSectorList({
   );
 }
 
-function LocalV6CityServiceAreaSection({
+function LocalV6LocalServiceAreaSection({
   config,
 }: {
-  config: Extract<LocalLandingPageV6Config, { scope: 'city' }>;
+  config: Extract<LocalLandingPageV6Config, { scope: 'city' | 'destination' }>;
 }) {
   const { serviceArea } = config;
   const parentEntry = getLocalRegistryEntry(serviceArea.parentLink.localEntryId);
@@ -430,12 +437,14 @@ function LocalV6CommuneName({
   prefix,
 }: {
   commune: string;
-  link?: { localEntryId: CityAreaId; label?: string } | undefined;
+  link?: { localEntryId: LocalChildAreaId; label?: string } | undefined;
   prefix?: string | undefined;
 }) {
   const entry = link ? getLocalRegistryEntry(link.localEntryId) : undefined;
   const href =
-    entry?.kind === 'city' && isLocalRegistryEntryPublished(entry.id) ? entry.path : undefined;
+    entry !== undefined && entry.kind !== 'department' && isLocalRegistryEntryPublished(entry.id)
+      ? entry.path
+      : undefined;
 
   return (
     <>
@@ -483,7 +492,7 @@ function LocalV6PricingSection({ config }: { config: LocalLandingPageV6Config })
           <div className="local-v6-pricing">
             <LocalPricingProfileSummary
               pricingProfile={getPricingProfile(config.pricing.pricingProfileId)}
-              localityLabel={config.city}
+              localityLabel={config.scope === 'city' ? config.city : config.destination}
               presentation="direct"
             />
           </div>

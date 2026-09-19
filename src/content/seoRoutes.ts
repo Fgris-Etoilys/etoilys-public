@@ -88,7 +88,7 @@ export function buildLocalSeoRoutes(
   return Object.fromEntries(
     publishedLocalSeoEntries.map((entry) => {
       const parentEntry =
-        entry.kind === 'city'
+        entry.kind !== 'department'
           ? publishedLocalSeoEntries.find((candidate) => candidate.id === entry.parentId)
           : undefined;
 
@@ -100,7 +100,7 @@ export function buildLocalSeoRoutes(
           description: entry.seo.description,
           breadcrumbLabel: entry.seo.breadcrumbLabel,
           breadcrumbParentPaths:
-            entry.kind === 'city' && parentEntry
+            entry.kind !== 'department' && parentEntry
               ? ['/zones-intervention', parentEntry.path]
               : ['/zones-intervention'],
           ogImageKey: entry.seo.ogImageKey,

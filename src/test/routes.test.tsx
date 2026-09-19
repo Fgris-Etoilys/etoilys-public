@@ -122,6 +122,10 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-bordeaux'
     );
+    expect(screen.getByRole('link', { name: 'Bassin d’Arcachon' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bassin-arcachon'
+    );
     expect(screen.getByRole('link', { name: 'Classement en Aveyron' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-aveyron'
@@ -203,6 +207,16 @@ describe('routing', () => {
     expectPageHeading(/classement/i, /bordeaux/i, /métropole/i);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(screen.getByRole('link', { name: /zone d’intervention en Gironde/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-gironde'
+    );
+  });
+
+  it('renders Bassin d’Arcachon destination local landing page', () => {
+    renderAt('/classement-meuble-tourisme-bassin-arcachon');
+    expectPageHeading(/classement/i, /bassin d.arcachon/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d.intervention en Gironde/i })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-gironde'
     );

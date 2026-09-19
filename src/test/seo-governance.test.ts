@@ -160,6 +160,18 @@ describe('seo governance', () => {
     ]);
   });
 
+  it('builds the Bassin d’Arcachon breadcrumb hierarchy from zones to Gironde', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-bassin-arcachon')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Gironde', url: `${SITE_URL}/classement-meuble-tourisme-gironde` },
+      {
+        name: 'Bassin d’Arcachon',
+        url: `${SITE_URL}/classement-meuble-tourisme-bassin-arcachon`,
+      },
+    ]);
+  });
+
   it('keeps dynamic public simulations noindex and out of the sitemap', () => {
     const dynamicSimulationSeo = getSeoRouteConfig('/simulateur/simulation-id');
 

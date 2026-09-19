@@ -4,6 +4,7 @@ import type {
   DepartmentInterventionArea,
   DepartmentRegionGroup,
   DepartmentRegistryEntry,
+  LocalChildRegistryEntry,
   LocalInterventionPage,
   LocalRegistryEntry,
   RegionId,
@@ -122,6 +123,29 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       breadcrumbLabel: 'Bordeaux',
       ogImageKey: 'bordeauxHero',
       lcpImageKey: 'bordeauxHero',
+      lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
+    },
+  },
+  {
+    id: 'bassin-arcachon',
+    kind: 'destination',
+    name: 'Bassin d’Arcachon',
+    path: '/classement-meuble-tourisme-bassin-arcachon',
+    departmentCode: '33',
+    regionId: 'nouvelle-aquitaine',
+    parentId: 'gironde',
+    status: 'published',
+    displayOrder: 20,
+    hubLabel: 'Bassin d’Arcachon',
+    departmentLabel: 'Bassin d’Arcachon',
+    seo: {
+      lastModified: '2026-09-19',
+      title: 'Classement meublé de tourisme Bassin d’Arcachon | Etoilys',
+      description:
+        'Faites classer votre meublé de tourisme sur le Bassin d’Arcachon. Visite dans les 12 communes, tarifs clairs et sans frais de déplacement.',
+      breadcrumbLabel: 'Bassin d’Arcachon',
+      ogImageKey: 'bassinArcachonHero',
+      lcpImageKey: 'bassinArcachonHero',
       lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
     },
   },
@@ -250,7 +274,7 @@ function joinFrenchList(items: string[]): string {
   return `${items.slice(0, -1).join(', ')} et ${items[items.length - 1]}`;
 }
 
-function toLocalPage(entry: CityRegistryEntry): LocalInterventionPage {
+function toLocalPage(entry: LocalChildRegistryEntry): LocalInterventionPage {
   return {
     id: entry.id,
     label: entry.name,
@@ -275,7 +299,7 @@ function toInterventionArea(
     displayOrder: entry.displayOrder,
     description: entry.hubDescription,
     hubLinkLabel: entry.hubLinkLabel,
-    localPages: getPublishedCityEntriesForDepartment(entry.id, entries).map(toLocalPage),
+    localPages: getPublishedLocalChildEntriesForDepartment(entry.id, entries).map(toLocalPage),
   };
 }
 
@@ -314,7 +338,7 @@ export function getPublishedLocalRegistryEntries(
 ): LocalRegistryEntry[] {
   return getPublishedDepartmentEntries(entries).flatMap((department) => [
     department,
-    ...getPublishedCityEntriesForDepartment(department.id, entries),
+    ...getPublishedLocalChildEntriesForDepartment(department.id, entries),
   ]);
 }
 
@@ -328,18 +352,27 @@ export function getPublishedDepartmentEntries(
     .sort(compareByDisplayOrder);
 }
 
-export function getPublishedCityEntriesForDepartment(
+export function getPublishedLocalChildEntriesForDepartment(
   parentId: DepartmentAreaId,
   entries: LocalRegistryEntry[] = LOCAL_REGISTRY
-): CityRegistryEntry[] {
+): LocalChildRegistryEntry[] {
   return entries
-    .filter((entry): entry is CityRegistryEntry => entry.kind === 'city')
+    .filter((entry): entry is LocalChildRegistryEntry => entry.kind !== 'department')
     .filter(
       (entry) =>
         entry.parentId === parentId && isLocalRegistryEntryEffectivelyPublished(entry, entries)
     )
     .slice()
     .sort(compareByDisplayOrder);
+}
+
+export function getPublishedCityEntriesForDepartment(
+  parentId: DepartmentAreaId,
+  entries: LocalRegistryEntry[] = LOCAL_REGISTRY
+): CityRegistryEntry[] {
+  return getPublishedLocalChildEntriesForDepartment(parentId, entries).filter(
+    (entry): entry is CityRegistryEntry => entry.kind === 'city'
+  );
 }
 
 export function getActiveDepartmentInterventionAreas(

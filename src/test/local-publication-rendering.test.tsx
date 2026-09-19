@@ -14,6 +14,7 @@ import { LOCAL_REGISTRY } from '../content/local/registry';
 import type {
   CityAreaId,
   DepartmentAreaId,
+  DestinationAreaId,
   LocalLandingPageV6CityConfig,
   LocalLandingPageV6DepartmentConfig,
   LocalRegistryEntry,
@@ -67,6 +68,24 @@ const publishedCity: LocalRegistryEntry = {
   seo: {
     ...fixtureSeo,
     breadcrumbLabel: 'Ville publiée',
+  },
+};
+
+const publishedDestination: LocalRegistryEntry = {
+  id: 'fixture-rendered-destination' as DestinationAreaId,
+  kind: 'destination',
+  name: 'Destination publiée rendue',
+  path: '/classement-meuble-tourisme-fixture-rendered-destination',
+  departmentCode: '2B',
+  regionId: 'occitanie',
+  parentId: publishedDepartment.id,
+  status: 'published',
+  displayOrder: 20,
+  hubLabel: 'Destination publiée rendue',
+  departmentLabel: 'Destination publiée depuis le registre',
+  seo: {
+    ...fixtureSeo,
+    breadcrumbLabel: 'Destination publiée',
   },
 };
 
@@ -248,21 +267,27 @@ describe('local publication rendering', () => {
     });
   });
 
-  it('renders a published child city link from the registry without a manual URL in config', async () => {
-    await withRegistryEntries([publishedDepartment, publishedCity], async () => {
-      const config = departmentConfig(publishedDepartment.id);
+  it('renders published local child links from the registry without a manual URL in config', async () => {
+    await withRegistryEntries(
+      [publishedDepartment, publishedCity, publishedDestination],
+      async () => {
+        const config = departmentConfig(publishedDepartment.id);
 
-      expect(config.serviceArea.communeLinks).toBeUndefined();
-      render(
-        <MemoryRouter>
-          <DepartmentLandingPage config={config} />
-        </MemoryRouter>
-      );
+        expect(config.serviceArea.communeLinks).toBeUndefined();
+        render(
+          <MemoryRouter>
+            <DepartmentLandingPage config={config} />
+          </MemoryRouter>
+        );
 
-      expect(
-        screen.getByRole('link', { name: 'Ville publiée depuis le registre' })
-      ).toHaveAttribute('href', publishedCity.path);
-    });
+        expect(
+          screen.getByRole('link', { name: 'Ville publiée depuis le registre' })
+        ).toHaveAttribute('href', publishedCity.path);
+        expect(
+          screen.getByRole('link', { name: 'Destination publiée depuis le registre' })
+        ).toHaveAttribute('href', publishedDestination.path);
+      }
+    );
   });
 
   it('renders non-public city routes as NotFound when draft or attached to no public parent', async () => {

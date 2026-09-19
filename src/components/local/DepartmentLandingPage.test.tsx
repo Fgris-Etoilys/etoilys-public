@@ -15,6 +15,7 @@ import { LOCAL_REGISTRY } from '../../content/local/registry';
 import { trackCtaClick } from '../../utils/analytics';
 import {
   DEPARTMENT_LOCAL_V6_FAQ_ITEMS,
+  BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
   BERGERAC_LOCAL_LANDING_PAGE_V6,
   BORDEAUX_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
@@ -542,6 +543,14 @@ describe('DepartmentLandingPage', () => {
       'Bordeaux',
       BORDEAUX_LOCAL_LANDING_PAGE_V6,
       ['Place de la Bourse, Bordeaux', 'Jardin Public, Bordeaux.'],
+    ],
+    [
+      'Bassin d’Arcachon',
+      BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
+      [
+        'Cabanes tchanquées, île aux Oiseaux',
+        'Entrée du bassin d’Arcachon depuis la dune du Pilat.',
+      ],
     ],
     ['Lot', LOT_LOCAL_LANDING_PAGE_V6, ['Saint-Cirq-Lapopie, Lot', 'Rocamadour, Lot.']],
     [

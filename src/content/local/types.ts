@@ -7,13 +7,17 @@ export type DepartmentAreaId = 'aveyron' | 'dordogne' | 'gironde' | 'lot' | 'lot
 
 export type CityAreaId = 'bergerac' | 'bordeaux';
 
-export type LocalAreaId = DepartmentAreaId | CityAreaId;
+export type DestinationAreaId = 'bassin-arcachon';
+
+export type LocalChildAreaId = CityAreaId | DestinationAreaId;
+
+export type LocalAreaId = DepartmentAreaId | LocalChildAreaId;
 
 export type RegionId = 'nouvelle-aquitaine' | 'occitanie';
 
 export type DepartmentPublicationStatus = 'published' | 'draft';
 
-export type LocalAreaKind = 'department' | 'city';
+export type LocalAreaKind = 'department' | 'city' | 'destination';
 
 export type LocalCoverageMode = 'department' | 'sectors' | 'on-request';
 
@@ -59,7 +63,17 @@ export interface CityRegistryEntry extends LocalRegistryEntryBase {
   departmentLabel?: string;
 }
 
-export type LocalRegistryEntry = DepartmentRegistryEntry | CityRegistryEntry;
+export interface DestinationRegistryEntry extends LocalRegistryEntryBase {
+  id: DestinationAreaId;
+  kind: 'destination';
+  parentId: DepartmentAreaId;
+  hubLabel: string;
+  departmentLabel?: string;
+}
+
+export type LocalChildRegistryEntry = CityRegistryEntry | DestinationRegistryEntry;
+
+export type LocalRegistryEntry = DepartmentRegistryEntry | LocalChildRegistryEntry;
 
 export interface LocalInterventionPage {
   id: string;
@@ -203,7 +217,7 @@ export interface LocalV6DepartmentServiceArea {
   title: string;
   intro: string;
   sectors: readonly DepartmentSector[];
-  communeLinks?: Record<string, { localEntryId: CityAreaId; label?: string }>;
+  communeLinks?: Record<string, { localEntryId: LocalChildAreaId; label?: string }>;
   parentLink?: {
     label: string;
     href: string;
@@ -323,6 +337,15 @@ export interface LocalLandingPageV6CityConfig extends LocalLandingPageV6Base {
   localModule?: LocalV6TaxModule;
 }
 
+export interface LocalLandingPageV6DestinationConfig extends LocalLandingPageV6Base {
+  scope: 'destination';
+  localEntryId: DestinationAreaId;
+  destination: string;
+  serviceArea: LocalV6CityServiceArea;
+  pricing: LocalV6DirectPricing;
+  localModule?: LocalV6TaxModule;
+}
+
 export interface LocalLandingPageV6DepartmentConfig extends LocalLandingPageV6Base {
   scope: 'department';
   departmentId: DepartmentAreaId;
@@ -333,4 +356,5 @@ export interface LocalLandingPageV6DepartmentConfig extends LocalLandingPageV6Ba
 
 export type LocalLandingPageV6Config =
   | LocalLandingPageV6CityConfig
+  | LocalLandingPageV6DestinationConfig
   | LocalLandingPageV6DepartmentConfig;

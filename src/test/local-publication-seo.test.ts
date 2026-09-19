@@ -1,5 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import type { CityAreaId, DepartmentAreaId, LocalRegistryEntry } from '../content/local/types';
+import type {
+  CityAreaId,
+  DepartmentAreaId,
+  DestinationAreaId,
+  LocalRegistryEntry,
+} from '../content/local/types';
 
 const fixtureSeo = {
   lastModified: '2026-09-18',
@@ -52,6 +57,24 @@ const publishedCity: LocalRegistryEntry = {
   },
 };
 
+const publishedDestination: LocalRegistryEntry = {
+  id: 'fixture-published-destination' as DestinationAreaId,
+  kind: 'destination',
+  name: 'Destination publiée',
+  path: '/classement-meuble-tourisme-fixture-destination',
+  departmentCode: '2A',
+  regionId: 'occitanie',
+  parentId: publishedDepartment.id,
+  status: 'published',
+  displayOrder: 20,
+  hubLabel: 'Destination publiée',
+  departmentLabel: 'Destination publiée depuis le registre',
+  seo: {
+    ...fixtureSeo,
+    breadcrumbLabel: 'Destination publiée',
+  },
+};
+
 const draftCity: LocalRegistryEntry = {
   ...publishedCity,
   id: 'fixture-draft-city' as CityAreaId,
@@ -86,6 +109,7 @@ describe('local publication SEO module load', () => {
       publishedDepartment,
       draftDepartment,
       publishedCity,
+      publishedDestination,
       draftCity,
       publishedCityWithDraftParent,
       publishedCityWithoutParent
@@ -97,8 +121,10 @@ describe('local publication SEO module load', () => {
 
     expect(indexablePaths).toContain(publishedDepartment.path);
     expect(indexablePaths).toContain(publishedCity.path);
+    expect(indexablePaths).toContain(publishedDestination.path);
     expect(prerenderPaths).toContain(publishedDepartment.path);
     expect(prerenderPaths).toContain(publishedCity.path);
+    expect(prerenderPaths).toContain(publishedDestination.path);
     expect(indexablePaths).not.toContain(draftDepartment.path);
     expect(indexablePaths).not.toContain(draftCity.path);
     expect(indexablePaths).not.toContain(publishedCityWithDraftParent.path);
@@ -114,5 +140,8 @@ describe('local publication SEO module load', () => {
       'Fixture',
       'Ville publiée',
     ]);
+    expect(
+      seoRoutes.getBreadcrumbItems(publishedDestination.path).map((item) => item.name)
+    ).toEqual(['Accueil', 'Zones d’intervention', 'Fixture', 'Destination publiée']);
   });
 });

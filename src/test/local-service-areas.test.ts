@@ -15,11 +15,17 @@ import {
   getDepartmentRegistryEntry,
   getDepartmentInterventionArea,
   getPublishedCityEntriesForDepartment,
+  getPublishedLocalChildEntriesForDepartment,
   getPublishedLocalRegistryEntries,
   getPublishedLocalPaths,
   groupActiveDepartmentsByRegion,
 } from '../content/local/registry';
-import type { CityAreaId, DepartmentAreaId, LocalRegistryEntry } from '../content/local/types';
+import type {
+  CityAreaId,
+  DepartmentAreaId,
+  DestinationAreaId,
+  LocalRegistryEntry,
+} from '../content/local/types';
 import {
   buildLocalSeoRoutes,
   getIndexablePaths,
@@ -111,6 +117,20 @@ const draftCorsicaCity: LocalRegistryEntry = {
   path: '/draft-city',
 };
 
+const publishedCorsicaDestination: LocalRegistryEntry = {
+  id: 'golfe-ajaccio' as DestinationAreaId,
+  kind: 'destination',
+  name: 'Golfe d’Ajaccio',
+  path: '/classement-meuble-tourisme-golfe-ajaccio',
+  departmentCode: '2A',
+  regionId: 'occitanie',
+  parentId: 'corse-du-sud' as DepartmentAreaId,
+  status: 'published',
+  displayOrder: 20,
+  hubLabel: 'Golfe d’Ajaccio',
+  seo: fixtureSeo,
+};
+
 const publishedCityWithDraftParent: LocalRegistryEntry = {
   ...publishedCorsicaCity,
   id: 'rodez' as CityAreaId,
@@ -158,17 +178,22 @@ describe('local service areas data', () => {
     });
   });
 
-  it('derives city children from parentId and published status', () => {
+  it('derives local children from parentId and published status', () => {
     expect(getPublishedCityEntriesForDepartment('dordogne').map((entry) => entry.id)).toEqual([
       'bergerac',
     ]);
     expect(getPublishedCityEntriesForDepartment('gironde').map((entry) => entry.id)).toEqual([
       'bordeaux',
     ]);
+    expect(getPublishedLocalChildEntriesForDepartment('gironde').map((entry) => entry.id)).toEqual([
+      'bordeaux',
+      'bassin-arcachon',
+    ]);
 
     const fixtureEntries: LocalRegistryEntry[] = [
       publishedCorsicaDepartment,
       publishedCorsicaCity,
+      publishedCorsicaDestination,
       draftCorsicaCity,
     ];
 
@@ -177,13 +202,20 @@ describe('local service areas data', () => {
         (entry) => entry.path
       )
     ).toEqual(['/classement-meuble-tourisme-ajaccio']);
+    expect(
+      getPublishedLocalChildEntriesForDepartment(
+        'corse-du-sud' as DepartmentAreaId,
+        fixtureEntries
+      ).map((entry) => entry.path)
+    ).toEqual(['/classement-meuble-tourisme-ajaccio', '/classement-meuble-tourisme-golfe-ajaccio']);
   });
 
-  it('applies effective publication to cities across helpers and local SEO', () => {
+  it('applies effective publication to local children across helpers and local SEO', () => {
     const fixtureEntries: LocalRegistryEntry[] = [
       draftDepartment,
       publishedCorsicaDepartment,
       publishedCorsicaCity,
+      publishedCorsicaDestination,
       draftCorsicaCity,
       publishedCityWithDraftParent,
       publishedCityWithoutParent,
@@ -192,10 +224,11 @@ describe('local service areas data', () => {
     const publicSeoPaths = Object.keys(buildLocalSeoRoutes(fixtureEntries));
     const publicEntries = getPublishedLocalRegistryEntries(fixtureEntries).map((entry) => entry.id);
 
-    expect(publicEntries).toEqual(['corse-du-sud', 'ajaccio']);
+    expect(publicEntries).toEqual(['corse-du-sud', 'ajaccio', 'golfe-ajaccio']);
     expect(publicPaths).toEqual([
       '/classement-meuble-tourisme-corse-du-sud',
       '/classement-meuble-tourisme-ajaccio',
+      '/classement-meuble-tourisme-golfe-ajaccio',
     ]);
     expect(publicSeoPaths).toEqual(publicPaths);
     expect(publicPaths).not.toContain('/classement-meuble-tourisme-rodez');
@@ -218,6 +251,7 @@ describe('local service areas data', () => {
     const fixtureEntries: LocalRegistryEntry[] = [
       publishedCorsicaDepartment,
       publishedCorsicaCity,
+      publishedCorsicaDestination,
       {
         ...publishedCorsicaDepartment,
         id: 'guadeloupe' as DepartmentAreaId,
@@ -236,6 +270,7 @@ describe('local service areas data', () => {
     expect(getDepartmentEntryByCode('01', fixtureEntries)?.kind).toBe('department');
     expect(getDepartmentEntryByCode('2B', fixtureEntries)?.kind).toBe('department');
     expect(getDepartmentEntryByCode('99', fixtureEntries)).toBeUndefined();
+    expect(getDepartmentEntryByCode('33')?.id).toBe('gironde');
   });
 
   it('excludes drafts from public outputs and lets unknown paths use NotFound SEO', () => {
@@ -250,7 +285,10 @@ describe('local service areas data', () => {
     const gironde = getDepartmentInterventionArea('gironde');
 
     expect(dordogne.localPages.map((localPage) => localPage.id)).toEqual(['bergerac']);
-    expect(gironde.localPages.map((localPage) => localPage.id)).toEqual(['bordeaux']);
+    expect(gironde.localPages.map((localPage) => localPage.id)).toEqual([
+      'bordeaux',
+      'bassin-arcachon',
+    ]);
     expect(dordogne.localPages.find((localPage) => localPage.id === 'bordeaux')).toBeUndefined();
     expect(gironde.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();
   });

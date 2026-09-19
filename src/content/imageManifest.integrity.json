@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "cdff6b9b00ecec3e86b50c03094568e5e36e664d5b2b3ee35cc860c0f723a317",
+  "pipelineSignature": "0a1e29a12922afb95da282e5e93afd550ed4aeeb323fe17e79c367114097c386",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "0d42aee3a0ef7ab1324325b9482bd97be5c038fed75832616f5434324a956167"
+    "sha256": "4e1fadb08c061bc14708ac095c61089c2e2ca95b5273d45bb8d54d7564396f9a"
   },
   "sources": [
     {
@@ -80,6 +80,16 @@
       "key": "girondeHero",
       "path": "src/assets/seo-images/source/axel-delansorne-fSpupJ0C95E-unsplash.jpg",
       "sha256": "a8e0c49cfac48775bb77e664de93b39e5a658a3032a8d4b41bdb0088b2efd0b1"
+    },
+    {
+      "key": "bassinArcachonHero",
+      "path": "src/assets/seo-images/source/bassin-arcachon-cabanes-tchanquees.jpg",
+      "sha256": "e354ebc2b18c36db0cabbaef09427768b7cc886b237679f69bc265892b0914fe"
+    },
+    {
+      "key": "bassinArcachonDunePilat",
+      "path": "src/assets/seo-images/source/bassin-arcachon-dune-pilat.jpg",
+      "sha256": "6de4d7dfee8d82ec02c198cb59c7cab29e2394b2218010588a75fbe059879cfd"
     },
     {
       "key": "aveyronHero",
@@ -947,6 +957,116 @@
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-768.webp",
       "bytes": 68804,
       "sha256": "6fc3a2335a293ff5f53be312253cb9ad01d4a1f48f6a7409933e4f1698c12795"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.avif",
+      "bytes": 34773,
+      "sha256": "de87193bd951dd0a70cd0d7a6b59aa4439371b2d5787952e0b37028a85152d34"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.jpg",
+      "bytes": 67362,
+      "sha256": "b769ad81515a146520ef67182293627b56b228aa1084949eedd8ac5f9b49bba8"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.webp",
+      "bytes": 51352,
+      "sha256": "33bebe1d369359cfe52ec132d879967baffd960da8fd26ae3d6f4a8de26499d5"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1600.avif",
+      "bytes": 55906,
+      "sha256": "81e3621a6bb207c5269cb35eaf4cc7ce73cf3b24b5ab797be0594d9cd780c560"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1600.webp",
+      "bytes": 77004,
+      "sha256": "2d681f68edf7b9002bf94dbe68ff22eeb8bc0b569930daeaf59307b9e3145c02"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1920.avif",
+      "bytes": 69087,
+      "sha256": "958b26e316936e9d94604fbb3665592c70fc4214b87356202f7e5abf4eaf0347"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1920.webp",
+      "bytes": 96692,
+      "sha256": "afded0b7dd0742f05154a78725f59d3887f9c8f033632f897cee019d8cd46319"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-480.avif",
+      "bytes": 7412,
+      "sha256": "cd51c455e832d4f65ed9bb53e970fb764fbd80c8bb23de66fa2cc4cc2ec794c8"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-480.webp",
+      "bytes": 10562,
+      "sha256": "c0ee1ed8a0c3b76c90068f87d3ac5980169829c95d763e84d08dcda1048d7a8f"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-768.avif",
+      "bytes": 14692,
+      "sha256": "561e3f2e4437efb5c66595bd8c067e876762f299c19c330fe76ec6c897781eb9"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-768.webp",
+      "bytes": 22890,
+      "sha256": "b6a58f578a56274d1d096424de38433bd0d345809d9dc156c9c2410e00f114e3"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1200.avif",
+      "bytes": 55390,
+      "sha256": "9466fd55262be7371afbea79c977a08ce98c08fae2c6f07f69319e4e2bc3c30f"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1200.jpg",
+      "bytes": 80966,
+      "sha256": "bf3cd145d6ca2fcb425c5e11e4bd37ea6ce460d44c7a76ae29bb04de3d281756"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1200.webp",
+      "bytes": 66828,
+      "sha256": "cb4f5e9cc5efcea84a766813c837267a26e811262e3e8a5949379469ecf9d62e"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1600.avif",
+      "bytes": 89859,
+      "sha256": "978d51fbb23aff96d9ef38eb3ee351fc08072e8271d21e2129924259b9153c59"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1600.webp",
+      "bytes": 108600,
+      "sha256": "0b8d648a898e300ec3444d79193bc577d990c15b5dfe537303b28351007f29cc"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1920.avif",
+      "bytes": 118375,
+      "sha256": "7190364e77545e9f9229f70a202703e1b14cdf2da782e2233d81c1f54d58d270"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1920.webp",
+      "bytes": 151988,
+      "sha256": "434fb6ee51ace865b80d51b3a4d9086818a541585b1ebfec67cd0900e156a431"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-480.avif",
+      "bytes": 8184,
+      "sha256": "30a7ebdb9599baa6ee38908073935d8f75bb00864b119bd87cb9f892e768c235"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-480.webp",
+      "bytes": 9988,
+      "sha256": "ff0b4493be1d6628411124580dbf6a5513fffccb3ead0fa3813bee927b5dd740"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-768.avif",
+      "bytes": 23002,
+      "sha256": "c594bf79202c49ca325c7018326f9cf3e1d85f860fc6a91779b55a7556759ad0"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-768.webp",
+      "bytes": 27190,
+      "sha256": "64600e49b75db0a4420a27565450be8621b49d514376cc53a9d23accd1c86147"
     },
     {
       "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1200.avif",

@@ -28,6 +28,8 @@ export type ImageAssetKey =
   | 'girondeHero'
   | 'girondeTerritory'
   | 'girondeCoast'
+  | 'bassinArcachonHero'
+  | 'bassinArcachonDunePilat'
   | 'lotHero'
   | 'lotRocamadour'
   | 'lotEtGaronneHero'
@@ -307,6 +309,24 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.webp 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.webp 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.webp 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.webp 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.avif 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.avif 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.avif 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.avif 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.avif 1920w',
+  },
+  bassinArcachonHero: {
+    width: 4397,
+    height: 2262,
+    src: '/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/bassin-arcachon-cabanes-tchanquees-480.webp 480w, /images/optimized/bassin-arcachon-cabanes-tchanquees-768.webp 768w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1200.webp 1200w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1600.webp 1600w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/bassin-arcachon-cabanes-tchanquees-480.avif 480w, /images/optimized/bassin-arcachon-cabanes-tchanquees-768.avif 768w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1200.avif 1200w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1600.avif 1600w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1920.avif 1920w',
+  },
+  bassinArcachonDunePilat: {
+    width: 3264,
+    height: 2448,
+    src: '/images/optimized/bassin-arcachon-dune-pilat-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/bassin-arcachon-dune-pilat-480.webp 480w, /images/optimized/bassin-arcachon-dune-pilat-768.webp 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.webp 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.webp 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/bassin-arcachon-dune-pilat-480.avif 480w, /images/optimized/bassin-arcachon-dune-pilat-768.avif 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.avif 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.avif 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.avif 1920w',
   },
   lotHero: {
     width: 5472,

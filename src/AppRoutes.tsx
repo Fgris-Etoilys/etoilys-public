@@ -7,6 +7,7 @@ import Prerequis from './pages/Prerequis';
 import Procedure from './pages/Procedure';
 import ZonesIntervention from './pages/ZonesIntervention';
 import ClassementAveyron from './pages/locales/ClassementAveyron';
+import ClassementBassinArcachon from './pages/locales/ClassementBassinArcachon';
 import ClassementBergerac from './pages/locales/ClassementBergerac';
 import ClassementBordeaux from './pages/locales/ClassementBordeaux';
 import ClassementDordogne from './pages/locales/ClassementDordogne';
@@ -51,6 +52,10 @@ export default function AppRoutes() {
         <Route path="procedure" element={<Procedure />} />
         <Route path="zones-intervention" element={<ZonesIntervention />} />
         <Route path="classement-meuble-tourisme-aveyron" element={<ClassementAveyron />} />
+        <Route
+          path="classement-meuble-tourisme-bassin-arcachon"
+          element={<ClassementBassinArcachon />}
+        />
         <Route path="classement-meuble-tourisme-bergerac" element={<ClassementBergerac />} />
         <Route path="classement-meuble-tourisme-bordeaux" element={<ClassementBordeaux />} />
         <Route path="classement-meuble-tourisme-dordogne" element={<ClassementDordogne />} />

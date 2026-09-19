@@ -77,7 +77,7 @@ describe('InterventionAreaCards', () => {
     ).toHaveLength(1);
   });
 
-  it('keeps city links in a separate tinted footer', () => {
+  it('keeps local child links in a separate tinted footer', () => {
     renderCards([dordogneArea]);
 
     const card = screen.getByRole('heading', { name: 'Dordogne' }).closest('article');
@@ -104,7 +104,7 @@ describe('InterventionAreaCards', () => {
     );
   });
 
-  it('does not render an empty city footer for departments without children', () => {
+  it('does not render an empty local child footer for departments without children', () => {
     renderCards([girondeArea]);
 
     const card = screen.getByRole('heading', { name: 'Gironde' }).closest('article');
