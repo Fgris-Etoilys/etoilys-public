@@ -155,6 +155,7 @@ describe('ClassementMedocAtlantique', () => {
     expect(document.body).toHaveTextContent('Lacanau-Océan');
     expect(document.body).toHaveTextContent('Carcans-Maubuisson');
     expect(document.body).toHaveTextContent('Hourtin-Plage');
+    expect(document.body).toHaveTextContent('Montalivet-les-Bains');
     expect(document.body).toHaveTextContent('Pointe de Grave');
 
     fireEvent.click(

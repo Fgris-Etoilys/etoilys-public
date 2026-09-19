@@ -19,10 +19,10 @@ afterEach(() => {
 });
 
 function expectSingleLayoutAndSeo(path: string) {
-  expect(screen.getAllByRole('banner')).toHaveLength(1);
+  expect(document.querySelectorAll('header.site-header')).toHaveLength(1);
   expect(screen.getAllByRole('contentinfo')).toHaveLength(1);
   expect(screen.getAllByRole('main')).toHaveLength(1);
-  expect(screen.getByRole('banner')).toHaveClass('fixed');
+  expect(document.querySelector('header.site-header')).toHaveClass('fixed');
   expect(screen.getByRole('contentinfo')).toHaveClass('site-footer');
   expect(document.querySelector('.dordogne-shell')).toBeNull();
   expect(document.querySelector('.dd-landing')).toBeNull();

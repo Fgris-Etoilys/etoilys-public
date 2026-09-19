@@ -45,7 +45,7 @@ export const MEDOC_ATLANTIQUE_FAQ: LocalFaqItem[] = [
     question:
       'Intervenez-vous aussi à Lacanau-Océan, Carcans-Maubuisson, Hourtin et Soulac-sur-Mer ?',
     answer:
-      'Oui. Etoilys intervient dans les 14 communes de la Communauté de communes Médoc Atlantique, de Lacanau au Verdon-sur-Mer, jusqu’à la Pointe de Grave. Cela couvre notamment Lacanau-Océan, Carcans-Maubuisson, Hourtin et Hourtin-Plage, Vendays-Montalivet, Soulac-sur-Mer et les autres communes du territoire.',
+      'Oui. Etoilys intervient dans les 14 communes de la Communauté de communes Médoc Atlantique, de Lacanau au Verdon-sur-Mer. Cela couvre notamment Lacanau-Océan, Carcans-Maubuisson, Hourtin-Plage, Montalivet-les-Bains, Soulac-sur-Mer et la Pointe de Grave.',
   },
   ...CITY_COMMON_FAQ,
 ];

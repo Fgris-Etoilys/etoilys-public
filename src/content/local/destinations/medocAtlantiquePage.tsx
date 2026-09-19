@@ -81,7 +81,7 @@ export const MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinati
   serviceArea: {
     title: 'Où intervenons-nous dans le Médoc Atlantique ?',
     intro:
-      'Nos inspecteurs interviennent à Lacanau et dans les 14 communes de la Communauté de communes Médoc Atlantique, sans frais de déplacement.',
+      'Nos inspecteurs interviennent dans les 14 communes de la Communauté de communes Médoc Atlantique, de Lacanau au Verdon-sur-Mer, sans frais de déplacement.',
     communes: MEDOC_ATLANTIQUE_SERVICE_COMMUNES,
     parentLink: {
       label: 'Voir notre zone d’intervention en Gironde',

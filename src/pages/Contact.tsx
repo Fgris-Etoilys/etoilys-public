@@ -12,7 +12,7 @@ export default function Contact() {
   return (
     <section className="inquiry-page">
       <div className="container-editorial inquiry-contact-layout">
-        <div className="inquiry-intro">
+        <header className="inquiry-intro">
           <p className="editorial-eyebrow editorial-eyebrow-marked">{content.hero.eyebrow}</p>
           <h1>{content.hero.title}</h1>
           <p className="inquiry-description">{content.hero.description}</p>
@@ -20,7 +20,7 @@ export default function Contact() {
             <Clock3 size={16} aria-hidden="true" />
             {content.quickResponse}
           </p>
-        </div>
+        </header>
 
         <div className="inquiry-contact-methods" role="group" aria-label={content.detailsTitle}>
           <a href="tel:+33649551540" className="inquiry-contact-link ui-focus">
