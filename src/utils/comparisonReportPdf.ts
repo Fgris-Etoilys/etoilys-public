@@ -3,7 +3,12 @@ import autoTable from 'jspdf-autotable';
 import type { Locale } from '../i18n/locales';
 import { getLocalizedPath } from '../i18n/routeHelpers';
 import { simulatorReportContent } from '../i18n/simulatorReportContent';
-import { getAutoTableFinalY, getEtoilysLogoPngAsset, normalizePdfText } from './simulatorExport';
+import {
+  getAutoTableFinalY,
+  getEtoilysLogoPngAsset,
+  getSimulatorPdfPalette,
+  normalizePdfText,
+} from './simulatorExport';
 
 export interface ComparisonPdfReport {
   locale: Locale;
@@ -31,27 +36,9 @@ export interface ComparisonPdfReport {
 
 type Color = [number, number, number];
 
-// Read the live design-system tokens; fallbacks also allow non-browser PDF checks.
-function color(token: string, fallback: Color): Color {
-  if (typeof document === 'undefined') return fallback;
-  const value = getComputedStyle(document.documentElement)
-    .getPropertyValue(`--color-${token}`)
-    .trim()
-    .split(/\s+/)
-    .map(Number);
-  return value.length === 3 && value.every(Number.isFinite) ? (value as Color) : fallback;
-}
-
 export async function createComparisonReportPdf(report: ComparisonPdfReport): Promise<jsPDF> {
   const copy = simulatorReportContent[report.locale === 'en' ? 'en' : 'fr'];
-  const palette = {
-    ink: color('ink', [23, 61, 73]),
-    muted: color('muted', [83, 99, 103]),
-    paper: color('paper', [246, 243, 235]),
-    surface: color('surface', [255, 254, 250]),
-    sage: color('surface-sage', [234, 236, 228]),
-    copper: color('copper', [166, 94, 54]),
-  };
+  const palette = getSimulatorPdfPalette();
   const doc = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
   doc.setProperties({ title: report.title, subject: report.subtitle, author: 'Etoilys' });
   doc.setLanguage(report.locale === 'en' ? 'en-GB' : 'fr-FR');

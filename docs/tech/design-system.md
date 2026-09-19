@@ -125,6 +125,10 @@ Les deux simulateurs utilisent les primitives CSS `simulator-*` de `src/index.cs
 
 ### Workspace De Classement
 
+L’export de classement utilise `simulationClassementPdf`, chargé à la demande depuis `simulatorExport`. Il reprend les codes des PDF fiscal et taxe de séjour : logo éditorial, fond `paper`, titres serif, surfaces `sage`, accents `copper` et panneau d’actions `ink`. Les trois exports partagent `getSimulatorPdfPalette`, qui lit les variables CSS et conserve leurs valeurs de repli pour les contrôles hors navigateur. Aucune police ni dépendance supplémentaire.
+
+Le compte rendu comprend une synthèse avec les deux CTA, les scores backend détaillés, les critères obligatoires non validés, les pièces et un relevé complet des réponses par chapitre. Les valeurs absentes restent distinctes de zéro ; les statuts backend priment sur ceux du modèle. Les tableaux répètent leurs en-têtes et évitent de couper les lignes entre deux pages ; chaque page porte la date d’édition, la mention indicative et sa pagination. Le lien de reprise utilise le domaine public et l’identifiant encodé de la simulation ; une mention rappelle que la reprise dépend du navigateur d’origine. Le clic conserve les conditions d’export et l’analytics existants.
+
 Le classement reprend `simulator-page`, `simulator-intro`, les champs natifs, `simulator-tool-link`, `simulator-warning`, `simulator-disclosure` et `simulator-next`. Il conserve une composition propre au parcours long, sans reprendre le split saisie/résultat des simulateurs de comparaison.
 
 - `classement-journey` présente trois tabs libres, avec résumé, sélection et état terminé. Les trois vues restent accessibles sur mobile ; ce rail ne devient pas sticky. Conserver le roving tabIndex, les flèches, Home/End et les associations tab/panel.

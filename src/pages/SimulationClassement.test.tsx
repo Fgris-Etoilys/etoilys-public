@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
+import { parseGridSummary } from '../content/simulatorGrid';
+import * as simulatorExport from '../utils/simulatorExport';
 import structureGrilleRaw from '../../docs/data/structureGrille.json?raw';
 
 vi.setConfig({ testTimeout: 15_000 });
@@ -519,6 +521,63 @@ const expandSimulationParameters = async () => {
 };
 
 describe('SimulationClassement', () => {
+  it('exporte le snapshot PDF sans recalcul et permet de réessayer après un échec', async () => {
+    let resolveExport: (() => void) | undefined;
+    const pendingExport = new Promise<void>((resolve) => {
+      resolveExport = resolve;
+    });
+    const exportPdf = vi
+      .spyOn(simulatorExport, 'exportSimulationClassementPdf')
+      .mockRejectedValueOnce(new Error('PDF unavailable'))
+      .mockReturnValueOnce(pendingExport);
+    const fetchMock = mockFetchJsonSequence([
+      { body: favorableSimulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: successfulRapportResponse },
+    ]);
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+    fireEvent.click(await screen.findByRole('tab', { name: /résultat/i }));
+    const exportButton = await screen.findByRole('button', { name: /télécharger le résultat/i });
+    const initialFetchCalls = [...fetchMock.mock.calls];
+    const exportStartedAt = Date.now();
+    const expectedSnapshot = {
+      grid: parseGridSummary(gridModelResponse),
+      rapport: successfulRapportResponse,
+      grille: favorableSimulationResponse.grille,
+      logement: logementWithPiecesResponse,
+      totalSleepingCapacity: 2,
+      simulationId: SIMULATION_ID,
+      generatedAt: expect.any(Date),
+    };
+
+    fireEvent.click(exportButton);
+    expect(await screen.findByRole('alert')).toHaveTextContent(/impossible de générer le PDF/i);
+    expect(exportPdf).toHaveBeenCalledTimes(1);
+    expect(exportPdf).toHaveBeenLastCalledWith(expectedSnapshot);
+    expect(analyticsMock.trackClassementSimulatorPdfExported).not.toHaveBeenCalled();
+    expect(exportButton).toBeEnabled();
+
+    fireEvent.click(exportButton);
+    expect(exportPdf).toHaveBeenCalledTimes(2);
+    expect(exportPdf).toHaveBeenLastCalledWith(expectedSnapshot);
+    expect(analyticsMock.trackClassementSimulatorPdfExported).not.toHaveBeenCalled();
+    for (const [snapshot] of exportPdf.mock.calls) {
+      expect(snapshot.generatedAt.getTime()).toBeGreaterThanOrEqual(exportStartedAt);
+      expect(snapshot.generatedAt.getTime()).toBeLessThanOrEqual(Date.now());
+    }
+    if (!resolveExport) throw new Error('Pending PDF export was not initialized');
+    resolveExport();
+    await waitFor(() => {
+      expect(analyticsMock.trackClassementSimulatorPdfExported).toHaveBeenCalledExactlyOnceWith({
+        resultOutcome: 'favorable',
+      });
+    });
+    expect(screen.getByText(/PDF généré\./i)).toBeInTheDocument();
+    expect(fetchMock.mock.calls).toEqual(initialFetchCalls);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
+    expect(analyticsMock.trackClassementSimulatorCalculated).not.toHaveBeenCalled();
+  });
+
   it('confine le focus dans la pièce et le restitue au déclencheur', async () => {
     mockFetchJsonSequence([{ body: simulationResponse }, { body: emptyLogementResponse }]);
     renderAt(`/simulateur/${SIMULATION_ID}`);
