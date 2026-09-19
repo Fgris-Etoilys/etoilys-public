@@ -101,6 +101,17 @@ CTA final sur fond sombre :
 </PageCta>
 ```
 
+### Simulateurs De Comparaison
+
+Les deux simulateurs utilisent les primitives CSS `simulator-*` de `src/index.css`, avec les tokens existants. Aucun moteur de formulaire ni nouveau jeu de tokens : les calculs, exports et états restent dans leurs domaines.
+
+- `simulator-page` et `simulator-intro` donnent une introduction compacte ; `simulator-workspace` juxtapose saisie et résultat dès 1024 px, puis les ordonne verticalement sur tablette et mobile.
+- `simulator-form-panel`, `simulator-fieldset`, `simulator-field-grid` et `simulator-field-unit` composent les champs. Les groupes gardent leurs `fieldset` / `legend`, labels et erreurs associées. `simulator-rate-options` habille des radios natifs : flèches clavier, focus visible et coche de sélection.
+- `simulator-result-panel` reçoit le chiffre principal (`simulator-result-value`), puis la comparaison en `dl` (`simulator-comparison`). Les catégories de classement sont une liste de lignes séparées, sans cartes imbriquées.
+- `simulator-result-toolbar` et `simulator-tool-link` réduisent le poids visuel des actions `Button` sans changer leurs variantes ni leurs identifiants analytics.
+- `simulator-disclosure` habille `details` / `summary` natifs. Garder les avertissements qui influencent la lecture hors des disclosures ; réserver celles-ci au détail du calcul, à la méthode et aux sources. Le tableau existant reste sémantique et bascule selon la largeur disponible du panneau, via une container query.
+- Les champs et actions principales offrent au moins 44 px de cible tactile. Les transitions et le défilement des pages respectent `prefers-reduced-motion`.
+
 ## Frontières De Migration
 
 - **ETOILYS-395** : socle premium, pages cœur, Home/Dordogne harmonisées, amorce des enveloppes de formulaires via `editorial-form`.

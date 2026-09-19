@@ -37,6 +37,7 @@ export default function Tooltip({
   const [isOpen, setIsOpen] = useState(false);
   const [horizontalOffset, setHorizontalOffset] = useState(0);
   const containerRef = useRef<HTMLSpanElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
   const tooltipRef = useRef<HTMLSpanElement | null>(null);
   const dismissTimerRef = useRef<number | null>(null);
   const isTriggerHoveredRef = useRef(false);
@@ -161,8 +162,17 @@ export default function Tooltip({
       className={`relative inline-flex ${className}`}
       onFocus={handleFocus}
       onBlur={handleBlur}
+      onKeyDown={(event) => {
+        if (event.key === 'Escape' && isOpen) {
+          event.stopPropagation();
+          clearDismissTimer();
+          triggerRef.current?.focus({ preventScroll: true });
+          setIsOpen(false);
+        }
+      }}
     >
       <button
+        ref={triggerRef}
         type="button"
         className={`ui-focus inline-flex h-4 w-4 items-center justify-center rounded-full border border-ink/15 bg-paper text-[10px] text-muted ${triggerClassName}`}
         aria-label={srLabel}

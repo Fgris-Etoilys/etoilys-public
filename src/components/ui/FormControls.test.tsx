@@ -48,11 +48,13 @@ describe('shared form controls', () => {
   it('keeps name-derived input IDs and associates checkbox errors', () => {
     render(
       <>
-        <Input label="Name" name="customer" />
+        <Input label="Name" name="customer" error="Name required" />
         <Checkbox label="Consent" error="Required" />
       </>
     );
     expect(screen.getByLabelText('Name')).toHaveAttribute('id', 'customer');
+    expect(screen.getByRole('alert')).toHaveTextContent('Name required');
+    expect(screen.getByLabelText('Name')).toHaveAccessibleDescription('Name required');
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toHaveAccessibleDescription('Required');
     expect(checkbox).toHaveAttribute('aria-invalid', 'true');

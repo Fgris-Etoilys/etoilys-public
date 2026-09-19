@@ -1741,6 +1741,327 @@
     margin-top: 0;
   }
 
+  .simulator-page {
+    @apply bg-paper text-ink;
+    padding-block: clamp(28px, 4vw, 52px) clamp(40px, 5vw, 72px);
+  }
+
+  .simulator-intro {
+    @apply mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4;
+  }
+
+  .simulator-eyebrow {
+    @apply mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted;
+  }
+
+  .simulator-page .simulator-intro h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 3.4vw, 44px);
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+    max-width: 27ch;
+  }
+
+  .simulator-intro p:not(.simulator-eyebrow) {
+    @apply mt-3 max-w-2xl text-base leading-relaxed text-muted;
+  }
+
+  .simulator-page .simulator-tool-link {
+    @apply min-h-11 gap-2 border-0 bg-transparent px-0 text-sm text-ink underline decoration-ink/30 underline-offset-4 hover:bg-transparent hover:text-ink-hover;
+  }
+
+  .simulator-workspace {
+    @apply grid min-w-0 overflow-visible rounded-editorial border border-ink/15 bg-surface;
+    box-shadow: 0 8px 32px rgb(var(--color-ink) / 0.035);
+  }
+
+  .simulator-form-panel,
+  .simulator-result-panel {
+    min-width: 0;
+    padding: clamp(24px, 3vw, 40px);
+  }
+
+  .simulator-form-panel {
+    @apply bg-surface;
+    border-radius: inherit;
+  }
+
+  .simulator-form-panel > h2 {
+    @apply mb-6;
+  }
+
+  .simulator-page .simulator-form-panel h2,
+  .simulator-page .simulator-result-heading h2 {
+    @apply font-roboto text-lg font-semibold;
+    letter-spacing: -0.015em;
+  }
+
+  .simulator-fieldset {
+    @apply min-w-0 border-0 p-0;
+  }
+
+  .simulator-fieldset + .simulator-fieldset {
+    @apply mt-6 border-t border-ink/10 pt-6;
+  }
+
+  .simulator-fieldset > legend {
+    @apply mb-4 text-sm font-semibold text-ink;
+  }
+
+  .simulator-field-grid {
+    @apply grid grid-cols-2 gap-x-4 gap-y-5;
+  }
+
+  .simulator-form-panel .ui-field {
+    @apply min-h-[52px] bg-white text-base;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .simulator-field-unit {
+    @apply relative;
+  }
+
+  .simulator-field-unit .ui-field {
+    @apply pr-14;
+  }
+
+  .simulator-field-unit > span,
+  .simulator-unit {
+    @apply pointer-events-none absolute right-4 top-0 flex h-[52px] items-center text-sm text-muted;
+  }
+
+  .simulator-submit {
+    @apply min-h-[52px] w-full gap-3;
+  }
+
+  .simulator-rate-options {
+    @apply grid grid-cols-5 gap-1 rounded-editorial bg-paper p-1;
+  }
+
+  .simulator-rate-options > label {
+    @apply relative min-w-0 cursor-pointer;
+  }
+
+  .simulator-rate-options > label > span {
+    @apply flex min-h-[52px] items-center justify-center gap-1 rounded-control border border-transparent text-sm font-semibold text-ink transition-colors;
+  }
+
+  .simulator-rate-options input:checked + span {
+    @apply border-ink bg-ink text-white;
+  }
+
+  .simulator-rate-options input:focus-visible + span {
+    outline: 2px solid rgb(var(--color-copper));
+    outline-offset: 3px;
+  }
+
+  .simulator-rate-options input:not(:checked) + span:hover {
+    @apply bg-white;
+  }
+
+  .simulator-result-panel {
+    @apply border-t border-ink/15 bg-surface-sage;
+    container-type: inline-size;
+    scroll-margin-top: calc(var(--etoilys-header-height, 80px) + 16px);
+  }
+
+  .simulator-result-empty {
+    @apply flex flex-col justify-center text-muted;
+    min-height: 300px;
+  }
+
+  .simulator-result-empty h2 {
+    @apply text-ink;
+  }
+
+  .simulator-result-empty > svg {
+    @apply mb-6 text-copper;
+  }
+
+  .simulator-result-heading {
+    @apply mb-7 flex flex-wrap items-center justify-between gap-x-4 gap-y-2;
+  }
+
+  .simulator-result-toolbar {
+    @apply flex flex-wrap items-center gap-1;
+  }
+
+  .simulator-result-toolbar > button {
+    @apply min-h-11 gap-2 border-0 bg-transparent px-2 py-2 text-xs text-ink underline decoration-ink/25 underline-offset-4 hover:bg-ink/5 hover:text-ink;
+  }
+
+  .simulator-result-hero {
+    @apply mb-6;
+  }
+
+  .simulator-result-value {
+    @apply font-semibold text-ink;
+    font-size: clamp(36px, 4.3vw, 60px);
+    letter-spacing: -0.055em;
+    line-height: 1.1 !important;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  .simulator-result-description {
+    @apply mt-3 max-w-lg text-base leading-relaxed text-ink;
+  }
+
+  .simulator-comparison {
+    @apply my-6 grid grid-cols-2 border-y border-ink/20 py-5;
+  }
+
+  .simulator-comparison > div {
+    @apply min-w-0 pr-4;
+  }
+
+  .simulator-comparison > div + div {
+    @apply border-l border-ink/20 pl-5 pr-0;
+  }
+
+  .simulator-comparison dt {
+    @apply mb-2 text-sm text-muted;
+  }
+
+  .simulator-comparison dd {
+    @apply text-2xl font-semibold tracking-tight text-ink;
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  .simulator-facts {
+    @apply my-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted;
+  }
+
+  .simulator-facts dd {
+    @apply mt-1 font-medium text-ink;
+  }
+
+  .simulator-disclosure {
+    @apply border-t border-ink/20;
+  }
+
+  .simulator-disclosure > summary {
+    @apply flex min-h-[52px] cursor-pointer list-none items-center justify-between gap-4 py-3 text-sm font-medium text-ink;
+  }
+
+  .simulator-disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .simulator-disclosure > summary::after {
+    content: '+';
+    @apply shrink-0 text-xl font-normal text-copper;
+  }
+
+  .simulator-disclosure[open] > summary::after {
+    content: '\2212';
+  }
+
+  .simulator-disclosure > summary:focus-visible {
+    outline: 2px solid rgb(var(--color-copper));
+    outline-offset: 3px;
+  }
+
+  .simulator-disclosure[open] {
+    @apply pb-5;
+  }
+
+  .simulator-warning {
+    @apply my-5 border-l-2 border-warning-500 bg-warning-100/50 py-3 pl-4 pr-3 text-sm leading-relaxed text-ink;
+  }
+
+  .simulator-category-list {
+    @apply my-5 divide-y divide-ink/15;
+  }
+
+  .simulator-category-list > li {
+    @apply flex items-center justify-between gap-4 py-3;
+  }
+
+  .simulator-category-list > li > :last-child {
+    @apply text-right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .simulator-method {
+    @apply mt-6 text-sm leading-relaxed text-muted;
+  }
+
+  .simulator-next {
+    @apply mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-ink/15 pt-5 text-sm text-muted;
+  }
+
+  .simulator-next a {
+    @apply min-h-11 gap-2 border-0 bg-transparent px-0 text-sm text-ink underline decoration-ink/30 underline-offset-4 hover:bg-transparent hover:text-ink-hover;
+  }
+
+  @container (max-width: 600px) {
+    .simulator-result-panel [data-responsive-comparison-variant='desktop'] {
+      display: none;
+    }
+    .simulator-result-panel [data-responsive-comparison-variant='mobile'] {
+      display: block;
+    }
+  }
+
+  @container (min-width: 500px) {
+    .simulator-category-list > li > :last-child {
+      display: grid;
+      grid-template-columns: minmax(90px, 1fr) minmax(160px, 1.5fr);
+      align-items: baseline;
+      gap: 20px;
+    }
+    .simulator-category-list > li > :last-child > p {
+      margin: 0;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .simulator-workspace {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.3fr);
+    }
+    .simulator-result-panel {
+      @apply border-l border-t-0;
+    }
+  }
+
+  @media (max-width: 680px) {
+    .simulator-intro {
+      @apply mb-6;
+    }
+    .simulator-intro p:not(.simulator-eyebrow) {
+      @apply text-sm;
+    }
+    .simulator-form-panel,
+    .simulator-result-panel {
+      padding: 24px 20px;
+    }
+    .simulator-result-empty {
+      min-height: 0;
+    }
+    .simulator-result-value {
+      font-size: clamp(34px, 10vw, 44px);
+    }
+    .simulator-comparison dd {
+      @apply text-xl;
+    }
+    .simulator-result-heading {
+      @apply mb-5;
+    }
+    .simulator-field-grid label {
+      @apply flex min-h-10 items-center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .simulator-page * {
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
   .simulator-ui h1,
   .simulator-ui h2,
   .simulator-ui h3,

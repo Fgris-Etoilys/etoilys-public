@@ -1,8 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Check,
+  Download,
+  Link2,
+  LoaderCircle,
+  Scale,
+  Search,
+} from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
-import Card from '../components/ui/Card';
 import Tooltip from '../components/ui/Tooltip';
 import ResponsiveComparisonTable, {
   type ResponsiveComparisonColumn,
@@ -714,6 +723,10 @@ export default function SimulateurTaxeSejour() {
     return result.rows.find((row) => row.category === 'Non classé')?.amount ?? null;
   }, [result]);
 
+  const isReferenceIndicative =
+    result?.rows.some((row) => row.category === 'Non classé' && row.status === 'indicatif') ??
+    false;
+
   const bestSavings = useMemo(() => {
     if (!result || nonClasseAmount === null) {
       return null;
@@ -1034,7 +1047,7 @@ export default function SimulateurTaxeSejour() {
     const targetTop = resultBlock.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({
       top: Math.max(0, targetTop - RESULT_SCROLL_OFFSET_PX),
-      behavior: 'smooth',
+      behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
     });
   }, [result]);
 
@@ -1591,112 +1604,118 @@ export default function SimulateurTaxeSejour() {
 
   return (
     <LocalizedContent locale={locale} translations={touristTaxSimulatorEnglishTranslations}>
-      <section className="simulator-ui bg-paper py-10 text-ink md:py-12">
+      <section className="simulator-ui simulator-page">
         <div className="container-editorial">
-          <div className="max-w-4xl">
-            <h1 className="mb-4 text-ink">Simulateur taxe de séjour 2026 : classé ou non classé</h1>
-            <p className="text-base text-muted">
-              Comparez le montant estimatif de taxe de séjour entre un meublé non classé et un
-              meublé classé de 1 à 5 étoiles, selon les données locales disponibles.
-            </p>
-          </div>
-        </div>
-      </section>
+          <header className="simulator-intro">
+            <div>
+              <p className="simulator-eyebrow">Les outils Etoilys · 2026</p>
+              <h1>Simulateur taxe de séjour</h1>
+              <p>Un même séjour, cinq classements. Comparez ce qui change pour vos voyageurs.</p>
+            </div>
+            <Button
+              href={
+                locale === 'en'
+                  ? '/en/furnished-tourist-accommodation-tax-simulator'
+                  : '/simulateur-fiscal-classement'
+              }
+              variant="primary"
+              className="simulator-tool-link"
+            >
+              Simulateur fiscal <ArrowUpRight size={16} aria-hidden="true" />
+            </Button>
+          </header>
 
-      <section className="simulator-ui bg-surface py-10 md:py-12">
-        <div className="container-editorial">
-          <div className="space-y-6">
-            <div className="rounded-editorial border border-ink/15 bg-paper p-5 leading-comfortable text-muted md:p-6">
-              <h2 className="mb-3 text-gray-900">Ce que compare le simulateur</h2>
-              <div className="space-y-3 text-sm">
-                <p>
-                  La taxe de séjour peut être très différente entre un meublé non classé et un
-                  meublé classé. Pour un logement classé, le tarif dépend du nombre d'étoiles. Pour
-                  un logement non classé, il est généralement calculé en pourcentage du prix de la
-                  nuitée.
-                </p>
-                <p>
-                  Le simulateur compare, pour une même commune et un même séjour, le montant
-                  estimatif dû pour un meublé non classé et pour un meublé classé de 1 à 5 étoiles.
-                  En pratique, vous visualisez si le classement change la taxe de séjour affichée au
-                  voyageur, et dans quelles proportions.
-                </p>
-                <p>
-                  Le calcul prend en compte la période de location, le nombre de personnes, le prix
-                  de la nuitée et les taxes additionnelles prévues localement.
+          <div className="simulator-workspace">
+            <div className="simulator-form-panel">
+              <div className="mb-6">
+                <p className="simulator-eyebrow">Votre simulation</p>
+                <h2>Informations du séjour</h2>
+                <p className="mt-2 text-sm text-muted">
+                  Commencez par la commune de votre logement.
                 </p>
               </div>
-            </div>
 
-            <Card className="p-5 md:p-6" hover={false}>
-              <h2 className="mb-2">Informations du séjour</h2>
-              <p className="mb-5 text-sm text-muted">
-                Sélectionnez une commune puis renseignez les informations du séjour pour comparer
-                les montants estimatifs.
-              </p>
-              {dataset && (
-                <p className="mb-5 text-sm font-medium text-gray-700">
-                  Données de taxe de séjour 2026 · Mise à jour de référence :{' '}
-                  {formatDatasetDate(dataset.sourceDate, locale)} · DELTA v{dataset.version}
+              {isLoading && (
+                <p className="flex items-center gap-2 text-sm text-muted" role="status">
+                  <LoaderCircle size={18} className="motion-safe:animate-spin" aria-hidden="true" />
+                  Chargement des données en cours...
                 </p>
               )}
-
-              {isLoading && <p className="text-muted">Chargement des données en cours...</p>}
               {loadingError && (
-                <p className="text-alert-500" role="alert">
+                <p className="simulator-warning" role="alert">
                   {loadingError}
                 </p>
               )}
 
               {!isLoading && !loadingError && (
-                <form className="space-y-6" onSubmit={handleSubmit} noValidate>
-                  <div className="relative max-w-2xl">
-                    <label
-                      htmlFor="city-input"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Commune <span className="ml-1 text-alert-400">*</span>
+                <form onSubmit={handleSubmit} noValidate>
+                  <div className="relative">
+                    <label htmlFor="city-input" className="mb-2 block text-sm font-medium text-ink">
+                      Commune{' '}
+                      <span className="text-alert-400" aria-hidden="true">
+                        *
+                      </span>
                     </label>
-                    <input
-                      id="city-input"
-                      type="text"
-                      required
-                      value={cityQuery}
-                      onChange={(event) => handleCityInputChange(event.target.value)}
-                      onFocus={handleCityInputFocus}
-                      onClick={handleCityInputClick}
-                      onBlur={handleCityInputBlur}
-                      onKeyDown={handleCityInputKeyDown}
-                      placeholder="Ex. Biarritz"
-                      autoComplete="off"
-                      role="combobox"
-                      aria-autocomplete="list"
-                      aria-expanded={isListOpen && suggestions.length > 0}
-                      aria-controls={listId}
-                      aria-invalid={errors.city ? 'true' : undefined}
-                      aria-describedby={errors.city ? 'city-error' : undefined}
-                      aria-activedescendant={
-                        highlightedIndex >= 0 ? `taxe-sejour-option-${highlightedIndex}` : undefined
-                      }
-                      className={`ui-field ${errors.city ? 'ui-field-error' : ''}`}
-                    />
+                    <div className="relative">
+                      <Search
+                        size={19}
+                        className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted"
+                        aria-hidden="true"
+                      />
+                      <input
+                        id="city-input"
+                        type="text"
+                        required
+                        value={cityQuery}
+                        onChange={(event) => handleCityInputChange(event.target.value)}
+                        onFocus={handleCityInputFocus}
+                        onClick={handleCityInputClick}
+                        onBlur={handleCityInputBlur}
+                        onKeyDown={handleCityInputKeyDown}
+                        placeholder="Ex. Biarritz"
+                        autoComplete="off"
+                        role="combobox"
+                        aria-autocomplete="list"
+                        aria-expanded={isListOpen && suggestions.length > 0}
+                        aria-controls={listId}
+                        aria-invalid={errors.city ? 'true' : undefined}
+                        aria-describedby={errors.city ? 'city-error' : 'city-status'}
+                        aria-activedescendant={
+                          highlightedIndex >= 0
+                            ? 'taxe-sejour-option-' + highlightedIndex
+                            : undefined
+                        }
+                        className={
+                          'ui-field !pl-11 !pr-11 ' + (errors.city ? 'ui-field-error' : '')
+                        }
+                      />
+                      {selectedCity && (
+                        <Check
+                          size={19}
+                          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink"
+                          aria-hidden="true"
+                        />
+                      )}
+                    </div>
                     {isListOpen && suggestions.length > 0 && (
                       <ul
                         id={listId}
                         role="listbox"
+                        aria-label="Communes proposées"
                         className="absolute z-20 mt-1 max-h-72 w-full overflow-auto rounded-editorial border border-ink/15 bg-white shadow-[0_8px_24px_rgb(var(--color-ink)/0.08)]"
                       >
                         {suggestions.map((city, index) => (
                           <li
-                            id={`taxe-sejour-option-${index}`}
+                            id={'taxe-sejour-option-' + index}
                             key={city.id}
                             role="option"
                             aria-selected={highlightedIndex === index}
-                            className={`cursor-pointer px-4 py-2 text-sm ${
-                              highlightedIndex === index
-                                ? 'bg-paper text-ink'
-                                : 'text-muted hover:bg-paper'
-                            }`}
+                            className={
+                              'flex min-h-11 cursor-pointer items-center px-4 py-3 text-sm ' +
+                              (highlightedIndex === index
+                                ? 'bg-surface-sage text-ink'
+                                : 'text-ink hover:bg-paper')
+                            }
                             onMouseDown={(event) => {
                               event.preventDefault();
                               selectCity(city);
@@ -1712,416 +1731,539 @@ export default function SimulateurTaxeSejour() {
                         {errors.city}
                       </p>
                     )}
+                    <p id="city-status" className="mt-2 text-xs text-muted" role="status">
+                      {selectedCity
+                        ? 'Commune sélectionnée · tarifs locaux chargés'
+                        : isListOpen && normalizedQuery && suggestions.length === 0
+                          ? 'Aucune commune trouvée. Essayez un autre nom.'
+                          : 'Saisissez un nom puis sélectionnez une commune dans la liste.'}
+                    </p>
                   </div>
 
                   {selectedCity && (
                     <>
-                      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-                        <Input
-                          label="Prix moyen de la nuitée HT"
-                          required
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          inputMode="decimal"
-                          placeholder="Ex. 120"
-                          value={nightlyPriceHt}
-                          onChange={(event) => {
-                            trackSimulatorStartOnce();
-                            setNightlyPriceHt(event.target.value);
-                            if (errors.nightlyPriceHt) {
-                              clearFormError('nightlyPriceHt');
-                            }
-                          }}
-                          error={errors.nightlyPriceHt}
-                        />
+                      <fieldset className="simulator-fieldset mt-6">
+                        <legend>Le séjour</legend>
+                        <div className="simulator-field-grid">
+                          <div>
+                            <label
+                              htmlFor="nightly-price-input"
+                              className="mb-2 block text-sm font-medium text-ink"
+                            >
+                              Prix par nuit HT{' '}
+                              <span className="text-alert-400" aria-hidden="true">
+                                *
+                              </span>
+                            </label>
+                            <div className="simulator-field-unit">
+                              <input
+                                id="nightly-price-input"
+                                required
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                inputMode="decimal"
+                                placeholder="Ex. 120"
+                                value={nightlyPriceHt}
+                                aria-invalid={errors.nightlyPriceHt ? 'true' : undefined}
+                                aria-describedby={
+                                  errors.nightlyPriceHt ? 'nightly-price-error' : undefined
+                                }
+                                onChange={(event) => {
+                                  trackSimulatorStartOnce();
+                                  setNightlyPriceHt(event.target.value);
+                                  if (errors.nightlyPriceHt) clearFormError('nightlyPriceHt');
+                                }}
+                                className={
+                                  'ui-field ' + (errors.nightlyPriceHt ? 'ui-field-error' : '')
+                                }
+                              />
+                              <span aria-hidden="true">€</span>
+                            </div>
+                            {errors.nightlyPriceHt && (
+                              <p
+                                id="nightly-price-error"
+                                className="mt-2 text-sm text-alert-400"
+                                role="alert"
+                              >
+                                {errors.nightlyPriceHt}
+                              </p>
+                            )}
+                          </div>
 
-                        <div className="w-full">
-                          <div className="mb-2 h-5 flex items-center">
-                            <div className="inline-flex items-center gap-2">
+                          <div>
+                            <div className="mb-2 flex items-center justify-between gap-1">
                               <label
                                 htmlFor="nights-input"
-                                className="text-sm font-medium text-gray-700"
+                                className="text-sm font-medium text-ink"
                               >
-                                Nombre de nuits louées
-                                <span className="ml-1 text-alert-400">*</span>
+                                Nuits{' '}
+                                <span className="text-alert-400" aria-hidden="true">
+                                  *
+                                </span>
                               </label>
                               <Tooltip
                                 srLabel="Précision sur le nombre de nuits louées à comparer."
-                                triggerClassName="-translate-y-[2px] shrink-0 font-semibold leading-none"
+                                className="-my-3"
+                                triggerClassName="min-h-11 min-w-11 !border-0 !bg-transparent !text-sm"
                               >
                                 Indiquez le nombre de nuits à comparer : une nuit, une semaine ou
                                 une période complète de location, par exemple 90 ou 120 nuits.
                               </Tooltip>
                             </div>
-                          </div>
-                          <input
-                            id="nights-input"
-                            required
-                            type="number"
-                            min="1"
-                            step="1"
-                            inputMode="numeric"
-                            placeholder="Ex. 3"
-                            value={nights}
-                            aria-invalid={errors.nights ? 'true' : undefined}
-                            aria-describedby={errors.nights ? 'nights-error' : undefined}
-                            onChange={(event) => {
-                              trackSimulatorStartOnce();
-                              setNights(event.target.value);
-                              if (errors.nights) {
-                                clearFormError('nights');
-                              }
-                            }}
-                            className={`ui-field ${errors.nights ? 'ui-field-error' : ''}`}
-                          />
-                          {errors.nights && (
-                            <p
-                              id="nights-error"
-                              className="mt-2 text-sm text-alert-400"
-                              role="alert"
-                            >
-                              {errors.nights}
-                            </p>
-                          )}
-                        </div>
-
-                        {requiresCapacity && (
-                          <Input
-                            label="Capacité du logement (personnes)"
-                            type="number"
-                            min="1"
-                            step="1"
-                            inputMode="numeric"
-                            placeholder="Ex. 4"
-                            value={capacity}
-                            onChange={(event) => {
-                              trackSimulatorStartOnce();
-                              setCapacity(event.target.value);
-                              if (errors.capacity) {
-                                clearFormError('capacity');
-                              }
-                            }}
-                            error={errors.capacity}
-                          />
-                        )}
-
-                        {requiresOccupancy && (
-                          <>
-                            <Input
-                              label="Personnes accueillies"
+                            <input
+                              id="nights-input"
                               required
                               type="number"
                               min="1"
                               step="1"
                               inputMode="numeric"
-                              placeholder="Ex. 4"
-                              value={personsStaying}
+                              placeholder="Ex. 3"
+                              value={nights}
+                              aria-invalid={errors.nights ? 'true' : undefined}
+                              aria-describedby={errors.nights ? 'nights-error' : undefined}
                               onChange={(event) => {
                                 trackSimulatorStartOnce();
-                                setPersonsStaying(event.target.value);
-                                if (errors.personsStaying) {
-                                  clearFormError('personsStaying');
-                                }
+                                setNights(event.target.value);
+                                if (errors.nights) clearFormError('nights');
                               }}
-                              error={errors.personsStaying}
+                              className={'ui-field ' + (errors.nights ? 'ui-field-error' : '')}
                             />
+                            {errors.nights && (
+                              <p
+                                id="nights-error"
+                                className="mt-2 text-sm text-alert-400"
+                                role="alert"
+                              >
+                                {errors.nights}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </fieldset>
 
-                            <div className="w-full">
-                              <div className="mb-2 h-5 flex items-center">
-                                <div className="inline-flex items-center gap-2">
-                                  <label
-                                    htmlFor="exempted-persons-input"
-                                    className="text-sm font-medium text-gray-700"
-                                  >
-                                    Personnes exonérées de taxe
-                                  </label>
-                                  <Tooltip
-                                    srLabel="Qui peut être exonéré: mineurs, salariés saisonniers de la commune, personnes hébergées en urgence ou relogées temporairement, et logements sous le seuil de loyer fixé localement."
-                                    triggerClassName="-translate-y-[2px] shrink-0 font-semibold leading-none"
-                                    triggerTabIndex={-1}
-                                  >
-                                    En général, sont exonérées: les personnes mineures, les salariés
-                                    saisonniers employés dans la commune, les personnes hébergées en
-                                    urgence ou relogées temporairement, et les logements dont le
-                                    loyer est sous le seuil fixé localement.
-                                  </Tooltip>
-                                </div>
-                              </div>
-                              <input
-                                id="exempted-persons-input"
+                      {(requiresCapacity || requiresOccupancy) && (
+                        <fieldset className="simulator-fieldset">
+                          <legend>{requiresOccupancy ? 'Les voyageurs' : 'Le logement'}</legend>
+                          <div className="simulator-field-grid">
+                            {requiresCapacity && (
+                              <Input
+                                id="capacity-input"
+                                label="Capacité du logement"
+                                required
                                 type="number"
-                                min="0"
+                                min="1"
                                 step="1"
                                 inputMode="numeric"
-                                placeholder="Ex. 1"
-                                value={exemptedPersons}
-                                aria-invalid={errors.exemptedPersons ? 'true' : undefined}
-                                aria-describedby={
-                                  errors.exemptedPersons ? 'exempted-persons-error' : undefined
-                                }
+                                placeholder="Ex. 4"
+                                helperText="Nombre de personnes maximum"
+                                value={capacity}
                                 onChange={(event) => {
                                   trackSimulatorStartOnce();
-                                  setExemptedPersons(event.target.value);
-                                  if (errors.exemptedPersons) {
-                                    clearFormError('exemptedPersons');
-                                  }
+                                  setCapacity(event.target.value);
+                                  if (errors.capacity) clearFormError('capacity');
                                 }}
-                                className={`ui-field ${
-                                  errors.exemptedPersons ? 'ui-field-error' : ''
-                                }`}
+                                error={errors.capacity ? localize(errors.capacity) : undefined}
                               />
-                              {errors.exemptedPersons && (
-                                <p
-                                  id="exempted-persons-error"
-                                  className="mt-2 text-sm text-alert-400"
-                                  role="alert"
-                                >
-                                  {errors.exemptedPersons}
-                                </p>
-                              )}
-                            </div>
-                          </>
-                        )}
-                      </div>
-
-                      <Button type="submit" variant="primary" className="w-full md:w-auto">
-                        Calculer
-                      </Button>
+                            )}
+                            {requiresOccupancy && (
+                              <>
+                                <Input
+                                  id="persons-staying-input"
+                                  label="Personnes accueillies"
+                                  required
+                                  type="number"
+                                  min="1"
+                                  step="1"
+                                  inputMode="numeric"
+                                  placeholder="Ex. 4"
+                                  value={personsStaying}
+                                  onChange={(event) => {
+                                    trackSimulatorStartOnce();
+                                    setPersonsStaying(event.target.value);
+                                    if (errors.personsStaying) clearFormError('personsStaying');
+                                  }}
+                                  error={
+                                    errors.personsStaying
+                                      ? localize(errors.personsStaying)
+                                      : undefined
+                                  }
+                                />
+                                <div>
+                                  <div className="mb-2 flex items-center justify-between gap-1">
+                                    <label
+                                      htmlFor="exempted-persons-input"
+                                      className="text-sm font-medium text-ink"
+                                    >
+                                      Personnes exonérées
+                                    </label>
+                                    <Tooltip
+                                      srLabel="Qui peut être exonéré: mineurs, salariés saisonniers de la commune, personnes hébergées en urgence ou relogées temporairement, et logements sous le seuil de loyer fixé localement."
+                                      className="-my-3"
+                                      triggerClassName="min-h-11 min-w-11 !border-0 !bg-transparent !text-sm"
+                                    >
+                                      En général, sont exonérées: les personnes mineures, les
+                                      salariés saisonniers employés dans la commune, les personnes
+                                      hébergées en urgence ou relogées temporairement, et les
+                                      logements dont le loyer est sous le seuil fixé localement.
+                                    </Tooltip>
+                                  </div>
+                                  <input
+                                    id="exempted-persons-input"
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    inputMode="numeric"
+                                    placeholder="Ex. 1"
+                                    value={exemptedPersons}
+                                    aria-invalid={errors.exemptedPersons ? 'true' : undefined}
+                                    aria-describedby={
+                                      errors.exemptedPersons
+                                        ? 'exempted-persons-error'
+                                        : 'exempted-persons-hint'
+                                    }
+                                    onChange={(event) => {
+                                      trackSimulatorStartOnce();
+                                      setExemptedPersons(event.target.value);
+                                      if (errors.exemptedPersons) clearFormError('exemptedPersons');
+                                    }}
+                                    className={
+                                      'ui-field ' + (errors.exemptedPersons ? 'ui-field-error' : '')
+                                    }
+                                  />
+                                  {errors.exemptedPersons ? (
+                                    <p
+                                      id="exempted-persons-error"
+                                      className="mt-2 text-sm text-alert-400"
+                                      role="alert"
+                                    >
+                                      {errors.exemptedPersons}
+                                    </p>
+                                  ) : (
+                                    <p
+                                      id="exempted-persons-hint"
+                                      className="mt-2 text-xs text-muted"
+                                    >
+                                      Parmi les personnes accueillies · facultatif
+                                    </p>
+                                  )}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </fieldset>
+                      )}
                     </>
                   )}
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    className="simulator-submit mt-6"
+                    disabled={!selectedCity}
+                  >
+                    Calculer <ArrowRight size={18} aria-hidden="true" />
+                  </Button>
+                  <p className="mt-3 text-xs text-muted">* Champs obligatoires</p>
                 </form>
               )}
-            </Card>
+            </div>
 
-            {result && (
-              <>
-                <Card ref={resultBlockRef} className="p-5 md:p-6" hover={false}>
-                  <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <h2>Résultats</h2>
-                    <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+            <div
+              ref={resultBlockRef}
+              id="tourist-tax-result"
+              role="region"
+              aria-labelledby="tourist-tax-result-heading"
+              className={'simulator-result-panel ' + (!result ? 'simulator-result-empty' : '')}
+            >
+              {result ? (
+                <>
+                  <div className="simulator-result-heading">
+                    <h2 id="tourist-tax-result-heading">Résultats</h2>
+                    <div className="simulator-result-toolbar" aria-label="Actions du résultat">
                       <Button
                         type="button"
                         variant="secondary"
                         size="sm"
                         onClick={handleCopyShareLink}
                       >
-                        Copier le lien
+                        <Link2 size={16} aria-hidden="true" /> Copier le lien
                       </Button>
                       <Button type="button" variant="primary" size="sm" onClick={handleExportPdf}>
-                        Exporter PDF
+                        <Download size={16} aria-hidden="true" /> Exporter PDF
                       </Button>
                     </div>
                   </div>
 
                   {resultSummary && (
-                    <div className="mb-6 rounded-editorial border border-ink/15 bg-white shadow-[0_4px_16px_rgb(var(--color-ink)/0.05)]">
-                      <div className="grid gap-0 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
-                        <div className="p-5 md:p-6">
-                          <p className="text-xs font-semibold uppercase tracking-wide text-copper">
-                            Résultat principal
+                    <>
+                      <div className="simulator-result-hero" role="status">
+                        {result.isIndicative && (
+                          <p className="mb-2 text-xs font-medium text-warning-500">
+                            Comparaison indicative
                           </p>
-                          {resultSummary.bestSavings ? (
-                            <>
-                              <p className="mt-3 text-3xl font-semibold leading-tight text-success-500 md:text-4xl">
-                                Jusqu’à{' '}
-                                {formatEuro(resultSummary.bestSavings.savingsAmount, locale)}
-                              </p>
-                              <p className="mt-3 max-w-2xl text-base leading-relaxed text-gray-900">
-                                {locale === 'en' ? (
-                                  <>
-                                    less tourist tax with a{' '}
-                                    <strong className="font-semibold text-gray-950">
-                                      {formatClassifiedCategoryForSentence(
-                                        resultSummary.bestSavings.category,
-                                        locale
-                                      )}{' '}
-                                      classification
-                                    </strong>
-                                    , compared with{' '}
-                                    <strong className="font-semibold text-gray-950">
-                                      unclassified furnished tourist accommodation
-                                    </strong>
-                                    .
-                                  </>
-                                ) : (
-                                  <>
-                                    de taxe de séjour en moins avec un{' '}
-                                    <strong className="font-semibold text-gray-950">
-                                      classement{' '}
-                                      {formatClassifiedCategoryForSentence(
-                                        resultSummary.bestSavings.category,
-                                        locale
-                                      )}
-                                    </strong>
-                                    , par rapport à un{' '}
-                                    <strong className="font-semibold text-gray-950">
-                                      meublé non classé
-                                    </strong>
-                                    .
-                                  </>
+                        )}
+                        <p className="simulator-eyebrow">
+                          {isReferenceIndicative
+                            ? 'Comparaison limitée'
+                            : resultSummary.bestSavings
+                              ? 'Économie maximale sur ce séjour'
+                              : 'Aucune économie sur ce séjour'}
+                        </p>
+                        <p className="simulator-result-value">
+                          {isReferenceIndicative
+                            ? '—'
+                            : formatEuro(resultSummary.bestSavings?.savingsAmount ?? 0, locale)}
+                        </p>
+                        <p className="simulator-result-description">
+                          {isReferenceIndicative
+                            ? localize(
+                                'Le montant non classé est indicatif. L’écart entre catégories ne peut pas être établi.'
+                              )
+                            : resultSummary.bestSavings
+                              ? localize(
+                                  'de taxe de séjour en moins avec un classement {category}, par rapport à un meublé non classé.'
+                                ).replace(
+                                  '{category}',
+                                  formatClassifiedCategoryForSentence(
+                                    resultSummary.bestSavings.category,
+                                    locale
+                                  )
+                                )
+                              : localize(
+                                  'Dans cette simulation, le classement ne réduit pas la taxe de séjour par rapport au non classé.'
                                 )}
-                              </p>
-                            </>
-                          ) : (
-                            <div className="mt-3 space-y-2">
-                              <p className="text-base font-semibold leading-relaxed text-gray-900 md:text-lg">
-                                Dans cette simulation, le classement ne réduit pas la taxe de séjour
-                                par rapport au non classé.
-                              </p>
-                              <p className="text-sm leading-relaxed text-gray-700">
-                                Les montants varient selon la catégorie de classement et les tarifs
-                                votés localement.
-                              </p>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="border-t border-gray-100 bg-gray-50/70 p-5 md:p-6 lg:border-l lg:border-t-0">
-                          <h3 className="text-sm font-semibold text-gray-900">
-                            Hypothèses de simulation
-                          </h3>
-                          <div className="mt-3 flex flex-wrap gap-x-2 gap-y-1 text-sm leading-relaxed text-gray-700">
-                            {resultSummary.facts.map((fact, index) => (
-                              <span key={`${fact}-${index}`} className="inline-flex min-w-0">
-                                <span className="break-words">{fact}</span>
-                                {index < resultSummary.facts.length - 1 && (
-                                  <span className="ml-2 text-gray-400">·</span>
-                                )}
-                              </span>
-                            ))}
-                          </div>
-                          <p className="mt-3 text-sm leading-relaxed text-gray-700">
-                            {resultSummary.nightlyPriceLabel}
-                          </p>
-                          <p className="mt-1 text-sm leading-relaxed text-gray-600">
-                            {getTariffPeriodCompactLabel(
-                              result.selectedPeriod.startLabel,
-                              result.selectedPeriod.endLabel,
-                              locale
-                            )}
-                          </p>
-                          {!isFullYearPeriod(
-                            result.selectedPeriod.startLabel,
-                            result.selectedPeriod.endLabel
-                          ) && (
-                            <p className="mt-2 text-xs leading-relaxed text-gray-500">
-                              En dehors de cette période, la taxe de séjour n&apos;est pas prélevée.
-                            </p>
-                          )}
-                        </div>
+                        </p>
                       </div>
-                    </div>
+                      {result.warnings.length > 0 && (
+                        <aside className="simulator-warning">
+                          <h3 className="mb-2 !text-sm !font-semibold">Points d&apos;attention</h3>
+                          <ul className="space-y-2 text-sm">
+                            {result.warnings.map((warning) => (
+                              <li key={warning}>{warning}</li>
+                            ))}
+                          </ul>
+                        </aside>
+                      )}
+                      <dl className="simulator-comparison">
+                        <div>
+                          <dt>Meublé non classé</dt>
+                          <dd>
+                            {isReferenceIndicative ? '—' : formatEuro(nonClasseAmount ?? 0, locale)}
+                            <span className="mt-1 block text-xs font-normal text-muted">
+                              Référence de comparaison
+                            </span>
+                          </dd>
+                        </div>
+                        {resultSummary.bestSavings && (
+                          <div>
+                            <dt>
+                              Classé{' '}
+                              {formatClassifiedCategoryForSentence(
+                                resultSummary.bestSavings.category,
+                                locale
+                              )}
+                            </dt>
+                            <dd>
+                              {formatEuro(
+                                (nonClasseAmount ?? 0) - resultSummary.bestSavings.savingsAmount,
+                                locale
+                              )}
+                              <span className="mt-1 block text-xs font-normal text-muted">
+                                Taxe de séjour totale
+                              </span>
+                            </dd>
+                          </div>
+                        )}
+                      </dl>
+                      <ul className="simulator-facts" aria-label="Hypothèses de simulation">
+                        {resultSummary.facts.map((fact, index) => (
+                          <li key={fact + index}>{fact}</li>
+                        ))}
+                        {lastCalculationSnapshot?.capacity !== undefined &&
+                          lastCalculationSnapshot.personsStaying !== undefined && (
+                            <li>Capacité : {lastCalculationSnapshot.capacity}</li>
+                          )}
+                      </ul>
+                      <p className="mt-2 text-xs text-muted">{resultSummary.nightlyPriceLabel}</p>
+                      <p className="mt-2 text-xs text-muted">
+                        {getTariffPeriodCompactLabel(
+                          result.selectedPeriod.startLabel,
+                          result.selectedPeriod.endLabel,
+                          locale
+                        )}
+                      </p>
+                      {!isFullYearPeriod(
+                        result.selectedPeriod.startLabel,
+                        result.selectedPeriod.endLabel
+                      ) && (
+                        <p className="mt-1 text-xs text-muted">
+                          En dehors de cette période, la taxe de séjour n&apos;est pas prélevée.
+                        </p>
+                      )}
+                    </>
                   )}
 
-                  <div className="space-y-6">
+                  <div className="mt-7">
+                    <h3 className="!text-base !font-semibold">Selon le classement</h3>
+                    <p className="mt-1 text-xs text-muted">
+                      Montant total et écart par rapport au non classé.
+                    </p>
+                    <ul className="simulator-category-list" aria-label="Catégories de classement">
+                      {result.rows
+                        .filter((row) => row.category !== 'Non classé')
+                        .map((row) => (
+                          <li key={row.category}>
+                            <div>
+                              <span className="font-medium">
+                                {formatClassifiedCategoryForSentence(row.category, locale)}
+                              </span>
+                              {row.status === 'indicatif' && (
+                                <span className="ml-2 text-xs text-warning-500">indicatif</span>
+                              )}
+                            </div>
+                            <div className="min-w-0 text-right">
+                              <p className="font-semibold tabular-nums text-ink">
+                                {formatEuro(row.amount, locale)}
+                              </p>
+                              <p
+                                className={
+                                  'mt-1 text-xs ' +
+                                  (isReferenceIndicative
+                                    ? 'text-muted'
+                                    : getDeltaClassName(row.amount - (nonClasseAmount ?? 0)))
+                                }
+                              >
+                                {isReferenceIndicative
+                                  ? localize('Écart non disponible')
+                                  : formatReadableDeltaWithPercent(
+                                      row.amount - (nonClasseAmount ?? 0),
+                                      nonClasseAmount ?? 0,
+                                      locale
+                                    )}
+                              </p>
+                            </div>
+                          </li>
+                        ))}
+                    </ul>
+                  </div>
+
+                  <details className="simulator-disclosure">
+                    <summary>Détail du calcul</summary>
                     <ResponsiveComparisonTable
                       appearance="editorial"
-                      caption={
-                        locale === 'en'
-                          ? 'Detailed tourist tax simulation result'
-                          : 'Résultat détaillé de la simulation de taxe de séjour'
-                      }
+                      caption="Résultat détaillé de la simulation de taxe de séjour"
                       columns={resultColumns}
                       rows={resultRows}
                       primaryColumnKey="category"
                     />
-
-                    {result.warnings.length > 0 && (
-                      <div className="rounded-editorial border border-warning-200 bg-warning-100 p-4">
-                        <h3 className="font-semibold text-gray-900 mb-2">
-                          Points d&apos;attention
-                        </h3>
-                        <ul className="space-y-2 text-sm text-gray-700">
-                          {result.warnings.map((warning) => (
-                            <li key={warning}>- {warning}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    <div className="rounded-editorial border border-ink/15 bg-paper p-4">
-                      <h3 className="font-semibold text-gray-900 mb-3">Taxes additionnelles</h3>
-                      <p className="mb-3 text-sm text-muted">
-                        Les taxes additionnelles sont incluses dans la simulation lorsqu&apos;elles
-                        s&apos;appliquent.
-                      </p>
-                      <ul className="space-y-3">
-                        {result.additionalTaxes.map((tax) => (
-                          <li
-                            key={tax.key}
-                            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1"
-                          >
-                            <div className="text-sm text-gray-700">
-                              <span>{tax.label}</span>{' '}
-                              <a
-                                href={tax.legalReferenceUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="editorial-inline-link"
-                              >
-                                ({tax.legalReferenceLabel})
-                              </a>
-                            </div>
-                            <span
-                              className={`text-sm font-semibold ${
-                                tax.isApplied ? 'text-success-500' : 'text-gray-600'
-                              }`}
-                            >
-                              {tax.isApplied ? 'OUI' : 'NON'}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <p className="text-sm text-muted">
-                      Cette simulation est fournie à titre informatif sur la base des délibérations
-                      publiées. Elle ne constitue pas un conseil juridique ou fiscal personnalisé.
+                  </details>
+                  <details className="simulator-disclosure">
+                    <summary>Taxes additionnelles</summary>
+                    <p className="mb-4 text-sm text-muted">
+                      Les taxes additionnelles sont incluses dans la simulation lorsqu&apos;elles
+                      s&apos;appliquent.
                     </p>
-
-                    {dataset && (
-                      <div className="space-y-1 text-xs text-muted">
-                        <p>
-                          Source de données: DELTA v{dataset.version} (date de référence:{' '}
-                          {dataset.sourceDate}).
-                        </p>
-                        {locale === 'en' && <p>Official sources are available in French.</p>}
-                      </div>
-                    )}
-                  </div>
-                </Card>
-
-                <div className="mb-8 mt-8 rounded-editorial border border-ink/15 bg-paper p-5 md:p-6">
-                  <h2 className="mb-3">Le classement intervient aussi dans la fiscalité</h2>
-                  <p className="mb-5 text-sm text-gray-700">
-                    Le simulateur fiscal compare le cadre micro-BIC d’un meublé classé et d’un
-                    meublé non classé.
+                    <ul className="space-y-4">
+                      {result.additionalTaxes.map((tax) => (
+                        <li
+                          key={tax.key}
+                          className="flex items-start justify-between gap-4 text-sm"
+                        >
+                          <div>
+                            <span>{tax.label}</span>{' '}
+                            <a
+                              href={tax.legalReferenceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="editorial-inline-link"
+                            >
+                              ({tax.legalReferenceLabel})
+                            </a>
+                          </div>
+                          <span className="shrink-0 font-semibold">
+                            {tax.isApplied ? 'Oui' : 'Non'}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                </>
+              ) : (
+                <div>
+                  <Scale
+                    size={36}
+                    strokeWidth={1.25}
+                    className="mb-5 text-ink/70"
+                    aria-hidden="true"
+                  />
+                  <p className="simulator-eyebrow">Classé ou non classé</p>
+                  <h2 id="tourist-tax-result-heading">Ce que le classement change</h2>
+                  <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">
+                    Renseignez votre séjour pour comparer la taxe de séjour, du non classé au 5
+                    étoiles.
                   </p>
-                  <div className="flex flex-wrap gap-3">
-                    <Button
-                      href={
-                        locale === 'en'
-                          ? '/en/furnished-tourist-accommodation-tax-simulator'
-                          : '/simulateur-fiscal-classement'
-                      }
-                      variant="primary"
-                    >
-                      Simulateur fiscal
-                    </Button>
-                    <Button
-                      href={
-                        locale === 'en' ? '/en/request-a-classification' : '/demande-classement'
-                      }
-                      variant="secondary"
-                    >
-                      Demande de classement
-                    </Button>
+                  <div className="mt-7 flex gap-4 border-t border-ink/15 pt-5 text-xs text-muted">
+                    <span>1 séjour</span>
+                    <span>6 catégories</span>
+                    <span>Tarifs locaux</span>
                   </div>
                 </div>
-              </>
-            )}
+              )}
+            </div>
           </div>
+
+          <details className="simulator-disclosure simulator-method">
+            <summary>Méthode, hypothèses et sources</summary>
+            <div className="max-w-3xl space-y-4 text-sm leading-relaxed text-muted">
+              <p>
+                La taxe de séjour peut être très différente entre un meublé non classé et un meublé
+                classé. Pour un logement classé, le tarif dépend du nombre d'étoiles. Pour un
+                logement non classé, il est généralement calculé en pourcentage du prix de la
+                nuitée.
+              </p>
+              <p>
+                Le calcul prend en compte la période de location, le nombre de personnes, le prix de
+                la nuitée et les taxes additionnelles prévues localement.
+              </p>
+              <p>
+                Cette simulation est fournie à titre informatif sur la base des délibérations
+                publiées. Elle ne constitue pas un conseil juridique ou fiscal personnalisé.
+              </p>
+              {dataset && (
+                <p>
+                  Données de taxe de séjour 2026 · Mise à jour de référence :{' '}
+                  {formatDatasetDate(dataset.sourceDate, locale)} · DELTA v{dataset.version}
+                </p>
+              )}
+              <p>Les sources officielles sont disponibles en français.</p>
+            </div>
+          </details>
+
+          {result && (
+            <div className="simulator-next">
+              <p>Le classement intervient aussi dans la fiscalité</p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                <Button
+                  href={
+                    locale === 'en'
+                      ? '/en/furnished-tourist-accommodation-tax-simulator'
+                      : '/simulateur-fiscal-classement'
+                  }
+                  variant="primary"
+                  className="simulator-tool-link"
+                >
+                  Simulateur fiscal <ArrowUpRight size={16} aria-hidden="true" />
+                </Button>
+                <Button
+                  href={locale === 'en' ? '/en/request-a-classification' : '/demande-classement'}
+                  variant="secondary"
+                  className="simulator-tool-link"
+                >
+                  Demande de classement <ArrowUpRight size={16} aria-hidden="true" />
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </LocalizedContent>
