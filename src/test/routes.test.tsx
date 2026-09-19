@@ -127,6 +127,10 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-bassin-arcachon'
     );
+    expect(screen.getByRole('link', { name: 'Lacanau et Médoc Atlantique' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-lacanau-medoc-atlantique'
+    );
     expect(screen.getByRole('link', { name: 'Classement en Aveyron' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-aveyron'
@@ -216,6 +220,16 @@ describe('routing', () => {
   it('renders Bassin d’Arcachon destination local landing page', () => {
     renderAt('/classement-meuble-tourisme-bassin-arcachon');
     expectPageHeading(/classement/i, /bassin d.arcachon/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d.intervention en Gironde/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-gironde'
+    );
+  });
+
+  it('renders Lacanau and Médoc Atlantique destination local landing page', () => {
+    renderAt('/classement-meuble-tourisme-lacanau-medoc-atlantique');
+    expectPageHeading(/classement/i, /lacanau/i, /médoc atlantique/i);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(screen.getByRole('link', { name: /zone d.intervention en Gironde/i })).toHaveAttribute(
       'href',

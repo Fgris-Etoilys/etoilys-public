@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "0a1e29a12922afb95da282e5e93afd550ed4aeeb323fe17e79c367114097c386",
+  "pipelineSignature": "f45db34bac05d578a5258289f4c31eb12075b872f93e853b23b59991488cab68",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "4e1fadb08c061bc14708ac095c61089c2e2ca95b5273d45bb8d54d7564396f9a"
+    "sha256": "f34deaa90dda5e667f3201bd7e44108bd5927f54c6c72a8b9f6054f5ec1f6211"
   },
   "sources": [
     {
@@ -150,6 +150,16 @@
       "key": "dordogneLandscape",
       "path": "src/assets/seo-images/source/le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg",
       "sha256": "f1ab643d07f65a54c8a5b2748871c7091ba1f04d65799392db7fc617507b2b03"
+    },
+    {
+      "key": "medocAtlantiqueExpertise",
+      "path": "src/assets/seo-images/source/medoc-atlantique-carcans-plage.jpg",
+      "sha256": "083127e6823234b4da10bd934383b08df23bf69a86f7cf77e45853c68acc5e47"
+    },
+    {
+      "key": "medocAtlantiqueHero",
+      "path": "src/assets/seo-images/source/medoc-atlantique-etang-lacanau.jpg",
+      "sha256": "adc7b276b334282e1daf9175ba17333259d61af6c21758ddca2677268bdd3f05"
     },
     {
       "key": "simulateurTaxeSejour",
@@ -1707,6 +1717,116 @@
       "path": "/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-768.webp",
       "bytes": 281264,
       "sha256": "4aca1808adbb7809b363472d99066a749e9dd9f7a328f2ea088c7732bec5aa30"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1200.avif",
+      "bytes": 162378,
+      "sha256": "6833d0e483dfb462139ca2acacaa52e9d9af1f9508b44c7f82fc00be8df40ab3"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1200.jpg",
+      "bytes": 157190,
+      "sha256": "6740b1b63137ab53631153bb9379116e202de6e9ebd58e2c872b4946f528c57f"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1200.webp",
+      "bytes": 170324,
+      "sha256": "4bd48547de96e9b9badbdd19d97164fb5dbc5ae90548123cf5553718c1a4b85d"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1600.avif",
+      "bytes": 267656,
+      "sha256": "cbf4a04ee3baf004cc91a9572766d693965248a1027da05c50a033b355d8855d"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1600.webp",
+      "bytes": 292532,
+      "sha256": "b1e936239355f9c4d4f8f286af69891358b99a0dcc4856a1b451fc3ec5a8933f"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1920.avif",
+      "bytes": 354650,
+      "sha256": "3cfce039b8eb1c2b6fab301bd0add3087f2ce10f2a973f8cade8854e0a6e202d"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1920.webp",
+      "bytes": 400884,
+      "sha256": "04bb69c044e120f914e60532dc4905513d3b400a230b094604474903e9df5c4f"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-480.avif",
+      "bytes": 23279,
+      "sha256": "f68bb1f32be10f159ba5e224ed4a2ab4067f96e225e3a25911632a11cef7916e"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-480.webp",
+      "bytes": 24924,
+      "sha256": "2b86aa17e26c8683a1b6e129463eed83f82e51e72c32c4f81f47e17a49af4821"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-768.avif",
+      "bytes": 64305,
+      "sha256": "e07f3242e5dcaf336473f97dc33ab4211827c938476208dc2cb2820c94ca3f36"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-768.webp",
+      "bytes": 65894,
+      "sha256": "090eb0c761c2b4ddde6c7c45daf502d1b49a0e8e726ed5d378ecede7fa18ed76"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1200.avif",
+      "bytes": 72054,
+      "sha256": "d20c04d2be56d75365d83f724d21d68450be2833d1eb90af42299d44905409d7"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1200.jpg",
+      "bytes": 128120,
+      "sha256": "b065ee4593e1816ed4696976191fade56c1ada2219b974fdfd496593e9578259"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1200.webp",
+      "bytes": 109710,
+      "sha256": "636c9b0d44358de4967d77864d82f9d2fa8b20f0ba07a754365fe922b6a7799e"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1600.avif",
+      "bytes": 150341,
+      "sha256": "a47c5291bf23266e77729dcbfde0f8ad2e95f616b817fc175a0f1a1e5520a3de"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1600.webp",
+      "bytes": 199436,
+      "sha256": "0457e8e8b685a4883ccdde2cec0ac3bb5dd1eb24c84d00913a37e876f60f20b7"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1920.avif",
+      "bytes": 209049,
+      "sha256": "ccb3424d377dd76d4c83d0854ba0aa2281c6230cd5dca7fe936184b965d06b8b"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1920.webp",
+      "bytes": 273304,
+      "sha256": "136804dba7aa973661ffff28e2c749010c07673790874d50239f394bfc663041"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-480.avif",
+      "bytes": 9823,
+      "sha256": "0b7792aeb92561ba02d4d302027786343ad794e4393c80736e9890810905d3e1"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-480.webp",
+      "bytes": 17526,
+      "sha256": "02b2a98960033e3cb5b85f4be4d62184a63403326917ced5fec6def480adf675"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-768.avif",
+      "bytes": 24268,
+      "sha256": "2c21922b6e855b4b717b8e8346201a457a7ca2b2948ff9f1fca3d14fc9138148"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-768.webp",
+      "bytes": 41268,
+      "sha256": "f2065c39ccf6b8c0a12daf315f0195cc423882f291d284515838ba59bdbd92a5"
     },
     {
       "path": "/images/optimized/pexels-d-goth-37724280-1200.avif",

@@ -61,6 +61,7 @@ V6 active :
 - Gironde : `GIRONDE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/girondePage.tsx`.
 - Bordeaux : `BORDEAUX_LOCAL_LANDING_PAGE_V6` dans `src/content/local/cities/bordeauxPage.tsx`.
 - Bassin d’Arcachon : `BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6` dans `src/content/local/destinations/bassinArcachonPage.tsx`.
+- Lacanau et Médoc Atlantique : `MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/destinations/medocAtlantiquePage.tsx`.
 - Lot-et-Garonne : `LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/lotEtGaronnePage.tsx`.
 - Lot : `LOT_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/lotPage.tsx`.
 - Aveyron : `AVEYRON_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/aveyronPage.tsx`.
@@ -109,6 +110,8 @@ La source technique reste `scripts/images-build.mjs` pour l’asset local et le 
 | Bordeaux          | Expertise | `bordeauxExpertise`          | source pipeline images                   | Jardin Public, Bordeaux                             | Wikimedia Commons, Marc Ryckaert (MJJR), CC BY 3.0.                      |
 | Bassin d’Arcachon | Hero      | `bassinArcachonHero`         | `bassin-arcachon-cabanes-tchanquees.jpg` | Cabanes tchanquées, île aux Oiseaux                 | Wikimedia Commons, Grand Parc - Bordeaux, France, CC BY 2.0.             |
 | Bassin d’Arcachon | Expertise | `bassinArcachonDunePilat`    | `bassin-arcachon-dune-pilat.jpg`         | Entrée du bassin d’Arcachon depuis la dune du Pilat | Wikimedia Commons, Franck-fnba, CC BY-SA 4.0.                            |
+| Médoc Atlantique  | Hero      | `medocAtlantiqueHero`        | `medoc-atlantique-etang-lacanau.jpg`     | Étang de Lacanau                                    | Wikimedia Commons, Paternel 1, CC BY-SA 4.0.                             |
+| Médoc Atlantique  | Expertise | `medocAtlantiqueExpertise`   | `medoc-atlantique-carcans-plage.jpg`     | Océan Atlantique depuis la dune à Carcans-Plage     | Wikimedia Commons, Michel VENOT, CC BY-SA 3.0.                           |
 | Lot-et-Garonne    | Hero      | `lotEtGaronneHero`           | `AdobeStock_1364523535.jpeg`             | Nérac, Lot-et-Garonne                               | Adobe Stock ID 1364523535 ; fiche publique exacte non confirmée.         |
 | Lot-et-Garonne    | Expertise | `lotEtGaronneTerritory`      | source pipeline images                   | Monflanquin, Lot-et-Garonne                         | Pexels, D Goth.                                                          |
 | Lot               | Hero      | `lotHero`                    | `pexels-tyvalloire-35860040.jpg`         | Saint-Cirq-Lapopie, Lot                             | Pexels ; fiche publique exacte non retrouvée, lieu vérifié visuellement. |

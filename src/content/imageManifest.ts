@@ -30,6 +30,8 @@ export type ImageAssetKey =
   | 'girondeCoast'
   | 'bassinArcachonHero'
   | 'bassinArcachonDunePilat'
+  | 'medocAtlantiqueHero'
+  | 'medocAtlantiqueExpertise'
   | 'lotHero'
   | 'lotRocamadour'
   | 'lotEtGaronneHero'
@@ -327,6 +329,24 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/bassin-arcachon-dune-pilat-480.webp 480w, /images/optimized/bassin-arcachon-dune-pilat-768.webp 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.webp 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.webp 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/bassin-arcachon-dune-pilat-480.avif 480w, /images/optimized/bassin-arcachon-dune-pilat-768.avif 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.avif 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.avif 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.avif 1920w',
+  },
+  medocAtlantiqueHero: {
+    width: 3648,
+    height: 2736,
+    src: '/images/optimized/medoc-atlantique-etang-lacanau-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/medoc-atlantique-etang-lacanau-480.webp 480w, /images/optimized/medoc-atlantique-etang-lacanau-768.webp 768w, /images/optimized/medoc-atlantique-etang-lacanau-1200.webp 1200w, /images/optimized/medoc-atlantique-etang-lacanau-1600.webp 1600w, /images/optimized/medoc-atlantique-etang-lacanau-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/medoc-atlantique-etang-lacanau-480.avif 480w, /images/optimized/medoc-atlantique-etang-lacanau-768.avif 768w, /images/optimized/medoc-atlantique-etang-lacanau-1200.avif 1200w, /images/optimized/medoc-atlantique-etang-lacanau-1600.avif 1600w, /images/optimized/medoc-atlantique-etang-lacanau-1920.avif 1920w',
+  },
+  medocAtlantiqueExpertise: {
+    width: 3072,
+    height: 2304,
+    src: '/images/optimized/medoc-atlantique-carcans-plage-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/medoc-atlantique-carcans-plage-480.webp 480w, /images/optimized/medoc-atlantique-carcans-plage-768.webp 768w, /images/optimized/medoc-atlantique-carcans-plage-1200.webp 1200w, /images/optimized/medoc-atlantique-carcans-plage-1600.webp 1600w, /images/optimized/medoc-atlantique-carcans-plage-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/medoc-atlantique-carcans-plage-480.avif 480w, /images/optimized/medoc-atlantique-carcans-plage-768.avif 768w, /images/optimized/medoc-atlantique-carcans-plage-1200.avif 1200w, /images/optimized/medoc-atlantique-carcans-plage-1600.avif 1600w, /images/optimized/medoc-atlantique-carcans-plage-1920.avif 1920w',
   },
   lotHero: {
     width: 5472,

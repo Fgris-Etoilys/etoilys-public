@@ -188,6 +188,7 @@ describe('local service areas data', () => {
     expect(getPublishedLocalChildEntriesForDepartment('gironde').map((entry) => entry.id)).toEqual([
       'bordeaux',
       'bassin-arcachon',
+      'medoc-atlantique',
     ]);
 
     const fixtureEntries: LocalRegistryEntry[] = [
@@ -288,6 +289,7 @@ describe('local service areas data', () => {
     expect(gironde.localPages.map((localPage) => localPage.id)).toEqual([
       'bordeaux',
       'bassin-arcachon',
+      'medoc-atlantique',
     ]);
     expect(dordogne.localPages.find((localPage) => localPage.id === 'bordeaux')).toBeUndefined();
     expect(gironde.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();

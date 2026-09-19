@@ -172,6 +172,18 @@ describe('seo governance', () => {
     ]);
   });
 
+  it('builds the Médoc Atlantique breadcrumb hierarchy from zones to Gironde', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-lacanau-medoc-atlantique')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Gironde', url: `${SITE_URL}/classement-meuble-tourisme-gironde` },
+      {
+        name: 'Lacanau et Médoc Atlantique',
+        url: `${SITE_URL}/classement-meuble-tourisme-lacanau-medoc-atlantique`,
+      },
+    ]);
+  });
+
   it('keeps dynamic public simulations noindex and out of the sitemap', () => {
     const dynamicSimulationSeo = getSeoRouteConfig('/simulateur/simulation-id');
 

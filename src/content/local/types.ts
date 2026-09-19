@@ -7,7 +7,7 @@ export type DepartmentAreaId = 'aveyron' | 'dordogne' | 'gironde' | 'lot' | 'lot
 
 export type CityAreaId = 'bergerac' | 'bordeaux';
 
-export type DestinationAreaId = 'bassin-arcachon';
+export type DestinationAreaId = 'bassin-arcachon' | 'medoc-atlantique';
 
 export type LocalChildAreaId = CityAreaId | DestinationAreaId;
 

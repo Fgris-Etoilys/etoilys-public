@@ -14,6 +14,7 @@ import ClassementDordogne from './pages/locales/ClassementDordogne';
 import ClassementGironde from './pages/locales/ClassementGironde';
 import ClassementLot from './pages/locales/ClassementLot';
 import ClassementLotEtGaronne from './pages/locales/ClassementLotEtGaronne';
+import ClassementMedocAtlantique from './pages/locales/ClassementMedocAtlantique';
 import SimulateurTaxeSejour from './pages/SimulateurTaxeSejour';
 import SimulateurFiscalClassement from './pages/SimulateurFiscalClassement';
 import Simulateur from './pages/Simulateur';
@@ -60,6 +61,10 @@ export default function AppRoutes() {
         <Route path="classement-meuble-tourisme-bordeaux" element={<ClassementBordeaux />} />
         <Route path="classement-meuble-tourisme-dordogne" element={<ClassementDordogne />} />
         <Route path="classement-meuble-tourisme-gironde" element={<ClassementGironde />} />
+        <Route
+          path="classement-meuble-tourisme-lacanau-medoc-atlantique"
+          element={<ClassementMedocAtlantique />}
+        />
         <Route path="classement-meuble-tourisme-lot" element={<ClassementLot />} />
         <Route
           path="classement-meuble-tourisme-lot-et-garonne"

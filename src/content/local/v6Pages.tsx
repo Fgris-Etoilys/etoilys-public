@@ -4,6 +4,7 @@ export { BERGERAC_LOCAL_LANDING_PAGE_V6 } from './cities/bergeracPage';
 export { GIRONDE_LOCAL_LANDING_PAGE_V6 } from './departments/girondePage';
 export { BORDEAUX_LOCAL_LANDING_PAGE_V6 } from './cities/bordeauxPage';
 export { BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6 } from './destinations/bassinArcachonPage';
+export { MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6 } from './destinations/medocAtlantiquePage';
 export { LOT_LOCAL_LANDING_PAGE_V6 } from './departments/lotPage';
 export { LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6 } from './departments/lotEtGaronnePage';
 export {
