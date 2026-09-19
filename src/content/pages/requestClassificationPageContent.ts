@@ -1,15 +1,8 @@
 import type { Locale } from '../../i18n/locales';
 
 type RequestClassificationPageContent = {
-  hero: {
-    title: string;
-    description: string;
-    phoneNote: string;
-  };
-  sidebar: {
-    title: string;
-    items: readonly string[];
-  };
+  hero: { eyebrow: string; title: string; description: string; phoneNote: string };
+  afterRequest: { responseTime: string; title: string; description: string; note: string };
   accreditation: {
     imageAlt: string;
     numberLabel: string;
@@ -21,23 +14,21 @@ type RequestClassificationPageContent = {
 export const requestClassificationPageContent = {
   fr: {
     hero: {
-      title: 'Demande de classement',
+      eyebrow: 'Le classement de votre meublé',
+      title: 'Votre demande, simplement.',
       description:
-        'Déposez votre demande en quelques minutes. Etoilys vous recontacte sous 24 heures ouvrées pour confirmer les modalités de visite, le tarif applicable et les prochaines disponibilités avant toute validation.',
-      phoneNote: 'Vous pouvez également contacter le 06 49 55 15 40',
+        'Quelques minutes pour nous transmettre vos coordonnées et l’adresse de votre logement.',
+      phoneNote: 'Une question avant de commencer ?',
     },
-    sidebar: {
-      title: 'Pourquoi confier votre classement à Etoilys ?',
-      items: [
-        'Organisme accrédité Cofrac Inspection',
-        'Accompagnement personnalisé à chaque étape',
-        'Procédure simple, sans dossier à constituer',
-        'Réactivité et fiabilité',
-        'Visite planifiée rapidement',
-      ],
+    afterRequest: {
+      responseTime: 'Nous vous recontactons sous 24 h ouvrées.',
+      title: 'Et ensuite ?',
+      description:
+        'Nous échangeons avec vous pour confirmer les modalités de visite, le tarif et les disponibilités.',
+      note: 'Vous décidez ensuite. Cette demande ne valide pas la visite et aucun dossier complexe n’est à préparer.',
     },
     accreditation: {
-      imageAlt: "Marque d'accréditation Cofrac Inspection",
+      imageAlt: 'Marque d’accréditation Cofrac Inspection',
       numberLabel: 'Accréditation n°3-2394',
       scopePrefix: 'Portée disponible sur',
       scopeLinkLabel: 'www.cofrac.fr',
@@ -45,20 +36,18 @@ export const requestClassificationPageContent = {
   },
   en: {
     hero: {
-      title: 'Classification request',
+      eyebrow: 'Your accommodation classification',
+      title: 'Your request, made simple.',
       description:
-        'Submit your request in a few minutes. Etoilys will contact you within 24 working hours to confirm the inspection arrangements, the applicable fee and the next available dates before any validation.',
-      phoneNote: 'You can also call +33 6 49 55 15 40',
+        'A few minutes to share your contact details and the address of your accommodation.',
+      phoneNote: 'A question before you start?',
     },
-    sidebar: {
-      title: 'Why entrust your classification to Etoilys?',
-      items: [
-        'Cofrac Inspection accredited inspection body',
-        'Personalized support at each step',
-        'Simple procedure, with no file to prepare',
-        'Responsiveness and reliability',
-        'Visit scheduled quickly',
-      ],
+    afterRequest: {
+      responseTime: 'We contact you within 24 working hours.',
+      title: 'What happens next?',
+      description:
+        'We get in touch to confirm the inspection arrangements, the fee and the available dates.',
+      note: 'You decide afterwards. This request does not confirm an inspection, and there is no complicated file to prepare.',
     },
     accreditation: {
       imageAlt: 'Cofrac Inspection accreditation mark',
@@ -69,25 +58,22 @@ export const requestClassificationPageContent = {
   },
   nl: {
     hero: {
-      title: 'Classificatie aanvragen',
+      eyebrow: 'De classificatie van uw vakantiewoning',
+      title: 'Uw aanvraag, eenvoudig geregeld.',
       description:
-        'Dien uw aanvraag in enkele minuten in voor een vakantiewoning in de momenteel bediende gebieden. Etoilys neemt binnen één werkdag contact met u op om de inspectievoorwaarden, het toepasselijke tarief en de eerstvolgende beschikbaarheden te bevestigen voordat u de aanvraag definitief bevestigt.',
-      phoneNote: 'U kunt ook bellen naar +33 6 49 55 15 40',
+        'Deel in enkele minuten uw contactgegevens en het adres van uw vakantiewoning in de gebieden waar wij actief zijn.',
+      phoneNote: 'Een vraag voordat u begint?',
     },
-    sidebar: {
-      title: 'Waarom uw classificatie aan Etoilys toevertrouwen?',
-      items: [
-        'Door Cofrac Inspection geaccrediteerde inspectie-instelling',
-        'Persoonlijke begeleiding bij elke stap',
-        'Eenvoudige procedure, zonder ingewikkeld dossier',
-        'Snelle reactie en betrouwbaarheid',
-        'Bezoek snel gepland',
-      ],
+    afterRequest: {
+      responseTime: 'Wij nemen binnen één werkdag contact op.',
+      title: 'Wat gebeurt er daarna?',
+      description: 'Samen bespreken we de inspectievoorwaarden, het tarief en de beschikbare data.',
+      note: 'Daarna beslist u. Deze aanvraag bevestigt nog geen inspectie en u hoeft geen ingewikkeld dossier samen te stellen.',
     },
     accreditation: {
       imageAlt: 'Cofrac Inspection-accreditatiemerk',
       numberLabel: 'Accreditatie nr. 3-2394',
-      scopePrefix: 'Reikwijdte van de accreditatie beschikbaar op',
+      scopePrefix: 'Reikwijdte van de accreditatie op',
       scopeLinkLabel: 'www.cofrac.fr',
     },
   },

@@ -56,7 +56,8 @@ describe('routing', () => {
 
   it('renders contact page', () => {
     renderAt('/contact');
-    expect(screen.getByRole('heading', { name: /contact/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /email/i })).toBeRequired();
   });
 
   it('renders public classement simulator page', () => {

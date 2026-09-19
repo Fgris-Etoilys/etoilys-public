@@ -1,5 +1,15 @@
 # Socle visuel du site public
 
+## Formulaires De Contact Et De Demande
+
+Les deux pages utilisent la famille CSS `inquiry-*` et les tokens existants. Leur introduction compacte donne rapidement accès à la saisie. Contact juxtapose les coordonnées et le formulaire ; la demande de classement place le formulaire devant une explication courte de la suite et la preuve Cofrac. Aucun contenu sticky.
+
+- `inquiry-form-surface` est la surface de saisie ; sur mobile, elle rejoint les marges de la page. `inquiry-field-grid` passe de deux colonnes à une sous 681 px. `inquiry-fieldset` habille des groupes natifs `fieldset` / `legend`.
+- `Input`, `Textarea`, `Checkbox` et `Button` conservent leurs API et variantes. Le style des champs est limité à `inquiry-form` : 52 px minimum, focus visible, aides sous le champ, erreurs associées. Les champs requis restent marqués ; le message de classement est explicitement facultatif.
+- `inquiry-submit` rassemble consentement, véritable widget Turnstile, erreur globale et action principale. `noValidate` laisse les validateurs localisés existants afficher les erreurs ; le focus va au premier champ invalide, au groupe Turnstile ou à l’erreur globale. Les champs et le bouton sont bloqués pendant l’envoi.
+- `FormSuccess` reçoit `title`, `message`, `actionLabel` et `onRestart`. La confirmation `role="status"` prend le focus après le succès API et reste affichée jusqu’à une nouvelle saisie volontaire. Le formulaire reste monté mais masqué avec `hidden`, pour conserver le reset du widget. La reprise replace le focus dans le premier champ ; aucune confirmation automatique ni temporisation.
+- Les contrats API, événements analytics et traductions restent dans les modules existants. Les nouveaux textes suivent `formContent` et les contenus de pages FR/EN/NL. Aucune dépendance, variante de bouton ni token supplémentaire. Les animations respectent `prefers-reduced-motion`.
+
 Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et aux pages locales V6. Les implémentations courantes Dordogne et Bergerac sont les références locales V6 : Dordogne pour le département, Bergerac pour la ville. Les anciens spikes et SHA ne servent plus que d’historique.
 
 ## Mode D'Emploi Durable

@@ -37,7 +37,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           </label>
         </div>
         {error && (
-          <p id={messageId} className="mt-2 text-sm text-alert-400 ml-8">
+          <p id={messageId} className="mt-2 text-sm text-alert-400 ml-8" role="alert">
             {error}
           </p>
         )}

@@ -53,10 +53,11 @@ describe('shared form controls', () => {
       </>
     );
     expect(screen.getByLabelText('Name')).toHaveAttribute('id', 'customer');
-    expect(screen.getByRole('alert')).toHaveTextContent('Name required');
+    expect(screen.getByText('Name required')).toHaveAttribute('role', 'alert');
     expect(screen.getByLabelText('Name')).toHaveAccessibleDescription('Name required');
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toHaveAccessibleDescription('Required');
+    expect(screen.getByText('Required')).toHaveAttribute('role', 'alert');
     expect(checkbox).toHaveAttribute('aria-invalid', 'true');
     fireEvent.click(screen.getByText('Consent'));
     expect(checkbox).toBeChecked();

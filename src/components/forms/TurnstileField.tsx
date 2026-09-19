@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import type { Locale } from '../../i18n/locales';
 
 const TURNSTILE_SCRIPT_ID = 'turnstile-script';
@@ -37,6 +37,7 @@ interface TurnstileFieldProps {
   resetKey: number;
   locale: Locale;
   messages?: {
+    label?: string;
     missingConfig: string;
     expired: string;
     verificationError: string;
@@ -44,6 +45,7 @@ interface TurnstileFieldProps {
 }
 
 const defaultMessages = {
+  label: 'Vérification anti-spam',
   missingConfig: 'Protection anti-spam indisponible (configuration manquante).',
   expired: 'La vérification anti-spam a expiré. Merci de réessayer.',
   verificationError: 'Erreur de vérification anti-spam. Merci de réessayer.',
@@ -58,6 +60,7 @@ export default function TurnstileField({
 }: TurnstileFieldProps) {
   const siteKey = import.meta.env?.VITE_TURNSTILE_SITE_KEY;
   const containerRef = useRef<HTMLDivElement>(null);
+  const errorId = useId();
   const widgetIdRef = useRef<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const [widgetSize, setWidgetSize] = useState<TurnstileSize>('normal');
@@ -159,10 +162,17 @@ export default function TurnstileField({
   }, [resetKey, onTokenChange]);
 
   return (
-    <div className="w-full rounded-editorial border border-ink/15 bg-paper p-4">
+    <div
+      className="inquiry-turnstile ui-focus"
+      role="group"
+      aria-label={messages.label ?? defaultMessages.label}
+      aria-invalid={error || localError ? true : undefined}
+      aria-describedby={error || localError ? errorId : undefined}
+      tabIndex={-1}
+    >
       <div ref={containerRef} className="min-h-[65px]" />
       {(error || localError) && (
-        <p className="mt-2 text-sm text-alert-400" role="alert">
+        <p id={errorId} className="mt-2 text-sm text-alert-400" role="alert">
           {error || localError}
         </p>
       )}

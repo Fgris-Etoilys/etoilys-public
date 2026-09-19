@@ -347,9 +347,8 @@ describe('localized layout', () => {
     );
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { level: 1, name: /contact etoilys/i })
-      ).toBeInTheDocument();
+      expect(window.location.pathname).toBe('/en/contact');
+      expect(screen.getByRole('textbox', { name: /email/i })).toBeRequired();
     });
     expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true, hasGlobalStructuredData: true });
   });

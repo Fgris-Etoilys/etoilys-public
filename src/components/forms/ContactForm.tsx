@@ -1,10 +1,12 @@
-import { FormEvent, useCallback, useRef, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useId, useRef, useState } from 'react';
+import { ArrowRight, LoaderCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
 import Checkbox from '../ui/Checkbox';
 import Button from '../ui/Button';
 import TurnstileField from './TurnstileField';
+import FormSuccess from './FormSuccess';
 import {
   validateContactForm,
   type ContactFormData,
@@ -79,6 +81,21 @@ export default function ContactForm({
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const hasTrackedFormStarted = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const errorRef = useRef<HTMLDivElement>(null);
+  const submissionPending = useRef(false);
+  const pendingFocus = useRef<'error' | 'start' | null>(null);
+  const titleId = useId();
+
+  useEffect(() => {
+    if (pendingFocus.current === 'error') {
+      const firstInvalid = formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]');
+      (firstInvalid ?? errorRef.current)?.focus();
+    } else if (pendingFocus.current === 'start') {
+      formRef.current?.querySelector<HTMLInputElement>('[name="nom"]')?.focus();
+    }
+    pendingFocus.current = null;
+  }, [errors, submitError, isSuccess]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!hasTrackedFormStarted.current) {
@@ -124,6 +141,7 @@ export default function ContactForm({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (submissionPending.current || isSuccess) return;
     if (!hasTrackedFormStarted.current) {
       trackFormStarted('contact');
       hasTrackedFormStarted.current = true;
@@ -141,16 +159,20 @@ export default function ContactForm({
     if (Object.keys(validationErrors).length > 0) {
       trackFormValidationFailed('contact', Object.keys(validationErrors).sort());
       setErrors(validationErrors);
+      pendingFocus.current = 'error';
       return;
     }
 
     setIsSubmitting(true);
+    submissionPending.current = true;
     setErrors({});
     trackFormSubmitAttempted('contact');
 
     const verifiedTurnstileToken = turnstileToken;
     if (!verifiedTurnstileToken) {
       setIsSubmitting(false);
+      submissionPending.current = false;
+      pendingFocus.current = 'error';
       setErrors({ turnstileToken: content.turnstile.required });
       return;
     }
@@ -169,8 +191,10 @@ export default function ContactForm({
     );
 
     setIsSubmitting(false);
+    submissionPending.current = false;
 
     if (!response.success) {
+      pendingFocus.current = 'error';
       setErrors(getLocalizedFieldErrors(response.fieldErrorCodes, locale, response.fieldErrors));
       setSubmitError(response.error);
       resetTurnstileToken();
@@ -183,6 +207,7 @@ export default function ContactForm({
     }
 
     if (!response.data.success) {
+      pendingFocus.current = 'error';
       setErrors(
         getLocalizedFieldErrors(response.data.fieldErrorCodes, locale, response.data.fieldErrors)
       );
@@ -214,92 +239,129 @@ export default function ContactForm({
     });
     setTurnstileToken(null);
     setTurnstileResetKey((prev) => prev + 1);
-
-    setTimeout(() => {
-      setIsSuccess(false);
-    }, 5000);
   };
 
   return (
-    <div className="editorial-form">
-      <h3 className="text-3xl text-ink mb-6">{displayedTitle}</h3>
-
+    <div className="inquiry-form">
       {isSuccess && (
-        <div
-          className="mb-6 rounded-editorial border border-success-200 bg-success-100 p-4 text-success-500"
-          role="status"
-        >
-          {displayedSuccessMessage}
-        </div>
+        <FormSuccess
+          title={contactContent.successTitle}
+          message={displayedSuccessMessage}
+          actionLabel={contactContent.successAction}
+          onRestart={() => {
+            pendingFocus.current = 'start';
+            setIsSuccess(false);
+          }}
+        />
       )}
 
-      {submitError && (
-        <div
-          className="mb-6 rounded-editorial border border-alert-200 bg-alert-100 p-4 text-alert-500"
-          role="alert"
-        >
-          {submitError}
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        className="inquiry-fields"
+        aria-labelledby={titleId}
+        aria-busy={isSubmitting}
+        noValidate
+        hidden={isSuccess}
+      >
+        <div>
+          <h2 id={titleId} className="inquiry-form-heading">
+            {displayedTitle}
+          </h2>
+          <p className="inquiry-form-note">{contactContent.requiredNote}</p>
         </div>
-      )}
+        <div className="inquiry-field-grid">
+          <Input
+            label={contactContent.labels.nom}
+            name="nom"
+            type="text"
+            autoComplete="name"
+            placeholder={contactContent.placeholders.nom}
+            value={formData.nom}
+            onChange={handleChange}
+            error={errors.nom}
+            disabled={isSubmitting}
+            required
+          />
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Input
-          label={contactContent.labels.nom}
-          name="nom"
-          type="text"
-          value={formData.nom}
-          onChange={handleChange}
-          error={errors.nom}
-          required
-        />
-
-        <Input
-          label={contactContent.labels.email}
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          error={errors.email}
-          required
-        />
+          <Input
+            label={contactContent.labels.email}
+            name="email"
+            type="email"
+            autoComplete="email"
+            inputMode="email"
+            autoCapitalize="none"
+            spellCheck={false}
+            placeholder={contactContent.placeholders.email}
+            value={formData.email}
+            onChange={handleChange}
+            error={errors.email}
+            disabled={isSubmitting}
+            required
+          />
+        </div>
 
         <Textarea
           label={contactContent.labels.message}
           name="message"
           rows={5}
+          placeholder={contactContent.placeholders.message}
           value={formData.message}
           onChange={handleChange}
           error={errors.message}
+          disabled={isSubmitting}
           required
         />
 
-        <Checkbox
-          name="consent"
-          checked={formData.consent}
-          onChange={handleChange}
-          error={errors.consent}
-          label={
-            <>
-              {contactContent.consentPrefix}{' '}
-              <Link to={privacyPath} className="editorial-inline-link">
-                {contactContent.privacyLinkLabel}
-              </Link>
-            </>
-          }
-          required
-        />
+        <div className="inquiry-submit">
+          <Checkbox
+            name="consent"
+            checked={formData.consent}
+            onChange={handleChange}
+            error={errors.consent}
+            disabled={isSubmitting}
+            label={
+              <>
+                {contactContent.consentPrefix}{' '}
+                <Link to={privacyPath} className="editorial-inline-link">
+                  {contactContent.privacyLinkLabel}
+                </Link>
+              </>
+            }
+            required
+          />
 
-        <TurnstileField
-          onTokenChange={handleTurnstileChange}
-          error={errors.turnstileToken}
-          resetKey={turnstileResetKey}
-          locale={locale}
-          messages={content.turnstile}
-        />
+          <TurnstileField
+            onTokenChange={handleTurnstileChange}
+            error={errors.turnstileToken}
+            resetKey={turnstileResetKey}
+            locale={locale}
+            messages={content.turnstile}
+          />
 
-        <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting}>
-          {isSubmitting ? contactContent.submitting : displayedSubmitButtonText}
-        </Button>
+          {submitError && (
+            <div ref={errorRef} className="inquiry-error ui-focus" role="alert" tabIndex={-1}>
+              {submitError}
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            variant="primary"
+            className="inquiry-submit-button"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? contactContent.submitting : displayedSubmitButtonText}
+            {isSubmitting ? (
+              <LoaderCircle
+                className="inquiry-submit-icon motion-safe:animate-spin"
+                aria-hidden="true"
+              />
+            ) : (
+              <ArrowRight className="inquiry-submit-icon" aria-hidden="true" />
+            )}
+          </Button>
+        </div>
       </form>
     </div>
   );

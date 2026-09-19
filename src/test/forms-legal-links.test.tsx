@@ -29,7 +29,7 @@ describe('legal links in forms', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole('heading', { name: /ask us your question/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument();
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /send my message/i })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /privacy policy/i })[0]).toHaveAttribute(
@@ -96,11 +96,9 @@ describe('legal links in forms', () => {
       </MemoryRouter>
     );
 
-    expect(
-      screen.getByRole('heading', { name: /your classification request/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument();
     expect(screen.getByLabelText(/last name/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/full address/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/accommodation address/i)).toBeRequired();
     expect(screen.getByRole('button', { name: /send my request/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /privacy policy/i })).toHaveAttribute(
       'href',

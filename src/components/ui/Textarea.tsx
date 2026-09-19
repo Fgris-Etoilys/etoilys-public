@@ -34,7 +34,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           aria-describedby={describedBy}
         />
         {error && (
-          <p id={messageId} className="mt-2 text-sm text-alert-400">
+          <p id={messageId} className="mt-2 text-sm text-alert-400" role="alert">
             {error}
           </p>
         )}
