@@ -58,11 +58,11 @@ describe('ClassementBordeaux', () => {
       'src',
       IMAGE_MANIFEST.bordeauxHero.src
     );
-    expect(screen.getByAltText('Tramway devant la place de la Bourse à Bordeaux')).toHaveAttribute(
+    expect(screen.getByAltText('Jardin Public à Bordeaux')).toHaveAttribute(
       'src',
       IMAGE_MANIFEST.bordeauxExpertise.src
     );
-    expect(screen.getByText('Tramway devant la place de la Bourse, Bordeaux.')).toBeInTheDocument();
+    expect(screen.getByText('Jardin Public, Bordeaux.')).toBeInTheDocument();
 
     expectHeadingSequence([
       'Classement de meublé de tourisme à Bordeaux et dans la métropole',

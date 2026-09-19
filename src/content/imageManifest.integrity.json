@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "6bee7ac778b7afe2a7268f2deb54f121f9e711efdaa08ee4e3a657a229ada893",
+  "pipelineSignature": "cdff6b9b00ecec3e86b50c03094568e5e36e664d5b2b3ee35cc860c0f723a317",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "5528ff89c402d895d7dff1fc9c57b282f2a6f9b990eddda70c405435d96dad8c"
+    "sha256": "0d42aee3a0ef7ab1324325b9482bd97be5c038fed75832616f5434324a956167"
   },
   "sources": [
     {
@@ -102,9 +102,19 @@
       "sha256": "5aab5b00d2ca69a89e1de233bbf2a2184175f08c7eeef8e3607a4f5896ae2a05"
     },
     {
+      "key": "bordeauxExpertise",
+      "path": "src/assets/seo-images/source/bordeaux-jardin-public-marc-ryckaert.jpg",
+      "sha256": "959feb26937ac55ece465319a17234b143faff4e4c1b4a01668281b92ecda6b2"
+    },
+    {
       "key": "simulateurClassement",
       "path": "src/assets/seo-images/source/gunnar-ridderstrom-4I26owL4-yk-unsplash.jpg",
       "sha256": "3f130a0dd14df2eb2174f482f803f0f119127fb5f183ddeb018491da9db0ee67"
+    },
+    {
+      "key": "homePourquoiChoisir",
+      "path": "src/assets/seo-images/source/home-pourquoi-choisir-etoilys.png",
+      "sha256": "27dc743b40134725b60f6183cdf01b4fd7c93b3c153e1fd8cb0f702fee77d0c2"
     },
     {
       "key": "homeProcedure",
@@ -135,11 +145,6 @@
       "key": "simulateurTaxeSejour",
       "path": "src/assets/seo-images/source/pexels-arnaud-32767039.jpg",
       "sha256": "cabe963bb75fe2f8e6c17122f96afc0ee726c6f0497f451136c381025930c75a"
-    },
-    {
-      "key": "bordeauxExpertise",
-      "path": "src/assets/seo-images/source/pexels-charldurand-6506986.jpg",
-      "sha256": "8782db60baa6a3e27ed5bb62dcbb9be9e4d952203fde7ecf2834e3e5ee486882"
     },
     {
       "key": "lotEtGaronneTerritory",
@@ -1164,6 +1169,61 @@
       "sha256": "f7336fa5d98420f466ee07370d541ff3efa3e5da10a15fb0e2b3d838bed9a2a1"
     },
     {
+      "path": "/images/optimized/bordeaux-jardin-public-1200.avif",
+      "bytes": 349699,
+      "sha256": "4df70bb59d9d1d898a906ec5f3ae7ff04093af823bc96850663b22fe05b2f06e"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1200.jpg",
+      "bytes": 268078,
+      "sha256": "f8142ddb92cb0c95530debcc63b32d4d3a272bd22628f6d4ae152dff0450099e"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1200.webp",
+      "bytes": 304270,
+      "sha256": "f9e37975f6a5593c68ba4154c9856b75cd5c3c973c59ca40dd3cc5faef9485c7"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1600.avif",
+      "bytes": 605642,
+      "sha256": "c7c1a3b02dbda2f2e44c74978cc29adaf8d45af2d817721591a685aa45e31d6e"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1600.webp",
+      "bytes": 547132,
+      "sha256": "055cd933ff044c84732a6bb6ef51722b674d544d067c268173e34a7b38c58e50"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1920.avif",
+      "bytes": 814340,
+      "sha256": "72290bd47fae8ca65665cf20b0e932d2ca759471407fcf17de13b87b5c115729"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1920.webp",
+      "bytes": 752890,
+      "sha256": "ae6b768eca008fabae6ae30228d4e30416579d8c5fe1322af0603d154ce73d4d"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-480.avif",
+      "bytes": 61685,
+      "sha256": "6de1fe067f03248d3fc9aa0317505b55a0de56ae69b1836d40848dbaf21d1a42"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-480.webp",
+      "bytes": 51750,
+      "sha256": "2346529574d20071d6cf334bcb65f2667afab31174442585018ffd208fc4ba24"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-768.avif",
+      "bytes": 156263,
+      "sha256": "f3d972fb42d41a59146ed6783fd5d082471c706f4da265b37da6417d674c381a"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-768.webp",
+      "bytes": 130324,
+      "sha256": "6d0cf28d3aa75ea376d5478629adb233d1410c2b9c9e8d6cf8eff8fdf36c2a60"
+    },
+    {
       "path": "/images/optimized/bordeaux-place-de-la-bourse-1200.avif",
       "bytes": 62476,
       "sha256": "36eeb74662e9e8868695de0a2d55e2c714b1f2ea98fb6b5d4c8b3ac844e9ffa0"
@@ -1219,61 +1279,6 @@
       "sha256": "c7f39727d90461c0c0e7ef00a34a118a7b2a606f811a18116fe2e9efbf26f698"
     },
     {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1200.avif",
-      "bytes": 173631,
-      "sha256": "578815c48715993e542faf44116d4f0312682c074582b66b775abe2cfa41eeef"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1200.jpg",
-      "bytes": 178901,
-      "sha256": "3e7e4d027357c7fc5231ac52d7e535992ebb9d4c28b0608d487297861e206589"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1200.webp",
-      "bytes": 171242,
-      "sha256": "3fb34506db11e20953306a0482f06c7be91cfaf7b997755f75400f092abee980"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1600.avif",
-      "bytes": 279517,
-      "sha256": "93fe6b5f175632f2685a2c96d139646ee3530414e2896bb52ed82e53f4331d57"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1600.webp",
-      "bytes": 270920,
-      "sha256": "3272521d03b89917f351604e41707a7c4f0bc6b30c9250315458630b60dcc9ab"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1920.avif",
-      "bytes": 374910,
-      "sha256": "5598ce7a9c0106fabc2c5d67cbd26ac0a19a28a94b36da074a2f546553ac6440"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-1920.webp",
-      "bytes": 372014,
-      "sha256": "b22dcc2c6362ad56bb5b12a40a9327ae0eed995bfd7fd317b6780c0e3d213d79"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-480.avif",
-      "bytes": 33872,
-      "sha256": "5e314355f0cd8085009b4bd298dba0deaa7be57b73a6bcd3b4de1ea4d9fc074f"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-480.webp",
-      "bytes": 33524,
-      "sha256": "77a2b3b78797d38ce498a3e69a31ff1c525729a5dbe2ec25f4dc8f2a754b7c30"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-768.avif",
-      "bytes": 80390,
-      "sha256": "6a964a0f975a237d45339f5a0b5cf1b0a45c67ad413a3cb10ff8982a8811ba21"
-    },
-    {
-      "path": "/images/optimized/bordeaux-place-de-la-bourse-tram-768.webp",
-      "bytes": 78628,
-      "sha256": "3523ff0ff73a42666a3b44a1f623cf37c448da6e572720442a490a7938a24dc5"
-    },
-    {
       "path": "/images/optimized/home-hero-1200.avif",
       "bytes": 73730,
       "sha256": "4e77dea31525ee7f2f64a7cf022ead6e56db6268168a6b7a7c882064e7e4fba2"
@@ -1327,6 +1332,41 @@
       "path": "/images/optimized/home-hero-768.webp",
       "bytes": 32342,
       "sha256": "109fc719ac103170aedeb3fb3643507604fe74fde29c235fbb73fdde771d0aca"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-1200.avif",
+      "bytes": 83405,
+      "sha256": "6dbe259058a11105466f5666c78d8dd05701856253b14bf6047f73b58fd178c4"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-1200.jpg",
+      "bytes": 130688,
+      "sha256": "75f2dd06d7a4e38dce4f27ec9597535410a0f97a6cfe63a1f77d11d34ac61af7"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-1200.webp",
+      "bytes": 102906,
+      "sha256": "4d20a41ca379a4813d2180a16e514589cc84f94afc9392fabbdd14f90ba50fa9"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-480.avif",
+      "bytes": 28019,
+      "sha256": "82296652f54e41d0ca31bbe619402c0b5aecd76827f670cd524ba2204aa74108"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-480.webp",
+      "bytes": 29842,
+      "sha256": "08ced8213b6bb22a325803e332e4c1e382a60455a9540593f6e669d770339de5"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-768.avif",
+      "bytes": 51233,
+      "sha256": "8368d10af90f4e23ecbbc6c623186daed301db2042ea7ff7671d449308361aad"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-768.webp",
+      "bytes": 57068,
+      "sha256": "ac001b0c9851cc93ad7f7bdec473d2064ed8084683162f8406bf1775b4dba2e5"
     },
     {
       "path": "/images/optimized/home-procedure-1200.avif",

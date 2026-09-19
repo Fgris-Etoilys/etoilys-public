@@ -32,6 +32,7 @@ const HERO_ASSET_KEYS = new Set([
 const IMAGE_ASSETS = [
   { key: 'homeHero', fileName: 'AdobeStock_70255363.jpeg', outputName: 'home-hero' },
   { key: 'homeProcedure', fileName: 'home-procedure.jpg' },
+  { key: 'homePourquoiChoisir', fileName: 'home-pourquoi-choisir-etoilys.png' },
   { key: 'pourquoiReferencement', fileName: 'pourquoi-referencement.jpg' },
   { key: 'recrutementInspection', fileName: 'AdobeStock_31855482.jpeg' },
   {
@@ -110,8 +111,8 @@ const IMAGE_ASSETS = [
   },
   {
     key: 'bordeauxExpertise',
-    fileName: 'pexels-charldurand-6506986.jpg',
-    outputName: 'bordeaux-place-de-la-bourse-tram',
+    fileName: 'bordeaux-jardin-public-marc-ryckaert.jpg',
+    outputName: 'bordeaux-jardin-public',
   },
 ];
 

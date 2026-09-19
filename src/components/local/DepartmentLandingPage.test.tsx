@@ -541,7 +541,7 @@ describe('DepartmentLandingPage', () => {
     [
       'Bordeaux',
       BORDEAUX_LOCAL_LANDING_PAGE_V6,
-      ['Place de la Bourse, Bordeaux', 'Tramway devant la place de la Bourse, Bordeaux.'],
+      ['Place de la Bourse, Bordeaux', 'Jardin Public, Bordeaux.'],
     ],
     ['Lot', LOT_LOCAL_LANDING_PAGE_V6, ['Saint-Cirq-Lapopie, Lot', 'Rocamadour, Lot.']],
     [

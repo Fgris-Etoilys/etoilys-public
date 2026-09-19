@@ -1,6 +1,7 @@
 export type ImageAssetKey =
   | 'homeHero'
   | 'homeProcedure'
+  | 'homePourquoiChoisir'
   | 'pourquoiReferencement'
   | 'recrutementInspection'
   | 'simulateurClassement'
@@ -63,6 +64,15 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/home-procedure-480.webp 480w, /images/optimized/home-procedure-768.webp 768w, /images/optimized/home-procedure-1200.webp 1200w, /images/optimized/home-procedure-1600.webp 1600w, /images/optimized/home-procedure-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/home-procedure-480.avif 480w, /images/optimized/home-procedure-768.avif 768w, /images/optimized/home-procedure-1200.avif 1200w, /images/optimized/home-procedure-1600.avif 1600w, /images/optimized/home-procedure-1920.avif 1920w',
+  },
+  homePourquoiChoisir: {
+    width: 1448,
+    height: 1086,
+    src: '/images/optimized/home-pourquoi-choisir-etoilys-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/home-pourquoi-choisir-etoilys-480.webp 480w, /images/optimized/home-pourquoi-choisir-etoilys-768.webp 768w, /images/optimized/home-pourquoi-choisir-etoilys-1200.webp 1200w',
+    srcSetAvif:
+      '/images/optimized/home-pourquoi-choisir-etoilys-480.avif 480w, /images/optimized/home-pourquoi-choisir-etoilys-768.avif 768w, /images/optimized/home-pourquoi-choisir-etoilys-1200.avif 1200w',
   },
   pourquoiReferencement: {
     width: 1920,
@@ -371,12 +381,12 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/bordeaux-place-de-la-bourse-480.avif 480w, /images/optimized/bordeaux-place-de-la-bourse-768.avif 768w, /images/optimized/bordeaux-place-de-la-bourse-1200.avif 1200w, /images/optimized/bordeaux-place-de-la-bourse-1600.avif 1600w, /images/optimized/bordeaux-place-de-la-bourse-1920.avif 1920w',
   },
   bordeauxExpertise: {
-    width: 5704,
-    height: 3803,
-    src: '/images/optimized/bordeaux-place-de-la-bourse-tram-1200.jpg',
+    width: 3820,
+    height: 2698,
+    src: '/images/optimized/bordeaux-jardin-public-1200.jpg',
     srcSetWebp:
-      '/images/optimized/bordeaux-place-de-la-bourse-tram-480.webp 480w, /images/optimized/bordeaux-place-de-la-bourse-tram-768.webp 768w, /images/optimized/bordeaux-place-de-la-bourse-tram-1200.webp 1200w, /images/optimized/bordeaux-place-de-la-bourse-tram-1600.webp 1600w, /images/optimized/bordeaux-place-de-la-bourse-tram-1920.webp 1920w',
+      '/images/optimized/bordeaux-jardin-public-480.webp 480w, /images/optimized/bordeaux-jardin-public-768.webp 768w, /images/optimized/bordeaux-jardin-public-1200.webp 1200w, /images/optimized/bordeaux-jardin-public-1600.webp 1600w, /images/optimized/bordeaux-jardin-public-1920.webp 1920w',
     srcSetAvif:
-      '/images/optimized/bordeaux-place-de-la-bourse-tram-480.avif 480w, /images/optimized/bordeaux-place-de-la-bourse-tram-768.avif 768w, /images/optimized/bordeaux-place-de-la-bourse-tram-1200.avif 1200w, /images/optimized/bordeaux-place-de-la-bourse-tram-1600.avif 1600w, /images/optimized/bordeaux-place-de-la-bourse-tram-1920.avif 1920w',
+      '/images/optimized/bordeaux-jardin-public-480.avif 480w, /images/optimized/bordeaux-jardin-public-768.avif 768w, /images/optimized/bordeaux-jardin-public-1200.avif 1200w, /images/optimized/bordeaux-jardin-public-1600.avif 1600w, /images/optimized/bordeaux-jardin-public-1920.avif 1920w',
   },
 };

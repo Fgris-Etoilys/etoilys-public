@@ -159,7 +159,7 @@ export default function Home() {
         <div className="container-editorial editorial-media-split">
           <div className="editorial-expertise-photo">
             <SmartImage
-              assetKey="articleDpeMeublesTourisme"
+              assetKey="homePourquoiChoisir"
               alt={content.features.imageAlt}
               sizes="(min-width: 1336px) 490px, (min-width: 900px) 40vw, 100vw"
               className="h-full w-full object-cover"
