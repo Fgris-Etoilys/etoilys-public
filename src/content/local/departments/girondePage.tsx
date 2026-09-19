@@ -13,12 +13,17 @@ import {
   buildDepartmentFaqItems,
   commonProcedure,
   getLocalHeroImageSizes,
-  girondePricingChecklist,
   heroReassurance,
   toCollapsedSectors,
 } from '../sharedLocalContent';
 
 const girondeHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-gironde');
+
+const girondePricingChecklist = [
+  'Aucun frais de déplacement : la visite et les documents de classement sont inclus.',
+  'Le tarif applicable dépend de la commune de votre logement et, selon le secteur, de sa typologie.',
+  'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
+] as const;
 
 export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
   layoutVersion: 'v6',
@@ -145,7 +150,7 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
     items: buildDepartmentFaqItems({
       question: 'Intervenez-vous dans toute la Gironde ?',
       answer:
-        'Oui. Etoilys intervient désormais dans l’ensemble du département de la Gironde, y compris le Bassin d’Arcachon, le Médoc, le Libournais et le Sud-Gironde. Les communes présentées sur cette page servent de repères géographiques : elles ne constituent pas une liste exhaustive.',
+        'Oui. Etoilys intervient désormais dans toute la Gironde, y compris sur le Bassin d’Arcachon, dans le Médoc, le Libournais et le Sud-Gironde. Les communes présentées sur cette page servent de repères géographiques : elles ne constituent pas une liste exhaustive.',
     }),
   },
   finalCta: {

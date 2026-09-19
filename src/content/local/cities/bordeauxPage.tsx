@@ -11,13 +11,18 @@ import {
   LOCAL_V6_FINAL_PRIMARY_ACTION,
   LOCAL_V6_HERO_NOTE,
   LOCAL_V6_PROOF_ITEMS,
-  bordeauxPricingChecklist,
   commonProcedure,
   getLocalHeroImageSizes,
   heroReassurance,
 } from '../sharedLocalContent';
 
 const bordeauxHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-bordeaux');
+
+const bordeauxPricingChecklist = [
+  'Aucun frais de déplacement : la visite et les documents de classement sont inclus.',
+  'Le tarif dépend de la typologie de votre logement, pas du nombre d’étoiles demandé.',
+  'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
+] as const;
 
 export const BORDEAUX_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   layoutVersion: 'v6',

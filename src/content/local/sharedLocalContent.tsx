@@ -44,18 +44,6 @@ export const LOCAL_V6_PRICING_CHECKLIST = [
   'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
 ] as const;
 
-export const GIRONDE_PRICING_CHECKLIST = [
-  'Aucun frais de déplacement : la visite et les documents de classement sont inclus.',
-  'Le tarif applicable dépend de la commune de votre logement et, selon le secteur, de sa typologie.',
-  'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
-] as const;
-
-export const BORDEAUX_PRICING_CHECKLIST = [
-  'Aucun frais de déplacement : la visite et les documents de classement sont inclus.',
-  'Le tarif dépend de la typologie de votre logement, pas du nombre d’étoiles demandé.',
-  'Un tarif confirmé avant tout engagement, quelle que soit la catégorie d’étoiles demandée.',
-] as const;
-
 export const LOCAL_V6_PROCESS_STEPS: readonly LocalProcedureStep[] = [
   {
     number: 1,
@@ -207,8 +195,6 @@ export function toCollapsedSectors(sectors: readonly DepartmentSector[], visible
 
 export const heroReassurance = LOCAL_V6_HERO_REASSURANCE;
 export const pricingChecklist = LOCAL_V6_PRICING_CHECKLIST;
-export const girondePricingChecklist = GIRONDE_PRICING_CHECKLIST;
-export const bordeauxPricingChecklist = BORDEAUX_PRICING_CHECKLIST;
 export const commonProcedure = LOCAL_V6_COMMON_PROCEDURE;
 
 export const dordogneCoverageQuestion = {

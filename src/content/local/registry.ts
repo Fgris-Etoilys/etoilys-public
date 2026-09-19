@@ -92,7 +92,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       outputFileName: 'communes-gironde-index.v1.json',
     },
     seo: {
-      lastModified: '2026-09-17',
+      lastModified: '2026-09-19',
       title: 'Classement gîte, Airbnb et meublé de tourisme en Gironde',
       description:
         'Etoilys accompagne les propriétaires de meublés de tourisme en Gironde : classement officiel, zones d’intervention, procédure, fiscalité, taxe de séjour et demande en ligne.',
@@ -115,7 +115,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
     hubLabel: 'Bordeaux et sa métropole',
     departmentLabel: 'Bordeaux et sa métropole',
     seo: {
-      lastModified: '2026-09-17',
+      lastModified: '2026-09-19',
       title: 'Classement meublé de tourisme à Bordeaux',
       description:
         'Faites classer votre meublé de tourisme à Bordeaux et dans la métropole. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
