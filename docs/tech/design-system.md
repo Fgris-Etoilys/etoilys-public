@@ -112,6 +112,9 @@ Les deux simulateurs utilisent les primitives CSS `simulator-*` de `src/index.cs
 - `simulator-disclosure` habille `details` / `summary` natifs. Garder les avertissements qui influencent la lecture hors des disclosures ; réserver celles-ci au détail du calcul, à la méthode et aux sources. Le tableau existant reste sémantique et bascule selon la largeur disponible du panneau, via une container query.
 - Les champs et actions principales offrent au moins 44 px de cible tactile. Les transitions et le défilement des pages respectent `prefers-reduced-motion`.
 
+- `SimulatorNextSteps` partage le CTA final des deux simulateurs : panneau `ink`, demande de classement principale et autre simulateur secondaire. Les variantes historiques des boutons conservent les identifiants analytics ; le texte FR/EN reste centralisé.
+- Les exports fiscal et taxe de séjour utilisent `comparisonReportPdf` : synthèse, paramètres, comparaison, méthode et sources. La palette provient des variables CSS du DS, le logo est éditorial ; les fontes PDF natives assurent une lecture hors ligne. Les deux CTA PDF pointent vers le site public, avec les paramètres du dernier calcul pour reprendre la simulation. Le contenu long est paginé, sans couper les lignes du tableau.
+
 ## Frontières De Migration
 
 - **ETOILYS-395** : socle premium, pages cœur, Home/Dordogne harmonisées, amorce des enveloppes de formulaires via `editorial-form`.

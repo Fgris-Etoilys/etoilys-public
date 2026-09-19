@@ -1,6 +1,16 @@
 import type { TextTranslations } from './textTranslation';
 
 export const fiscalSimulatorEnglishTranslations = {
+  'Création du PDF…': 'Creating PDF…',
+  "Tranche marginale d'imposition": 'Marginal income tax rate',
+  'Revenus 2026 déclarés en 2027 · comparaison micro-BIC':
+    '2026 income declared in 2027 · micro-BIC comparison',
+  'Le régime micro-BIC non classé est sous vigilance. Consultez les points d’attention.':
+    'The unclassified micro-BIC threshold has been exceeded. Review the points to note.',
+  'Mise à jour des paramètres': 'Tax parameters updated',
+  'À situation identique, l’écart représente environ {amount} sur 5 ans.':
+    'Assuming unchanged circumstances, the difference is approximately {amount} over 5 years.',
+  'Seuils et abattements — Service Public': 'Thresholds and allowances — Service Public',
   'Outils de simulation': 'Simulation tools',
   'Simulateur fiscal : classé ou non classé': 'Tax simulator: classified or unclassified',
   'Deux informations pour estimer ce que le classement change à votre fiscalité micro-BIC en 2026.':
@@ -150,6 +160,16 @@ export const fiscalSimulatorEnglishTranslations = {
 } as const satisfies TextTranslations;
 
 export const touristTaxSimulatorEnglishTranslations = {
+  'Création du PDF…': 'Creating PDF…',
+  'Période tarifaire': 'Tariff period',
+  'Un même séjour · du non classé au 5 étoiles': 'One stay · from unclassified to 5 stars',
+  'Non calculé': 'Not calculated',
+  'Comparaison indicative. Consultez les points d’attention avant d’interpréter les montants.':
+    'Indicative comparison. Review the points to note before interpreting the amounts.',
+  'Méthode et hypothèses': 'Method and assumptions',
+  'Données DELTA v{version} · date de référence : {date}.':
+    'DELTA v{version} data · reference date: {date}.',
+  'Données DELTA publiées par Etoilys': 'DELTA data published by Etoilys',
   'Comparaison limitée': 'Limited comparison',
   'Le montant non classé est indicatif. L’écart entre catégories ne peut pas être établi.':
     'The unclassified amount is indicative. The difference between categories cannot be established.',
@@ -371,3 +391,34 @@ export const touristTaxSimulatorEnglishTranslations = {
   "Régime forfaitaire (indicatif): le calcul légal repose sur la période d'ouverture / de mise en location et la capacité d'accueil du logement. Un abattement local peut aussi exister. Il n'est pas intégré ici, car le simulateur vise une comparaison simplifiée sur un séjour type et non un calcul fiscal annuel exact.":
     'Flat-rate regime (indicative): the statutory calculation is based on the opening or rental period and the accommodation capacity. A local allowance may also apply. It is not included because this simulator provides a simplified comparison for a typical stay rather than an exact annual tax calculation.',
 } as const satisfies TextTranslations;
+
+export const simulatorNextStepsContent = {
+  fr: {
+    title: 'Préparez votre classement',
+    description: {
+      fiscal:
+        'Demandez le classement de votre meublé ou explorez aussi son effet sur la taxe de séjour.',
+      'tourist-tax':
+        'Demandez le classement de votre meublé ou explorez aussi son effet sur votre fiscalité.',
+    },
+    classificationLabel: 'Demander un classement',
+    otherSimulatorLabel: {
+      fiscal: 'Simulateur taxe de séjour',
+      'tourist-tax': 'Simulateur fiscal',
+    },
+  },
+  en: {
+    title: 'Prepare for classification',
+    description: {
+      fiscal:
+        'Request a classification for your accommodation, or explore its effect on tourist tax.',
+      'tourist-tax':
+        'Request a classification for your accommodation, or explore its effect on your taxation.',
+    },
+    classificationLabel: 'Request a classification',
+    otherSimulatorLabel: {
+      fiscal: 'Tourist tax simulator',
+      'tourist-tax': 'Tax simulator',
+    },
+  },
+} as const;

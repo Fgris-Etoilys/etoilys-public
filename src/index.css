@@ -1989,11 +1989,43 @@
   }
 
   .simulator-next {
-    @apply mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-ink/15 pt-5 text-sm text-muted;
+    @apply mt-8 grid items-center gap-7 rounded-editorial bg-ink text-paper;
+    padding: clamp(24px, 3.3vw, 40px);
+    grid-template-columns: minmax(0, 1fr) minmax(260px, auto);
   }
 
-  .simulator-next a {
-    @apply min-h-11 gap-2 border-0 bg-transparent px-0 text-sm text-ink underline decoration-ink/30 underline-offset-4 hover:bg-transparent hover:text-ink-hover;
+  .simulator-page .simulator-next h2 {
+    @apply mb-3 font-playfair font-medium text-paper;
+    font-size: clamp(28px, 2.7vw, 36px);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .simulator-page .simulator-next p {
+    @apply max-w-xl text-sm text-paper/80;
+    line-height: 1.6;
+  }
+
+  .simulator-next-actions {
+    @apply flex flex-col gap-3;
+  }
+
+  .simulator-next-actions a {
+    @apply min-h-[48px] justify-between gap-4 px-5 py-3 text-sm no-underline;
+  }
+
+  .simulator-next .simulator-next-primary {
+    @apply border border-paper bg-paper text-ink hover:border-white hover:bg-white hover:text-ink;
+  }
+
+  .simulator-next .simulator-next-secondary {
+    @apply border border-paper/45 bg-transparent text-paper hover:border-paper hover:bg-paper/10 hover:text-paper;
+  }
+
+  @media (max-width: 767px) {
+    .simulator-next {
+      @apply grid-cols-1 gap-6;
+    }
   }
 
   @container (max-width: 600px) {

@@ -11,6 +11,7 @@ import {
   Search,
 } from 'lucide-react';
 import Button from '../components/ui/Button';
+import SimulatorNextSteps from '../components/simulator/SimulatorNextSteps';
 import Input from '../components/ui/Input';
 import Tooltip from '../components/ui/Tooltip';
 import ResponsiveComparisonTable, {
@@ -20,6 +21,7 @@ import ResponsiveComparisonTable, {
 import { useToast } from '../components/ui/Toast';
 import {
   loadTaxeSejourDataset,
+  TAXE_SEJOUR_DATASET_URL,
   normalizeTaxeSejourSearchTerm,
   type TaxeSejourCity,
   type TaxeSejourDataset,
@@ -28,13 +30,8 @@ import {
   calculateTaxeSejour,
   type TaxeSejourCalculationOutput,
 } from '../utils/taxeSejourCalculator';
-import {
-  copyToClipboard,
-  formatFilenameDate,
-  getAutoTableFinalY,
-  getEtoilysLogoPngAsset,
-  normalizePdfText,
-} from '../utils/simulatorExport';
+import { copyToClipboard, formatFilenameDate } from '../utils/simulatorExport';
+import type { ComparisonPdfReport } from '../utils/comparisonReportPdf';
 import { trackSimulatorCalculated, trackSimulatorStarted } from '../utils/analytics';
 import { prepareLocalitySearch, searchPreparedLocalities } from '../utils/localitySearch';
 import LocalizedContent from '../i18n/LocalizedContent';
@@ -393,10 +390,6 @@ function formatEuro(value: number, locale: Locale): string {
   return formatLocalizedEuro(value, locale);
 }
 
-function formatPdfEuro(value: number, locale: Locale): string {
-  return normalizePdfText(formatEuro(value, locale));
-}
-
 function localizeTouristTaxSimulatorText(value: string, locale: Locale): string {
   return locale === 'en' ? translateText(value, touristTaxSimulatorEnglishTranslations) : value;
 }
@@ -440,14 +433,6 @@ function formatReadableDeltaWithPercent(
   const deltaLabel = getReadableDeltaLabel(delta, locale);
 
   return `${formattedAmount} ${deltaLabel} (${formattedPercent})`;
-}
-
-function formatPdfReadableDeltaWithPercent(
-  delta: number,
-  nonClasseReference: number,
-  locale: Locale
-): string {
-  return normalizePdfText(formatReadableDeltaWithPercent(delta, nonClasseReference, locale));
 }
 
 function getDeltaClassName(delta: number): string {
@@ -516,55 +501,6 @@ function findBestSavings(
   }
 
   return bestSavings;
-}
-
-function getSimulationAssumptionsSentence(
-  cityLabel: string,
-  snapshot: PersistedCalculationSnapshot,
-  locale: Locale
-): string {
-  const parts =
-    locale === 'en'
-      ? [`Simulation for ${cityLabel}`, `over ${getNightsLabel(snapshot.nights, locale)}`]
-      : [`Simulation réalisée pour ${cityLabel}`, `sur ${getNightsLabel(snapshot.nights, locale)}`];
-
-  if (snapshot.personsStaying !== undefined) {
-    const personsLabel =
-      locale === 'en'
-        ? formatPeopleLabel(snapshot.personsStaying, 'guest staying', 'guests staying')
-        : formatPeopleLabel(
-            snapshot.personsStaying,
-            'personne accueillie',
-            'personnes accueillies'
-          );
-    const exemptedLabel =
-      locale === 'en'
-        ? formatPeopleLabel(snapshot.exemptedPersons ?? 0, 'exempt', 'exempt')
-        : formatPeopleLabel(snapshot.exemptedPersons ?? 0, 'exonérée', 'exonérées');
-    parts.push(
-      locale === 'en'
-        ? `with ${personsLabel}, including ${exemptedLabel}`
-        : `avec ${personsLabel} dont ${exemptedLabel}`
-    );
-  } else if (snapshot.capacity !== undefined) {
-    const capacityLabel =
-      locale === 'en'
-        ? formatPeopleLabel(snapshot.capacity, 'person capacity', 'person capacity')
-        : formatPeopleLabel(snapshot.capacity, 'personne', 'personnes');
-    parts.push(
-      locale === 'en'
-        ? `with a stated capacity of ${capacityLabel}`
-        : `avec une capacité renseignée de ${capacityLabel}`
-    );
-  }
-
-  parts.push(
-    locale === 'en'
-      ? `at an average price of ${formatEuro(snapshot.nightlyPriceHt, locale)} excluding tax / night`
-      : `au prix moyen de ${formatEuro(snapshot.nightlyPriceHt, locale)} HT / nuit`
-  );
-
-  return `${parts.join(', ')}.`;
 }
 
 function getSimulationAssumptionFacts(
@@ -711,6 +647,7 @@ export default function SimulateurTaxeSejour() {
   const [pendingRestoredCalculation, setPendingRestoredCalculation] =
     useState<PersistedCalculationSnapshot | null>(null);
   const [isStorageHydrated, setIsStorageHydrated] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [isCityLabelSyncPending, setIsCityLabelSyncPending] = useState(false);
   const hasTrackedSimulatorStarted = useRef(false);
   const resultBlockRef = useRef<HTMLDivElement>(null);
@@ -1303,263 +1240,195 @@ export default function SimulateurTaxeSejour() {
   }
 
   async function handleExportPdf() {
+    if (isExportingPdf) return;
     if (!result || !lastCalculationSnapshot) {
       showToast(localize('Aucun résultat à exporter.'), { type: 'info' });
       return;
     }
 
+    setIsExportingPdf(true);
     try {
-      const [{ jsPDF }, { default: autoTable }] = await Promise.all([
-        import('jspdf'),
-        import('jspdf-autotable'),
-      ]);
-      const doc = new jsPDF({ unit: 'pt', format: 'a4' });
-      let cursorY = 40;
-      const marginX = 40;
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const logoAsset = await getEtoilysLogoPngAsset();
-      let logoWidth = 0;
-      let logoHeight = 0;
-
-      if (logoAsset) {
-        const maxLogoWidth = 180;
-        const maxLogoHeight = 44;
-        logoWidth = maxLogoWidth;
-        logoHeight = logoWidth / logoAsset.aspectRatio;
-        if (logoHeight > maxLogoHeight) {
-          logoHeight = maxLogoHeight;
-          logoWidth = logoHeight * logoAsset.aspectRatio;
-        }
-
-        const logoY = 24;
-        doc.addImage(logoAsset.dataUrl, 'PNG', marginX, logoY, logoWidth, logoHeight);
-        doc.link(marginX, logoY, logoWidth, logoHeight, {
-          url: 'https://www.etoilys.fr',
-        });
-        cursorY = Math.max(cursorY, logoY + logoHeight + 18);
-      }
-
-      doc.setFontSize(18);
-      doc.setTextColor(49, 107, 255);
-      const title = localize('Simulation taxe de séjour');
-      const titleWidth = doc.getTextWidth(title);
-      const centeredTitleX = (pageWidth - titleWidth) / 2;
-      doc.text(title, centeredTitleX, cursorY);
-
-      cursorY += 34;
-      doc.setFontSize(11);
-      doc.setTextColor(25);
-      doc.text(localize('Paramètres de simulation'), marginX, cursorY);
-
-      const simulationParametersRows: string[][] = [
+      const generatedAt = new Date();
+      const shareUrl = new URL(buildShareUrl(lastCalculationSnapshot));
+      const simulatorUrl = new URL(
+        shareUrl.pathname + shareUrl.search,
+        'https://www.etoilys.fr'
+      ).toString();
+      const safeCityId = lastCalculationSnapshot.cityId.replace(/[^a-zA-Z0-9_-]/g, '-');
+      const comparisonCategory =
+        result.rows.find((row) => row.category === bestSavings?.category) ??
+        result.rows.find((row) => row.category !== 'Non classé');
+      const parameters: ComparisonPdfReport['parameters'] = [
         [localize('Commune'), resultCityLabel],
-        [
-          localize('Prix par nuit HT'),
-          formatPdfEuro(lastCalculationSnapshot.nightlyPriceHt, locale),
-        ],
+        [localize('Prix par nuit HT'), formatEuro(lastCalculationSnapshot.nightlyPriceHt, locale)],
         [localize('Durée du séjour'), getNightsLabel(lastCalculationSnapshot.nights, locale)],
+        [
+          localize('Période tarifaire'),
+          `${formatTariffDateLabel(result.selectedPeriod.startLabel, locale)} — ${formatTariffDateLabel(result.selectedPeriod.endLabel, locale)}`,
+        ],
       ];
       if (lastCalculationSnapshot.capacity !== undefined) {
-        simulationParametersRows.push([
+        parameters.push([
           localize('Capacité du logement'),
           String(lastCalculationSnapshot.capacity),
         ]);
       }
       if (lastCalculationSnapshot.personsStaying !== undefined) {
-        simulationParametersRows.push([
+        parameters.push([
           localize('Personnes accueillies'),
           String(lastCalculationSnapshot.personsStaying),
         ]);
-      }
-      if (lastCalculationSnapshot.exemptedPersons !== undefined) {
-        simulationParametersRows.push([
+        parameters.push([
           localize('Personnes exonérées'),
-          String(lastCalculationSnapshot.exemptedPersons),
+          String(lastCalculationSnapshot.exemptedPersons ?? 0),
         ]);
       }
-
-      autoTable(doc, {
-        startY: cursorY + 10,
-        head: [[localize('Paramètre'), localize('Valeur')]],
-        body: simulationParametersRows,
-        styles: { fontSize: 10, cellPadding: 7 },
-        headStyles: { fillColor: [49, 107, 255] },
-        alternateRowStyles: { fillColor: [249, 250, 251] },
-      });
-
-      cursorY = (getAutoTableFinalY(doc) ?? cursorY) + 26;
-
-      doc.setFontSize(11);
-      doc.setTextColor(25);
-      doc.text(localize('Résultats'), marginX, cursorY);
-
-      cursorY += 18;
-      doc.setFontSize(10);
-      doc.setTextColor(75, 85, 99);
-      const resultSummaryLines =
-        bestSavings !== null
-          ? [
-              locale === 'en'
-                ? `Up to ${formatPdfEuro(
-                    bestSavings.savingsAmount,
-                    locale
-                  )} less tourist tax with a ${formatClassifiedCategoryForSentence(
-                    bestSavings.category,
-                    locale
-                  )} classification, compared with unclassified furnished tourist accommodation.`
-                : `Jusqu’à ${formatPdfEuro(
-                    bestSavings.savingsAmount,
-                    locale
-                  )} de taxe de séjour en moins avec un classement ${formatClassifiedCategoryForSentence(
-                    bestSavings.category,
-                    locale
-                  )}, par rapport à un meublé non classé.`,
-              getSimulationAssumptionsSentence(resultCityLabel, lastCalculationSnapshot, locale),
-              getTariffPeriodSentence(
-                result.selectedPeriod.startLabel,
-                result.selectedPeriod.endLabel,
-                locale
-              ),
-            ]
-          : [
-              localize(
-                'Dans cette simulation, le classement ne réduit pas la taxe de séjour par rapport au non classé. Les montants varient selon la catégorie de classement et les tarifs votés localement.'
-              ),
-              getSimulationAssumptionsSentence(resultCityLabel, lastCalculationSnapshot, locale),
-              getTariffPeriodSentence(
-                result.selectedPeriod.startLabel,
-                result.selectedPeriod.endLabel,
-                locale
-              ),
-            ];
-      const wrappedResultSummary = doc.splitTextToSize(
-        normalizePdfText(resultSummaryLines.join(' ')),
-        515
-      );
-      doc.text(wrappedResultSummary, marginX, cursorY);
-      cursorY += wrappedResultSummary.length * 13 + 12;
-
-      const resultRowsForPdf = result.rows.map((row) => {
-        const nonClassReference = nonClasseAmount ?? 0;
-        const deltaRaw = row.amount - nonClassReference;
-        return {
-          category: localize(row.category),
-          rawCategory: row.category,
-          amount: row.amount,
-          deltaText:
-            row.category === 'Non classé'
-              ? localize('Référence de comparaison')
-              : formatPdfReadableDeltaWithPercent(deltaRaw, nonClassReference, locale),
-          deltaRaw,
-        };
-      });
-
-      autoTable(doc, {
-        startY: cursorY,
-        head: [
-          [
-            localize('Catégorie'),
-            localize('Économie / surcoût'),
-            localize('Taxe de séjour totale'),
+      const report: ComparisonPdfReport = {
+        locale,
+        title: localize('Simulation taxe de séjour'),
+        subtitle: localize('Un même séjour · du non classé au 5 étoiles'),
+        filename: `simulation-taxe-sejour-${safeCityId}-${formatFilenameDate(generatedAt)}.pdf`,
+        simulatorUrl,
+        generatedAt,
+        summary: {
+          label: localize(
+            isReferenceIndicative
+              ? 'Comparaison limitée'
+              : bestSavings
+                ? 'Économie maximale sur ce séjour'
+                : 'Aucune économie sur ce séjour'
+          ),
+          value: isReferenceIndicative ? '—' : formatEuro(bestSavings?.savingsAmount ?? 0, locale),
+          description: isReferenceIndicative
+            ? localize(
+                'Le montant non classé est indicatif. L’écart entre catégories ne peut pas être établi.'
+              )
+            : bestSavings
+              ? localize(
+                  'de taxe de séjour en moins avec un classement {category}, par rapport à un meublé non classé.'
+                ).replace(
+                  '{category}',
+                  formatClassifiedCategoryForSentence(bestSavings.category, locale)
+                )
+              : localize(
+                  'Dans cette simulation, le classement ne réduit pas la taxe de séjour par rapport au non classé.'
+                ),
+          comparisons: [
+            {
+              label: localize('Meublé non classé'),
+              value: isReferenceIndicative
+                ? localize('Non calculé')
+                : formatEuro(nonClasseAmount ?? 0, locale),
+            },
+            ...(comparisonCategory
+              ? [
+                  {
+                    label: `${localize('Classé')} ${formatClassifiedCategoryForSentence(comparisonCategory.category, locale)}`,
+                    value: formatEuro(comparisonCategory.amount, locale),
+                  },
+                ]
+              : []),
           ],
-        ],
-        body: resultRowsForPdf.map((row) => [
-          row.category,
-          row.deltaText,
-          formatPdfEuro(row.amount, locale),
-        ]),
-        styles: { fontSize: 10, cellPadding: 7 },
-        headStyles: { fillColor: [49, 107, 255] },
-        alternateRowStyles: { fillColor: [249, 250, 251] },
-        didParseCell: (hookData) => {
-          if (hookData.section !== 'body') {
-            return;
-          }
-
-          const rowData = resultRowsForPdf[hookData.row.index];
-          if (!rowData) {
-            return;
-          }
-
-          if (hookData.column.index === 2 && rowData.rawCategory === 'Non classé') {
-            hookData.cell.styles.textColor = [1, 50, 176];
-            hookData.cell.styles.fontStyle = 'bold';
-          }
-
-          if (hookData.column.index === 1) {
-            if (rowData.rawCategory === 'Non classé' || rowData.deltaRaw === 0) {
-              hookData.cell.styles.textColor = [75, 85, 99];
-            } else if (rowData.deltaRaw < 0) {
-              hookData.cell.styles.textColor = [0, 115, 0];
-              hookData.cell.styles.fontStyle = 'bold';
-            } else {
-              hookData.cell.styles.textColor = [140, 0, 0];
-              hookData.cell.styles.fontStyle = 'bold';
-            }
-          }
+          ...(result.isIndicative
+            ? {
+                notice: localize(
+                  'Comparaison indicative. Consultez les points d’attention avant d’interpréter les montants.'
+                ),
+              }
+            : {}),
         },
-      });
-
-      cursorY = (getAutoTableFinalY(doc) ?? cursorY) + 24;
-
-      doc.setFontSize(11);
-      doc.setTextColor(25);
-      doc.text(localize('Taxes additionnelles'), marginX, cursorY);
-      cursorY += 8;
-
-      autoTable(doc, {
-        startY: cursorY,
-        head: [[localize('Taxes additionnelles'), localize('Appliquée')]],
-        body: result.additionalTaxes.map((tax) => [
-          localize(tax.label),
-          tax.isApplied ? localize('Oui') : localize('Non'),
-        ]),
-        styles: { fontSize: 10, cellPadding: 7 },
-        headStyles: { fillColor: [49, 107, 255] },
-        alternateRowStyles: { fillColor: [249, 250, 251] },
-      });
-
-      cursorY = (getAutoTableFinalY(doc) ?? cursorY) + 24;
-
-      if (result.warnings.length > 0) {
-        doc.setFontSize(11);
-        doc.setTextColor(25);
-        doc.text(localize("Points d'attention"), marginX, cursorY);
-
-        autoTable(doc, {
-          startY: cursorY + 8,
-          head: [[localize('Avertissement')]],
-          body: result.warnings.map((warning) => [localize(warning)]),
-          styles: { fontSize: 10, cellPadding: 7 },
-          headStyles: { fillColor: [145, 109, 0] },
-          alternateRowStyles: { fillColor: [255, 248, 211] },
-        });
-      }
-
-      const sourceLine = dataset
-        ? locale === 'en'
-          ? `Etoilys source: DELTA v${dataset.version} data (reference date: ${dataset.sourceDate}). Official sources are available in French.`
-          : `Source Etoilys: données DELTA v${dataset.version} (date de référence: ${dataset.sourceDate}).`
-        : localize('Source Etoilys: données DELTA indisponibles.');
-      const sourceWrapped = doc.splitTextToSize(sourceLine, 520);
-      doc.setFontSize(9);
-      doc.setTextColor(110);
-      const lastPage = doc.getNumberOfPages();
-      doc.setPage(lastPage);
-      const pageHeight = doc.internal.pageSize.getHeight();
-      doc.text(sourceWrapped, marginX, pageHeight - 30);
-      const etoilysWebsite = 'www.etoilys.fr';
-      doc.setTextColor(1, 50, 176);
-      doc.text(etoilysWebsite, marginX, pageHeight - 12);
-      doc.link(marginX, pageHeight - 20, doc.getTextWidth(etoilysWebsite), 11, {
-        url: 'https://www.etoilys.fr',
-      });
-
-      const safeCityId = lastCalculationSnapshot.cityId.replace(/[^a-zA-Z0-9_-]/g, '-');
-      doc.save(`simulation-taxe-sejour-${safeCityId}-${formatFilenameDate(new Date())}.pdf`);
+        parameters,
+        comparison: {
+          columns: ['Catégorie', 'Taxe de séjour totale', 'Écart vs non classé'].map(localize),
+          widths: [0.23, 0.28, 0.49],
+          rows: result.rows.map((row) => {
+            const isReference = row.category === 'Non classé';
+            const delta = row.amount - (nonClasseAmount ?? 0);
+            return {
+              cells: [
+                `${isReference ? localize('Non classé') : formatClassifiedCategoryForSentence(row.category, locale)}${row.status === 'indicatif' ? ` (${localize('indicatif')})` : ''}`,
+                isReference && isReferenceIndicative
+                  ? localize('Non calculé')
+                  : formatEuro(row.amount, locale),
+                isReference
+                  ? localize('Référence de comparaison')
+                  : isReferenceIndicative
+                    ? localize('Écart non disponible')
+                    : formatReadableDeltaWithPercent(delta, nonClasseAmount ?? 0, locale),
+              ],
+              tone: isReference
+                ? 'reference'
+                : isReferenceIndicative
+                  ? 'neutral'
+                  : delta < 0
+                    ? 'positive'
+                    : delta > 0
+                      ? 'negative'
+                      : 'neutral',
+            };
+          }),
+        },
+        notes: [
+          ...(result.warnings.length
+            ? [
+                {
+                  title: localize("Points d'attention"),
+                  paragraphs: result.warnings.map(localize),
+                },
+              ]
+            : []),
+          {
+            title: localize('Taxes additionnelles'),
+            paragraphs: result.additionalTaxes.map(
+              (tax) => `${localize(tax.label)} : ${localize(tax.isApplied ? 'Oui' : 'Non')}`
+            ),
+          },
+          {
+            title: localize('Méthode et hypothèses'),
+            paragraphs: [
+              getTariffPeriodSentence(
+                result.selectedPeriod.startLabel,
+                result.selectedPeriod.endLabel,
+                locale
+              ),
+              ...(!isFullYearPeriod(
+                result.selectedPeriod.startLabel,
+                result.selectedPeriod.endLabel
+              )
+                ? [localize("En dehors de cette période, la taxe de séjour n'est pas prélevée.")]
+                : []),
+              localize(
+                "Les taxes additionnelles sont incluses dans la simulation lorsqu'elles s'appliquent."
+              ),
+              dataset
+                ? localize('Données DELTA v{version} · date de référence : {date}.')
+                    .replace('{version}', dataset.version)
+                    .replace('{date}', formatDatasetDate(dataset.sourceDate, locale))
+                : localize('Source Etoilys: données DELTA indisponibles.'),
+              localize(
+                'Cette simulation est fournie à titre informatif sur la base des délibérations publiées. Elle ne constitue pas un conseil juridique ou fiscal personnalisé.'
+              ),
+            ],
+          },
+        ],
+        sources: [
+          {
+            label: localize('Données DELTA publiées par Etoilys'),
+            url: new URL(TAXE_SEJOUR_DATASET_URL, 'https://www.etoilys.fr').toString(),
+          },
+          ...result.additionalTaxes.map((tax) => ({
+            label: localize(tax.legalReferenceLabel),
+            url: tax.legalReferenceUrl,
+          })),
+        ],
+      };
+      const { exportComparisonReportPdf } = await import('../utils/comparisonReportPdf');
+      await exportComparisonReportPdf(report);
       showToast(localize('PDF généré.'), { type: 'success' });
     } catch {
       showToast(localize('Impossible de générer le PDF.'), { type: 'error' });
+    } finally {
+      setIsExportingPdf(false);
     }
   }
 
@@ -1988,8 +1857,16 @@ export default function SimulateurTaxeSejour() {
                       >
                         <Link2 size={16} aria-hidden="true" /> Copier le lien
                       </Button>
-                      <Button type="button" variant="primary" size="sm" onClick={handleExportPdf}>
-                        <Download size={16} aria-hidden="true" /> Exporter PDF
+                      <Button
+                        type="button"
+                        variant="primary"
+                        size="sm"
+                        onClick={handleExportPdf}
+                        disabled={isExportingPdf}
+                        aria-busy={isExportingPdf}
+                      >
+                        <Download size={16} aria-hidden="true" />
+                        {isExportingPdf ? 'Création du PDF…' : 'Exporter PDF'}
                       </Button>
                     </div>
                   </div>
@@ -2239,31 +2116,7 @@ export default function SimulateurTaxeSejour() {
             </div>
           </details>
 
-          {result && (
-            <div className="simulator-next">
-              <p>Le classement intervient aussi dans la fiscalité</p>
-              <div className="flex flex-wrap gap-x-6 gap-y-2">
-                <Button
-                  href={
-                    locale === 'en'
-                      ? '/en/furnished-tourist-accommodation-tax-simulator'
-                      : '/simulateur-fiscal-classement'
-                  }
-                  variant="primary"
-                  className="simulator-tool-link"
-                >
-                  Simulateur fiscal <ArrowUpRight size={16} aria-hidden="true" />
-                </Button>
-                <Button
-                  href={locale === 'en' ? '/en/request-a-classification' : '/demande-classement'}
-                  variant="secondary"
-                  className="simulator-tool-link"
-                >
-                  Demande de classement <ArrowUpRight size={16} aria-hidden="true" />
-                </Button>
-              </div>
-            </div>
-          )}
+          {result && <SimulatorNextSteps locale={locale} currentSimulator="tourist-tax" />}
         </div>
       </section>
     </LocalizedContent>

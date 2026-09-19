@@ -415,13 +415,15 @@ export function getAutoTableFinalY(document: unknown): number | null {
   return typeof finalY === 'number' && Number.isFinite(finalY) ? finalY : null;
 }
 
-export async function getEtoilysLogoPngAsset(): Promise<PdfLogoAsset | null> {
+export async function getEtoilysLogoPngAsset(
+  source = '/logo-etoilys.svg'
+): Promise<PdfLogoAsset | null> {
   if (typeof window === 'undefined' || typeof document === 'undefined') {
     return null;
   }
 
   try {
-    const response = await fetch('/logo-etoilys.svg', { cache: 'force-cache' });
+    const response = await fetch(source, { cache: 'force-cache' });
     if (!response.ok) {
       return null;
     }

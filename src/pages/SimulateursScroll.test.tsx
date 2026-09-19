@@ -328,7 +328,7 @@ describe('parcours et restauration des simulateurs', () => {
     expect(screen.getByRole('radio', { name: '0 %' })).toBeChecked();
     expect(screen.getByRole('button', { name: /exporter pdf/i })).toBeInTheDocument();
     const table = openComparisonTable();
-    expect(table.getAllByRole('cell', { name: '0,00 €' }).length).toBeGreaterThanOrEqual(2);
+    expect(table.getAllByRole('cell', { name: /^0,00\s€$/ }).length).toBeGreaterThanOrEqual(2);
   });
 
   it('restaure le lien fiscal en anglais et donne priorité au lien sur la session', () => {
