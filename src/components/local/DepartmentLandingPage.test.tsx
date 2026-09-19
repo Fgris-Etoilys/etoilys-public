@@ -376,8 +376,8 @@ describe('DepartmentLandingPage', () => {
     expect(new Set(girondeQuestions).size).toBe(girondeQuestions.length);
     expect(new Set(lotQuestions).size).toBe(lotQuestions.length);
     expect(new Set(lotEtGaronneQuestions).size).toBe(lotEtGaronneQuestions.length);
-    expect(girondeQuestions[0]).toBe('Intervenez-vous dans ma commune en Gironde ?');
-    expect(girondeQuestions).toContain(
+    expect(girondeQuestions[0]).toBe('Intervenez-vous dans toute la Gironde ?');
+    expect(girondeQuestions).not.toContain(
       'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?'
     );
     expect(lotQuestions[0]).toBe('Intervenez-vous dans ma commune dans le Lot ?');
@@ -387,6 +387,20 @@ describe('DepartmentLandingPage', () => {
 
     renderDepartmentPage(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6);
     expect(document.body).not.toHaveTextContent(/Aucun tarif fixe/i);
+  });
+
+  it('renders Gironde as full department coverage without retired partial coverage copy', () => {
+    renderDepartmentPage(GIRONDE_LOCAL_LANDING_PAGE_V6);
+
+    expect(
+      screen.getByRole('heading', { level: 2, name: /Où intervenons-nous en Gironde/ })
+    ).toBeInTheDocument();
+    expect(document.body).toHaveTextContent('Etoilys intervient désormais dans toute la Gironde');
+    expect(
+      screen.getByRole('button', { name: 'Intervenez-vous dans toute la Gironde ?' })
+    ).toBeInTheDocument();
+    expect(document.body).not.toHaveTextContent(/zone concentrée autour du Libournais/i);
+    expect(document.body).not.toHaveTextContent(/étudiées selon la localisation du logement/i);
   });
 
   it('switches FAQ background when a local notice exists without a local tax module', () => {
@@ -495,9 +509,8 @@ describe('DepartmentLandingPage', () => {
       ...baseQuestions,
     ]);
     expect(GIRONDE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
-      'Intervenez-vous dans ma commune en Gironde ?',
+      'Intervenez-vous dans toute la Gironde ?',
       ...baseQuestions,
-      'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?',
     ]);
     expect(LOT_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
       'Intervenez-vous dans ma commune dans le Lot ?',

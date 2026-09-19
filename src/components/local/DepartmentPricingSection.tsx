@@ -379,13 +379,32 @@ export function LocalPricingProfileSummary({
       {presentation === 'picker' && pricingProfile.note && (
         <p className="local-v6-pricing-note">{pricingProfile.note}</p>
       )}
-      <div className="local-v6-pricing-public">
-        <span>{pricingProfile.standard.label}</span>
-        <p className="local-v6-pricing-amount">
-          {pricingProfile.standard.amount} <small>{pricingProfile.standard.qualifier}</small>
-        </p>
-      </div>
-      {pricingProfile.partner && (
+      {pricingProfile.kind === 'flat' ? (
+        <div className="local-v6-pricing-public">
+          <span>{pricingProfile.standard.label}</span>
+          <p className="local-v6-pricing-amount">
+            {pricingProfile.standard.amount} <small>{pricingProfile.standard.qualifier}</small>
+          </p>
+        </div>
+      ) : (
+        <dl className="local-v6-pricing-tiers">
+          {pricingProfile.tiers.map((tier) => (
+            <div key={tier.key}>
+              <dt>{tier.label}</dt>
+              <dd>
+                {tier.amount} <small>{tier.qualifier}</small>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {pricingProfile.offer && (
+        <div className="local-v6-pricing-offer">
+          <strong>{pricingProfile.offer.title}</strong>
+          <p>{pricingProfile.offer.description}</p>
+        </div>
+      )}
+      {pricingProfile.kind === 'flat' && pricingProfile.partner && (
         <div className="local-v6-pricing-partner">
           <strong>
             {pricingProfile.partner.amount} {pricingProfile.partner.qualifier}
@@ -396,7 +415,7 @@ export function LocalPricingProfileSummary({
           </p>
         </div>
       )}
-      {pricingProfile.multiProperty && (
+      {pricingProfile.kind === 'flat' && pricingProfile.multiProperty && (
         <details className="local-v6-pricing-multiple">
           <summary>Plusieurs logements dans le même secteur ?</summary>
           <dl>

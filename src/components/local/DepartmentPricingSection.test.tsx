@@ -5,11 +5,40 @@ import DepartmentPricingSection, { LocalPricingProfileSummary } from './Departme
 import { getPricingProfile, PRICING_PROFILES } from '../../content/local/pricing';
 import {
   AVEYRON_LOCAL_LANDING_PAGE_V6,
+  BORDEAUX_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOT_LOCAL_LANDING_PAGE_V6,
-  LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
+import type { PricingProfile } from '../../content/local/pricing';
+
+const PAYS_FOYEN_GIRONDE_CODES = [
+  '33020',
+  '33094',
+  '33160',
+  '33223',
+  '33242',
+  '33246',
+  '33247',
+  '33269',
+  '33277',
+  '33316',
+  '33324',
+  '33354',
+  '33360',
+  '33369',
+  '33377',
+  '33378',
+  '33402',
+  '33462',
+  '33467',
+] as const;
+
+function requireFlatProfile(profile: PricingProfile) {
+  expect(profile.kind).toBe('flat');
+  if (profile.kind !== 'flat') throw new Error('Expected a flat pricing profile');
+  return profile;
+}
 
 afterEach(() => {
   cleanup();
@@ -19,7 +48,7 @@ afterEach(() => {
 describe('Department pricing picker', () => {
   it('requires a commune selection and preserves pricing, keyboard search and fallback paths', async () => {
     const config = DORDOGNE_LOCAL_LANDING_PAGE_V6.pricing.picker;
-    const profile = getPricingProfile(config.defaultPricingProfileId);
+    const profile = requireFlatProfile(getPricingProfile(config.defaultPricingProfileId));
     const fetchMock = vi
       .fn()
       .mockRejectedValueOnce(new Error('Network unavailable'))
@@ -113,77 +142,110 @@ describe('Department pricing picker', () => {
     expect(screen.queryByRole('option', { name: 'Bordeaux' })).not.toBeInTheDocument();
   });
 
-  it('resolves Gironde and Lot-et-Garonne through independent business profile ids', async () => {
-    const girondeAmount = PRICING_PROFILES['gironde-standard'].standard.amount;
-    const bordeauxAmount = PRICING_PROFILES['bordeaux-standard'].standard.amount;
-    const lotEtGaronneAmount = PRICING_PROFILES['lot-et-garonne-standard'].standard.amount;
-    PRICING_PROFILES['gironde-standard'].standard.amount = '111 €';
-    PRICING_PROFILES['bordeaux-standard'].standard.amount = '222 €';
-    PRICING_PROFILES['lot-et-garonne-standard'].standard.amount = '333 €';
+  it('resolves Gironde default communes to tiered pricing and Pays Foyen to Dordogne', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(async (url: string) => ({
+      vi.fn(async () => ({
         ok: true,
-        json: async () =>
-          url.includes('gironde')
-            ? { c: [{ id: '33063', label: 'Bordeaux', departmentCode: '33' }] }
-            : { c: [{ id: '47001', label: 'Agen', departmentCode: '47' }] },
+        json: async () => ({
+          c: [
+            { id: '33063', label: 'Bordeaux', departmentCode: '33' },
+            { id: '33402', label: 'Sainte-Foy-la-Grande', departmentCode: '33' },
+            { id: '33324', label: 'Pineuilh', departmentCode: '33' },
+          ],
+        }),
       }))
     );
 
-    try {
-      const { unmount } = render(
-        <MemoryRouter>
-          <DepartmentPricingSection
-            config={GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker}
-            presentation="panel"
-          />
-        </MemoryRouter>
-      );
-      let input = screen.getByRole('combobox', { name: 'Commune' });
-      fireEvent.focus(input);
-      fireEvent.change(input, {
-        target: { value: 'bor' },
-      });
-      expect(await screen.findByRole('option', { name: 'Bordeaux' })).toBeInTheDocument();
-      fireEvent.keyDown(input, { key: 'Enter' });
-      expect(screen.getByText('Votre meublé à Bordeaux')).toBeInTheDocument();
-      expect(screen.getByText(/222\s€/)).toBeInTheDocument();
-      expect(screen.queryByText(/111\s€/)).not.toBeInTheDocument();
-      expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
-        'gironde-standard'
-      );
-      expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides['33063']).toBe(
-        'bordeaux-standard'
-      );
-      unmount();
+    const { unmount } = render(
+      <MemoryRouter>
+        <DepartmentPricingSection
+          config={GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker}
+          presentation="panel"
+        />
+      </MemoryRouter>
+    );
+    let input = screen.getByRole('combobox', { name: 'Commune' });
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'bor' } });
+    expect(await screen.findByRole('option', { name: 'Bordeaux' })).toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'Enter' });
 
-      render(
-        <MemoryRouter>
-          <DepartmentPricingSection
-            config={LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker}
-            presentation="panel"
-          />
-        </MemoryRouter>
+    expect(screen.getByText('Votre meublé à Bordeaux')).toBeInTheDocument();
+    expect(screen.getByText('Studio / T1')).toBeInTheDocument();
+    expect(screen.getByText(/180\s€/)).toBeInTheDocument();
+    expect(screen.getByText('T2 / T3 / T4')).toBeInTheDocument();
+    expect(screen.getByText(/200\s€/)).toBeInTheDocument();
+    expect(screen.getByText('T5 et plus')).toBeInTheDocument();
+    expect(screen.getByText(/250\s€/)).toBeInTheDocument();
+    expect(screen.getByText('Renouvellement : -20 %')).toBeInTheDocument();
+    expect(
+      screen.getByText(/classement initial a été réalisé par Etoilys ou Gironde Tourisme/i)
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/office de tourisme partenaire/i)).not.toBeInTheDocument();
+    expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
+      'gironde-standard'
+    );
+    expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides['33063']).toBeUndefined();
+    unmount();
+
+    render(
+      <MemoryRouter>
+        <DepartmentPricingSection
+          config={GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker}
+          presentation="panel"
+        />
+      </MemoryRouter>
+    );
+    input = screen.getByRole('combobox', { name: 'Commune' });
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'sainte foy' } });
+    expect(await screen.findByRole('option', { name: 'Sainte-Foy-la-Grande' })).toBeInTheDocument();
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(screen.getByText('Votre meublé à Sainte-Foy-la-Grande')).toBeInTheDocument();
+    expect(screen.getAllByText(/240\s€/).length).toBeGreaterThan(0);
+    expect(screen.queryByText('Studio / T1')).not.toBeInTheDocument();
+    expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides['33402']).toBe(
+      'dordogne-standard'
+    );
+    expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides['33324']).toBe(
+      'dordogne-standard'
+    );
+    PAYS_FOYEN_GIRONDE_CODES.forEach((code) => {
+      expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides[code]).toBe(
+        'dordogne-standard'
       );
-      input = screen.getByRole('combobox', { name: 'Commune' });
-      fireEvent.focus(input);
-      fireEvent.change(input, {
-        target: { value: 'age' },
-      });
-      expect(await screen.findByRole('option', { name: 'Agen' })).toBeInTheDocument();
-      fireEvent.keyDown(input, { key: 'Enter' });
-      expect(screen.getByText('Votre meublé à Agen')).toBeInTheDocument();
-      expect(screen.getByText(/333\s€/)).toBeInTheDocument();
-      expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
-        'lot-et-garonne-standard'
-      );
-      expect(LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides).toEqual({});
-    } finally {
-      PRICING_PROFILES['gironde-standard'].standard.amount = girondeAmount;
-      PRICING_PROFILES['bordeaux-standard'].standard.amount = bordeauxAmount;
-      PRICING_PROFILES['lot-et-garonne-standard'].standard.amount = lotEtGaronneAmount;
-    }
+    });
+    expect(Object.keys(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides)).toHaveLength(
+      PAYS_FOYEN_GIRONDE_CODES.length
+    );
+  });
+
+  it('renders Bordeaux direct pricing with the shared Gironde tiered values', () => {
+    render(
+      <MemoryRouter>
+        <LocalPricingProfileSummary
+          pricingProfile={getPricingProfile(
+            BORDEAUX_LOCAL_LANDING_PAGE_V6.pricing.pricingProfileId
+          )}
+          localityLabel="Bordeaux"
+          presentation="direct"
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Votre meublé à Bordeaux')).toBeInTheDocument();
+    expect(screen.getByText('Studio / T1')).toBeInTheDocument();
+    expect(screen.getByText(/180\s€/)).toBeInTheDocument();
+    expect(screen.getByText('T2 / T3 / T4')).toBeInTheDocument();
+    expect(screen.getByText(/200\s€/)).toBeInTheDocument();
+    expect(screen.getByText('T5 et plus')).toBeInTheDocument();
+    expect(screen.getByText(/250\s€/)).toBeInTheDocument();
+    expect(screen.getByText('Renouvellement : -20 %')).toBeInTheDocument();
+    expect(
+      screen.queryByText(getPricingProfile('bordeaux-standard').note ?? '')
+    ).not.toBeInTheDocument();
   });
 
   it('renders the Lot pricing profile without partner tariff', async () => {
@@ -220,10 +282,12 @@ describe('Department pricing picker', () => {
   });
 
   it('resolves Aveyron through its independent standard profile id', async () => {
-    const aveyronAmount = PRICING_PROFILES['aveyron-standard'].standard.amount;
-    const dordogneAmount = PRICING_PROFILES['dordogne-standard'].standard.amount;
-    PRICING_PROFILES['aveyron-standard'].standard.amount = '444 €';
-    PRICING_PROFILES['dordogne-standard'].standard.amount = '555 €';
+    const aveyronProfile = requireFlatProfile(PRICING_PROFILES['aveyron-standard']);
+    const dordogneProfile = requireFlatProfile(PRICING_PROFILES['dordogne-standard']);
+    const aveyronAmount = aveyronProfile.standard.amount;
+    const dordogneAmount = dordogneProfile.standard.amount;
+    aveyronProfile.standard.amount = '444 €';
+    dordogneProfile.standard.amount = '555 €';
     vi.stubGlobal(
       'fetch',
       vi.fn(async () => ({
@@ -259,8 +323,8 @@ describe('Department pricing picker', () => {
       expect(screen.getByText(/444\s€/)).toBeInTheDocument();
       expect(screen.queryByText(/555\s€/)).not.toBeInTheDocument();
     } finally {
-      PRICING_PROFILES['aveyron-standard'].standard.amount = aveyronAmount;
-      PRICING_PROFILES['dordogne-standard'].standard.amount = dordogneAmount;
+      aveyronProfile.standard.amount = aveyronAmount;
+      dordogneProfile.standard.amount = dordogneAmount;
     }
   });
 

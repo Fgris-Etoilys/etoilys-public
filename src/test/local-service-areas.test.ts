@@ -273,6 +273,7 @@ describe('local service areas data', () => {
     departmentPageConfigs.forEach((config) => {
       expect(getDepartmentInterventionArea(config.departmentId).id).toBe(config.departmentId);
     });
+    expect(getDepartmentInterventionArea('gironde').coverageMode).toBe('department');
   });
 
   it('keeps department sector communes present in their generated commune indexes', () => {

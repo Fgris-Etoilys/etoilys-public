@@ -11,10 +11,10 @@ import {
   LOCAL_V6_FINAL_PRIMARY_ACTION,
   LOCAL_V6_HERO_NOTE,
   LOCAL_V6_PROOF_ITEMS,
+  bordeauxPricingChecklist,
   commonProcedure,
   getLocalHeroImageSizes,
   heroReassurance,
-  pricingChecklist,
 } from '../sharedLocalContent';
 
 const bordeauxHeroImageSizes = getLocalHeroImageSizes('/classement-meuble-tourisme-bordeaux');
@@ -84,7 +84,7 @@ export const BORDEAUX_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
   pricing: {
     mode: 'direct',
     title: 'Combien coûte le classement d’un meublé à Bordeaux ?',
-    checklist: pricingChecklist,
+    checklist: bordeauxPricingChecklist,
     procedureLink: {
       href: '/procedure',
       label: 'Les modalités de la visite',

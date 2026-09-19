@@ -82,7 +82,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
     departmentCode: '33',
     regionId: 'nouvelle-aquitaine',
     status: 'published',
-    coverageMode: 'sectors',
+    coverageMode: 'department',
     displayOrder: 20,
     hubDescription:
       'Entre Bordeaux, les vignobles du Libournais et les paysages de l’Entre-deux-Mers, la Gironde mêle tourisme urbain, viticole et rural. Les meublés de tourisme y prennent des formes très différentes, de l’appartement en ville à la maison au cœur des vignes.',

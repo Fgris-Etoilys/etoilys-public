@@ -49,7 +49,7 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 
 ## Pricing
 
-Les montants et conditions restent dans `src/content/local/pricing.ts`. Le département résout le profil via le picker de communes existant ; la ville affiche directement son profil. Les IDs métier (`aveyron-standard`, `dordogne-standard`, `gironde-standard`, `lot-standard`, `lot-et-garonne-standard`, `bordeaux-standard`) restent indépendants même si leurs valeurs initiales partagent une base interne.
+Les montants et conditions restent dans `src/content/local/pricing.ts`. Le département résout le profil via le picker de communes existant ; la ville affiche directement son profil. Les profils tarifaires sont discriminés par `kind` : `flat` conserve le tarif public unique historique avec éventuel partenaire et multi-logements, tandis que `tiered` affiche plusieurs lignes par typologie et une offre conditionnelle facultative. Les IDs métier (`aveyron-standard`, `dordogne-standard`, `gironde-standard`, `lot-standard`, `lot-et-garonne-standard`, `bordeaux-standard`) restent indépendants même si leurs valeurs partagent une base interne.
 
 ## Consommateurs
 

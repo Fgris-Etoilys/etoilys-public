@@ -1140,6 +1140,61 @@
     letter-spacing: 0;
   }
 
+  .local-v6-pricing-tiers {
+    display: grid;
+    gap: 10px;
+    margin: 0 0 20px;
+  }
+
+  .local-v6-pricing-tiers > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 13px 0;
+    border-bottom: 1px solid #deddd2;
+  }
+
+  .local-v6-pricing-tiers dt {
+    color: #526b5e;
+    font-size: 13px;
+  }
+
+  .local-v6-pricing-tiers dd {
+    margin: 0;
+    color: #173d49;
+    text-align: right;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .local-v6-pricing-tiers small {
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .local-v6-pricing-offer {
+    margin: 0 0 20px;
+    padding: 16px;
+    background: #f6f3eb;
+    border-radius: 6px;
+  }
+
+  .local-v6-pricing-offer strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .local-v6-pricing-offer p {
+    margin: 0;
+    color: #526b5e;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
   .local-v6-pricing-partner {
     display: flex;
     align-items: center;
@@ -1211,6 +1266,17 @@
 
   .local-v6-pricing-cta:focus-visible {
     --tw-ring-color: #526b5e;
+  }
+
+  @media (max-width: 420px) {
+    .local-v6-pricing-tiers > div {
+      display: block;
+    }
+
+    .local-v6-pricing-tiers dd {
+      margin-top: 6px;
+      text-align: left;
+    }
   }
 
   .local-v6-procedure-link {

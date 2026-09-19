@@ -13,8 +13,8 @@ import {
   buildDepartmentFaqItems,
   commonProcedure,
   getLocalHeroImageSizes,
+  girondePricingChecklist,
   heroReassurance,
-  pricingChecklist,
   toCollapsedSectors,
 } from '../sharedLocalContent';
 
@@ -63,9 +63,9 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
   },
   proofItems: LOCAL_V6_PROOF_ITEMS,
   serviceArea: {
-    title: 'Dans quelles communes de Gironde intervenons-nous ?',
+    title: 'Où intervenons-nous en Gironde ?',
     intro:
-      'Etoilys intervient en Gironde sur une zone concentrée autour du Libournais, de la Haute-Gironde, de Bordeaux Métropole, de l’Entre-deux-Mers, de Montesquieu, de la vallée de la Garonne et du nord du Sud-Gironde.',
+      'Etoilys intervient désormais dans toute la Gironde. Pour vous repérer, nous regroupons ci-dessous les principales communes par grands secteurs. Cette liste donne des repères géographiques : elle n’est pas exhaustive.',
     sectors: toCollapsedSectors(GIRONDE_SERVICE_SECTORS),
     communeLinks: {
       Bordeaux: {
@@ -82,7 +82,7 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
     mode: 'picker',
     title: 'Quel tarif pour classer votre meublé en Gironde ?',
     intro: LOCAL_V6_DEPARTMENT_PRICING_INTRO,
-    checklist: pricingChecklist,
+    checklist: girondePricingChecklist,
     procedureLink: {
       href: '/procedure',
       label: 'Les modalités de la visite',
@@ -95,7 +95,25 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
       communeIndexUrl: '/data/communes-gironde-index.v1.json',
       defaultPricingProfileId: 'gironde-standard',
       overrides: {
-        '33063': 'bordeaux-standard',
+        '33020': 'dordogne-standard',
+        '33094': 'dordogne-standard',
+        '33160': 'dordogne-standard',
+        '33223': 'dordogne-standard',
+        '33242': 'dordogne-standard',
+        '33246': 'dordogne-standard',
+        '33247': 'dordogne-standard',
+        '33269': 'dordogne-standard',
+        '33277': 'dordogne-standard',
+        '33316': 'dordogne-standard',
+        '33324': 'dordogne-standard',
+        '33354': 'dordogne-standard',
+        '33360': 'dordogne-standard',
+        '33369': 'dordogne-standard',
+        '33377': 'dordogne-standard',
+        '33378': 'dordogne-standard',
+        '33402': 'dordogne-standard',
+        '33462': 'dordogne-standard',
+        '33467': 'dordogne-standard',
       },
     },
   },
@@ -124,27 +142,11 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
       href: '/contact',
       label: 'Parlons-en',
     },
-    items: buildDepartmentFaqItems(
-      {
-        question: 'Intervenez-vous dans ma commune en Gironde ?',
-        answer: (
-          <>
-            Etoilys intervient en Gironde sur une zone concentrée autour du Libournais, de la
-            Haute-Gironde, de Bordeaux Métropole, de l’Entre-deux-Mers, de Montesquieu, de la vallée
-            de la Garonne et du nord du Sud-Gironde. Consultez les{' '}
-            <a href="#communes">communes de nos secteurs</a> ou indiquez l’adresse de votre logement
-            dans votre demande pour confirmer notre intervention.
-          </>
-        ),
-      },
-      [
-        {
-          question: 'Etoilys intervient-il sur le Bassin d’Arcachon ou le littoral médocain ?',
-          answer:
-            'Les demandes situées sur le Bassin d’Arcachon, le littoral médocain ou les secteurs plus éloignés sont étudiées selon la localisation du logement et l’organisation des tournées. Indiquez la commune dans votre demande pour recevoir une réponse claire avant toute validation.',
-        },
-      ]
-    ),
+    items: buildDepartmentFaqItems({
+      question: 'Intervenez-vous dans toute la Gironde ?',
+      answer:
+        'Oui. Etoilys intervient désormais dans l’ensemble du département de la Gironde, y compris le Bassin d’Arcachon, le Médoc, le Libournais et le Sud-Gironde. Les communes présentées sur cette page servent de repères géographiques : elles ne constituent pas une liste exhaustive.',
+    }),
   },
   finalCta: {
     ...LOCAL_V6_FINAL_CTA_BASE,
