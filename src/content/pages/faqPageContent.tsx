@@ -35,7 +35,7 @@ type FaqPageContent = {
 };
 
 const sourceLinkClassName = 'mt-3 block text-sm font-medium';
-const accreditationLinkClassName = 'font-medium text-primary-300 underline hover:text-primary-400';
+const accreditationLinkClassName = 'editorial-inline-link font-medium';
 
 // eslint-disable-next-line react-refresh/only-export-components -- Local JSX helper for structured content.
 function SourceLink({ href, label }: { href: string; label: string }) {

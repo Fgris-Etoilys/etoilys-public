@@ -12,6 +12,12 @@ Le socle ETOILYS-395 porte les primitives premium communes aux pages cœur et au
 - Le focus cuivre reste le comportement par défaut sur fond clair. Les surfaces `ink` utilisent `editorial-focus-inverse`, avec un contour `paper`. Les champs en erreur gardent leurs styles `ui-field-error`.
 - `Button` conserve ses variantes, tailles, navigation et événements analytics. Pour changer le rendu d'un CTA, ajouter une classe contextuelle partagée sans changer `variant`, `href` ni le libellé analytics dérivé. Si un changement d'apparence impose de changer `variant`, passer `analyticsId` avec l'identifiant historique calculé. `analyticsId` ne doit jamais être rendu comme attribut DOM ; sans cette prop, le fallback historique complet reste la source de vérité.
 
+### Assets De Marque
+
+- Le logo principal UI est `/logo-etoilys-editorial.svg`. Son cartouche monogramme utilise `#285764` (`ink-hover`), le wordmark `#173D49` (`ink`) et la lettre claire `#FFFDF7`.
+- Le cuivre `#A65E36` est réservé aux accents d'interface ; il ne doit pas devenir une couleur principale du logo.
+- Les favicons reprennent le monogramme avec un fond `#285764` et un symbole `#FFFDF7`.
+
 ### Besoin → Composant → Règle D'Usage
 
 | Besoin                       | Composant ou classe                                | Règle d'usage                                                                                                                                                          |

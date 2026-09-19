@@ -25,7 +25,7 @@ export const STRUCTURED_DATA_IDS = {
   cofracAccreditation: `${SITE_URL}/#cofrac-accreditation-3-2394`,
 } as const;
 
-export const ETOILYS_LOGO_URL = `${SITE_URL}/logo-etoilys.svg`;
+export const ETOILYS_LOGO_URL = `${SITE_URL}/logo-etoilys-editorial.svg`;
 export const ETOILYS_ORGANIZATION_IMAGE_URL = `${SITE_URL}${IMAGE_MANIFEST.homeHero.src}`;
 export const ETOILYS_GOOGLE_MAPS_URL =
   'https://www.google.com/maps/place/Etoilys/@44.7878856,0.2862321,199196m/data=!3m2!1e3!4b1!4m6!3m5!1s0x6730df7915ec7283:0x628d60fdd2c1dc09!8m2!3d44.7878856!4d0.286232!16s%2Fg%2F11z5n62vbq';

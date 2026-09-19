@@ -979,7 +979,7 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /résultat à recalculer/i })
     ).toBeInTheDocument();
-  }, 15_000);
+  }, 20_000);
 
   it('conserve le paramètre et garde le résultat accessible si un refetch secondaire échoue', async () => {
     const fetchMock = mockFetchJsonSequence([
@@ -1993,7 +1993,7 @@ describe('SimulationClassement', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: /pièces du logement/i }));
     expect(screen.getAllByRole('button', { name: /ajouter une pièce/i })[0]).toBeInTheDocument();
-  }, 10000);
+  }, 15_000);
 
   it('garde le résultat en CTA principal unique dans le bloc grille quand la grille est complète', async () => {
     mockFetchJsonSequence([

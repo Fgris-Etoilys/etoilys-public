@@ -62,7 +62,7 @@
   }
 
   a {
-    @apply text-themePrimary-1 hover:text-primary-300 transition-colors duration-200;
+    @apply text-ink transition-colors duration-200 hover:text-ink-hover;
   }
 }
 
