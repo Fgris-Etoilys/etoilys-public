@@ -2094,6 +2094,418 @@
     }
   }
 
+  .classement-workspace-topline {
+    @apply mb-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-1;
+  }
+
+  .classement-workspace-intro {
+    @apply mb-6;
+  }
+
+  .classement-category {
+    @apply border-l-2 border-copper py-2 pl-4 text-sm font-medium text-ink;
+  }
+
+  .classement-parameters {
+    @apply border-y border-ink/15 py-3;
+  }
+
+  .classement-journey {
+    @apply my-7 grid grid-cols-3 border-b border-ink/20;
+  }
+
+  .classement-journey-tab {
+    @apply relative min-w-0 border-b-[3px] border-transparent px-3 py-4 text-left text-muted transition-colors hover:bg-surface-neutral;
+  }
+
+  .classement-journey-tab[aria-selected='true'] {
+    @apply border-ink bg-surface-sage text-ink;
+  }
+
+  .classement-journey-title {
+    @apply flex items-center gap-3 text-sm font-semibold;
+  }
+
+  .classement-journey-number {
+    @apply inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-ink/20 text-xs;
+  }
+
+  .classement-journey-tab[aria-selected='true'] .classement-journey-number {
+    @apply border-ink bg-ink text-paper;
+  }
+
+  .classement-journey-summary {
+    @apply mt-2 block text-xs leading-relaxed;
+    padding-left: 40px;
+  }
+
+  .classement-workspace h2,
+  .classement-piece-sections h3,
+  .classement-piece h4 {
+    @apply font-roboto text-ink;
+    letter-spacing: -0.025em;
+  }
+
+  .classement-workspace h2 {
+    font-size: clamp(21px, 2.3vw, 28px);
+  }
+
+  .classement-piece-sections h3 {
+    @apply text-lg font-semibold;
+  }
+
+  .classement-pieces-panel {
+    @apply min-w-0 rounded-editorial border border-ink/15 bg-surface;
+  }
+
+  .classement-panel-heading,
+  .classement-piece-sections {
+    padding: clamp(20px, 3vw, 32px);
+  }
+
+  .classement-piece-sections {
+    @apply space-y-7;
+  }
+
+  .classement-home-summary {
+    @apply border-y border-ink/15 bg-surface-neutral;
+    padding: 22px clamp(20px, 3vw, 32px);
+  }
+
+  .classement-home-summary p:first-child {
+    @apply text-xs;
+  }
+
+  .classement-home-summary p:last-child {
+    @apply mt-2 text-lg text-ink;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .classement-pieces-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: 16px;
+  }
+
+  .classement-piece {
+    @apply flex min-w-0 flex-col justify-between rounded-editorial border border-ink/20 bg-surface p-4;
+  }
+
+  .classement-piece-heading {
+    @apply flex min-w-0 items-center gap-3 text-base font-semibold;
+    overflow-wrap: anywhere;
+  }
+
+  .classement-piece-icon {
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-sage text-ink;
+  }
+
+  .classement-piece-facts {
+    @apply my-5 flex flex-wrap gap-x-6 gap-y-3;
+  }
+
+  .classement-piece-facts dt {
+    @apply text-xs text-muted;
+  }
+
+  .classement-piece-facts dd {
+    @apply mt-1.5 text-lg font-medium text-ink;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .classement-piece-actions {
+    @apply -mb-1 -mr-1 flex items-center justify-between border-t border-ink/10 pt-2;
+  }
+
+  .classement-piece-add {
+    @apply flex min-h-[132px] flex-col items-center justify-center gap-3 rounded-editorial border border-dashed border-ink/30 bg-paper p-5 text-ink transition-colors hover:border-copper hover:bg-surface-warm;
+  }
+
+  .classement-piece-continue {
+    @apply flex flex-wrap items-center justify-between gap-4 border-t border-ink/15 pt-6;
+  }
+
+  .classement-piece-continue > button {
+    @apply bg-ink text-paper hover:bg-ink-hover hover:text-paper;
+  }
+
+  .classement-feedback {
+    @apply min-w-0 bg-surface-sage;
+    padding: clamp(24px, 5vw, 64px);
+  }
+
+  .classement-feedback-stale {
+    @apply border-warning-500/30 bg-surface-warm;
+  }
+
+  .classement-piece-overlay {
+    @apply flex items-end justify-end bg-ink/40;
+    backdrop-filter: blur(3px);
+  }
+
+  .classement-piece-dialog {
+    @apply flex w-full min-w-0 flex-col overflow-y-auto bg-paper text-ink shadow-xl;
+    max-width: 540px;
+    max-height: 100dvh;
+    height: 100%;
+    overscroll-behavior: contain;
+  }
+
+  .classement-piece-dialog-heading {
+    @apply relative border-b border-ink/15 px-7 py-7;
+    padding-right: 70px;
+  }
+
+  .classement-piece-dialog-heading h3 {
+    @apply text-2xl;
+  }
+
+  .classement-dialog-close {
+    @apply absolute right-4 top-4 inline-flex h-11 w-11 items-center justify-center rounded-control text-ink hover:bg-surface-neutral;
+  }
+
+  .classement-piece-dialog-form {
+    @apply flex flex-1 flex-col gap-5 p-7;
+  }
+
+  .classement-piece-dialog-actions {
+    @apply mt-auto flex flex-col gap-3 border-t border-ink/15 pt-6;
+  }
+
+  .classement-opening-switch {
+    @apply relative inline-flex h-11 w-14 shrink-0 items-center rounded-control;
+  }
+
+  .classement-opening-switch::before {
+    content: '';
+    @apply absolute inset-x-0 h-8 rounded-full bg-ink/25 transition-colors;
+  }
+
+  .classement-opening-switch[aria-checked='true']::before {
+    @apply bg-ink;
+  }
+
+  .classement-opening-thumb {
+    @apply absolute left-1 h-6 w-6 rounded-full bg-white shadow-sm transition-transform;
+  }
+
+  .classement-opening-switch[aria-checked='true'] .classement-opening-thumb {
+    transform: translateX(24px);
+  }
+
+  @media (max-width: 680px) {
+    .classement-workspace-topline > span {
+      @apply hidden;
+    }
+
+    .classement-journey {
+      @apply my-5;
+    }
+
+    .classement-journey-tab {
+      @apply px-2 py-3;
+    }
+
+    .classement-journey-title {
+      @apply flex-col items-start gap-2 text-xs;
+      min-height: 62px;
+    }
+
+    .classement-journey-summary {
+      @apply pl-0 text-[11px];
+      line-height: 1.5;
+    }
+
+    .classement-parameters .simulator-tool-link {
+      @apply justify-start;
+    }
+
+    .classement-piece-dialog {
+      height: auto;
+      max-height: 92dvh;
+      max-width: none;
+      border-radius: 14px 14px 0 0;
+    }
+
+    .classement-piece-dialog-heading,
+    .classement-piece-dialog-form {
+      @apply p-5;
+    }
+
+    .classement-piece-dialog-heading {
+      padding-right: 64px;
+    }
+
+    .classement-piece-dialog-actions {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .classement-piece-overlay * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  .classement-grid :is(h2, h3, h4, h5, h6),
+  .criterion-help-panel :is(h3, h4) {
+    @apply font-roboto;
+  }
+
+  .classement-grid-summary {
+    @apply rounded-editorial border border-ink/10 bg-surface p-5 md:p-7;
+  }
+
+  .classement-grid-progress {
+    @apply mt-6 border-t border-ink/10 pt-5;
+  }
+
+  .classement-grid-progress-bar {
+    @apply mt-3 block h-1.5 w-full overflow-hidden rounded-full border-0 bg-ink/10;
+    appearance: none;
+    accent-color: rgb(var(--color-ink));
+  }
+
+  .classement-grid-progress-bar::-webkit-progress-bar {
+    background: rgb(var(--color-ink) / 0.1);
+  }
+
+  .classement-grid-progress-bar::-webkit-progress-value {
+    border-radius: 999px;
+    background: rgb(var(--color-ink));
+  }
+
+  .classement-grid-progress-bar::-moz-progress-bar {
+    border-radius: 999px;
+    background: rgb(var(--color-ink));
+  }
+
+  .classement-grid-nav {
+    @apply sticky flex flex-col py-1;
+    top: calc(var(--etoilys-header-height, 80px) + 24px);
+    max-height: calc(100dvh - var(--etoilys-header-height, 80px) - 48px);
+  }
+
+  .classement-grid-mobile-nav {
+    @apply min-w-0 rounded-editorial border border-ink/10 bg-surface px-4 py-3;
+  }
+
+  .classement-grid-search {
+    @apply flex items-end gap-2;
+  }
+
+  .classement-grid-search .ui-field {
+    @apply min-h-[48px] bg-surface;
+  }
+
+  .classement-grid-section,
+  .classement-criterion,
+  .classement-grid {
+    scroll-margin-top: calc(var(--etoilys-header-height, 80px) + 24px);
+  }
+
+  .classement-criterion-list {
+    @apply divide-y divide-ink/10 overflow-hidden rounded-editorial border border-ink/10 bg-surface;
+  }
+
+  .classement-criterion {
+    @apply grid min-w-0 gap-4 p-4 md:p-5;
+  }
+
+  .classement-criterion:focus {
+    outline: 2px solid rgb(var(--color-copper));
+    outline-offset: -2px;
+  }
+
+  .classement-criterion-main {
+    @apply flex min-w-0 items-start justify-between gap-3;
+  }
+
+  .classement-criterion-answer {
+    @apply min-w-0;
+  }
+
+  .classement-response-options {
+    @apply flex flex-wrap gap-2;
+  }
+
+  .classement-response-button {
+    flex: 1 1 auto;
+  }
+
+  .classement-result {
+    @apply overflow-hidden rounded-editorial border border-ink/15 bg-surface;
+  }
+
+  .classement-result-verdict {
+    @apply border-b border-ink/10 p-5 md:p-8;
+  }
+
+  .classement-result-scores {
+    @apply grid md:grid-cols-2;
+  }
+
+  .classement-result-score {
+    @apply min-w-0 p-5 md:p-7;
+  }
+
+  .classement-result-score + .classement-result-score {
+    @apply border-t border-ink/10 md:border-l md:border-t-0;
+  }
+
+  .classement-result-diagnostic {
+    @apply border-t border-ink/15 p-5 md:p-7;
+  }
+
+  .criterion-help-overlay {
+    @apply fixed inset-0 z-[90] flex items-end justify-end bg-ink/40;
+    backdrop-filter: blur(3px);
+  }
+
+  .criterion-help-panel {
+    @apply flex w-full flex-col overflow-hidden rounded-t-xl bg-surface text-ink shadow-2xl;
+    max-width: 640px;
+    height: min(94dvh, 100%);
+  }
+
+  .criterion-help-header {
+    @apply flex shrink-0 items-start justify-between gap-4 border-b border-ink/15 px-5 py-5 md:px-8;
+  }
+
+  .criterion-help-content {
+    @apply min-h-0 space-y-7 overflow-y-auto overscroll-contain px-5 py-6 md:px-8 md:py-8;
+  }
+
+  .criterion-help-content:focus-visible {
+    outline: 2px solid rgb(var(--color-copper));
+    outline-offset: -3px;
+  }
+
+  .criterion-help-content h4 {
+    @apply mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted;
+  }
+
+  .criterion-help-content p,
+  .criterion-help-content li {
+    line-height: 1.7;
+  }
+
+  @media (min-width: 768px) {
+    .criterion-help-panel {
+      @apply rounded-none border-l border-ink/15;
+      height: 100dvh;
+    }
+  }
+
+  @media (min-width: 1150px) {
+    .classement-criterion {
+      grid-template-columns: minmax(0, 1fr) 236px;
+      align-items: center;
+      gap: 24px;
+    }
+  }
+
   .simulator-ui h1,
   .simulator-ui h2,
   .simulator-ui h3,

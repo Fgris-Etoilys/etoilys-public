@@ -57,11 +57,7 @@ function renderTextBlocks(value: string) {
 
   return blocks.map((block, index) => {
     if (block.type === 'paragraph') {
-      return (
-        <p key={`${block.text}-${index}`} className="text-gray-700">
-          {block.text}
-        </p>
-      );
+      return <p key={`${block.text}-${index}`}>{block.text}</p>;
     }
 
     return (
@@ -89,11 +85,11 @@ function CriterionIllustration({ aide }: { aide: CritereAide }) {
   }
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center rounded-editorial border border-ink/10 bg-white p-2">
       <img
         src={aide.illustration}
         alt={`Illustration ${aide.titre}`}
-        className="h-auto max-w-full rounded-lg border border-gray-200 shadow-sm"
+        className="h-auto max-w-full rounded-control"
       />
     </div>
   );
@@ -107,17 +103,48 @@ export default function CriterionHelpDialog({
 }: CriterionHelpDialogProps) {
   const titleId = useId();
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const dialogRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!criterion) {
       return undefined;
     }
 
+    const trigger = document.activeElement;
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     closeButtonRef.current?.focus();
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      if (trigger instanceof HTMLElement && trigger.isConnected) {
+        trigger.focus({ preventScroll: true });
+      }
+    };
+  }, [criterion]);
+
+  useEffect(() => {
+    if (!criterion) {
+      return undefined;
+    }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         onClose();
+      }
+      if (event.key === 'Tab') {
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button:not(:disabled), a[href], [tabindex="0"]'
+        );
+        const first = focusable?.[0];
+        const last = focusable?.[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
       }
     };
 
@@ -139,26 +166,30 @@ export default function CriterionHelpDialog({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[90] flex min-h-dvh items-center justify-center overflow-y-auto bg-gray-900/35 px-4 py-6"
+      className="criterion-help-overlay"
       data-testid="criterion-help-dialog-overlay"
       onClick={onClose}
     >
       <section
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="w-full max-w-2xl rounded-editorial border border-ink/15 bg-white p-5 shadow-[0_8px_30px_rgb(var(--color-ink)/0.12)] md:p-6"
+        className="criterion-help-panel"
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="mb-6 flex items-start justify-between gap-4">
-          <h3 id={titleId} className="flex items-center gap-2 text-xl text-gray-900">
+        <div className="criterion-help-header">
+          <h3
+            id={titleId}
+            className="flex min-h-11 items-center gap-3 text-base font-semibold text-ink"
+          >
             <BookOpen className="h-5 w-5 shrink-0 text-copper" aria-hidden="true" />
             <span>Aide - Critère {criterion.num_critere}</span>
           </h3>
           <button
             ref={closeButtonRef}
             type="button"
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-editorial border border-ink/15 text-muted transition-colors duration-200 hover:border-copper hover:text-copper focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2 motion-reduce:transition-none"
+            className="ui-focus inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-control border border-ink/15 text-muted transition-colors duration-200 hover:border-copper hover:bg-paper hover:text-copper motion-reduce:transition-none"
             aria-label="Fermer l’aide du critère"
             onClick={onClose}
           >
@@ -166,19 +197,20 @@ export default function CriterionHelpDialog({
           </button>
         </div>
 
-        <div className="max-h-[70vh] space-y-6 overflow-y-auto pr-1">
+        <div
+          className="criterion-help-content"
+          tabIndex={0}
+          role="region"
+          aria-label="Explications du critère"
+        >
           <div>
-            <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-copper">
-              Intitulé
-            </h4>
-            <p className="text-lg font-semibold leading-relaxed text-gray-900">
-              {dialogContent.titre}
-            </p>
+            <h4>Intitulé</h4>
+            <p className="text-xl font-medium leading-relaxed text-ink">{dialogContent.titre}</p>
           </div>
 
           {isLoading && !aide && (
             <div
-              className="rounded-editorial border border-ink/15 bg-paper p-4 text-sm font-medium text-ink"
+              className="rounded-editorial bg-paper p-4 text-sm font-medium text-ink"
               role="status"
             >
               Chargement de l’aide contextuelle...
@@ -191,10 +223,8 @@ export default function CriterionHelpDialog({
 
           {!isLoading && (
             <div>
-              <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
-                Description
-              </h4>
-              <div className="space-y-3 text-sm leading-relaxed text-gray-700">
+              <h4>Description</h4>
+              <div className="space-y-3 text-sm leading-relaxed text-ink">
                 {renderTextBlocks(dialogContent.description)}
               </div>
 
@@ -205,7 +235,7 @@ export default function CriterionHelpDialog({
               )}
 
               {dialogContent.numero === 57 && dialogContent.description_suite && (
-                <div className="mt-4 space-y-3 text-sm leading-relaxed text-gray-700">
+                <div className="mt-4 space-y-3 text-sm leading-relaxed text-ink">
                   {renderTextBlocks(dialogContent.description_suite)}
                 </div>
               )}
@@ -214,16 +244,14 @@ export default function CriterionHelpDialog({
 
           {!isLoading && dialogContent.non_applicabilite && (
             <div>
-              <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
-                Non-applicabilité
-              </h4>
-              <div className="rounded-editorial border border-warning-200 bg-warning-100 p-4 shadow-sm">
+              <h4>Non-applicabilité</h4>
+              <div className="rounded-control border-l-2 border-warning-500 bg-warning-100/60 p-4">
                 <div className="flex items-start gap-2">
                   <AlertTriangle
                     className="mt-0.5 h-5 w-5 shrink-0 text-warning-500"
                     aria-hidden="true"
                   />
-                  <div className="text-sm font-medium leading-relaxed text-warning-500">
+                  <div className="text-sm leading-relaxed text-ink">
                     {renderTextBlocks(dialogContent.non_applicabilite)}
                   </div>
                 </div>
@@ -233,13 +261,11 @@ export default function CriterionHelpDialog({
 
           {!isLoading && dialogContent.notes && (
             <div>
-              <h4 className="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-900">
-                Notes
-              </h4>
-              <div className="rounded-editorial border border-ink/15 bg-paper p-4 shadow-sm">
+              <h4>Notes</h4>
+              <div className="rounded-control border-l-2 border-copper bg-paper p-4">
                 <div className="flex items-start gap-2">
                   <Info className="mt-0.5 h-5 w-5 shrink-0 text-copper" aria-hidden="true" />
-                  <div className="text-sm font-medium leading-relaxed text-ink">
+                  <div className="text-sm leading-relaxed text-ink">
                     {renderTextBlocks(dialogContent.notes)}
                   </div>
                 </div>

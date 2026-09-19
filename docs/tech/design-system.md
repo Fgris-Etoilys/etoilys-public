@@ -123,6 +123,18 @@ Les deux simulateurs utilisent les primitives CSS `simulator-*` de `src/index.cs
 - **ETOILYS-414** : les routes locales publiques Dordogne, Bergerac, Gironde, Bordeaux et Lot-et-Garonne passent par `LocalLandingPageV6` via les wrappers fins `CityLandingPage` / `DepartmentLandingPage`. Voir `docs/tech/local-framework-v6.md`.
 - En V6 locale, `editorial-notice` occupe la largeur du conteneur éditorial, avec son texte limité en lecture. Une notice est rendue sur `bg-paper`; la FAQ qui suit bascule sur `bg-surface-neutral` pour conserver l’alternance des surfaces.
 
+### Workspace De Classement
+
+Le classement reprend `simulator-page`, `simulator-intro`, les champs natifs, `simulator-tool-link`, `simulator-warning`, `simulator-disclosure` et `simulator-next`. Il conserve une composition propre au parcours long, sans reprendre le split saisie/résultat des simulateurs de comparaison.
+
+- `classement-journey` présente trois tabs libres, avec résumé, sélection et état terminé. Les trois vues restent accessibles sur mobile ; ce rail ne devient pas sticky. Conserver le roving tabIndex, les flèches, Home/End et les associations tab/panel.
+- Les fiches `classement-piece` présentent les surfaces et couchages sans sous-cartes. `classement-home-summary` rassemble les quatre indicateurs du logement ; les avertissements restent visibles et non bloquants.
+- La grille utilise des rangées `classement-criterion` regroupées par rubrique. Le sommaire reste sticky sur desktop et devient un select natif sur mobile. Les réponses ont une cible de 44 px minimum, une sélection explicite et leurs valeurs métier inchangées.
+- L’édition de pièce et l’aide sont des dialogs latéraux sur desktop, des panneaux bas sur mobile. Ils contiennent le focus, se ferment avec Escape, restaurent le focus au déclencheur et bloquent le défilement de la page. Le contenu reste défilable sur petit écran.
+- `classement-result` hiérarchise verdict, scores backend et corrections ; les détails ne concurrencent pas le verdict. Le CTA officiel reprend le panneau partagé `simulator-next`.
+
+Ces patterns utilisent uniquement les tokens existants, avec leurs styles dans `src/index.css`. Aucune nouvelle variante de `Button`, aucun changement d’identifiant analytics, aucun moteur de formulaire ou de persistance. Garder les imports CSS au point d’entrée de l’application pour que les composants restent compatibles avec le prérendu Node.
+
 ## Compte Rendu Daté Des Validations
 
 ### 2026-09-15 - Passe ETOILYS-395

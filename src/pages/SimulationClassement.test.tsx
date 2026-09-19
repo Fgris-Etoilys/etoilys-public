@@ -519,6 +519,29 @@ const expandSimulationParameters = async () => {
 };
 
 describe('SimulationClassement', () => {
+  it('confine le focus dans la pièce et le restitue au déclencheur', async () => {
+    mockFetchJsonSequence([{ body: simulationResponse }, { body: emptyLogementResponse }]);
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+    const trigger = await screen.findByRole('button', { name: /^ajouter une pièce$/i });
+    trigger.focus();
+    fireEvent.click(trigger);
+
+    expect(screen.getByLabelText(/type de pièce/i)).toHaveFocus();
+    const closeButton = screen.getByRole('button', { name: /fermer la pièce/i });
+    const cancelButton = screen.getByRole('button', { name: /annuler/i });
+    closeButton.focus();
+    expect(closeButton).toHaveFocus();
+    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+    expect(cancelButton).toHaveFocus();
+    fireEvent.keyDown(window, { key: 'Tab' });
+    expect(closeButton).toHaveFocus();
+    fireEvent.keyDown(window, { key: 'Escape' });
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
+    expect(document.body.style.overflow).toBe('');
+  });
+
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
@@ -583,9 +606,6 @@ describe('SimulationClassement', () => {
     expect(
       within(screen.getByTestId('piece-card-piece-1')).getByText(/2 personnes/i)
     ).toBeInTheDocument();
-    expect(screen.getByTestId('piece-card-piece-1')).toHaveClass('min-h-52');
-    expect(screen.getByTestId('piece-card-piece-1')).toHaveClass('h-full');
-    expect(screen.getByTestId('piece-card-piece-1').className).not.toContain('aspect-square');
     expect(screen.getByRole('button', { name: /modifier chambre 1/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /supprimer chambre 1/i })).toBeInTheDocument();
     expect(
@@ -595,12 +615,6 @@ describe('SimulationClassement', () => {
       screen.getByRole('button', { name: /ajouter un espace extérieur/i })
     ).toBeInTheDocument();
     expect(screen.getByText(/^Ajouter un espace extérieur$/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /ajouter une pièce intérieure/i })).toHaveClass(
-      'min-h-52'
-    );
-    expect(
-      screen.getByRole('button', { name: /ajouter une pièce intérieure/i }).className
-    ).not.toContain('aspect-square');
     fireEvent.click(screen.getByRole('button', { name: /^ajouter une pièce$/i }));
     expect(screen.getByRole('dialog', { name: /ajouter une pièce/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/type de pièce/i)).toHaveValue('CHAMBRE');
@@ -1781,7 +1795,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     const emptyPiecesWarning = await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
-    const piecesHeading = screen.getByRole('heading', { name: /pièces du logement/i });
+    const piecesHeading = screen.getByRole('heading', { name: /pièces de votre logement/i });
     const goToGridButtons = screen.getAllByRole('button', {
       name: /passer à la grille de contrôle/i,
     });
@@ -2295,7 +2309,7 @@ describe('SimulationClassement', () => {
     expectTextMatching(/estimation/i, /réponses/i);
     const resultTab = screen.getByRole('tab', { name: /résultat/i });
     expect(within(resultTab).getByText(/classement atteint/i)).toBeInTheDocument();
-    expect(resultTab.querySelector('.text-success-400')).not.toBeNull();
+    expect(resultTab).toHaveAttribute('data-complete', 'true');
     expect(screen.getByText(/^160 \/ 140 requis$/i)).toBeInTheDocument();
     expect(screen.getByText(/^160 \/ 155 requis$/i)).toBeInTheDocument();
     expect(screen.getAllByText(/^objectif atteint$/i)).toHaveLength(2);
@@ -2390,7 +2404,7 @@ describe('SimulationClassement', () => {
     expect(screen.getByText(/3 étoiles.*pas encore atteint/i)).toBeInTheDocument();
     const resultTab = screen.getByRole('tab', { name: /résultat/i });
     expect(within(resultTab).getByText(/calcul à jour/i)).toBeInTheDocument();
-    expect(resultTab.querySelector('.text-success-400')).toBeNull();
+    expect(resultTab).not.toHaveAttribute('data-complete');
     expect(
       screen.getByRole('heading', { name: /critères obligatoires non validés/i })
     ).toBeInTheDocument();
