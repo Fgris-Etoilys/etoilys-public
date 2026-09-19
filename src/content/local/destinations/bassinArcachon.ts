@@ -21,7 +21,7 @@ export const BASSIN_ARCACHON_TAX_MODULE: LocalV6TaxModule = {
   title: 'Sur le Bassin, les étoiles peuvent aussi alléger la taxe de séjour',
   highlightedTitleText: 'la taxe de séjour',
   paragraphs: [
-    'Du Cap Ferret à Arcachon, en passant par Andernos, Gujan-Mestras ou Pyla-sur-Mer, le Bassin concentre une offre de locations saisonnières particulièrement dense. Dans ce contexte, le classement apporte à votre logement un repère officiel simple à comprendre pour les voyageurs — et il peut aussi avoir un effet très concret sur le coût de leur séjour.',
+    'Du Cap Ferret à Arcachon, en passant par Andernos, Gujan-Mestras ou Pyla-sur-Mer, le Bassin concentre une offre de locations saisonnières particulièrement dense. Dans ce contexte, le classement apporte à votre logement un repère officiel simple à comprendre pour les voyageurs. Il peut aussi avoir un effet très concret sur le coût de leur séjour.',
     'À Arcachon, pour une réservation à 250 € la nuit hors taxe de séjour et six adultes, un meublé non classé représente 13,86 € de taxe de séjour par nuit, contre 7,78 € pour un meublé classé 2 étoiles. Cela représente 6,08 € de moins par nuit, soit 42,56 € sur une semaine.',
   ],
   exampleLabel: 'Exemple à Arcachon',

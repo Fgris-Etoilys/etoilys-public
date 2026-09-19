@@ -248,6 +248,22 @@ describe('Department pricing picker', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('allows direct pricing to override the locality heading', () => {
+    render(
+      <MemoryRouter>
+        <LocalPricingProfileSummary
+          pricingProfile={getPricingProfile('gironde-standard')}
+          localityLabel="Bassin d’Arcachon"
+          localityHeading="Votre meublé sur le Bassin d’Arcachon"
+          presentation="direct"
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Votre meublé sur le Bassin d’Arcachon')).toBeInTheDocument();
+    expect(screen.queryByText('Votre meublé à Bassin d’Arcachon')).not.toBeInTheDocument();
+  });
+
   it('renders the Lot pricing profile without partner tariff', async () => {
     vi.stubGlobal(
       'fetch',

@@ -73,7 +73,7 @@ describe('ClassementBassinArcachon', () => {
       'Votre classement en trois étapes',
       'Pourquoi choisir Etoilys pour votre classement sur le Bassin d’Arcachon ?',
       'Sur le Bassin, les étoiles peuvent aussi alléger la taxe de séjour',
-      'Questions fréquentes sur le classement sur le Bassin d’Arcachon',
+      'Questions fréquentes sur le classement dans le Bassin d’Arcachon',
       'Demandez le classement de votre meublé sur le Bassin d’Arcachon',
     ]);
 
@@ -92,6 +92,8 @@ describe('ClassementBassinArcachon', () => {
       '/classement-meuble-tourisme-gironde'
     );
     expect(screen.getByText('Studio / T1')).toBeInTheDocument();
+    expect(screen.getByText('Votre meublé sur le Bassin d’Arcachon')).toBeInTheDocument();
+    expect(screen.queryByText('Votre meublé à Bassin d’Arcachon')).not.toBeInTheDocument();
     expect(screen.getByText('T2 / T3 / T4')).toBeInTheDocument();
     expect(screen.getByText('T5 et plus')).toBeInTheDocument();
     expect(document.body).toHaveTextContent(/180\s€\s*TTC/);

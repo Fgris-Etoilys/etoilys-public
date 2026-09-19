@@ -96,6 +96,7 @@ describe('indexnow-submit helpers', () => {
       [
         'M\tsrc/content/local/v6Pages.tsx',
         'M\tsrc/content/local/departments/dordognePage.tsx',
+        'M\tsrc/content/local/destinations/bassinArcachonPage.tsx',
         'M\tsrc/pages/locales/ClassementDordogne.tsx',
       ].join('\n')
     );
@@ -104,6 +105,7 @@ describe('indexnow-submit helpers', () => {
     expect(urls).toContain('https://www.etoilys.fr/zones-intervention');
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-dordogne');
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-gironde');
+    expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-bassin-arcachon');
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-lot');
     expect(urls).toContain('https://www.etoilys.fr/classement-meuble-tourisme-lot-et-garonne');
   });

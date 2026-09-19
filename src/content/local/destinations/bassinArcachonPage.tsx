@@ -49,7 +49,7 @@ export const BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
       ),
       note: LOCAL_V6_HERO_NOTE,
       credit: {
-        sourceLabel: 'Grand Parc - Bordeaux, France from France / Wikimedia Commons',
+        sourceLabel: 'Grand Parc - Bordeaux, France / Wikimedia Commons',
         sourceHref:
           'https://commons.wikimedia.org/wiki/File:Bassin_d%27Arcachon_-_Cabanes_Tchanqu%C3%A9es_sur_l%27%C3%AFle_aux_oiseaux_-_Picture_Image_Photography_(14524551963).jpg',
         licenseLabel: 'CC BY 2.0',
@@ -92,6 +92,7 @@ export const BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
   pricing: {
     mode: 'direct',
     title: 'Combien coûte le classement d’un meublé sur le Bassin d’Arcachon ?',
+    localityHeading: 'Votre meublé sur le Bassin d’Arcachon',
     checklist: bassinArcachonPricingChecklist,
     procedureLink: {
       href: '/procedure',
@@ -127,7 +128,7 @@ export const BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
   localModule: BASSIN_ARCACHON_TAX_MODULE,
   faq: {
     eyebrow: 'AVANT DE VOUS LANCER',
-    title: 'Questions fréquentes sur le classement sur le Bassin d’Arcachon',
+    title: 'Questions fréquentes sur le classement dans le Bassin d’Arcachon',
     intro: 'Un point particulier sur votre logement ?',
     contactLink: {
       href: '/contact',

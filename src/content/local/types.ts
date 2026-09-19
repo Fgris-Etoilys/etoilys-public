@@ -228,6 +228,7 @@ export interface LocalV6DirectPricing {
   mode: 'direct';
   title: string;
   intro?: string;
+  localityHeading?: string;
   checklist: readonly string[];
   procedureLink: {
     href: string;

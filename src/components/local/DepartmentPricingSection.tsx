@@ -362,10 +362,12 @@ export default function DepartmentPricingSection({
 export function LocalPricingProfileSummary({
   pricingProfile,
   localityLabel,
+  localityHeading,
   presentation = 'picker',
 }: {
   pricingProfile: PricingProfile;
   localityLabel?: string;
+  localityHeading?: string | undefined;
   presentation?: 'direct' | 'picker';
 }) {
   return (
@@ -375,7 +377,11 @@ export function LocalPricingProfileSummary({
       }`}
       aria-live="polite"
     >
-      {localityLabel && <p className="local-v6-pricing-locality">Votre meublé à {localityLabel}</p>}
+      {(localityHeading || localityLabel) && (
+        <p className="local-v6-pricing-locality">
+          {localityHeading ?? <>Votre meublé à {localityLabel}</>}
+        </p>
+      )}
       {presentation === 'picker' && pricingProfile.note && (
         <p className="local-v6-pricing-note">{pricingProfile.note}</p>
       )}

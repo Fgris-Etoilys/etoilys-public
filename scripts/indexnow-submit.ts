@@ -295,12 +295,8 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
       }
 
       if (
-        normalizedPath === 'src/content/local/registry.ts' ||
-        normalizedPath === 'src/content/local/sharedLocalContent.ts' ||
-        normalizedPath === 'src/content/local/sharedLocalContent.tsx' ||
-        normalizedPath === 'src/content/local/v6Pages.tsx' ||
-        normalizedPath.startsWith('src/content/local/cities/') ||
-        normalizedPath.startsWith('src/content/local/departments/') ||
+        normalizedPath.startsWith('src/content/local/') ||
+        normalizedPath.startsWith('src/components/local/') ||
         normalizedPath.startsWith('src/pages/locales/')
       ) {
         if (normalizedPath === 'src/content/local/registry.ts') {

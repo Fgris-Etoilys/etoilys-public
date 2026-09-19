@@ -39,14 +39,14 @@ export default function InterventionAreaCards({
             <p className="text-sm leading-comfortable text-muted">{area.description}</p>
           </Link>
           {area.localPages.length > 0 && (
-            <footer className="shrink-0 border-t border-ink/10 bg-surface-warm/55 px-5 py-4">
-              <p className="mb-2 text-xs font-medium text-muted">Dans ce département</p>
-              <ul className="flex flex-col gap-2">
+            <footer className="shrink-0 border-t border-ink/10 bg-surface-warm/55 px-5 py-3">
+              <p className="mb-1.5 text-xs font-medium text-muted">Dans ce département</p>
+              <ul className="flex flex-col gap-1">
                 {area.localPages.map((localPage) => (
                   <li key={localPage.id}>
                     <Link
                       to={localPage.path}
-                      className="editorial-inline-link ui-focus inline-flex min-h-11 items-center rounded-sm text-sm font-semibold leading-snug text-ink"
+                      className="editorial-inline-link ui-focus inline-flex min-h-10 items-center rounded-sm text-sm font-semibold leading-snug text-ink"
                     >
                       {localPage.hubLabel ?? localPage.label}
                       <ArrowRight className="ml-2 h-3.5 w-3.5" aria-hidden="true" />

@@ -493,6 +493,7 @@ function LocalV6PricingSection({ config }: { config: LocalLandingPageV6Config })
             <LocalPricingProfileSummary
               pricingProfile={getPricingProfile(config.pricing.pricingProfileId)}
               localityLabel={config.scope === 'city' ? config.city : config.destination}
+              localityHeading={config.pricing.localityHeading}
               presentation="direct"
             />
           </div>
