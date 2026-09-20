@@ -14,10 +14,6 @@ import Button from '../components/ui/Button';
 import SimulatorNextSteps from '../components/simulator/SimulatorNextSteps';
 import SimulatorField from '../components/simulator/SimulatorField';
 import Tooltip from '../components/ui/Tooltip';
-import ResponsiveComparisonTable, {
-  type ResponsiveComparisonColumn,
-  type ResponsiveComparisonRow,
-} from '../components/ui/ResponsiveComparisonTable';
 import { useToast } from '../components/ui/Toast';
 import {
   loadTaxeSejourDataset,
@@ -675,97 +671,6 @@ export default function SimulateurTaxeSejour() {
 
     return findBestSavings(result.rows, nonClasseAmount);
   }, [result, nonClasseAmount]);
-
-  const resultColumns = useMemo<ResponsiveComparisonColumn[]>(
-    () => [
-      {
-        key: 'category',
-        label: localize('Catégorie'),
-        mobileLabel: localize('Catégorie'),
-        align: 'center',
-        widthClassName: 'w-1/4',
-      },
-      {
-        key: 'delta',
-        label: localize('Économie / surcoût'),
-        mobileLabel: localize('Écart vs non classé'),
-        align: 'center',
-        widthClassName: 'w-5/12',
-      },
-      {
-        key: 'amount',
-        label: localize('Taxe de séjour totale'),
-        mobileLabel: localize('Taxe de séjour totale'),
-        align: 'center',
-        widthClassName: 'w-1/3',
-      },
-    ],
-    [localize]
-  );
-
-  const resultRows = useMemo<ResponsiveComparisonRow[]>(() => {
-    if (!result) {
-      return [];
-    }
-
-    const nonClassReference = nonClasseAmount ?? 0;
-
-    return result.rows.map((row, index) => {
-      const delta = row.amount - nonClassReference;
-      const isReferenceRow = row.category === 'Non classé';
-      const mobileCardClassName = isReferenceRow ? 'border-ink/15 bg-paper' : null;
-      const comparisonRow: ResponsiveComparisonRow = {
-        key: row.category,
-        rowClassName: isReferenceRow
-          ? 'border-b border-ink/15 bg-paper'
-          : index % 2 === 0
-            ? 'bg-white border-b border-gray-100'
-            : 'bg-gray-50',
-        cells: {
-          category: (
-            <div className="flex flex-col items-center justify-center gap-1">
-              <span className="font-semibold">{localize(row.category)}</span>
-              {row.status === 'indicatif' && (
-                <span className="text-xs font-semibold text-warning-500">
-                  {localize('indicatif')}
-                </span>
-              )}
-            </div>
-          ),
-          amount: (
-            <span
-              className={
-                row.category === 'Non classé'
-                  ? 'font-semibold text-ink'
-                  : 'font-semibold text-gray-900'
-              }
-            >
-              {formatEuro(row.amount, locale)}
-            </span>
-          ),
-          delta: isReferenceRow ? (
-            <span className="inline-block max-w-[13rem] text-right font-medium text-gray-600 md:max-w-none md:text-center">
-              {localize('Référence de comparaison')}
-            </span>
-          ) : (
-            <span
-              className={`inline-block max-w-[13rem] text-right font-semibold md:max-w-none md:text-center ${getDeltaClassName(
-                delta
-              )}`}
-            >
-              {formatReadableDeltaWithPercent(delta, nonClassReference, locale)}
-            </span>
-          ),
-        },
-      };
-
-      if (mobileCardClassName) {
-        comparisonRow.mobileCardClassName = mobileCardClassName;
-      }
-
-      return comparisonRow;
-    });
-  }, [localize, locale, result, nonClasseAmount]);
 
   const resultSummary = useMemo(() => {
     if (!lastCalculationSnapshot) {
@@ -1626,7 +1531,9 @@ export default function SimulateurTaxeSejour() {
                             placeholder="Ex. 120"
                             value={nightlyPriceHt}
                             suffix="€"
-                            error={errors.nightlyPriceHt}
+                            error={
+                              errors.nightlyPriceHt ? localize(errors.nightlyPriceHt) : undefined
+                            }
                             errorId="nightly-price-error"
                             onChange={(event) => {
                               trackSimulatorStartOnce();
@@ -1645,16 +1552,19 @@ export default function SimulateurTaxeSejour() {
                             inputMode="numeric"
                             placeholder="Ex. 3"
                             value={nights}
-                            error={errors.nights}
+                            error={errors.nights ? localize(errors.nights) : undefined}
                             errorId="nights-error"
                             labelAccessory={
                               <Tooltip
-                                srLabel="Précision sur le nombre de nuits louées à comparer."
+                                srLabel={localize(
+                                  'Précision sur le nombre de nuits louées à comparer.'
+                                )}
                                 className="-my-3"
                                 triggerClassName="min-h-11 min-w-11 !border-0 !bg-transparent !text-sm"
                               >
-                                Indiquez le nombre de nuits à comparer : une nuit, une semaine ou
-                                une période complète de location, par exemple 90 ou 120 nuits.
+                                {localize(
+                                  'Indiquez le nombre de nuits à comparer : une nuit, une semaine ou une période complète de location, par exemple 90 ou 120 nuits.'
+                                )}
                               </Tooltip>
                             }
                             onChange={(event) => {
@@ -1722,21 +1632,26 @@ export default function SimulateurTaxeSejour() {
                                   inputMode="numeric"
                                   placeholder="Ex. 1"
                                   value={exemptedPersons}
-                                  error={errors.exemptedPersons}
+                                  error={
+                                    errors.exemptedPersons
+                                      ? localize(errors.exemptedPersons)
+                                      : undefined
+                                  }
                                   errorId="exempted-persons-error"
                                   helperId="exempted-persons-hint"
                                   helperText="Parmi les personnes accueillies · facultatif"
                                   helperClassName="mt-2 text-xs text-muted"
                                   labelAccessory={
                                     <Tooltip
-                                      srLabel="Qui peut être exonéré: mineurs, salariés saisonniers de la commune, personnes hébergées en urgence ou relogées temporairement, et logements sous le seuil de loyer fixé localement."
+                                      srLabel={localize(
+                                        'Qui peut être exonéré: mineurs, salariés saisonniers de la commune, personnes hébergées en urgence ou relogées temporairement, et logements sous le seuil de loyer fixé localement.'
+                                      )}
                                       className="-my-3"
                                       triggerClassName="min-h-11 min-w-11 !border-0 !bg-transparent !text-sm"
                                     >
-                                      En général, sont exonérées: les personnes mineures, les
-                                      salariés saisonniers employés dans la commune, les personnes
-                                      hébergées en urgence ou relogées temporairement, et les
-                                      logements dont le loyer est sous le seuil fixé localement.
+                                      {localize(
+                                        'En général, sont exonérées: les personnes mineures, les salariés saisonniers employés dans la commune, les personnes hébergées en urgence ou relogées temporairement, et les logements dont le loyer est sous le seuil fixé localement.'
+                                      )}
                                     </Tooltip>
                                   }
                                   onChange={(event) => {
@@ -1952,18 +1867,6 @@ export default function SimulateurTaxeSejour() {
                     </ul>
                   </div>
 
-                  <details className="simulator-disclosure">
-                    <summary>Détail du calcul</summary>
-                    <ResponsiveComparisonTable
-                      appearance="editorial"
-                      caption="Résultat détaillé de la simulation de taxe de séjour"
-                      columns={resultColumns}
-                      rows={resultRows}
-                      primaryColumnKey="category"
-                      desktopWrapperClassName="simulator-comparison-table-desktop"
-                      mobileContainerClassName="simulator-comparison-table-mobile space-y-3"
-                    />
-                  </details>
                   <details className="simulator-disclosure">
                     <summary>Taxes additionnelles</summary>
                     <p className="mb-4 text-sm text-muted">

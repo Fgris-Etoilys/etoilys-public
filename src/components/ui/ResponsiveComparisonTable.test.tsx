@@ -108,7 +108,7 @@ describe('ResponsiveComparisonTable', () => {
     );
   });
 
-  it('keeps simulator integrations captioned and on the editorial bounded table appearance', () => {
+  it('keeps the fiscal simulator integration captioned and on the editorial bounded table appearance', () => {
     const componentSource = readFileSync(
       path.resolve(process.cwd(), 'src/components/ui/ResponsiveComparisonTable.tsx'),
       'utf8'
@@ -119,18 +119,24 @@ describe('ResponsiveComparisonTable', () => {
     expect(cssSource).toContain('.simulator-comparison-table-desktop');
     expect(cssSource).toContain('.simulator-comparison-table-mobile');
 
-    ['src/pages/SimulateurTaxeSejour.tsx', 'src/pages/SimulateurFiscalClassement.tsx'].forEach(
-      (relativePath) => {
-        const source = readFileSync(path.resolve(process.cwd(), relativePath), 'utf8');
-
-        expect(source).toContain('<ResponsiveComparisonTable');
-        expect(source).toContain('appearance="editorial"');
-        expect(source).toContain('caption=');
-        expect(source).toContain('desktopWrapperClassName="simulator-comparison-table-desktop"');
-        expect(source).toContain('mobileContainerClassName="simulator-comparison-table-mobile');
-        expect(source).not.toContain('desktopWrapperClassName="hidden md:block');
-        expect(source).not.toContain('mobileContainerClassName="space-y-0 md:hidden');
-      }
+    const fiscalSource = readFileSync(
+      path.resolve(process.cwd(), 'src/pages/SimulateurFiscalClassement.tsx'),
+      'utf8'
     );
+    const taxeSejourSource = readFileSync(
+      path.resolve(process.cwd(), 'src/pages/SimulateurTaxeSejour.tsx'),
+      'utf8'
+    );
+
+    expect(fiscalSource).toContain('<ResponsiveComparisonTable');
+    expect(fiscalSource).toContain('appearance="editorial"');
+    expect(fiscalSource).toContain('caption=');
+    expect(fiscalSource).toContain('desktopWrapperClassName="simulator-comparison-table-desktop"');
+    expect(fiscalSource).toContain('mobileContainerClassName="simulator-comparison-table-mobile');
+    expect(fiscalSource).not.toContain('desktopWrapperClassName="hidden md:block');
+    expect(fiscalSource).not.toContain('mobileContainerClassName="space-y-0 md:hidden');
+
+    expect(taxeSejourSource).not.toContain('<ResponsiveComparisonTable');
+    expect(taxeSejourSource).not.toContain('<summary>Détail du calcul</summary>');
   });
 });

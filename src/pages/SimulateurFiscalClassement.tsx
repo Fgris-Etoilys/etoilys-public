@@ -996,7 +996,7 @@ export default function SimulateurFiscalClassement() {
                   placeholder="Ex. 20 000"
                   value={annualRevenueInput}
                   suffix="€"
-                  error={errors.annualRevenue}
+                  error={errors.annualRevenue ? localize(errors.annualRevenue) : undefined}
                   errorId="annual-revenue-error"
                   helperId="annual-revenue-help"
                   helperText="Total perçu en 2026, loyers et charges inclus, en euros."

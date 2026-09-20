@@ -197,10 +197,22 @@ describe('parcours et restauration des simulateurs', () => {
       'taxe_sejour',
       expect.objectContaining({ has_exemptions: true, is_indicative: false })
     );
-    const table = openComparisonTable();
-    expect(table.getByRole('rowheader', { name: /non classé/i }).closest('tr')).toHaveTextContent(
-      /7[,.]50/
-    );
+    const result = within(screen.getByRole('region', { name: /résultats/i }));
+    expect(result.queryByText('Détail du calcul')).not.toBeInTheDocument();
+    expect(result.getByText('Meublé non classé')).toBeInTheDocument();
+    expect(result.getByText(/7[,.]50/)).toBeInTheDocument();
+    expect(result.getByText('Selon le classement')).toBeInTheDocument();
+    const categoryItems = within(
+      result.getByRole('list', { name: /catégories de classement/i })
+    ).getAllByRole('listitem');
+    expect(categoryItems).toHaveLength(5);
+    ['1 étoile', '2 étoiles', '3 étoiles', '4 étoiles', '5 étoiles'].forEach((category) => {
+      const item = categoryItems.find((candidate) => candidate.textContent?.includes(category));
+      expect(item).toBeDefined();
+      expect(item!).toHaveTextContent(/€/);
+      expect(item!).toHaveTextContent(/économisés|écart|aucun|moins|plus/i);
+    });
+    expect(result.getByText('Taxes additionnelles')).toBeInTheDocument();
     changeInput('nightly-price-input', '120');
     fireEvent.click(screen.getByRole('button', { name: /copier le lien/i }));
     const copied = await expectCopiedQuery({
@@ -243,6 +255,20 @@ describe('parcours et restauration des simulateurs', () => {
     expect(analytics.trackSimulatorCalculated).not.toHaveBeenCalled();
   });
 
+  it('localise en anglais l’erreur de recettes du simulateur fiscal', () => {
+    renderWithProviders(
+      <SimulateurFiscalClassement />,
+      '/en/furnished-tourist-accommodation-tax-simulator'
+    );
+    changeInput('annual-revenue-input', 'abc');
+    submitForm('annual-revenue-input');
+
+    expect(screen.getByText('Enter valid annual rental income for 2026.')).toBeInTheDocument();
+    expect(
+      screen.queryByText("Saisissez un chiffre d'affaires annuel 2026 valide.")
+    ).not.toBeInTheDocument();
+  });
+
   it('relie les erreurs de commune, de nuits et d’exonérations aux champs', async () => {
     renderWithProviders(<SimulateurTaxeSejour />, '/simulateur-taxe-sejour');
     const cityInput = await screen.findByRole('combobox');
@@ -270,6 +296,70 @@ describe('parcours et restauration des simulateurs', () => {
     expect(analytics.trackSimulatorCalculated).not.toHaveBeenCalled();
   });
 
+  it('localise en anglais les erreurs des champs partagés du simulateur taxe de séjour', async () => {
+    renderWithProviders(<SimulateurTaxeSejour />, '/en/tourist-tax-simulator');
+    await selectCity();
+    changeInput('nightly-price-input', '');
+    changeInput('nights-input', '0');
+    changeInput('persons-staying-input', '1');
+    changeInput('exempted-persons-input', '2');
+    submitForm('city-input');
+
+    expect(
+      screen.getByText('Enter a price excluding tax that is greater than zero.')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Enter a whole number of nights greater than zero.')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('The number of exempt guests cannot exceed the number of guests staying.')
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Indiquez un prix HT strictement positif.')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Indiquez un nombre de nuits entier strictement positif.')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'Le nombre de personnes exonérées ne peut pas dépasser le nombre de personnes accueillies.'
+      )
+    ).not.toBeInTheDocument();
+  });
+
+  it('localise en anglais les tooltips passés aux champs du simulateur taxe de séjour', async () => {
+    renderWithProviders(<SimulateurTaxeSejour />, '/en/tourist-tax-simulator');
+    await selectCity();
+
+    const nightsTooltip = screen.getByRole('button', {
+      name: 'Information about the number of rented nights to compare.',
+    });
+    fireEvent.mouseEnter(nightsTooltip);
+    expect(
+      screen.getByText(
+        'Enter the number of nights to compare: one night, one week or a full rental period, for example 90 or 120 nights.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'Indiquez le nombre de nuits à comparer : une nuit, une semaine ou une période complète de location, par exemple 90 ou 120 nuits.'
+      )
+    ).not.toBeInTheDocument();
+
+    const exemptionsTooltip = screen.getByRole('button', {
+      name: 'Who may be exempt: minors, seasonal workers employed in the municipality, people receiving emergency accommodation or temporary rehousing, and accommodation below the locally defined rent threshold.',
+    });
+    fireEvent.mouseEnter(exemptionsTooltip);
+    expect(
+      screen.getByText(
+        'Exemptions generally cover minors, seasonal workers employed in the municipality, people receiving emergency accommodation or temporary rehousing, and accommodation below the locally defined rent threshold.'
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'En général, sont exonérées: les personnes mineures, les salariés saisonniers employés dans la commune, les personnes hébergées en urgence ou relogées temporairement, et les logements dont le loyer est sous le seuil fixé localement.'
+      )
+    ).not.toBeInTheDocument();
+  });
+
   it('utilise la capacité pour le forfait et les occupants pour le non classé', async () => {
     renderWithProviders(<SimulateurTaxeSejour />, '/simulateur-taxe-sejour');
     await selectCity('Forfaitville');
@@ -285,13 +375,17 @@ describe('parcours et restauration des simulateurs', () => {
     changeInput('capacity-input', '10');
     submitForm('city-input');
 
-    const table = openComparisonTable();
-    expect(table.getByRole('rowheader', { name: /non classé/i }).closest('tr')).toHaveTextContent(
-      /2[,.]50/
-    );
-    expect(table.getByRole('rowheader', { name: /1\*/ }).closest('tr')).toHaveTextContent(
-      /20[,.]00/
-    );
+    const result = within(screen.getByRole('region', { name: /résultats/i }));
+    expect(result.queryByText('Détail du calcul')).not.toBeInTheDocument();
+    expect(result.getByText('Meublé non classé')).toBeInTheDocument();
+    expect(result.getByText(/2[,.]50/)).toBeInTheDocument();
+    expect(result.getByText('Selon le classement')).toBeInTheDocument();
+    expect(result.getAllByText('indicatif').length).toBeGreaterThan(0);
+    const oneStar = within(
+      result.getByRole('list', { name: /catégories de classement/i })
+    ).getByText(/1 étoile/i);
+    expect(oneStar.closest('li')).toHaveTextContent(/20[,.]00/);
+    expect(result.getByText('Taxes additionnelles')).toBeInTheDocument();
     const params = new URLSearchParams(window.location.search);
     expect(params.get('capacity')).toBe('10');
     expect(params.get('persons')).toBe('4');
@@ -314,7 +408,9 @@ describe('parcours et restauration des simulateurs', () => {
     expect(summary).toHaveTextContent('Limited comparison');
     expect(summary).not.toHaveTextContent('€');
     expect(within(summary).getByText('—')).toBeInTheDocument();
+    expect(result.queryByText('Calculation details')).not.toBeInTheDocument();
     expect(result.getAllByText('Difference unavailable')).toHaveLength(5);
+    expect(result.getByText('Additional taxes')).toBeInTheDocument();
     expect(document.getElementById('persons-staying-input')).not.toBeInTheDocument();
   });
 
@@ -368,12 +464,17 @@ describe('parcours et restauration des simulateurs', () => {
     expect(await screen.findByRole('button', { name: /copy link/i })).toBeInTheDocument();
     expect(inputById('city-input')).toHaveValue('Testville (64)');
     expect(inputById('persons-staying-input')).toHaveValue(1);
-    const table = openComparisonTable();
-    expect(table.getByRole('rowheader', { name: /unclassified/i }).closest('tr')).toHaveTextContent(
-      '€4.00'
-    );
-    expect(table.getAllByRole('rowheader')).toHaveLength(6);
-    expect(table.getByRole('columnheader', { name: 'Total tourist tax' })).toBeInTheDocument();
+    const result = within(screen.getByRole('region', { name: /results/i }));
+    expect(result.queryByText('Calculation details')).not.toBeInTheDocument();
+    expect(result.getByText('Unclassified accommodation')).toBeInTheDocument();
+    expect(result.getAllByText(/4[,.]00/).length).toBeGreaterThan(0);
+    expect(result.getByText('By star rating')).toBeInTheDocument();
+    expect(
+      within(result.getByRole('list', { name: /star rating categories/i })).getAllByRole('listitem')
+    ).toHaveLength(5);
+    expect(result.getByText('1 star')).toBeInTheDocument();
+    expect(result.getByText('Additional taxes')).toBeInTheDocument();
+    expect(screen.queryByRole('table', { hidden: true })).not.toBeInTheDocument();
     expect(window.scrollTo).not.toHaveBeenCalled();
     expect(analytics.trackSimulatorCalculated).not.toHaveBeenCalled();
   });
