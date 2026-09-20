@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import type { ReactNode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { ToastProvider } from '../components/ui/Toast';
+import { localizedRoutes } from '../i18n/localizedRoutes';
 import * as analytics from '../utils/analytics';
 import * as simulatorExport from '../utils/simulatorExport';
 import SimulateurFiscalClassement from './SimulateurFiscalClassement';
@@ -387,5 +388,27 @@ describe('parcours et restauration des simulateurs', () => {
     expect(screen.queryByRole('table', { hidden: true })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /exporter pdf/i })).not.toBeInTheDocument();
     expect(window.scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('rend les liens inter-simulateurs avec les routes localisées', async () => {
+    const fiscalView = renderWithProviders(
+      <SimulateurFiscalClassement />,
+      localizedRoutes.simulateurFiscalClassement.en!
+    );
+    expect(screen.getByRole('link', { name: /tourist tax simulator/i })).toHaveAttribute(
+      'href',
+      localizedRoutes.simulateurTaxeSejour.en
+    );
+    fiscalView.unmount();
+
+    const taxView = renderWithProviders(
+      <SimulateurTaxeSejour />,
+      localizedRoutes.simulateurTaxeSejour.fr!
+    );
+    expect(await screen.findByRole('link', { name: /simulateur fiscal/i })).toHaveAttribute(
+      'href',
+      localizedRoutes.simulateurFiscalClassement.fr
+    );
+    taxView.unmount();
   });
 });

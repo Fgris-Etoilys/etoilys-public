@@ -134,3 +134,46 @@ it('preserves report data and localized links while paginating long notes withou
     logo.mockRestore();
   }
 });
+
+it('rejects unsupported locales and incoherent table shapes before rendering', async () => {
+  const baseReport: ComparisonPdfReport = {
+    locale: 'fr',
+    title: 'Contrat PDF',
+    subtitle: 'Validation',
+    filename: 'contrat.pdf',
+    simulatorUrl: 'https://www.etoilys.fr/simulateur-taxe-sejour',
+    summary: {
+      label: 'Synthèse',
+      value: '100,00 €',
+      description: 'Description',
+      comparisons: [
+        { label: 'Non classé', value: '100,00 €' },
+        { label: 'Classé', value: '80,00 €' },
+      ],
+    },
+    parameters: [['Commune', 'Testville']],
+    comparison: {
+      columns: ['Catégorie', 'Montant'],
+      widths: [0.5, 0.5],
+      rows: [{ cells: ['Non classé', '100,00 €'] }],
+    },
+    notes: [],
+    sources: [],
+  };
+
+  await expect(
+    createComparisonReportPdf({ ...baseReport, locale: 'nl' } as unknown as ComparisonPdfReport)
+  ).rejects.toThrow(/Unsupported comparison PDF locale/);
+  await expect(
+    createComparisonReportPdf({
+      ...baseReport,
+      comparison: { ...baseReport.comparison, widths: [1] },
+    })
+  ).rejects.toThrow(/widths/);
+  await expect(
+    createComparisonReportPdf({
+      ...baseReport,
+      comparison: { ...baseReport.comparison, rows: [{ cells: ['Non classé'] }] },
+    })
+  ).rejects.toThrow(/row 1/);
+});

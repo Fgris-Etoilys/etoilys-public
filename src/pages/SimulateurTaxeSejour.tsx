@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import SimulatorNextSteps from '../components/simulator/SimulatorNextSteps';
-import Input from '../components/ui/Input';
+import SimulatorField from '../components/simulator/SimulatorField';
 import Tooltip from '../components/ui/Tooltip';
 import ResponsiveComparisonTable, {
   type ResponsiveComparisonColumn,
@@ -37,7 +37,7 @@ import { prepareLocalitySearch, searchPreparedLocalities } from '../utils/locali
 import LocalizedContent from '../i18n/LocalizedContent';
 import { translateText } from '../i18n/textTranslation';
 import { touristTaxSimulatorEnglishTranslations } from '../i18n/simulatorContent';
-import { getLocaleFromPath } from '../i18n/routeHelpers';
+import { getLocaleFromPath, getLocalizedPath } from '../i18n/routeHelpers';
 import { formatDate, formatEuro as formatLocalizedEuro } from '../i18n/numberFormatting';
 import type { Locale } from '../i18n/locales';
 
@@ -618,6 +618,10 @@ function bucketNumber(value: number, buckets: readonly number[]): string {
 export default function SimulateurTaxeSejour() {
   const location = useLocation();
   const locale = getLocaleFromPath(location.pathname);
+  const contentLocale = locale === 'en' ? 'en' : 'fr';
+  const fiscalSimulatorPath =
+    getLocalizedPath('simulateurFiscalClassement', contentLocale) ??
+    '/simulateur-fiscal-classement';
   const localize = useCallback(
     (value: string): string =>
       locale === 'en' ? translateText(value, touristTaxSimulatorEnglishTranslations) : value,
@@ -1258,6 +1262,10 @@ export default function SimulateurTaxeSejour() {
       const comparisonCategory =
         result.rows.find((row) => row.category === bestSavings?.category) ??
         result.rows.find((row) => row.category !== 'Non classé');
+      if (!comparisonCategory) {
+        showToast(localize('Aucun résultat à exporter.'), { type: 'info' });
+        return;
+      }
       const parameters: ComparisonPdfReport['parameters'] = [
         [localize('Commune'), resultCityLabel],
         [localize('Prix par nuit HT'), formatEuro(lastCalculationSnapshot.nightlyPriceHt, locale)],
@@ -1283,8 +1291,13 @@ export default function SimulateurTaxeSejour() {
           String(lastCalculationSnapshot.exemptedPersons ?? 0),
         ]);
       }
+      const indicativeLabel = localize('indicatif');
+      const formatPossiblyIndicativeAmount = (amount: number) =>
+        isReferenceIndicative
+          ? `${formatEuro(amount, locale)} (${indicativeLabel})`
+          : formatEuro(amount, locale);
       const report: ComparisonPdfReport = {
-        locale,
+        locale: contentLocale,
         title: localize('Simulation taxe de séjour'),
         subtitle: localize('Un même séjour · du non classé au 5 étoiles'),
         filename: `simulation-taxe-sejour-${safeCityId}-${formatFilenameDate(generatedAt)}.pdf`,
@@ -1317,17 +1330,13 @@ export default function SimulateurTaxeSejour() {
             {
               label: localize('Meublé non classé'),
               value: isReferenceIndicative
-                ? localize('Non calculé')
+                ? formatPossiblyIndicativeAmount(nonClasseAmount ?? 0)
                 : formatEuro(nonClasseAmount ?? 0, locale),
             },
-            ...(comparisonCategory
-              ? [
-                  {
-                    label: `${localize('Classé')} ${formatClassifiedCategoryForSentence(comparisonCategory.category, locale)}`,
-                    value: formatEuro(comparisonCategory.amount, locale),
-                  },
-                ]
-              : []),
+            {
+              label: `${localize('Classé')} ${formatClassifiedCategoryForSentence(comparisonCategory.category, locale)}`,
+              value: formatEuro(comparisonCategory.amount, locale),
+            },
           ],
           ...(result.isIndicative
             ? {
@@ -1348,7 +1357,7 @@ export default function SimulateurTaxeSejour() {
               cells: [
                 `${isReference ? localize('Non classé') : formatClassifiedCategoryForSentence(row.category, locale)}${row.status === 'indicatif' ? ` (${localize('indicatif')})` : ''}`,
                 isReference && isReferenceIndicative
-                  ? localize('Non calculé')
+                  ? formatPossiblyIndicativeAmount(row.amount)
                   : formatEuro(row.amount, locale),
                 isReference
                   ? localize('Référence de comparaison')
@@ -1481,15 +1490,7 @@ export default function SimulateurTaxeSejour() {
               <h1>Simulateur taxe de séjour</h1>
               <p>Un même séjour, cinq classements. Comparez ce qui change pour vos voyageurs.</p>
             </div>
-            <Button
-              href={
-                locale === 'en'
-                  ? '/en/furnished-tourist-accommodation-tax-simulator'
-                  : '/simulateur-fiscal-classement'
-              }
-              variant="primary"
-              className="simulator-tool-link"
-            >
+            <Button href={fiscalSimulatorPath} variant="primary" className="simulator-tool-link">
               Simulateur fiscal <ArrowUpRight size={16} aria-hidden="true" />
             </Button>
           </header>
@@ -1614,63 +1615,39 @@ export default function SimulateurTaxeSejour() {
                       <fieldset className="simulator-fieldset mt-6">
                         <legend>Le séjour</legend>
                         <div className="simulator-field-grid">
-                          <div>
-                            <label
-                              htmlFor="nightly-price-input"
-                              className="mb-2 block text-sm font-medium text-ink"
-                            >
-                              Prix par nuit HT{' '}
-                              <span className="text-alert-400" aria-hidden="true">
-                                *
-                              </span>
-                            </label>
-                            <div className="simulator-field-unit">
-                              <input
-                                id="nightly-price-input"
-                                required
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                inputMode="decimal"
-                                placeholder="Ex. 120"
-                                value={nightlyPriceHt}
-                                aria-invalid={errors.nightlyPriceHt ? 'true' : undefined}
-                                aria-describedby={
-                                  errors.nightlyPriceHt ? 'nightly-price-error' : undefined
-                                }
-                                onChange={(event) => {
-                                  trackSimulatorStartOnce();
-                                  setNightlyPriceHt(event.target.value);
-                                  if (errors.nightlyPriceHt) clearFormError('nightlyPriceHt');
-                                }}
-                                className={
-                                  'ui-field ' + (errors.nightlyPriceHt ? 'ui-field-error' : '')
-                                }
-                              />
-                              <span aria-hidden="true">€</span>
-                            </div>
-                            {errors.nightlyPriceHt && (
-                              <p
-                                id="nightly-price-error"
-                                className="mt-2 text-sm text-alert-400"
-                                role="alert"
-                              >
-                                {errors.nightlyPriceHt}
-                              </p>
-                            )}
-                          </div>
+                          <SimulatorField
+                            id="nightly-price-input"
+                            label="Prix par nuit HT"
+                            required
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            inputMode="decimal"
+                            placeholder="Ex. 120"
+                            value={nightlyPriceHt}
+                            suffix="€"
+                            error={errors.nightlyPriceHt}
+                            errorId="nightly-price-error"
+                            onChange={(event) => {
+                              trackSimulatorStartOnce();
+                              setNightlyPriceHt(event.target.value);
+                              if (errors.nightlyPriceHt) clearFormError('nightlyPriceHt');
+                            }}
+                          />
 
-                          <div>
-                            <div className="mb-2 flex items-center justify-between gap-1">
-                              <label
-                                htmlFor="nights-input"
-                                className="text-sm font-medium text-ink"
-                              >
-                                Nuits{' '}
-                                <span className="text-alert-400" aria-hidden="true">
-                                  *
-                                </span>
-                              </label>
+                          <SimulatorField
+                            id="nights-input"
+                            label="Nuits"
+                            required
+                            type="number"
+                            min="1"
+                            step="1"
+                            inputMode="numeric"
+                            placeholder="Ex. 3"
+                            value={nights}
+                            error={errors.nights}
+                            errorId="nights-error"
+                            labelAccessory={
                               <Tooltip
                                 srLabel="Précision sur le nombre de nuits louées à comparer."
                                 className="-my-3"
@@ -1679,35 +1656,13 @@ export default function SimulateurTaxeSejour() {
                                 Indiquez le nombre de nuits à comparer : une nuit, une semaine ou
                                 une période complète de location, par exemple 90 ou 120 nuits.
                               </Tooltip>
-                            </div>
-                            <input
-                              id="nights-input"
-                              required
-                              type="number"
-                              min="1"
-                              step="1"
-                              inputMode="numeric"
-                              placeholder="Ex. 3"
-                              value={nights}
-                              aria-invalid={errors.nights ? 'true' : undefined}
-                              aria-describedby={errors.nights ? 'nights-error' : undefined}
-                              onChange={(event) => {
-                                trackSimulatorStartOnce();
-                                setNights(event.target.value);
-                                if (errors.nights) clearFormError('nights');
-                              }}
-                              className={'ui-field ' + (errors.nights ? 'ui-field-error' : '')}
-                            />
-                            {errors.nights && (
-                              <p
-                                id="nights-error"
-                                className="mt-2 text-sm text-alert-400"
-                                role="alert"
-                              >
-                                {errors.nights}
-                              </p>
-                            )}
-                          </div>
+                            }
+                            onChange={(event) => {
+                              trackSimulatorStartOnce();
+                              setNights(event.target.value);
+                              if (errors.nights) clearFormError('nights');
+                            }}
+                          />
                         </div>
                       </fieldset>
 
@@ -1716,7 +1671,7 @@ export default function SimulateurTaxeSejour() {
                           <legend>{requiresOccupancy ? 'Les voyageurs' : 'Le logement'}</legend>
                           <div className="simulator-field-grid">
                             {requiresCapacity && (
-                              <Input
+                              <SimulatorField
                                 id="capacity-input"
                                 label="Capacité du logement"
                                 required
@@ -1737,7 +1692,7 @@ export default function SimulateurTaxeSejour() {
                             )}
                             {requiresOccupancy && (
                               <>
-                                <Input
+                                <SimulatorField
                                   id="persons-staying-input"
                                   label="Personnes accueillies"
                                   required
@@ -1758,14 +1713,21 @@ export default function SimulateurTaxeSejour() {
                                       : undefined
                                   }
                                 />
-                                <div>
-                                  <div className="mb-2 flex items-center justify-between gap-1">
-                                    <label
-                                      htmlFor="exempted-persons-input"
-                                      className="text-sm font-medium text-ink"
-                                    >
-                                      Personnes exonérées
-                                    </label>
+                                <SimulatorField
+                                  id="exempted-persons-input"
+                                  label="Personnes exonérées"
+                                  type="number"
+                                  min="0"
+                                  step="1"
+                                  inputMode="numeric"
+                                  placeholder="Ex. 1"
+                                  value={exemptedPersons}
+                                  error={errors.exemptedPersons}
+                                  errorId="exempted-persons-error"
+                                  helperId="exempted-persons-hint"
+                                  helperText="Parmi les personnes accueillies · facultatif"
+                                  helperClassName="mt-2 text-xs text-muted"
+                                  labelAccessory={
                                     <Tooltip
                                       srLabel="Qui peut être exonéré: mineurs, salariés saisonniers de la commune, personnes hébergées en urgence ou relogées temporairement, et logements sous le seuil de loyer fixé localement."
                                       className="-my-3"
@@ -1776,47 +1738,13 @@ export default function SimulateurTaxeSejour() {
                                       hébergées en urgence ou relogées temporairement, et les
                                       logements dont le loyer est sous le seuil fixé localement.
                                     </Tooltip>
-                                  </div>
-                                  <input
-                                    id="exempted-persons-input"
-                                    type="number"
-                                    min="0"
-                                    step="1"
-                                    inputMode="numeric"
-                                    placeholder="Ex. 1"
-                                    value={exemptedPersons}
-                                    aria-invalid={errors.exemptedPersons ? 'true' : undefined}
-                                    aria-describedby={
-                                      errors.exemptedPersons
-                                        ? 'exempted-persons-error'
-                                        : 'exempted-persons-hint'
-                                    }
-                                    onChange={(event) => {
-                                      trackSimulatorStartOnce();
-                                      setExemptedPersons(event.target.value);
-                                      if (errors.exemptedPersons) clearFormError('exemptedPersons');
-                                    }}
-                                    className={
-                                      'ui-field ' + (errors.exemptedPersons ? 'ui-field-error' : '')
-                                    }
-                                  />
-                                  {errors.exemptedPersons ? (
-                                    <p
-                                      id="exempted-persons-error"
-                                      className="mt-2 text-sm text-alert-400"
-                                      role="alert"
-                                    >
-                                      {errors.exemptedPersons}
-                                    </p>
-                                  ) : (
-                                    <p
-                                      id="exempted-persons-hint"
-                                      className="mt-2 text-xs text-muted"
-                                    >
-                                      Parmi les personnes accueillies · facultatif
-                                    </p>
-                                  )}
-                                </div>
+                                  }
+                                  onChange={(event) => {
+                                    trackSimulatorStartOnce();
+                                    setExemptedPersons(event.target.value);
+                                    if (errors.exemptedPersons) clearFormError('exemptedPersons');
+                                  }}
+                                />
                               </>
                             )}
                           </div>
@@ -2032,6 +1960,8 @@ export default function SimulateurTaxeSejour() {
                       columns={resultColumns}
                       rows={resultRows}
                       primaryColumnKey="category"
+                      desktopWrapperClassName="simulator-comparison-table-desktop"
+                      mobileContainerClassName="simulator-comparison-table-mobile space-y-3"
                     />
                   </details>
                   <details className="simulator-disclosure">

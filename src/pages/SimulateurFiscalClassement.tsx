@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Check, Download, Link2 } from 'lucide-react';
 import Button from '../components/ui/Button';
 import SimulatorNextSteps from '../components/simulator/SimulatorNextSteps';
+import SimulatorField from '../components/simulator/SimulatorField';
 import ResponsiveComparisonTable, {
   type ResponsiveComparisonColumn,
   type ResponsiveComparisonRow,
@@ -24,7 +25,7 @@ import { trackSimulatorCalculated, trackSimulatorStarted } from '../utils/analyt
 import LocalizedContent from '../i18n/LocalizedContent';
 import { translateText } from '../i18n/textTranslation';
 import { fiscalSimulatorEnglishTranslations } from '../i18n/simulatorContent';
-import { getLocaleFromPath } from '../i18n/routeHelpers';
+import { getLocaleFromPath, getLocalizedPath } from '../i18n/routeHelpers';
 import { formatDate, formatEuro as formatLocalizedEuro } from '../i18n/numberFormatting';
 import type { Locale } from '../i18n/locales';
 import { MICRO_BIC_OFFICIAL_SOURCE_URLS } from '../content/microBicFiscalRules';
@@ -460,6 +461,9 @@ function getFiscalWarningMessages(result: SimulationResult, locale: Locale): str
 export default function SimulateurFiscalClassement() {
   const location = useLocation();
   const locale = getLocaleFromPath(location.pathname);
+  const contentLocale = locale === 'en' ? 'en' : 'fr';
+  const touristTaxSimulatorPath =
+    getLocalizedPath('simulateurTaxeSejour', contentLocale) ?? '/simulateur-taxe-sejour';
   const localize = useCallback(
     (value: string): string =>
       locale === 'en' ? translateText(value, fiscalSimulatorEnglishTranslations) : value,
@@ -769,7 +773,7 @@ export default function SimulateurFiscalClassement() {
         ['Total estimé', result.nonClasse.estimatedTotal, result.classe.estimatedTotal],
       ] as const;
       const report: ComparisonPdfReport = {
-        locale,
+        locale: contentLocale,
         title: localize('Simulation fiscale classement 2026'),
         subtitle: localize('Revenus 2026 déclarés en 2027 · comparaison micro-BIC'),
         filename: `simulation-fiscale-classement-${safeRevenue}-${formatFilenameDate(generatedAt)}.pdf`,
@@ -964,7 +968,7 @@ export default function SimulateurFiscalClassement() {
               </p>
             </div>
             <Button
-              href={locale === 'en' ? '/en/tourist-tax-simulator' : '/simulateur-taxe-sejour'}
+              href={touristTaxSimulatorPath}
               variant="primary"
               className="simulator-tool-link"
             >
@@ -981,48 +985,29 @@ export default function SimulateurFiscalClassement() {
               </div>
 
               <div className="space-y-7">
-                <div>
-                  <label htmlFor="annual-revenue-input" className="mb-2 block text-sm font-medium">
-                    Recettes locatives annuelles 2026
-                  </label>
-                  <div className="simulator-field-unit">
-                    <input
-                      id="annual-revenue-input"
-                      name="annualRevenue"
-                      className={`ui-field ${errors.annualRevenue ? 'ui-field-error' : ''}`}
-                      required
-                      type="text"
-                      inputMode="decimal"
-                      placeholder="Ex. 20 000"
-                      aria-invalid={errors.annualRevenue ? true : undefined}
-                      aria-describedby={
-                        errors.annualRevenue ? 'annual-revenue-error' : 'annual-revenue-help'
-                      }
-                      value={annualRevenueInput}
-                      onChange={(event) => {
-                        trackSimulatorStartOnce();
-                        setAnnualRevenueInput(event.target.value);
-                        if (errors.annualRevenue) {
-                          clearFormError('annualRevenue');
-                        }
-                      }}
-                    />
-                    <span aria-hidden="true">€</span>
-                  </div>
-                  {errors.annualRevenue ? (
-                    <p
-                      id="annual-revenue-error"
-                      role="alert"
-                      className="mt-2 text-sm text-alert-400"
-                    >
-                      {errors.annualRevenue}
-                    </p>
-                  ) : (
-                    <p id="annual-revenue-help" className="mt-2 text-sm text-muted">
-                      Total perçu en 2026, loyers et charges inclus, en euros.
-                    </p>
-                  )}
-                </div>
+                <SimulatorField
+                  id="annual-revenue-input"
+                  name="annualRevenue"
+                  label="Recettes locatives annuelles 2026"
+                  required
+                  showRequiredMarker={false}
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="Ex. 20 000"
+                  value={annualRevenueInput}
+                  suffix="€"
+                  error={errors.annualRevenue}
+                  errorId="annual-revenue-error"
+                  helperId="annual-revenue-help"
+                  helperText="Total perçu en 2026, loyers et charges inclus, en euros."
+                  onChange={(event) => {
+                    trackSimulatorStartOnce();
+                    setAnnualRevenueInput(event.target.value);
+                    if (errors.annualRevenue) {
+                      clearFormError('annualRevenue');
+                    }
+                  }}
+                />
 
                 <fieldset
                   id="tmi-rate-group"
@@ -1205,8 +1190,8 @@ export default function SimulateurFiscalClassement() {
                       rows={tableRows}
                       primaryColumnKey="metric"
                       showPrimaryColumnInMobileDetails={false}
-                      desktopWrapperClassName="hidden md:block lg:hidden xl:block"
-                      mobileContainerClassName="space-y-0 md:hidden lg:block xl:hidden"
+                      desktopWrapperClassName="simulator-comparison-table-desktop"
+                      mobileContainerClassName="simulator-comparison-table-mobile space-y-0"
                       headerCellClassName="p-3 font-semibold break-words"
                       cellClassName="border-b border-ink/15 p-3 align-top break-words text-muted"
                       mobileCardClassName="border-b border-ink/15 py-4"

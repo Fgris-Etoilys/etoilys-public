@@ -1,6 +1,5 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { Locale } from '../i18n/locales';
 import { getLocalizedPath } from '../i18n/routeHelpers';
 import { simulatorReportContent } from '../i18n/simulatorReportContent';
 import {
@@ -11,8 +10,15 @@ import {
   type PdfColor,
 } from './simulatorPdfShared';
 
+export type ComparisonPdfLocale = 'fr' | 'en';
+
+interface ComparisonSummaryItem {
+  label: string;
+  value: string;
+}
+
 export interface ComparisonPdfReport {
-  locale: Locale;
+  locale: ComparisonPdfLocale;
   title: string;
   subtitle: string;
   filename: string;
@@ -21,7 +27,7 @@ export interface ComparisonPdfReport {
     label: string;
     value: string;
     description: string;
-    comparisons: Array<{ label: string; value: string }>;
+    comparisons: [ComparisonSummaryItem, ComparisonSummaryItem];
     notice?: string;
   };
   parameters: Array<[string, string]>;
@@ -37,8 +43,32 @@ export interface ComparisonPdfReport {
 
 type Color = PdfColor;
 
+function validateComparisonReport(report: ComparisonPdfReport): void {
+  if (report.locale !== 'fr' && report.locale !== 'en') {
+    throw new Error(`Unsupported comparison PDF locale: ${String(report.locale)}`);
+  }
+  if (report.summary.comparisons.length !== 2) {
+    throw new Error('Comparison PDF summary expects exactly two comparison values.');
+  }
+  if (report.comparison.columns.length === 0) {
+    throw new Error('Comparison PDF table requires at least one column.');
+  }
+  if (report.comparison.widths.length !== report.comparison.columns.length) {
+    throw new Error('Comparison PDF table widths must match the columns.');
+  }
+  if (!report.comparison.widths.every((width) => Number.isFinite(width) && width > 0)) {
+    throw new Error('Comparison PDF table widths must be positive numbers.');
+  }
+  report.comparison.rows.forEach((row, index) => {
+    if (row.cells.length !== report.comparison.columns.length) {
+      throw new Error(`Comparison PDF row ${index + 1} does not match the columns.`);
+    }
+  });
+}
+
 export async function createComparisonReportPdf(report: ComparisonPdfReport): Promise<jsPDF> {
-  const copy = simulatorReportContent[report.locale === 'en' ? 'en' : 'fr'];
+  validateComparisonReport(report);
+  const copy = simulatorReportContent[report.locale];
   const palette = getSimulatorPdfPalette();
   const doc = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
   doc.setProperties({ title: report.title, subject: report.subtitle, author: 'Etoilys' });
@@ -49,7 +79,9 @@ export async function createComparisonReportPdf(report: ComparisonPdfReport): Pr
   const contentWidth = width - margin * 2;
   const bottom = height - 64;
   const logo = await getEtoilysLogoPngAsset('/logo-etoilys-editorial.svg');
-  const classificationUrl = `https://www.etoilys.fr${getLocalizedPath('demandeClassement', report.locale)}`;
+  const classificationPath =
+    getLocalizedPath('demandeClassement', report.locale) ?? '/demande-classement';
+  const classificationUrl = `https://www.etoilys.fr${classificationPath}`;
   const date = new Intl.DateTimeFormat(report.locale === 'en' ? 'en-GB' : 'fr-FR', {
     dateStyle: 'long',
   }).format(report.generatedAt ?? new Date());

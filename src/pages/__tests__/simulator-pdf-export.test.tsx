@@ -180,11 +180,11 @@ describe('simulator PDF adapters', () => {
     expect(report.parameters.some(([label]) => label === 'Guests staying')).toBe(false);
     expect(report.summary.label).toBe('Limited comparison');
     expect(report.summary.value).toBe('—');
-    expect(report.summary.comparisons[0]?.value).toBe('Not calculated');
+    expect(report.summary.comparisons[0]?.value).toBe(`${formatEuro(0, 'en')} (indicative)`);
     expect(report.summary.notice).toContain('Indicative comparison');
     expect(report.comparison.rows[0]?.cells).toEqual([
       'Unclassified (indicative)',
-      'Not calculated',
+      `${formatEuro(0, 'en')} (indicative)`,
       'Comparison reference',
     ]);
     expect(
@@ -208,6 +208,31 @@ describe('simulator PDF adapters', () => {
     fireEvent.click(button);
     await waitFor(() => expect(exportComparisonReportPdf).toHaveBeenCalledTimes(2));
     expect(await screen.findByText('PDF generated.')).toBeInTheDocument();
+  });
+
+  it('exports an indicative flat-rate comparison in French without dropping the reference amount', async () => {
+    renderAt(
+      <SimulateurTaxeSejour />,
+      '/simulateur-taxe-sejour?city=forfait-64&nightly=100&nights=2&capacity=10'
+    );
+    const button = await screen.findByRole('button', { name: 'Exporter PDF' });
+    fireEvent.click(button);
+    await waitFor(() => expect(exportComparisonReportPdf).toHaveBeenCalledTimes(1));
+
+    const report = reportSent();
+    expect(report.locale).toBe('fr');
+    expect(report.summary.label).toBe('Comparaison limitée');
+    expect(report.summary.value).toBe('—');
+    expect(report.summary.comparisons[0]?.value).toBe(`${formatEuro(0, 'fr')} (indicatif)`);
+    expect(report.comparison.rows[0]?.cells).toEqual([
+      'Non classé (indicatif)',
+      `${formatEuro(0, 'fr')} (indicatif)`,
+      'Référence de comparaison',
+    ]);
+    expect(
+      report.comparison.rows.slice(1).every(({ cells }) => cells[2] === 'Écart non disponible')
+    ).toBe(true);
+    expect(JSON.stringify(report)).not.toMatch(/Non calculé/);
   });
 
   it('preserves a zero tax difference at TMI 0 and never offers a PDF for an out-of-scope fiscal result', async () => {

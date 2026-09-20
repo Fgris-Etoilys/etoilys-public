@@ -113,8 +113,11 @@ describe('ResponsiveComparisonTable', () => {
       path.resolve(process.cwd(), 'src/components/ui/ResponsiveComparisonTable.tsx'),
       'utf8'
     );
+    const cssSource = readFileSync(path.resolve(process.cwd(), 'src/index.css'), 'utf8');
     expect(componentSource).toContain('table-fixed');
     expect(componentSource).toContain('break-words');
+    expect(cssSource).toContain('.simulator-comparison-table-desktop');
+    expect(cssSource).toContain('.simulator-comparison-table-mobile');
 
     ['src/pages/SimulateurTaxeSejour.tsx', 'src/pages/SimulateurFiscalClassement.tsx'].forEach(
       (relativePath) => {
@@ -123,6 +126,10 @@ describe('ResponsiveComparisonTable', () => {
         expect(source).toContain('<ResponsiveComparisonTable');
         expect(source).toContain('appearance="editorial"');
         expect(source).toContain('caption=');
+        expect(source).toContain('desktopWrapperClassName="simulator-comparison-table-desktop"');
+        expect(source).toContain('mobileContainerClassName="simulator-comparison-table-mobile');
+        expect(source).not.toContain('desktopWrapperClassName="hidden md:block');
+        expect(source).not.toContain('mobileContainerClassName="space-y-0 md:hidden');
       }
     );
   });

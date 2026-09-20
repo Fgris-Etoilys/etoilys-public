@@ -2225,6 +2225,15 @@
     scroll-margin-top: calc(var(--etoilys-header-height, 80px) + 16px);
   }
 
+  .simulator-result-panel .simulator-comparison-table-desktop {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .simulator-result-panel .simulator-comparison-table-mobile {
+    display: none;
+  }
+
   .simulator-result-empty {
     @apply flex flex-col justify-center text-muted;
     min-height: 300px;
@@ -2389,10 +2398,10 @@
   }
 
   @container (max-width: 600px) {
-    .simulator-result-panel [data-responsive-comparison-variant='desktop'] {
+    .simulator-result-panel .simulator-comparison-table-desktop {
       display: none;
     }
-    .simulator-result-panel [data-responsive-comparison-variant='mobile'] {
+    .simulator-result-panel .simulator-comparison-table-mobile {
       display: block;
     }
   }
