@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ContactForm from '../components/forms/ContactForm';
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
+import { formContent } from '../i18n/formContent';
 
 describe('legal links in forms', () => {
   afterEach(() => {
@@ -29,7 +30,9 @@ describe('legal links in forms', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 2, name: formContent.en.contact.title })
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /send my message/i })).toBeInTheDocument();
     expect(screen.getAllByRole('link', { name: /privacy policy/i })[0]).toHaveAttribute(
@@ -96,7 +99,9 @@ describe('legal links in forms', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 2, name: formContent.en.demandeClassement.title })
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/last name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/accommodation address/i)).toBeRequired();
     expect(screen.getByRole('button', { name: /send my request/i })).toBeInTheDocument();

@@ -2,7 +2,9 @@
 
 ## Formulaires De Contact Et De Demande
 
-Les deux pages utilisent la famille CSS `inquiry-*` et les tokens existants. Leur introduction compacte donne rapidement accès à la saisie. Contact juxtapose les coordonnées et le formulaire ; la demande de classement place le formulaire devant une explication courte de la suite et la preuve Cofrac. Aucun contenu sticky.
+Les deux pages utilisent la famille CSS `inquiry-*` et les tokens existants. Leur introduction compacte donne rapidement accès à la saisie. Contact juxtapose les coordonnées et le formulaire ; la demande de classement place le formulaire devant une explication courte de la suite, des ressources secondaires, une réassurance compacte et la preuve Cofrac. Aucun contenu sticky.
+
+`PageHero` reste le pattern par défaut des pages cœur classiques. Les pages dont le formulaire constitue l’action principale peuvent utiliser le pattern compact `inquiry-intro` pour amener plus vite à la saisie. Ce pattern reste réservé aux pages formulaire et ne doit pas devenir un second hero générique.
 
 - `inquiry-form-surface` est la surface de saisie ; sur mobile, elle rejoint les marges de la page. `inquiry-field-grid` passe de deux colonnes à une sous 681 px. `inquiry-fieldset` habille des groupes natifs `fieldset` / `legend`.
 - `Input`, `Textarea`, `Checkbox` et `Button` conservent leurs API et variantes. Le style des champs est limité à `inquiry-form` : 52 px minimum, focus visible, aides sous le champ, erreurs associées. Les champs requis restent marqués ; le message de classement est explicitement facultatif.

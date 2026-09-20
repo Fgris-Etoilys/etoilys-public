@@ -1,14 +1,17 @@
-import { ArrowUpRight, Clock3, Phone } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { ArrowUpRight, Check, Clock3, Phone } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
 import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
-import { requestClassificationPageContent } from '../content/pages/requestClassificationPageContent';
+import {
+  requestClassificationPageContent,
+  type RequestClassificationPageContent,
+} from '../content/pages/requestClassificationPageContent';
 import { getLocaleFromPath } from '../i18n/routeHelpers';
 
 export default function DemandeClassement() {
   const { pathname } = useLocation();
   const locale = getLocaleFromPath(pathname);
-  const content = requestClassificationPageContent[locale];
+  const content: RequestClassificationPageContent = requestClassificationPageContent[locale];
 
   return (
     <section className="inquiry-page">
@@ -40,7 +43,33 @@ export default function DemandeClassement() {
               </p>
               <h2 id="after-request-title">{content.afterRequest.title}</h2>
               <p>{content.afterRequest.description}</p>
-              <p className="inquiry-after-note">{content.afterRequest.note}</p>
+            </div>
+
+            {content.resources !== undefined && (
+              <div className="inquiry-resources">
+                {content.resources.map((resource) => (
+                  <article className="inquiry-resource" key={resource.href}>
+                    <h3>{resource.title}</h3>
+                    <p>{resource.description}</p>
+                    <Link to={resource.href} className="editorial-link ui-focus">
+                      {resource.cta}
+                      <ArrowUpRight size={14} aria-hidden="true" />
+                    </Link>
+                  </article>
+                ))}
+              </div>
+            )}
+
+            <div className="inquiry-reassurance">
+              <h3>{content.reassurance.title}</h3>
+              <ul>
+                {content.reassurance.items.map((item) => (
+                  <li key={item}>
+                    <Check size={15} aria-hidden="true" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="inquiry-accreditation">

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
+import { contactPageContent } from '../content/pages/contactPageContent';
 import { EN_MVP_PATHS, NL_MVP_PATHS } from './i18nMvpTestData';
 
 const renderAt = (path: string) => {
@@ -56,7 +57,9 @@ describe('routing', () => {
 
   it('renders contact page', () => {
     renderAt('/contact');
-    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: contactPageContent.fr.hero.title })
+    ).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: /email/i })).toBeRequired();
   });
 

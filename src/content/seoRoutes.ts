@@ -318,7 +318,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'recrutementInspection',
   },
   '/contact': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-19',
     title: 'Contact',
     description:
       'Coordonnées et formulaire de contact pour échanger avec Etoilys sur le classement des meublés de tourisme.',
@@ -327,7 +327,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/demande-classement': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-19',
     title: 'Demande de classement meublé de tourisme',
     description:
       'Demandez le classement de votre meublé de tourisme. Procédure simple. Etoilys vous recontacte sous 24h pour organiser la visite.',
@@ -403,7 +403,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'faq',
   },
   '/en/contact': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-19',
     title: 'Contact',
     description:
       'Contact details and form for questions about Etoilys and the French furnished tourist accommodation classification process.',
@@ -412,7 +412,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/en/request-a-classification': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-19',
     title: 'Classification request',
     description:
       'Submit your furnished tourist accommodation classification request to Etoilys in a few minutes.',
@@ -488,7 +488,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'faq',
   },
   '/nl/contact': {
-    lastModified: '2026-09-07',
+    lastModified: '2026-09-19',
     title: 'Contact',
     description:
       'Contactgegevens en formulier voor vragen over Etoilys en de Franse classificatieprocedure voor vakantiewoningen.',
@@ -497,7 +497,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/nl/classificatie-aanvragen': {
-    lastModified: '2026-09-07',
+    lastModified: '2026-09-19',
     title: 'Classificatie aanvragen',
     description:
       'Dien in enkele minuten uw aanvraag in voor de officiële classificatie van uw vakantiewoning in de momenteel bediende gebieden.',

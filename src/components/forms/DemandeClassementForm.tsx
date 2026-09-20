@@ -384,7 +384,6 @@ export default function DemandeClassementForm({
               {submitError}
             </div>
           )}
-          <p className="inquiry-form-note !mt-0">{demandeContent.submitNote}</p>
           <Button
             type="submit"
             variant="primary"

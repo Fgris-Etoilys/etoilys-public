@@ -4,6 +4,9 @@ import { MemoryRouter } from 'react-router-dom';
 import Contact from '../pages/Contact';
 import DemandeClassement from '../pages/DemandeClassement';
 import { COFRAC_ACCREDITATION_URL } from '../content/accreditationLinks';
+import { contactPageContent } from '../content/pages/contactPageContent';
+import { requestClassificationPageContent } from '../content/pages/requestClassificationPageContent';
+import { formContent } from '../i18n/formContent';
 import { localizedRoutes } from '../i18n/localizedRoutes';
 import { expectNoA11yViolations } from './a11y';
 
@@ -20,7 +23,13 @@ describe('public form pages', () => {
         <main>{kind === 'contact' ? <Contact /> : <DemandeClassement />}</main>
       </MemoryRouter>
     );
+    const pageContent =
+      kind === 'contact' ? contactPageContent[locale] : requestClassificationPageContent[locale];
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('heading', { level: 1, name: pageContent.hero.title })).toBeVisible();
+    expect(
+      screen.getByRole('heading', { level: 2, name: formContent[locale][kind].title })
+    ).toBeVisible();
     expect(container.querySelectorAll('form')).toHaveLength(1);
     const phone = container.querySelector('a[href="tel:+33649551540"]');
     expect(phone).toBeVisible();
@@ -34,6 +43,29 @@ describe('public form pages', () => {
       expect(container).toHaveTextContent('1345 route de Dautres');
       expect(container).toHaveTextContent('24150 Mauzac et Grand Castang');
     } else {
+      if (locale === 'fr') {
+        expect(screen.getByRole('link', { name: /Lire le guide/i })).toHaveAttribute(
+          'href',
+          '/actualites/preparer-visite-classement-meuble-tourisme'
+        );
+        expect(screen.getByRole('link', { name: /Lancer la simulation/i })).toHaveAttribute(
+          'href',
+          '/simulateur'
+        );
+      } else {
+        expect(
+          container.querySelector(
+            'a[href="/actualites/preparer-visite-classement-meuble-tourisme"]'
+          )
+        ).not.toBeInTheDocument();
+        expect(container.querySelector('a[href="/simulateur"]')).not.toBeInTheDocument();
+      }
+      expect(
+        screen.getByRole('heading', {
+          level: 3,
+          name: requestClassificationPageContent[locale].reassurance.title,
+        })
+      ).toBeVisible();
       const proof = container.querySelector(`a[href="${COFRAC_ACCREDITATION_URL}"]`);
       expect(proof).toBeVisible();
       expect(proof).toHaveAccessibleName();

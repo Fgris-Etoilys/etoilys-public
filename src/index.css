@@ -1396,7 +1396,7 @@
   }
 
   .inquiry-response svg {
-    @apply mt-1 shrink-0 text-copper;
+    @apply mt-0.5 shrink-0 text-copper;
   }
 
   .inquiry-intro > .inquiry-response {
@@ -1598,8 +1598,35 @@
   .inquiry-after-copy > p:not(.inquiry-response) {
     @apply text-sm text-muted;
   }
-  .inquiry-after-note {
-    @apply mt-4 border-t border-ink/15 pt-4;
+  .inquiry-resources {
+    @apply mt-4 grid gap-3;
+  }
+  .inquiry-resource {
+    @apply border-t border-ink/15 pt-4;
+  }
+  .inquiry-resource h3,
+  .inquiry-reassurance h3 {
+    @apply font-roboto text-base text-ink;
+    letter-spacing: -0.015em;
+  }
+  .inquiry-resource p {
+    @apply mt-2 text-sm text-muted;
+  }
+  .inquiry-resource .editorial-link {
+    @apply mt-2;
+  }
+  .inquiry-reassurance {
+    @apply mt-6 border-y border-ink/15 py-5;
+  }
+  .inquiry-reassurance ul {
+    @apply mt-3 grid gap-3 p-0;
+    list-style: none;
+  }
+  .inquiry-reassurance li {
+    @apply flex items-start gap-3 text-sm text-muted;
+  }
+  .inquiry-reassurance svg {
+    @apply mt-1 shrink-0 text-copper;
   }
   .inquiry-accreditation {
     @apply mt-6 flex items-center gap-5 px-1 text-xs text-muted;
@@ -1693,6 +1720,10 @@
     }
     .inquiry-after h2 {
       @apply mt-4;
+    }
+    .inquiry-resource h3,
+    .inquiry-reassurance h3 {
+      @apply text-sm;
     }
     .inquiry-address {
       @apply text-xs;

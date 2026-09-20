@@ -27,7 +27,6 @@ type FormContent = {
     requiredNote: string;
     sections: { contact: string; property: string };
     telephoneHint: string;
-    submitNote: string;
     labels: {
       nom: string;
       prenom: string;
@@ -110,7 +109,6 @@ export const formContent = {
       requiredNote: '* Champs obligatoires',
       sections: { contact: 'Vos coordonnées', property: 'Votre logement' },
       telephoneHint: 'Hors de France, ajoutez l’indicatif du pays (ex. +32 ou +44).',
-      submitNote: 'L’envoi de cette demande ne valide pas la visite.',
       labels: {
         nom: 'Nom',
         prenom: 'Prénom',
@@ -221,7 +219,6 @@ export const formContent = {
       requiredNote: '* Required fields',
       sections: { contact: 'Your contact details', property: 'Your accommodation' },
       telephoneHint: 'Outside France, include your country code (e.g. +44 or +32).',
-      submitNote: 'Sending this request does not confirm an inspection.',
       labels: {
         nom: 'Last name',
         prenom: 'First name',
@@ -334,7 +331,6 @@ export const formContent = {
       requiredNote: '* Verplichte velden',
       sections: { contact: 'Uw contactgegevens', property: 'Uw vakantiewoning' },
       telephoneHint: 'Buiten Frankrijk: voeg uw landcode toe (bijv. +31 of +32).',
-      submitNote: 'Het versturen van deze aanvraag bevestigt nog geen inspectie.',
       labels: {
         nom: 'Achternaam',
         prenom: 'Voornaam',
