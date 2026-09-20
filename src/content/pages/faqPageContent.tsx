@@ -35,7 +35,7 @@ type FaqPageContent = {
 };
 
 const sourceLinkClassName = 'mt-3 block text-sm font-medium';
-const accreditationLinkClassName = 'font-medium text-primary-300 underline hover:text-primary-400';
+const accreditationLinkClassName = 'editorial-inline-link font-medium';
 
 // eslint-disable-next-line react-refresh/only-export-components -- Local JSX helper for structured content.
 function SourceLink({ href, label }: { href: string; label: string }) {
@@ -409,7 +409,7 @@ export const faqPageContent: Record<Locale, FaqPageContent> = {
         'Notre équipe est à votre disposition pour répondre à toutes vos questions sur le classement de votre meublé de tourisme.',
       links: [
         { label: 'Nous contacter', href: '/contact', variant: 'primary' },
-        { label: 'Demander votre classement', href: '/demande-classement', variant: 'secondary' },
+        { label: 'Demander mon classement', href: '/demande-classement', variant: 'secondary' },
       ],
     },
   },

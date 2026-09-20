@@ -1,14 +1,18 @@
-export type PricingProfileId = 'dordogne-standard' | 'bordeaux-standard';
+export type PricingProfileId =
+  | 'aveyron-standard'
+  | 'dordogne-standard'
+  | 'gironde-standard'
+  | 'lot-standard'
+  | 'lot-et-garonne-standard'
+  | 'bordeaux-standard';
 
 export interface PricingAmount {
   label: string;
   amount: string;
   qualifier: 'TTC' | 'HT';
-  description?: string;
 }
 
 export interface PartnerPricing {
-  label: string;
   amount: string;
   qualifier: 'TTC' | 'HT';
   conditions?: string;
@@ -20,33 +24,52 @@ export interface MultiPropertyPricingRow {
   amount: string;
 }
 
-export interface PricingProfile {
+export interface PricingOffer {
+  title: string;
+  description: string;
+}
+
+export interface PricingTierRow {
+  key: string;
+  label: string;
+  amount: string;
+  qualifier: 'TTC' | 'HT';
+}
+
+export interface FlatPricingProfile {
+  kind: 'flat';
   id: PricingProfileId;
   standard: PricingAmount;
   partner?: PartnerPricing;
   multiProperty?: {
-    title: string;
-    caption: string;
     rows: MultiPropertyPricingRow[];
   };
-  travelFees?: string;
+  offer?: PricingOffer;
   note?: string;
 }
 
+export interface TieredPricingProfile {
+  kind: 'tiered';
+  id: PricingProfileId;
+  tiers: PricingTierRow[];
+  offer?: PricingOffer;
+  note?: string;
+}
+
+export type PricingProfile = FlatPricingProfile | TieredPricingProfile;
+
 const standardProfileValues = {
+  kind: 'flat',
   standard: {
     label: 'Tarif public',
     amount: '240 €',
     qualifier: 'TTC',
   },
   partner: {
-    label: 'Adhérent à un office de tourisme partenaire',
     amount: '200 €',
     qualifier: 'TTC',
   },
   multiProperty: {
-    title: 'Tarifs dégressifs pour plusieurs logements sur le même secteur',
-    caption: 'Tarifs dégressifs Etoilys pour plusieurs logements',
     rows: [
       {
         key: 'first',
@@ -66,17 +89,95 @@ const standardProfileValues = {
     ],
   },
   note: 'Les tarifs ci-dessous sont tout compris, sans frais de déplacement. Le montant applicable est confirmé avant tout engagement.',
-} as const satisfies Omit<PricingProfile, 'id'>;
+} as const satisfies Omit<FlatPricingProfile, 'id'>;
+
+function createStandardPricingProfile(id: PricingProfileId): PricingProfile {
+  return {
+    id,
+    kind: standardProfileValues.kind,
+    standard: { ...standardProfileValues.standard },
+    partner: { ...standardProfileValues.partner },
+    multiProperty: {
+      rows: standardProfileValues.multiProperty.rows.map((row) => ({ ...row })),
+    },
+    note: standardProfileValues.note,
+  };
+}
+
+const lotPricingProfile: PricingProfile = {
+  id: 'lot-standard',
+  kind: 'flat',
+  standard: {
+    label: 'Tarif public',
+    amount: '200 €',
+    qualifier: 'TTC',
+  },
+  multiProperty: {
+    rows: [
+      {
+        key: 'first',
+        label: 'Premier logement',
+        amount: '200 €',
+      },
+      {
+        key: 'second-and-next',
+        label: 'Deuxième logement et suivants',
+        amount: '160 € par logement',
+      },
+    ],
+  },
+  note: standardProfileValues.note,
+};
+
+const girondeStandardProfileValues = {
+  kind: 'tiered',
+  tiers: [
+    {
+      key: 'studio-t1',
+      label: 'Studio / T1',
+      amount: '180 €',
+      qualifier: 'TTC',
+    },
+    {
+      key: 't2-t3-t4',
+      label: 'T2 / T3 / T4',
+      amount: '200 €',
+      qualifier: 'TTC',
+    },
+    {
+      key: 't5-plus',
+      label: 'T5 et plus',
+      amount: '250 €',
+      qualifier: 'TTC',
+    },
+  ],
+  offer: {
+    title: 'Renouvellement : -20 %',
+    description:
+      'Pour les logements dont le classement initial a été réalisé par Etoilys ou Gironde Tourisme.',
+  },
+  note: standardProfileValues.note,
+} as const satisfies Omit<TieredPricingProfile, 'id'>;
+
+function createGirondePricingProfile(
+  id: Extract<PricingProfileId, 'gironde-standard' | 'bordeaux-standard'>
+): PricingProfile {
+  return {
+    id,
+    kind: girondeStandardProfileValues.kind,
+    tiers: girondeStandardProfileValues.tiers.map((tier) => ({ ...tier })),
+    offer: { ...girondeStandardProfileValues.offer },
+    note: girondeStandardProfileValues.note,
+  };
+}
 
 export const PRICING_PROFILES: Record<PricingProfileId, PricingProfile> = {
-  'dordogne-standard': {
-    id: 'dordogne-standard',
-    ...standardProfileValues,
-  },
-  'bordeaux-standard': {
-    id: 'bordeaux-standard',
-    ...standardProfileValues,
-  },
+  'aveyron-standard': createStandardPricingProfile('aveyron-standard'),
+  'dordogne-standard': createStandardPricingProfile('dordogne-standard'),
+  'gironde-standard': createGirondePricingProfile('gironde-standard'),
+  'lot-standard': lotPricingProfile,
+  'lot-et-garonne-standard': createStandardPricingProfile('lot-et-garonne-standard'),
+  'bordeaux-standard': createGirondePricingProfile('bordeaux-standard'),
 };
 
 export function getPricingProfile(profileId: PricingProfileId): PricingProfile {

@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { getCanonicalUrl, getIndexablePaths, SITE_URL } from '../src/content/seoRoutes.ts';
+import { getPublishedLocalPaths } from '../src/content/local/registry.ts';
 
 const SITE_HOST = 'www.etoilys.fr';
 const INDEXNOW_KEY = 'a4f9bc0d1e4b47b9b0e2b438d9d8f2aa';
@@ -197,6 +198,10 @@ function routeUrl(pathname: string): string {
   return getCanonicalUrl(pathname);
 }
 
+function localPublicUrls(): string[] {
+  return ['/zones-intervention', ...getPublishedLocalPaths()].map(routeUrl);
+}
+
 function articlePathFromPage(filePath: string): string | null {
   const articlePageRoutes: Record<string, string> = {
     'src/pages/actualites/MeublesChangements20252026.tsx':
@@ -242,11 +247,6 @@ function staticRoutesFromPage(filePath: string): string[] {
     'src/pages/Prerequis.tsx': ['/prerequis-au-classement', '/en/classification-requirements'],
     'src/pages/Procedure.tsx': ['/procedure', '/en/classification-process'],
     'src/pages/ZonesIntervention.tsx': ['/zones-intervention'],
-    'src/pages/locales/ClassementBergerac.tsx': ['/classement-meuble-tourisme-bergerac'],
-    'src/pages/locales/ClassementBordeaux.tsx': ['/classement-meuble-tourisme-bordeaux'],
-    'src/pages/locales/ClassementDordogne.tsx': ['/classement-meuble-tourisme-dordogne'],
-    'src/pages/locales/ClassementGironde.tsx': ['/classement-meuble-tourisme-gironde'],
-    'src/pages/locales/ClassementLotEtGaronne.tsx': ['/classement-meuble-tourisme-lot-et-garonne'],
     'src/pages/Simulateur.tsx': ['/simulateur'],
     'src/pages/SimulateurTaxeSejour.tsx': ['/simulateur-taxe-sejour'],
     'src/pages/SimulateurFiscalClassement.tsx': ['/simulateur-fiscal-classement'],
@@ -294,9 +294,17 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
         continue;
       }
 
-      if (normalizedPath === 'src/content/cityLandingPages.tsx') {
-        urls.push(routeUrl('/classement-meuble-tourisme-bergerac'));
-        urls.push(routeUrl('/classement-meuble-tourisme-bordeaux'));
+      if (
+        normalizedPath.startsWith('src/content/local/') ||
+        normalizedPath.startsWith('src/components/local/') ||
+        normalizedPath.startsWith('src/pages/locales/')
+      ) {
+        if (normalizedPath === 'src/content/local/registry.ts') {
+          urls.push(...allIndexableUrls());
+          continue;
+        }
+
+        urls.push(...localPublicUrls());
         continue;
       }
 

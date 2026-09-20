@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight, ArrowUpRight, FolderOpen, LoaderCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
 import { useToast } from '../components/ui/Toast';
@@ -44,7 +44,7 @@ interface SimulationStatusBadge {
 const SIMULATION_STATUS_BADGES: Record<SimulationStatus, SimulationStatusBadge> = {
   BROUILLON: {
     label: 'Brouillon',
-    className: 'border-primary-200 bg-primary-100 text-primary-500',
+    className: 'border-ink/15 bg-paper text-ink',
   },
   FAVORABLE: {
     label: 'Résultat favorable',
@@ -101,7 +101,6 @@ export default function Simulateur() {
     null
   );
   const [deletingSimulationId, setDeletingSimulationId] = useState<string | null>(null);
-  const startBlockRef = useRef<HTMLDivElement>(null);
 
   const loadSimulations = useCallback(async (ignoreResult: () => boolean = () => false) => {
     setSimulationsStatus('loading');
@@ -231,277 +230,312 @@ export default function Simulateur() {
   }
 
   return (
-    <>
-      <section className="simulator-ui bg-gradient-to-br from-themePrimary-1 to-primary-300 py-10 text-white md:py-12">
-        <div className="container-adaptive">
-          <div className="max-w-3xl">
-            <h1 className="mb-4 text-white">Simulateur de classement</h1>
-            <p className="text-base text-white/90">
-              Ce simulateur vous aide à situer votre logement avant une visite officielle :
-              catégorie atteignable, points à vérifier, équipements à préparer. Il ne délivre pas de
-              classement, mais il vous donne une première lecture utile.
+    <section className="simulator-ui simulator-page">
+      <div className="container-editorial">
+        <header className="simulator-intro">
+          <div>
+            <p className="simulator-eyebrow">Les outils Etoilys</p>
+            <h1>Simulateur de classement</h1>
+            <p>
+              Situez votre meublé de tourisme, identifiez les points à préparer et avancez vers
+              votre classement.
             </p>
           </div>
-        </div>
-      </section>
+        </header>
 
-      <section className="simulator-ui bg-white py-10 md:py-12">
-        <div className="container-adaptive">
-          <div className="mx-auto mb-6 max-w-6xl">
-            <div className="rounded-card border border-primary-200 bg-primary-100 p-5 leading-comfortable text-gray-700 md:p-6">
-              <h2 className="mb-3 text-gray-900">Méthode du simulateur de classement</h2>
-              <div className="space-y-3 text-sm">
-                <p>
-                  Ce simulateur vous donne une première estimation du classement possible de votre
-                  meublé de tourisme. Il s’appuie sur la grille officielle de classement, utilisée
-                  pour attribuer de 1 à 5 étoiles selon des critères liés au logement, aux
-                  équipements, aux services proposés et au développement durable.
-                </p>
-                <p>
-                  L’objectif est simple : vous aider à situer votre logement avant d’engager une
-                  démarche officielle. Vous renseignez les caractéristiques du bien, puis le
-                  simulateur compare vos réponses aux exigences du référentiel.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-            <div ref={startBlockRef} className="space-y-5">
-              <Card hover={false} className="border-primary-200 bg-primary-100 p-5 md:p-6">
-                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-primary-500">
-                  Nouvelle simulation
-                </p>
-                <h2 className="mb-3">Les informations de départ</h2>
-                <p className="mb-5 text-sm text-gray-700">
-                  Indiquez la catégorie visée et les caractéristiques principales du logement. Vous
-                  pourrez les modifier si besoin pendant la simulation.
-                </p>
-
-                <form className="space-y-5" onSubmit={handleStartFormSubmit}>
-                  <Select
-                    id="requestedCategory"
-                    name="requestedCategory"
-                    label="Catégorie que vous souhaitez tester"
-                    helperText="Vous ne savez pas quelle catégorie viser ? Commencez par le niveau qui vous semble réaliste. Le simulateur vous aidera à voir si certains points bloquent ou si une catégorie supérieure paraît envisageable."
-                    options={REQUESTED_CATEGORY_OPTIONS}
-                    value={requestedCategory}
-                    onChange={handleRequestedCategoryChange}
-                  />
-
-                  <Select
-                    id="housingType"
-                    name="housingType"
-                    label="Type de logement"
-                    options={HOUSING_TYPE_OPTIONS}
-                    value={housingType}
-                    onChange={handleHousingTypeChange}
-                  />
-
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <Select
-                      id="floor"
-                      name="floor"
-                      label="Étage"
-                      options={FLOOR_OPTIONS}
-                      value={floor}
-                      onChange={(event) => setFloor(event.target.value)}
-                    />
-
-                    <Input
-                      label="Capacité d’accueil"
-                      name="capacity"
-                      type="number"
-                      inputMode="numeric"
-                      min="1"
-                      placeholder="Ex. 4"
-                      value={capacity}
-                      onChange={(event) => {
-                        setCapacity(event.target.value);
-                        if (formErrors.capacity) {
-                          setFormErrors({});
-                        }
-                      }}
-                      error={formErrors.capacity}
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    className="w-full"
-                    disabled={isCreatingSimulation}
-                  >
-                    {isCreatingSimulation ? 'Création en cours...' : 'Démarrer la simulation'}
-                  </Button>
-                </form>
-              </Card>
-
-              <div className="rounded-card border border-warning-200 bg-warning-100 p-5 leading-comfortable text-gray-700 md:p-6">
-                <h2 className="mb-3 text-gray-900">Limites du simulateur de classement</h2>
-                <div className="space-y-3 text-sm">
-                  <p>
-                    Ce simulateur ne délivre pas un classement officiel. Il vous donne une
-                    estimation à partir de vos réponses, mais seul un contrôle sur place permet de
-                    confirmer les critères réellement validés.
-                  </p>
-                  <p>
-                    Lors de la visite, Etoilys vérifie concrètement les équipements, les surfaces,
-                    l’état du logement et les points prévus par la grille de classement. Un détail
-                    mal renseigné ou un équipement absent peut modifier le résultat final.
-                  </p>
-                  <p>
-                    Le score affiché doit donc être lu comme une aide à la préparation, pas comme
-                    une garantie d’obtention d’une catégorie d’étoiles.
-                  </p>
-                </div>
-              </div>
-
-              <div className="rounded-card border border-primary-200 bg-white p-5 shadow-card md:p-6">
-                <h2 className="mb-3 text-gray-900">
-                  Passer de l’estimation à la visite officielle
-                </h2>
-                <p className="mb-5 text-sm leading-comfortable text-textLight">
-                  Le simulateur vous aide à préparer votre projet, mais seul un contrôle sur place
-                  permet d’obtenir un classement. Etoilys peut réaliser cette visite en tant
-                  qu’organisme de contrôle accrédité Cofrac Inspection n°3-2394.
-                </p>
-                <Button href="/demande-classement" variant="primary">
-                  Organiser une visite officielle
-                </Button>
-              </div>
+        <div className="simulator-workspace lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+          <form
+            className="simulator-form-panel"
+            onSubmit={handleStartFormSubmit}
+            aria-labelledby="new-simulation-title"
+          >
+            <div className="mb-6">
+              <p className="simulator-eyebrow">Votre point de départ</p>
+              <h2 id="new-simulation-title">Nouvelle simulation</h2>
+              <p className="mt-2 text-sm text-muted">
+                Quatre informations pour commencer. Vous pourrez les modifier à tout moment.
+              </p>
             </div>
 
             <div className="space-y-5">
-              <div>
-                <h2 className="mb-2">Mes simulations</h2>
-                <p className="text-sm text-textLight">
-                  Vos simulations sont enregistrées sur ce navigateur.
-                </p>
+              <Select
+                id="requestedCategory"
+                name="requestedCategory"
+                label="Catégorie que vous souhaitez tester"
+                helperText="Choisissez un premier objectif, de 1 à 5 étoiles."
+                options={REQUESTED_CATEGORY_OPTIONS}
+                value={requestedCategory}
+                onChange={handleRequestedCategoryChange}
+              />
+
+              <Select
+                id="housingType"
+                name="housingType"
+                label="Type de logement"
+                options={HOUSING_TYPE_OPTIONS}
+                value={housingType}
+                onChange={handleHousingTypeChange}
+              />
+
+              <div className="simulator-field-grid">
+                <Select
+                  id="floor"
+                  name="floor"
+                  label="Étage"
+                  options={FLOOR_OPTIONS}
+                  value={floor}
+                  onChange={(event) => setFloor(event.target.value)}
+                />
+
+                <Input
+                  label="Capacité d’accueil"
+                  name="capacity"
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  placeholder="Ex. 4"
+                  value={capacity}
+                  onChange={(event) => {
+                    setCapacity(event.target.value);
+                    if (formErrors.capacity) {
+                      setFormErrors({});
+                    }
+                  }}
+                  error={formErrors.capacity}
+                />
               </div>
 
-              {simulationsStatus === 'loading' && (
-                <Card hover={false} className="p-6">
-                  <p className="text-sm text-gray-700">Chargement de vos simulations...</p>
-                </Card>
-              )}
+              <Button
+                type="submit"
+                variant="primary"
+                className="simulator-submit"
+                disabled={isCreatingSimulation}
+              >
+                {isCreatingSimulation ? 'Création en cours...' : 'Démarrer la simulation'}
+                {isCreatingSimulation ? (
+                  <LoaderCircle size={18} className="motion-safe:animate-spin" aria-hidden="true" />
+                ) : (
+                  <ArrowRight size={18} aria-hidden="true" />
+                )}
+              </Button>
+            </div>
 
-              {simulationsStatus === 'error' && (
-                <Card hover={false} className="border-alert-200 bg-alert-100 p-5">
-                  <h3 className="mb-2">Chargement impossible</h3>
-                  <p className="mb-4 text-sm text-alert-500">
-                    Impossible de charger vos simulations pour le moment.
-                  </p>
-                  <Button type="button" variant="secondary" onClick={() => void loadSimulations()}>
-                    Réessayer
-                  </Button>
-                </Card>
-              )}
+            <p className="mt-5 border-t border-ink/10 pt-4 text-xs text-muted" role="note">
+              Une estimation pour vous préparer. Seule une visite officielle permet de confirmer le
+              classement.
+            </p>
+          </form>
 
-              {simulationsStatus === 'success' && simulations.length === 0 && (
-                <Card hover={false} className="p-5 md:p-6">
-                  <h3 className="mb-2">Aucune simulation enregistrée</h3>
-                  <p className="text-sm text-textLight">
-                    Vous n’avez pas encore de simulation enregistrée sur ce navigateur.
-                  </p>
-                </Card>
-              )}
+          <section
+            className="simulator-result-panel"
+            aria-labelledby="saved-simulations-title"
+            aria-busy={simulationsStatus === 'loading'}
+          >
+            <div className="mb-6">
+              <div className="simulator-result-heading !mb-2">
+                <h2 id="saved-simulations-title">Mes simulations</h2>
+                {simulationsStatus === 'success' && simulations.length > 0 && (
+                  <span className="text-xs text-muted">
+                    {simulations.length} enregistrée{simulations.length > 1 ? 's' : ''}
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-muted">
+                Vos simulations sont enregistrées sur ce navigateur.
+              </p>
+            </div>
 
-              {simulationsStatus === 'success' && simulations.length > 0 && (
-                <div className="space-y-4">
-                  {simulations.map((simulation) => {
-                    const statusBadge = getSimulationStatusBadge(simulation.statut);
-                    const isConfirmingDelete = confirmingDeleteSimulationId === simulation.id;
-                    const isDeleting = deletingSimulationId === simulation.id;
+            {simulationsStatus === 'loading' && (
+              <p className="flex items-center gap-3 py-8 text-sm text-muted" role="status">
+                <LoaderCircle size={20} className="motion-safe:animate-spin" aria-hidden="true" />
+                Chargement de vos simulations...
+              </p>
+            )}
 
-                    return (
-                      <Card key={simulation.id} hover={false} className="p-4 md:p-5">
-                        <div className="mb-4 space-y-3">
-                          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                            <h3>
-                              Catégorie que vous souhaitez tester :{' '}
-                              {formatRequestedCategory(simulation.categorie_demandee)}
-                            </h3>
-                            {statusBadge && (
-                              <span
-                                className={`inline-flex w-fit rounded-full border px-3 py-1 text-sm font-medium ${statusBadge.className}`}
-                              >
-                                {statusBadge.label}
-                              </span>
-                            )}
-                          </div>
+            {simulationsStatus === 'error' && (
+              <div className="border-l-2 border-alert-500 bg-alert-100/50 p-5" role="alert">
+                <h3 className="mb-2">Chargement impossible</h3>
+                <p className="mb-4 text-sm text-alert-500">
+                  Impossible de charger vos simulations pour le moment.
+                </p>
+                <Button type="button" variant="secondary" onClick={() => void loadSimulations()}>
+                  Réessayer
+                </Button>
+              </div>
+            )}
 
-                          <dl className="grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-                            <div>
-                              <dt className="font-medium text-gray-900">Capacité d’accueil</dt>
-                              <dd>{formatCapacity(simulation.capacite_accueil)}</dd>
-                            </div>
-                            <div>
-                              <dt className="font-medium text-gray-900">Dernière modification</dt>
-                              <dd>{formatModificationDate(simulation.date_modification)}</dd>
-                            </div>
-                          </dl>
+            {simulationsStatus === 'success' && simulations.length === 0 && (
+              <div className="border-t border-ink/15 py-8">
+                <FolderOpen
+                  size={32}
+                  strokeWidth={1.25}
+                  className="mb-5 text-copper"
+                  aria-hidden="true"
+                />
+                <h3 className="mb-3">Aucune simulation enregistrée</h3>
+                <p className="max-w-sm text-sm text-muted">
+                  Commencez avec les informations de votre logement. Vous retrouverez ici vos
+                  simulations pour les reprendre à votre rythme.
+                </p>
+                <ol
+                  className="mt-7 space-y-3 border-t border-ink/15 pt-5 text-sm text-muted"
+                  aria-label="Le parcours de simulation"
+                >
+                  <li className="flex items-center gap-3">
+                    <span className="text-xs text-copper" aria-hidden="true">
+                      01
+                    </span>
+                    Décrivez les pièces du logement
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="text-xs text-copper" aria-hidden="true">
+                      02
+                    </span>
+                    Parcourez la grille de contrôle
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <span className="text-xs text-copper" aria-hidden="true">
+                      03
+                    </span>
+                    Consultez votre estimation
+                  </li>
+                </ol>
+              </div>
+            )}
+
+            {simulationsStatus === 'success' && simulations.length > 0 && (
+              <ul className="divide-y divide-ink/15 border-t border-ink/15">
+                {simulations.map((simulation) => {
+                  const statusBadge = getSimulationStatusBadge(simulation.statut);
+                  const isConfirmingDelete = confirmingDeleteSimulationId === simulation.id;
+                  const isDeleting = deletingSimulationId === simulation.id;
+
+                  return (
+                    <li key={simulation.id} className="py-5 last:pb-0">
+                      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+                        <h3>{formatRequestedCategory(simulation.categorie_demandee)}</h3>
+                        {statusBadge && (
+                          <span
+                            className={`inline-flex w-fit rounded-full border px-2.5 py-1 text-xs font-medium ${statusBadge.className}`}
+                          >
+                            {statusBadge.label}
+                          </span>
+                        )}
+                      </div>
+
+                      <dl className="mt-3 space-y-1 text-sm text-muted">
+                        <div>
+                          <dt className="sr-only">Capacité d’accueil</dt>
+                          <dd>{formatCapacity(simulation.capacite_accueil)}</dd>
                         </div>
+                        <div className="flex flex-wrap gap-x-1">
+                          <dt>Modifiée le</dt>
+                          <dd>{formatModificationDate(simulation.date_modification)}</dd>
+                        </div>
+                      </dl>
 
-                        {isConfirmingDelete ? (
-                          <div className="flex flex-col gap-3 border-t border-alert-200 pt-4 sm:flex-row sm:items-center">
-                            <p className="text-sm font-medium text-alert-500 sm:flex-1">
-                              Confirmer la suppression de cette simulation ?
-                            </p>
-                            <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
-                              <button
-                                type="button"
-                                className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                disabled={isDeleting}
-                                onClick={() => setConfirmingDeleteSimulationId(null)}
-                              >
-                                Annuler
-                              </button>
-                              <button
-                                type="button"
-                                className="inline-flex items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                disabled={isDeleting}
-                                onClick={() => void handleDeleteSimulation(simulation.id)}
-                              >
-                                {isDeleting ? 'Suppression...' : 'Supprimer'}
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:flex-wrap sm:items-center">
-                            <Button
-                              type="button"
-                              variant="primary"
-                              href={`/simulateur/${simulation.id}`}
-                              state={{ classementSimulatorEntryPoint: 'resume_card' }}
-                              onClick={() =>
-                                trackClassementSimulatorResumed({
-                                  entryPoint: 'resume_card',
-                                  requestedCategory: simulation.categorie_demandee,
-                                  capacity: simulation.capacite_accueil,
-                                })
-                              }
-                            >
-                              Reprendre
-                            </Button>
+                      {isConfirmingDelete ? (
+                        <div className="mt-4 border-t border-alert-200 pt-4" role="alert">
+                          <p className="text-sm font-medium text-alert-500">
+                            Confirmer la suppression de cette simulation ?
+                          </p>
+                          <div className="mt-3 flex flex-wrap gap-2">
                             <button
                               type="button"
-                              className="mt-2 inline-flex items-center justify-center rounded-lg border border-alert-200 bg-white px-4 py-2 text-sm font-medium text-alert-500 transition-colors duration-200 hover:bg-alert-100 focus:outline-none focus:ring-2 focus:ring-alert-400 focus:ring-offset-2 sm:ml-auto sm:mt-0"
-                              onClick={() => setConfirmingDeleteSimulationId(simulation.id)}
+                              className="ui-focus inline-flex min-h-11 items-center justify-center rounded-control border border-ink/20 bg-white px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-paper disabled:cursor-not-allowed disabled:opacity-50"
+                              disabled={isDeleting}
+                              onClick={() => setConfirmingDeleteSimulationId(null)}
                             >
-                              Supprimer
+                              Annuler
+                            </button>
+                            <button
+                              type="button"
+                              className="ui-focus inline-flex min-h-11 items-center justify-center rounded-control border border-alert-200 bg-alert-100 px-4 py-2 text-sm font-medium text-alert-500 transition-colors hover:bg-alert-200 disabled:cursor-not-allowed disabled:opacity-50"
+                              disabled={isDeleting}
+                              onClick={() => void handleDeleteSimulation(simulation.id)}
+                            >
+                              {isDeleting ? 'Suppression...' : 'Supprimer'}
                             </button>
                           </div>
-                        )}
-                      </Card>
-                    );
-                  })}
-                </div>
-              )}
+                        </div>
+                      ) : (
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+                          <Button
+                            type="button"
+                            variant="primary"
+                            className="min-h-11 gap-3 px-4 py-2 text-sm"
+                            href={`/simulateur/${simulation.id}`}
+                            state={{ classementSimulatorEntryPoint: 'resume_card' }}
+                            onClick={() =>
+                              trackClassementSimulatorResumed({
+                                entryPoint: 'resume_card',
+                                requestedCategory: simulation.categorie_demandee,
+                                capacity: simulation.capacite_accueil,
+                              })
+                            }
+                          >
+                            Reprendre
+                            <ArrowRight size={16} aria-hidden="true" />
+                          </Button>
+                          <button
+                            type="button"
+                            className="ui-focus min-h-11 rounded-control px-2 py-2 text-sm text-muted underline decoration-ink/25 underline-offset-4 transition-colors hover:text-alert-500"
+                            onClick={() => setConfirmingDeleteSimulationId(simulation.id)}
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </section>
+        </div>
+
+        <details className="simulator-disclosure simulator-method">
+          <summary>Comment fonctionne cette estimation ?</summary>
+          <div className="grid gap-5 pt-2 md:grid-cols-2 md:gap-10">
+            <div>
+              <h2 className="mb-2 !text-base">Un repère avant la visite</h2>
+              <p>
+                Le simulateur compare vos réponses à la grille officielle de classement des meublés
+                de tourisme, de 1 à 5 étoiles : logement, équipements, services et développement
+                durable. Il vous aide à repérer les exigences à vérifier et les équipements à
+                préparer.
+              </p>
+            </div>
+            <div>
+              <h2 className="mb-2 !text-base">Une estimation, pas un classement</h2>
+              <p>
+                Le résultat dépend des informations renseignées. Lors de la visite officielle,
+                Etoilys vérifie les équipements, les surfaces et l’état du logement. Un équipement
+                absent ou un détail mal renseigné peut modifier le résultat final.
+              </p>
             </div>
           </div>
-        </div>
-      </section>
-    </>
+        </details>
+
+        <section
+          className="simulator-next editorial-focus-inverse"
+          aria-labelledby="official-visit-title"
+        >
+          <div>
+            <h2 id="official-visit-title">Prêt pour la visite officielle ?</h2>
+            <p>
+              Etoilys vous accompagne vers le classement de votre meublé, en tant qu’organisme de
+              contrôle accrédité Cofrac Inspection n°3-2394.
+            </p>
+          </div>
+          <div className="simulator-next-actions">
+            <Button href="/demande-classement" variant="primary" className="simulator-next-primary">
+              Organiser une visite officielle
+              <ArrowUpRight size={18} aria-hidden="true" />
+            </Button>
+          </div>
+        </section>
+      </div>
+    </section>
   );
 }

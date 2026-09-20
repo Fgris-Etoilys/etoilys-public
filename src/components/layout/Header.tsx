@@ -6,11 +6,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import { layoutContent, type LayoutNavigationItem } from '../../i18n/layoutContent';
 import { getLocaleFromPath } from '../../i18n/routeHelpers';
 
-const normalizePathForComparison = (pathname: string): string =>
-  pathname === '/' ? pathname : pathname.replace(/\/+$/, '') || '/';
-
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [openMobileSubmenu, setOpenMobileSubmenu] = useState<string | null>(null);
@@ -21,20 +17,6 @@ export default function Header() {
   const locale = getLocaleFromPath(location.pathname);
   const content = layoutContent[locale].header;
   const navigation: readonly LayoutNavigationItem[] = content.navigation;
-  const isHomePage =
-    normalizePathForComparison(location.pathname) === normalizePathForComparison(content.homeHref);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
-
-    handleScroll();
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   useEffect(() => {
     const updateHeaderHeight = () => {
       const headerHeight = Math.ceil(headerRef.current?.getBoundingClientRect().height ?? 64);
@@ -67,6 +49,9 @@ export default function Header() {
     } else {
       document.body.style.overflow = '';
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [isMobileMenuOpen]);
 
   useEffect(() => {
@@ -75,44 +60,51 @@ export default function Header() {
         setOpenDropdown(null);
       }
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpenDropdown(null);
+        setIsMobileMenuOpen(false);
+      }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
-  const headerClasses = `fixed left-0 right-0 top-0 z-[70] border-b border-primary-100/80 shadow-[0_10px_30px_rgba(1,50,176,0.08)] backdrop-blur-md transition-all duration-300 ${
-    isScrolled || !isHomePage || isMobileMenuOpen ? 'bg-white/95' : 'bg-white/90'
-  }`;
+  const headerClasses =
+    'site-header text-ink fixed left-0 right-0 top-0 z-[70] border-b border-ink/15 bg-paper/95 shadow-[0_4px_20px_rgb(var(--color-ink)/0.03)] backdrop-blur-md';
 
   const navLinkBaseClasses =
-    'rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-200';
-  const navLinkInactiveClasses =
-    'text-themePrimary-1 hover:bg-primary-100/80 hover:text-primary-500';
-  const navLinkActiveClasses = 'bg-primary-100 text-primary-500 shadow-sm';
+    'rounded-control px-3 py-2 text-sm font-medium transition-all duration-200 ui-focus';
+  const navLinkInactiveClasses = 'text-ink hover:bg-surface-hover hover:text-ink';
+  const navLinkActiveClasses = 'bg-surface-hover text-ink';
   const mobileLinkBaseClasses =
-    'rounded-lg px-3 py-2 text-lg font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-200';
-  const mobileLinkInactiveClasses =
-    'text-themePrimary-1 hover:bg-primary-100/70 hover:text-primary-500';
-  const mobileLinkActiveClasses = 'bg-primary-100 text-primary-500';
+    'rounded-control px-3 py-2 text-lg font-medium transition-colors duration-200 ui-focus';
+  const mobileLinkInactiveClasses = 'text-ink hover:bg-surface-hover hover:text-ink';
+  const mobileLinkActiveClasses = 'bg-surface-hover text-ink';
 
   return (
     <>
       <header ref={headerRef} className={headerClasses}>
-        <nav className="container-adaptive py-2">
+        <nav className="container-editorial py-2">
           <div className="flex items-center justify-between">
-            <Link to={content.homeHref} className="flex items-center">
+            <Link to={content.homeHref} className="ui-focus flex items-center">
               <img
-                src="/Logo complet - site web copy.svg"
+                src="/logo-etoilys-editorial.svg"
                 alt="Etoilys"
                 width={1025}
                 height={576}
                 loading="eager"
                 decoding="async"
-                className="h-14 w-auto origin-left scale-110 md:h-14 xl:h-16"
+                className="h-14 w-auto origin-left scale-110 md:h-14 min-[1280px]:h-16"
               />
             </Link>
 
-            <div className="hidden items-center gap-2 xl:flex" ref={dropdownRef}>
+            <div className="hidden items-center gap-2 min-[1280px]:flex" ref={dropdownRef}>
               {navigation.map((item) => {
                 const hasSubmenu = Boolean(item.submenu);
                 const isActive =
@@ -158,6 +150,9 @@ export default function Header() {
                         }`}
                         aria-expanded={openDropdown === item.name}
                         aria-haspopup="true"
+                        onClick={() =>
+                          setOpenDropdown(openDropdown === item.name ? null : item.name)
+                        }
                       >
                         {item.name}
                         <ChevronDown
@@ -169,24 +164,24 @@ export default function Header() {
 
                       {openDropdown === item.name && (
                         <div
-                          className="absolute left-0 top-full z-[80] mt-3 w-72 rounded-xl border border-primary-100/90 bg-white p-2 shadow-[0_18px_45px_rgba(1,50,176,0.14)]"
+                          className="absolute left-0 top-full z-[80] mt-3 w-72 rounded-control border border-ink/15 bg-surface p-2 shadow-[0_6px_24px_rgb(var(--color-ink)/0.08)]"
                           role="menu"
                         >
                           {dropdownItems.map((subItem) => (
                             <Link
                               key={subItem.name}
                               to={subItem.href}
-                              className={`block rounded-lg px-4 py-3 transition-colors duration-200 ${
+                              className={`ui-focus block rounded-control px-4 py-3 transition-colors duration-200 ${
                                 location.pathname === subItem.href
-                                  ? 'bg-primary-100 text-primary-500'
-                                  : 'text-themePrimary-1 hover:bg-primary-100/70 hover:text-primary-500'
+                                  ? 'bg-surface-hover text-ink'
+                                  : 'text-ink hover:bg-surface-hover hover:text-ink'
                               }`}
                               role="menuitem"
                               onClick={() => setOpenDropdown(null)}
                             >
                               <span className="block text-sm font-medium">{subItem.name}</span>
                               {subItem.description && (
-                                <span className="mt-0.5 block text-xs leading-5 text-textLight">
+                                <span className="mt-0.5 block text-xs leading-5 text-muted">
                                   {subItem.description}
                                 </span>
                               )}
@@ -214,7 +209,7 @@ export default function Header() {
                 href={content.cta.href}
                 variant="primary"
                 size="sm"
-                className="ml-2 gap-2 border border-primary-200 px-4 py-2.5 shadow-[0_10px_24px_rgba(49,107,255,0.22)]"
+                className="ml-2 gap-2 border border-ink px-4 py-2.5 shadow-none"
               >
                 <Star className="h-4 w-4" aria-hidden="true" />
                 {content.cta.name}
@@ -224,8 +219,10 @@ export default function Header() {
 
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="rounded-full p-2 text-themePrimary-1 transition-colors duration-200 hover:bg-primary-100/70 hover:text-primary-500 xl:hidden"
+              className="ui-focus rounded-control p-2 text-ink transition-colors duration-200 hover:bg-surface-hover hover:text-ink min-[1280px]:hidden"
               aria-label={content.menuToggleLabel}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls={isMobileMenuOpen ? 'site-mobile-menu' : undefined}
             >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -234,7 +231,10 @@ export default function Header() {
       </header>
 
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[60] overflow-y-auto bg-white pt-20 xl:hidden">
+        <div
+          id="site-mobile-menu"
+          className="fixed inset-0 z-[60] overflow-y-auto bg-paper pt-[var(--etoilys-header-height,73px)] min-[1280px]:hidden"
+        >
           <nav className="container-adaptive py-6">
             <div className="flex flex-col gap-2">
               {navigation.map((item) => {
@@ -274,15 +274,15 @@ export default function Header() {
                       </button>
 
                       {isSubmenuOpen && (
-                        <div className="ml-3 mt-2 flex flex-col gap-1 border-l border-primary-200 pl-3">
+                        <div className="ml-3 mt-2 flex flex-col gap-1 border-l border-ink/15 pl-3">
                           {mobileSubmenuItems.map((subItem) => (
                             <Link
                               key={subItem.name}
                               to={subItem.href}
-                              className={`rounded-lg px-3 py-2 text-base transition-colors duration-200 ${
+                              className={`ui-focus rounded-control px-3 py-2 text-base transition-colors duration-200 ${
                                 location.pathname === subItem.href
-                                  ? 'bg-primary-100 font-medium text-primary-500'
-                                  : 'text-themePrimary-1 hover:bg-primary-100/70 hover:text-primary-500'
+                                  ? 'bg-surface-hover font-medium text-ink'
+                                  : 'text-ink hover:bg-surface-hover hover:text-ink'
                               }`}
                               onClick={() => setOpenMobileSubmenu(null)}
                             >
@@ -311,7 +311,7 @@ export default function Header() {
               <Button
                 href={content.cta.href}
                 variant="primary"
-                className="mt-4 w-full gap-2 border border-primary-200 shadow-[0_10px_24px_rgba(49,107,255,0.2)]"
+                className="mt-4 w-full gap-2 border border-ink shadow-none"
               >
                 <Star className="h-4 w-4" aria-hidden="true" />
                 {content.cta.name}

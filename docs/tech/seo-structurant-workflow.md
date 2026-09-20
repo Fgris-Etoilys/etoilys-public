@@ -12,7 +12,7 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
 
 ## Ajout d'une nouvelle page indexable
 
-1. Ajouter la route dans `src/AppRoutes.tsx` (appelé par `src/App.tsx`).
+1. Ajouter la route dans `src/AppRoutes.tsx`, monté par le wrapper `src/App.tsx`.
 2. Ajouter la meta route dans `src/content/seoRoutes.ts` :
    - `title`
    - `description`
@@ -35,23 +35,21 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
 
 ## Ajout d'une page locale
 
-Une page locale correspond à une ville ou à un bassin rattaché à une page départementale.
+Une page locale correspond à un département ou à une ville/zone rattachée à une page départementale. Le contrat détaillé est `docs/tech/local-framework-v6.md`.
 
-1. Créer le composant de page réel avec son contenu validé.
-2. Déclarer sa route publique dans `src/AppRoutes.tsx`.
-3. Ajouter sa configuration SEO dans `src/content/seoRoutes.ts` avec une route indexable et prerenderable.
-4. Régénérer le sitemap avec `npm run seo:sitemap`.
-5. Vérifier que la route est incluse dans le prerender avec `npm run prerender` après `npm run build`.
-6. Enregistrer la page dans `localPages` du département concerné dans `src/content/localServiceAreas.ts`.
-7. Ajouter ou adapter les tests de route, SEO, breadcrumbs, sitemap, prerender et maillage local.
+1. Ajouter l'ID typé dans `src/content/local/types.ts`, puis créer la config V6 dans `src/content/local/departments/*Page.tsx` ou `src/content/local/cities/*Page.tsx`.
+2. Déclarer la route publique explicite dans `src/AppRoutes.tsx` via le wrapper fin `DepartmentLandingPage` ou `CityLandingPage`.
+3. Ajouter l'entrée dans `src/content/local/registry.ts` : hiérarchie, statut, URL, hub, SEO local, image LCP/OG et données de script.
+4. Ne pas ajouter de route SEO locale parallèle dans `src/content/seoRoutes.ts` : les routes locales sont composées depuis le registre.
+5. Ne pas maintenir de liste `localPages` : les enfants publiés sont dérivés de `parentId` et du statut effectif.
+6. Si la page ajoute un index communes ou des images critiques, passer par les scripts existants (`npm run taxe-sejour:data`, `npm run images:build`, `npm run images:check`).
+7. Régénérer et valider : `npm run seo:sitemap`, `npm run test:run`, `npm run build:seo`, puis `npm run typecheck`.
 
-Ne jamais enregistrer une page locale dans `localPages` avant que sa route réelle, sa configuration
-SEO indexable et ses tests existent. Cette règle empêche le hub et les pages départementales de
-rendre un lien crawlable vers une page absente.
+Un brouillon, une ville orpheline ou une ville rattachée à un parent brouillon ne doit pas apparaître dans le hub, le sitemap, le prerender ou IndexNow, et doit rendre la 404 avec SEO `noindex,follow` si sa route est déjà déclarée.
 
 ## Ajout d'un nouvel article
 
-1. Ajouter la route article dans `src/App.tsx`.
+1. Ajouter la route article dans `src/AppRoutes.tsx`.
 2. Ajouter la meta route dans `src/content/seoRoutes.ts`.
 3. Ajouter les métadonnées canoniques de l'article dans `src/content/articleStructuredData.ts`.
    Pour ce lot, ce fichier est la source canonique temporaire de `datePublished` et `dateModified`.

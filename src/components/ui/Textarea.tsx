@@ -1,4 +1,4 @@
-import { TextareaHTMLAttributes, forwardRef } from 'react';
+import { TextareaHTMLAttributes, forwardRef, useId } from 'react';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -8,23 +8,41 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ label, error, helperText, className = '', ...props }, ref) => {
+    const generatedId = useId();
+    const inputId = props.id ?? generatedId;
+
+    const messageId = `${inputId}-message`;
+    const describedBy =
+      [props['aria-describedby'], error || helperText ? messageId : undefined]
+        .filter(Boolean)
+        .join(' ') || undefined;
+
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor={inputId} className="block text-sm font-medium text-ink mb-2">
             {label}
             {props.required && <span className="text-alert-400 ml-1">*</span>}
           </label>
         )}
         <textarea
           ref={ref}
-          className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-transparent transition-all duration-200 resize-none ${
-            error ? 'border-alert-400 focus:ring-alert-400' : ''
-          } ${className}`}
+          className={`ui-field resize-none ${error ? 'ui-field-error' : ''} ${className}`}
           {...props}
+          id={inputId}
+          aria-invalid={props['aria-invalid'] ?? (error ? true : undefined)}
+          aria-describedby={describedBy}
         />
-        {error && <p className="mt-2 text-sm text-alert-400">{error}</p>}
-        {helperText && !error && <p className="mt-2 text-sm text-textLight">{helperText}</p>}
+        {error && (
+          <p id={messageId} className="mt-2 text-sm text-alert-400" role="alert">
+            {error}
+          </p>
+        )}
+        {helperText && !error && (
+          <p id={messageId} className="mt-2 text-sm text-muted">
+            {helperText}
+          </p>
+        )}
       </div>
     );
   }

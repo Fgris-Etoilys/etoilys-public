@@ -22,7 +22,8 @@ Whenever you write code, apply this instruction:
 
 - `CLAUDE.md`
 - `tailwind.config.js`
-- `src/App.tsx`
+- `src/AppRoutes.tsx`
+- `src/App.tsx` (application wrapper)
 - `src/components/ui/*`
 - `src/components/forms/*`
 - `src/utils/formValidation.ts`
@@ -48,12 +49,13 @@ Whenever you write code, apply this instruction:
 
 - Canonical domain is fixed to `https://www.etoilys.fr`.
 - Never add page-level SEO injection inside `src/pages/*`: SEO is rendered once in `src/components/layout/Layout.tsx`.
-- Every new route added in `src/App.tsx` must be declared in `src/content/seoRoutes.ts` with at least:
+- Every new route added in `src/AppRoutes.tsx` must be declared in `src/content/seoRoutes.ts` with at least:
   - `title`
   - `description`
   - `breadcrumbLabel` (except home)
   - optional `robots` only when needed
 - Unknown routes must keep the fallback `noindex,follow` (`NOT_FOUND_SEO`).
+- For local pages, follow `docs/tech/local-framework-v6.md`: the React route stays explicit, while local SEO entries, sitemap, prerender and IndexNow are derived from the local registry.
 - Do not reintroduce `meta keywords`.
 - Absolute SEO URLs (canonical, `og:url`, JSON-LD `url`) must stay on `https://www.etoilys.fr`.
 
@@ -64,7 +66,7 @@ Whenever you write code, apply this instruction:
   - `WebSite`
 - Business fields (`legalName`, SIRET `identifier`, contact, address) must match `MentionsLegales`.
 - Do not add `sameAs` until official social profiles are provided and validated.
-- Breadcrumbs are JSON-LD only (no visible breadcrumb UI), generated from `getBreadcrumbItems` in `src/content/seoRoutes.ts`.
+- Breadcrumbs are generated from `getBreadcrumbItems` in `src/content/seoRoutes.ts`. Visible breadcrumb UI is allowed only on `/zones-intervention` and local pages; other page families keep JSON-LD only.
 - Home and 404 must not output `BreadcrumbList`.
 - Articles must use `ArticleStructuredData` + `src/content/articleStructuredData.ts`; no manual `useEffect` JSON-LD in article pages.
 - Article JSON-LD (`headline`, `description`) must stay coherent with the rendered H1/meta wording and keep proper French UTF-8 accents; do not replace accents with ASCII approximations.
@@ -95,12 +97,13 @@ Whenever you write code, apply this instruction:
   - public key file: `public/a4f9bc0d1e4b47b9b0e2b438d9d8f2aa.txt`
   - local submit script: `npm run indexnow:submit` (use `INDEXNOW_DRY_RUN=1` when needed)
   - CI automation: `.github/workflows/indexnow.yml` on `main` pushes
+  - local files (`src/content/local/registry.ts`, `sharedLocalContent.tsx`, `v6Pages.tsx`, `departments/`, `cities/`, `src/pages/locales/`) are covered generically by `scripts/indexnow-submit.ts`; add a file -> route mapping only for non-local pages not already covered.
 
 ### Mandatory SEO Validation Before Delivery
 
 - Verify there is only one SEO injector (`<SEO />`) in layout.
 - Verify no page imports `SEO` directly.
-- Verify all active routes in `src/App.tsx` are covered by `src/content/seoRoutes.ts`.
+- Verify all active routes in `src/AppRoutes.tsx` are covered by `src/content/seoRoutes.ts`, with local routes derived from the registry.
 - Verify no duplicated JSON-LD scripts after SPA navigation.
 - Run `npm run typecheck` and fix errors until clean.
 - For any new page/article, follow `docs/tech/seo-structurant-workflow.md`.
@@ -118,7 +121,7 @@ npm run preview
 ## Architecture Snapshot
 
 - Stack: React 19, TypeScript, Vite, React Router v7, Tailwind CSS, Lucide React.
-- App routing is defined in `src/App.tsx`, wrapped by layout components.
+- App routing is defined in `src/AppRoutes.tsx`; `src/App.tsx` mounts the application wrapper.
 - Shared UI lives in `src/components/ui`; forms in `src/components/forms`; helpers in `src/utils`.
 - Frontend API URLs use `VITE_API_BASE_URL` (usually `/api`) and are routed by Vite/Vercel.
 - Public forms use Starsmanager through same-origin `/api/public/forms/*` URLs and `submitToApi`.

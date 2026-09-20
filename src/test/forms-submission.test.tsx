@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-libra
 import { MemoryRouter } from 'react-router-dom';
 import ContactForm from '../components/forms/ContactForm';
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
+import { formContent } from '../i18n/formContent';
 
 const openAiAdsMock = vi.hoisted(() => ({
   trackLeadCreatedConversion: vi.fn(),
@@ -118,6 +119,7 @@ describe('localized form submissions', () => {
     fireEvent.click(screen.getByRole('button', { name: /envoyer mon message/i }));
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
+    expect(await screen.findByRole('status')).toBeVisible();
 
     expect(getLastFetchBody()).toMatchObject({
       nom: 'Jane Doe',
@@ -272,6 +274,7 @@ describe('localized form submissions', () => {
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
     expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'first-turnstile-token' });
+    expect(await screen.findByRole('alert')).toBeVisible();
     await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
 
     fireEvent.click(submitButton);
@@ -489,6 +492,7 @@ describe('localized form submissions', () => {
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
     expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'first-turnstile-token' });
+    expect(await screen.findByRole('alert')).toBeVisible();
     await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
 
     fireEvent.click(submitButton);
@@ -528,7 +532,8 @@ describe('localized form submissions', () => {
 
     await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
     await waitFor(() => expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1));
-    expect(await screen.findByText(/envoyée avec succès/i)).toBeVisible();
+    expect(await screen.findByRole('status')).toBeVisible();
+    expect(screen.getByRole('status')).toHaveTextContent(formContent.fr.demandeClassement.success);
   });
 
   it('does not trigger the OpenAI Ads conversion on frontend validation failure', async () => {
@@ -673,7 +678,9 @@ describe('localized form submissions', () => {
     fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
 
     await waitFor(() => expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1));
-    expect(await screen.findByText(/envoyée avec succès/i)).toBeVisible();
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      formContent.fr.demandeClassement.success
+    );
 
     const nameInput = screen.getByLabelText(/^nom/i) as HTMLInputElement;
     expect(nameInput.value).toBe('');

@@ -1,6 +1,7 @@
 export type ImageAssetKey =
   | 'homeHero'
   | 'homeProcedure'
+  | 'homePourquoiChoisir'
   | 'pourquoiReferencement'
   | 'recrutementInspection'
   | 'simulateurClassement'
@@ -20,16 +21,26 @@ export type ImageAssetKey =
   | 'articlePreparerVisiteClassement'
   | 'articleRipostVoyageurRefuseQuitter'
   | 'dordogneHero'
-  | 'dordogneInterior'
+  | 'aveyronHero'
+  | 'aveyronTerritory'
+  | 'dordogneLaRoqueGageac'
   | 'dordogneLandscape'
   | 'girondeHero'
   | 'girondeTerritory'
   | 'girondeCoast'
+  | 'bassinArcachonHero'
+  | 'bassinArcachonDunePilat'
+  | 'medocAtlantiqueHero'
+  | 'medocAtlantiqueExpertise'
+  | 'lotHero'
+  | 'lotRocamadour'
   | 'lotEtGaronneHero'
   | 'lotEtGaronneTerritory'
   | 'lotEtGaronneCanal'
   | 'bergeracHero'
-  | 'bordeauxHero';
+  | 'bergeracSaintJacquesCyrano'
+  | 'bordeauxHero'
+  | 'bordeauxExpertise';
 
 export interface ImageManifestEntry {
   width: number;
@@ -57,6 +68,15 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/home-procedure-480.webp 480w, /images/optimized/home-procedure-768.webp 768w, /images/optimized/home-procedure-1200.webp 1200w, /images/optimized/home-procedure-1600.webp 1600w, /images/optimized/home-procedure-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/home-procedure-480.avif 480w, /images/optimized/home-procedure-768.avif 768w, /images/optimized/home-procedure-1200.avif 1200w, /images/optimized/home-procedure-1600.avif 1600w, /images/optimized/home-procedure-1920.avif 1920w',
+  },
+  homePourquoiChoisir: {
+    width: 1448,
+    height: 1086,
+    src: '/images/optimized/home-pourquoi-choisir-etoilys-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/home-pourquoi-choisir-etoilys-480.webp 480w, /images/optimized/home-pourquoi-choisir-etoilys-768.webp 768w, /images/optimized/home-pourquoi-choisir-etoilys-1200.webp 1200w',
+    srcSetAvif:
+      '/images/optimized/home-pourquoi-choisir-etoilys-480.avif 480w, /images/optimized/home-pourquoi-choisir-etoilys-768.avif 768w, /images/optimized/home-pourquoi-choisir-etoilys-1200.avif 1200w',
   },
   pourquoiReferencement: {
     width: 1920,
@@ -229,7 +249,25 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
     srcSetAvif:
       '/images/optimized/pexels-slimmars-13-197677686-14298615-480.avif 480w, /images/optimized/pexels-slimmars-13-197677686-14298615-768.avif 768w, /images/optimized/pexels-slimmars-13-197677686-14298615-1200.avif 1200w, /images/optimized/pexels-slimmars-13-197677686-14298615-1600.avif 1600w, /images/optimized/pexels-slimmars-13-197677686-14298615-1920.avif 1920w',
   },
-  dordogneInterior: {
+  aveyronHero: {
+    width: 5200,
+    height: 3500,
+    src: '/images/optimized/belcastel-4-kallerna-wikimedia-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/belcastel-4-kallerna-wikimedia-480.webp 480w, /images/optimized/belcastel-4-kallerna-wikimedia-768.webp 768w, /images/optimized/belcastel-4-kallerna-wikimedia-1200.webp 1200w, /images/optimized/belcastel-4-kallerna-wikimedia-1600.webp 1600w, /images/optimized/belcastel-4-kallerna-wikimedia-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/belcastel-4-kallerna-wikimedia-480.avif 480w, /images/optimized/belcastel-4-kallerna-wikimedia-768.avif 768w, /images/optimized/belcastel-4-kallerna-wikimedia-1200.avif 1200w, /images/optimized/belcastel-4-kallerna-wikimedia-1600.avif 1600w, /images/optimized/belcastel-4-kallerna-wikimedia-1920.avif 1920w',
+  },
+  aveyronTerritory: {
+    width: 3024,
+    height: 4032,
+    src: '/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-480.webp 480w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-768.webp 768w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.webp 1200w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1600.webp 1600w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-480.avif 480w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-768.avif 768w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.avif 1200w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1600.avif 1600w, /images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1920.avif 1920w',
+  },
+  dordogneLaRoqueGageac: {
     width: 3158,
     height: 2228,
     src: '/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1200.jpg',
@@ -274,6 +312,60 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
     srcSetAvif:
       '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.avif 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.avif 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.avif 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.avif 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.avif 1920w',
   },
+  bassinArcachonHero: {
+    width: 4397,
+    height: 2262,
+    src: '/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/bassin-arcachon-cabanes-tchanquees-480.webp 480w, /images/optimized/bassin-arcachon-cabanes-tchanquees-768.webp 768w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1200.webp 1200w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1600.webp 1600w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/bassin-arcachon-cabanes-tchanquees-480.avif 480w, /images/optimized/bassin-arcachon-cabanes-tchanquees-768.avif 768w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1200.avif 1200w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1600.avif 1600w, /images/optimized/bassin-arcachon-cabanes-tchanquees-1920.avif 1920w',
+  },
+  bassinArcachonDunePilat: {
+    width: 3264,
+    height: 2448,
+    src: '/images/optimized/bassin-arcachon-dune-pilat-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/bassin-arcachon-dune-pilat-480.webp 480w, /images/optimized/bassin-arcachon-dune-pilat-768.webp 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.webp 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.webp 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/bassin-arcachon-dune-pilat-480.avif 480w, /images/optimized/bassin-arcachon-dune-pilat-768.avif 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.avif 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.avif 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.avif 1920w',
+  },
+  medocAtlantiqueHero: {
+    width: 3648,
+    height: 2736,
+    src: '/images/optimized/medoc-atlantique-etang-lacanau-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/medoc-atlantique-etang-lacanau-480.webp 480w, /images/optimized/medoc-atlantique-etang-lacanau-768.webp 768w, /images/optimized/medoc-atlantique-etang-lacanau-1200.webp 1200w, /images/optimized/medoc-atlantique-etang-lacanau-1600.webp 1600w, /images/optimized/medoc-atlantique-etang-lacanau-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/medoc-atlantique-etang-lacanau-480.avif 480w, /images/optimized/medoc-atlantique-etang-lacanau-768.avif 768w, /images/optimized/medoc-atlantique-etang-lacanau-1200.avif 1200w, /images/optimized/medoc-atlantique-etang-lacanau-1600.avif 1600w, /images/optimized/medoc-atlantique-etang-lacanau-1920.avif 1920w',
+  },
+  medocAtlantiqueExpertise: {
+    width: 3072,
+    height: 2304,
+    src: '/images/optimized/medoc-atlantique-carcans-plage-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/medoc-atlantique-carcans-plage-480.webp 480w, /images/optimized/medoc-atlantique-carcans-plage-768.webp 768w, /images/optimized/medoc-atlantique-carcans-plage-1200.webp 1200w, /images/optimized/medoc-atlantique-carcans-plage-1600.webp 1600w, /images/optimized/medoc-atlantique-carcans-plage-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/medoc-atlantique-carcans-plage-480.avif 480w, /images/optimized/medoc-atlantique-carcans-plage-768.avif 768w, /images/optimized/medoc-atlantique-carcans-plage-1200.avif 1200w, /images/optimized/medoc-atlantique-carcans-plage-1600.avif 1600w, /images/optimized/medoc-atlantique-carcans-plage-1920.avif 1920w',
+  },
+  lotHero: {
+    width: 5472,
+    height: 3648,
+    src: '/images/optimized/pexels-tyvalloire-35860040-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/pexels-tyvalloire-35860040-480.webp 480w, /images/optimized/pexels-tyvalloire-35860040-768.webp 768w, /images/optimized/pexels-tyvalloire-35860040-1200.webp 1200w, /images/optimized/pexels-tyvalloire-35860040-1600.webp 1600w, /images/optimized/pexels-tyvalloire-35860040-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/pexels-tyvalloire-35860040-480.avif 480w, /images/optimized/pexels-tyvalloire-35860040-768.avif 768w, /images/optimized/pexels-tyvalloire-35860040-1200.avif 1200w, /images/optimized/pexels-tyvalloire-35860040-1600.avif 1600w, /images/optimized/pexels-tyvalloire-35860040-1920.avif 1920w',
+  },
+  lotRocamadour: {
+    width: 4080,
+    height: 3060,
+    src: '/images/optimized/rocamadour-2025-114909-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/rocamadour-2025-114909-480.webp 480w, /images/optimized/rocamadour-2025-114909-768.webp 768w, /images/optimized/rocamadour-2025-114909-1200.webp 1200w, /images/optimized/rocamadour-2025-114909-1600.webp 1600w, /images/optimized/rocamadour-2025-114909-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/rocamadour-2025-114909-480.avif 480w, /images/optimized/rocamadour-2025-114909-768.avif 768w, /images/optimized/rocamadour-2025-114909-1200.avif 1200w, /images/optimized/rocamadour-2025-114909-1600.avif 1600w, /images/optimized/rocamadour-2025-114909-1920.avif 1920w',
+  },
   lotEtGaronneHero: {
     width: 3888,
     height: 2593,
@@ -310,6 +402,15 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
     srcSetAvif:
       '/images/optimized/bergerac-view-late-afternoon-480.avif 480w, /images/optimized/bergerac-view-late-afternoon-768.avif 768w, /images/optimized/bergerac-view-late-afternoon-1200.avif 1200w, /images/optimized/bergerac-view-late-afternoon-1600.avif 1600w, /images/optimized/bergerac-view-late-afternoon-1920.avif 1920w',
   },
+  bergeracSaintJacquesCyrano: {
+    width: 4411,
+    height: 4411,
+    src: '/images/optimized/bergerac-saint-jacques-cyrano-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/bergerac-saint-jacques-cyrano-480.webp 480w, /images/optimized/bergerac-saint-jacques-cyrano-768.webp 768w, /images/optimized/bergerac-saint-jacques-cyrano-1200.webp 1200w, /images/optimized/bergerac-saint-jacques-cyrano-1600.webp 1600w, /images/optimized/bergerac-saint-jacques-cyrano-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/bergerac-saint-jacques-cyrano-480.avif 480w, /images/optimized/bergerac-saint-jacques-cyrano-768.avif 768w, /images/optimized/bergerac-saint-jacques-cyrano-1200.avif 1200w, /images/optimized/bergerac-saint-jacques-cyrano-1600.avif 1600w, /images/optimized/bergerac-saint-jacques-cyrano-1920.avif 1920w',
+  },
   bordeauxHero: {
     width: 7860,
     height: 5240,
@@ -318,5 +419,14 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/bordeaux-place-de-la-bourse-480.webp 480w, /images/optimized/bordeaux-place-de-la-bourse-768.webp 768w, /images/optimized/bordeaux-place-de-la-bourse-1200.webp 1200w, /images/optimized/bordeaux-place-de-la-bourse-1600.webp 1600w, /images/optimized/bordeaux-place-de-la-bourse-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/bordeaux-place-de-la-bourse-480.avif 480w, /images/optimized/bordeaux-place-de-la-bourse-768.avif 768w, /images/optimized/bordeaux-place-de-la-bourse-1200.avif 1200w, /images/optimized/bordeaux-place-de-la-bourse-1600.avif 1600w, /images/optimized/bordeaux-place-de-la-bourse-1920.avif 1920w',
+  },
+  bordeauxExpertise: {
+    width: 3820,
+    height: 2698,
+    src: '/images/optimized/bordeaux-jardin-public-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/bordeaux-jardin-public-480.webp 480w, /images/optimized/bordeaux-jardin-public-768.webp 768w, /images/optimized/bordeaux-jardin-public-1200.webp 1200w, /images/optimized/bordeaux-jardin-public-1600.webp 1600w, /images/optimized/bordeaux-jardin-public-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/bordeaux-jardin-public-480.avif 480w, /images/optimized/bordeaux-jardin-public-768.avif 768w, /images/optimized/bordeaux-jardin-public-1200.avif 1200w, /images/optimized/bordeaux-jardin-public-1600.avif 1600w, /images/optimized/bordeaux-jardin-public-1920.avif 1920w',
   },
 };

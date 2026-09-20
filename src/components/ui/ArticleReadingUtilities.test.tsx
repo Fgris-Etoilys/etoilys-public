@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { useRef } from 'react';
+import { StrictMode, useRef } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ArticleReadingUtilities from './ArticleReadingUtilities';
 import {
@@ -179,6 +179,56 @@ describe('ArticleReadingUtilities', () => {
     expect(screen.getByTestId('article-reading-progress')).toHaveAttribute('aria-hidden', 'true');
     expect(screen.getByTestId('article-reading-progress')).toHaveClass('opacity-100');
     expect(screen.getByTestId('article-reading-progress-bar')).toHaveStyle({ width: '50%' });
+  });
+
+  it('keeps scheduling measurements after StrictMode cancels the first pending frame', () => {
+    setViewport(0);
+    render(
+      <StrictMode>
+        <ReadingUtilitiesFixture />
+      </StrictMode>
+    );
+
+    const heading = screen.getByRole('heading', { level: 1, name: 'Titre article' });
+    const editorialContent = screen.getByTestId('editorial-content');
+    setDocumentBounds(heading, 100, 160);
+    setDocumentBounds(editorialContent, 500, 2100);
+
+    expect(window.cancelAnimationFrame).toHaveBeenCalledTimes(1);
+    expect(pendingAnimationFrames.size).toBe(1);
+
+    act(() => {
+      flushAnimationFrames();
+    });
+
+    expect(screen.getByTestId('article-reading-progress')).toHaveClass('opacity-0');
+
+    setViewport(850);
+    act(() => {
+      fireEvent.scroll(window);
+    });
+    expect(pendingAnimationFrames.size).toBe(1);
+
+    act(() => {
+      flushAnimationFrames();
+    });
+    expect(screen.getByTestId('article-reading-progress')).toHaveClass('opacity-100');
+    expect(screen.getByTestId('article-reading-progress-bar')).toHaveStyle({ width: '50%' });
+
+    setViewport(1200);
+    act(() => {
+      fireEvent.scroll(window);
+      flushAnimationFrames();
+    });
+    expect(screen.getByTestId('article-reading-progress-bar')).toHaveStyle({ width: '73.3%' });
+
+    const scrollIntoViewMock = vi.spyOn(heading, 'scrollIntoView');
+    const focusMock = vi.spyOn(heading, 'focus');
+
+    screen.getByRole('button', { name: BACK_TO_TOP_LABEL }).click();
+
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
+    expect(focusMock).toHaveBeenCalledWith({ preventScroll: true });
   });
 
   it('keeps the back-to-top button inaccessible before the vertical threshold', () => {

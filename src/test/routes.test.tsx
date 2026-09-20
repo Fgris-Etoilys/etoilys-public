@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
+import { contactPageContent } from '../content/pages/contactPageContent';
 import { EN_MVP_PATHS, NL_MVP_PATHS } from './i18nMvpTestData';
 
 const renderAt = (path: string) => {
@@ -56,7 +57,12 @@ describe('routing', () => {
 
   it('renders contact page', () => {
     renderAt('/contact');
-    expect(screen.getByRole('heading', { name: /contact/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { level: 1, name: contactPageContent.fr.hero.title })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /email/i })).toBeRequired();
+    expect(screen.queryByText('1345 route de Dautres')).not.toBeInTheDocument();
+    expect(screen.queryByText('24150 Mauzac et Grand Castang')).not.toBeInTheDocument();
   });
 
   it('renders public classement simulator page', () => {
@@ -95,30 +101,100 @@ describe('routing', () => {
     renderAt('/zones-intervention');
     expectPageHeading(/zones d’intervention/i);
     expect(
+      screen.getByRole('heading', { level: 2, name: 'Trouvez votre département' })
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole('heading', { level: 3, name: 'Nouvelle-Aquitaine' })
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Dordogne' })).toBeInTheDocument();
+    expect(screen.getByText('24')).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Gironde' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Lot-et-Garonne' })).toBeInTheDocument();
-    expect(screen.queryByRole('heading', { name: 'Occitanie' })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois →' })).toHaveAttribute(
+    expect(screen.getByRole('heading', { level: 3, name: 'Occitanie' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Lot' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Aveyron' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Classement en Dordogne' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-dordogne'
+    );
+    expect(screen.queryByRole('link', { name: /consulter la page/i })).not.toBeInTheDocument();
+    expect(screen.queryByText('Pages locales')).not.toBeInTheDocument();
+    expect(screen.queryByAltText(/carte de france/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Bergerac et le Bergeracois' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
-    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bordeaux'
+    );
+    expect(screen.getByRole('link', { name: 'Bassin d’Arcachon' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-bassin-arcachon'
+    );
+    expect(screen.getByRole('link', { name: 'Lacanau et Médoc Atlantique' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-lacanau-medoc-atlantique'
+    );
+    expect(screen.getByRole('link', { name: 'Classement en Aveyron' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-aveyron'
+    );
+  });
+
+  it('renders visible breadcrumbs only for the local perimeter and keeps them aligned with JSON-LD', async () => {
+    renderAt('/classement-meuble-tourisme-bergerac');
+
+    const nav = screen.getByRole('navigation', { name: 'Fil d’Ariane' });
+    expect(screen.getAllByRole('navigation', { name: 'Fil d’Ariane' })).toHaveLength(1);
+    expect(within(nav).getByRole('link', { name: 'Accueil' })).toHaveAttribute('href', '/');
+    expect(within(nav).getByRole('link', { name: 'Zones d’intervention' })).toHaveAttribute(
+      'href',
+      '/zones-intervention'
+    );
+    expect(within(nav).getByRole('link', { name: 'Dordogne' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-dordogne'
+    );
+    expect(within(nav).getByText('Bergerac')).toHaveAttribute('aria-current', 'page');
+
+    await waitFor(() =>
+      expect(document.querySelector('#structured-data-breadcrumbs')).toBeInTheDocument()
+    );
+    const breadcrumbs = JSON.parse(
+      document.querySelector('#structured-data-breadcrumbs')?.textContent ?? '{}'
+    );
+    const jsonLabels = breadcrumbs.itemListElement.map((item: { name: string }) => item.name);
+    const visibleLabels = [
+      ...within(nav)
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+      within(nav).getByText('Bergerac').textContent,
+    ];
+
+    expect(visibleLabels).toEqual(jsonLabels);
+
+    cleanup();
+    renderAt('/classement');
+    expect(screen.queryByRole('navigation', { name: 'Fil d’Ariane' })).not.toBeInTheDocument();
+
+    cleanup();
+    renderAt('/actualites/preparer-visite-classement-meuble-tourisme');
+    expect(screen.queryByRole('navigation', { name: 'Fil d’Ariane' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /retour aux actualités/i })).toHaveAttribute(
+      'href',
+      '/actualites'
     );
   });
 
   it('renders Dordogne local landing page', () => {
     renderAt('/classement-meuble-tourisme-dordogne');
-    expectPageHeading(/classement/i, /dordogne/i);
-    expect(screen.getByRole('link', { name: 'Bergerac →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bergerac'
-    );
-    expect(screen.queryByText(/Une page dédiée présente aussi/i)).toBeNull();
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/\S/);
+    expect(document.querySelector('a[href="/demande-classement"]')).toBeInTheDocument();
+    expect(
+      document.querySelector('a[href="/classement-meuble-tourisme-bergerac"]')
+    ).toBeInTheDocument();
   });
 
   it('renders Bergerac city local landing page', () => {
@@ -130,7 +206,7 @@ describe('routing', () => {
   it('renders Gironde local landing page', () => {
     renderAt('/classement-meuble-tourisme-gironde');
     expectPageHeading(/classement/i, /gironde/i);
-    expect(screen.getByRole('link', { name: 'Voir la page Bordeaux →' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Bordeaux →' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bordeaux'
     );
@@ -146,9 +222,41 @@ describe('routing', () => {
     );
   });
 
+  it('renders Bassin d’Arcachon destination local landing page', () => {
+    renderAt('/classement-meuble-tourisme-bassin-arcachon');
+    expectPageHeading(/classement/i, /bassin d.arcachon/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d.intervention en Gironde/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-gironde'
+    );
+  });
+
+  it('renders Lacanau and Médoc Atlantique destination local landing page', () => {
+    renderAt('/classement-meuble-tourisme-lacanau-medoc-atlantique');
+    expectPageHeading(/classement/i, /lacanau/i, /médoc atlantique/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d.intervention en Gironde/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-gironde'
+    );
+  });
+
   it('renders Lot-et-Garonne local landing page', () => {
     renderAt('/classement-meuble-tourisme-lot-et-garonne');
     expectPageHeading(/classement/i, /lot-et-garonne/i);
+  });
+
+  it('renders Lot local landing page', () => {
+    renderAt('/classement-meuble-tourisme-lot');
+    expectPageHeading(/classement/i, /lot/i);
+    expect(screen.getByText('46 / LE LOT')).toBeInTheDocument();
+  });
+
+  it('renders Aveyron local landing page', () => {
+    renderAt('/classement-meuble-tourisme-aveyron');
+    expectPageHeading(/classement/i, /aveyron/i);
+    expect(screen.getByText('12 / L’AVEYRON')).toBeInTheDocument();
   });
 
   it('exposes service areas in classement navigation and keeps footer hub-focused', () => {
@@ -169,6 +277,8 @@ describe('routing', () => {
     );
     expect(screen.queryByRole('link', { name: /classement en dordogne/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement en gironde/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /classement dans le lot/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /classement en aveyron/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement en lot-et-garonne/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /bergerac et le bergeracois/i })).toBeNull();
   });

@@ -19,8 +19,13 @@ const FORCE_REBUILD = process.argv.includes('--force');
 const CHECK_MODE = process.argv.includes('--check');
 const HERO_ASSET_KEYS = new Set([
   'homeHero',
+  'aveyronHero',
   'dordogneHero',
+  'dordogneLaRoqueGageac',
   'girondeHero',
+  'bassinArcachonHero',
+  'medocAtlantiqueHero',
+  'lotHero',
   'lotEtGaronneHero',
   'bergeracHero',
   'bordeauxHero',
@@ -29,6 +34,7 @@ const HERO_ASSET_KEYS = new Set([
 const IMAGE_ASSETS = [
   { key: 'homeHero', fileName: 'AdobeStock_70255363.jpeg', outputName: 'home-hero' },
   { key: 'homeProcedure', fileName: 'home-procedure.jpg' },
+  { key: 'homePourquoiChoisir', fileName: 'home-pourquoi-choisir-etoilys.png' },
   { key: 'pourquoiReferencement', fileName: 'pourquoi-referencement.jpg' },
   { key: 'recrutementInspection', fileName: 'AdobeStock_31855482.jpeg' },
   {
@@ -86,19 +92,49 @@ const IMAGE_ASSETS = [
     fileName: 'article-ripost-voyageur-refuse-quitter.png',
   },
   { key: 'dordogneHero', fileName: 'pexels-slimmars-13-197677686-14298615.jpg' },
-  { key: 'dordogneInterior', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
+  { key: 'aveyronHero', fileName: 'belcastel-4-kallerna-wikimedia.jpg' },
+  { key: 'aveyronTerritory', fileName: 'joran-quinten-wYzuwwLKmGM-unsplash.jpg' },
+  { key: 'dordogneLaRoqueGageac', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
   { key: 'dordogneLandscape', fileName: 'le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg' },
   { key: 'girondeHero', fileName: 'axel-delansorne-fSpupJ0C95E-unsplash.jpg' },
   { key: 'girondeTerritory', fileName: 'arpad-czapp-J181eozqAd8-unsplash.jpg' },
   { key: 'girondeCoast', fileName: 'benjamin-esteves-A_JaVydOsRk-unsplash.jpg' },
+  {
+    key: 'bassinArcachonHero',
+    fileName: 'bassin-arcachon-cabanes-tchanquees.jpg',
+    outputName: 'bassin-arcachon-cabanes-tchanquees',
+  },
+  {
+    key: 'bassinArcachonDunePilat',
+    fileName: 'bassin-arcachon-dune-pilat.jpg',
+    outputName: 'bassin-arcachon-dune-pilat',
+  },
+  {
+    key: 'medocAtlantiqueHero',
+    fileName: 'medoc-atlantique-etang-lacanau.jpg',
+    outputName: 'medoc-atlantique-etang-lacanau',
+  },
+  {
+    key: 'medocAtlantiqueExpertise',
+    fileName: 'medoc-atlantique-carcans-plage.jpg',
+    outputName: 'medoc-atlantique-carcans-plage',
+  },
+  { key: 'lotHero', fileName: 'pexels-tyvalloire-35860040.jpg' },
+  { key: 'lotRocamadour', fileName: 'rocamadour-2025-114909.jpg' },
   { key: 'lotEtGaronneHero', fileName: 'AdobeStock_1364523535.jpeg' },
   { key: 'lotEtGaronneTerritory', fileName: 'pexels-d-goth-37724280.jpg' },
   { key: 'lotEtGaronneCanal', fileName: 'AdobeStock_919223785.jpeg' },
   { key: 'bergeracHero', fileName: 'bergerac-view-late-afternoon.jpg' },
+  { key: 'bergeracSaintJacquesCyrano', fileName: 'bergerac-saint-jacques-cyrano.jpg' },
   {
     key: 'bordeauxHero',
     fileName: 'pexels-miguel-cuenca-67882473-17356595.jpg',
     outputName: 'bordeaux-place-de-la-bourse',
+  },
+  {
+    key: 'bordeauxExpertise',
+    fileName: 'bordeaux-jardin-public-marc-ryckaert.jpg',
+    outputName: 'bordeaux-jardin-public',
   },
 ];
 
@@ -195,6 +231,10 @@ function toRelativePath(filePath) {
   return toPosixPath(path.relative(ROOT_DIR, filePath));
 }
 
+function normalizeFnSource(fn) {
+  return normalizeText(fn.toString());
+}
+
 function buildPipelineSignature() {
   return hashText(
     JSON.stringify(
@@ -204,18 +244,18 @@ function buildPipelineSignature() {
         ogAspectRatio: OG_ASPECT_RATIO,
         heroAssetKeys: [...HERO_ASSET_KEYS].sort(),
         imageAssets: IMAGE_ASSETS,
-        sharpVersions: sharp.versions,
-        formatSrcSet: formatSrcSet.toString(),
-        buildOgCompositionOverlay: buildOgCompositionOverlay.toString(),
-        getJpegQuality: getJpegQuality.toString(),
-        getWebpQuality: getWebpQuality.toString(),
-        getAvifQuality: getAvifQuality.toString(),
-        getOutputPaths: getOutputPaths.toString(),
-        shouldBuildAsset: shouldBuildAsset.toString(),
-        createAssetPlan: createAssetPlan.toString(),
-        buildAsset: buildAsset.toString(),
-        buildManifestEntry: buildManifestEntry.toString(),
-        buildManifest: buildManifest.toString(),
+        sharpVersion: sharp.versions.sharp,
+        formatSrcSet: normalizeFnSource(formatSrcSet),
+        buildOgCompositionOverlay: normalizeFnSource(buildOgCompositionOverlay),
+        getJpegQuality: normalizeFnSource(getJpegQuality),
+        getWebpQuality: normalizeFnSource(getWebpQuality),
+        getAvifQuality: normalizeFnSource(getAvifQuality),
+        getOutputPaths: normalizeFnSource(getOutputPaths),
+        shouldBuildAsset: normalizeFnSource(shouldBuildAsset),
+        createAssetPlan: normalizeFnSource(createAssetPlan),
+        buildAsset: normalizeFnSource(buildAsset),
+        buildManifestEntry: normalizeFnSource(buildManifestEntry),
+        buildManifest: normalizeFnSource(buildManifest),
       },
       null,
       2

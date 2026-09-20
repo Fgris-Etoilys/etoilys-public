@@ -47,7 +47,9 @@ function expectMainInternalEnglishLinksReadyOnly() {
   const links = Array.from(main.querySelectorAll('a[href^="/en/"]'));
 
   links.forEach((link) => {
-    expect(EN_MVP_PATH_SET.has(link.getAttribute('href') ?? '')).toBe(true);
+    expect(EN_MVP_PATH_SET.has(getInternalPathname(link.getAttribute('href') ?? '') ?? '')).toBe(
+      true
+    );
   });
 }
 

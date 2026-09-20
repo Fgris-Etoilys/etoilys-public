@@ -169,7 +169,7 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       article={article}
       tableOfContents={tableOfContents}
       lede={
-        <p className="text-xl leading-comfortable text-gray-700 mb-6">
+        <p className="text-xl leading-comfortable text-muted mb-6">
           Un voyageur termine sa réservation mais refuse de quitter le logement : jusqu’ici, la
           procédure administrative rapide utilisée contre certaines occupations illégales était mal
           adaptée, car le voyageur était entré légalement dans les lieux. Depuis la loi RIPOST,
@@ -183,11 +183,11 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       }
       keyTakeaways={keyTakeawaysBlock}
       footerCta={
-        <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+        <div className="article-cta-panel mb-12 mt-12 p-8">
           <h2 className="text-h4 mb-3">
             Vous voulez faire le point sur les règles qui changent pour les meublés de tourisme ?
           </h2>
-          <p className="text-gray-700 leading-comfortable mb-6">
+          <p className="text-muted leading-comfortable mb-6">
             Fiscalité, DPE, copropriété, enregistrement national et durée de location : plusieurs
             autres règles ont aussi évolué pour les propriétaires de meublés de tourisme.
           </p>
@@ -206,11 +206,11 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       <ArticleSectionHeading id="pourquoi-cette-situation-posait-probleme-jusquici">
         Pourquoi cette situation posait problème jusqu’ici
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Vous louez votre maison du samedi au samedi. La réservation se termine à 10 h, mais le
         voyageur refuse de rendre les clés et annonce qu’il reste dans le logement.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Contrairement à quelqu’un qui entre par effraction, ce voyageur avait le droit d’entrer dans
         le logement au début du séjour : il avait réservé et payé son séjour. C’est précisément ce
         qui rendait la procédure administrative existante mal adaptée à son cas. Le{' '}
@@ -226,16 +226,16 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         régulièrement dans un meublé de tourisme, mais qui se maintient dans les lieux après la fin
         de son contrat, n’entrait pas dans le champ de cette procédure rapide.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Dans le langage courant, la situation ressemble évidemment à un squat. Juridiquement, la
         différence est importante : le voyageur était entré dans le logement avec votre
         autorisation.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le problème n’était pas que le propriétaire n’avait aucun droit. Le problème était que la
         procédure rapide existante avait été conçue pour d’autres formes d’occupation illégale.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Cette lacune s’ajoute à plusieurs autres évolutions réglementaires du secteur : retrouvez
         notre point sur{' '}
         <Link
@@ -250,40 +250,40 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       <ArticleSectionHeading id="ce-que-la-loi-ripost-prevoit-de-changer">
         Ce que la loi RIPOST change désormais
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La loi RIPOST étend désormais la procédure administrative au cas d’un voyageur entré
         légalement dans un meublé mais qui refuse de partir après la fin de son contrat.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Concrètement, la procédure applicable suit ces étapes :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>le séjour est terminé ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>le voyageur reste malgré la fin de son droit d’occuper le logement ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>le propriétaire réunit les preuves et engage les démarches prévues ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>il demande au préfet d’ordonner le départ de l’occupant ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -292,7 +292,7 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Juridiquement, cette procédure est prévue par{' '}
         <a
           href={ARTICLE_38_DALO_URL}
@@ -308,7 +308,7 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         administrative sous l’autorité du préfet, plutôt que de devoir commencer par une procédure
         judiciaire classique.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         À chaque étape, l’intervention reste toutefois encadrée : le propriétaire ne peut pas
         décider seul de faire partir l’occupant, un simple appel à la préfecture ne suffit pas, et
         rien ne garantit une évacuation automatique ou immédiate.
@@ -317,14 +317,15 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       <ArticleSectionHeading id="ce-que-le-conseil-constitutionnel-a-change-le-14-aout">
         Ce que le Conseil constitutionnel a changé le 14 août
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un propriétaire qui cherche surtout à récupérer son logement, le principal dispositif
         de la réforme a été validé et est bien en vigueur.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Voici, en synthèse, ce que retient la décision du 14 août 2026 :
       </p>
       <ResponsiveComparisonTable
+        appearance="editorial"
         className="mb-6"
         primaryColumnKey="disposition"
         columns={[
@@ -358,13 +359,13 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         ]}
         caption="Comparaison entre ce que prévoyait la loi RIPOST et le résultat après la décision du Conseil constitutionnel du 14 août 2026"
       />
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le Conseil constitutionnel n’a pas remis en cause le principe d’une protection pour le
         propriétaire. Il a censuré le paragraphe II de l’article 14, qui créait, pour les mêmes
         faits, deux infractions pénales distinctes assorties de peines différentes : une
         construction qui méconnaît le principe d’égalité devant la loi pénale.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour récupérer votre logement, la procédure administrative prévue par l’article 38 est donc
         bien applicable, y compris lorsque l’occupant se maintient dans un meublé de tourisme après
         la fin de son contrat.
@@ -373,16 +374,16 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       <ArticleSectionHeading id="peut-on-vraiment-recuperer-son-logement-en-72-heures">
         Peut-on vraiment récupérer son logement en 72 heures ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Non : la loi ne garantit pas que le voyageur sera dehors 72 heures après votre demande.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le délai de 72 heures concerne un cas particulier : si l’occupation vous empêche de
         récupérer ou de fournir les justificatifs nécessaires pour établir votre droit sur le
         logement, le préfet sollicite l’administration fiscale dans un délai de 72 heures pour
         établir ce droit. Ces 72 heures ne correspondent donc pas à la durée totale de la procédure.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le texte actuel de l’article 38 prévoit que le préfet statue sur la mise en demeure dans les
         48 heures suivant la réception de la demande. Le délai d’exécution de cette mise en demeure
         ne peut être inférieur à 24 heures. Lorsque le logement occupé ne constitue pas le domicile
@@ -390,7 +391,7 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         meublé de tourisme après la fin du séjour, puisque l’article 38, dans sa rédaction en
         vigueur depuis le 20 août 2026, couvre désormais expressément ce cas.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La procédure peut être beaucoup plus rapide qu’une procédure judiciaire classique, mais
         personne ne peut sérieusement promettre au propriétaire de récupérer ses clés sous 72
         heures.
@@ -399,18 +400,18 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
       <ArticleSectionHeading id="que-faire-si-un-voyageur-refuse-de-quitter-votre-meuble">
         Que faire si un voyageur refuse de quitter votre meublé ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Depuis l’entrée en vigueur de la nouvelle rédaction de l’article 38 le 20 août 2026, cette
         procédure préfectorale est ouverte au cas du voyageur qui se maintient dans un meublé de
         tourisme après la fin de son séjour. Si cela vous arrive, conservez toutes les preuves de la
         réservation et du refus de partir, ne tentez pas d’expulser vous-même le voyageur et engagez
         les démarches suivantes.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Voici les étapes de la procédure applicable :
       </p>
-      <div className="rounded-card border border-primary-200 bg-primary-100 p-6 mb-8">
-        <ul className="space-y-4 text-gray-700">
+      <div className="article-callout p-6 mb-8">
+        <ul className="space-y-4 text-muted">
           <li>
             <strong>1. Garder toutes les preuves de la réservation.</strong> Contrat ou confirmation
             de réservation, plateforme utilisée, dates et heures prévues du séjour, identité du
@@ -475,17 +476,17 @@ export default function ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost() {
         </ul>
       </div>
 
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si un voyageur refuse de partir à la fin de son séjour, RIPOST donne désormais au
         propriétaire une nouvelle porte de sortie : demander au préfet d’engager une procédure
         d’évacuation, alors que ce recours était jusqu’ici mal adapté à cette situation.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le Conseil constitutionnel n’a pas remis en cause ce mécanisme. La procédure n’est toutefois
         pas automatique : il faut conserver les preuves, déposer plainte, faire constater
         l’occupation et saisir officiellement la préfecture.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si cela vous arrive, votre premier réflexe doit donc être de conserver toutes les preuves de
         la réservation et du refus de partir, puis d’engager rapidement les démarches officielles
         plutôt que de tenter de récupérer le logement par vos propres moyens.

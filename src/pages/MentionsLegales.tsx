@@ -3,19 +3,19 @@ import CookiePreferencesButton from '../components/ui/CookiePreferencesButton';
 export default function MentionsLegales() {
   return (
     <>
-      <section className="py-section bg-white">
-        <div className="container-adaptive max-w-4xl">
+      <section className="py-section bg-surface">
+        <div className="container-editorial max-w-4xl">
           <h1 className="mb-3">Mentions légales</h1>
-          <p className="text-sm text-textLight mb-10">Dernière mise à jour : 10 juillet 2026</p>
+          <p className="text-sm text-muted mb-10">Dernière mise à jour : 10 juillet 2026</p>
 
-          <div className="space-y-10 text-textLight leading-comfortable">
+          <div className="space-y-10 text-muted leading-comfortable">
             {/* Éditeur */}
             <div>
               <p className="mb-4">
                 Le présent site, accessible notamment à l&apos;adresse{' '}
                 <a
                   href="https://www.etoilys.fr"
-                  className="text-primary hover:underline"
+                  className="article-inline-link"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -23,9 +23,9 @@ export default function MentionsLegales() {
                 </a>
                 , est édité par :
               </p>
-              <div className="bg-primary-100 rounded-card p-6 space-y-1 text-sm">
+              <div className="bg-paper rounded-editorial p-6 space-y-1 text-sm">
                 <p>
-                  <strong className="text-gray-800">ETOILYS</strong>, société par actions simplifiée
+                  <strong className="text-ink">ETOILYS</strong>, société par actions simplifiée
                   (SAS) au capital social de 2&nbsp;000&nbsp;€, immatriculée au RCS de Bergerac sous
                   le numéro 939&nbsp;330&nbsp;809, dont le siège social est situé 1345 route de
                   Dautres, 24150 Mauzac-et-Grand-Castang, France.
@@ -34,13 +34,13 @@ export default function MentionsLegales() {
                 <p>Numéro de TVA intracommunautaire : FR43939330809</p>
                 <p>
                   Téléphone :{' '}
-                  <a href="tel:+33649551540" className="text-primary hover:underline">
+                  <a href="tel:+33649551540" className="article-inline-link">
                     06 49 55 15 40
                   </a>
                 </p>
                 <p>
                   Adresse e-mail :{' '}
-                  <a href="mailto:contact@etoilys.fr" className="text-primary hover:underline">
+                  <a href="mailto:contact@etoilys.fr" className="article-inline-link">
                     contact@etoilys.fr
                   </a>
                 </p>
@@ -51,16 +51,16 @@ export default function MentionsLegales() {
 
             {/* Hébergement */}
             <div>
-              <h2 className="text-h4 font-semibold text-gray-800 mb-3">Hébergement</h2>
+              <h2 className="text-h4 font-semibold text-ink mb-3">Hébergement</h2>
               <p className="mb-3">Le site est hébergé par :</p>
-              <div className="bg-primary-100 rounded-card p-6 text-sm space-y-0.5">
-                <p className="font-semibold text-gray-800">Vercel Inc.</p>
+              <div className="bg-paper rounded-editorial p-6 text-sm space-y-0.5">
+                <p className="font-semibold text-ink">Vercel Inc.</p>
                 <p>440 N Barranca Ave #4133</p>
                 <p>Covina, CA 91723</p>
                 <p>États-Unis</p>
                 <p>
                   Téléphone :{' '}
-                  <a href="tel:+15592887060" className="text-primary hover:underline">
+                  <a href="tel:+15592887060" className="article-inline-link">
                     +1 559 288 7060
                   </a>
                 </p>
@@ -69,7 +69,7 @@ export default function MentionsLegales() {
 
             {/* Propriété intellectuelle */}
             <div>
-              <h2 className="text-h4 font-semibold text-gray-800 mb-3">Propriété intellectuelle</h2>
+              <h2 className="text-h4 font-semibold text-ink mb-3">Propriété intellectuelle</h2>
               <p className="mb-3">
                 L&apos;ensemble des éléments présents sur le site, notamment les textes, contenus,
                 images, photographies, illustrations, logos, éléments graphiques, structure,
@@ -87,7 +87,7 @@ export default function MentionsLegales() {
 
             {/* Responsabilité */}
             <div>
-              <h2 className="text-h4 font-semibold text-gray-800 mb-3">Responsabilité</h2>
+              <h2 className="text-h4 font-semibold text-ink mb-3">Responsabilité</h2>
               <p className="mb-3">
                 ETOILYS s&apos;efforce de fournir sur le site des informations aussi précises et à
                 jour que possible. Toutefois, ETOILYS ne saurait garantir l&apos;exactitude,
@@ -115,7 +115,7 @@ export default function MentionsLegales() {
 
             {/* Liens hypertextes */}
             <div>
-              <h2 className="text-h4 font-semibold text-gray-800 mb-3">Liens hypertextes</h2>
+              <h2 className="text-h4 font-semibold text-ink mb-3">Liens hypertextes</h2>
               <p className="mb-3">
                 Le site peut contenir des liens vers des sites tiers. ETOILYS n&apos;exerce aucun
                 contrôle sur ces sites et ne saurait être tenue responsable de leur contenu, de
@@ -126,7 +126,7 @@ export default function MentionsLegales() {
                 La création de liens vers le site{' '}
                 <a
                   href="https://www.etoilys.fr"
-                  className="text-primary hover:underline"
+                  className="article-inline-link"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -140,14 +140,14 @@ export default function MentionsLegales() {
 
             {/* Données personnelles */}
             <div>
-              <h2 className="text-h4 font-semibold text-gray-800 mb-3">Données personnelles</h2>
+              <h2 className="text-h4 font-semibold text-ink mb-3">Données personnelles</h2>
               <p className="mb-3">
                 ETOILYS peut être amenée à collecter des données personnelles via le site, notamment
                 au moyen des formulaires de contact et de demande de classement.
               </p>
               <p className="mb-3">
                 Les traitements de données mis en œuvre via le site sont encadrés par la{' '}
-                <a href="/confidentialite" className="text-primary hover:underline">
+                <a href="/confidentialite" className="article-inline-link">
                   Politique de confidentialité
                 </a>{' '}
                 d&apos;ETOILYS, que l&apos;utilisateur est invité à consulter pour obtenir
@@ -165,7 +165,7 @@ export default function MentionsLegales() {
 
             {/* Cookies et traceurs */}
             <div>
-              <h2 className="text-h4 font-semibold text-gray-800 mb-3">Cookies et traceurs</h2>
+              <h2 className="text-h4 font-semibold text-ink mb-3">Cookies et traceurs</h2>
               <p className="mb-3">
                 Le site peut utiliser des cookies ou autres traceurs nécessaires à son
                 fonctionnement, à la mesure d&apos;audience ou à l&apos;amélioration de
@@ -186,14 +186,14 @@ export default function MentionsLegales() {
                 préférences. ETOILYS ne transmet volontairement à PostHog ni nom, ni adresse e-mail,
                 ni téléphone, ni adresse postale, ni contenu de message.
               </p>
-              <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-primary-300 hover:text-primary-400">
+              <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-ink hover:text-ink-hover">
                 Gérer mes cookies
               </CookiePreferencesButton>
             </div>
 
             {/* Droit applicable */}
             <div>
-              <h2 className="text-h4 font-semibold text-gray-800 mb-3">Droit applicable</h2>
+              <h2 className="text-h4 font-semibold text-ink mb-3">Droit applicable</h2>
               <p className="mb-3">
                 Les présentes mentions légales sont soumises au droit français.
               </p>
@@ -206,15 +206,15 @@ export default function MentionsLegales() {
 
             {/* Contact */}
             <div>
-              <h2 className="text-h4 font-semibold text-gray-800 mb-3">Contact</h2>
+              <h2 className="text-h4 font-semibold text-ink mb-3">Contact</h2>
               <p>
                 Pour toute question relative au site ou à son contenu, vous pouvez contacter ETOILYS
                 à l&apos;adresse suivante :{' '}
-                <a href="mailto:contact@etoilys.fr" className="text-primary hover:underline">
+                <a href="mailto:contact@etoilys.fr" className="article-inline-link">
                   contact@etoilys.fr
                 </a>{' '}
                 ou par téléphone au{' '}
-                <a href="tel:+33649551540" className="text-primary hover:underline">
+                <a href="tel:+33649551540" className="article-inline-link">
                   06 49 55 15 40
                 </a>
                 .

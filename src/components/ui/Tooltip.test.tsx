@@ -54,6 +54,16 @@ describe('Tooltip', () => {
     expect(tooltip).toHaveAttribute('aria-hidden', 'false');
   });
 
+  it('uses the editorial surface styles', () => {
+    render(<Tooltip srLabel="Information">Contenu du tooltip</Tooltip>);
+
+    const trigger = screen.getByRole('button', { name: 'Information' });
+    const tooltip = screen.getByRole('tooltip', { hidden: true });
+
+    expect(trigger).toHaveClass('ui-focus', 'border-ink/15', 'bg-paper', 'text-muted');
+    expect(tooltip).toHaveClass('rounded-editorial', 'border-ink/15', 'bg-white', 'text-muted');
+  });
+
   it('stays open when the mouse reaches the tooltip before the dismiss delay', () => {
     render(<Tooltip srLabel="Information">Contenu du tooltip</Tooltip>);
 
@@ -123,6 +133,33 @@ describe('Tooltip', () => {
       'href',
       'https://example.com'
     );
+  });
+
+  it('dismisses keyboard help on Escape and keeps focus on the trigger', () => {
+    render(
+      <Tooltip srLabel="Information">
+        <a href="https://example.com">Source</a>
+      </Tooltip>
+    );
+
+    const trigger = screen.getByRole('button', { name: 'Information' });
+    const tooltip = screen.getByRole('tooltip', { hidden: true });
+
+    act(() => trigger.focus());
+    expect(tooltip).toHaveAttribute('aria-hidden', 'false');
+    expect(trigger).toHaveAttribute('aria-describedby', tooltip.id);
+    fireEvent.keyDown(trigger, { key: 'Escape' });
+    expect(tooltip).toHaveAttribute('aria-hidden', 'true');
+    expect(trigger).toHaveFocus();
+    expect(trigger).not.toHaveAttribute('aria-describedby');
+
+    act(() => trigger.blur());
+    act(() => trigger.focus());
+    const source = screen.getByRole('link', { name: 'Source' });
+    act(() => source.focus());
+    fireEvent.keyDown(source, { key: 'Escape' });
+    expect(tooltip).toHaveAttribute('aria-hidden', 'true');
+    expect(trigger).toHaveFocus();
   });
 
   it('keeps the tooltip inside the viewport when the trigger is close to the right edge', () => {

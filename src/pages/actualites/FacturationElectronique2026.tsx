@@ -3,6 +3,7 @@ import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
 import { getArticleAuthor } from '../../content/articleAuthors';
@@ -176,7 +177,7 @@ export default function ArticleFacturationElectronique2026() {
       lede={
         <>
           {/* Chapô */}
-          <p className="text-xl leading-comfortable text-gray-700 mb-6">
+          <p className="text-xl leading-comfortable text-muted mb-6">
             Oui, les propriétaires de meublés de tourisme sont concernés par la réforme de la
             facturation électronique. La confusion vient d'un mauvais réflexe&nbsp;: beaucoup
             pensent que seuls les loueurs qui <strong>collectent la TVA</strong> sont concernés. En
@@ -184,7 +185,7 @@ export default function ArticleFacturationElectronique2026() {
             <strong>loueur en meublé classique</strong> doit être en mesure de recevoir les factures
             électroniques de ses fournisseurs, même si les séjours restent exonérés de TVA.
           </p>
-          <p className="text-gray-700 leading-comfortable mb-10">
+          <p className="text-muted leading-comfortable mb-10">
             En pratique, le sujet concerne surtout les loueurs disposant d'un numéro{' '}
             <strong>SIREN</strong>. Même lorsque les séjours restent exonérés de TVA, ces loueurs
             doivent désormais avoir choisi une plateforme agréée pour recevoir les factures
@@ -196,9 +197,9 @@ export default function ArticleFacturationElectronique2026() {
       footerCta={
         <>
           {/* CTA */}
-          <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+          <div className="article-cta-panel mb-12 mt-12 p-8">
             <h2 className="text-h4 mb-3">Besoin d'y voir plus clair&nbsp;?</h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-muted mb-6">
               Retrouvez les réponses générales dans la FAQ ou échangez avec Etoilys sur le
               classement de votre meublé.
             </p>
@@ -221,30 +222,30 @@ export default function ArticleFacturationElectronique2026() {
       <ArticleSectionHeading id="oui-vous-etes-concernes-meme-si-vous-ne-collectez-pas-la-tva-sur-vos-sejours">
         Oui, vous êtes concernés, même si vous ne collectez pas la TVA sur vos séjours
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         C'est le point le plus important à expliquer clairement.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un propriétaire de meublé de tourisme, la réforme ne se résume pas à la question&nbsp;:{' '}
         <em>est-ce que je facture la TVA à mes voyageurs&nbsp;?</em>
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un <strong>loueur en meublé classique</strong>, la DGFiP indique que les locations
         exonérées de TVA au titre de l'article <strong>261 D du CGI</strong> n'emportent{' '}
         <strong>pas d'obligation d'émission</strong> de facture électronique ni de{' '}
         <strong>e-reporting</strong> pour ces opérations.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Mais cette même fiche DGFiP ajoute un point essentiel&nbsp;: <strong>en réception</strong>,
         ces bailleurs restent assujettis à la TVA et doivent <strong>recevoir</strong> des factures
         électroniques, <strong>sous réserve de disposer d'un numéro SIREN</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Donc la réponse courte est la suivante&nbsp;:
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -253,7 +254,7 @@ export default function ArticleFacturationElectronique2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -268,21 +269,21 @@ export default function ArticleFacturationElectronique2026() {
       <ArticleSectionHeading id="ce-qui-s-applique-a-un-loueur-en-meuble-classique">
         Ce qui s'applique à un loueur en meublé classique
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un loueur en meublé de tourisme classique — c'est-à-dire hors activité taxable de type
         para-hôtelière — il faut distinguer trois sujets.
       </p>
 
       <h3 className="mt-6 mb-3">1. Réception des factures électroniques</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Depuis le <strong>1er septembre 2026</strong>, vous devez être en mesure de{' '}
         <strong>recevoir</strong> les factures électroniques de vos fournisseurs français assujettis
         à la TVA.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Concrètement, cela vise par exemple des factures de&nbsp;:
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         {[
           'logiciel ou abonnement métier ;',
           'comptable ;',
@@ -292,7 +293,7 @@ export default function ArticleFacturationElectronique2026() {
           "prestataires de ménage ou d'entretien lorsqu'ils facturent votre activité.",
         ].map((item) => (
           <li key={item} className="flex gap-3">
-            <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+            <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
               •
             </span>
             <span>{item}</span>
@@ -301,19 +302,19 @@ export default function ArticleFacturationElectronique2026() {
       </ul>
 
       <h3 className="mt-6 mb-3">2. Émission des factures électroniques</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour vos <strong>séjours exonérés de TVA</strong>, la fiche DGFiP dédiée aux loueurs en
         meublé est claire&nbsp;: <strong>pas d'obligation d'émission</strong> de facture
         électronique.
       </p>
 
       <h3 className="mt-6 mb-3">3. E-reporting</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour ces <strong>opérations exonérées</strong>, la fiche DGFiP est là aussi claire&nbsp;:{' '}
         <strong>pas d'obligation de e-reporting</strong>.
       </p>
-      <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-6">
-        <p className="text-gray-700 leading-comfortable">
+      <div className="article-callout-muted mb-6 p-5">
+        <p className="text-muted leading-comfortable">
           Pour un loueur en meublé classique, la réforme impose d'abord la{' '}
           <strong>réception</strong>. Elle n'impose pas l'<strong>émission</strong> ni le{' '}
           <strong>e-reporting</strong> pour les séjours exonérés.
@@ -324,17 +325,17 @@ export default function ArticleFacturationElectronique2026() {
       <ArticleSectionHeading id="quand-les-obligations-deviennent-plus-larges">
         Quand les obligations deviennent plus larges
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Les obligations s'élargissent si l'activité entre dans le champ des{' '}
         <strong>opérations taxables à la TVA</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le cas le plus connu en location meublée est celui de la <strong>para-hôtellerie</strong>,
         lorsque l'activité remplit les conditions fiscales permettant de la traiter comme une
         activité taxable, par exemple avec au moins <strong>trois</strong> des quatre prestations
         suivantes&nbsp;:
       </p>
-      <div className="space-y-3 mb-6 text-gray-700">
+      <div className="space-y-3 mb-6 text-muted">
         {[
           { num: '1', label: 'Petit-déjeuner' },
           { num: '2', label: 'Nettoyage régulier des locaux' },
@@ -342,20 +343,18 @@ export default function ArticleFacturationElectronique2026() {
           { num: '4', label: 'Réception de la clientèle' },
         ].map(({ num, label }) => (
           <div key={num} className="flex gap-3 items-center">
-            <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {num}
-            </div>
+            <div className="article-step-marker h-7 w-7">{num}</div>
             <span>{label}</span>
           </div>
         ))}
       </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si votre activité est taxable, vous ne devez plus raisonner comme un loueur exonéré. Le
         périmètre de la réforme devient plus large. Vous pouvez alors être concerné par&nbsp;:
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -364,7 +363,7 @@ export default function ArticleFacturationElectronique2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -372,7 +371,7 @@ export default function ArticleFacturationElectronique2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -383,69 +382,52 @@ export default function ArticleFacturationElectronique2026() {
       </ul>
 
       {/* Tableau récapitulatif */}
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le tableau suivant résume les obligations selon votre situation&nbsp;:
       </p>
-      <div className="overflow-x-auto mb-8">
-        <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
-          <caption className="sr-only">
-            Obligations de facturation électronique selon la situation du loueur
-          </caption>
-          <colgroup>
-            <col className="w-[28%]" />
-            <col className="w-[18%]" />
-            <col className="w-[18%]" />
-            <col className="w-[16%]" />
-            <col className="w-[20%]" />
-          </colgroup>
-          <thead>
-            <tr className="bg-primary-300 text-white">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Situation
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
-                Réception depuis le 01/09/2026
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
-                Émission
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
-                E-reporting
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                Ce que vous devez faire
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-white border-b border-gray-100">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Loueur en meublé classique exonéré
-              </th>
-              <td className="p-3 text-center text-gray-600">Oui, si vous avez un SIREN</td>
-              <td className="p-3 text-center text-gray-500">Non pour les séjours exonérés</td>
-              <td className="p-3 text-center text-gray-500">Non pour ces opérations exonérées</td>
-              <td className="p-3 text-gray-700">
-                Avoir choisi une plateforme agréée pour recevoir les factures fournisseurs
-              </td>
-            </tr>
-            <tr className="bg-gray-50">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Loueur avec activité taxable à la TVA
-              </th>
-              <td className="p-3 text-center text-gray-600">Oui</td>
-              <td className="p-3 text-center text-gray-600">
-                Oui selon le calendrier de taille d'entreprise
-              </td>
-              <td className="p-3 text-center text-gray-600">Oui selon la nature des opérations</td>
-              <td className="p-3 text-gray-700">
-                Vérifier le champ TVA réel de l'activité, choisir une plateforme, organiser
-                l'émission et les flux de données
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-8"
+        caption="Obligations de facturation électronique selon la situation du loueur"
+        primaryColumnKey="situation"
+        desktopWrapperClassName="hidden xl:block"
+        mobileContainerClassName="space-y-3 xl:hidden"
+        columns={[
+          { key: 'situation', label: 'Situation', widthClassName: 'w-[28%]' },
+          {
+            key: 'reception',
+            label: 'Réception depuis le 01/09/2026',
+            widthClassName: 'w-[18%]',
+            align: 'center',
+          },
+          { key: 'emission', label: 'Émission', widthClassName: 'w-[18%]', align: 'center' },
+          { key: 'reporting', label: 'E-reporting', widthClassName: 'w-[16%]', align: 'center' },
+          { key: 'action', label: 'Ce que vous devez faire', widthClassName: 'w-[20%]' },
+        ]}
+        rows={[
+          {
+            key: 'loueur-exonere',
+            cells: {
+              situation: 'Loueur en meublé classique exonéré',
+              reception: 'Oui, si vous avez un SIREN',
+              emission: 'Non pour les séjours exonérés',
+              reporting: 'Non pour ces opérations exonérées',
+              action: 'Avoir choisi une plateforme agréée pour recevoir les factures fournisseurs',
+            },
+          },
+          {
+            key: 'loueur-taxable',
+            cells: {
+              situation: 'Loueur avec activité taxable à la TVA',
+              reception: 'Oui',
+              emission: "Oui selon le calendrier de taille d'entreprise",
+              reporting: 'Oui selon la nature des opérations',
+              action:
+                "Vérifier le champ TVA réel de l'activité, choisir une plateforme, organiser l'émission et les flux de données",
+            },
+          },
+        ]}
+      />
 
       {/* Section 4 */}
       <ArticleSectionHeading id="le-calendrier-precis-a-retenir">
@@ -453,21 +435,19 @@ export default function ArticleFacturationElectronique2026() {
       </ArticleSectionHeading>
 
       <h3 className="mt-6 mb-3">Réception</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Depuis le <strong>1er septembre 2026</strong>, la réception des factures électroniques est
         <strong> obligatoire</strong> pour les entreprises concernées. Pour un loueur en meublé
         classique, c'est la principale obligation à retenir.
       </p>
 
       <h3 className="mt-6 mb-3">Émission</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour les activités qui entrent dans le champ de l'<strong>émission</strong>&nbsp;:
       </p>
-      <div className="space-y-3 mb-6 text-gray-700">
+      <div className="space-y-3 mb-6 text-muted">
         <div className="flex gap-4">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-            1
-          </div>
+          <div className="article-step-marker">1</div>
           <div>
             <p className="leading-comfortable">
               <strong>1er septembre 2026</strong>&nbsp;: obligation d'émission pour les{' '}
@@ -476,9 +456,7 @@ export default function ArticleFacturationElectronique2026() {
           </div>
         </div>
         <div className="flex gap-4">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-            2
-          </div>
+          <div className="article-step-marker">2</div>
           <div>
             <p className="leading-comfortable">
               <strong>1er septembre 2027</strong>&nbsp;: obligation d'émission pour les{' '}
@@ -487,7 +465,7 @@ export default function ArticleFacturationElectronique2026() {
           </div>
         </div>
       </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, beaucoup de propriétaires de meublés relèveront plutôt du second calendrier si
         leur activité est taxable — mais cela dépend de la taille réelle de l'entreprise.
       </p>
@@ -496,12 +474,12 @@ export default function ArticleFacturationElectronique2026() {
       <ArticleSectionHeading id="les-sanctions-a-connaitre">
         Les sanctions à connaître
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         D'après la FAQ dédiée sur impots.gouv.fr et les textes codifiés&nbsp;:
       </p>
-      <ul className="space-y-3 mb-6 text-gray-700">
+      <ul className="space-y-3 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -513,7 +491,7 @@ export default function ArticleFacturationElectronique2026() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -524,13 +502,13 @@ export default function ArticleFacturationElectronique2026() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Toutefois, le démarrage de la réforme s'accompagne d'une période de tolérance. Le ministère
         de l'Économie a annoncé le 1er septembre 2026 qu'aucune sanction ne serait appliquée pendant
         la fin de l'année 2026 aux entreprises rencontrant des difficultés dans la mise en œuvre de
         la réforme.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Cette tolérance ne supprime pas les obligations entrées en vigueur le 1er septembre. Si vous
         n'avez pas encore choisi de plateforme agréée ou organisé la réception de vos factures
         électroniques, l'administration demande de vous mettre en conformité dans les meilleurs
@@ -543,11 +521,11 @@ export default function ArticleFacturationElectronique2026() {
       </ArticleSectionHeading>
 
       <h3 className="mt-6 mb-3">Option 1 — Le minimum indispensable pour un loueur exonéré</h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si vous êtes un loueur en meublé classique exonéré de TVA, le minimum à vérifier désormais
         est&nbsp;:
       </p>
-      <div className="space-y-3 mb-6 text-gray-700">
+      <div className="space-y-3 mb-6 text-muted">
         {[
           "vérifier que votre activité dispose bien d'un SIREN\u00a0;",
           "si ce n'est pas encore fait, choisir une plateforme agréée pour la réception\u00a0;",
@@ -555,10 +533,8 @@ export default function ArticleFacturationElectronique2026() {
           'organiser un circuit simple\u00a0: réception, classement, transmission à votre comptable si besoin.',
         ].map((step, i) => (
           <div key={i} className="flex gap-4">
-            <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {i + 1}
-            </div>
-            <p className="leading-comfortable text-gray-700">{step}</p>
+            <div className="article-step-marker h-7 w-7">{i + 1}</div>
+            <p className="leading-comfortable text-muted">{step}</p>
           </div>
         ))}
       </div>
@@ -566,26 +542,24 @@ export default function ArticleFacturationElectronique2026() {
       <h3 className="mt-6 mb-3">
         Option 2 — Vérifier si votre activité est vraiment exonérée ou taxable
       </h3>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si vous proposez des services proches de la <strong>para-hôtellerie</strong>, il faut
         vérifier votre situation TVA avant de choisir une solution trop minimaliste. Dans ce cas, la
         bonne approche est&nbsp;:
       </p>
-      <div className="space-y-3 mb-6 text-gray-700">
+      <div className="space-y-3 mb-6 text-muted">
         {[
           "qualifier le régime TVA réel de l'activité\u00a0;",
           "vérifier si vous entrez dans le champ de l'émission\u00a0;",
           "choisir une solution capable de gérer à la fois la réception et, si nécessaire, l'émission et les flux de données.",
         ].map((step, i) => (
           <div key={i} className="flex gap-4">
-            <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {i + 1}
-            </div>
-            <p className="leading-comfortable text-gray-700">{step}</p>
+            <div className="article-step-marker h-7 w-7">{i + 1}</div>
+            <p className="leading-comfortable text-muted">{step}</p>
           </div>
         ))}
       </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le but est d'éviter deux erreurs opposées&nbsp;: ne rien faire parce que{' '}
         <em>je ne facture pas la TVA</em>&nbsp;; ou, à l'inverse, installer une usine à gaz alors
         que seule la <strong>réception</strong> est obligatoire à ce stade.
@@ -593,10 +567,10 @@ export default function ArticleFacturationElectronique2026() {
 
       {/* Conclusion */}
       <ArticleSectionHeading id="en-resume">En résumé</ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La bonne réponse n'est donc pas <em>je suis concerné seulement si je collecte la TVA</em>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un propriétaire de meublé de tourisme classique, la réforme impose désormais un
         changement concret&nbsp;: être en mesure de recevoir les factures électroniques de ses
         fournisseurs. Cette obligation s'applique depuis le <strong>1er septembre 2026</strong>. L'

@@ -90,6 +90,8 @@ Les pages `Notre équipe` et `Recrutement` existent encore dans `src/pages`, mai
 | `/les-avantages-du-classement`  | `PourquoiClasser`                 | Effets factuels du classement : cadre officiel, fiscalité, taxe de séjour. |
 | `/prerequis-au-classement`      | `Prerequis`                       | Conditions et points préalables avant une demande de classement.           |
 | `/procedure`                    | `Procedure`                       | Étapes de la procédure de classement.                                      |
+| `/zones-intervention`           | `ZonesIntervention`               | Hub compact des zones locales publiées, dérivé du registre local.          |
+| `/classement-meuble-tourisme-*` | pages dans `src/pages/locales`    | Landings locales publiées via le registre local.                           |
 | `/simulateur`                   | `Simulateur`                      | Entrée du simulateur public de classement.                                 |
 | `/simulateur/:simulationId`     | `SimulationClassement`            | Détail d’une simulation publique, route dynamique `noindex`.               |
 | `/simulateur-taxe-sejour`       | `SimulateurTaxeSejour`            | Outil de comparaison taxe de séjour classé/non classé.                     |
@@ -157,11 +159,11 @@ Règles obligatoires :
 - Domaine canonique unique : `https://www.etoilys.fr`.
 - Ne jamais injecter le SEO directement dans `src/pages/*`.
 - Le seul injecteur SEO est `<SEO />` dans `src/components/layout/Layout.tsx`.
-- Toute nouvelle route dans `src/AppRoutes.tsx` doit être ajoutée dans `src/content/seoRoutes.ts`.
+- Toute nouvelle route non locale dans `src/AppRoutes.tsx` doit être ajoutée dans `src/content/seoRoutes.ts`. Les pages locales suivent `docs/tech/local-framework-v6.md` : route explicite, SEO local dérivé du registre.
 - Les routes inconnues doivent rester `noindex,follow` via `NOT_FOUND_SEO`.
 - Pas de `meta keywords`.
 - Les URLs SEO absolues doivent rester sur `https://www.etoilys.fr`.
-- Les breadcrumbs sont uniquement en JSON-LD, générés par `getBreadcrumbItems`.
+- Les breadcrumbs sont générés par `getBreadcrumbItems` en JSON-LD. Un fil d’Ariane visible discret existe uniquement pour le hub `/zones-intervention` et les pages locales, intégré dans le haut du hero via `PageHero`.
 - Home et 404 ne doivent pas sortir de `BreadcrumbList`.
 - Les articles utilisent `ArticleStructuredData` et `src/content/articleStructuredData.ts`.
 - Ne pas injecter manuellement de JSON-LD dans une page.
@@ -169,12 +171,12 @@ Règles obligatoires :
 Pour ajouter ou supprimer une route indexable :
 
 1. Modifier `src/AppRoutes.tsx`.
-2. Modifier `src/content/seoRoutes.ts`.
+2. Modifier `src/content/seoRoutes.ts` pour une route non locale, ou `src/content/local/registry.ts` pour une page locale.
 3. Ajouter les données article si nécessaire dans `src/content/articleStructuredData.ts`.
 4. Régénérer le sitemap avec `npm run seo:sitemap`.
 5. Vérifier que les routes `noindex` et la 404 ne sont pas dans le sitemap.
 
-Le workflow détaillé pour les pages/articles est `docs/tech/seo-structurant-workflow.md`.
+Le workflow détaillé pour les pages/articles est `docs/tech/seo-structurant-workflow.md`. Le contrat spécifique des pages locales est `docs/tech/local-framework-v6.md`.
 
 ## Images
 
@@ -282,10 +284,10 @@ Le fichier `vercel.json` définit aussi les rewrites API et la route dynamique `
 
 Avant de livrer une modification significative :
 
-- Lire `CLAUDE.md`, `tailwind.config.js`, `src/App.tsx` et `src/AppRoutes.tsx`.
+- Lire `CLAUDE.md`, `tailwind.config.js` et `src/AppRoutes.tsx` ; lire `src/App.tsx` seulement si le wrapper applicatif est concerné.
 - Vérifier les composants existants dans `src/components/ui` et `src/components/forms`.
 - Vérifier les helpers concernés dans `src/utils`.
-- Si une route est ajoutée/supprimée, mettre à jour `seoRoutes.ts` et régénérer le sitemap.
+- Si une route est ajoutée/supprimée, mettre à jour `seoRoutes.ts` ou le registre local selon le type de route, puis régénérer le sitemap.
 - Si une image critique est ajoutée, passer par `SmartImage`, `npm run images:build` et `npm run images:check`.
 - Si du contenu juridique/fiscal est modifié, vérifier les sources documentaires.
 - Lancer `npm run typecheck` et corriger jusqu’à zéro erreur.

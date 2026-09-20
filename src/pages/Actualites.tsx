@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ActualitesArticleCard from '../components/ui/ActualitesArticleCard';
 import FeaturedActualiteCard from '../components/ui/FeaturedActualiteCard';
+import PageHero from '../components/ui/PageHero';
 import {
   ACTUALITES_CATEGORY_FILTERS,
   actualitesArticlesByRecency,
@@ -42,21 +43,17 @@ export default function Actualites() {
 
   return (
     <>
-      <section className="bg-gradient-to-br from-themePrimary-1 to-primary-300 py-14 text-white sm:py-16 lg:py-20">
-        <div className="container-adaptive">
-          <div className="max-w-3xl">
-            <h1 className="mb-6 text-white">Actualités</h1>
-            <p className="text-xl text-white/90 leading-comfortable">
-              Décryptages, guides pratiques et informations utiles sur le classement et la
-              réglementation des meublés de tourisme.
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        size="compact"
+        eyebrow="Actualités"
+        eyebrowMarked
+        title="Actualités"
+        description="Décryptages, guides pratiques et informations utiles sur le classement et la réglementation des meublés de tourisme."
+      />
 
-      <section className="bg-white pb-section pt-12 sm:pt-14 lg:pt-16">
-        <div className="container-adaptive">
-          <p className="mb-3 text-sm font-semibold text-textLight">Explorer les actualités</p>
+      <section className="bg-surface pb-section pt-12 sm:pt-14 lg:pt-16">
+        <div className="container-editorial">
+          <p className="editorial-eyebrow mb-3">Explorer les actualités</p>
           <div
             className="mb-8 flex flex-wrap gap-3"
             role="group"
@@ -71,10 +68,10 @@ export default function Actualites() {
                   type="button"
                   aria-pressed={isActive}
                   onClick={() => handleFilterChange(filter.value)}
-                  className={`min-h-11 rounded-full border px-4 py-2 text-sm font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2 motion-reduce:transition-none ${
+                  className={`ui-focus min-h-11 rounded-control border px-4 py-2 text-sm font-semibold transition-colors duration-200 motion-reduce:transition-none ${
                     isActive
-                      ? 'border-primary-400 bg-primary-400 text-white'
-                      : 'border-gray-200 bg-white text-themePrimary-1 hover:border-primary-300 hover:bg-primary-100'
+                      ? 'border-ink bg-ink text-white'
+                      : 'border-ink/15 bg-surface text-ink hover:bg-surface-hover'
                   }`}
                 >
                   {filter.label}
@@ -97,13 +94,13 @@ export default function Actualites() {
             </div>
           ) : (
             <div className="py-16 text-center">
-              <p className="mb-6 text-lg text-textLight">
+              <p className="mb-6 text-lg text-muted">
                 Aucun article n’est encore publié dans cette catégorie.
               </p>
               <button
                 type="button"
                 onClick={() => handleFilterChange('all')}
-                className="inline-flex min-h-11 items-center justify-center rounded-lg bg-primary-400 px-6 py-3 text-base font-medium text-white transition-colors duration-200 hover:bg-primary-500 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300 focus-visible:ring-offset-2 motion-reduce:transition-none"
+                className="ui-focus inline-flex min-h-11 items-center justify-center rounded-control bg-ink px-6 py-3 text-base font-medium text-white transition-colors duration-200 hover:bg-ink-hover hover:text-white motion-reduce:transition-none"
               >
                 Voir toutes les actualités
               </button>

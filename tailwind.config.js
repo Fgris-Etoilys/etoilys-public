@@ -11,6 +11,16 @@ export default {
     },
     extend: {
       colors: {
+        ink: 'rgb(var(--color-ink) / <alpha-value>)',
+        muted: 'rgb(var(--color-muted) / <alpha-value>)',
+        paper: 'rgb(var(--color-paper) / <alpha-value>)',
+        surface: 'rgb(var(--color-surface) / <alpha-value>)',
+        'surface-neutral': 'rgb(var(--color-surface-neutral) / <alpha-value>)',
+        'surface-warm': 'rgb(var(--color-surface-warm) / <alpha-value>)',
+        'surface-sage': 'rgb(var(--color-surface-sage) / <alpha-value>)',
+        copper: 'rgb(var(--color-copper) / <alpha-value>)',
+        'ink-hover': 'rgb(var(--color-ink-hover) / <alpha-value>)',
+        'surface-hover': 'rgb(var(--color-surface-hover) / <alpha-value>)',
         primary: {
           DEFAULT: '#316bff',
           100: '#e9f3ff',
@@ -86,6 +96,8 @@ export default {
         'card-hover': '0 4px 16px rgba(49, 107, 255, 0.12)',
       },
       borderRadius: {
+        control: '4px',
+        editorial: '6px',
         card: '12px',
       },
     },

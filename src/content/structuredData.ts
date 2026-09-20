@@ -1,7 +1,10 @@
 import { IMAGE_MANIFEST } from './imageManifest';
 import { SITE_URL, type BreadcrumbItem } from './seoRoutes';
 import { getArticleAuthor, type ArticleAuthorId } from './articleAuthors';
-import { getClassificationAreaServed } from './local/registry';
+import {
+  getActiveDepartmentInterventionAreas,
+  getClassificationAreaServed,
+} from './local/registry';
 
 export type JsonLdObject = Record<string, unknown>;
 
@@ -22,7 +25,7 @@ export const STRUCTURED_DATA_IDS = {
   cofracAccreditation: `${SITE_URL}/#cofrac-accreditation-3-2394`,
 } as const;
 
-export const ETOILYS_LOGO_URL = `${SITE_URL}/logo-etoilys.svg`;
+export const ETOILYS_LOGO_URL = `${SITE_URL}/logo-etoilys-editorial.svg`;
 export const ETOILYS_ORGANIZATION_IMAGE_URL = `${SITE_URL}${IMAGE_MANIFEST.homeHero.src}`;
 export const ETOILYS_GOOGLE_MAPS_URL =
   'https://www.google.com/maps/place/Etoilys/@44.7878856,0.2862321,199196m/data=!3m2!1e3!4b1!4m6!3m5!1s0x6730df7915ec7283:0x628d60fdd2c1dc09!8m2!3d44.7878856!4d0.286232!16s%2Fg%2F11z5n62vbq';
@@ -44,11 +47,6 @@ const SERVICE_COMPACT_GRAPH_PATHS = new Set([
   '/prerequis-au-classement',
   '/procedure',
   '/zones-intervention',
-  '/classement-meuble-tourisme-dordogne',
-  '/classement-meuble-tourisme-bergerac',
-  '/classement-meuble-tourisme-bordeaux',
-  '/classement-meuble-tourisme-gironde',
-  '/classement-meuble-tourisme-lot-et-garonne',
   '/demande-classement',
   '/contact',
   '/en/benefits-of-furnished-tourist-accommodation-classification',
@@ -62,6 +60,12 @@ const SERVICE_COMPACT_GRAPH_PATHS = new Set([
   '/nl/classificatie-aanvragen',
   '/nl/contact',
 ]);
+const LOCAL_SERVICE_GRAPH_PATHS = new Set(
+  getActiveDepartmentInterventionAreas().flatMap((area) => [
+    area.path,
+    ...area.localPages.map((localPage) => localPage.path),
+  ])
+);
 const ORGANIZATION_COMPACT_GRAPH_PATHS = new Set([
   '/mentions-legales',
   '/confidentialite',
@@ -249,7 +253,10 @@ export function buildPageStructuredData(pathname: string): JsonLdObject | null {
     ]);
   }
 
-  if (SERVICE_COMPACT_GRAPH_PATHS.has(normalizedPath)) {
+  if (
+    SERVICE_COMPACT_GRAPH_PATHS.has(normalizedPath) ||
+    LOCAL_SERVICE_GRAPH_PATHS.has(normalizedPath)
+  ) {
     return graphData([buildCompactOrganization(), buildClassificationService()]);
   }
 

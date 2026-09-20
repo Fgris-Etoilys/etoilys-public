@@ -5,6 +5,8 @@ import AnalyticsContactTracker from './AnalyticsContactTracker';
 import CookieConsentManager from './CookieConsentManager';
 import Header from './Header';
 import Footer from './Footer';
+import { layoutContent } from '../../i18n/layoutContent';
+import { getLocaleFromPath } from '../../i18n/routeHelpers';
 import SEO from '../ui/SEO';
 import { ToastProvider } from '../ui/Toast';
 import {
@@ -23,6 +25,7 @@ import { IMAGE_MANIFEST } from '../../content/imageManifest';
 
 export default function Layout() {
   const location = useLocation();
+  const content = layoutContent[getLocaleFromPath(location.pathname)];
   const seoConfig = getSeoRouteConfig(location.pathname);
   const alternateLinks = getSeoAlternateLinks(location.pathname);
   const breadcrumbItems = getBreadcrumbItems(location.pathname);
@@ -40,16 +43,29 @@ export default function Layout() {
 
   useEffect(() => {
     if (location.hash) {
-      try {
+      let frameId: number | null = null;
+      const scrollToHashTarget = () => {
         const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
         target?.scrollIntoView();
+        return Boolean(target);
+      };
+
+      try {
+        if (!scrollToHashTarget()) {
+          frameId = window.requestAnimationFrame(scrollToHashTarget);
+        }
       } catch {
         // Ignore malformed URL fragments and preserve the current scroll position.
       }
-      return;
+      return () => {
+        if (frameId !== null) {
+          window.cancelAnimationFrame(frameId);
+        }
+      };
     }
 
     window.scrollTo(0, 0);
+    return undefined;
   }, [location.pathname, location.hash]);
 
   return (
@@ -63,7 +79,7 @@ export default function Layout() {
         ogImage={ogImageUrl}
         preloadImage={lcpPreloadAsset?.src}
         preloadImageSrcSet={lcpPreloadAsset?.srcSetAvif}
-        preloadImageSizes={lcpPreloadAsset ? '100vw' : undefined}
+        preloadImageSizes={lcpPreloadAsset ? (seoConfig.lcpImageSizes ?? '100vw') : undefined}
         alternateLinks={alternateLinks}
         includeCanonical={seoConfig.includeCanonical !== false}
       />
@@ -81,8 +97,11 @@ export default function Layout() {
         />
       )}
       <ToastProvider>
+        <a href="#main-content" className="skip-link ui-focus">
+          {content.skipToContentLabel}
+        </a>
         <Header />
-        <main className="flex-grow pt-16">
+        <main id="main-content" tabIndex={-1} className="flex-grow site-main">
           <Outlet />
         </main>
         <Footer />

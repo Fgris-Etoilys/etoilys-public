@@ -213,7 +213,7 @@ describe('Simulateur public de classement', () => {
     expect(screen.getByText(/réessayez dans quelques minutes/i)).toBeInTheDocument();
   });
 
-  it('affiche les simulations existantes sous forme de cartes', async () => {
+  it('affiche les simulations existantes dans la liste de reprise', async () => {
     mockFetchJson([
       {
         id: 'c3f43f31-59fd-4b4e-9272-7f1321d8cabc',
@@ -226,7 +226,7 @@ describe('Simulateur public de classement', () => {
 
     renderSimulateur();
 
-    expect(await screen.findByText(/^3 étoiles$/i)).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: /^3 étoiles$/i })).toBeInTheDocument();
     expect(screen.getByText(/4 personnes/i)).toBeInTheDocument();
     expect(screen.getByText(/^brouillon$/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /reprendre/i })).toHaveAttribute(
@@ -400,7 +400,7 @@ describe('Simulateur public de classement', () => {
     fireEvent.click(screen.getByRole('button', { name: /^supprimer$/i }));
 
     expect(await screen.findByText(/cette simulation n’est plus disponible/i)).toBeInTheDocument();
-    expect(screen.getByText(/^2 étoiles$/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /^2 étoiles$/i })).toBeInTheDocument();
     expect(screen.getByText(/confirmer la suppression de cette simulation/i)).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({

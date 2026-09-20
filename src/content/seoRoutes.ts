@@ -7,6 +7,12 @@ import {
   getRouteIdFromPath,
 } from '../i18n/routeHelpers';
 import type { LocalizedRouteId } from '../i18n/localizedRoutes';
+import {
+  getLocalRegistryEntryByPath,
+  getPublishedLocalSeoEntries,
+  isLocalRegistryEntryPublished,
+} from './local/registry';
+import type { LocalRegistryEntry } from './local/types';
 
 export interface SeoRouteConfig {
   title: string;
@@ -19,6 +25,7 @@ export interface SeoRouteConfig {
   indexable?: boolean;
   prerender?: boolean;
   lcpImageKey?: ImageAssetKey;
+  lcpImageSizes?: string;
   locale?: Locale;
   routeId?: LocalizedRouteId;
   includeCanonical?: boolean;
@@ -73,6 +80,40 @@ const SIMULATION_DETAIL_SEO: SeoRouteConfig = {
   prerender: false,
 };
 
+export function buildLocalSeoRoutes(
+  entries?: LocalRegistryEntry[]
+): Record<string, SeoRouteConfig> {
+  const publishedLocalSeoEntries = getPublishedLocalSeoEntries(entries);
+
+  return Object.fromEntries(
+    publishedLocalSeoEntries.map((entry) => {
+      const parentEntry =
+        entry.kind !== 'department'
+          ? publishedLocalSeoEntries.find((candidate) => candidate.id === entry.parentId)
+          : undefined;
+
+      return [
+        entry.path,
+        {
+          lastModified: entry.seo.lastModified,
+          title: entry.seo.title,
+          description: entry.seo.description,
+          breadcrumbLabel: entry.seo.breadcrumbLabel,
+          breadcrumbParentPaths:
+            entry.kind !== 'department' && parentEntry
+              ? ['/zones-intervention', parentEntry.path]
+              : ['/zones-intervention'],
+          ogImageKey: entry.seo.ogImageKey,
+          lcpImageKey: entry.seo.lcpImageKey,
+          lcpImageSizes: entry.seo.lcpImageSizes,
+        } satisfies SeoRouteConfig,
+      ];
+    })
+  );
+}
+
+const LOCAL_SEO_ROUTES = buildLocalSeoRoutes();
+
 export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/': {
     lastModified: '2026-09-07',
@@ -81,6 +122,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       'Etoilys accompagne les propriétaires de meublés de tourisme pour obtenir leur classement officiel dans les secteurs actuellement couverts.',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
+    lcpImageSizes: '(min-width: 900px) 50vw, 100vw',
     locale: 'fr',
     routeId: 'home',
   },
@@ -122,59 +164,13 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'procedure',
   },
   '/zones-intervention': {
-    lastModified: '2026-09-07',
+    lastModified: '2026-09-18',
     title: 'Zones d’intervention pour le classement des meublés de tourisme',
     description:
       'Découvrez les secteurs actuellement couverts par Etoilys pour les visites de classement des meublés de tourisme.',
     breadcrumbLabel: 'Zones d’intervention',
   },
-  '/classement-meuble-tourisme-dordogne': {
-    lastModified: '2026-09-08',
-    title: 'Classement gîte, Airbnb et meublé de tourisme en Dordogne',
-    description:
-      'Etoilys accompagne les propriétaires de gîtes et locations saisonnières en Dordogne pour le classement officiel de leur meublé de tourisme.',
-    breadcrumbLabel: 'Dordogne',
-    ogImageKey: 'dordogneHero',
-    lcpImageKey: 'dordogneHero',
-  },
-  '/classement-meuble-tourisme-bergerac': {
-    lastModified: '2026-07-23',
-    title: 'Classement meublé de tourisme à Bergerac',
-    description:
-      'Faites classer votre meublé de tourisme à Bergerac et dans le Bergeracois. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
-    breadcrumbLabel: 'Bergerac et le Bergeracois',
-    breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-dordogne'],
-    ogImageKey: 'bergeracHero',
-    lcpImageKey: 'bergeracHero',
-  },
-  '/classement-meuble-tourisme-bordeaux': {
-    lastModified: '2026-07-24',
-    title: 'Classement meublé de tourisme à Bordeaux',
-    description:
-      'Faites classer votre meublé de tourisme à Bordeaux et dans la métropole. Visite sur place, tarifs clairs et demande en ligne avec Etoilys.',
-    breadcrumbLabel: 'Bordeaux',
-    breadcrumbParentPaths: ['/zones-intervention', '/classement-meuble-tourisme-gironde'],
-    ogImageKey: 'bordeauxHero',
-    lcpImageKey: 'bordeauxHero',
-  },
-  '/classement-meuble-tourisme-gironde': {
-    lastModified: '2026-06-07',
-    title: 'Classement gîte, Airbnb et meublé de tourisme en Gironde',
-    description:
-      'Etoilys accompagne les propriétaires de meublés de tourisme en Gironde : classement officiel, zones d’intervention, procédure, fiscalité, taxe de séjour et demande en ligne.',
-    breadcrumbLabel: 'Gironde',
-    ogImageKey: 'girondeHero',
-    lcpImageKey: 'girondeHero',
-  },
-  '/classement-meuble-tourisme-lot-et-garonne': {
-    lastModified: '2026-06-07',
-    title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot-et-Garonne',
-    description:
-      'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot-et-Garonne pour leur classement officiel.',
-    breadcrumbLabel: 'Classement en Lot-et-Garonne',
-    ogImageKey: 'lotEtGaronneHero',
-    lcpImageKey: 'lotEtGaronneHero',
-  },
+  ...LOCAL_SEO_ROUTES,
   '/simulateur': {
     lastModified: '2026-06-24',
     title: 'Simulateur de classement meublé de tourisme',
@@ -322,7 +318,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'recrutementInspection',
   },
   '/contact': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-19',
     title: 'Contact',
     description:
       'Coordonnées et formulaire de contact pour échanger avec Etoilys sur le classement des meublés de tourisme.',
@@ -331,7 +327,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/demande-classement': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-20',
     title: 'Demande de classement meublé de tourisme',
     description:
       'Demandez le classement de votre meublé de tourisme. Procédure simple. Etoilys vous recontacte sous 24h pour organiser la visite.',
@@ -356,6 +352,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Home',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
+    lcpImageSizes: '(min-width: 900px) 50vw, 100vw',
     locale: 'en',
     routeId: 'home',
   },
@@ -406,7 +403,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'faq',
   },
   '/en/contact': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-19',
     title: 'Contact',
     description:
       'Contact details and form for questions about Etoilys and the French furnished tourist accommodation classification process.',
@@ -415,7 +412,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/en/request-a-classification': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-09-20',
     title: 'Classification request',
     description:
       'Submit your furnished tourist accommodation classification request to Etoilys in a few minutes.',
@@ -440,6 +437,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Home',
     ogImageKey: 'homeHero',
     lcpImageKey: 'homeHero',
+    lcpImageSizes: '(min-width: 900px) 50vw, 100vw',
     locale: 'nl',
     routeId: 'home',
   },
@@ -490,7 +488,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'faq',
   },
   '/nl/contact': {
-    lastModified: '2026-09-07',
+    lastModified: '2026-09-19',
     title: 'Contact',
     description:
       'Contactgegevens en formulier voor vragen over Etoilys en de Franse classificatieprocedure voor vakantiewoningen.',
@@ -499,7 +497,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/nl/classificatie-aanvragen': {
-    lastModified: '2026-09-07',
+    lastModified: '2026-09-20',
     title: 'Classificatie aanvragen',
     description:
       'Dien in enkele minuten uw aanvraag in voor de officiële classificatie van uw vakantiewoning in de momenteel bediende gebieden.',
@@ -610,6 +608,12 @@ function applyLocaleIndexing(route: SeoRouteConfig): SeoRouteConfig {
 
 export function getSeoRouteConfig(pathname: string): SeoRouteConfig {
   const normalizedPath = normalizePath(pathname);
+  const localEntry = getLocalRegistryEntryByPath(normalizedPath);
+
+  if (localEntry !== undefined && !isLocalRegistryEntryPublished(localEntry.id)) {
+    return applyLocaleIndexing(NOT_FOUND_SEO);
+  }
+
   const route =
     SEO_ROUTES[normalizedPath] ??
     DYNAMIC_SEO_ROUTES.find((route) => route.pattern.test(normalizedPath))?.config ??
@@ -756,4 +760,14 @@ export function getBreadcrumbItems(pathname: string): BreadcrumbItem[] {
       url: getCanonicalUrl(normalizedPath),
     },
   ];
+}
+
+export function shouldRenderVisibleBreadcrumbs(pathname: string): boolean {
+  const normalizedPath = normalizePath(pathname);
+  if (normalizedPath === '/zones-intervention') {
+    return true;
+  }
+
+  const entry = getLocalRegistryEntryByPath(normalizedPath);
+  return entry === undefined ? false : isLocalRegistryEntryPublished(entry.id);
 }

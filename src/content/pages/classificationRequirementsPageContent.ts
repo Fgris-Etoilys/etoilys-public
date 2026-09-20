@@ -6,6 +6,7 @@ type RequirementCriterion = {
 };
 
 type ClassificationRequirementsPageContent = {
+  navigation: readonly [string, string, string, string];
   hero: {
     title: string;
     description: string;
@@ -63,6 +64,7 @@ export const classificationRequirementsPageContent: Record<
   ClassificationRequirementsPageContent
 > = {
   fr: {
+    navigation: ['Checklist', 'Logements concernés', 'Critères essentiels', 'Points bloquants'],
     hero: {
       title: "Les prérequis au classement d'un meublé de tourisme",
       description:
@@ -157,11 +159,12 @@ export const classificationRequirementsPageContent: Record<
         'Une fois les prérequis réunis, la procédure de classement suit un déroulement précis en quelques étapes.',
       links: [
         { label: 'La procédure de classement', href: '/procedure', variant: 'ghost' },
-        { label: 'Demander votre classement', href: '/demande-classement', variant: 'white' },
+        { label: 'Demander mon classement', href: '/demande-classement', variant: 'white' },
       ],
     },
   },
   en: {
+    navigation: ['Checklist', 'Eligible properties', 'Essential criteria', 'Blocking points'],
     hero: {
       title: 'Requirements for furnished tourist accommodation classification',
       description:
@@ -266,6 +269,7 @@ export const classificationRequirementsPageContent: Record<
     },
   },
   nl: {
+    navigation: ['Checklist', 'Geschikte woningen', 'Basiscriteria', 'Blokkerende punten'],
     hero: {
       title: 'Voorwaarden voor classificatie van een vakantiewoning',
       description:

@@ -6,6 +6,8 @@ type FieldErrorMessages = Partial<Record<FieldErrorCode, string>>;
 type FormContent = {
   contact: {
     title: string;
+    requiredNote: string;
+    placeholders: { nom: string; email: string; message: string };
     labels: {
       nom: string;
       email: string;
@@ -16,10 +18,14 @@ type FormContent = {
     submitButton: string;
     submitting: string;
     success: string;
+    successTitle: string;
+    successAction: string;
   };
   demandeClassement: {
     title: string;
     intro: string;
+    requiredNote: string;
+    sections: { contact: string; property: string };
     labels: {
       nom: string;
       prenom: string;
@@ -29,6 +35,9 @@ type FormContent = {
       message: string;
     };
     placeholders: {
+      nom: string;
+      prenom: string;
+      email: string;
       telephone: string;
       adresse: string;
       message: string;
@@ -38,6 +47,8 @@ type FormContent = {
     submitButton: string;
     submitting: string;
     success: string;
+    successTitle: string;
+    successAction: string;
   };
   validation: {
     nomRequired: string;
@@ -51,6 +62,7 @@ type FormContent = {
     consentRequired: string;
   };
   turnstile: {
+    label: string;
     required: string;
     missingConfig: string;
     expired: string;
@@ -70,7 +82,13 @@ type FormContent = {
 export const formContent = {
   fr: {
     contact: {
-      title: 'Posez-nous votre question',
+      title: 'Écrivez-nous',
+      requiredNote: '* Champs obligatoires',
+      placeholders: {
+        nom: 'Votre nom',
+        email: 'vous@exemple.fr',
+        message: 'Comment pouvons-nous vous aider ?',
+      },
       labels: {
         nom: 'Nom',
         email: 'Email',
@@ -80,32 +98,39 @@ export const formContent = {
       privacyLinkLabel: 'politique de confidentialité',
       submitButton: 'Envoyer mon message',
       submitting: 'Envoi en cours...',
-      success:
-        'Votre message a été envoyé avec succès. Notre équipe reviendra vers vous rapidement.',
+      successTitle: 'Votre message est bien envoyé',
+      success: 'Nous vous répondrons sous 24 heures ouvrées, à l’adresse email indiquée.',
+      successAction: 'Écrire un autre message',
     },
     demandeClassement: {
       title: 'Votre demande de classement',
-      intro:
-        "Indiquez vos coordonnées et l'adresse du logement à classer. Nous vous recontacterons rapidement pour organiser la suite.",
+      intro: 'Vos coordonnées et l’adresse du logement, simplement.',
+      requiredNote: '* Champs obligatoires',
+      sections: { contact: 'Vos coordonnées', property: 'Votre logement' },
       labels: {
         nom: 'Nom',
         prenom: 'Prénom',
         email: 'Email',
         telephone: 'Téléphone',
-        adresse: 'Adresse du bien',
-        message: 'Message',
+        adresse: 'Adresse du logement',
+        message: 'Message (optionnel)',
       },
       placeholders: {
-        telephone: 'Ex : 06 12 34 56 78 ou +32 470 12 34 56',
-        adresse: 'Adresse complète de votre meublé de tourisme',
-        message: 'Parlez-nous de votre hébergement et de vos attentes (optionnel)',
+        nom: 'Votre nom',
+        prenom: 'Votre prénom',
+        email: 'vous@exemple.fr',
+        telephone: '06 12 34 56 78',
+        adresse: 'Numéro, rue, code postal et commune',
+        message: 'Une précision utile sur votre logement ou vos disponibilités ?',
       },
       consentPrefix: "J'accepte que mes données soient traitées conformément à la",
       privacyLinkLabel: 'politique de confidentialité',
       submitButton: 'Envoyer ma demande',
       submitting: 'Envoi en cours...',
+      successTitle: 'Votre demande est bien envoyée',
       success:
-        'Votre demande a été envoyée avec succès. Notre équipe reviendra vers vous sous 24 heures.',
+        'Nous vous recontactons sous 24 heures ouvrées pour confirmer ensemble les modalités de visite, le tarif et les disponibilités, avant toute validation.',
+      successAction: 'Faire une autre demande',
     },
     validation: {
       nomRequired: 'Le nom est requis',
@@ -119,6 +144,7 @@ export const formContent = {
       consentRequired: 'Vous devez accepter la politique de confidentialité',
     },
     turnstile: {
+      label: 'Vérification anti-spam',
       required: 'Merci de valider la vérification anti-spam.',
       missingConfig: 'Protection anti-spam indisponible (configuration manquante).',
       expired: 'La vérification anti-spam a expiré. Merci de réessayer.',
@@ -165,7 +191,13 @@ export const formContent = {
   },
   en: {
     contact: {
-      title: 'Ask us your question',
+      title: 'Write to us',
+      requiredNote: '* Required fields',
+      placeholders: {
+        nom: 'Your name',
+        email: 'you@example.com',
+        message: 'How can we help you?',
+      },
       labels: {
         nom: 'Name',
         email: 'Email',
@@ -175,31 +207,39 @@ export const formContent = {
       privacyLinkLabel: 'privacy policy',
       submitButton: 'Send my message',
       submitting: 'Sending...',
-      success: 'Your message has been sent successfully. Our team will get back to you soon.',
+      successTitle: 'Your message has been sent',
+      success: 'We will reply within 24 business hours at the email address you provided.',
+      successAction: 'Write another message',
     },
     demandeClassement: {
       title: 'Your classification request',
-      intro:
-        'Enter your contact details and the address of the accommodation to be classified. We will contact you quickly to organize the next steps.',
+      intro: 'Just your contact details and the accommodation address.',
+      requiredNote: '* Required fields',
+      sections: { contact: 'Your contact details', property: 'Your accommodation' },
       labels: {
         nom: 'Last name',
         prenom: 'First name',
         email: 'Email',
         telephone: 'Phone',
         adresse: 'Accommodation address',
-        message: 'Message',
+        message: 'Message (optional)',
       },
       placeholders: {
-        telephone: 'Example: +44 7700 900123',
-        adresse: 'Full address of your furnished tourist accommodation',
-        message: 'Tell us about your accommodation and expectations (optional)',
+        nom: 'Your last name',
+        prenom: 'Your first name',
+        email: 'you@example.com',
+        telephone: '+44 7700 900123',
+        adresse: 'Number, street, postcode and town',
+        message: 'Anything to add about your accommodation or availability?',
       },
       consentPrefix: 'I agree that my data may be processed in accordance with the',
       privacyLinkLabel: 'privacy policy',
       submitButton: 'Send my request',
       submitting: 'Sending...',
+      successTitle: 'Your request has been sent',
       success:
-        'Your request has been sent successfully. Our team will get back to you within 24 hours.',
+        'We will contact you within 24 business hours to confirm the visit arrangements, price and availability together before anything is agreed.',
+      successAction: 'Make another request',
     },
     validation: {
       nomRequired: 'Name is required',
@@ -213,6 +253,7 @@ export const formContent = {
       consentRequired: 'You must accept the privacy policy',
     },
     turnstile: {
+      label: 'Anti-spam verification',
       required: 'Please complete the anti-spam verification.',
       missingConfig: 'Anti-spam protection is unavailable (missing configuration).',
       expired: 'The anti-spam verification has expired. Please try again.',
@@ -261,7 +302,13 @@ export const formContent = {
   },
   nl: {
     contact: {
-      title: 'Stel uw vraag',
+      title: 'Schrijf ons',
+      requiredNote: '* Verplichte velden',
+      placeholders: {
+        nom: 'Uw naam',
+        email: 'u@voorbeeld.nl',
+        message: 'Waarmee kunnen wij u helpen?',
+      },
       labels: {
         nom: 'Naam',
         email: 'E-mail',
@@ -271,30 +318,39 @@ export const formContent = {
       privacyLinkLabel: 'privacybeleid',
       submitButton: 'Mijn bericht versturen',
       submitting: 'Bezig met verzenden...',
-      success: 'Uw bericht is succesvol verzonden. Ons team neemt binnenkort contact met u op.',
+      successTitle: 'Uw bericht is verzonden',
+      success: 'Wij antwoorden binnen één werkdag op het opgegeven e-mailadres.',
+      successAction: 'Nog een bericht schrijven',
     },
     demandeClassement: {
       title: 'Uw classificatieaanvraag',
-      intro:
-        'Vul uw contactgegevens en het adres van de te classificeren vakantiewoning in. Wij nemen snel contact met u op om de volgende stappen te organiseren.',
+      intro: 'Alleen uw contactgegevens en het adres van de vakantiewoning.',
+      requiredNote: '* Verplichte velden',
+      sections: { contact: 'Uw contactgegevens', property: 'Uw vakantiewoning' },
       labels: {
         nom: 'Achternaam',
         prenom: 'Voornaam',
         email: 'E-mail',
         telephone: 'Telefoon',
         adresse: 'Adres van de vakantiewoning',
-        message: 'Bericht',
+        message: 'Bericht (optioneel)',
       },
       placeholders: {
-        telephone: 'Voorbeeld: +31 6 12345678',
-        adresse: 'Volledig adres van uw vakantiewoning in Frankrijk',
-        message: 'Vertel ons over uw woning en uw verwachtingen (optioneel)',
+        nom: 'Uw achternaam',
+        prenom: 'Uw voornaam',
+        email: 'u@voorbeeld.nl',
+        telephone: '+31 6 12345678',
+        adresse: 'Huisnummer, straat, postcode en plaats',
+        message: 'Iets toe te voegen over uw woning of beschikbaarheid?',
       },
       consentPrefix: 'Ik ga ermee akkoord dat mijn gegevens worden verwerkt volgens het',
       privacyLinkLabel: 'privacybeleid',
       submitButton: 'Mijn aanvraag versturen',
       submitting: 'Bezig met verzenden...',
-      success: 'Uw aanvraag is succesvol verzonden. Ons team neemt binnen 24 uur contact met u op.',
+      successTitle: 'Uw aanvraag is verzonden',
+      success:
+        'Wij nemen binnen één werkdag contact met u op om samen de bezoekvoorwaarden, het tarief en de beschikbaarheid te bevestigen, voordat u iets vastlegt.',
+      successAction: 'Nog een aanvraag doen',
     },
     validation: {
       nomRequired: 'Naam is verplicht',
@@ -308,6 +364,7 @@ export const formContent = {
       consentRequired: 'U moet het privacybeleid accepteren',
     },
     turnstile: {
+      label: 'Antispamcontrole',
       required: 'Vul de antispamcontrole in.',
       missingConfig: 'Antispambeveiliging is niet beschikbaar (configuratie ontbreekt).',
       expired: 'De antispamcontrole is verlopen. Probeer het opnieuw.',

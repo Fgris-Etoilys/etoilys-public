@@ -10,8 +10,6 @@ export const INTERIOR_PIECE_TYPES: PieceType[] = [
   'CABINE',
   'PIECE_SANS_OUVRANT',
   'COULOIRS_ET_DEGAGEMENTS',
-  'SALLE_DE_BAIN',
-  'WC',
 ];
 
 export const EXTERIOR_PIECE_TYPES: PieceType[] = [

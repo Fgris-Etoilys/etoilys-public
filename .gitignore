@@ -43,3 +43,6 @@ docs/data/lot-et-garonne-tourisme-meubles.json
 
 .vercel
 .env*
+
+# Local scratch files (screenshots, throwaway artifacts)
+tmp/

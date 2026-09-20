@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -138,7 +139,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       lede={
         <>
           {/* Chapô */}
-          <p className="text-xl leading-comfortable text-gray-700 mb-10">
+          <p className="text-xl leading-comfortable text-muted mb-10">
             Lorsque vous avez à la fois un <strong>meublé classé</strong> et un{' '}
             <strong>meublé non classé</strong>, la lecture des seuils micro-BIC n'est ni « tout sous
             15&nbsp;000&nbsp;€ » ni « tout sous 77&nbsp;700&nbsp;€ ». Les sources officielles les
@@ -153,11 +154,11 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       footerCta={
         <>
           {/* CTA */}
-          <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+          <div className="article-cta-panel mb-12 mt-12 p-8">
             <h2 className="text-h4 mb-3">
               Le classement de l'un de vos logements change-t-il votre cadre fiscal ?
             </h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-muted mb-6">
               Consultez la procédure de classement pour comprendre les démarches, ou faites
               directement une demande de classement avec Etoilys.
             </p>
@@ -180,32 +181,32 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       <ArticleSectionHeading id="la-reponse-courte-non-ce-n-est-pas-une-lecture-tout-ou-rien">
         La réponse courte : non, ce n'est pas une lecture « tout ou rien »
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si vous avez un logement <strong>classé</strong> et un autre <strong>non classé</strong>, la
         lecture la plus solide des sources officielles n'est ni :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>« tout est plafonné à 15&nbsp;000&nbsp;€ »,</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>ni « tout profite du plafond classé ».</span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le point le plus solide, c'est la page Service-Public Entreprendre sur le{' '}
         <strong>régime fiscal de la micro-entreprise</strong> : en <strong>activité mixte</strong>,
         elle indique qu'il faut respecter un <strong>seuil global de chiffre d'affaires</strong> et
         le <strong>seuil applicable à chaque activité</strong>, en citant explicitement la{' '}
         <strong>location meublée classée ou non classée</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Les sources officielles montrent donc bien une{' '}
         <strong>logique de distinction par catégorie de recettes</strong>, pas un pot commun où tout
         serait fondu sans distinction.
@@ -215,14 +216,12 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       <ArticleSectionHeading id="ce-que-montrent-les-sources-officielles">
         Ce que montrent les sources officielles
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Trois indices officiels vont dans le même sens :
       </p>
-      <div className="space-y-4 mb-8 text-gray-700">
+      <div className="space-y-4 mb-8 text-muted">
         <div className="flex gap-4">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-            1
-          </div>
+          <div className="article-step-marker">1</div>
           <div>
             <p className="leading-comfortable">
               <strong>Le CGI distingue les seuils</strong> (
@@ -230,6 +229,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
                 href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042159220/"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="article-inline-link"
               >
                 article 50-0 du CGI
               </a>
@@ -240,9 +240,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </div>
         </div>
         <div className="flex gap-4">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-            2
-          </div>
+          <div className="article-step-marker">2</div>
           <div>
             <p className="leading-comfortable">
               <strong>La déclaration 2042 C PRO distingue les recettes</strong> : les meublés
@@ -251,6 +249,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
                 href="https://www.impots.gouv.fr/www2/fichiers/documentation/brochure/ir_2026/pdf_integral/Brochure-IR-2026.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="article-inline-link"
               >
                 brochure pratique IR 2026
               </a>
@@ -259,9 +258,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </div>
         </div>
         <div className="flex gap-4">
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-            3
-          </div>
+          <div className="article-step-marker">3</div>
           <div>
             <p className="leading-comfortable">
               <strong>Service-Public Entreprendre parle d'activité mixte</strong> (
@@ -269,6 +266,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
                 href="https://entreprendre.service-public.fr/vosdroits/F23267"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="article-inline-link"
               >
                 régime fiscal de la micro-entreprise
               </a>
@@ -279,63 +277,83 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
         </div>
       </div>
 
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le tableau suivant résume les seuils et abattements applicables selon la catégorie de
         recettes :
       </p>
 
-      <div className="overflow-x-auto mb-4">
-        <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
-          <caption className="sr-only">
-            Seuils et abattements micro-BIC applicables selon la catégorie de recettes
-          </caption>
-          <colgroup>
-            <col className="w-2/5" />
-            <col className="w-1/5" />
-            <col className="w-1/5" />
-            <col className="w-1/5" />
-          </colgroup>
-          <thead>
-            <tr className="bg-primary-300 text-white">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Catégorie de recettes
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-4"
+        caption="Seuils et abattements micro-BIC applicables selon la catégorie de recettes"
+        primaryColumnKey="categorie"
+        columns={[
+          {
+            key: 'categorie',
+            label: 'Catégorie de recettes',
+            mobileLabel: 'Catégorie de recettes',
+            widthClassName: 'w-2/5',
+          },
+          {
+            key: 'revenus2025',
+            label: (
+              <>
                 Revenus 2025
                 <br />
-                <span className="font-normal text-xs">(déclarés en 2026)</span>
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
+                <span className="text-xs font-normal">(déclarés en 2026)</span>
+              </>
+            ),
+            mobileLabel: 'Revenus 2025 (déclarés en 2026)',
+            align: 'center',
+            widthClassName: 'w-1/5',
+          },
+          {
+            key: 'revenus2026',
+            label: (
+              <>
                 Revenus 2026
                 <br />
-                <span className="font-normal text-xs">(déclarés en 2027)</span>
-              </th>
-              <th scope="col" className="p-3 text-center font-semibold">
-                Abattement micro
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-white border-b border-gray-100">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Meublés de tourisme non classés
-              </th>
-              <td className="p-3 text-center text-gray-600">15&nbsp;000&nbsp;€</td>
-              <td className="p-3 text-center text-gray-600">15&nbsp;000&nbsp;€</td>
-              <td className="p-3 text-center font-semibold text-gray-700">30&nbsp;%</td>
-            </tr>
-            <tr className="bg-gray-50">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Meublés de tourisme classés
-              </th>
-              <td className="p-3 text-center text-gray-600">77&nbsp;700&nbsp;€</td>
-              <td className="p-3 text-center font-semibold text-primary-400">83&nbsp;600&nbsp;€</td>
-              <td className="p-3 text-center font-semibold text-gray-700">50&nbsp;%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p className="text-gray-700 leading-comfortable mb-8">
+                <span className="text-xs font-normal">(déclarés en 2027)</span>
+              </>
+            ),
+            mobileLabel: 'Revenus 2026 (déclarés en 2027)',
+            align: 'center',
+            widthClassName: 'w-1/5',
+          },
+          {
+            key: 'abattement',
+            label: 'Abattement micro',
+            mobileLabel: 'Abattement micro',
+            align: 'center',
+            widthClassName: 'w-1/5',
+          },
+        ]}
+        rows={[
+          {
+            key: 'non-classes',
+            cells: {
+              categorie: 'Meublés de tourisme non classés',
+              revenus2025: '15 000 €',
+              revenus2026: '15 000 €',
+              abattement: <span className="font-semibold">30 %</span>,
+            },
+          },
+          {
+            key: 'classes',
+            cells: {
+              categorie: 'Meublés de tourisme classés',
+              revenus2025: <span aria-label="Revenus 2025 : 77 700 €">77 700 €</span>,
+              revenus2026: (
+                <span aria-label="Revenus 2026 : 83 600 €" className="font-semibold text-copper">
+                  83 600 €
+                </span>
+              ),
+              abattement: <span className="font-semibold">50 %</span>,
+            },
+          },
+        ]}
+      />
+      <p className="text-muted leading-comfortable mb-8">
         En pratique, si vous avez des recettes des deux côtés, il faut les lire séparément, puis
         vérifier aussi le cadre global applicable à votre activité.
       </p>
@@ -344,10 +362,10 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       <ArticleSectionHeading id="ce-que-cela-veut-dire-concretement-si-vous-avez-plusieurs-logements">
         Ce que cela veut dire concrètement si vous avez plusieurs logements
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">Si vous avez :</p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <p className="text-muted leading-comfortable mb-4">Si vous avez :</p>
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -355,7 +373,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -363,17 +381,17 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         les recettes classées et non classées doivent être distinguées. Les seuils spécifiques et
         les abattements correspondants s'apprécient par catégorie de recettes, dans un cadre
         micro-fiscal qui peut aussi imposer la vérification d'un seuil global en activité mixte.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Deux points à éviter dans cette lecture :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -382,7 +400,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -391,12 +409,12 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </span>
         </li>
       </ul>
-      <blockquote className="border-l-4 border-primary-300 pl-5 py-2 my-6 text-gray-700 italic">
+      <blockquote className="article-quote italic">
         Les recettes classées et non classées doivent être distinguées. Les seuils spécifiques et
         les abattements correspondants s'apprécient par catégorie de recettes, dans un cadre
         micro-fiscal qui peut aussi imposer la vérification d'un seuil global en activité mixte.
       </blockquote>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour comprendre pourquoi le classement fait une différence concrète sur d'autres sujets
         fiscaux, consultez la page{' '}
         <Link to="/les-avantages-du-classement" className="article-inline-link">
@@ -409,11 +427,11 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
       <ArticleSectionHeading id="et-pour-les-abattements">
         Et pour les abattements ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Sur ce point, les sources officielles sont plus nettes que beaucoup de contenus publiés en
         ligne.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Service-Public Entreprendre précise que, lorsque l'activité est <strong>mixte</strong>, les{' '}
         <strong>
           abattements propres à chaque activité s'appliquent cumulativement sur la fraction de
@@ -421,13 +439,13 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
         </strong>
         .
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Concrètement, cela veut dire qu'on ne prend pas tout le chiffre d'affaires pour lui
         appliquer un seul abattement uniforme. On distingue :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -435,7 +453,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -443,10 +461,10 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         sous réserve bien sûr que le régime micro reste applicable (seuils et conditions respectés).
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un rappel des règles générales sur la fiscalité des meublés classés, la page{' '}
         <Link to="/faq" className="article-inline-link">
           FAQ Etoilys
@@ -456,7 +474,7 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
 
       {/* Section 5 */}
       <ArticleSectionHeading id="la-prudence-a-garder">La prudence à garder</ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Ce sujet est assez clair dans les{' '}
         <strong>sources officielles sur le micro-fiscal / activité mixte</strong>. Mais quelques
         points méritent attention :
@@ -482,12 +500,10 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
           ] as { num: string; title: string; desc: string }[]
         ).map(({ num, title, desc }) => (
           <div key={num} className="flex gap-4">
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {num}
-            </div>
+            <div className="article-step-marker">{num}</div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1 text-base leading-snug">{title}</h3>
-              <p className="text-gray-700 leading-comfortable">{desc}</p>
+              <h3 className="font-semibold text-ink mb-1 text-base leading-snug">{title}</h3>
+              <p className="text-muted leading-comfortable">{desc}</p>
             </div>
           </div>
         ))}
@@ -495,11 +511,11 @@ export default function ArticleMeubleClasseNonClasseSeuils() {
 
       {/* Conclusion */}
       <ArticleSectionHeading id="conclusion">Conclusion</ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Si vous avez un meublé classé et un non classé, la bonne approche n'est ni de tout mélanger,
         ni de raisonner logement par logement sans cadre global.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La lecture la plus solide des sources officielles est la suivante :{' '}
         <strong>
           on distingue les recettes par catégorie, on applique les abattements correspondants, et on

@@ -1,6 +1,57 @@
 import type { TextTranslations } from './textTranslation';
 
 export const fiscalSimulatorEnglishTranslations = {
+  'Création du PDF…': 'Creating PDF…',
+  "Tranche marginale d'imposition": 'Marginal income tax rate',
+  'Revenus 2026 déclarés en 2027 · comparaison micro-BIC':
+    '2026 income declared in 2027 · micro-BIC comparison',
+  'Le régime micro-BIC non classé est sous vigilance. Consultez les points d’attention.':
+    'The unclassified micro-BIC threshold has been exceeded. Review the points to note.',
+  'Mise à jour des paramètres': 'Tax parameters updated',
+  'À situation identique, l’écart représente environ {amount} sur 5 ans.':
+    'Assuming unchanged circumstances, the difference is approximately {amount} over 5 years.',
+  'Seuils et abattements — Service Public': 'Thresholds and allowances — Service Public',
+  'Outils de simulation': 'Simulation tools',
+  'Simulateur fiscal : classé ou non classé': 'Tax simulator: classified or unclassified',
+  'Deux informations pour estimer ce que le classement change à votre fiscalité micro-BIC en 2026.':
+    'Enter two details to estimate how classification affects your micro-BIC taxation in 2026.',
+  'Deux champs à renseigner.': 'Two details to enter.',
+  'Total perçu en 2026, loyers et charges inclus, en euros.':
+    'Total received in 2026, including rent and charges, in euros.',
+  'Où trouver mon taux ?': 'Where can I find my rate?',
+  'Classé / non classé': 'Classified / unclassified',
+  'Votre comparaison, en un regard': 'Your comparison at a glance',
+  'Renseignez vos recettes et votre taux pour comparer les montants annuels et découvrir l’écart estimé.':
+    'Enter your rental income and tax rate to compare annual amounts and see the estimated difference.',
+  'Revenus 2026 · régime micro-BIC': '2026 income · micro-BIC regime',
+  'L’effet du classement': 'The effect of classification',
+  'Totaux annuels estimés, impôt et prélèvements ou cotisations sociales inclus.':
+    'Estimated annual totals, including income tax and social levies or social security contributions.',
+  'Au-delà de 23 000 € de recettes, cette estimation utilise des cotisations sociales plutôt que des prélèvements sociaux. Consultez le détail du calcul.':
+    'Above €23,000 in rental income, this estimate uses social security contributions instead of social levies. See the calculation details.',
+  'Recettes locatives 2026': '2026 rental income',
+  'Tranche marginale d’imposition': 'Marginal income tax rate',
+  'Vos paramètres ont changé. Relancez le calcul pour actualiser ce résultat.':
+    'Your details have changed. Calculate again to update this result.',
+  'Voir le détail du calcul': 'View calculation details',
+  'Comparatif fiscal entre meublé classé et non classé':
+    'Tax comparison between classified and unclassified furnished tourist accommodation',
+  'Limite du simulateur': 'Simulator limit',
+  'Comparaison hors périmètre': 'Comparison outside the simulator scope',
+  'Vos recettes dépassent le seuil du micro-BIC classé pour les revenus 2026 déclarés en 2027.':
+    'Your rental income exceeds the micro-BIC threshold for classified accommodation for 2026 income declared in 2027.',
+  'Au-delà de {threshold} de recettes sur deux années consécutives, le régime réel s’applique l’année suivante. Ce simulateur ne permet alors plus de comparer votre situation.':
+    'Above {threshold} in rental income for two consecutive years, the actual expenses tax regime applies the following year. This simulator can no longer compare your circumstances in that case.',
+  'Simulation calculée.': 'Simulation calculated.',
+  'Méthode, hypothèses et sources': 'Method, assumptions and sources',
+  'Le cadre de la comparaison': 'Scope of the comparison',
+  'Sources de référence': 'Reference sources',
+  'Fiscalité des meublés de tourisme — impots.gouv.fr':
+    'Furnished tourist accommodation taxation — impots.gouv.fr',
+  'Location meublée — Service Public': 'Furnished rentals — Service Public',
+  'Sources officielles disponibles en français.': 'Official sources are available in French.',
+  'Le classement intervient aussi dans la taxe de séjour.':
+    'Classification also affects tourist tax.',
   "Saisissez un chiffre d'affaires annuel 2026 valide.":
     'Enter valid annual rental income for 2026.',
   "Sélectionnez une tranche marginale d'imposition.": 'Select a marginal income tax rate.',
@@ -109,6 +160,71 @@ export const fiscalSimulatorEnglishTranslations = {
 } as const satisfies TextTranslations;
 
 export const touristTaxSimulatorEnglishTranslations = {
+  'Création du PDF…': 'Creating PDF…',
+  'Période tarifaire': 'Tariff period',
+  'Un même séjour · du non classé au 5 étoiles': 'One stay · from unclassified to 5 stars',
+  'Non calculé': 'Not calculated',
+  'Comparaison indicative. Consultez les points d’attention avant d’interpréter les montants.':
+    'Indicative comparison. Review the points to note before interpreting the amounts.',
+  'Méthode et hypothèses': 'Method and assumptions',
+  'Données DELTA v{version} · date de référence : {date}.':
+    'DELTA v{version} data · reference date: {date}.',
+  'Données DELTA publiées par Etoilys': 'DELTA data published by Etoilys',
+  'Comparaison limitée': 'Limited comparison',
+  'Le montant non classé est indicatif. L’écart entre catégories ne peut pas être établi.':
+    'The unclassified amount is indicative. The difference between categories cannot be established.',
+  'Écart non disponible': 'Difference unavailable',
+  Nuits: 'Nights',
+  'Aucun écart': 'No difference',
+  'Ex. 120': 'e.g. 120',
+  'Ex. 3': 'e.g. 3',
+  'Ex. 4': 'e.g. 4',
+  'Ex. 1': 'e.g. 1',
+  'Article L3333-1 du CGCT': 'CGCT Article L3333-1',
+  'Article L2531-17 du CGCT': 'CGCT Article L2531-17',
+  'Articles L4332-4 à L4332-6 du CGCT': 'CGCT Articles L4332-4 to L4332-6',
+  'Article L2531-18 du CGCT': 'CGCT Article L2531-18',
+  'Comparaison indicative': 'Indicative comparison',
+  'Capacité :': 'Capacity:',
+  'Les outils Etoilys · 2026': 'Etoilys tools · 2026',
+  'Simulateur taxe de séjour': 'Tourist tax simulator',
+  'Un même séjour, cinq classements. Comparez ce qui change pour vos voyageurs.':
+    'One stay, five star ratings. Compare what changes for your guests.',
+  'Votre simulation': 'Your simulation',
+  'Commencez par la commune de votre logement.':
+    'Start with the municipality of your accommodation.',
+  'Communes proposées': 'Suggested municipalities',
+  'Commune sélectionnée · tarifs locaux chargés': 'Municipality selected · local rates loaded',
+  'Aucune commune trouvée. Essayez un autre nom.': 'No municipality found. Try another name.',
+  'Saisissez un nom puis sélectionnez une commune dans la liste.':
+    'Enter a name, then select a municipality from the list.',
+  'Le séjour': 'The stay',
+  'Les voyageurs': 'Your guests',
+  'Le logement': 'Your accommodation',
+  'Nombre de personnes maximum': 'Maximum number of guests',
+  'Parmi les personnes accueillies · facultatif': 'Included in your guest count · optional',
+  '* Champs obligatoires': '* Required fields',
+  'Actions du résultat': 'Result actions',
+  'Économie maximale sur ce séjour': 'Maximum saving for this stay',
+  'Aucune économie sur ce séjour': 'No saving for this stay',
+  'de taxe de séjour en moins avec un classement {category}, par rapport à un meublé non classé.':
+    'less tourist tax with a {category} classification, compared with unclassified accommodation.',
+  'Selon le classement': 'By star rating',
+  'Montant total et écart par rapport au non classé.':
+    'Total amount and difference compared with unclassified accommodation.',
+  'Catégories de classement': 'Star rating categories',
+  'Détail du calcul': 'Calculation details',
+  'Résultat détaillé de la simulation de taxe de séjour': 'Detailed tourist tax simulation result',
+  'Classé ou non classé': 'Classified or unclassified',
+  'Ce que le classement change': 'See what classification changes',
+  'Renseignez votre séjour pour comparer la taxe de séjour, du non classé au 5 étoiles.':
+    'Enter your stay details to compare tourist tax, from unclassified to 5 stars.',
+  '1 séjour': '1 stay',
+  '6 catégories': '6 categories',
+  'Tarifs locaux': 'Local rates',
+  'Méthode, hypothèses et sources': 'Method, assumptions and sources',
+  'Les sources officielles sont disponibles en français.':
+    'Official sources are available in French.',
   'Sélectionnez une commune dans la liste proposée.':
     'Select a municipality from the suggested list.',
   'Indiquez un prix HT strictement positif.':
@@ -275,3 +391,34 @@ export const touristTaxSimulatorEnglishTranslations = {
   "Régime forfaitaire (indicatif): le calcul légal repose sur la période d'ouverture / de mise en location et la capacité d'accueil du logement. Un abattement local peut aussi exister. Il n'est pas intégré ici, car le simulateur vise une comparaison simplifiée sur un séjour type et non un calcul fiscal annuel exact.":
     'Flat-rate regime (indicative): the statutory calculation is based on the opening or rental period and the accommodation capacity. A local allowance may also apply. It is not included because this simulator provides a simplified comparison for a typical stay rather than an exact annual tax calculation.',
 } as const satisfies TextTranslations;
+
+export const simulatorNextStepsContent = {
+  fr: {
+    title: 'Préparez votre classement',
+    description: {
+      fiscal:
+        'Demandez le classement de votre meublé ou explorez aussi son effet sur la taxe de séjour.',
+      'tourist-tax':
+        'Demandez le classement de votre meublé ou explorez aussi son effet sur votre fiscalité.',
+    },
+    classificationLabel: 'Demander un classement',
+    otherSimulatorLabel: {
+      fiscal: 'Simulateur taxe de séjour',
+      'tourist-tax': 'Simulateur fiscal',
+    },
+  },
+  en: {
+    title: 'Prepare for classification',
+    description: {
+      fiscal:
+        'Request a classification for your accommodation, or explore its effect on tourist tax.',
+      'tourist-tax':
+        'Request a classification for your accommodation, or explore its effect on your taxation.',
+    },
+    classificationLabel: 'Request a classification',
+    otherSimulatorLabel: {
+      fiscal: 'Tourist tax simulator',
+      'tourist-tax': 'Tax simulator',
+    },
+  },
+} as const;

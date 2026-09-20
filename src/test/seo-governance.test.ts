@@ -142,7 +142,7 @@ describe('seo governance', () => {
       { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
       { name: 'Dordogne', url: `${SITE_URL}/classement-meuble-tourisme-dordogne` },
       {
-        name: 'Bergerac et le Bergeracois',
+        name: 'Bergerac',
         url: `${SITE_URL}/classement-meuble-tourisme-bergerac`,
       },
     ]);
@@ -156,6 +156,30 @@ describe('seo governance', () => {
       {
         name: 'Bordeaux',
         url: `${SITE_URL}/classement-meuble-tourisme-bordeaux`,
+      },
+    ]);
+  });
+
+  it('builds the Bassin d’Arcachon breadcrumb hierarchy from zones to Gironde', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-bassin-arcachon')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Gironde', url: `${SITE_URL}/classement-meuble-tourisme-gironde` },
+      {
+        name: 'Bassin d’Arcachon',
+        url: `${SITE_URL}/classement-meuble-tourisme-bassin-arcachon`,
+      },
+    ]);
+  });
+
+  it('builds the Médoc Atlantique breadcrumb hierarchy from zones to Gironde', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-lacanau-medoc-atlantique')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Gironde', url: `${SITE_URL}/classement-meuble-tourisme-gironde` },
+      {
+        name: 'Lacanau et Médoc Atlantique',
+        url: `${SITE_URL}/classement-meuble-tourisme-lacanau-medoc-atlantique`,
       },
     ]);
   });
@@ -284,9 +308,11 @@ describe('seo governance', () => {
       '/simulateur',
       '/zones-intervention',
       '/classement-meuble-tourisme-dordogne',
+      '/classement-meuble-tourisme-aveyron',
       '/classement-meuble-tourisme-bergerac',
       '/classement-meuble-tourisme-bordeaux',
       '/classement-meuble-tourisme-gironde',
+      '/classement-meuble-tourisme-lot',
       '/classement-meuble-tourisme-lot-et-garonne',
       '/recrutement',
       '/mentions-legales',

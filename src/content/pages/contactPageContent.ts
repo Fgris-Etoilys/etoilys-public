@@ -1,75 +1,41 @@
 import type { Locale } from '../../i18n/locales';
 
 type ContactPageContent = {
-  hero: {
-    title: string;
-    description: string;
-  };
+  hero: { eyebrow: string; title: string; description: string };
   detailsTitle: string;
-  contactLabels: {
-    phone: string;
-    email: string;
-    headOffice: string;
-  };
-  quickResponse: {
-    title: string;
-    description: string;
-  };
+  contactLabels: { phone: string; email: string };
+  quickResponse: string;
 };
 
 export const contactPageContent = {
   fr: {
     hero: {
-      title: 'Contacter Etoilys',
-      description:
-        'Vous avez une question avant de demander le classement de votre meublé ? Etoilys vous répond et vous aide à comprendre les prochaines étapes.',
+      eyebrow: 'Contact Etoilys',
+      title: 'Une question ?',
+      description: 'Écrivez-nous ou contactez-nous directement. Nous sommes là pour vous répondre.',
     },
-    detailsTitle: 'Nos coordonnées',
-    contactLabels: {
-      phone: 'Téléphone',
-      email: 'Email',
-      headOffice: 'Siège social',
-    },
-    quickResponse: {
-      title: 'Réponse rapide',
-      description:
-        "Nous nous engageons à répondre à votre demande sous 24 heures ouvrées. Pour une demande urgente, n'hésitez pas à nous appeler directement.",
-    },
+    detailsTitle: 'Nous contacter directement',
+    contactLabels: { phone: 'Par téléphone', email: 'Par email' },
+    quickResponse: 'Une réponse sous 24 heures ouvrées.',
   },
   en: {
     hero: {
-      title: 'Contact Etoilys',
-      description:
-        'Do you have a question before requesting the official classification of your furnished tourist accommodation? Etoilys can reply and help you understand the next steps.',
+      eyebrow: 'Contact Etoilys',
+      title: 'Have a question?',
+      description: 'Send us a message or get in touch directly. We are here to help.',
     },
-    detailsTitle: 'Contact details',
-    contactLabels: {
-      phone: 'Phone',
-      email: 'Email',
-      headOffice: 'Head office',
-    },
-    quickResponse: {
-      title: 'Quick reply',
-      description:
-        'We undertake to reply to your request within 24 working hours. For an urgent request, please feel free to call us directly.',
-    },
+    detailsTitle: 'Get in touch directly',
+    contactLabels: { phone: 'By phone', email: 'By email' },
+    quickResponse: 'A reply within 24 working hours.',
   },
   nl: {
     hero: {
-      title: 'Contact met Etoilys',
-      description:
-        'Heeft u een vraag voordat u de officiële classificatie van uw vakantiewoning in de momenteel bediende gebieden aanvraagt? Etoilys beantwoordt uw vraag en licht de volgende stappen toe.',
+      eyebrow: 'Contact met Etoilys',
+      title: 'Heeft u een vraag?',
+      description: 'Stuur ons een bericht of neem rechtstreeks contact op. Wij helpen u graag.',
     },
-    detailsTitle: 'Onze contactgegevens',
-    contactLabels: {
-      phone: 'Telefoon',
-      email: 'E-mail',
-      headOffice: 'Vestigingsadres',
-    },
-    quickResponse: {
-      title: 'Snelle reactie',
-      description:
-        'Wij beantwoorden uw aanvraag binnen één werkdag. Voor een spoedvraag kunt u ons ook rechtstreeks bellen.',
-    },
+    detailsTitle: 'Rechtstreeks contact opnemen',
+    contactLabels: { phone: 'Per telefoon', email: 'Per e-mail' },
+    quickResponse: 'Een antwoord binnen één werkdag.',
   },
 } as const satisfies Record<Locale, ContactPageContent>;

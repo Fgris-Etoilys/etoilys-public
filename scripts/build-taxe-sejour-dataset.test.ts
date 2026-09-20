@@ -148,6 +148,7 @@ describe('buildCompactDatasetFromXml', () => {
             [],
           ],
           ['33063', 'BORDEAUX (33)', 'bordeaux 33 bordeaux metropole', 'r', 'r', 0, [], []],
+          ['47001', 'AGEN (47)', 'agen 47 agglomeration agen', 'r', 'r', 0, [], []],
         ],
       },
       '24'
@@ -164,6 +165,25 @@ describe('buildCompactDatasetFromXml', () => {
         label: 'Port-Sainte-Foy-et-Ponchapt',
         departmentCode: '24',
       },
+    ]);
+  });
+
+  it('filters generated commune indexes by target department code', () => {
+    const dataset: Parameters<typeof buildDepartmentCommuneIndexFromCompactDataset>[0] = {
+      v: '2.5.0',
+      sd: '01/01/2026',
+      g: '2026-01-01T00:00:00.000Z',
+      c: [
+        ['33063', 'BORDEAUX (33)', 'bordeaux 33 bordeaux metropole', 'r', 'r', 0, [], []],
+        ['47001', 'AGEN (47)', 'agen 47 agglomeration agen', 'r', 'r', 0, [], []],
+      ],
+    };
+
+    expect(buildDepartmentCommuneIndexFromCompactDataset(dataset, '33').c).toEqual([
+      { id: '33063', label: 'Bordeaux', departmentCode: '33' },
+    ]);
+    expect(buildDepartmentCommuneIndexFromCompactDataset(dataset, '47').c).toEqual([
+      { id: '47001', label: 'Agen', departmentCode: '47' },
     ]);
   });
 });

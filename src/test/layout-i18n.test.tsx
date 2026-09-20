@@ -86,6 +86,21 @@ function expectSeoHeadWithoutDuplicates({
 }
 
 describe('localized layout', () => {
+  it.each(['/contact', '/en/contact', '/nl/contact'])(
+    'provides a shared footer and a named skip link on %s',
+    (path) => {
+      renderAt(path);
+      const main = screen.getByRole('main');
+      expect(main).toHaveAttribute('id', 'main-content');
+      expect(main).toHaveAttribute('tabindex', '-1');
+      expect(document.querySelector('a[href="#main-content"]')).toHaveAccessibleName();
+      const footer = screen.getByRole('contentinfo');
+      expect(footer).toHaveClass('site-footer');
+      expect(footer.querySelector(`a[href="${path}"]`)).toBeInTheDocument();
+      expect(within(footer).getByRole('button')).toHaveAccessibleName();
+    }
+  );
+
   afterEach(() => {
     cleanup();
   });
@@ -110,19 +125,35 @@ describe('localized layout', () => {
     );
   });
 
-  it('disables unavailable language options without falling back to /en', () => {
-    renderAt('/actualites');
-    openLanguageSwitcher();
+  it.each(['/actualites', '/classement-meuble-tourisme-dordogne'])(
+    'disables unavailable languages on %s without links to homepages',
+    (path) => {
+      renderAt(path);
+      openLanguageSwitcher();
+      for (const name of [
+        /version indisponible en english/i,
+        /version indisponible en nederlands/i,
+      ]) {
+        const option = screen.getByRole('button', { name });
+        expect(option).toBeDisabled();
+        expect(option).toHaveAttribute('aria-disabled', 'true');
+        expect(option).not.toHaveAttribute('href');
+      }
+      expect(document.querySelector('a[href="/en"], a[href="/nl"]')).toBeNull();
+      expect(screen.queryByRole('link', { name: /passer en english/i })).not.toBeInTheDocument();
+      expect(document.querySelectorAll('link[hreflang]')).toHaveLength(0);
+    }
+  );
 
-    const unavailableEnglishOption = screen.getByRole('button', {
-      name: /version indisponible en english/i,
-    });
-
-    expect(unavailableEnglishOption).toBeDisabled();
-    expect(unavailableEnglishOption).toHaveAttribute('aria-disabled', 'true');
-    expect(unavailableEnglishOption).not.toHaveAttribute('href');
-    expect(screen.queryByRole('link', { name: /passer en anglais/i })).not.toBeInTheDocument();
-    expect(document.querySelector('a[href="/en"]')).not.toBeInTheDocument();
+  it('toggles the global navigation with a button and closes it with Escape', () => {
+    renderAt('/classement-meuble-tourisme-dordogne');
+    const trigger = screen.getByRole('button', { name: /^Le classement$/ });
+    fireEvent.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getAllByRole('menuitem').length).toBeGreaterThan(0);
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByRole('menuitem')).not.toBeInTheDocument();
   });
 
   it('uses a compact trigger and closes the dropdown with Escape and outside clicks', () => {
@@ -316,30 +347,32 @@ describe('localized layout', () => {
     );
 
     await waitFor(() => {
-      expect(
-        screen.getByRole('heading', { level: 1, name: /contact etoilys/i })
-      ).toBeInTheDocument();
+      expect(window.location.pathname).toBe('/en/contact');
+      expect(screen.getByRole('textbox', { name: /email/i })).toBeRequired();
     });
     expectSeoHeadWithoutDuplicates({ hasBreadcrumb: true, hasGlobalStructuredData: true });
   });
 
-  it('keeps unavailable language options disabled in the mobile menu', () => {
-    renderAt('/actualites');
+  it.each(['/actualites', '/classement-meuble-tourisme-dordogne'])(
+    'disables unavailable languages in the mobile menu on %s',
+    (path) => {
+      renderAt(path);
 
-    fireEvent.click(screen.getByLabelText(/ouvrir ou fermer le menu/i));
-    fireEvent.click(
-      getLastElement(screen.getAllByRole('button', { name: /sélecteur de langue/i }))
-    );
+      fireEvent.click(screen.getByLabelText(/ouvrir ou fermer le menu/i));
+      fireEvent.click(
+        getLastElement(screen.getAllByRole('button', { name: /sélecteur de langue/i }))
+      );
 
-    const unavailableEnglishOptions = screen.getAllByRole('button', {
-      name: /version indisponible en english/i,
-    });
-
-    expect(unavailableEnglishOptions.length).toBeGreaterThanOrEqual(1);
-    unavailableEnglishOptions.forEach((option) => {
-      expect(option).toBeDisabled();
-      expect(option).toHaveAttribute('aria-disabled', 'true');
-      expect(option).not.toHaveAttribute('href');
-    });
-  });
+      for (const name of [
+        /version indisponible en english/i,
+        /version indisponible en nederlands/i,
+      ]) {
+        const option = screen.getByRole('button', { name });
+        expect(option).toBeDisabled();
+        expect(option).toHaveAttribute('aria-disabled', 'true');
+        expect(option).not.toHaveAttribute('href');
+      }
+      expect(document.querySelector('a[href="/en"], a[href="/nl"]')).toBeNull();
+    }
+  );
 });

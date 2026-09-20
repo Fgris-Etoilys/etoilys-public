@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "63c16cdb600c21eec4d3bca64eaff252706c266a9499334675f626388b89e4b1",
+  "pipelineSignature": "f45db34bac05d578a5258289f4c31eb12075b872f93e853b23b59991488cab68",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "8c9ff9d0f8ce1bfbc62ccfa9419c8a7525d556605ee0bcd2f0564ec5ae1f1289"
+    "sha256": "f34deaa90dda5e667f3201bd7e44108bd5927f54c6c72a8b9f6054f5ec1f6211"
   },
   "sources": [
     {
@@ -82,9 +82,29 @@
       "sha256": "a8e0c49cfac48775bb77e664de93b39e5a658a3032a8d4b41bdb0088b2efd0b1"
     },
     {
+      "key": "bassinArcachonHero",
+      "path": "src/assets/seo-images/source/bassin-arcachon-cabanes-tchanquees.jpg",
+      "sha256": "e354ebc2b18c36db0cabbaef09427768b7cc886b237679f69bc265892b0914fe"
+    },
+    {
+      "key": "bassinArcachonDunePilat",
+      "path": "src/assets/seo-images/source/bassin-arcachon-dune-pilat.jpg",
+      "sha256": "6de4d7dfee8d82ec02c198cb59c7cab29e2394b2218010588a75fbe059879cfd"
+    },
+    {
+      "key": "aveyronHero",
+      "path": "src/assets/seo-images/source/belcastel-4-kallerna-wikimedia.jpg",
+      "sha256": "1705aa4c979aeec97c89007778d8705660eb31f371597a9c387979a4a19ada47"
+    },
+    {
       "key": "girondeCoast",
       "path": "src/assets/seo-images/source/benjamin-esteves-A_JaVydOsRk-unsplash.jpg",
       "sha256": "b088e60360c513993e56b84b5a2e2a5af6dabd24aac5636bf26d9c3a075ffe2f"
+    },
+    {
+      "key": "bergeracSaintJacquesCyrano",
+      "path": "src/assets/seo-images/source/bergerac-saint-jacques-cyrano.jpg",
+      "sha256": "cf1dc07036c343635557262ba65eb3774d0a467b1065bbe241f897f85500ac85"
     },
     {
       "key": "bergeracHero",
@@ -92,9 +112,19 @@
       "sha256": "5aab5b00d2ca69a89e1de233bbf2a2184175f08c7eeef8e3607a4f5896ae2a05"
     },
     {
+      "key": "bordeauxExpertise",
+      "path": "src/assets/seo-images/source/bordeaux-jardin-public-marc-ryckaert.jpg",
+      "sha256": "959feb26937ac55ece465319a17234b143faff4e4c1b4a01668281b92ecda6b2"
+    },
+    {
       "key": "simulateurClassement",
       "path": "src/assets/seo-images/source/gunnar-ridderstrom-4I26owL4-yk-unsplash.jpg",
       "sha256": "3f130a0dd14df2eb2174f482f803f0f119127fb5f183ddeb018491da9db0ee67"
+    },
+    {
+      "key": "homePourquoiChoisir",
+      "path": "src/assets/seo-images/source/home-pourquoi-choisir-etoilys.png",
+      "sha256": "27dc743b40134725b60f6183cdf01b4fd7c93b3c153e1fd8cb0f702fee77d0c2"
     },
     {
       "key": "homeProcedure",
@@ -102,9 +132,14 @@
       "sha256": "10c152d1bafc65fe0c806291a36f0640237e23c6a2afb6dee6fc26685daf00c0"
     },
     {
-      "key": "dordogneInterior",
+      "key": "dordogneLaRoqueGageac",
       "path": "src/assets/seo-images/source/jametlene-reskp-0MF_yWx470o-unsplash.jpg",
       "sha256": "ada5d2ff88b2bc0677b7158edf9027ef5729a7713b52a384d4e232d7992cc8f6"
+    },
+    {
+      "key": "aveyronTerritory",
+      "path": "src/assets/seo-images/source/joran-quinten-wYzuwwLKmGM-unsplash.jpg",
+      "sha256": "9b1eb3ad6e9464887e3fa9ca0956fd648e0a287442fa030ef84ace08baf1a34c"
     },
     {
       "key": "simulateurFiscalClassement",
@@ -115,6 +150,16 @@
       "key": "dordogneLandscape",
       "path": "src/assets/seo-images/source/le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg",
       "sha256": "f1ab643d07f65a54c8a5b2748871c7091ba1f04d65799392db7fc617507b2b03"
+    },
+    {
+      "key": "medocAtlantiqueExpertise",
+      "path": "src/assets/seo-images/source/medoc-atlantique-carcans-plage.jpg",
+      "sha256": "083127e6823234b4da10bd934383b08df23bf69a86f7cf77e45853c68acc5e47"
+    },
+    {
+      "key": "medocAtlantiqueHero",
+      "path": "src/assets/seo-images/source/medoc-atlantique-etang-lacanau.jpg",
+      "sha256": "adc7b276b334282e1daf9175ba17333259d61af6c21758ddca2677268bdd3f05"
     },
     {
       "key": "simulateurTaxeSejour",
@@ -152,9 +197,19 @@
       "sha256": "9ae363f6e2bec43ab11a5ad336bdda713b67df7145da27797e3b80741b42aca2"
     },
     {
+      "key": "lotHero",
+      "path": "src/assets/seo-images/source/pexels-tyvalloire-35860040.jpg",
+      "sha256": "9bfc0fcf3d8ba13be010cd56bcc8ef6c05446ceacaa95836e64d9803347ae2ba"
+    },
+    {
       "key": "pourquoiReferencement",
       "path": "src/assets/seo-images/source/pourquoi-referencement.jpg",
       "sha256": "45b5562e9e3d90c930754a6e3265012b20f8709c744a2ef42818ffba1a89292d"
+    },
+    {
+      "key": "lotRocamadour",
+      "path": "src/assets/seo-images/source/rocamadour-2025-114909.jpg",
+      "sha256": "bd477e3027f939f4831e629b329f540155f65d34af6328792e0da603a1c46968"
     },
     {
       "key": "articleFacturationElectronique2026",
@@ -914,6 +969,171 @@
       "sha256": "6fc3a2335a293ff5f53be312253cb9ad01d4a1f48f6a7409933e4f1698c12795"
     },
     {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.avif",
+      "bytes": 34773,
+      "sha256": "de87193bd951dd0a70cd0d7a6b59aa4439371b2d5787952e0b37028a85152d34"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.jpg",
+      "bytes": 67362,
+      "sha256": "b769ad81515a146520ef67182293627b56b228aa1084949eedd8ac5f9b49bba8"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.webp",
+      "bytes": 51352,
+      "sha256": "33bebe1d369359cfe52ec132d879967baffd960da8fd26ae3d6f4a8de26499d5"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1600.avif",
+      "bytes": 55906,
+      "sha256": "81e3621a6bb207c5269cb35eaf4cc7ce73cf3b24b5ab797be0594d9cd780c560"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1600.webp",
+      "bytes": 77004,
+      "sha256": "2d681f68edf7b9002bf94dbe68ff22eeb8bc0b569930daeaf59307b9e3145c02"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1920.avif",
+      "bytes": 69087,
+      "sha256": "958b26e316936e9d94604fbb3665592c70fc4214b87356202f7e5abf4eaf0347"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1920.webp",
+      "bytes": 96692,
+      "sha256": "afded0b7dd0742f05154a78725f59d3887f9c8f033632f897cee019d8cd46319"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-480.avif",
+      "bytes": 7412,
+      "sha256": "cd51c455e832d4f65ed9bb53e970fb764fbd80c8bb23de66fa2cc4cc2ec794c8"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-480.webp",
+      "bytes": 10562,
+      "sha256": "c0ee1ed8a0c3b76c90068f87d3ac5980169829c95d763e84d08dcda1048d7a8f"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-768.avif",
+      "bytes": 14692,
+      "sha256": "561e3f2e4437efb5c66595bd8c067e876762f299c19c330fe76ec6c897781eb9"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-768.webp",
+      "bytes": 22890,
+      "sha256": "b6a58f578a56274d1d096424de38433bd0d345809d9dc156c9c2410e00f114e3"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1200.avif",
+      "bytes": 55390,
+      "sha256": "9466fd55262be7371afbea79c977a08ce98c08fae2c6f07f69319e4e2bc3c30f"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1200.jpg",
+      "bytes": 80966,
+      "sha256": "bf3cd145d6ca2fcb425c5e11e4bd37ea6ce460d44c7a76ae29bb04de3d281756"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1200.webp",
+      "bytes": 66828,
+      "sha256": "cb4f5e9cc5efcea84a766813c837267a26e811262e3e8a5949379469ecf9d62e"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1600.avif",
+      "bytes": 89859,
+      "sha256": "978d51fbb23aff96d9ef38eb3ee351fc08072e8271d21e2129924259b9153c59"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1600.webp",
+      "bytes": 108600,
+      "sha256": "0b8d648a898e300ec3444d79193bc577d990c15b5dfe537303b28351007f29cc"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1920.avif",
+      "bytes": 118375,
+      "sha256": "7190364e77545e9f9229f70a202703e1b14cdf2da782e2233d81c1f54d58d270"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-1920.webp",
+      "bytes": 151988,
+      "sha256": "434fb6ee51ace865b80d51b3a4d9086818a541585b1ebfec67cd0900e156a431"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-480.avif",
+      "bytes": 8184,
+      "sha256": "30a7ebdb9599baa6ee38908073935d8f75bb00864b119bd87cb9f892e768c235"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-480.webp",
+      "bytes": 9988,
+      "sha256": "ff0b4493be1d6628411124580dbf6a5513fffccb3ead0fa3813bee927b5dd740"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-768.avif",
+      "bytes": 23002,
+      "sha256": "c594bf79202c49ca325c7018326f9cf3e1d85f860fc6a91779b55a7556759ad0"
+    },
+    {
+      "path": "/images/optimized/bassin-arcachon-dune-pilat-768.webp",
+      "bytes": 27190,
+      "sha256": "64600e49b75db0a4420a27565450be8621b49d514376cc53a9d23accd1c86147"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1200.avif",
+      "bytes": 222279,
+      "sha256": "3955856ebd4e72e68f8a246505093da5677efe111132cbce01acda6ec80aaad6"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1200.jpg",
+      "bytes": 226937,
+      "sha256": "75f113c53f21d4081bccf9ea795fc37f299ee9b3f2ac32199b9f22808286a58e"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1200.webp",
+      "bytes": 247192,
+      "sha256": "8df9009ed374ffedeb1dae7265d675edb949a1a551dddd8d1e7ae43fd275ebd1"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1600.avif",
+      "bytes": 427220,
+      "sha256": "d6dae0fae9734689f12c6aee5ab5eab23d92e6fdc7e8f8c803e5589499dfff4a"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1600.webp",
+      "bytes": 448342,
+      "sha256": "1ebc94f96eb7d71ac97615315c406f316c58101c753f55f8e9787087660e2fca"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1920.avif",
+      "bytes": 644187,
+      "sha256": "3e9682c7031d55bf35b0eb341c8540795efb0ece83ebe0e11d1220e6c2dad59e"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-1920.webp",
+      "bytes": 677788,
+      "sha256": "c4a907425d6f68582b1054bc6b463e04665a5b733bb542fd00ed169a4677c901"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-480.avif",
+      "bytes": 27564,
+      "sha256": "8f582a6a2e8d379b1c4b17fceb886e03435d8c203d836b84170ac67c7b4031a6"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-480.webp",
+      "bytes": 33634,
+      "sha256": "aeaf5a2c79bdcd0d67dae34ef8248edd64afe167d426002ed106eeb4db39b8a8"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-768.avif",
+      "bytes": 74038,
+      "sha256": "f524cc466d6516a6d951cfa06adfe1679bd0b4bddf0b0812078414602d1a776c"
+    },
+    {
+      "path": "/images/optimized/belcastel-4-kallerna-wikimedia-768.webp",
+      "bytes": 87796,
+      "sha256": "ef1eb599eaf482c9b974e744e15e581b8e85445aa07f2b54c66ccb6a489a7a49"
+    },
+    {
       "path": "/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.avif",
       "bytes": 156554,
       "sha256": "de705657edff627531f679122a66ea647b0b161982a36a7db89e0b5851206d33"
@@ -969,6 +1189,61 @@
       "sha256": "f1cdc099e6eec431d8984d62a9955d3e7df1cbc2024e9fa6b6304db3591e176a"
     },
     {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1200.avif",
+      "bytes": 286192,
+      "sha256": "b8daf6a00c42449464d174eec0e919bec3b29b04503f041075d9c0135f3335d4"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1200.jpg",
+      "bytes": 263838,
+      "sha256": "47b54614fff72192c4742a5ad064f4842db6b8ec09559a13d6ca7236765c04fd"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1200.webp",
+      "bytes": 285492,
+      "sha256": "6be900292395a8a9d7f83a2ce504f779c3676ef11f83c9dbc12b9e6a61145755"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1600.avif",
+      "bytes": 497409,
+      "sha256": "43798aba3ff8fee2451e6ea4cea0326335d80f6f5fb2e897fc4a380b10ddd191"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1600.webp",
+      "bytes": 489908,
+      "sha256": "bf9b41419014236e65e9e8fa3f4442937b2aeba73ededcb8a89f58b0f56c86a4"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1920.avif",
+      "bytes": 674495,
+      "sha256": "90a68887513bcdd30a7ecd042cb7b8bbe30345f54dcb9565d3fee0d5ebb94c27"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-1920.webp",
+      "bytes": 680004,
+      "sha256": "d870bcd356d289e4ef4e1163cddadd8122908fe01cdd44c4f8cb4c51c93a5a3e"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-480.avif",
+      "bytes": 46307,
+      "sha256": "d2e0c539088ae9a83f9c8672cfa245397439763db6d45094f6849d6f32a78034"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-480.webp",
+      "bytes": 48044,
+      "sha256": "8a82a84b2ee05d2a789dd22e954d0d2b2cf0e5793832ab5f01ef280462958461"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-768.avif",
+      "bytes": 118712,
+      "sha256": "78232c0d9f0579afe8065e7251b9cf8603ec0b0d72f1ee59be8b9c0ab5a17f45"
+    },
+    {
+      "path": "/images/optimized/bergerac-saint-jacques-cyrano-768.webp",
+      "bytes": 119572,
+      "sha256": "dee8450d3c8164133d8b3690755160a31de7a9a7807b9124a2430932a0bb3b22"
+    },
+    {
       "path": "/images/optimized/bergerac-view-late-afternoon-1200.avif",
       "bytes": 48311,
       "sha256": "c4b019dc0c112380e2e54398b429ed284fde64b7e18637bfb8ee9dcde304b145"
@@ -1022,6 +1297,61 @@
       "path": "/images/optimized/bergerac-view-late-afternoon-768.webp",
       "bytes": 25702,
       "sha256": "f7336fa5d98420f466ee07370d541ff3efa3e5da10a15fb0e2b3d838bed9a2a1"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1200.avif",
+      "bytes": 349699,
+      "sha256": "4df70bb59d9d1d898a906ec5f3ae7ff04093af823bc96850663b22fe05b2f06e"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1200.jpg",
+      "bytes": 268078,
+      "sha256": "f8142ddb92cb0c95530debcc63b32d4d3a272bd22628f6d4ae152dff0450099e"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1200.webp",
+      "bytes": 304270,
+      "sha256": "f9e37975f6a5593c68ba4154c9856b75cd5c3c973c59ca40dd3cc5faef9485c7"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1600.avif",
+      "bytes": 605642,
+      "sha256": "c7c1a3b02dbda2f2e44c74978cc29adaf8d45af2d817721591a685aa45e31d6e"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1600.webp",
+      "bytes": 547132,
+      "sha256": "055cd933ff044c84732a6bb6ef51722b674d544d067c268173e34a7b38c58e50"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1920.avif",
+      "bytes": 814340,
+      "sha256": "72290bd47fae8ca65665cf20b0e932d2ca759471407fcf17de13b87b5c115729"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-1920.webp",
+      "bytes": 752890,
+      "sha256": "ae6b768eca008fabae6ae30228d4e30416579d8c5fe1322af0603d154ce73d4d"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-480.avif",
+      "bytes": 61685,
+      "sha256": "6de1fe067f03248d3fc9aa0317505b55a0de56ae69b1836d40848dbaf21d1a42"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-480.webp",
+      "bytes": 51750,
+      "sha256": "2346529574d20071d6cf334bcb65f2667afab31174442585018ffd208fc4ba24"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-768.avif",
+      "bytes": 156263,
+      "sha256": "f3d972fb42d41a59146ed6783fd5d082471c706f4da265b37da6417d674c381a"
+    },
+    {
+      "path": "/images/optimized/bordeaux-jardin-public-768.webp",
+      "bytes": 130324,
+      "sha256": "6d0cf28d3aa75ea376d5478629adb233d1410c2b9c9e8d6cf8eff8fdf36c2a60"
     },
     {
       "path": "/images/optimized/bordeaux-place-de-la-bourse-1200.avif",
@@ -1134,6 +1464,41 @@
       "sha256": "109fc719ac103170aedeb3fb3643507604fe74fde29c235fbb73fdde771d0aca"
     },
     {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-1200.avif",
+      "bytes": 83405,
+      "sha256": "6dbe259058a11105466f5666c78d8dd05701856253b14bf6047f73b58fd178c4"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-1200.jpg",
+      "bytes": 130688,
+      "sha256": "75f2dd06d7a4e38dce4f27ec9597535410a0f97a6cfe63a1f77d11d34ac61af7"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-1200.webp",
+      "bytes": 102906,
+      "sha256": "4d20a41ca379a4813d2180a16e514589cc84f94afc9392fabbdd14f90ba50fa9"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-480.avif",
+      "bytes": 28019,
+      "sha256": "82296652f54e41d0ca31bbe619402c0b5aecd76827f670cd524ba2204aa74108"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-480.webp",
+      "bytes": 29842,
+      "sha256": "08ced8213b6bb22a325803e332e4c1e382a60455a9540593f6e669d770339de5"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-768.avif",
+      "bytes": 51233,
+      "sha256": "8368d10af90f4e23ecbbc6c623186daed301db2042ea7ff7671d449308361aad"
+    },
+    {
+      "path": "/images/optimized/home-pourquoi-choisir-etoilys-768.webp",
+      "bytes": 57068,
+      "sha256": "ac001b0c9851cc93ad7f7bdec473d2064ed8084683162f8406bf1775b4dba2e5"
+    },
+    {
       "path": "/images/optimized/home-procedure-1200.avif",
       "bytes": 82520,
       "sha256": "6b677603225da3ab63525e5fdb0de92acbfa2d4733dfda1b9ca65556140930de"
@@ -1190,58 +1555,113 @@
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1200.avif",
-      "bytes": 317122,
-      "sha256": "bb332b28bcbec6c4922bbc4a856b670e54e7b4f7c7c93536148a86ae841feb84"
+      "bytes": 227057,
+      "sha256": "c89f9a82e42b50abe4757741a0313cc241073e48821a6e414166e4457ef8a987"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1200.jpg",
-      "bytes": 268859,
-      "sha256": "f833ab1f8c50a0fe1f42c4b344df10be257d40125c53a28105e1cc8ed900e89e"
+      "bytes": 254461,
+      "sha256": "839d7eb3c5f1f49f41d8157f724e283f425b429f25107bf08895535196cb5cde"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1200.webp",
-      "bytes": 302352,
-      "sha256": "e0d442eb85cbfa4d9bf11e6c09d22d5949f27ff381561df9832b8d2cd8142be3"
+      "bytes": 267188,
+      "sha256": "809d8959df0f573eceabfc38298ed71d3607f5b35649835222418cefc58f7258"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1600.avif",
-      "bytes": 498870,
-      "sha256": "95bf3f01fd6aef2b2474dd1d2f5253a9fd8ebf3b1f11ac8ef445c704d9404b60"
+      "bytes": 379258,
+      "sha256": "6c4786e49e1223ae647675689ec35a7fcf124c792f681fa53872fde3a2b13023"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1600.webp",
-      "bytes": 487642,
-      "sha256": "04998e672b154f87bbe3cb8c4d3dbebeb30745db478f452714fa9bb7f0d8fa09"
+      "bytes": 429444,
+      "sha256": "6b2337e25ee531a7f16deb9b9ae9c1192c4400eb2be05503f52228772139551a"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1920.avif",
-      "bytes": 639815,
-      "sha256": "1d5b773cb5ae5b00996718a2676e6efa9f15aa828c5cc59f08afaec85401eb6f"
+      "bytes": 479912,
+      "sha256": "e59690decb01fbeaaab35c2b5d502cdee730baf4274f8d92c8ac6bdbaa185ef3"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-1920.webp",
-      "bytes": 653594,
-      "sha256": "bdefa9cf5e7bd3a8c38cab62a11269682f5a9431897eb1a364925a1c4a1d8ee3"
+      "bytes": 565546,
+      "sha256": "0f724f22cefd476a89ad27728851dcdbc76a437221714e55fac88984daba09c2"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-480.avif",
-      "bytes": 56627,
-      "sha256": "44f3cb9bc73317ace4b3d670450f215cc14663828868e0789394e26354453143"
+      "bytes": 34792,
+      "sha256": "80f1946893d86a094433ed5b5820b8ce1a4656e463b7ae7fdbb87e1a915cbb53"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-480.webp",
-      "bytes": 53746,
-      "sha256": "ab3ee6e1052fa15319037f018eb88c046f5dbb65f4e328a1740f4a2b80dfcfad"
+      "bytes": 42274,
+      "sha256": "6b9be71d9bdb4202ea4b9327af239f1e49d6392307661cd279716f53ec9181c8"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-768.avif",
-      "bytes": 143095,
-      "sha256": "e85424214cf5fe5b96172dfd970c2bdc254d5ae56583fc9ca145e7cf519208ad"
+      "bytes": 89015,
+      "sha256": "e230cdc8822c2893f463495e1f7c39865dd636a18bf66c22aedbfadd7c9a450e"
     },
     {
       "path": "/images/optimized/jametlene-reskp-0MF_yWx470o-unsplash-768.webp",
-      "bytes": 133272,
-      "sha256": "1ac5d1bc92401bc515b0a3d7a7b0f09088b315fa947797f2cc99dfae1504a6fb"
+      "bytes": 105544,
+      "sha256": "af7c1d7712ec4706a63f8a5d1b1c48cfb5e26f2c627d619fd9ca282b9bd8f2ba"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.avif",
+      "bytes": 367814,
+      "sha256": "f3840176f751f0e578a5430996e62c365383ed48b761fb6e6b50a49a5e7d651b"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.jpg",
+      "bytes": 351459,
+      "sha256": "c674c3939a25e6a9fa88add13aa9cf12a4b7a5d94097192a6e2e7ad773084648"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1200.webp",
+      "bytes": 387062,
+      "sha256": "60c9d40118bca7b5f74d00217e412edc5b5b98c7d6d900acb83f58315cb7fea2"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1600.avif",
+      "bytes": 605715,
+      "sha256": "7a9748f6da69177b66926ff0913284d4a5f3a2ad4eea34924fa26167992d356c"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1600.webp",
+      "bytes": 633142,
+      "sha256": "4b4bd9ae2e1f0756900cbb21381b06126bff15fc9625c1cb82d04c315cbf6f8e"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1920.avif",
+      "bytes": 819983,
+      "sha256": "ef9fff81a59615aeef82692f4801b2b9865fc3270cb12031f1f56c0c41924afd"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-1920.webp",
+      "bytes": 872576,
+      "sha256": "f87188fe4dd702ffbdcdee66a5d47946b6e70bf47b03c09d678e8c673427f233"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-480.avif",
+      "bytes": 62338,
+      "sha256": "cd6dc4b91a9166245395650087ef7c737d67bd9fe2d93c6a49a31667decece1d"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-480.webp",
+      "bytes": 65164,
+      "sha256": "7a3df773055b0e84518138622f82ae0447025d3be8350c598733b97a2081d4e4"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-768.avif",
+      "bytes": 159493,
+      "sha256": "4d3b068640f1292734fd29214cd7c31adc2263a959ab79c27e6f3607dc80af48"
+    },
+    {
+      "path": "/images/optimized/joran-quinten-wYzuwwLKmGM-unsplash-768.webp",
+      "bytes": 166402,
+      "sha256": "56b7673fd90df22b646f466687b46cbb36b815ae8709a36f88d0a24002ae87cf"
     },
     {
       "path": "/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1200.avif",
@@ -1297,6 +1717,116 @@
       "path": "/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-768.webp",
       "bytes": 281264,
       "sha256": "4aca1808adbb7809b363472d99066a749e9dd9f7a328f2ea088c7732bec5aa30"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1200.avif",
+      "bytes": 162378,
+      "sha256": "6833d0e483dfb462139ca2acacaa52e9d9af1f9508b44c7f82fc00be8df40ab3"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1200.jpg",
+      "bytes": 157190,
+      "sha256": "6740b1b63137ab53631153bb9379116e202de6e9ebd58e2c872b4946f528c57f"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1200.webp",
+      "bytes": 170324,
+      "sha256": "4bd48547de96e9b9badbdd19d97164fb5dbc5ae90548123cf5553718c1a4b85d"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1600.avif",
+      "bytes": 267656,
+      "sha256": "cbf4a04ee3baf004cc91a9572766d693965248a1027da05c50a033b355d8855d"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1600.webp",
+      "bytes": 292532,
+      "sha256": "b1e936239355f9c4d4f8f286af69891358b99a0dcc4856a1b451fc3ec5a8933f"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1920.avif",
+      "bytes": 354650,
+      "sha256": "3cfce039b8eb1c2b6fab301bd0add3087f2ce10f2a973f8cade8854e0a6e202d"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-1920.webp",
+      "bytes": 400884,
+      "sha256": "04bb69c044e120f914e60532dc4905513d3b400a230b094604474903e9df5c4f"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-480.avif",
+      "bytes": 23279,
+      "sha256": "f68bb1f32be10f159ba5e224ed4a2ab4067f96e225e3a25911632a11cef7916e"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-480.webp",
+      "bytes": 24924,
+      "sha256": "2b86aa17e26c8683a1b6e129463eed83f82e51e72c32c4f81f47e17a49af4821"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-768.avif",
+      "bytes": 64305,
+      "sha256": "e07f3242e5dcaf336473f97dc33ab4211827c938476208dc2cb2820c94ca3f36"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-carcans-plage-768.webp",
+      "bytes": 65894,
+      "sha256": "090eb0c761c2b4ddde6c7c45daf502d1b49a0e8e726ed5d378ecede7fa18ed76"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1200.avif",
+      "bytes": 72054,
+      "sha256": "d20c04d2be56d75365d83f724d21d68450be2833d1eb90af42299d44905409d7"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1200.jpg",
+      "bytes": 128120,
+      "sha256": "b065ee4593e1816ed4696976191fade56c1ada2219b974fdfd496593e9578259"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1200.webp",
+      "bytes": 109710,
+      "sha256": "636c9b0d44358de4967d77864d82f9d2fa8b20f0ba07a754365fe922b6a7799e"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1600.avif",
+      "bytes": 150341,
+      "sha256": "a47c5291bf23266e77729dcbfde0f8ad2e95f616b817fc175a0f1a1e5520a3de"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1600.webp",
+      "bytes": 199436,
+      "sha256": "0457e8e8b685a4883ccdde2cec0ac3bb5dd1eb24c84d00913a37e876f60f20b7"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1920.avif",
+      "bytes": 209049,
+      "sha256": "ccb3424d377dd76d4c83d0854ba0aa2281c6230cd5dca7fe936184b965d06b8b"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-1920.webp",
+      "bytes": 273304,
+      "sha256": "136804dba7aa973661ffff28e2c749010c07673790874d50239f394bfc663041"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-480.avif",
+      "bytes": 9823,
+      "sha256": "0b7792aeb92561ba02d4d302027786343ad794e4393c80736e9890810905d3e1"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-480.webp",
+      "bytes": 17526,
+      "sha256": "02b2a98960033e3cb5b85f4be4d62184a63403326917ced5fec6def480adf675"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-768.avif",
+      "bytes": 24268,
+      "sha256": "2c21922b6e855b4b717b8e8346201a457a7ca2b2948ff9f1fca3d14fc9138148"
+    },
+    {
+      "path": "/images/optimized/medoc-atlantique-etang-lacanau-768.webp",
+      "bytes": 41268,
+      "sha256": "f2065c39ccf6b8c0a12daf315f0195cc423882f291d284515838ba59bdbd92a5"
     },
     {
       "path": "/images/optimized/pexels-d-goth-37724280-1200.avif",
@@ -1554,6 +2084,61 @@
       "sha256": "0c34a204ea936f0225538dcd872b2abc10afb3489d6351e700b249540609dfd3"
     },
     {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1200.avif",
+      "bytes": 202989,
+      "sha256": "d19d5031665194e91700a13db43aca21565444dde10e2c8c30a263d19aa68185"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1200.jpg",
+      "bytes": 219072,
+      "sha256": "013ae41783524970623c4771fa845e4f66f7027d53a080d61c4246bf157b22d0"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1200.webp",
+      "bytes": 235530,
+      "sha256": "b7ccb61979fe7ab6e31dc7b82b73a4ff1b6a9a2e1e1cabe13a8d5da0b36191f8"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1600.avif",
+      "bytes": 381432,
+      "sha256": "74b44955b2819f1cb50e4d6d7175c973c320b9082de38f8aa08ee397ea620322"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1600.webp",
+      "bytes": 407936,
+      "sha256": "383ce2ebabebd6bd270cf8b5f58fcfb59a15b3dcc4ea309e4e4b129fb81b5ac7"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1920.avif",
+      "bytes": 543907,
+      "sha256": "85db986f376b0ebf4e1de3b149c2014f7f4ad860c6e8d58ff5ee1cbd89521b78"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-1920.webp",
+      "bytes": 587216,
+      "sha256": "baa10e1b5956b570d3890fab68f2e56d3fa406049f9613c477abe99c620c330e"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-480.avif",
+      "bytes": 26304,
+      "sha256": "f84ea2e90fe5ffb287304563fefe12184b7e99d1c597309efbbda7cb98e1f3fe"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-480.webp",
+      "bytes": 33824,
+      "sha256": "1c623be9c2aa19d77de0e4c3b761ba18361380e1793af40ecdc150d036902b5e"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-768.avif",
+      "bytes": 68464,
+      "sha256": "a62e5b91f17ccce15b67becd1a7224870af4b1f509ad8a1c599e8ad21ee911e6"
+    },
+    {
+      "path": "/images/optimized/pexels-tyvalloire-35860040-768.webp",
+      "bytes": 85926,
+      "sha256": "cdd55f9c76b11c68042ae75ec4b0ef94c0b39fa3f853ab6bc814741fad9c8830"
+    },
+    {
       "path": "/images/optimized/pourquoi-referencement-1200.avif",
       "bytes": 59698,
       "sha256": "32c52471db3fffcfb42efd40bfa14a11ff11584675685323c32e19af7334007d"
@@ -1607,6 +2192,61 @@
       "path": "/images/optimized/pourquoi-referencement-768.webp",
       "bytes": 38290,
       "sha256": "7acb4d4618a0379a6321cd5b137c11f40848043da51161ecfa7063e538f84233"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1200.avif",
+      "bytes": 260539,
+      "sha256": "bd4af598bd4c099eddcc91764ec6f3634863b52b0508af309c897b36a9a9f703"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1200.jpg",
+      "bytes": 250510,
+      "sha256": "1bf5eb829ac3e5636cb994da49332bc0a4b59a18dbc9edf4791ee6023a8bc7b3"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1200.webp",
+      "bytes": 282314,
+      "sha256": "86fbd9a2432ad6866f75e3f467d7969287e34f25f525bbd8235d7d7863f7a62d"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1600.avif",
+      "bytes": 394051,
+      "sha256": "f4af32e0f35cdf25270a5eb3d3b73557039bbc860daf0172f09a3f881cb5c491"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1600.webp",
+      "bytes": 436042,
+      "sha256": "245a064c22105897f05e0ab371b5daf0c865393eaa0a8c84d9a804fb9669fe8b"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1920.avif",
+      "bytes": 491308,
+      "sha256": "e5714cbcdea27c02e83a58695ee500736b9ce84b91b946a133d2a6f97c4276d6"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-1920.webp",
+      "bytes": 559812,
+      "sha256": "9bd232962e1530c314196539abd911e2be072b2563bf91e3ad02c62a2d67f9f0"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-480.avif",
+      "bytes": 54738,
+      "sha256": "6491d0b1d5eac3c69608a6ffa4aa5e1814eb428381406bd5e28870b96f38a710"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-480.webp",
+      "bytes": 56234,
+      "sha256": "c8f23ace2415e4ac54db273335d8ad9db56476b7006dd8539bf07c8a0756b64d"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-768.avif",
+      "bytes": 124044,
+      "sha256": "076eb35f7daa201428b34e33dc4cf284e9cf3d09750066251d818fbc6f2a169c"
+    },
+    {
+      "path": "/images/optimized/rocamadour-2025-114909-768.webp",
+      "bytes": 128092,
+      "sha256": "5150b92bd670ea045925b16c6def864c22569b60c92b2d02b40b9015f7ddcfdf"
     },
     {
       "path": "/images/optimized/simulateur-classement-og-1200.avif",

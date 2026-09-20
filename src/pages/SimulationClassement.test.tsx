@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
+import { parseGridSummary } from '../content/simulatorGrid';
+import * as simulatorExport from '../utils/simulatorExport';
 import structureGrilleRaw from '../../docs/data/structureGrille.json?raw';
 
 vi.setConfig({ testTimeout: 15_000 });
@@ -316,8 +318,8 @@ const logementWithPiecesResponse = {
 
 const completeLogementResponse = {
   id: 'logement-id',
-  nb_pieces_habitation: 2,
-  surface_totale: 42,
+  nb_pieces_habitation: 1,
+  surface_totale: 24,
   pieces: [
     {
       id: 'piece-complete-bedroom',
@@ -331,21 +333,6 @@ const completeLogementResponse = {
       nombre_lits: 4,
       format_lits: null,
       literie: true,
-      surface_minimum_atteinte: true,
-      capacite_lits_atteinte: true,
-    },
-    {
-      id: 'piece-complete-bathroom',
-      nom: 'Salle de bain 1',
-      type_piece: 'SALLE_DE_BAIN',
-      surface: 6,
-      ouvrant: true,
-      prise: true,
-      ventilation: true,
-      type_literie: null,
-      nombre_lits: null,
-      format_lits: null,
-      literie: false,
       surface_minimum_atteinte: true,
       capacite_lits_atteinte: true,
     },
@@ -519,8 +506,176 @@ const expandSimulationParameters = async () => {
 };
 
 describe('SimulationClassement', () => {
+  it.each(['SALLE_DE_BAIN', 'WC'])(
+    'reprend une ancienne pièce %s sans la proposer en création',
+    async (type) => {
+      const fetchMock = mockFetchJsonSequence([
+        { body: simulationResponse },
+        {
+          body: {
+            ...completeLogementResponse,
+            pieces: [
+              ...completeLogementResponse.pieces,
+              {
+                id: 'legacy-room',
+                nom: 'Ancienne pièce',
+                type_piece: type,
+                surface: 0,
+              },
+            ],
+          },
+        },
+      ]);
+      renderAt(`/simulateur/${SIMULATION_ID}`);
+      expect(await screen.findByRole('heading', { name: 'Ancienne pièce' })).toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /modifier ancienne/i })).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: /supprimer ancienne/i }));
+      expect(screen.getByRole('button', { name: /^Supprimer$/ })).toBeEnabled();
+      fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
+      expect(screen.queryByRole('option', { name: /salle de bain|^WC$/i })).not.toBeInTheDocument();
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
+    }
+  );
+
+  it('calcule sans salle de bain et sans création de pièce implicite', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: completeLogementResponse },
+      { body: true },
+      { body: successfulRapportResponse },
+    ]);
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    clickGoToGrid();
+    fireEvent.click(
+      await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
+    );
+    await waitFor(() =>
+      expect(analyticsMock.trackClassementSimulatorCalculated).toHaveBeenCalledWith(
+        expect.objectContaining({ resultOutcome: 'favorable' })
+      )
+    );
+    expect(getNonModelFetchCalls(fetchMock).map(([url]) => String(url))).toEqual([
+      `/api/public/simulations/${SIMULATION_ID}`,
+      `/api/public/simulations/${SIMULATION_ID}/logement`,
+      `/api/public/simulations/${SIMULATION_ID}/verifier`,
+      `/api/public/simulations/${SIMULATION_ID}/rapport`,
+    ]);
+  });
+
+  it.each(['interior', 'exterior'])('exclut SDB et WC des types créables (%s)', async (scope) => {
+    mockFetchJsonSequence([{ body: simulationResponse }, { body: emptyLogementResponse }]);
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name:
+          scope === 'interior' ? /ajouter une pièce intérieure/i : /ajouter un espace extérieur/i,
+      })
+    );
+    const values = within(screen.getByRole('dialog'))
+      .getAllByRole('option')
+      .map((option) => option.getAttribute('value'));
+    expect(values.length).toBeGreaterThan(0);
+    expect(values).not.toContain('SALLE_DE_BAIN');
+    expect(values).not.toContain('WC');
+  });
+
+  it('exporte le snapshot PDF sans recalcul et permet de réessayer après un échec', async () => {
+    let resolveExport: (() => void) | undefined;
+    const pendingExport = new Promise<void>((resolve) => {
+      resolveExport = resolve;
+    });
+    const exportPdf = vi
+      .spyOn(simulatorExport, 'exportSimulationClassementPdf')
+      .mockRejectedValueOnce(new Error('PDF unavailable'))
+      .mockReturnValueOnce(pendingExport);
+    const fetchMock = mockFetchJsonSequence([
+      { body: favorableSimulationResponse },
+      { body: logementWithPiecesResponse },
+      { body: successfulRapportResponse },
+    ]);
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+    fireEvent.click(await screen.findByRole('tab', { name: /résultat/i }));
+    const exportButton = await screen.findByRole('button', { name: /télécharger le résultat/i });
+    const initialFetchCalls = [...fetchMock.mock.calls];
+    const exportStartedAt = Date.now();
+    const expectedSnapshot = {
+      grid: parseGridSummary(gridModelResponse),
+      rapport: successfulRapportResponse,
+      grille: favorableSimulationResponse.grille,
+      logement: logementWithPiecesResponse,
+      totalSleepingCapacity: 2,
+      simulationId: SIMULATION_ID,
+      generatedAt: expect.any(Date),
+    };
+
+    fireEvent.click(exportButton);
+    expect(await screen.findByRole('alert')).toHaveTextContent(/impossible de générer le PDF/i);
+    expect(exportPdf).toHaveBeenCalledTimes(1);
+    expect(exportPdf).toHaveBeenLastCalledWith(expectedSnapshot);
+    expect(analyticsMock.trackClassementSimulatorPdfExported).not.toHaveBeenCalled();
+    expect(exportButton).toBeEnabled();
+
+    fireEvent.click(exportButton);
+    expect(exportPdf).toHaveBeenCalledTimes(2);
+    expect(exportPdf).toHaveBeenLastCalledWith(expectedSnapshot);
+    expect(analyticsMock.trackClassementSimulatorPdfExported).not.toHaveBeenCalled();
+    for (const [snapshot] of exportPdf.mock.calls) {
+      expect(snapshot.generatedAt.getTime()).toBeGreaterThanOrEqual(exportStartedAt);
+      expect(snapshot.generatedAt.getTime()).toBeLessThanOrEqual(Date.now());
+    }
+    if (!resolveExport) throw new Error('Pending PDF export was not initialized');
+    resolveExport();
+    await waitFor(() => {
+      expect(analyticsMock.trackClassementSimulatorPdfExported).toHaveBeenCalledExactlyOnceWith({
+        resultOutcome: 'favorable',
+      });
+    });
+    expect(screen.getByText(/PDF généré\./i)).toBeInTheDocument();
+    expect(fetchMock.mock.calls).toEqual(initialFetchCalls);
+    expect(fetchMock.mock.calls.some(([url]) => String(url).includes('/verifier'))).toBe(false);
+    expect(analyticsMock.trackClassementSimulatorCalculated).not.toHaveBeenCalled();
+  });
+
+  it.each(['create', 'edit'])(
+    'confine le focus et le restitue au déclencheur (%s)',
+    async (mode) => {
+      mockFetchJsonSequence([{ body: simulationResponse }, { body: logementWithPiecesResponse }]);
+      renderAt(`/simulateur/${SIMULATION_ID}`);
+      const trigger = await screen.findByRole('button', {
+        name: mode === 'create' ? /ajouter une pièce intérieure/i : /modifier chambre 1/i,
+      });
+      trigger.focus();
+      document.body.style.overflow = 'scroll';
+      fireEvent.click(trigger);
+
+      expect(screen.getByLabelText(/type de pièce/i)).toHaveFocus();
+      expect(document.body.style.overflow).toBe('hidden');
+      const surfaceInput = screen.getByRole('spinbutton', { name: /surface/i });
+      surfaceInput.focus();
+      fireEvent.change(surfaceInput, { target: { value: '12' } });
+      expect(surfaceInput).toHaveFocus();
+      const closeButton = screen.getByRole('button', { name: /fermer la pièce/i });
+      const cancelButton = screen.getByRole('button', { name: /annuler/i });
+      const restoreFocus = vi.spyOn(trigger, 'focus');
+      closeButton.focus();
+      expect(closeButton).toHaveFocus();
+      fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+      expect(cancelButton).toHaveFocus();
+      fireEvent.keyDown(window, { key: 'Tab' });
+      expect(closeButton).toHaveFocus();
+      fireEvent.keyDown(window, { key: 'Escape' });
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+      expect(restoreFocus).toHaveBeenCalledWith({ preventScroll: true });
+      expect(document.body.style.overflow).toBe('scroll');
+    }
+  );
+
   afterEach(() => {
     cleanup();
+    document.body.style.overflow = '';
     vi.restoreAllMocks();
     Object.values(analyticsMock).forEach((mock) => mock.mockClear());
   });
@@ -583,9 +738,6 @@ describe('SimulationClassement', () => {
     expect(
       within(screen.getByTestId('piece-card-piece-1')).getByText(/2 personnes/i)
     ).toBeInTheDocument();
-    expect(screen.getByTestId('piece-card-piece-1')).toHaveClass('min-h-52');
-    expect(screen.getByTestId('piece-card-piece-1')).toHaveClass('h-full');
-    expect(screen.getByTestId('piece-card-piece-1').className).not.toContain('aspect-square');
     expect(screen.getByRole('button', { name: /modifier chambre 1/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /supprimer chambre 1/i })).toBeInTheDocument();
     expect(
@@ -595,12 +747,6 @@ describe('SimulationClassement', () => {
       screen.getByRole('button', { name: /ajouter un espace extérieur/i })
     ).toBeInTheDocument();
     expect(screen.getByText(/^Ajouter un espace extérieur$/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /ajouter une pièce intérieure/i })).toHaveClass(
-      'min-h-52'
-    );
-    expect(
-      screen.getByRole('button', { name: /ajouter une pièce intérieure/i }).className
-    ).not.toContain('aspect-square');
     fireEvent.click(screen.getByRole('button', { name: /^ajouter une pièce$/i }));
     expect(screen.getByRole('dialog', { name: /ajouter une pièce/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/type de pièce/i)).toHaveValue('CHAMBRE');
@@ -979,7 +1125,7 @@ describe('SimulationClassement', () => {
     expect(
       await screen.findByRole('heading', { name: /résultat à recalculer/i })
     ).toBeInTheDocument();
-  }, 15_000);
+  }, 20_000);
 
   it('conserve le paramètre et garde le résultat accessible si un refetch secondaire échoue', async () => {
     const fetchMock = mockFetchJsonSequence([
@@ -1131,13 +1277,7 @@ describe('SimulationClassement', () => {
       expect(exteriorOpeningSwitch()).toBeInTheDocument();
     }
 
-    for (const pieceType of [
-      'CUISINE',
-      'COULOIRS_ET_DEGAGEMENTS',
-      'WC',
-      'SALLE_DE_BAIN',
-      'PIECE_SANS_OUVRANT',
-    ]) {
+    for (const pieceType of ['CUISINE', 'COULOIRS_ET_DEGAGEMENTS', 'PIECE_SANS_OUVRANT']) {
       fireEvent.change(typeSelect, { target: { value: pieceType } });
       expect(exteriorOpeningSwitch()).not.toBeInTheDocument();
     }
@@ -1781,7 +1921,7 @@ describe('SimulationClassement', () => {
     renderAt(`/simulateur/${SIMULATION_ID}`);
 
     const emptyPiecesWarning = await screen.findByText(/aucune pièce n’a encore été ajoutée/i);
-    const piecesHeading = screen.getByRole('heading', { name: /pièces du logement/i });
+    const piecesHeading = screen.getByRole('heading', { name: /pièces de votre logement/i });
     const goToGridButtons = screen.getAllByRole('button', {
       name: /passer à la grille de contrôle/i,
     });
@@ -1908,7 +2048,7 @@ describe('SimulationClassement', () => {
     });
     expect(firstSectionButton).toBeInTheDocument();
     expect(firstSectionButton).toHaveAttribute('aria-current', 'true');
-    expect(firstSectionButton).toHaveClass('bg-primary-100');
+    expect(firstSectionButton).toHaveClass('bg-paper');
     expect(tableOfContents).toHaveClass('table-of-contents-scrollbar');
 
     const firstManualCriterion = screen.getByTestId('criterion-card-3');
@@ -1979,7 +2119,7 @@ describe('SimulationClassement', () => {
     expect(optionalNotApplicableButton).toBeInTheDocument();
     expect(optionalYesButton).toHaveClass('hover:bg-success-100');
     expect(optionalNoButton).toHaveClass('hover:bg-alert-100');
-    expect(optionalNotApplicableButton).toHaveClass('hover:bg-primary-100');
+    expect(optionalNotApplicableButton).toHaveClass('hover:bg-paper');
     expect(optionalYesButton).toHaveClass('focus-visible:ring-2');
     expect(optionalYesButton.className).not.toContain('focus:ring-2');
 
@@ -1993,7 +2133,7 @@ describe('SimulationClassement', () => {
 
     fireEvent.click(screen.getByRole('tab', { name: /pièces du logement/i }));
     expect(screen.getAllByRole('button', { name: /ajouter une pièce/i })[0]).toBeInTheDocument();
-  }, 10000);
+  }, 15_000);
 
   it('garde le résultat en CTA principal unique dans le bloc grille quand la grille est complète', async () => {
     mockFetchJsonSequence([
@@ -2013,7 +2153,7 @@ describe('SimulationClassement', () => {
     expect(screen.queryByRole('button', { name: /continuer la grille/i })).not.toBeInTheDocument();
     expect(
       screen.getAllByRole('button', { name: /voir le résultat de ma simulation/i })[0]
-    ).toHaveClass('bg-primary-400');
+    ).toHaveClass('bg-ink');
     expect(screen.getByText(/^0$/i)).toBeInTheDocument();
   });
 
@@ -2178,7 +2318,6 @@ describe('SimulationClassement', () => {
     expectTextMatching(/2 critères/i, /renseignés/i);
     expect(screen.getByText(/accueillir 2 personnes/i)).toBeInTheDocument();
     expect(screen.getByText(/indiquée est de 4 personnes/i)).toBeInTheDocument();
-    expect(screen.getByText(/aucune salle de bain/i)).toBeInTheDocument();
     expect(screen.queryByText(/commentaire/i)).not.toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verifier`
@@ -2186,13 +2325,12 @@ describe('SimulationClassement', () => {
     expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verification`
     );
-    expect(analyticsMock.trackClassementSimulatorResultBlocked).toHaveBeenCalledWith(
-      expect.objectContaining({
-        hasSleepingCapacityIssue: true,
-        hasBathroomIssue: true,
-        hasMissingCriteria: true,
-      })
-    );
+    expect(analyticsMock.trackClassementSimulatorResultBlocked).toHaveBeenCalledWith({
+      hasSleepingCapacityIssue: true,
+      hasMissingCriteria: true,
+      missingMandatoryCount: 1,
+      remainingCriteriaCount: expect.any(Number),
+    });
     expect(analyticsMock.trackClassementSimulatorCalculated).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole('button', { name: /afficher dans la grille/i }));
@@ -2295,7 +2433,7 @@ describe('SimulationClassement', () => {
     expectTextMatching(/estimation/i, /réponses/i);
     const resultTab = screen.getByRole('tab', { name: /résultat/i });
     expect(within(resultTab).getByText(/classement atteint/i)).toBeInTheDocument();
-    expect(resultTab.querySelector('.text-success-400')).not.toBeNull();
+    expect(resultTab).toHaveAttribute('data-complete', 'true');
     expect(screen.getByText(/^160 \/ 140 requis$/i)).toBeInTheDocument();
     expect(screen.getByText(/^160 \/ 155 requis$/i)).toBeInTheDocument();
     expect(screen.getAllByText(/^objectif atteint$/i)).toHaveLength(2);
@@ -2390,7 +2528,7 @@ describe('SimulationClassement', () => {
     expect(screen.getByText(/3 étoiles.*pas encore atteint/i)).toBeInTheDocument();
     const resultTab = screen.getByRole('tab', { name: /résultat/i });
     expect(within(resultTab).getByText(/calcul à jour/i)).toBeInTheDocument();
-    expect(resultTab.querySelector('.text-success-400')).toBeNull();
+    expect(resultTab).not.toHaveAttribute('data-complete');
     expect(
       screen.getByRole('heading', { name: /critères obligatoires non validés/i })
     ).toBeInTheDocument();

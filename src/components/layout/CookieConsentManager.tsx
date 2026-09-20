@@ -266,8 +266,10 @@ export default function CookieConsentManager() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPreferencesOpen]);
 
-  const actionButtonClasses =
-    'inline-flex min-h-11 w-full items-center justify-center rounded-lg border border-primary-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-800 shadow-sm transition-all duration-200 hover:border-primary-300 hover:bg-primary-100/40 hover:text-primary-400 hover:shadow-card focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 sm:min-w-32 motion-reduce:transition-none';
+  const secondaryActionButtonClasses =
+    'ui-focus inline-flex min-h-11 w-full items-center justify-center rounded-editorial border border-ink/20 bg-transparent px-5 py-2.5 text-sm font-medium text-ink transition-colors duration-200 hover:bg-surface-hover hover:text-ink sm:min-w-32 motion-reduce:transition-none';
+  const primaryActionButtonClasses =
+    'ui-focus inline-flex min-h-11 w-full items-center justify-center rounded-editorial border border-ink bg-ink px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-ink-hover hover:text-white sm:min-w-32 motion-reduce:transition-none';
 
   return (
     <>
@@ -278,27 +280,26 @@ export default function CookieConsentManager() {
           aria-label={content.bannerAriaLabel}
           className="fixed inset-x-0 bottom-0 z-[60] px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-6 sm:pb-6"
         >
-          <div className="mx-auto max-w-4xl rounded-card border border-primary-200/60 bg-white p-4 shadow-card transition-all duration-300 motion-reduce:transition-none sm:p-5 lg:shadow-card-hover">
+          <div className="mx-auto max-w-4xl rounded-editorial border border-ink/15 bg-surface p-4 shadow-[0_10px_30px_rgb(var(--color-ink)/0.08)] transition-all duration-300 motion-reduce:transition-none sm:p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
               <div className="max-w-2xl">
-                <p className="mb-3 text-base font-playfair font-semibold text-gray-900">
+                <p className="mb-3 text-base font-playfair font-semibold text-ink">
                   {content.bannerTitle}
                 </p>
-                <p className="max-w-2xl text-sm leading-relaxed text-textLight">
-                  {content.bannerText}
-                </p>
-                <Link
-                  to={privacyPath}
-                  className="mt-4 inline-flex text-sm font-medium text-primary-400 hover:text-primary-500"
-                >
+                <p className="max-w-2xl text-sm leading-relaxed text-muted">{content.bannerText}</p>
+                <Link to={privacyPath} className="editorial-inline-link mt-4 inline-flex text-sm">
                   {content.privacyLinkLabel}
                 </Link>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:shrink-0">
-                <button type="button" className={actionButtonClasses} onClick={handleReject}>
+                <button
+                  type="button"
+                  className={secondaryActionButtonClasses}
+                  onClick={handleReject}
+                >
                   {content.rejectLabel}
                 </button>
-                <button type="button" className={actionButtonClasses} onClick={handleAccept}>
+                <button type="button" className={primaryActionButtonClasses} onClick={handleAccept}>
                   {content.acceptLabel}
                 </button>
               </div>
@@ -309,7 +310,7 @@ export default function CookieConsentManager() {
 
       {isPreferencesOpen && (
         <div
-          className="fixed inset-0 z-[70] flex items-end justify-center bg-gray-900/35 px-4 py-6 sm:items-center"
+          className="fixed inset-0 z-[70] flex items-end justify-center bg-ink/35 px-4 py-6 sm:items-center"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) setIsPreferencesOpen(false);
           }}
@@ -319,21 +320,21 @@ export default function CookieConsentManager() {
             aria-modal="true"
             aria-labelledby="cookie-preferences-title"
             aria-describedby="cookie-preferences-description"
-            className="w-full max-w-lg rounded-card border border-gray-200 bg-white p-5 shadow-card sm:p-6"
+            className="w-full max-w-lg rounded-editorial border border-ink/15 bg-surface p-5 shadow-[0_20px_55px_rgb(var(--color-ink)/0.14)] sm:p-6"
           >
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
-                <h2 id="cookie-preferences-title" className="text-xl text-gray-900">
+                <h2 id="cookie-preferences-title" className="text-xl text-ink">
                   {content.preferencesTitle}
                 </h2>
-                <p id="cookie-preferences-description" className="mt-2 text-sm text-textLight">
+                <p id="cookie-preferences-description" className="mt-2 text-sm text-muted">
                   {content.preferencesDescription}
                 </p>
               </div>
               <button
                 ref={closeButtonRef}
                 type="button"
-                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-gray-200 text-gray-600 transition-colors duration-200 hover:border-primary-300 hover:text-primary-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2 motion-reduce:transition-none"
+                className="ui-focus inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-editorial border border-ink/20 text-ink transition-colors duration-200 hover:bg-surface-hover motion-reduce:transition-none"
                 aria-label={content.closePreferencesLabel}
                 onClick={() => setIsPreferencesOpen(false)}
               >
@@ -341,43 +342,43 @@ export default function CookieConsentManager() {
               </button>
             </div>
 
-            <div className="space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm">
+            <div className="space-y-4 rounded-editorial border border-ink/15 bg-surface-neutral p-4 text-sm">
               <div>
-                <p className="font-medium text-gray-900">{content.detailedPurposeLabel}</p>
-                <p className="mt-1 text-textLight">{content.detailedPurposeValue}</p>
-                <p className="mt-2 text-textLight">
+                <p className="font-medium text-ink">{content.detailedPurposeLabel}</p>
+                <p className="mt-1 text-muted">{content.detailedPurposeValue}</p>
+                <p className="mt-2 text-muted">
                   {content.currentStatusLabel} :{' '}
                   {getStatusLabel(consentStatus, content.statusLabels)}
                 </p>
-                <p className="mt-1 text-textLight">{content.toolLabel} : PostHog</p>
+                <p className="mt-1 text-muted">{content.toolLabel} : PostHog</p>
               </div>
-              <div className="border-t border-gray-200 pt-4">
-                <p className="font-medium text-gray-900">{content.advertisingPurposeLabel}</p>
-                <p className="mt-1 text-textLight">{content.advertisingPurposeValue}</p>
-                <label className="mt-3 flex cursor-pointer items-start gap-3 text-gray-800">
+              <div className="border-t border-ink/15 pt-4">
+                <p className="font-medium text-ink">{content.advertisingPurposeLabel}</p>
+                <p className="mt-1 text-muted">{content.advertisingPurposeValue}</p>
+                <label className="mt-3 flex cursor-pointer items-start gap-3 text-ink">
                   <input
                     type="checkbox"
                     checked={advertisingConsentStatus === 'accepted'}
                     onChange={(event) => handleAdvertisingConsentChange(event.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary-400 focus:ring-primary-300"
+                    className="ui-focus mt-0.5 h-4 w-4 rounded border-ink/30 [accent-color:rgb(var(--color-ink))]"
                   />
                   <span>{content.advertisingToggleLabel}</span>
                 </label>
-                <p className="mt-2 text-textLight">
+                <p className="mt-2 text-muted">
                   {content.currentAdvertisingStatusLabel} :{' '}
                   {getStatusLabel(advertisingConsentStatus, content.statusLabels)}
                 </p>
-                <p className="mt-1 text-textLight">{content.toolLabel} : OpenAI Ads</p>
+                <p className="mt-1 text-muted">{content.toolLabel} : OpenAI Ads</p>
               </div>
-              <div className="border-t border-gray-200 pt-4">
-                <p className="font-medium text-gray-900">{content.minimalPurposeLabel}</p>
-                <p className="mt-1 text-textLight">{content.minimalPurposeValue}</p>
-                <label className="mt-3 flex cursor-pointer items-start gap-3 text-gray-800">
+              <div className="border-t border-ink/15 pt-4">
+                <p className="font-medium text-ink">{content.minimalPurposeLabel}</p>
+                <p className="mt-1 text-muted">{content.minimalPurposeValue}</p>
+                <label className="mt-3 flex cursor-pointer items-start gap-3 text-ink">
                   <input
                     type="checkbox"
                     checked={isMinimalAudienceEnabled}
                     onChange={(event) => handleMinimalAudienceChange(event.target.checked)}
-                    className="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary-400 focus:ring-primary-300"
+                    className="ui-focus mt-0.5 h-4 w-4 rounded border-ink/30 [accent-color:rgb(var(--color-ink))]"
                   />
                   <span>{content.minimalToggleLabel}</span>
                 </label>
@@ -385,10 +386,10 @@ export default function CookieConsentManager() {
             </div>
 
             <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <button type="button" className={actionButtonClasses} onClick={handleReject}>
+              <button type="button" className={secondaryActionButtonClasses} onClick={handleReject}>
                 {content.rejectLabel}
               </button>
-              <button type="button" className={actionButtonClasses} onClick={handleAccept}>
+              <button type="button" className={primaryActionButtonClasses} onClick={handleAccept}>
                 {content.acceptLabel}
               </button>
             </div>

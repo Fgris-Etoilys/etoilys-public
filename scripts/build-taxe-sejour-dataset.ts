@@ -2,15 +2,16 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { XMLParser } from 'fast-xml-parser';
+import { getDepartmentCommuneIndexOutputs } from '../src/content/local/registry.ts';
 
 const ROOT_DIR = process.cwd();
 const INPUT_XML_PATH = path.join(ROOT_DIR, 'docs', 'data', 'taxe_sejour_donnees_deliberations.xml');
 const OUTPUT_DIR = path.join(ROOT_DIR, 'public', 'data');
 const OUTPUT_JSON_PATH = path.join(OUTPUT_DIR, 'taxe-sejour-dataset.v1.json');
-const OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH = path.join(
-  OUTPUT_DIR,
-  'communes-dordogne-index.v1.json'
-);
+const DEPARTMENT_COMMUNE_INDEX_OUTPUTS = getDepartmentCommuneIndexOutputs().map((entry) => ({
+  departmentCode: entry.departmentCode,
+  outputPath: path.join(OUTPUT_DIR, entry.outputFileName),
+}));
 
 const CLASSIFIED_NATURE_ID = '4';
 const UNCLASSIFIED_NATURE_ID = '10';
@@ -72,6 +73,17 @@ const COMMUNE_LABEL_OVERRIDES_BY_INSEE: Record<string, string> = {
   '24274': 'Monbazillac',
   '24322': 'Périgueux',
   '24352': 'Ribérac',
+  '46015': 'Bagnac-sur-Célé',
+  '46063': 'Castelnau-Montratier',
+  '46037': 'Bouziès',
+  '46138': 'Cœur de Causse',
+  '46173': 'Limogne-en-Quercy',
+  '46183': 'Marcilhac-sur-Célé',
+  '46191': 'Mercuès',
+  '46201': 'Montcuq-en-Quercy-Blanc',
+  '46231': 'Puy-l’Évêque',
+  '46251': 'Saint-Céré',
+  '46320': 'Tour-de-Faure',
 };
 
 interface TextNode {
@@ -500,21 +512,21 @@ export function buildCompactDatasetFromXml(
 async function main() {
   const xml = await readFile(INPUT_XML_PATH, 'utf8');
   const dataset = buildCompactDatasetFromXml(xml);
-  const communeIndex = buildDepartmentCommuneIndexFromCompactDataset(dataset, '24');
 
   await mkdir(OUTPUT_DIR, { recursive: true });
   await writeFile(OUTPUT_JSON_PATH, JSON.stringify(dataset), 'utf8');
-  await writeFile(OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH, JSON.stringify(communeIndex), 'utf8');
 
   console.log(
     `Generated ${dataset.c.length} cities in ${path.relative(ROOT_DIR, OUTPUT_JSON_PATH)}.`
   );
-  console.log(
-    `Generated ${communeIndex.c.length} communes in ${path.relative(
-      ROOT_DIR,
-      OUTPUT_DORDOGNE_COMMUNE_INDEX_JSON_PATH
-    )}.`
-  );
+
+  for (const { departmentCode, outputPath } of DEPARTMENT_COMMUNE_INDEX_OUTPUTS) {
+    const communeIndex = buildDepartmentCommuneIndexFromCompactDataset(dataset, departmentCode);
+    await writeFile(outputPath, JSON.stringify(communeIndex), 'utf8');
+    console.log(
+      `Generated ${communeIndex.c.length} communes in ${path.relative(ROOT_DIR, outputPath)}.`
+    );
+  }
 }
 
 const isDirectExecution =

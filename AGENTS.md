@@ -16,7 +16,8 @@ Quand tu dois écrire du code, applique cette instruction:
 
 - `CLAUDE.md`
 - `tailwind.config.js`
-- `src/App.tsx` (routing)
+- `src/AppRoutes.tsx` (routing)
+- `src/App.tsx` (wrapper applicatif)
 - `src/components/ui/*`
 - `src/components/forms/*`
 - `src/utils/formValidation.ts`
@@ -42,12 +43,13 @@ Quand tu dois écrire du code, applique cette instruction:
 
 - Domaine canonique unique: `https://www.etoilys.fr`.
 - Ne jamais injecter de SEO dans les pages (`src/pages/*`): le SEO est centralise dans `src/components/layout/Layout.tsx`.
-- Toute nouvelle route ajoutee dans `src/App.tsx` doit etre ajoutee dans `src/content/seoRoutes.ts` avec au minimum:
+- Toute nouvelle route ajoutee dans `src/AppRoutes.tsx` doit etre ajoutee dans `src/content/seoRoutes.ts` avec au minimum:
   - `title`
   - `description`
   - `breadcrumbLabel` (sauf home)
   - `robots` seulement si besoin specifique
 - Le fallback des routes inconnues doit rester `noindex,follow` (via `NOT_FOUND_SEO`).
+- Pour les pages locales, suivre `docs/tech/local-framework-v6.md` : la route React reste explicite, mais les entrees SEO locales, sitemap, prerender et IndexNow sont derives du registre local.
 - Interdit de reintroduire `meta keywords`.
 - Les URLs absolues SEO (canonical, `og:url`, JSON-LD `url`) doivent rester sur `https://www.etoilys.fr`.
 
@@ -58,7 +60,7 @@ Quand tu dois écrire du code, applique cette instruction:
   - `WebSite`
 - Les donnees business (`legalName`, `identifier`/SIRET, contact, adresse) doivent rester alignees avec `MentionsLegales`.
 - Ne pas ajouter `sameAs` sans profils officiels verifies.
-- Les breadcrumbs doivent etre uniquement en JSON-LD (pas de breadcrumb UI), generes depuis `getBreadcrumbItems` dans `src/content/seoRoutes.ts`.
+- Les breadcrumbs sont generes depuis `getBreadcrumbItems` dans `src/content/seoRoutes.ts`. Un breadcrumb UI visible est autorise uniquement sur `/zones-intervention` et les pages locales ; les autres familles restent en JSON-LD uniquement.
 - Home et 404: aucun `BreadcrumbList`.
 - Articles: utiliser `ArticleStructuredData` + `src/content/articleStructuredData.ts`, sans injection manuelle `useEffect` dans les pages article.
 
@@ -87,13 +89,13 @@ Quand tu dois écrire du code, applique cette instruction:
   - cle publique versionnee: `public/a4f9bc0d1e4b47b9b0e2b438d9d8f2aa.txt`
   - soumission locale: `npm run indexnow:submit` (dry-run possible avec `INDEXNOW_DRY_RUN=1`)
   - workflow CI: `.github/workflows/indexnow.yml` (push `main`)
-  - toute nouvelle page routée doit être ajoutée au mapping fichier -> route de `scripts/indexnow-submit.ts` lorsque ce fichier peut être modifié seul et doit déclencher une soumission IndexNow.
+  - les fichiers locaux (`src/content/local/registry.ts`, `sharedLocalContent.tsx`, `v6Pages.tsx`, dossiers `departments/`, `cities/`, wrappers `src/pages/locales/`) sont couverts generiquement par `scripts/indexnow-submit.ts`; ajouter un mapping fichier -> route seulement pour une page non locale non couverte.
 
 ### Checklist obligatoire avant livraison (SEO)
 
 - Verifier qu'il n'existe qu'un seul injecteur SEO (`<SEO />`) dans le layout.
 - Verifier qu'aucune page n'importe `SEO` directement.
-- Verifier que toutes les routes actives de `src/App.tsx` sont couvertes par `src/content/seoRoutes.ts`.
+- Verifier que toutes les routes actives de `src/AppRoutes.tsx` sont couvertes par `src/content/seoRoutes.ts`, avec les routes locales derivees du registre.
 - Verifier qu'il n'y a pas de scripts JSON-LD dupliques apres navigation SPA.
 - Exécuter `npm run typecheck` et corriger jusqu'à 0 erreur.
 - Pour toute creation de page/article, suivre `docs/tech/seo-structurant-workflow.md`.

@@ -70,13 +70,13 @@ export default function ArticleLayout({
     <article aria-labelledby={headingId}>
       <ArticleReadingUtilities startRef={headingRef} endRef={editorialContentRef} />
       <header>
-        <section className="bg-gradient-to-br from-themePrimary-1 to-primary-300 pb-10 pt-14 text-white sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
-          <div className="container-adaptive">
+        <section className="bg-paper pb-10 pt-14 text-ink sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
+          <div className="container-editorial">
             <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
               <div className="mx-auto w-full min-w-0 max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
                 <Link
                   to="/actualites"
-                  className="group mb-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-semibold text-white no-underline transition-[background-color,border-color,color] duration-200 hover:border-white/35 hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-themePrimary-1 motion-reduce:transition-none"
+                  className="ui-focus group mb-5 inline-flex min-h-11 items-center gap-2 rounded-control border border-ink/15 bg-surface px-4 py-2 text-sm font-semibold text-ink no-underline transition-colors duration-200 hover:bg-surface-hover hover:text-ink motion-reduce:transition-none"
                 >
                   <ArrowLeft
                     aria-hidden="true"
@@ -85,7 +85,7 @@ export default function ArticleLayout({
                   <span>Retour aux actualités</span>
                 </Link>
                 <div className="mb-5">
-                  <span className="inline-flex rounded-full border border-white/25 bg-white/10 px-3 py-1 text-sm font-medium text-white">
+                  <span className="inline-flex rounded-control border border-ink/15 bg-surface px-3 py-1 text-sm font-medium text-ink">
                     {getArticleCategoryLabel(article.category)}
                   </span>
                 </div>
@@ -93,11 +93,11 @@ export default function ArticleLayout({
                   ref={headingRef}
                   id={headingId}
                   tabIndex={-1}
-                  className="mb-5 scroll-mt-24 text-white focus:outline-none xl:scroll-mt-28"
+                  className="editorial-title mb-5 scroll-mt-24 text-ink focus:outline-none xl:scroll-mt-28"
                 >
                   {article.title}
                 </h1>
-                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-white/80">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
                   <time dateTime={article.publishedAt}>
                     Publié le {formatFrenchDate(article.publishedAt)}
                   </time>
@@ -118,8 +118,10 @@ export default function ArticleLayout({
         </section>
       </header>
 
-      <section className={`bg-white pt-10 sm:pt-12 lg:pt-14 ${hasFooter ? 'pb-0' : 'pb-section'}`}>
-        <div className="container-adaptive">
+      <section
+        className={`bg-surface pt-10 sm:pt-12 lg:pt-14 ${hasFooter ? 'pb-0' : 'pb-section'}`}
+      >
+        <div className="container-editorial">
           <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
             {shouldShowTableOfContents && (
               <ArticleTableOfContents items={tableOfContents} variant="desktop" />
@@ -128,7 +130,7 @@ export default function ArticleLayout({
               ref={editorialContentRef}
               className="mx-auto w-full min-w-0 max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none"
             >
-              <div className="article-lede mb-10 space-y-6 text-xl leading-comfortable text-gray-700 sm:mb-12">
+              <div className="article-lede mb-10 space-y-6 text-xl leading-comfortable text-muted sm:mb-12">
                 {lede}
               </div>
               {keyTakeaways}
@@ -142,8 +144,8 @@ export default function ArticleLayout({
       </section>
 
       {hasFooter && (
-        <footer className="bg-white pb-section pt-10 sm:pt-12">
-          <div className="container-adaptive">
+        <footer className="bg-surface pb-section pt-10 sm:pt-12">
+          <div className="container-editorial">
             <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
               <div className="article-footer-slots mx-auto w-full min-w-0 max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
                 {footerCta}

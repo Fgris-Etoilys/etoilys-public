@@ -26,6 +26,7 @@ import {
 } from '../src/content/structuredData.ts';
 import { EN_INDEXABLE_ROUTE_IDS, NL_INDEXABLE_ROUTE_IDS } from '../src/i18n/contentReadiness.ts';
 import { localizedRoutes } from '../src/i18n/localizedRoutes.ts';
+import { getPublishedLocalPaths } from '../src/content/local/registry.ts';
 
 const NOT_FOUND_PRERENDER_PATH = '/404';
 const EN_NOT_FOUND_RENDER_PATH = '/en/route-inexistante';
@@ -48,11 +49,10 @@ const EN_MVP_PRERENDER_PATHS = new Set(
 const NL_MVP_PRERENDER_PATHS = new Set(
   NL_INDEXABLE_ROUTE_IDS.map((routeId) => localizedRoutes[routeId].nl)
 );
+const LOCAL_PUBLIC_PRERENDER_PATHS = new Set(['/zones-intervention', ...getPublishedLocalPaths()]);
 const FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS = [
   /^\/actualites(?:\/|$)/,
   /^\/simulateur(?:\/|-|$)/,
-  /^\/zones-intervention(?:\/|$)/,
-  /^\/classement-meuble-tourisme-(?:dordogne|gironde|lot-et-garonne)(?:\/|$)/,
   /^\/recrutement(?:\/|$)/,
   /^\/mentions-legales(?:\/|$)/,
   /^\/en\/actualites(?:\/|$)/,
@@ -229,7 +229,7 @@ function buildSeoHead(pathname: string): string {
 
   if (preloadImage) {
     tags.push(
-      `    <link rel="preload" as="image" href="${escapeHtml(preloadImage.src)}" imagesrcset="${escapeHtml(preloadImage.srcSetAvif)}" imagesizes="100vw" data-seo-lcp-preload="true">`
+      `    <link rel="preload" as="image" href="${escapeHtml(preloadImage.src)}" imagesrcset="${escapeHtml(preloadImage.srcSetAvif)}" imagesizes="${escapeHtml(seoConfig.lcpImageSizes ?? '100vw')}" data-seo-lcp-preload="true">`
     );
   }
 
@@ -314,11 +314,17 @@ function getInternalHrefPath(href: string): string | null {
 }
 
 function isForbiddenEnglishMvpInternalHref(href: string): boolean {
-  return FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href));
+  return (
+    LOCAL_PUBLIC_PRERENDER_PATHS.has(href) ||
+    FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href))
+  );
 }
 
 function isForbiddenDutchMvpInternalHref(href: string): boolean {
-  return FORBIDDEN_NL_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href));
+  return (
+    LOCAL_PUBLIC_PRERENDER_PATHS.has(href) ||
+    FORBIDDEN_NL_MVP_INTERNAL_LINK_PATTERNS.some((pattern) => pattern.test(href))
+  );
 }
 
 function getInternalHrefs(rootContent: string): string[] {

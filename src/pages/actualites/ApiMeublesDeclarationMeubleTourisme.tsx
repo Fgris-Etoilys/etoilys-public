@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
@@ -164,7 +165,7 @@ export default function ArticleApiMeubles() {
       lede={
         <>
           {/* Chapô */}
-          <p className="text-xl leading-comfortable text-gray-700 mb-10">
+          <p className="text-xl leading-comfortable text-muted mb-10">
             Depuis le <strong>20 mai 2026</strong>, le cadre légal de déclaration des meublés de
             tourisme a changé : tous les loueurs devront, à terme, obtenir un{' '}
             <strong>numéro d&apos;enregistrement national</strong> via un téléservice connecté à{' '}
@@ -180,9 +181,9 @@ export default function ArticleApiMeubles() {
       footerCta={
         <>
           {/* CTA */}
-          <div className="mt-12 mb-12 p-8 bg-primary-100 rounded-card border border-primary-200">
+          <div className="article-cta-panel mb-12 mt-12 p-8">
             <h2 className="text-h4 mb-3">Des questions sur votre situation ?</h2>
-            <p className="text-gray-700 mb-6">
+            <p className="text-muted mb-6">
               Retrouvez les réponses générales dans la FAQ ou échangez avec Etoilys sur le
               classement de votre meublé.
             </p>
@@ -205,11 +206,11 @@ export default function ArticleApiMeubles() {
       <ArticleSectionHeading id="le-vrai-changement-tout-le-monde-devra-declarer-son-meuble">
         Le vrai changement : tout le monde devra déclarer son meublé
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le changement important n&apos;est pas seulement technique. Il ne s&apos;agit pas juste de
         remplacer un formulaire par un autre, avec un joli nom numérique pour faire moderne.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Jusqu&apos;au 20 mai 2026, le Code du tourisme prévoyait une déclaration auprès du maire
         pour les meublés de tourisme, mais avec une exception importante : cette déclaration
         préalable n&apos;était pas obligatoire lorsque le logement constituait la{' '}
@@ -217,15 +218,15 @@ export default function ArticleApiMeubles() {
         d&apos;enregistrement pouvait déjà s&apos;appliquer plus largement, mais ce n&apos;était pas
         un système uniforme pour tous les propriétaires.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Depuis le <strong>20 mai 2026</strong>, la rédaction du texte a changé : toute personne qui
         offre à la location un meublé de tourisme doit procéder à une déclaration soumise à
         enregistrement auprès d&apos;un <strong>téléservice national</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Concrètement, cela signifie qu&apos;à terme, la logique devient nationale :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         {[
           'vous louez une résidence secondaire en meublé de tourisme ;',
           'vous louez ponctuellement votre résidence principale ;',
@@ -234,20 +235,20 @@ export default function ArticleApiMeubles() {
           'vous louez en direct.',
         ].map((item) => (
           <li key={item} className="flex gap-3">
-            <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+            <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
               •
             </span>
             <span>{item}</span>
           </li>
         ))}
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Dans tous ces cas, vous devrez demander un{' '}
         <strong>nouveau numéro d&apos;enregistrement national</strong> lorsque le téléservice final
         sera ouvert.
       </p>
-      <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-6">
-        <p className="text-gray-700 leading-comfortable">
+      <div className="article-callout-muted mb-6 p-5">
+        <p className="text-muted leading-comfortable">
           La DGE est claire sur ce point : au lancement de la version finale d&apos;API Meublés,{' '}
           <strong>tous les loueurs, sans exception</strong>, devront demander un numéro
           d&apos;enregistrement auprès du téléservice national pour chaque meublé de tourisme mis en
@@ -259,21 +260,21 @@ export default function ArticleApiMeubles() {
       <ArticleSectionHeading id="api-meubles-c-est-quoi-exactement">
         API Meublés, c&apos;est quoi exactement ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         <strong>API Meublés</strong> est la nouvelle plateforme nationale qui doit centraliser les
         données liées aux meublés de tourisme.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Son objectif est simple à comprendre : aujourd&apos;hui, les informations sont dispersées
         entre les communes, les plateformes de location et les anciens systèmes
         d&apos;enregistrement locaux. Résultat : des démarches différentes selon les territoires,
         des numéros qui ne se ressemblent pas, des contrôles plus compliqués, et une belle usine à
         gaz administrative.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         API Meublés doit servir de <strong>guichet unique centralisateur</strong> entre :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         {[
           'les intermédiaires de location de meublés, comme Airbnb, Abritel ou Booking ;',
           'les communes ;',
@@ -281,14 +282,14 @@ export default function ArticleApiMeubles() {
           'et, à terme, les loueurs eux-mêmes via un téléservice national.',
         ].map((item) => (
           <li key={item} className="flex gap-3">
-            <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+            <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
               •
             </span>
             <span>{item}</span>
           </li>
         ))}
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La plateforme doit notamment permettre de centraliser les numéros d&apos;enregistrement, les
         données d&apos;activité transmises par les plateformes, l&apos;adresse des logements et les
         URL des annonces. Pour comprendre précisément quelles informations Airbnb, Booking, Abritel
@@ -301,7 +302,7 @@ export default function ArticleApiMeubles() {
         </Link>
         .
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Pour un propriétaire, le point concret est le suivant : lorsque le service final sera
         ouvert, il faudra passer par le téléservice national relié à API Meublés pour obtenir un{' '}
         <strong>numéro d&apos;enregistrement national</strong>.
@@ -311,72 +312,66 @@ export default function ArticleApiMeubles() {
       <ArticleSectionHeading id="ce-qui-a-change-depuis-le-20-mai-2026">
         Ce qui a changé depuis le 20 mai 2026
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Depuis le <strong>20 mai 2026</strong>, le code du tourisme prévoit une déclaration des
         meublés de tourisme via un téléservice national. Cette déclaration doit permettre la
         délivrance d&apos;un récépissé électronique avec un numéro de déclaration.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, il faut toutefois distinguer le cadre légal et le déploiement opérationnel. La
         DGE indique encore que le téléservice final destiné aux loueurs doit ouvrir au{' '}
         <strong>second semestre 2026</strong>. Pendant cette période de transition, les
         propriétaires doivent donc continuer à vérifier la procédure applicable auprès de la commune
         du logement.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-6">
-        Il faut donc distinguer deux choses :
-      </p>
-      <div className="overflow-x-auto mb-6">
-        <table className="w-full text-sm border-collapse rounded-card overflow-hidden shadow-sm">
-          <caption className="sr-only">
-            Calendrier de transition vers la déclaration nationale API Meublés
-          </caption>
-          <colgroup>
-            <col className="w-[30%]" />
-            <col className="w-[70%]" />
-          </colgroup>
-          <thead>
-            <tr className="bg-primary-300 text-white">
-              <th scope="col" className="p-3 text-left font-semibold">
-                Date ou période
-              </th>
-              <th scope="col" className="p-3 text-left font-semibold">
-                Ce que cela signifie pour le propriétaire
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="bg-white border-b border-gray-100">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Jusqu&apos;au 20 mai 2026
-              </th>
-              <td className="p-3 text-gray-600">
-                La déclaration peut encore passer par la démarche en ligne actuelle de
-                Service-Public, par un formulaire ou par le service propre de certaines mairies.
-              </td>
-            </tr>
-            <tr className="bg-gray-50 border-b border-gray-100">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Depuis le 20 mai 2026
-              </th>
-              <td className="p-3 text-gray-600">
-                Le nouveau cadre légal est en vigueur, mais le téléservice final API Meublés destiné
-                aux loueurs n&apos;est pas encore ouvert.
-              </td>
-            </tr>
-            <tr className="bg-white">
-              <th scope="row" className="p-3 text-gray-700 font-medium">
-                Second semestre 2026
-              </th>
-              <td className="p-3 text-gray-600">
-                Le téléservice national relié à API Meublés doit permettre aux loueurs de demander
-                leur nouveau numéro d&apos;enregistrement national.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-6">Il faut donc distinguer deux choses :</p>
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-6"
+        caption="Calendrier de transition vers la déclaration nationale API Meublés"
+        primaryColumnKey="periode"
+        columns={[
+          {
+            key: 'periode',
+            label: 'Date ou période',
+            mobileLabel: 'Date ou période',
+            widthClassName: 'w-[30%]',
+          },
+          {
+            key: 'effet',
+            label: 'Ce que cela signifie pour le propriétaire',
+            mobileLabel: 'Ce que cela signifie pour le propriétaire',
+            widthClassName: 'w-[70%]',
+          },
+        ]}
+        rows={[
+          {
+            key: 'avant-20-mai-2026',
+            cells: {
+              periode: 'Jusqu’au 20 mai 2026',
+              effet:
+                'La déclaration peut encore passer par la démarche en ligne actuelle de Service-Public, par un formulaire ou par le service propre de certaines mairies.',
+            },
+          },
+          {
+            key: 'depuis-20-mai-2026',
+            cells: {
+              periode: 'Depuis le 20 mai 2026',
+              effet:
+                'Le nouveau cadre légal est en vigueur, mais le téléservice final API Meublés destiné aux loueurs n’est pas encore ouvert.',
+            },
+          },
+          {
+            key: 'second-semestre-2026',
+            cells: {
+              periode: 'Second semestre 2026',
+              effet:
+                'Le téléservice national relié à API Meublés doit permettre aux loueurs de demander leur nouveau numéro d’enregistrement national.',
+            },
+          },
+        ]}
+      />
+      <p className="text-muted leading-comfortable mb-4">
         Le bon réflexe est de comprendre la période de transition et de se préparer à demander un
         nouveau numéro dès que le service national sera ouvert.
       </p>
@@ -385,22 +380,22 @@ export default function ArticleApiMeubles() {
       <ArticleSectionHeading id="que-faire-pendant-la-transition">
         Que faire pendant la transition ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La démarche en ligne de déclaration d&apos;hébergement touristique sur Service-Public
         s&apos;est arrêtée le <strong>20 mai 2026</strong>. Les déclarations déposées avant cette
         date ont été traitées jusqu&apos;à leur terme.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Service-Public indique que cette démarche est désormais remplacée par le{' '}
         <strong>formulaire Cerfa n°14004</strong>. Ce Cerfa n&apos;est pas un nouveau dispositif API
         Meublés : c&apos;est le formulaire classique de{' '}
         <strong>déclaration en mairie d&apos;un meublé de tourisme</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         En pratique, cela veut dire que pendant la période intermédiaire, avant l&apos;ouverture du
         téléservice national API Meublés aux loueurs, il faudra suivre les modalités disponibles :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         {[
           'vérifier les consignes de la mairie où se situe le logement ;',
           'utiliser le Cerfa n°14004 si c\u2019est la démarche demandée ;',
@@ -409,15 +404,15 @@ export default function ArticleApiMeubles() {
           'surveiller l\u2019ouverture du téléservice national API Meublés.',
         ].map((item) => (
           <li key={item} className="flex gap-3">
-            <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+            <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
               •
             </span>
             <span>{item}</span>
           </li>
         ))}
       </ul>
-      <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-6">
-        <p className="text-gray-700 leading-comfortable">
+      <div className="article-callout-muted mb-6 p-5">
+        <p className="text-muted leading-comfortable">
           Toutes les mairies ne fonctionneront pas forcément exactement de la même façon pendant
           cette transition. Certaines peuvent proposer leur propre service ou leurs propres
           modalités de dépôt. Il faut donc vérifier localement avant d&apos;envoyer un formulaire.
@@ -428,28 +423,28 @@ export default function ArticleApiMeubles() {
       <ArticleSectionHeading id="comment-devrait-fonctionner-la-declaration-via-api-meubles">
         Comment devrait fonctionner la déclaration via API Meublés ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Lorsque le téléservice final sera ouvert, le propriétaire devra demander un numéro
         d&apos;enregistrement pour <strong>chaque meublé de tourisme mis en location</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La déclaration devra notamment indiquer si le logement constitue la{' '}
         <strong>résidence principale</strong> du loueur. Si c&apos;est le cas, le texte prévoit que
         le loueur devra en apporter la preuve dans sa déclaration.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La DGE indique aussi que des pièces justificatives seront nécessaires. La liste exacte est
         encore en cours de stabilisation, mais elle devrait notamment inclure :
       </p>
-      <ul className="space-y-2 mb-6 text-gray-700">
+      <ul className="space-y-2 mb-6 text-muted">
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>une pièce d&apos;identité ;</span>
         </li>
         <li className="flex gap-3">
-          <span className="text-primary-400 font-bold shrink-0 mt-0.5" aria-hidden="true">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
             •
           </span>
           <span>
@@ -457,12 +452,12 @@ export default function ArticleApiMeubles() {
           </span>
         </li>
       </ul>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Une fois la déclaration complète reçue, le téléservice doit délivrer un avis de réception
         électronique avec un numéro de déclaration. Ce numéro servira ensuite de référence nationale
         pour identifier le meublé.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le propriétaire devra aussi mettre à jour sa déclaration en cas de changement des
         informations ou des pièces justificatives fournies.
       </p>
@@ -471,25 +466,25 @@ export default function ArticleApiMeubles() {
       <ArticleSectionHeading id="que-deviennent-les-anciens-numeros-d-enregistrement">
         Que deviennent les anciens numéros d&apos;enregistrement ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         C&apos;est l&apos;une des questions les plus importantes pour les propriétaires qui ont déjà
         fait une déclaration dans leur commune.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La réponse est simple : les anciens numéros ne resteront pas valables indéfiniment.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         La DGE indique qu&apos;au lancement de la version finale d&apos;API Meublés, tous les
         loueurs devront demander un nouveau numéro d&apos;enregistrement national. Les loueurs déjà
         titulaires d&apos;un numéro délivré sous l&apos;ancienne législation bénéficieront d&apos;un{' '}
         <strong>délai raisonnable</strong> pour le renouveler.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Après cette période transitoire, les anciens numéros deviendront invalides et ne pourront
         plus être utilisés auprès des intermédiaires de location.
       </p>
-      <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-6">
-        <p className="text-gray-700 leading-comfortable">
+      <div className="article-callout-muted mb-6 p-5">
+        <p className="text-muted leading-comfortable">
           Si vous avez déjà un numéro local, il devra être remplacé par un nouveau numéro national
           lorsque le dispositif final sera ouvert.
         </p>
@@ -499,19 +494,19 @@ export default function ArticleApiMeubles() {
       <ArticleSectionHeading id="quelles-sanctions-si-le-meuble-n-est-pas-declare">
         Quelles sanctions si le meublé n&apos;est pas déclaré ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Le nouveau cadre prévoit des sanctions plus nettes.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         L&apos;absence de déclaration préalable peut entraîner une{' '}
         <strong>amende administrative prononcée par la commune</strong>, dont le montant peut aller
         jusqu&apos;à <strong>10 000 €</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Une fausse déclaration ou l&apos;utilisation d&apos;un faux numéro de déclaration peut
         entraîner une amende administrative pouvant aller jusqu&apos;à <strong>20 000 €</strong>.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Avec API Meublés, l&apos;enregistrement devient un point central de conformité pour les
         loueurs de meublés de tourisme.
       </p>
@@ -520,20 +515,20 @@ export default function ArticleApiMeubles() {
       <ArticleSectionHeading id="que-faire-concretement-pendant-la-periode-de-transition">
         Que faire concrètement pendant la période de transition ?
       </ArticleSectionHeading>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Tant que le téléservice final national n&apos;est pas ouvert, le bon réflexe reste le même :
         vérifier la procédure applicable auprès de la mairie du logement. Selon la commune, la
         déclaration peut encore passer par le formulaire Cerfa 14004*04 ou par un téléservice local.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-4">
+      <p className="text-muted leading-comfortable mb-4">
         Au lancement du téléservice final, les loueurs devront demander un nouveau numéro
         d&apos;enregistrement pour chaque meublé concerné. Les anciens numéros ont vocation à être
         invalidés après une période transitoire.
       </p>
-      <p className="text-gray-700 leading-comfortable mb-6">
+      <p className="text-muted leading-comfortable mb-6">
         En attendant, les actions utiles sont les suivantes :
       </p>
-      <div className="space-y-4 mb-8 text-gray-700">
+      <div className="space-y-4 mb-8 text-muted">
         {[
           'Vérifier si votre meublé dispose déjà d\u2019un ancien numéro d\u2019enregistrement.',
           'Conserver les documents liés à votre déclaration actuelle.',
@@ -544,17 +539,15 @@ export default function ArticleApiMeubles() {
           'Prévoir de demander un nouveau numéro national pour chaque meublé mis en location.',
         ].map((item, index) => (
           <div className="flex gap-4" key={item}>
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary-300 text-white flex items-center justify-center font-semibold text-sm">
-              {index + 1}
-            </div>
+            <div className="article-step-marker">{index + 1}</div>
             <p className="leading-comfortable">{item}</p>
           </div>
         ))}
       </div>
 
       {/* Conclusion */}
-      <div className="bg-gray-50 border border-gray-200 rounded-card p-5 mb-10">
-        <p className="text-gray-700 leading-comfortable">
+      <div className="article-callout-muted mb-10 p-5">
+        <p className="text-muted leading-comfortable">
           Le changement à retenir est clair : l&apos;enregistrement des meublés de tourisme devient
           national, et tous les loueurs devront obtenir un nouveau numéro via API Meublés. Le
           service final n&apos;est pas encore ouvert aux propriétaires, mais la bascule est engagée.

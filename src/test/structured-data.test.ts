@@ -11,6 +11,7 @@ import {
   type JsonLdObject,
 } from '../content/structuredData';
 import { getArticleAuthor } from '../content/articleAuthors';
+import { getActiveDepartmentInterventionAreas } from '../content/local/registry';
 
 function getGraph(data: JsonLdObject | null): JsonLdObject[] {
   expect(data).not.toBeNull();
@@ -96,7 +97,7 @@ describe('structured data graph', () => {
 
     expect(asObject(website.publisher)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
     expect(asObject(service.provider)['@id']).toBe(STRUCTURED_DATA_IDS.organization);
-    expect(service.areaServed).toBe('Dordogne, Gironde et Lot-et-Garonne');
+    expect(service.areaServed).toBe('Dordogne, Gironde, Lot-et-Garonne, Lot et Aveyron');
     expect(service.offers).toBeUndefined();
 
     expect(certification.certificationIdentification).toBe('3-2394');
@@ -149,6 +150,22 @@ describe('structured data graph', () => {
     ).toBeDefined();
     expect(findNodeById(servicePageGraph, STRUCTURED_DATA_IDS.serviceClassification)).toBeDefined();
     expect(findNodeById(privacyGraph, STRUCTURED_DATA_IDS.organization)).toBeDefined();
+  });
+
+  it('exposes compact organization and service graphs on every published local route', () => {
+    const localPaths = getActiveDepartmentInterventionAreas().flatMap((area) => [
+      area.path,
+      ...area.localPages.map((localPage) => localPage.path),
+    ]);
+
+    localPaths.forEach((pathname) => {
+      const graph = getGraph(buildPageStructuredData(pathname));
+
+      expect(findNodeById(graph, STRUCTURED_DATA_IDS.organization)['@type']).toBe('Organization');
+      expect(findNodeById(graph, STRUCTURED_DATA_IDS.serviceClassification)['@type']).toBe(
+        'Service'
+      );
+    });
   });
 
   it('defines canonical article author and publisher nodes on article pages', () => {

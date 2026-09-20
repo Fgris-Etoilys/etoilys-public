@@ -61,7 +61,7 @@ représentations concurrentes.
 
 Le service canonique reste unique et général :
 
-`Dordogne, Gironde, Lot-et-Garonne et secteurs proches de Bergerac`
+`Dordogne, Gironde, Lot-et-Garonne et Lot`
 
 Aucune entité `Offer` n’est publiée tant que les tarifs ne sont pas affichés de façon stable sur le
 site.

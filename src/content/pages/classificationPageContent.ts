@@ -13,6 +13,7 @@ type ClassificationAdvantage = {
 };
 
 type ClassificationPageContent = {
+  essentials: readonly { value: string; label: string }[];
   hero: {
     title: string;
     description: string;
@@ -69,6 +70,11 @@ type ClassificationPageContent = {
 
 export const classificationPageContent: Record<Locale, ClassificationPageContent> = {
   fr: {
+    essentials: [
+      { value: '1 à 5 étoiles', label: 'Un classement officiel' },
+      { value: '5 ans', label: 'De validité une fois acquis' },
+      { value: 'Sur place', label: 'Une visite dans votre logement' },
+    ],
     hero: {
       title: 'Le classement des meublés de tourisme',
       description:
@@ -175,11 +181,16 @@ export const classificationPageContent: Record<Locale, ClassificationPageContent
       title: 'Prêt à faire classer votre meublé ?',
       description:
         'Vous souhaitez faire classer votre meublé ? Transmettez-nous votre demande et nous vous recontactons pour organiser la suite.',
-      primaryLabel: 'Demander votre classement',
+      primaryLabel: 'Demander mon classement',
       primaryHref: '/demande-classement',
     },
   },
   en: {
+    essentials: [
+      { value: '1 to 5 stars', label: 'An official classification' },
+      { value: '5 years', label: 'Validity once awarded' },
+      { value: 'On site', label: 'An inspection at your property' },
+    ],
     hero: {
       title: 'Official classification of furnished tourist accommodation',
       description:
@@ -280,6 +291,11 @@ export const classificationPageContent: Record<Locale, ClassificationPageContent
     },
   },
   nl: {
+    essentials: [
+      { value: '1 tot 5 sterren', label: 'Een officiële classificatie' },
+      { value: '5 jaar', label: 'Geldig na toekenning' },
+      { value: 'Ter plaatse', label: 'Een bezoek aan uw woning' },
+    ],
     hero: {
       title: 'Officiële classificatie van een vakantiewoning in Frankrijk',
       description:
