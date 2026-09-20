@@ -35,7 +35,7 @@ export default function DemandeClassement() {
             <DemandeClassementForm locale={locale} />
           </div>
 
-          <aside className="inquiry-after" aria-labelledby="after-request-title">
+          <aside className="inquiry-after">
             <div className="inquiry-after-copy">
               <p className="inquiry-response">
                 <Clock3 size={16} aria-hidden="true" />
@@ -43,22 +43,22 @@ export default function DemandeClassement() {
               </p>
               <h2 id="after-request-title">{content.afterRequest.title}</h2>
               <p>{content.afterRequest.description}</p>
-            </div>
 
-            {content.resources !== undefined && (
-              <div className="inquiry-resources">
-                {content.resources.map((resource) => (
-                  <article className="inquiry-resource" key={resource.href}>
-                    <h3>{resource.title}</h3>
-                    <p>{resource.description}</p>
-                    <Link to={resource.href} className="editorial-link ui-focus">
-                      {resource.cta}
-                      <ArrowUpRight size={14} aria-hidden="true" />
-                    </Link>
-                  </article>
-                ))}
-              </div>
-            )}
+              {content.resources !== undefined && (
+                <div className="inquiry-resources">
+                  {content.resources.map((resource) => (
+                    <article className="inquiry-resource" key={resource.href}>
+                      <h3>{resource.title}</h3>
+                      <p>{resource.description}</p>
+                      <Link to={resource.href} className="editorial-link ui-focus">
+                        {resource.cta}
+                        <ArrowUpRight size={14} aria-hidden="true" />
+                      </Link>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <div className="inquiry-reassurance">
               <h3>{content.reassurance.title}</h3>
@@ -70,30 +70,30 @@ export default function DemandeClassement() {
                   </li>
                 ))}
               </ul>
-            </div>
 
-            <div className="inquiry-accreditation">
-              <img
-                src="/Inspection_RVB.jpg"
-                alt={content.accreditation.imageAlt}
-                width={1440}
-                height={2399}
-                loading="lazy"
-                decoding="async"
-                className="h-24 w-auto shrink-0"
-              />
-              <div>
-                <p className="font-medium text-ink">{content.accreditation.numberLabel}</p>
-                <p>{content.accreditation.scopePrefix}</p>
-                <a
-                  href={COFRAC_ACCREDITATION_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="editorial-link ui-focus"
-                >
-                  {content.accreditation.scopeLinkLabel}
-                  <ArrowUpRight size={14} aria-hidden="true" />
-                </a>
+              <div className="inquiry-accreditation">
+                <img
+                  src="/Inspection_RVB.jpg"
+                  alt={content.accreditation.imageAlt}
+                  width={1440}
+                  height={2399}
+                  loading="lazy"
+                  decoding="async"
+                  className="h-24 w-auto shrink-0"
+                />
+                <div>
+                  <p className="font-medium text-ink">{content.accreditation.numberLabel}</p>
+                  <p>{content.accreditation.scopePrefix}</p>
+                  <a
+                    href={COFRAC_ACCREDITATION_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="editorial-link ui-focus"
+                  >
+                    {content.accreditation.scopeLinkLabel}
+                    <ArrowUpRight size={14} aria-hidden="true" />
+                  </a>
+                </div>
               </div>
             </div>
           </aside>

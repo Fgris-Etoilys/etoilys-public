@@ -26,7 +26,6 @@ type FormContent = {
     intro: string;
     requiredNote: string;
     sections: { contact: string; property: string };
-    telephoneHint: string;
     labels: {
       nom: string;
       prenom: string;
@@ -108,7 +107,6 @@ export const formContent = {
       intro: 'Vos coordonnées et l’adresse du logement, simplement.',
       requiredNote: '* Champs obligatoires',
       sections: { contact: 'Vos coordonnées', property: 'Votre logement' },
-      telephoneHint: 'Hors de France, ajoutez l’indicatif du pays (ex. +32 ou +44).',
       labels: {
         nom: 'Nom',
         prenom: 'Prénom',
@@ -218,7 +216,6 @@ export const formContent = {
       intro: 'Just your contact details and the accommodation address.',
       requiredNote: '* Required fields',
       sections: { contact: 'Your contact details', property: 'Your accommodation' },
-      telephoneHint: 'Outside France, include your country code (e.g. +44 or +32).',
       labels: {
         nom: 'Last name',
         prenom: 'First name',
@@ -330,7 +327,6 @@ export const formContent = {
       intro: 'Alleen uw contactgegevens en het adres van de vakantiewoning.',
       requiredNote: '* Verplichte velden',
       sections: { contact: 'Uw contactgegevens', property: 'Uw vakantiewoning' },
-      telephoneHint: 'Buiten Frankrijk: voeg uw landcode toe (bijv. +31 of +32).',
       labels: {
         nom: 'Achternaam',
         prenom: 'Voornaam',

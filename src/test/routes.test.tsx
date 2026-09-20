@@ -61,6 +61,8 @@ describe('routing', () => {
       screen.getByRole('heading', { level: 1, name: contactPageContent.fr.hero.title })
     ).toBeInTheDocument();
     expect(screen.getByRole('textbox', { name: /email/i })).toBeRequired();
+    expect(screen.queryByText('1345 route de Dautres')).not.toBeInTheDocument();
+    expect(screen.queryByText('24150 Mauzac et Grand Castang')).not.toBeInTheDocument();
   });
 
   it('renders public classement simulator page', () => {

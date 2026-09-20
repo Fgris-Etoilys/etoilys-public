@@ -322,12 +322,13 @@ export default function DemandeClassementForm({
                 onChange={handleChange}
                 error={errors.telephone}
                 placeholder={demandeContent.placeholders.telephone}
-                helperText={demandeContent.telephoneHint}
                 required
               />
             </div>
           </div>
         </fieldset>
+
+        <div className="inquiry-fieldset-divider" aria-hidden="true" />
 
         <fieldset className="inquiry-fieldset" disabled={isSubmitting}>
           <legend>{demandeContent.sections.property}</legend>

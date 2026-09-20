@@ -38,7 +38,7 @@ export const requestClassificationPageContent = {
       {
         title: 'Faire une première simulation',
         description:
-          'Testez gratuitement votre logement pour voir vers quelle catégorie de classement il se situe.',
+          'Testez votre logement pour voir vers quelle catégorie de classement il se situe.',
         cta: 'Lancer la simulation',
         href: '/simulateur',
       },
@@ -76,7 +76,7 @@ export const requestClassificationPageContent = {
     reassurance: {
       title: 'Why Etoilys?',
       items: [
-        'Cofrac Inspection accredited body',
+        'Inspection body accredited by Cofrac',
         'A simple process, with no complex file to prepare',
         'One contact person at every step',
         'An inspection usually arranged within two weeks',
@@ -105,7 +105,7 @@ export const requestClassificationPageContent = {
     reassurance: {
       title: 'Waarom Etoilys?',
       items: [
-        'Cofrac Inspection-geaccrediteerde instelling',
+        'Door Cofrac geaccrediteerde inspectie-instelling',
         'Een eenvoudige procedure, zonder ingewikkeld dossier',
         'Eén contactpersoon in elke stap',
         'Een inspectie gemiddeld binnen twee weken georganiseerd',

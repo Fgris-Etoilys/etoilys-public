@@ -1400,20 +1400,24 @@
   }
 
   .inquiry-intro > .inquiry-response {
+    align-items: center;
     margin-top: 22px;
+  }
+
+  .inquiry-intro > .inquiry-response svg {
+    margin-top: 0;
   }
 
   .inquiry-contact-layout {
     display: grid;
-    grid-template-areas: 'intro' 'methods' 'form' 'address';
+    grid-template-areas: 'side' 'form';
     gap: 24px;
   }
 
-  .inquiry-contact-layout > .inquiry-intro {
-    grid-area: intro;
-  }
-  .inquiry-contact-methods {
-    grid-area: methods;
+  .inquiry-contact-side {
+    display: grid;
+    grid-area: side;
+    gap: 24px;
   }
   .inquiry-contact-layout > .inquiry-form-surface {
     grid-area: form;
@@ -1439,11 +1443,6 @@
 
   .inquiry-contact-label {
     @apply mb-1 block text-xs font-medium text-muted;
-  }
-
-  .inquiry-address {
-    @apply text-sm not-italic leading-comfortable text-muted;
-    grid-area: address;
   }
 
   .inquiry-request-intro {
@@ -1497,8 +1496,15 @@
   .inquiry-fieldset {
     @apply min-w-0 border-0 p-0;
   }
+  .inquiry-fieldset-divider {
+    @apply border-t border-ink/15;
+    margin-block: -2px -10px;
+  }
   .inquiry-fieldset > legend {
     @apply mb-5 w-full text-base font-semibold text-ink;
+  }
+  .inquiry-fieldset-divider + .inquiry-fieldset > legend {
+    @apply mb-3;
   }
   .inquiry-form .ui-field {
     @apply min-h-[52px] rounded-control border-ink/25 bg-paper/30 text-base;
@@ -1587,7 +1593,7 @@
   }
 
   .inquiry-after {
-    @apply min-w-0;
+    @apply grid min-w-0 gap-5;
   }
   .inquiry-after-copy {
     @apply rounded-editorial bg-surface-sage p-6;
@@ -1599,10 +1605,13 @@
     @apply text-sm text-muted;
   }
   .inquiry-resources {
-    @apply mt-4 grid gap-3;
+    @apply mt-5 grid border-t border-ink/10;
   }
   .inquiry-resource {
-    @apply border-t border-ink/15 pt-4;
+    @apply pt-4;
+  }
+  .inquiry-resource + .inquiry-resource {
+    @apply mt-4 border-t border-ink/10;
   }
   .inquiry-resource h3,
   .inquiry-reassurance h3 {
@@ -1616,7 +1625,7 @@
     @apply mt-2;
   }
   .inquiry-reassurance {
-    @apply mt-6 border-y border-ink/15 py-5;
+    @apply rounded-editorial bg-surface-warm p-6;
   }
   .inquiry-reassurance ul {
     @apply mt-3 grid gap-3 p-0;
@@ -1629,7 +1638,7 @@
     @apply mt-1 shrink-0 text-copper;
   }
   .inquiry-accreditation {
-    @apply mt-6 flex items-center gap-5 px-1 text-xs text-muted;
+    @apply mt-5 flex items-center gap-5 border-t border-ink/10 pt-5 text-xs text-muted;
   }
 
   @media (min-width: 681px) {
@@ -1642,23 +1651,19 @@
     .inquiry-contact-methods {
       @apply grid grid-cols-2 gap-8;
     }
-    .inquiry-after {
-      @apply grid grid-cols-2 items-start gap-8;
-    }
-    .inquiry-accreditation {
-      @apply mt-2;
-    }
   }
 
   @media (min-width: 1024px) {
     .inquiry-contact-layout {
       grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-      grid-template-rows: auto auto 1fr;
-      grid-template-areas: 'intro form' 'methods form' 'address form';
+      grid-template-areas: 'side form';
       column-gap: clamp(40px, 5vw, 72px);
-      row-gap: 32px;
+      align-items: start;
     }
-    .inquiry-contact-layout > .inquiry-intro {
+    .inquiry-contact-side {
+      gap: 34px;
+    }
+    .inquiry-contact-side > .inquiry-intro {
       @apply pt-5;
     }
     .inquiry-contact-methods {
@@ -1667,22 +1672,13 @@
     .inquiry-contact-link {
       @apply py-5;
     }
-    .inquiry-address {
-      @apply pt-2;
-    }
     .inquiry-request-layout {
       grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
       gap: 36px;
       align-items: start;
     }
-    .inquiry-after {
-      @apply block;
-    }
     .inquiry-after-copy {
       padding: clamp(24px, 2.5vw, 36px);
-    }
-    .inquiry-accreditation {
-      @apply mt-8 px-3;
     }
   }
 
@@ -1718,15 +1714,15 @@
     .inquiry-after-copy {
       @apply p-5;
     }
+    .inquiry-reassurance {
+      @apply p-5;
+    }
     .inquiry-after h2 {
       @apply mt-4;
     }
     .inquiry-resource h3,
     .inquiry-reassurance h3 {
       @apply text-sm;
-    }
-    .inquiry-address {
-      @apply text-xs;
     }
   }
 

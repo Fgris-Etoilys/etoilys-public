@@ -40,8 +40,8 @@ describe('public form pages', () => {
 
     if (kind === 'contact') {
       expect(container.querySelector('a[href="mailto:contact@etoilys.fr"]')).toBeVisible();
-      expect(container).toHaveTextContent('1345 route de Dautres');
-      expect(container).toHaveTextContent('24150 Mauzac et Grand Castang');
+      expect(container).not.toHaveTextContent('1345 route de Dautres');
+      expect(container).not.toHaveTextContent('24150 Mauzac et Grand Castang');
     } else {
       if (locale === 'fr') {
         expect(screen.getByRole('link', { name: /Lire le guide/i })).toHaveAttribute(

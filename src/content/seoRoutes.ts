@@ -327,7 +327,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/demande-classement': {
-    lastModified: '2026-09-19',
+    lastModified: '2026-09-20',
     title: 'Demande de classement meublé de tourisme',
     description:
       'Demandez le classement de votre meublé de tourisme. Procédure simple. Etoilys vous recontacte sous 24h pour organiser la visite.',
@@ -412,7 +412,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/en/request-a-classification': {
-    lastModified: '2026-09-19',
+    lastModified: '2026-09-20',
     title: 'Classification request',
     description:
       'Submit your furnished tourist accommodation classification request to Etoilys in a few minutes.',
@@ -497,7 +497,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'contact',
   },
   '/nl/classificatie-aanvragen': {
-    lastModified: '2026-09-19',
+    lastModified: '2026-09-20',
     title: 'Classificatie aanvragen',
     description:
       'Dien in enkele minuten uw aanvraag in voor de officiële classificatie van uw vakantiewoning in de momenteel bediende gebieden.',
