@@ -528,14 +528,9 @@ describe('SimulationClassement', () => {
       ]);
       renderAt(`/simulateur/${SIMULATION_ID}`);
       expect(await screen.findByRole('heading', { name: 'Ancienne pièce' })).toBeInTheDocument();
-      fireEvent.click(screen.getByRole('button', { name: 'Modifier Ancienne pièce' }));
-      expect(screen.getByRole('combobox')).toHaveValue(type);
-      expect(
-        within(screen.getByRole('combobox'))
-          .getAllByRole('option')
-          .find((option) => option.getAttribute('value') === type)
-      ).toBeDisabled();
-      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(screen.queryByRole('button', { name: /modifier ancienne/i })).not.toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: /supprimer ancienne/i }));
+      expect(screen.getByRole('button', { name: /^Supprimer$/ })).toBeEnabled();
       fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
       expect(screen.queryByRole('option', { name: /salle de bain|^WC$/i })).not.toBeInTheDocument();
       expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);

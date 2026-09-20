@@ -159,6 +159,10 @@ function isPieceType(value: string): value is PieceType {
   return [...INTERIOR_PIECE_TYPES, ...EXTERIOR_PIECE_TYPES].includes(value as PieceType);
 }
 
+function isLegacyBathroomPieceType(pieceType: PieceType) {
+  return pieceType === 'SALLE_DE_BAIN' || pieceType === 'WC';
+}
+
 function createSimulationParametersForm(
   grille: PublicSimulationDto['grille'] | undefined
 ): SimulationParametersForm {
@@ -1724,6 +1728,7 @@ export default function SimulationClassement() {
     const supportsSleepingCapacity = canPieceHaveSleepingCapacity(piece.type_piece);
     const isConfirmingDelete = confirmingDeleteId === piece.id;
     const canUpdatePiece = Boolean(piece.id);
+    const canEditPiece = canUpdatePiece && !isLegacyBathroomPieceType(piece.type_piece);
     const pieceDisplayName = getPieceDisplayName(piece);
     const PieceIcon = PIECE_TYPE_ICONS[piece.type_piece];
     const sleepingCapacity = getValidSleepingCapacity(piece);
@@ -1797,16 +1802,17 @@ export default function SimulationClassement() {
           </div>
         ) : (
           <div className="classement-piece-actions">
-            <button
-              type="button"
-              className="ui-focus inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-3 text-sm text-ink hover:bg-paper disabled:opacity-50"
-              aria-label={`Modifier ${pieceDisplayName}`}
-              disabled={!canUpdatePiece}
-              onClick={() => openEditPanel(piece)}
-            >
-              <Pencil aria-hidden="true" className="h-4 w-4" />
-              Modifier
-            </button>
+            {canEditPiece && (
+              <button
+                type="button"
+                className="ui-focus inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-3 text-sm text-ink hover:bg-paper disabled:opacity-50"
+                aria-label={`Modifier ${pieceDisplayName}`}
+                onClick={() => openEditPanel(piece)}
+              >
+                <Pencil aria-hidden="true" className="h-4 w-4" />
+                Modifier
+              </button>
+            )}
             <button
               type="button"
               className="ui-focus inline-flex h-11 w-11 items-center justify-center rounded-control text-muted hover:bg-alert-100 hover:text-alert-500 disabled:opacity-50"
