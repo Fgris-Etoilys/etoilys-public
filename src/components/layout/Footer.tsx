@@ -6,12 +6,9 @@ import { layoutContent } from '../../i18n/layoutContent';
 import { getLocaleFromPath, getLocalizedPath } from '../../i18n/routeHelpers';
 
 export default function Footer() {
-  const { pathname } = useLocation();
-  const locale = getLocaleFromPath(pathname);
+  const locale = getLocaleFromPath(useLocation().pathname);
   const content = layoutContent[locale].footer;
   const contactHref = getLocalizedPath('contact', locale);
-  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
-  const isContactPage = contactHref === normalizedPath;
   return (
     <footer className="site-footer">
       <div className="container-editorial">
@@ -38,13 +35,11 @@ export default function Footer() {
             <a href="mailto:contact@etoilys.fr" className="ui-focus">
               contact@etoilys.fr
             </a>
-            {!isContactPage && (
-              <address className="footer-address">
-                1345 route de Dautres
-                <br />
-                24150 Mauzac et Grand Castang
-              </address>
-            )}
+            <address className="footer-address">
+              1345 route de Dautres
+              <br />
+              24150 Mauzac et Grand Castang
+            </address>
           </div>
           <nav className="site-footer-links" aria-label={content.linksLabel}>
             {content.columns.map((column) => (
