@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { GridCriterion } from '../../content/simulatorGrid';
 import type { CritereAide } from '../../content/criteresAide';
 import CriterionHelpDialog from './CriterionHelpDialog';
@@ -49,6 +49,7 @@ describe('CriterionHelpDialog', () => {
     render(<HelpExample />);
     const trigger = screen.getByRole('button');
     trigger.focus();
+    const restoreFocus = vi.spyOn(trigger, 'focus');
     fireEvent.click(trigger);
     const dialog = screen.getByRole('dialog');
     const closeButton = within(dialog).getByRole('button');
@@ -62,24 +63,31 @@ describe('CriterionHelpDialog', () => {
     fireEvent.keyDown(closeButton, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
+    expect(restoreFocus).toHaveBeenCalledWith({ preventScroll: true });
     expect(document.body.style.overflow).toBe('scroll');
   });
 
   it('keeps structured help and image ordering when loading completes without moving focus', () => {
+    const initialClose = vi.fn();
+    const latestClose = vi.fn();
     const { rerender } = render(
-      <CriterionHelpDialog criterion={criterion} aide={null} isLoading onClose={() => undefined} />
+      <CriterionHelpDialog criterion={criterion} aide={null} isLoading onClose={initialClose} />
     );
     const content = screen.getByRole('region');
     content.focus();
     rerender(
       <CriterionHelpDialog
-        criterion={criterion}
+        criterion={{ ...criterion }}
         aide={aide}
         isLoading={false}
-        onClose={() => undefined}
+        onClose={latestClose}
       />
     );
     expect(content).toHaveFocus();
+    expect(document.body.style.overflow).toBe('hidden');
+    fireEvent.keyDown(content, { key: 'Escape' });
+    expect(initialClose).not.toHaveBeenCalled();
+    expect(latestClose).toHaveBeenCalledOnce();
     expect(screen.getAllByRole('list')).toHaveLength(2);
     expect(screen.getByText(aide.non_applicabilite!)).toBeInTheDocument();
     expect(screen.getByText(aide.notes!)).toBeInTheDocument();
@@ -87,5 +95,23 @@ describe('CriterionHelpDialog', () => {
       screen.getByRole('img').compareDocumentPosition(screen.getByText(aide.description_suite!)) &
         Node.DOCUMENT_POSITION_FOLLOWING
     ).toBeTruthy();
+  });
+
+  it('cleans up when its trigger has been removed', () => {
+    const trigger = document.createElement('button');
+    document.body.append(trigger);
+    trigger.focus();
+    const restoreFocus = vi.spyOn(trigger, 'focus');
+    document.body.style.overflow = 'auto';
+    const onClose = vi.fn();
+    const { unmount } = render(
+      <CriterionHelpDialog criterion={criterion} aide={aide} isLoading={false} onClose={onClose} />
+    );
+    trigger.remove();
+    unmount();
+    expect(document.body.style.overflow).toBe('auto');
+    expect(restoreFocus).not.toHaveBeenCalled();
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(onClose).not.toHaveBeenCalled();
   });
 });

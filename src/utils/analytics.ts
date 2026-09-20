@@ -131,7 +131,6 @@ const ALLOWED_CUSTOM_PROPERTIES = new Set<string>([
   'missing_mandatory_bucket',
   'result_outcome',
   'has_sleeping_capacity_issue',
-  'has_bathroom_issue',
   'has_missing_criteria',
 ]);
 
@@ -953,7 +952,6 @@ export function trackClassementSimulatorResultRequested(input: {
 
 export function trackClassementSimulatorResultBlocked(input: {
   hasSleepingCapacityIssue: boolean;
-  hasBathroomIssue: boolean;
   hasMissingCriteria: boolean;
   missingMandatoryCount: number;
   remainingCriteriaCount: number;
@@ -962,7 +960,6 @@ export function trackClassementSimulatorResultBlocked(input: {
     simulator: 'classement',
     result_outcome: 'needs_completion',
     has_sleeping_capacity_issue: input.hasSleepingCapacityIssue,
-    has_bathroom_issue: input.hasBathroomIssue,
     has_missing_criteria: input.hasMissingCriteria,
     missing_mandatory_bucket: getCriteriaCountBucket(input.missingMandatoryCount),
     remaining_criteria_bucket: getCriteriaCountBucket(input.remainingCriteriaCount),

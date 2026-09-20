@@ -1,11 +1,7 @@
 import { jsPDF } from 'jspdf';
 import autoTable, { type UserOptions } from 'jspdf-autotable';
-import {
-  getCriterionByNumber,
-  getCriterionStatusForCategory,
-  type GridSummary,
-} from '../content/simulatorGrid';
-import type { LogementDto, PublicSimulationGridDto, RapportProvisoireDto } from './simulatorApi';
+import { getCriterionByNumber, getCriterionStatusForCategory } from '../content/simulatorGrid';
+import type { SimulationClassementPdfInput } from './simulationClassementPdf.types';
 import {
   canPieceHaveSleepingCapacity,
   formatFloor,
@@ -19,17 +15,7 @@ import {
   getSimulatorPdfPalette,
   normalizePdfText,
   type PdfColor,
-} from './simulatorExport';
-
-export interface SimulationClassementPdfInput {
-  grid: GridSummary;
-  rapport: RapportProvisoireDto;
-  grille: PublicSimulationGridDto | undefined;
-  logement: LogementDto | null;
-  totalSleepingCapacity: number;
-  generatedAt: Date;
-  simulationId: string;
-}
+} from './simulatorPdfShared';
 
 const number = (value: number | null | undefined, unit = '') =>
   typeof value === 'number' && Number.isFinite(value)

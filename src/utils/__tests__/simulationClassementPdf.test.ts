@@ -2,11 +2,9 @@ import { jsPDF } from 'jspdf';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { buildGridSummary, type GridCriterion } from '../../content/simulatorGrid';
 import type { PieceDto } from '../simulatorApi';
-import {
-  createSimulationClassementPdf,
-  type SimulationClassementPdfInput,
-} from '../simulationClassementPdf';
-import * as simulatorExport from '../simulatorExport';
+import { createSimulationClassementPdf } from '../simulationClassementPdf';
+import type { SimulationClassementPdfInput } from '../simulationClassementPdf.types';
+import * as simulatorPdfShared from '../simulatorPdfShared';
 
 interface TextDraw {
   text: string;
@@ -170,7 +168,7 @@ function rowText(draws: TextDraw[], marker: string): string {
 }
 
 beforeEach(() => {
-  vi.spyOn(simulatorExport, 'getEtoilysLogoPngAsset').mockResolvedValue(null);
+  vi.spyOn(simulatorPdfShared, 'getEtoilysLogoPngAsset').mockResolvedValue(null);
 });
 
 afterEach(() => vi.restoreAllMocks());

@@ -80,6 +80,21 @@ initial lorsque la catégorie demandée n’est pas exploitable côté frontend.
 
 ## Endpoints publics simulateur
 
+Le parcours public ne propose plus la création de pièces `SALLE_DE_BAIN` ou `WC`.
+Ces valeurs restent dans `PieceType` pour afficher les anciennes simulations, sans retirer
+leurs pièces ni modifier les données reçues. Aucune pièce technique n’est ajoutée par le frontend.
+Le backend doit autoriser la vérification d’une simulation publique sans salle de bain :
+le frontend conserve le verdict de `/verifier` et ne réécrit pas `salle_de_bain_presente`.
+Les alertes et le champ de tracking associés à l’absence de salle de bain sont supprimés.
+
+Les dialogs de pièce et d’aide partagent `src/hooks/useDialog.ts` pour le clavier, le focus
+et le verrouillage du scroll. Le hook conserve le déclencheur pendant toute l’ouverture,
+même si le callback de fermeture change.
+
+Les helpers PDF communs sont dans `src/utils/simulatorPdfShared.ts`, et le contrat d’entrée
+du PDF classement dans `src/utils/simulationClassementPdf.types.ts`.
+`simulatorExport.ts` reste la façade d’export et charge le renderer classement à la demande.
+
 Endpoints disponibles d’après le Swagger local :
 
 - `GET /public/simulations`

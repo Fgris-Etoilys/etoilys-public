@@ -56,6 +56,7 @@ import {
   trackClassementSimulatorStepViewed,
 } from '../utils/analytics';
 import { exportSimulationClassementPdf } from '../utils/simulatorExport';
+import { useDialog } from '../hooks/useDialog';
 import {
   createPiece,
   deletePiece,
@@ -379,10 +380,6 @@ function getPieceCompletionWarnings({
     );
   }
 
-  if (!pieces.some((piece) => piece.type_piece === 'SALLE_DE_BAIN')) {
-    warnings.push('Aucune salle de bain n’est renseignée.');
-  }
-
   return warnings;
 }
 
@@ -658,6 +655,11 @@ function PieceTypeSelect({
           className="ui-field appearance-none py-3 pl-4 pr-12 text-sm"
         >
           <optgroup label={groupLabel}>
+            {!options.includes(value) && (
+              <option value={value} disabled>
+                {formatPieceType(value)}
+              </option>
+            )}
             {options.map((pieceType) => (
               <option key={pieceType} value={pieceType}>
                 {formatPieceType(pieceType)}
@@ -1062,47 +1064,12 @@ export default function SimulationClassement() {
     ? 'TERRASSE_OU_JARDIN_PRIVE'
     : (availableExteriorPieceTypesForCreation[0] ?? 'TERRASSE_OU_JARDIN_PRIVE');
 
-  useEffect(() => {
-    if (piecePanelMode === 'closed') {
-      return;
-    }
-
-    const previousBodyOverflow = document.body.style.overflow;
-    const previousFocus = document.activeElement;
-    document.body.style.overflow = 'hidden';
-    pieceDialogRef.current?.querySelector<HTMLSelectElement>('select')?.focus();
-
-    function handleEscapeKey(event: globalThis.KeyboardEvent) {
-      if (event.key === 'Tab') {
-        const controls = pieceDialogRef.current?.querySelectorAll<HTMLElement>(
-          ':is(button, input, select, [tabindex="0"]):not(:disabled)'
-        );
-        const first = controls?.[0];
-        const last = controls?.[controls.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last?.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first?.focus();
-        }
-      }
-      if (event.key === 'Escape') {
-        setPiecePanelMode('closed');
-        setPieceTypeScope('interior');
-        setEditingPieceId(null);
-        setPieceForm(DEFAULT_PIECE_FORM);
-        setPieceFormErrors({});
-      }
-    }
-
-    window.addEventListener('keydown', handleEscapeKey);
-    return () => {
-      window.removeEventListener('keydown', handleEscapeKey);
-      document.body.style.overflow = previousBodyOverflow;
-      if (previousFocus instanceof HTMLElement) previousFocus.focus();
-    };
-  }, [piecePanelMode]);
+  useDialog({
+    isOpen: piecePanelMode !== 'closed',
+    dialogRef: pieceDialogRef,
+    initialFocus: 'select',
+    onClose: resetPiecePanel,
+  });
 
   function resetPiecePanel() {
     setPiecePanelMode('closed');
@@ -1187,7 +1154,6 @@ export default function SimulationClassement() {
     if (resultOutcome === 'needs_completion' && result.kind === 'verification') {
       trackClassementSimulatorResultBlocked({
         hasSleepingCapacityIssue: result.verification.nb_couchages_suffisants === false,
-        hasBathroomIssue: result.verification.salle_de_bain_presente === false,
         hasMissingCriteria: getVerificationMissingCriteriaCount(result.verification) > 0,
         missingMandatoryCount:
           result.verification.criteres_obligatoires_a_cocher?.criteres_non_coches?.length ?? 0,
@@ -1986,6 +1952,7 @@ export default function SimulationClassement() {
       >
         <div
           ref={pieceDialogRef}
+          tabIndex={-1}
           role="dialog"
           aria-modal="true"
           aria-labelledby="piece-modal-title"

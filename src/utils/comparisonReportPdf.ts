@@ -8,7 +8,8 @@ import {
   getEtoilysLogoPngAsset,
   getSimulatorPdfPalette,
   normalizePdfText,
-} from './simulatorExport';
+  type PdfColor,
+} from './simulatorPdfShared';
 
 export interface ComparisonPdfReport {
   locale: Locale;
@@ -34,7 +35,7 @@ export interface ComparisonPdfReport {
   generatedAt?: Date;
 }
 
-type Color = [number, number, number];
+type Color = PdfColor;
 
 export async function createComparisonReportPdf(report: ComparisonPdfReport): Promise<jsPDF> {
   const copy = simulatorReportContent[report.locale === 'en' ? 'en' : 'fr'];

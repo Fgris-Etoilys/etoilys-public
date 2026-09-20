@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
 import { expect, it, vi } from 'vitest';
 import { createComparisonReportPdf, type ComparisonPdfReport } from '../comparisonReportPdf';
-import * as simulatorExport from '../simulatorExport';
+import * as simulatorPdfShared from '../simulatorPdfShared';
 
 interface TextDraw {
   text: string;
@@ -11,7 +11,7 @@ interface TextDraw {
 }
 
 it('preserves report data and localized links while paginating long notes without overlapping text', async () => {
-  const logo = vi.spyOn(simulatorExport, 'getEtoilysLogoPngAsset').mockResolvedValue(null);
+  const logo = vi.spyOn(simulatorPdfShared, 'getEtoilysLogoPngAsset').mockResolvedValue(null);
   let draws: TextDraw[] = [];
   const captureText = function (
     this: jsPDF,

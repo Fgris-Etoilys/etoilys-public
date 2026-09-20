@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef } from 'react';
+import { useId, useRef } from 'react';
+import { useDialog } from '../../hooks/useDialog';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, BookOpen, Info, X } from 'lucide-react';
 import type { GridCriterion } from '../../content/simulatorGrid';
@@ -102,55 +103,14 @@ export default function CriterionHelpDialog({
   onClose,
 }: CriterionHelpDialogProps) {
   const titleId = useId();
-  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const dialogRef = useRef<HTMLElement | null>(null);
 
-  useEffect(() => {
-    if (!criterion) {
-      return undefined;
-    }
-
-    const trigger = document.activeElement;
-    const previousBodyOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeButtonRef.current?.focus();
-
-    return () => {
-      document.body.style.overflow = previousBodyOverflow;
-      if (trigger instanceof HTMLElement && trigger.isConnected) {
-        trigger.focus({ preventScroll: true });
-      }
-    };
-  }, [criterion]);
-
-  useEffect(() => {
-    if (!criterion) {
-      return undefined;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-      if (event.key === 'Tab') {
-        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
-          'button:not(:disabled), a[href], [tabindex="0"]'
-        );
-        const first = focusable?.[0];
-        const last = focusable?.[focusable.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last?.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first?.focus();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [criterion, onClose]);
+  useDialog({
+    isOpen: criterion !== null,
+    dialogRef,
+    initialFocus: 'button',
+    onClose,
+  });
 
   if (!criterion || typeof document === 'undefined') {
     return null;
@@ -172,6 +132,7 @@ export default function CriterionHelpDialog({
     >
       <section
         ref={dialogRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
@@ -187,7 +148,6 @@ export default function CriterionHelpDialog({
             <span>Aide - Critère {criterion.num_critere}</span>
           </h3>
           <button
-            ref={closeButtonRef}
             type="button"
             className="ui-focus inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-control border border-ink/15 text-muted transition-colors duration-200 hover:border-copper hover:bg-paper hover:text-copper motion-reduce:transition-none"
             aria-label="Fermer l’aide du critère"

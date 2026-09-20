@@ -318,8 +318,8 @@ const logementWithPiecesResponse = {
 
 const completeLogementResponse = {
   id: 'logement-id',
-  nb_pieces_habitation: 2,
-  surface_totale: 42,
+  nb_pieces_habitation: 1,
+  surface_totale: 24,
   pieces: [
     {
       id: 'piece-complete-bedroom',
@@ -333,21 +333,6 @@ const completeLogementResponse = {
       nombre_lits: 4,
       format_lits: null,
       literie: true,
-      surface_minimum_atteinte: true,
-      capacite_lits_atteinte: true,
-    },
-    {
-      id: 'piece-complete-bathroom',
-      nom: 'Salle de bain 1',
-      type_piece: 'SALLE_DE_BAIN',
-      surface: 6,
-      ouvrant: true,
-      prise: true,
-      ventilation: true,
-      type_literie: null,
-      nombre_lits: null,
-      format_lits: null,
-      literie: false,
       surface_minimum_atteinte: true,
       capacite_lits_atteinte: true,
     },
@@ -521,6 +506,85 @@ const expandSimulationParameters = async () => {
 };
 
 describe('SimulationClassement', () => {
+  it.each(['SALLE_DE_BAIN', 'WC'])(
+    'reprend une ancienne pièce %s sans la proposer en création',
+    async (type) => {
+      const fetchMock = mockFetchJsonSequence([
+        { body: simulationResponse },
+        {
+          body: {
+            ...completeLogementResponse,
+            pieces: [
+              ...completeLogementResponse.pieces,
+              {
+                id: 'legacy-room',
+                nom: 'Ancienne pièce',
+                type_piece: type,
+                surface: 0,
+              },
+            ],
+          },
+        },
+      ]);
+      renderAt(`/simulateur/${SIMULATION_ID}`);
+      expect(await screen.findByRole('heading', { name: 'Ancienne pièce' })).toBeInTheDocument();
+      fireEvent.click(screen.getByRole('button', { name: 'Modifier Ancienne pièce' }));
+      expect(screen.getByRole('combobox')).toHaveValue(type);
+      expect(
+        within(screen.getByRole('combobox'))
+          .getAllByRole('option')
+          .find((option) => option.getAttribute('value') === type)
+      ).toBeDisabled();
+      fireEvent.keyDown(window, { key: 'Escape' });
+      fireEvent.click(screen.getByRole('button', { name: /ajouter une pièce intérieure/i }));
+      expect(screen.queryByRole('option', { name: /salle de bain|^WC$/i })).not.toBeInTheDocument();
+      expect(getNonModelFetchCalls(fetchMock)).toHaveLength(2);
+    }
+  );
+
+  it('calcule sans salle de bain et sans création de pièce implicite', async () => {
+    const fetchMock = mockFetchJsonSequence([
+      { body: simulationResponse },
+      { body: completeLogementResponse },
+      { body: true },
+      { body: successfulRapportResponse },
+    ]);
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+    await screen.findByRole('heading', { name: /chambre 1/i });
+    clickGoToGrid();
+    fireEvent.click(
+      await screen.findByRole('button', { name: /voir le résultat de ma simulation/i })
+    );
+    await waitFor(() =>
+      expect(analyticsMock.trackClassementSimulatorCalculated).toHaveBeenCalledWith(
+        expect.objectContaining({ resultOutcome: 'favorable' })
+      )
+    );
+    expect(getNonModelFetchCalls(fetchMock).map(([url]) => String(url))).toEqual([
+      `/api/public/simulations/${SIMULATION_ID}`,
+      `/api/public/simulations/${SIMULATION_ID}/logement`,
+      `/api/public/simulations/${SIMULATION_ID}/verifier`,
+      `/api/public/simulations/${SIMULATION_ID}/rapport`,
+    ]);
+  });
+
+  it.each(['interior', 'exterior'])('exclut SDB et WC des types créables (%s)', async (scope) => {
+    mockFetchJsonSequence([{ body: simulationResponse }, { body: emptyLogementResponse }]);
+    renderAt(`/simulateur/${SIMULATION_ID}`);
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name:
+          scope === 'interior' ? /ajouter une pièce intérieure/i : /ajouter un espace extérieur/i,
+      })
+    );
+    const values = within(screen.getByRole('dialog'))
+      .getAllByRole('option')
+      .map((option) => option.getAttribute('value'));
+    expect(values.length).toBeGreaterThan(0);
+    expect(values).not.toContain('SALLE_DE_BAIN');
+    expect(values).not.toContain('WC');
+  });
+
   it('exporte le snapshot PDF sans recalcul et permet de réessayer après un échec', async () => {
     let resolveExport: (() => void) | undefined;
     const pendingExport = new Promise<void>((resolve) => {
@@ -578,31 +642,45 @@ describe('SimulationClassement', () => {
     expect(analyticsMock.trackClassementSimulatorCalculated).not.toHaveBeenCalled();
   });
 
-  it('confine le focus dans la pièce et le restitue au déclencheur', async () => {
-    mockFetchJsonSequence([{ body: simulationResponse }, { body: emptyLogementResponse }]);
-    renderAt(`/simulateur/${SIMULATION_ID}`);
-    const trigger = await screen.findByRole('button', { name: /^ajouter une pièce$/i });
-    trigger.focus();
-    fireEvent.click(trigger);
+  it.each(['create', 'edit'])(
+    'confine le focus et le restitue au déclencheur (%s)',
+    async (mode) => {
+      mockFetchJsonSequence([{ body: simulationResponse }, { body: logementWithPiecesResponse }]);
+      renderAt(`/simulateur/${SIMULATION_ID}`);
+      const trigger = await screen.findByRole('button', {
+        name: mode === 'create' ? /ajouter une pièce intérieure/i : /modifier chambre 1/i,
+      });
+      trigger.focus();
+      document.body.style.overflow = 'scroll';
+      fireEvent.click(trigger);
 
-    expect(screen.getByLabelText(/type de pièce/i)).toHaveFocus();
-    const closeButton = screen.getByRole('button', { name: /fermer la pièce/i });
-    const cancelButton = screen.getByRole('button', { name: /annuler/i });
-    closeButton.focus();
-    expect(closeButton).toHaveFocus();
-    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
-    expect(cancelButton).toHaveFocus();
-    fireEvent.keyDown(window, { key: 'Tab' });
-    expect(closeButton).toHaveFocus();
-    fireEvent.keyDown(window, { key: 'Escape' });
+      expect(screen.getByLabelText(/type de pièce/i)).toHaveFocus();
+      expect(document.body.style.overflow).toBe('hidden');
+      const surfaceInput = screen.getByRole('spinbutton', { name: /surface/i });
+      surfaceInput.focus();
+      fireEvent.change(surfaceInput, { target: { value: '12' } });
+      expect(surfaceInput).toHaveFocus();
+      const closeButton = screen.getByRole('button', { name: /fermer la pièce/i });
+      const cancelButton = screen.getByRole('button', { name: /annuler/i });
+      const restoreFocus = vi.spyOn(trigger, 'focus');
+      closeButton.focus();
+      expect(closeButton).toHaveFocus();
+      fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+      expect(cancelButton).toHaveFocus();
+      fireEvent.keyDown(window, { key: 'Tab' });
+      expect(closeButton).toHaveFocus();
+      fireEvent.keyDown(window, { key: 'Escape' });
 
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-    expect(trigger).toHaveFocus();
-    expect(document.body.style.overflow).toBe('');
-  });
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+      expect(restoreFocus).toHaveBeenCalledWith({ preventScroll: true });
+      expect(document.body.style.overflow).toBe('scroll');
+    }
+  );
 
   afterEach(() => {
     cleanup();
+    document.body.style.overflow = '';
     vi.restoreAllMocks();
     Object.values(analyticsMock).forEach((mock) => mock.mockClear());
   });
@@ -1204,13 +1282,7 @@ describe('SimulationClassement', () => {
       expect(exteriorOpeningSwitch()).toBeInTheDocument();
     }
 
-    for (const pieceType of [
-      'CUISINE',
-      'COULOIRS_ET_DEGAGEMENTS',
-      'WC',
-      'SALLE_DE_BAIN',
-      'PIECE_SANS_OUVRANT',
-    ]) {
+    for (const pieceType of ['CUISINE', 'COULOIRS_ET_DEGAGEMENTS', 'PIECE_SANS_OUVRANT']) {
       fireEvent.change(typeSelect, { target: { value: pieceType } });
       expect(exteriorOpeningSwitch()).not.toBeInTheDocument();
     }
@@ -2251,7 +2323,6 @@ describe('SimulationClassement', () => {
     expectTextMatching(/2 critères/i, /renseignés/i);
     expect(screen.getByText(/accueillir 2 personnes/i)).toBeInTheDocument();
     expect(screen.getByText(/indiquée est de 4 personnes/i)).toBeInTheDocument();
-    expect(screen.getByText(/aucune salle de bain/i)).toBeInTheDocument();
     expect(screen.queryByText(/commentaire/i)).not.toBeInTheDocument();
     expect(getNonModelFetchCalls(fetchMock)[2]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verifier`
@@ -2259,13 +2330,12 @@ describe('SimulationClassement', () => {
     expect(getNonModelFetchCalls(fetchMock)[3]?.[0]).toBe(
       `/api/public/simulations/${SIMULATION_ID}/verification`
     );
-    expect(analyticsMock.trackClassementSimulatorResultBlocked).toHaveBeenCalledWith(
-      expect.objectContaining({
-        hasSleepingCapacityIssue: true,
-        hasBathroomIssue: true,
-        hasMissingCriteria: true,
-      })
-    );
+    expect(analyticsMock.trackClassementSimulatorResultBlocked).toHaveBeenCalledWith({
+      hasSleepingCapacityIssue: true,
+      hasMissingCriteria: true,
+      missingMandatoryCount: 1,
+      remainingCriteriaCount: expect.any(Number),
+    });
     expect(analyticsMock.trackClassementSimulatorCalculated).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole('button', { name: /afficher dans la grille/i }));
