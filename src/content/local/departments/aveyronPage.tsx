@@ -110,6 +110,31 @@ export const AVEYRON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
       },
     },
   },
+  // Sources Aveyron Attractivité Tourisme et OT du Pays Decazevillois vérifiées le 20 septembre 2026.
+  localModule: {
+    type: 'territorial-service',
+    title: 'Vos repères pour un classement en Aveyron',
+    intro:
+      'Le service départemental de classement a changé en 2026. Des ressources locales vous aident à préparer votre logement avant la visite.',
+    items: [
+      {
+        title: 'Votre interlocuteur en 2026',
+        body: 'Aveyron Attractivité Tourisme ne réalise plus de classements depuis la fin de son agrément, le 29 avril 2026. L’agence oriente désormais les propriétaires vers un organisme agréé ou accrédité.',
+        link: {
+          label: 'Lire l’annonce de l’agence',
+          href: 'https://www.aveyron-attractivite.fr/fin-de-lagrement-pour-le-classement-des-meubles-de-tourisme-29-avril-2026/',
+        },
+      },
+      {
+        title: 'Les ressources du Pays Decazevillois',
+        body: 'L’office de tourisme du Pays Decazevillois publie le référentiel et le mémo départemental « Les incontournables du classement ». Consultez ces documents pour préparer votre meublé et vos questions avant la visite.',
+        link: {
+          label: 'Consulter les documents',
+          href: 'https://www.tourisme-paysdecazevillois.fr/les-meubles-de-tourisme/',
+        },
+      },
+    ],
+  },
   faq: {
     eyebrow: 'AVANT DE VOUS LANCER',
     title: 'Questions fréquentes sur le classement en Aveyron',

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
+import { MemoryRouter, Route, Routes, StaticRouter } from 'react-router-dom';
 import type { ReactElement } from 'react';
 import Layout from '../components/layout/Layout';
 import CityLandingPage from '../components/local/CityLandingPage';
@@ -15,6 +16,7 @@ import type {
   CityAreaId,
   DepartmentAreaId,
   DestinationAreaId,
+  LocalChildAreaId,
   LocalLandingPageV6CityConfig,
   LocalLandingPageV6DepartmentConfig,
   LocalRegistryEntry,
@@ -150,18 +152,12 @@ function clearSeoHead() {
     .forEach((element) => element.remove());
 }
 
-function departmentConfig(
-  departmentId: DepartmentAreaId,
-  communeLinks?: LocalLandingPageV6DepartmentConfig['serviceArea']['communeLinks']
-): LocalLandingPageV6DepartmentConfig {
-  const serviceArea = { ...DORDOGNE_LOCAL_LANDING_PAGE_V6.serviceArea };
-  delete serviceArea.communeLinks;
-
+function departmentConfig(departmentId: DepartmentAreaId): LocalLandingPageV6DepartmentConfig {
   return {
     ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
     departmentId,
     serviceArea: {
-      ...serviceArea,
+      ...DORDOGNE_LOCAL_LANDING_PAGE_V6.serviceArea,
       sectors: [
         {
           name: 'Secteur fixture',
@@ -169,7 +165,6 @@ function departmentConfig(
           collapsedCommunes: [],
         },
       ],
-      ...(communeLinks ? { communeLinks } : {}),
     },
   };
 }
@@ -240,52 +235,72 @@ describe('local publication rendering', () => {
     });
   });
 
-  it('keeps draft city links out of the hub and renders communes as plain text', async () => {
-    await withRegistryEntries([publishedDepartment, draftCity], async () => {
-      render(
-        <MemoryRouter>
-          <ZonesIntervention />
-        </MemoryRouter>
-      );
+  it.each([draftCity, cityWithDraftParent, cityWithoutParent])(
+    'omits navigation for non-public child $id',
+    async (child) => {
+      await withRegistryEntries([publishedDepartment, draftDepartment, child], async () => {
+        render(
+          <MemoryRouter>
+            <ZonesIntervention />
+          </MemoryRouter>
+        );
 
-      expect(document.querySelector(`a[href="${draftCity.path}"]`)).toBeNull();
+        expect(document.querySelector(`a[href="${child.path}"]`)).toBeNull();
 
-      cleanup();
-      render(
-        <MemoryRouter>
-          <DepartmentLandingPage
-            config={departmentConfig(publishedDepartment.id, {
-              Draftville: { localEntryId: draftCity.id, label: 'Draftville →' },
-            })}
-          />
-        </MemoryRouter>
-      );
+        cleanup();
+        render(
+          <MemoryRouter>
+            <DepartmentLandingPage config={departmentConfig(publishedDepartment.id)} />
+          </MemoryRouter>
+        );
 
-      expect(screen.getByText('Draftville')).toBeInTheDocument();
-      expect(screen.queryByRole('link', { name: /Draftville/ })).not.toBeInTheDocument();
-      expect(document.querySelector(`a[href="${draftCity.path}"]`)).toBeNull();
-    });
-  });
+        expect(document.querySelector('.local-v6-sector-list')).toHaveTextContent('Draftville');
+        expect(screen.queryByRole('link', { name: /Draftville/ })).not.toBeInTheDocument();
+        expect(document.querySelector(`a[href="${child.path}"]`)).toBeNull();
+        expect(
+          screen.queryByRole('navigation', { name: 'Pages locales du département' })
+        ).not.toBeInTheDocument();
+      });
+    }
+  );
 
   it('renders published local child links from the registry without a manual URL in config', async () => {
     await withRegistryEntries(
-      [publishedDepartment, publishedCity, publishedDestination],
+      [publishedDepartment, publishedDestination, draftCity, publishedCity],
       async () => {
         const config = departmentConfig(publishedDepartment.id);
 
-        expect(config.serviceArea.communeLinks).toBeUndefined();
         render(
           <MemoryRouter>
             <DepartmentLandingPage config={config} />
           </MemoryRouter>
         );
 
+        const navigation = screen.getByRole('navigation', { name: 'Pages locales du département' });
+        expect(within(navigation).getByRole('list')).toHaveClass('local-v6-commune-list');
+        const links = within(navigation).getAllByRole('link');
+        expect(links.map((link) => link.getAttribute('href'))).toEqual([
+          publishedCity.path,
+          publishedDestination.path,
+        ]);
+        links.forEach((link) =>
+          expect(link.getAttribute('rel')?.split(/\s+/) ?? []).not.toContain('nofollow')
+        );
+        expect(navigation.querySelector(`a[href="${draftCity.path}"]`)).toBeNull();
+
+        const html = renderToString(
+          <StaticRouter location={publishedDepartment.path}>
+            <DepartmentLandingPage config={config} />
+          </StaticRouter>
+        );
+        const serverDocument = new DOMParser().parseFromString(html, 'text/html');
+        const serverNavigation = serverDocument.querySelector('section#communes nav');
         expect(
-          screen.getByRole('link', { name: 'Ville publiée depuis le registre' })
-        ).toHaveAttribute('href', publishedCity.path);
-        expect(
-          screen.getByRole('link', { name: 'Destination publiée depuis le registre' })
-        ).toHaveAttribute('href', publishedDestination.path);
+          [...(serverNavigation?.querySelectorAll('a') ?? [])].map((link) =>
+            link.getAttribute('href')
+          )
+        ).toEqual([publishedCity.path, publishedDestination.path]);
+        expect(serverDocument.querySelectorAll('.local-v6-sector-list a')).toHaveLength(0);
       }
     );
   });
@@ -312,6 +327,76 @@ describe('local publication rendering', () => {
           <CityLandingPage config={cityConfig(cityWithoutParent.id)} />
         );
         await expectNotFoundSeo();
+      }
+    );
+  });
+
+  it.each([
+    { state: 'published city', id: publishedCity.id, href: publishedCity.path },
+    {
+      state: 'published destination',
+      id: publishedDestination.id,
+      href: publishedDestination.path,
+    },
+    { state: 'draft child', id: draftCity.id, href: null },
+    { state: 'draft parent', id: cityWithDraftParent.id, href: null },
+    { state: 'missing parent', id: cityWithoutParent.id, href: null },
+    { state: 'missing child', id: 'fixture-missing-child' as LocalChildAreaId, href: null },
+  ])('resolves a territorial link with $state in client and server HTML', async ({ id, href }) => {
+    await withRegistryEntries(
+      [
+        publishedDepartment,
+        draftDepartment,
+        publishedCity,
+        publishedDestination,
+        draftCity,
+        cityWithDraftParent,
+        cityWithoutParent,
+      ],
+      () => {
+        const config: LocalLandingPageV6DepartmentConfig = {
+          ...departmentConfig(publishedDepartment.id),
+          localModule: {
+            type: 'territorial-service',
+            title: 'Fixture territorial module',
+            intro: 'Fixture introduction.',
+            items: [
+              {
+                title: 'Fixture linked item',
+                body: 'Fixture body remains available.',
+                link: { label: 'Fixture local link', localEntryId: id },
+              },
+              { title: 'Fixture unlinked item', body: 'Fixture second body.' },
+            ],
+          },
+        };
+        render(
+          <MemoryRouter>
+            <DepartmentLandingPage config={config} />
+          </MemoryRouter>
+        );
+        const section = screen.getByRole('region', { name: 'Fixture territorial module' });
+        const link = within(section).queryByRole('link', { name: 'Fixture local link' });
+        expect(within(section).getByText('Fixture body remains available.')).toBeInTheDocument();
+        expect(within(section).getAllByRole('listitem')).toHaveLength(2);
+        if (href) {
+          expect(link).toHaveAttribute('href', href);
+          expect(link?.getAttribute('rel')?.split(/\s+/) ?? []).not.toContain('nofollow');
+        } else {
+          expect(link).not.toBeInTheDocument();
+        }
+
+        const html = renderToString(
+          <StaticRouter location={publishedDepartment.path}>
+            <DepartmentLandingPage config={config} />
+          </StaticRouter>
+        );
+        const document = new DOMParser().parseFromString(html, 'text/html');
+        const serverSection = document.querySelector(
+          'section[aria-labelledby="local-v6-territorial-title"]'
+        );
+        expect(serverSection?.textContent).toContain('Fixture body remains available.');
+        expect(serverSection?.querySelector('a')?.getAttribute('href') ?? null).toBe(href);
       }
     );
   });

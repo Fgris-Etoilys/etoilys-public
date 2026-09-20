@@ -72,12 +72,6 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
     intro:
       'Etoilys intervient désormais dans toute la Gironde. Pour vous repérer, nous regroupons ci-dessous les principales communes par grands secteurs. Cette liste donne des repères géographiques : elle n’est pas exhaustive.',
     sectors: toCollapsedSectors(GIRONDE_SERVICE_SECTORS),
-    communeLinks: {
-      Bordeaux: {
-        label: 'Bordeaux →',
-        localEntryId: 'bordeaux',
-      },
-    },
     parentLink: {
       href: '/zones-intervention',
       label: 'Voir toutes nos zones d’intervention',
@@ -138,6 +132,42 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
         licenseHref: 'https://unsplash.com/license',
       },
     },
+  },
+  // Sources institutionnelles et pages filles vérifiées le 20 septembre 2026.
+  localModule: {
+    type: 'territorial-service',
+    title: 'Quels repères pour votre meublé en Gironde ?',
+    intro:
+      'Bordeaux, le Bassin d’Arcachon et le Médoc Atlantique ont chacun leurs repères. Notre couverture reste départementale : ailleurs en Gironde, préparez votre demande avec le sélecteur de commune ci-dessus.',
+    items: [
+      {
+        title: 'Bordeaux et sa métropole',
+        // https://taxedesejour.bordeaux-metropole.fr/
+        body: 'Le portail métropolitain distingue les démarches d’enregistrement et de changement d’usage de Bordeaux des informations pour les autres communes. Vérifiez la commune de votre logement : les règles de la ville ne s’étendent pas automatiquement à toute la métropole.',
+        link: {
+          label: 'Les démarches sur le portail de Bordeaux Métropole',
+          href: 'https://taxedesejour.bordeaux-metropole.fr/',
+        },
+      },
+      {
+        title: 'Le Bassin d’Arcachon, commune par commune',
+        // https://www.gironde-tourisme.com/espace-pro/hebergements/meubles-de-tourisme/faq-meuble-de-tourisme/
+        body: 'Sur le Bassin, vérifiez les démarches de location auprès de la mairie du logement : la destination ne forme pas un cadre administratif unique. La FAQ de Gironde Tourisme détaille les démarches à connaître pour votre meublé, de la déclaration au classement.',
+        link: {
+          label: 'Les démarches locales avec Gironde Tourisme',
+          href: 'https://www.gironde-tourisme.com/espace-pro/hebergements/meubles-de-tourisme/faq-meuble-de-tourisme/',
+        },
+      },
+      {
+        title: 'Lacanau et Médoc Atlantique',
+        // https://medocatlantique.taxesejour.fr/
+        body: 'Lacanau, Carcans, Hourtin et Soulac-sur-Mer relèvent du portail de taxe de séjour de Médoc Atlantique. Consultez-y le barème de votre hébergement et pensez à actualiser votre classement. Ce périmètre ne couvre pas tout le Médoc.',
+        link: {
+          label: 'Le portail de taxe de séjour de Médoc Atlantique',
+          href: 'https://medocatlantique.taxesejour.fr/',
+        },
+      },
+    ],
   },
   faq: {
     eyebrow: 'AVANT DE VOUS LANCER',

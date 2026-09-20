@@ -103,6 +103,31 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
       },
     },
   },
+  // Sources Lot Tourisme vérifiées le 20 septembre 2026.
+  localModule: {
+    type: 'territorial-service',
+    title: 'Préparer votre classement dans le Lot',
+    intro:
+      'Lot Tourisme vous aide à adapter l’accueil de votre gîte et à actualiser sa présentation dans le réseau touristique départemental.',
+    items: [
+      {
+        title: 'Accueillir à pied ou à vélo',
+        body: 'Lot Tourisme présente Rando Étape et Accueil Vélo dans sa fiche pour les locations saisonnières. Retrouvez leurs prérequis et interlocuteurs pour préparer l’accueil des randonneurs et cyclotouristes en complément du classement.',
+        link: {
+          label: 'Voir la fiche des démarches',
+          href: 'https://www.tourisme-lot.com/app/uploads/lot-tourisme/2026/05/260521-iche-Label-Location-saisonniere.pdf',
+        },
+      },
+      {
+        title: 'Actualiser votre fiche touristique',
+        body: 'L’Extranet VIT permet d’actualiser votre fiche toute l’année, depuis « Mes Offres ». Pour vous aider après le classement, Lot Tourisme réunit les contacts des offices de tourisme du département.',
+        link: {
+          label: 'Retrouver les outils et contacts',
+          href: 'https://www.tourisme-lot.com/pros-centre-de-ressources/nos-services/promotion-visibilite/sit/outils-pratiques-et-accompagnement/',
+        },
+      },
+    ],
+  },
   faq: {
     eyebrow: 'AVANT DE VOUS LANCER',
     title: 'Questions fréquentes sur le classement dans le Lot',

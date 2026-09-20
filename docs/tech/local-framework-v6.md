@@ -48,6 +48,44 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 - `hubDescription` est un contenu éditorial spécifique à chaque département. Il présente le territoire, pas la couverture opérationnelle d’Etoilys : ne pas le générer depuis un template du type `Etoilys intervient dans…`.
 - Un bon `hubDescription` comporte généralement deux phrases courtes : la première fait ressortir l’identité géographique ou touristique du département ; la seconde apporte, quand c’est naturel, un angle sur les séjours, gîtes, maisons de vacances ou meublés de tourisme. Varier la construction entre départements et éviter les slogans touristiques génériques, le keyword stuffing et les formulations interchangeables.
 
+## Module territorial de service (P1.1)
+
+Une page locale publiée doit apporter une valeur territoriale propre, mais la structure d’affichage reste commune. Les cinq départements renseignent `localModule` avec `type: 'territorial-service'` ; les villes et destinations conservent leur variante `tax-comparison`.
+
+Le contrat `LocalV6TerritorialModule` porte un `title` (H2), une `intro` de une à deux phrases et `items`, un tuple de **deux ou trois** informations. Chaque item contient `title` (H3), `body` (texte court) et un `link` facultatif : `{ label, localEntryId }` pour une ville/destination du registre, ou `{ label, href }` pour une ressource HTTPS. Aucun JSX ni choix de mise en page dans ces données. Un lien local n’est rendu que si l’enfant et son parent sont publiés ; son texte éditorial reste présent même si le lien disparaît.
+
+`LocalV6TerritorialModuleSection`, dans la composition V6, réutilise les surfaces, titres, liens et espacements éditoriaux. Les informations sont des lignes séparées, empilées sur mobile, sans cartes ni interaction. Le bloc reste après l’expertise et avant la notice éventuelle, la FAQ et le CTA final ; tout son contenu est présent au pré-rendu.
+
+Une bonne information aide le propriétaire à agir : identifier la collectivité compétente, préparer les informations de son logement avec une ressource locale ou rejoindre une page fille publiée. Vérifier la source institutionnelle actuelle ; conserver l’URL et la date de vérification dans la config (lien visible ou commentaire), sans reprendre ses éventuels passages obsolètes. La couverture opérationnelle vient des données Etoilys existantes, jamais d’une déduction touristique.
+
+Sont exclus : statistiques de fréquentation, paysages, listes de mots-clés, promesses de présence ou partenariat non vérifiées, paraphrases interchangeables des bénéfices nationaux et CTA commerciaux supplémentaires. Deux informations solides suffisent. Pour ajouter un département, renseigner ce module dans sa config sans modifier le renderer.
+
+Exemple de valeur `localModule` (les autres champs de la page restent inchangés) :
+
+```ts
+localModule: {
+  type: 'territorial-service',
+  title: 'Préparer votre classement dans le Lot',
+  intro: 'Lot Tourisme propose des ressources pour préparer les services du gîte et actualiser sa présentation.',
+  items: [
+    {
+      title: 'Accueil des randonneurs et cyclistes',
+      body: 'La fiche locations saisonnières présente Rando Étape et Accueil Vélo, en complément du classement.',
+      link: {
+        label: 'Les labels et qualifications de Lot Tourisme',
+        href: 'https://www.tourisme-lot.com/pros/nos-services/labels-et-qualifications/',
+      },
+    },
+    {
+      title: 'Actualiser votre fiche touristique',
+      body: 'L’Extranet VIT permet de mettre à jour votre offre toute l’année ; votre office de tourisme peut vous accompagner.',
+    },
+  ],
+}
+```
+
+Les liens externes de ce module portent systématiquement `rel="nofollow"`, ajouté par le renderer commun. Les liens internes vers les pages Etoilys restent suivis. `nofollow` exprime notre choix de ne pas recommander la destination aux moteurs ; Google le traite comme un indice, pas comme une garantie absolue d’absence d’effet SEO.
+
 ## Pricing
 
 Les montants et conditions restent dans `src/content/local/pricing.ts`. Le département résout le profil via le picker de communes existant ; la ville et la destination affichent directement leur profil. Les profils tarifaires sont discriminés par `kind` : `flat` conserve le tarif public unique historique avec éventuel partenaire et multi-logements, tandis que `tiered` affiche plusieurs lignes par typologie et une offre conditionnelle facultative. Les IDs métier (`aveyron-standard`, `dordogne-standard`, `gironde-standard`, `lot-standard`, `lot-et-garonne-standard`, `bordeaux-standard`) restent indépendants même si leurs valeurs partagent une base interne.
@@ -89,7 +127,7 @@ Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pend
 - Images : une page locale ne réutilise pas par défaut le même asset pour le hero et l’expertise. `image.caption` et `expertise.image.caption` sont obligatoires dans la config V6 locale. La caption décrit le lieu photographié ; l’index département reste le repère territorial (`24 / LE PÉRIGORD`, `33 / LA GIRONDE`, `47 / LOT-ET-GARONNE`). La provenance/licence d’un asset externe doit toujours être documentée dans la table de traçabilité. Le champ `credit` de la config V6 est nécessaire lorsqu’une attribution visible est requise ; ne pas forcer de crédit visible pour Pexels lorsque la licence ne l’exige pas. La trace éditoriale peut vivre dans `src/content/local/departments/*Page.tsx`, `src/content/local/cities/*Page.tsx` ou `src/content/local/destinations/*Page.tsx`. Les libellés actifs sont Saint-Émilion + Arcachon pour la Gironde, place de la Bourse pour le hero Bordeaux, Nérac + Monflanquin pour le Lot-et-Garonne.
 - CTA final : reprendre le motif et la copy du département parent au lieu d’inventer une nouvelle formulation pour chaque ville, mais conserver le `Button.variant` analytics historique d’une page existante.
 - FAQ : toutes les pages V6 incluent le socle FAQ commun ajouté automatiquement par `LocalLandingPageV6`. Les départements utilisent en plus le socle métier commun neutre `DEPARTMENT_LOCAL_V6_FAQ_ITEMS` avec une première question de couverture territoriale et, si utile, une question locale avant les deux FAQ automatiques. Ne pas fabriquer le socle commun avec un `slice` d’une FAQ territoriale. Les villes utilisent le socle riche `sharedCityFaq.ts`; ne pas réécrire des liens en markdown ni déclencher une réponse riche par comparaison de texte de question.
-- Maillage département : `communeLinks` associe une commune rendue à une entrée locale enfant. La déduplication des liens complémentaires se fait uniquement à partir des communes réellement présentes dans la section, visibles ou repliées, et dont la destination registry est effectivement publiée. Une association inutilisée ne doit pas masquer le lien complémentaire d’un enfant local publié.
+- Maillage département : les communes des secteurs sont du texte simple, visibles ou repliées. Toutes les pages enfants publiées (villes et destinations) sont regroupées dans une seule navigation sous les secteurs, avec la même présentation `local-v6-commune-list`. Le registre fournit les liens, leurs libellés (`departmentLabel`, puis `hubLabel`, puis `name`) et leur ordre `displayOrder` ; aucune association manuelle commune/page ni déduplication à maintenir. Sans enfant publié, aucune navigation vide. Appliquer cette règle à tous les départements.
 - Une migration V6 ne doit jamais appauvrir un motif validé simplement parce qu’un nouveau scope utilise moins de données.
 - Les anciennes données tourisme/statistiques inventoriées pendant une migration peuvent rester dans les fichiers de contenu source si elles gardent une utilité éditoriale future, mais elles ne sont pas réexportées ni rendues en V6 sans motif V6 validé.
 - Recette corrective ETOILYS-415 du 18 septembre 2026 : build preview vérifié en 390, 768, 1024 et 1440 px sur le hub, Bergerac, Dordogne et Lot ; Bordeaux vérifié pour le breadcrumb court et le lien Gironde ; une page générale et un article vérifiés sans breadcrumb UI supplémentaire.
@@ -227,7 +265,6 @@ const DEPARTMENT_V6: LocalLandingPageV6DepartmentConfig = {
     title: 'Dans quelles communes de Dordogne intervenons-nous ?',
     intro: 'Nos inspecteurs interviennent par secteurs.',
     sectors,
-    communeLinks: { Bergerac: { localEntryId: 'bergerac', label: 'Bergerac →' } },
     parentLink: { href: '/zones-intervention', label: 'Voir toutes nos zones' },
   },
   pricing: {

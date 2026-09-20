@@ -1,8 +1,9 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
+import { MemoryRouter, StaticRouter } from 'react-router-dom';
 import DepartmentLandingPage from './DepartmentLandingPage';
 import LocalLandingPageV6, { COMMON_LOCAL_V6_FAQ_ITEMS } from './LocalLandingPageV6';
 import type {
@@ -11,10 +12,15 @@ import type {
   LocalLandingPageV6DepartmentConfig,
   LocalRegistryEntry,
 } from '../../content/local/types';
-import { LOCAL_REGISTRY } from '../../content/local/registry';
+import {
+  getLocalRegistryEntry,
+  getPublishedLocalChildEntriesForDepartment,
+  LOCAL_REGISTRY,
+} from '../../content/local/registry';
 import { trackCtaClick } from '../../utils/analytics';
 import {
   DEPARTMENT_LOCAL_V6_FAQ_ITEMS,
+  AVEYRON_LOCAL_LANDING_PAGE_V6,
   BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
   BERGERAC_LOCAL_LANDING_PAGE_V6,
   BORDEAUX_LOCAL_LANDING_PAGE_V6,
@@ -25,6 +31,14 @@ import {
   LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
+
+const departmentConfigs = [
+  DORDOGNE_LOCAL_LANDING_PAGE_V6,
+  GIRONDE_LOCAL_LANDING_PAGE_V6,
+  LOT_LOCAL_LANDING_PAGE_V6,
+  LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+  AVEYRON_LOCAL_LANDING_PAGE_V6,
+] as const;
 
 vi.mock('../../utils/analytics', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../utils/analytics')>()),
@@ -215,86 +229,64 @@ describe('DepartmentLandingPage', () => {
     expect(toggle).toHaveTextContent('Masquer les 6 communes');
   });
 
-  it('deduplicates complementary city links from communes that are actually rendered', () => {
+  it.each(departmentConfigs)(
+    'groups published children below sectors for $departmentId',
+    (config) => {
+      renderDepartmentPage(config);
+      const children = getPublishedLocalChildEntriesForDepartment(config.departmentId);
+      const sectors = document.querySelector<HTMLElement>('.local-v6-sector-list');
+      if (!sectors) throw new Error('Missing department sectors');
+      expect(sectors.querySelectorAll('a')).toHaveLength(0);
+      const navigation = screen.queryByRole('navigation', { name: 'Pages locales du département' });
+
+      if (children.length === 0) {
+        expect(navigation).not.toBeInTheDocument();
+        return;
+      }
+      if (!navigation) throw new Error('Missing local pages navigation');
+      expect(
+        screen.getAllByRole('navigation', { name: 'Pages locales du département' })
+      ).toHaveLength(1);
+      expect(within(navigation).getByRole('list')).toHaveClass('local-v6-commune-list');
+      const links = within(navigation).getAllByRole('link');
+      expect(links.map((link) => link.getAttribute('href'))).toEqual(
+        children.map((child) => child.path)
+      );
+      links.forEach((link) =>
+        expect(link.getAttribute('rel')?.split(/\s+/) ?? []).not.toContain('nofollow')
+      );
+      expect(
+        sectors.compareDocumentPosition(navigation) & Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
+    }
+  );
+
+  it.each([false, true])('keeps communes as plain text when collapsed is %s', (collapsed) => {
     renderDepartmentPage({
       ...GIRONDE_LOCAL_LANDING_PAGE_V6,
       serviceArea: {
         ...GIRONDE_LOCAL_LANDING_PAGE_V6.serviceArea,
         sectors: [
           {
-            name: 'Bordeaux Métropole',
-            visibleCommunes: ['Bordeaux'],
-            collapsedCommunes: [],
+            name: 'Fixture sector',
+            visibleCommunes: collapsed ? ['Libourne'] : ['Bordeaux'],
+            collapsedCommunes: collapsed ? ['Bordeaux'] : [],
           },
         ],
-        communeLinks: {
-          Bordeaux: {
-            label: 'Bordeaux →',
-            localEntryId: 'bordeaux',
-          },
-        },
       },
     });
-
+    const sectors = document.querySelector<HTMLElement>('.local-v6-sector-list');
+    if (!sectors) throw new Error('Missing department sectors');
+    expect(sectors).toHaveTextContent('Bordeaux');
+    expect(sectors.querySelectorAll('a')).toHaveLength(0);
+    if (collapsed) {
+      fireEvent.click(within(sectors).getByRole('button'));
+      expect(sectors.querySelectorAll('a')).toHaveLength(0);
+    }
+    const navigation = screen.getByRole('navigation', { name: 'Pages locales du département' });
     expect(
-      document.querySelectorAll('a[href="/classement-meuble-tourisme-bordeaux"]')
+      navigation.querySelectorAll('a[href="/classement-meuble-tourisme-bordeaux"]')
     ).toHaveLength(1);
-    expect(
-      screen.queryByRole('link', { name: 'Bordeaux et sa métropole' })
-    ).not.toBeInTheDocument();
-  });
-
-  it('keeps collapsed commune links from creating complementary duplicates', () => {
-    renderDepartmentPage({
-      ...GIRONDE_LOCAL_LANDING_PAGE_V6,
-      serviceArea: {
-        ...GIRONDE_LOCAL_LANDING_PAGE_V6.serviceArea,
-        sectors: [
-          {
-            name: 'Bordeaux Métropole',
-            visibleCommunes: ['Libourne'],
-            collapsedCommunes: ['Bordeaux'],
-          },
-        ],
-        communeLinks: {
-          Bordeaux: {
-            label: 'Bordeaux →',
-            localEntryId: 'bordeaux',
-          },
-        },
-      },
-    });
-
-    expect(
-      document.querySelectorAll('a[href="/classement-meuble-tourisme-bordeaux"]')
-    ).toHaveLength(1);
-  });
-
-  it('renders a complementary city link when a commune association is not used by rendered sectors', () => {
-    renderDepartmentPage({
-      ...GIRONDE_LOCAL_LANDING_PAGE_V6,
-      serviceArea: {
-        ...GIRONDE_LOCAL_LANDING_PAGE_V6.serviceArea,
-        sectors: [
-          {
-            name: 'Libournais',
-            visibleCommunes: ['Libourne'],
-            collapsedCommunes: [],
-          },
-        ],
-        communeLinks: {
-          Bordeaux: {
-            label: 'Bordeaux →',
-            localEntryId: 'bordeaux',
-          },
-        },
-      },
-    });
-
-    expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bordeaux'
-    );
   });
 
   it('renders Lot sectors as representative coverage for the whole department', () => {
@@ -424,7 +416,11 @@ describe('DepartmentLandingPage', () => {
   });
 
   it('keeps FAQ on paper when no local module or notice exists', () => {
-    renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
+    const config = { ...DORDOGNE_LOCAL_LANDING_PAGE_V6 };
+    delete config.localModule;
+    renderDepartmentPage(config);
+
+    expect(document.getElementById('local-v6-territorial-title')).not.toBeInTheDocument();
 
     expect(
       screen
@@ -458,24 +454,113 @@ describe('DepartmentLandingPage', () => {
     });
   });
 
-  it.each([
-    [DORDOGNE_LOCAL_LANDING_PAGE_V6.departmentId, DORDOGNE_LOCAL_LANDING_PAGE_V6],
-    [GIRONDE_LOCAL_LANDING_PAGE_V6.departmentId, GIRONDE_LOCAL_LANDING_PAGE_V6],
-    [LOT_LOCAL_LANDING_PAGE_V6.departmentId, LOT_LOCAL_LANDING_PAGE_V6],
-    [LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.departmentId, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6],
-  ])('keeps the full V6 department section order for %s', (_, config) => {
-    renderDepartmentPage(config);
+  it.each(departmentConfigs)(
+    'keeps the full V6 department section order for $departmentId',
+    (config) => {
+      if (!config.localModule) throw new Error('Missing department module');
+      renderDepartmentPage(config);
 
-    expectHeadingSequence([
-      config.hero.title,
-      'Pourquoi faire classer votre meublé de tourisme ?',
-      config.serviceArea.title,
-      config.pricing.title,
-      config.procedure.title,
-      config.expertise.title,
-      config.faq.title,
-      config.finalCta.title,
-    ]);
+      expectHeadingSequence([
+        config.hero.title,
+        'Pourquoi faire classer votre meublé de tourisme ?',
+        config.serviceArea.title,
+        config.pricing.title,
+        config.procedure.title,
+        config.expertise.title,
+        config.localModule.title,
+        config.faq.title,
+        config.finalCta.title,
+      ]);
+    }
+  );
+
+  it.each(departmentConfigs)(
+    'renders the territorial module accessibly for $departmentId',
+    (config) => {
+      const module = config.localModule;
+      if (!module) throw new Error('Missing department module');
+      renderDepartmentPage(config);
+
+      const section = screen.getByRole('region', {
+        name: (name) => normalizeText(name) === normalizeText(module.title),
+      });
+      expect(within(section).getAllByRole('heading', { level: 2 })).toHaveLength(1);
+      expect(section.querySelector('p')).not.toBeEmptyDOMElement();
+      expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+      expect([2, 3]).toContain(module.items.length);
+      const items = within(section).getAllByRole('listitem');
+      expect(items).toHaveLength(module.items.length);
+      items.forEach((item, index) => {
+        expect(within(item).getAllByRole('heading', { level: 3 })).toHaveLength(1);
+        expect(item.querySelector('p')).not.toBeEmptyDOMElement();
+        const link = module.items[index]?.link;
+        if (!link) {
+          expect(within(item).queryByRole('link')).not.toBeInTheDocument();
+          return;
+        }
+        const renderedLink = within(item).getByRole('link', { name: link.label });
+        expect(renderedLink).toHaveAttribute(
+          'href',
+          'localEntryId' in link ? getLocalRegistryEntry(link.localEntryId)?.path : link.href
+        );
+        const relations = renderedLink.getAttribute('rel')?.split(/\s+/) ?? [];
+        if ('href' in link) {
+          expect(relations).toContain('nofollow');
+          if (renderedLink.getAttribute('target') === '_blank') {
+            expect(relations).toContain('noopener');
+          }
+        } else {
+          expect(relations).not.toContain('nofollow');
+        }
+      });
+      expect(section.querySelector('details')).toBeNull();
+      expect(document.getElementById('local-v6-tax-title')).not.toBeInTheDocument();
+    }
+  );
+
+  it.each(departmentConfigs)(
+    'includes the territorial module in server HTML for $departmentId',
+    (config) => {
+      const module = config.localModule;
+      if (!module) throw new Error('Missing department module');
+      const html = renderToString(
+        <StaticRouter location={getLocalRegistryEntry(config.departmentId)?.path ?? '/'}>
+          <DepartmentLandingPage config={config} />
+        </StaticRouter>
+      );
+      const document = new DOMParser().parseFromString(html, 'text/html');
+      const section = document.querySelector(
+        'section[aria-labelledby="local-v6-territorial-title"]'
+      );
+
+      expect(document.querySelectorAll('h1')).toHaveLength(1);
+      expect(section?.querySelectorAll('h2')).toHaveLength(1);
+      expect(section?.querySelectorAll('li h3')).toHaveLength(module.items.length);
+      expect(section?.querySelectorAll('li p')).toHaveLength(module.items.length);
+      expect(section?.querySelectorAll('a')).toHaveLength(
+        module.items.filter((item) => item.link).length
+      );
+    }
+  );
+
+  it('renders a two-item territorial module without an empty third item', () => {
+    renderDepartmentPage({
+      ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      localModule: {
+        type: 'territorial-service',
+        title: 'Fixture territory',
+        intro: 'Fixture introduction.',
+        items: [
+          { title: 'First fixture', body: 'First body.' },
+          { title: 'Second fixture', body: 'Second body.' },
+        ],
+      },
+    });
+
+    const section = screen.getByRole('region', { name: 'Fixture territory' });
+    expect(within(section).getAllByRole('listitem')).toHaveLength(2);
+    expect(within(section).getAllByRole('heading', { level: 3 })).toHaveLength(2);
+    expect(within(section).queryByRole('link')).not.toBeInTheDocument();
   });
 
   it.each([

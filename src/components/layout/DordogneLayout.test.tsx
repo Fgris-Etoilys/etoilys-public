@@ -72,6 +72,7 @@ describe('Shared site layout', () => {
         'local-v6-pricing-title',
         'local-v6-process-title',
         'local-v6-expertise-title',
+        'local-v6-territorial-title',
         'local-v6-faq-title',
       ]);
       expect(

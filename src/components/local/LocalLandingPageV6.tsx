@@ -23,13 +23,12 @@ import { getPricingProfile } from '../../content/local/pricing';
 import { COMMON_LOCAL_V6_FAQ_ITEMS } from '../../content/local/sharedLocalContent';
 import type {
   DepartmentSector,
-  LocalChildAreaId,
-  LocalInterventionPage,
   LocalLandingPageV6Config,
   LocalV6Action,
   LocalV6EditorialNotice,
   LocalV6Hero,
   LocalV6TaxModule,
+  LocalV6TerritorialModule,
 } from '../../content/local/types';
 import DepartmentPricingSection, { LocalPricingProfileSummary } from './DepartmentPricingSection';
 
@@ -94,35 +93,6 @@ function formatFrenchTitle(title: string) {
   return title.replace(/ ([?!:;])/g, '\u00a0$1');
 }
 
-function getRenderedDepartmentCommunes(sectors: readonly DepartmentSector[]): string[] {
-  return sectors.flatMap((sector) => [
-    ...(sector.visibleCommunes ?? sector.communes ?? []),
-    ...(sector.collapsedCommunes ?? []),
-  ]);
-}
-
-function getRenderedLinkedLocalChildIds(
-  sectors: readonly DepartmentSector[],
-  communeLinks: Record<string, { localEntryId: LocalChildAreaId; label?: string }> | undefined
-) {
-  const linkedLocalChildIds = new Set<LocalChildAreaId>();
-
-  getRenderedDepartmentCommunes(sectors).forEach((commune) => {
-    const link = communeLinks?.[commune];
-    const entry = link ? getLocalRegistryEntry(link.localEntryId) : undefined;
-
-    if (
-      entry !== undefined &&
-      entry.kind !== 'department' &&
-      isLocalRegistryEntryPublished(entry.id)
-    ) {
-      linkedLocalChildIds.add(entry.id);
-    }
-  });
-
-  return linkedLocalChildIds;
-}
-
 export default function LocalLandingPageV6({ config }: { config: LocalLandingPageV6Config }) {
   return (
     <div className="local-v6-landing">
@@ -137,7 +107,12 @@ export default function LocalLandingPageV6({ config }: { config: LocalLandingPag
       <LocalV6PricingSection config={config} />
       <LocalV6ProcedureSection config={config} />
       <LocalV6ExpertiseSection config={config} />
-      {config.localModule && <LocalV6TaxModuleSection module={config.localModule} />}
+      {config.localModule &&
+        (config.localModule.type === 'territorial-service' ? (
+          <LocalV6TerritorialModuleSection module={config.localModule} />
+        ) : (
+          <LocalV6TaxModuleSection module={config.localModule} />
+        ))}
       {config.localNotice && <LocalV6EditorialNoticeSection notice={config.localNotice} />}
       <LocalV6FaqSection config={config} />
       <LocalV6FinalCta config={config} />
@@ -274,19 +249,7 @@ function LocalV6DepartmentServiceAreaSection({
   config: Extract<LocalLandingPageV6Config, { scope: 'department' }>;
 }) {
   const { serviceArea } = config;
-  const linkedLocalChildIds = getRenderedLinkedLocalChildIds(
-    serviceArea.sectors,
-    serviceArea.communeLinks
-  );
-  const extraLocalPages = getPublishedLocalChildEntriesForDepartment(config.departmentId)
-    .filter((entry) => !linkedLocalChildIds.has(entry.id))
-    .map(
-      (entry): LocalInterventionPage => ({
-        id: entry.id,
-        label: entry.departmentLabel ?? entry.hubLabel ?? entry.name,
-        path: entry.path,
-      })
-    );
+  const localPages = getPublishedLocalChildEntriesForDepartment(config.departmentId);
 
   return (
     <section
@@ -300,20 +263,19 @@ function LocalV6DepartmentServiceAreaSection({
           {formatFrenchTitle(serviceArea.title)}
         </h2>
         <p>{serviceArea.intro}</p>
-        <LocalV6DepartmentSectorList
-          sectors={serviceArea.sectors}
-          {...(serviceArea.communeLinks ? { communeLinks: serviceArea.communeLinks } : {})}
-        />
-        {extraLocalPages.length > 0 && (
-          <ul className="local-v6-commune-list">
-            {extraLocalPages.map((localPage) => (
-              <li key={localPage.id}>
-                <Link to={localPage.path} className="editorial-inline-link">
-                  {localPage.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        <LocalV6DepartmentSectorList sectors={serviceArea.sectors} />
+        {localPages.length > 0 && (
+          <nav aria-label="Pages locales du département">
+            <ul className="local-v6-commune-list">
+              {localPages.map((localPage) => (
+                <li key={localPage.id}>
+                  <Link to={localPage.path} className="editorial-inline-link">
+                    {localPage.departmentLabel ?? localPage.hubLabel ?? localPage.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         )}
         {serviceArea.parentLink && (
           <Link to={serviceArea.parentLink.href} className="editorial-link ui-focus">
@@ -325,13 +287,7 @@ function LocalV6DepartmentServiceAreaSection({
   );
 }
 
-function LocalV6DepartmentSectorList({
-  sectors,
-  communeLinks,
-}: {
-  sectors: readonly DepartmentSector[];
-  communeLinks?: Record<string, { localEntryId: LocalChildAreaId; label?: string }>;
-}) {
+function LocalV6DepartmentSectorList({ sectors }: { sectors: readonly DepartmentSector[] }) {
   const [expandedSectors, setExpandedSectors] = useState<ReadonlySet<string>>(new Set());
 
   function toggleSector(sectorName: string) {
@@ -360,24 +316,11 @@ function LocalV6DepartmentSectorList({
           <div key={sector.name} className="local-v6-sector-row">
             <h3>{sector.name}</h3>
             <p>
-              {visibleCommunes.map((commune, index) => (
-                <LocalV6CommuneName
-                  key={commune}
-                  commune={commune}
-                  link={communeLinks?.[commune]}
-                  prefix={index > 0 ? ' · ' : undefined}
-                />
-              ))}
+              {visibleCommunes.join(' · ')}
               {collapsedCommunes.length > 0 && (
                 <span id={collapsedListId} className={isExpanded ? '' : 'hidden'}>
-                  {collapsedCommunes.map((commune) => (
-                    <LocalV6CommuneName
-                      key={commune}
-                      commune={commune}
-                      link={communeLinks?.[commune]}
-                      prefix=" · "
-                    />
-                  ))}
+                  {visibleCommunes.length > 0 && ' · '}
+                  {collapsedCommunes.join(' · ')}
                 </span>
               )}
             </p>
@@ -428,35 +371,6 @@ function LocalV6LocalServiceAreaSection({
         )}
       </div>
     </section>
-  );
-}
-
-function LocalV6CommuneName({
-  commune,
-  link,
-  prefix,
-}: {
-  commune: string;
-  link?: { localEntryId: LocalChildAreaId; label?: string } | undefined;
-  prefix?: string | undefined;
-}) {
-  const entry = link ? getLocalRegistryEntry(link.localEntryId) : undefined;
-  const href =
-    entry !== undefined && entry.kind !== 'department' && isLocalRegistryEntryPublished(entry.id)
-      ? entry.path
-      : undefined;
-
-  return (
-    <>
-      {prefix}
-      {href ? (
-        <Link to={href} className="editorial-inline-link">
-          {link?.label ?? commune}
-        </Link>
-      ) : (
-        <span>{commune}</span>
-      )}
-    </>
   );
 }
 
@@ -606,6 +520,65 @@ function LocalV6ExpertiseSection({ config }: { config: LocalLandingPageV6Config 
                         >
                           {reason.link.label} <ArrowUpRight size={17} aria-hidden="true" />
                         </a>
+                      ))}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LocalV6TerritorialModuleSection({ module }: { module: LocalV6TerritorialModule }) {
+  return (
+    <section
+      className="editorial-section bg-surface-neutral"
+      aria-labelledby="local-v6-territorial-title"
+    >
+      <div className="container-editorial">
+        <div className="max-w-5xl">
+          <h2 className="editorial-heading" id="local-v6-territorial-title">
+            {formatFrenchTitle(module.title)}
+          </h2>
+          <p className="mt-5 text-muted">{module.intro}</p>
+          <ul className="mt-8 divide-y divide-ink/10">
+            {module.items.map((item) => {
+              const link = item.link;
+              const entry =
+                link && 'localEntryId' in link
+                  ? getLocalRegistryEntry(link.localEntryId)
+                  : undefined;
+
+              return (
+                <li
+                  key={item.title}
+                  className="grid gap-3 py-5 first:pt-0 last:pb-0 min-[900px]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] min-[900px]:gap-8"
+                >
+                  <h3 className="text-lg font-semibold leading-snug text-ink">
+                    {formatFrenchTitle(item.title)}
+                  </h3>
+                  <div className="min-w-0 space-y-3 text-muted">
+                    <p>{item.body}</p>
+                    {link &&
+                      ('href' in link ? (
+                        <a
+                          href={link.href}
+                          rel="nofollow"
+                          className="editorial-inline-link inline-block"
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        entry &&
+                        entry.kind !== 'department' &&
+                        isLocalRegistryEntryPublished(entry.id) && (
+                          <Link to={entry.path} className="editorial-inline-link inline-block">
+                            {link.label}
+                          </Link>
+                        )
                       ))}
                   </div>
                 </li>

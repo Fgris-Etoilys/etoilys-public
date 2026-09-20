@@ -110,6 +110,31 @@ export const LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentC
       },
     },
   },
+  // Sources Tourisme Lot-et-Garonne vérifiées le 20 septembre 2026.
+  localModule: {
+    type: 'territorial-service',
+    title: 'Des ressources pour votre meublé en Lot-et-Garonne',
+    intro:
+      'Tourisme Lot-et-Garonne fournit des repères pour présenter votre classement et préparer l’information des voyageurs dans votre logement.',
+    items: [
+      {
+        title: 'Présenter votre classement',
+        body: 'L’agence départementale tient à jour la liste des meublés classés. Après réception de votre décision, vérifiez que vos annonces et les informations transmises à votre office de tourisme présentent le bon nombre d’étoiles.',
+        link: {
+          label: 'Voir les informations de l’agence',
+          href: 'https://pro.tourisme-lotetgaronne.com/accompagnement/classement-2/classement-des-meubles-de-tourisme/',
+        },
+      },
+      {
+        title: 'Informer vos voyageurs',
+        body: 'Tourisme Lot-et-Garonne propose un guide des écogestes en vacances et des affiches ADEME sur l’eau, l’énergie et le tri. Utilisez ces supports pour informer vos voyageurs, en les adaptant aux équipements du logement.',
+        link: {
+          label: 'Découvrir le kit écogestes',
+          href: 'https://pro.tourisme-lotetgaronne.com/guide-et-kit-ecogestes/',
+        },
+      },
+    ],
+  },
   faq: {
     eyebrow: 'AVANT DE VOUS LANCER',
     title: 'Questions fréquentes sur le classement dans le Lot-et-Garonne',
