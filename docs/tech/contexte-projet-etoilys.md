@@ -20,7 +20,7 @@ Les affirmations juridiques et fiscales doivent rester sourcées.
 - SEO/prerender : configuration centralisée dans `src/content/seoRoutes.ts`, génération sitemap, prerender Playwright.
 - Images SEO/CWV : pipeline local Sharp via `npm run images:build`, manifeste typé dans `src/content/imageManifest.ts`, contrôle rapide via `npm run images:check`.
 - Analytics : PostHog via `src/utils/analytics.ts`, consentement cookies via le layout.
-- Backend public : Starsmanager `api-dev.etoilys.fr` pour les formulaires publics et le simulateur public.
+- Backend public : Starsmanager `api-dev.etoilys.fr` pour les formulaires publics ; le simulateur public est routé vers `api-prod.etoilys.fr` par `vercel.json` (en local, le proxy Vite garde `api-dev.etoilys.fr` par défaut).
 
 La source de vérité des versions est `package.json`. Si une ancienne doc mentionne React 18, elle est obsolète pour l’état actuel du repo.
 

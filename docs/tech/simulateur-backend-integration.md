@@ -14,7 +14,9 @@ Le frontend appelle toujours des URLs same-origin sous `/api`.
 
 En développement, le routage est défini dans `vite.config.ts`.
 Le proxy Vite retire l’en-tête `Origin` sur les routes simulateur, afin que le backend ne traite pas les appels serveur-à-serveur comme une requête CORS venant de `localhost`.
-En production, le routage est défini dans `vercel.json`.
+En production, le routage est défini dans `vercel.json`. Les rewrites `/api/public/simulations` et `/api/public/simulations/*` ciblent le backend de production `https://api-prod.etoilys.fr`, alors que `/api/public/forms/*` cible toujours `https://api-dev.etoilys.fr`. Ces destinations sont codées en dur (pas de variable d’environnement Vercel) et valent aussi pour les déploiements Preview.
+
+Exigence backend : la configuration CORS de `api-prod.etoilys.fr` doit autoriser l’origine `https://www.etoilys.fr`. Vercel transmet l’en-tête `Origin` du navigateur (sur les requêtes `POST`/`PUT`/`DELETE` en particulier) et le backend répond `403 Invalid CORS request` pour une origine non autorisée. Ne pas contourner côté frontend.
 
 ## Client frontend
 
