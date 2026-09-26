@@ -1619,7 +1619,7 @@ Les produits d'accueil sont des cosmétiques. Ainsi les mouchoirs, papier toilet
     description: `Méthodologie d'évaluation :
 Vérification sur place. Les produits de nettoyage utilisés doivent être respectueux de l'environnement. Par exemple : savon noir, vinaigre blanc, bicarbonate de soude… Si les produits sont certifiés par des labels, le critère est validé. Par exemple : Ecolabel européen, Nature & Progrès, Ecocert, Sustainable cleaning… La liste est non exhaustive.`,
     non_applicabilite: null,
-    notes: null,
+    notes: `Les systèmes réduisant l'utilisation de produits de nettoyage permettent de valider ce critère : utilisation de produits naturels comme le savon noir, le vinaigre blanc, le bicarbonate de soude, vapodil, eau oxygénée, etc.`,
   },
   '133': {
     numero: 133,
