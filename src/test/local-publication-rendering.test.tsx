@@ -6,6 +6,7 @@ import type { ReactElement } from 'react';
 import Layout from '../components/layout/Layout';
 import CityLandingPage from '../components/local/CityLandingPage';
 import DepartmentLandingPage from '../components/local/DepartmentLandingPage';
+import LocalLandingPageV6 from '../components/local/LocalLandingPageV6';
 import ZonesIntervention from '../pages/ZonesIntervention';
 import {
   BERGERAC_LOCAL_LANDING_PAGE_V6,
@@ -98,6 +99,19 @@ const draftCity: LocalRegistryEntry = {
   path: '/classement-meuble-tourisme-draftville',
   status: 'draft',
   hubLabel: 'Draftville',
+};
+
+const otherPublishedDepartment: LocalRegistryEntry = {
+  ...publishedDepartment,
+  id: 'fixture-other-published-department' as DepartmentAreaId,
+  path: '/classement-meuble-tourisme-other-department',
+};
+
+const cityInOtherDepartment: LocalRegistryEntry = {
+  ...publishedCity,
+  id: 'fixture-other-department-city' as CityAreaId,
+  path: '/classement-meuble-tourisme-other-department-city',
+  parentId: otherPublishedDepartment.id,
 };
 
 const cityWithDraftParent: LocalRegistryEntry = {
@@ -260,13 +274,14 @@ describe('local publication rendering', () => {
         expect(
           screen.queryByRole('navigation', { name: 'Pages locales du département' })
         ).not.toBeInTheDocument();
+        expect(screen.queryByText(/nos pages locales/i)).not.toBeInTheDocument();
       });
     }
   );
 
   it('renders published local child links from the registry without a manual URL in config', async () => {
     await withRegistryEntries(
-      [publishedDepartment, publishedDestination, draftCity, publishedCity],
+      [publishedDepartment, publishedDestination, draftCity, publishedCity, cityWithoutParent],
       async () => {
         const config = departmentConfig(publishedDepartment.id);
 
@@ -278,6 +293,7 @@ describe('local publication rendering', () => {
 
         const navigation = screen.getByRole('navigation', { name: 'Pages locales du département' });
         expect(within(navigation).getByRole('list')).toHaveClass('local-v6-commune-list');
+        expect(within(navigation).getByText(/nos pages locales/i)).toBeVisible();
         const links = within(navigation).getAllByRole('link');
         expect(links.map((link) => link.getAttribute('href'))).toEqual([
           publishedCity.path,
@@ -295,6 +311,7 @@ describe('local publication rendering', () => {
         );
         const serverDocument = new DOMParser().parseFromString(html, 'text/html');
         const serverNavigation = serverDocument.querySelector('section#communes nav');
+        expect(serverNavigation?.querySelector('p')?.textContent).toMatch(/nos pages locales/i);
         expect(
           [...(serverNavigation?.querySelectorAll('a') ?? [])].map((link) =>
             link.getAttribute('href')
@@ -342,6 +359,11 @@ describe('local publication rendering', () => {
     { state: 'draft parent', id: cityWithDraftParent.id, href: null },
     { state: 'missing parent', id: cityWithoutParent.id, href: null },
     { state: 'missing child', id: 'fixture-missing-child' as LocalChildAreaId, href: null },
+    {
+      state: 'published child of another published department',
+      id: cityInOtherDepartment.id,
+      href: null,
+    },
   ])('resolves a territorial link with $state in client and server HTML', async ({ id, href }) => {
     await withRegistryEntries(
       [
@@ -352,10 +374,15 @@ describe('local publication rendering', () => {
         draftCity,
         cityWithDraftParent,
         cityWithoutParent,
+        otherPublishedDepartment,
+        cityInOtherDepartment,
       ],
       () => {
         const config: LocalLandingPageV6DepartmentConfig = {
-          ...departmentConfig(publishedDepartment.id),
+          // Exercise the renderer directly so a draft parent is not masked by the route guard.
+          ...departmentConfig(
+            id === cityWithDraftParent.id ? draftDepartment.id : publishedDepartment.id
+          ),
           localModule: {
             type: 'territorial-service',
             title: 'Fixture territorial module',
@@ -372,7 +399,7 @@ describe('local publication rendering', () => {
         };
         render(
           <MemoryRouter>
-            <DepartmentLandingPage config={config} />
+            <LocalLandingPageV6 config={config} />
           </MemoryRouter>
         );
         const section = screen.getByRole('region', { name: 'Fixture territorial module' });
@@ -388,7 +415,7 @@ describe('local publication rendering', () => {
 
         const html = renderToString(
           <StaticRouter location={publishedDepartment.path}>
-            <DepartmentLandingPage config={config} />
+            <LocalLandingPageV6 config={config} />
           </StaticRouter>
         );
         const document = new DOMParser().parseFromString(html, 'text/html');

@@ -110,27 +110,27 @@ export const LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentC
       },
     },
   },
-  // Sources Tourisme Lot-et-Garonne vérifiées le 20 septembre 2026.
+  // Sources Tourisme Lot-et-Garonne et portails intercommunaux vérifiés le 22 septembre 2026.
   localModule: {
     type: 'territorial-service',
-    title: 'Des ressources pour votre meublé en Lot-et-Garonne',
+    title: 'Après le classement en Lot-et-Garonne',
     intro:
-      'Tourisme Lot-et-Garonne fournit des repères pour présenter votre classement et préparer l’information des voyageurs dans votre logement.',
+      'Le suivi départemental des meublés classés et la taxe de séjour relèvent d’interlocuteurs différents. Identifiez celui qui correspond à votre démarche et à la commune du logement.',
     items: [
       {
         title: 'Présenter votre classement',
-        body: 'L’agence départementale tient à jour la liste des meublés classés. Après réception de votre décision, vérifiez que vos annonces et les informations transmises à votre office de tourisme présentent le bon nombre d’étoiles.',
-        link: {
-          label: 'Voir les informations de l’agence',
-          href: 'https://pro.tourisme-lotetgaronne.com/accompagnement/classement-2/classement-des-meubles-de-tourisme/',
-        },
+        // Source factuelle uniquement : cette page propose aussi la commande d’une visite concurrente.
+        // https://pro.tourisme-lotetgaronne.com/accompagnement/classement-2/classement-des-meubles-de-tourisme/
+        body: 'Tourisme Lot-et-Garonne tient à jour la liste départementale des meublés classés. Après réception de votre décision, vérifiez que vos annonces et les informations transmises à votre office de tourisme présentent le bon nombre d’étoiles.',
       },
       {
-        title: 'Informer vos voyageurs',
-        body: 'Tourisme Lot-et-Garonne propose un guide des écogestes en vacances et des affiches ADEME sur l’eau, l’énergie et le tri. Utilisez ces supports pour informer vos voyageurs, en les adaptant aux équipements du logement.',
+        title: 'Taxe de séjour : retrouver votre intercommunalité',
+        // Portails recoupés : https://taxe.3douest.com/agen.php,
+        // https://grandvilleneuvois.taxesejour.fr/ et https://valdegaronne.taxesejour.fr/
+        body: 'Agen, le Grand Villeneuvois et le Val de Garonne ont chacun leur portail de taxe de séjour. Une fois votre classement obtenu, signalez-le à la collectivité de votre commune et vérifiez le barème correspondant à vos étoiles : il n’existe pas de tarif unique pour tout le Lot-et-Garonne.',
         link: {
-          label: 'Découvrir le kit écogestes',
-          href: 'https://pro.tourisme-lotetgaronne.com/guide-et-kit-ecogestes/',
+          label: 'Trouver le portail de taxe de séjour de ma collectivité',
+          href: 'https://pro.tourisme-lotetgaronne.com/accompagnement/legislation-et-reglementation/taxe-de-sejour/',
         },
       },
     ],

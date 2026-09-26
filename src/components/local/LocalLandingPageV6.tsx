@@ -22,6 +22,7 @@ import {
 import { getPricingProfile } from '../../content/local/pricing';
 import { COMMON_LOCAL_V6_FAQ_ITEMS } from '../../content/local/sharedLocalContent';
 import type {
+  DepartmentAreaId,
   DepartmentSector,
   LocalLandingPageV6Config,
   LocalV6Action,
@@ -107,12 +108,14 @@ export default function LocalLandingPageV6({ config }: { config: LocalLandingPag
       <LocalV6PricingSection config={config} />
       <LocalV6ProcedureSection config={config} />
       <LocalV6ExpertiseSection config={config} />
-      {config.localModule &&
-        (config.localModule.type === 'territorial-service' ? (
-          <LocalV6TerritorialModuleSection module={config.localModule} />
-        ) : (
-          <LocalV6TaxModuleSection module={config.localModule} />
-        ))}
+      {config.scope === 'department' ? (
+        <LocalV6TerritorialModuleSection
+          module={config.localModule}
+          departmentId={config.departmentId}
+        />
+      ) : (
+        config.localModule && <LocalV6TaxModuleSection module={config.localModule} />
+      )}
       {config.localNotice && <LocalV6EditorialNoticeSection notice={config.localNotice} />}
       <LocalV6FaqSection config={config} />
       <LocalV6FinalCta config={config} />
@@ -266,7 +269,8 @@ function LocalV6DepartmentServiceAreaSection({
         <LocalV6DepartmentSectorList sectors={serviceArea.sectors} />
         {localPages.length > 0 && (
           <nav aria-label="Pages locales du département">
-            <ul className="local-v6-commune-list">
+            <p className="text-sm font-semibold">Nos pages locales dans ce département</p>
+            <ul className="local-v6-commune-list mt-3">
               {localPages.map((localPage) => (
                 <li key={localPage.id}>
                   <Link to={localPage.path} className="editorial-inline-link">
@@ -532,7 +536,13 @@ function LocalV6ExpertiseSection({ config }: { config: LocalLandingPageV6Config 
   );
 }
 
-function LocalV6TerritorialModuleSection({ module }: { module: LocalV6TerritorialModule }) {
+function LocalV6TerritorialModuleSection({
+  module,
+  departmentId,
+}: {
+  module: LocalV6TerritorialModule;
+  departmentId: DepartmentAreaId;
+}) {
   return (
     <section
       className="editorial-section bg-surface-neutral"
@@ -566,7 +576,7 @@ function LocalV6TerritorialModuleSection({ module }: { module: LocalV6Territoria
                       ('href' in link ? (
                         <a
                           href={link.href}
-                          rel="nofollow"
+                          rel={link.nofollow ? 'nofollow' : undefined}
                           className="editorial-inline-link inline-block"
                         >
                           {link.label}
@@ -574,6 +584,7 @@ function LocalV6TerritorialModuleSection({ module }: { module: LocalV6Territoria
                       ) : (
                         entry &&
                         entry.kind !== 'department' &&
+                        entry.parentId === departmentId &&
                         isLocalRegistryEntryPublished(entry.id) && (
                           <Link to={entry.path} className="editorial-inline-link inline-block">
                             {link.label}

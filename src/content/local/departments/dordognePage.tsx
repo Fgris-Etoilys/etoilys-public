@@ -105,7 +105,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
       caption: 'Les pierres du Périgord.',
     },
   },
-  // Sources institutionnelles et liens locaux vérifiés le 20 septembre 2026.
+  // Sources institutionnelles et liens locaux vérifiés le 22 septembre 2026.
   localModule: {
     type: 'territorial-service',
     title: 'Vos interlocuteurs locaux en Dordogne',

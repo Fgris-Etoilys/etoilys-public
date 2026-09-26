@@ -103,26 +103,24 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
       },
     },
   },
-  // Sources Lot Tourisme vérifiées le 20 septembre 2026.
+  // Sources Lot Tourisme vérifiées le 22 septembre 2026.
   localModule: {
     type: 'territorial-service',
-    title: 'Préparer votre classement dans le Lot',
+    title: 'Après le classement de votre meublé dans le Lot',
     intro:
-      'Lot Tourisme vous aide à adapter l’accueil de votre gîte et à actualiser sa présentation dans le réseau touristique départemental.',
+      'Dans le Lot, le suivi des attestations et la mise à jour des fiches touristiques sont deux démarches distinctes après le classement.',
     items: [
       {
-        title: 'Accueillir à pied ou à vélo',
-        body: 'Lot Tourisme présente Rando Étape et Accueil Vélo dans sa fiche pour les locations saisonnières. Retrouvez leurs prérequis et interlocuteurs pour préparer l’accueil des randonneurs et cyclotouristes en complément du classement.',
-        link: {
-          label: 'Voir la fiche des démarches',
-          href: 'https://www.tourisme-lot.com/app/uploads/lot-tourisme/2026/05/260521-iche-Label-Location-saisonniere.pdf',
-        },
+        title: 'Le suivi départemental des attestations',
+        // Plan d’actions 2026, p. 12 : suivi après les visites, sans nouvelle démarche imposée au loueur.
+        // https://www.tourisme-lot.com/app/uploads/lot-tourisme/2025/12/251105-Plan-actions-2026-CA.pdf
+        body: 'Lot Tourisme assure le suivi et l’enregistrement des attestations de classement dans l’outil national, après les visites des différents organismes, y compris privés accrédités. Ce rôle départemental est distinct de la visite de votre meublé réalisée par Etoilys.',
       },
       {
         title: 'Actualiser votre fiche touristique',
-        body: 'L’Extranet VIT permet d’actualiser votre fiche toute l’année, depuis « Mes Offres ». Pour vous aider après le classement, Lot Tourisme réunit les contacts des offices de tourisme du département.',
+        body: 'Votre classement obtenu, pensez à faire actualiser les étoiles de votre fiche auprès de votre office de tourisme. Pour les autres informations de l’hébergement, l’Extranet VIT du Lot permet des mises à jour toute l’année depuis « Mes Offres ».',
         link: {
-          label: 'Retrouver les outils et contacts',
+          label: 'Mettre à jour ma fiche avec les outils du Lot',
           href: 'https://www.tourisme-lot.com/pros-centre-de-ressources/nos-services/promotion-visibilite/sit/outils-pratiques-et-accompagnement/',
         },
       },

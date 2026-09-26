@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import { MemoryRouter, StaticRouter } from 'react-router-dom';
@@ -9,11 +9,15 @@ import LocalLandingPageV6, { COMMON_LOCAL_V6_FAQ_ITEMS } from './LocalLandingPag
 import type {
   DepartmentAreaId,
   LocalLandingPageV6Config,
+  LocalLandingPageV6CityConfig,
+  LocalLandingPageV6DestinationConfig,
   LocalLandingPageV6DepartmentConfig,
   LocalRegistryEntry,
+  LocalV6TerritorialModule,
 } from '../../content/local/types';
 import {
   getLocalRegistryEntry,
+  getPublishedDepartmentEntries,
   getPublishedLocalChildEntriesForDepartment,
   LOCAL_REGISTRY,
 } from '../../content/local/registry';
@@ -30,6 +34,7 @@ import {
   LOCAL_V6_DEPARTMENT_HERO_INDEXES,
   LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+  MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
 
 const departmentConfigs = [
@@ -241,9 +246,12 @@ describe('DepartmentLandingPage', () => {
 
       if (children.length === 0) {
         expect(navigation).not.toBeInTheDocument();
+        expect(screen.queryByText(/nos pages locales/i)).not.toBeInTheDocument();
         return;
       }
       if (!navigation) throw new Error('Missing local pages navigation');
+      expect(within(navigation).getByText(/nos pages locales/i)).toBeVisible();
+      expect(within(navigation).queryByRole('heading', { level: 2 })).not.toBeInTheDocument();
       expect(
         screen.getAllByRole('navigation', { name: 'Pages locales du département' })
       ).toHaveLength(1);
@@ -415,12 +423,10 @@ describe('DepartmentLandingPage', () => {
     ).toHaveClass('bg-surface-neutral');
   });
 
-  it('keeps FAQ on paper when no local module or notice exists', () => {
-    const config = { ...DORDOGNE_LOCAL_LANDING_PAGE_V6 };
-    delete config.localModule;
-    renderDepartmentPage(config);
+  it('keeps FAQ on paper after the required territorial module when no notice exists', () => {
+    renderDepartmentPage(DORDOGNE_LOCAL_LANDING_PAGE_V6);
 
-    expect(document.getElementById('local-v6-territorial-title')).not.toBeInTheDocument();
+    expect(document.getElementById('local-v6-territorial-title')).toBeInTheDocument();
 
     expect(
       screen
@@ -457,7 +463,6 @@ describe('DepartmentLandingPage', () => {
   it.each(departmentConfigs)(
     'keeps the full V6 department section order for $departmentId',
     (config) => {
-      if (!config.localModule) throw new Error('Missing department module');
       renderDepartmentPage(config);
 
       expectHeadingSequence([
@@ -478,7 +483,6 @@ describe('DepartmentLandingPage', () => {
     'renders the territorial module accessibly for $departmentId',
     (config) => {
       const module = config.localModule;
-      if (!module) throw new Error('Missing department module');
       renderDepartmentPage(config);
 
       const section = screen.getByRole('region', {
@@ -505,9 +509,10 @@ describe('DepartmentLandingPage', () => {
         );
         const relations = renderedLink.getAttribute('rel')?.split(/\s+/) ?? [];
         if ('href' in link) {
-          expect(relations).toContain('nofollow');
+          expect(relations.includes('nofollow')).toBe(link.nofollow === true);
           if (renderedLink.getAttribute('target') === '_blank') {
             expect(relations).toContain('noopener');
+            expect(relations).toContain('noreferrer');
           }
         } else {
           expect(relations).not.toContain('nofollow');
@@ -522,7 +527,6 @@ describe('DepartmentLandingPage', () => {
     'includes the territorial module in server HTML for $departmentId',
     (config) => {
       const module = config.localModule;
-      if (!module) throw new Error('Missing department module');
       const html = renderToString(
         <StaticRouter location={getLocalRegistryEntry(config.departmentId)?.path ?? '/'}>
           <DepartmentLandingPage config={config} />
@@ -561,6 +565,98 @@ describe('DepartmentLandingPage', () => {
     expect(within(section).getAllByRole('listitem')).toHaveLength(2);
     expect(within(section).getAllByRole('heading', { level: 3 })).toHaveLength(2);
     expect(within(section).queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  it('requires a territorial module only for department configs at compile time', () => {
+    expectTypeOf<
+      LocalLandingPageV6DepartmentConfig['localModule']
+    >().toEqualTypeOf<LocalV6TerritorialModule>();
+    expectTypeOf<
+      Omit<LocalLandingPageV6DepartmentConfig, 'localModule'>
+    >().not.toMatchTypeOf<LocalLandingPageV6DepartmentConfig>();
+    expectTypeOf<
+      Omit<LocalLandingPageV6CityConfig, 'localModule'>
+    >().toMatchTypeOf<LocalLandingPageV6CityConfig>();
+    expectTypeOf<
+      Omit<LocalLandingPageV6DestinationConfig, 'localModule'>
+    >().toMatchTypeOf<LocalLandingPageV6DestinationConfig>();
+  });
+
+  it('covers every published department with a territorial module', () => {
+    expect(departmentConfigs.map((config) => config.departmentId).sort()).toEqual(
+      getPublishedDepartmentEntries()
+        .map((entry) => entry.id)
+        .sort()
+    );
+    departmentConfigs.forEach((config) => {
+      expect(config.localModule.type).toBe('territorial-service');
+      expect([2, 3]).toContain(config.localModule.items.length);
+    });
+  });
+
+  it.each([undefined, false, true])(
+    'uses selective nofollow for external links (%s)',
+    (nofollow) => {
+      const config: LocalLandingPageV6DepartmentConfig = {
+        ...DORDOGNE_LOCAL_LANDING_PAGE_V6,
+        localModule: {
+          type: 'territorial-service',
+          title: 'Fixture external links',
+          intro: 'Fixture introduction.',
+          items: [
+            {
+              title: 'External fixture',
+              body: 'Fixture body.',
+              link: {
+                label: 'Fixture external resource',
+                href: 'https://example.org/resource',
+                ...(nofollow === undefined ? {} : { nofollow }),
+              },
+            },
+            { title: 'Unlinked fixture', body: 'Fixture body.' },
+          ],
+        },
+      };
+      const html = renderToString(
+        <StaticRouter location="/classement-meuble-tourisme-dordogne">
+          <DepartmentLandingPage config={config} />
+        </StaticRouter>
+      );
+      const serverDocument = new DOMParser().parseFromString(html, 'text/html');
+      renderDepartmentPage(config);
+      const links = [
+        screen.getByRole('link', { name: 'Fixture external resource' }),
+        serverDocument.querySelector('a[href="https://example.org/resource"]'),
+      ];
+      links.forEach((link) => {
+        expect(link).not.toBeNull();
+        const relations = link?.getAttribute('rel')?.split(/\s+/) ?? [];
+        expect(relations.includes('nofollow')).toBe(nofollow === true);
+        // Links currently use the same tab; guard a future new-tab renderer as well.
+        if (link?.getAttribute('target') === '_blank') {
+          expect(relations).toEqual(expect.arrayContaining(['noopener', 'noreferrer']));
+        }
+      });
+    }
+  );
+
+  it.each([
+    BERGERAC_LOCAL_LANDING_PAGE_V6,
+    BORDEAUX_LOCAL_LANDING_PAGE_V6,
+    BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
+    MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6,
+  ])('keeps the tax module optional and department navigation absent for $localEntryId', (page) => {
+    const config = { ...page };
+    delete config.localModule;
+    renderLocalPage(config);
+    expect(document.getElementById('local-v6-tax-title')).not.toBeInTheDocument();
+    expect(document.getElementById('local-v6-territorial-title')).not.toBeInTheDocument();
+    expect(screen.queryByText(/nos pages locales/i)).not.toBeInTheDocument();
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(document.querySelector('.local-v6-service-area a')).toHaveAttribute(
+      'href',
+      getLocalRegistryEntry(config.serviceArea.parentLink.localEntryId)?.path
+    );
   });
 
   it.each([

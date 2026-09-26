@@ -267,7 +267,7 @@ export interface LocalV6TerritorialItem {
   body: string;
   link?:
     | { label: string; localEntryId: LocalChildAreaId }
-    | { label: string; href: `https://${string}` };
+    | { label: string; href: `https://${string}`; nofollow?: boolean };
 }
 
 export interface LocalV6TerritorialModule {
@@ -368,7 +368,7 @@ export interface LocalLandingPageV6DepartmentConfig extends LocalLandingPageV6Ba
   departmentId: DepartmentAreaId;
   serviceArea: LocalV6DepartmentServiceArea;
   pricing: LocalV6PickerPricing;
-  localModule?: LocalV6TerritorialModule;
+  localModule: LocalV6TerritorialModule;
 }
 
 export type LocalLandingPageV6Config =

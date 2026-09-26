@@ -133,7 +133,7 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
       },
     },
   },
-  // Sources institutionnelles et pages filles vérifiées le 20 septembre 2026.
+  // Sources institutionnelles ci-dessous et pages filles vérifiées le 22 septembre 2026.
   localModule: {
     type: 'territorial-service',
     title: 'Quels repères pour votre meublé en Gironde ?',
@@ -145,17 +145,17 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
         // https://taxedesejour.bordeaux-metropole.fr/
         body: 'Le portail métropolitain distingue les démarches d’enregistrement et de changement d’usage de Bordeaux des informations pour les autres communes. Vérifiez la commune de votre logement : les règles de la ville ne s’étendent pas automatiquement à toute la métropole.',
         link: {
-          label: 'Les démarches sur le portail de Bordeaux Métropole',
-          href: 'https://taxedesejour.bordeaux-metropole.fr/',
+          label: 'Le classement à Bordeaux et dans sa métropole',
+          localEntryId: 'bordeaux',
         },
       },
       {
         title: 'Le Bassin d’Arcachon, commune par commune',
         // https://www.gironde-tourisme.com/espace-pro/hebergements/meubles-de-tourisme/faq-meuble-de-tourisme/
-        body: 'Sur le Bassin, vérifiez les démarches de location auprès de la mairie du logement : la destination ne forme pas un cadre administratif unique. La FAQ de Gironde Tourisme détaille les démarches à connaître pour votre meublé, de la déclaration au classement.',
+        body: 'Sur le Bassin, vérifiez les démarches de location auprès de la mairie du logement : la destination ne forme pas un cadre administratif unique. Notre page dédiée précise les repères locaux pour préparer votre classement.',
         link: {
-          label: 'Les démarches locales avec Gironde Tourisme',
-          href: 'https://www.gironde-tourisme.com/espace-pro/hebergements/meubles-de-tourisme/faq-meuble-de-tourisme/',
+          label: 'Le classement sur le Bassin d’Arcachon',
+          localEntryId: 'bassin-arcachon',
         },
       },
       {
@@ -163,8 +163,8 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
         // https://medocatlantique.taxesejour.fr/
         body: 'Lacanau, Carcans, Hourtin et Soulac-sur-Mer relèvent du portail de taxe de séjour de Médoc Atlantique. Consultez-y le barème de votre hébergement et pensez à actualiser votre classement. Ce périmètre ne couvre pas tout le Médoc.',
         link: {
-          label: 'Le portail de taxe de séjour de Médoc Atlantique',
-          href: 'https://medocatlantique.taxesejour.fr/',
+          label: 'Le classement à Lacanau et en Médoc Atlantique',
+          localEntryId: 'medoc-atlantique',
         },
       },
     ],
