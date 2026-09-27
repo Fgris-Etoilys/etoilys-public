@@ -74,6 +74,11 @@ describe('ClassementValleeDordogne', () => {
       })
     ).toBeInTheDocument();
     expect(screen.getByText('dans la Vallée de la Dordogne')).toHaveClass('text-copper');
+    expect(
+      screen.getByText(
+        'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement dans la Vallée de la Dordogne ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.'
+      )
+    ).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
 
@@ -102,7 +107,6 @@ describe('ClassementValleeDordogne', () => {
       'Votre classement en trois étapes',
       'Pourquoi choisir Etoilys pour votre classement dans la Vallée de la Dordogne ?',
       'Dans la Vallée de la Dordogne, le classement peut aussi réduire la taxe de séjour',
-      'Une destination touristique, une page rattachée au Lot',
       'Questions fréquentes sur le classement dans la Vallée de la Dordogne',
       'Demandez le classement de votre meublé dans la Vallée de la Dordogne',
     ]);
@@ -128,17 +132,31 @@ describe('ClassementValleeDordogne', () => {
     expect(document.body).not.toHaveTextContent(/240\s€\s*TTC/);
 
     expect(screen.getByText('Exemple à Rocamadour')).toBeInTheDocument();
+    expect(document.body).toHaveTextContent(
+      'De Rocamadour à Souillac, en passant par Gramat, Martel et Saint-Céré'
+    );
+    expect(document.body).toHaveTextContent(
+      'À Rocamadour, pour une réservation à 150 € la nuit hors taxe de séjour et quatre personnes'
+    );
     expect(screen.getByText('Taxe de séjour pour 4 personnes')).toBeInTheDocument();
     expect(screen.getByText('Logement à 150 € la nuit')).toBeInTheDocument();
     expect(screen.getByText('10,80 € par nuit')).toBeInTheDocument();
     expect(screen.getByText('5,18 € par nuit')).toBeInTheDocument();
-    expect(screen.getByText('5,62 € de taxe de séjour en moins par nuit')).toBeInTheDocument();
+    expect(
+      screen.getByText('5,62 € de taxe de séjour en moins par nuit, soit une baisse d’environ 52 %')
+    ).toBeInTheDocument();
     expect(screen.getByText(/39,34 € de taxe de séjour en moins sur 7 nuits/i)).toBeInTheDocument();
+    expect(
+      screen.getByText('Tarifs 2026 applicables à Rocamadour, taxes additionnelles comprises.')
+    ).toBeInTheDocument();
     expect(
       screen.getAllByRole('link', { name: 'Comparer la taxe de séjour de mon logement' })
     ).toHaveLength(2);
 
-    expect(document.body).toHaveTextContent(
+    expect(document.body).not.toHaveTextContent(
+      'Une destination touristique, une page rattachée au Lot'
+    );
+    expect(document.body).not.toHaveTextContent(
       'Etoilys intervient également dans les autres secteurs de la Vallée de la Dordogne.'
     );
 
@@ -148,9 +166,8 @@ describe('ClassementValleeDordogne', () => {
       })
     );
     expect(document.body).toHaveTextContent(
-      'Etoilys réalise des visites de classement dans toute la Vallée de la Dordogne'
+      'Oui. Etoilys réalise des visites de classement dans toute la Vallée de la Dordogne. Dans le Lot, nous intervenons notamment à Rocamadour, Souillac, Gramat, Martel, Saint-Céré, Padirac, Carennac, Autoire, Loubressac et Bretenoux.'
     );
-    expect(document.body).toHaveTextContent('Padirac, Carennac, Autoire, Loubressac');
 
     const main = screen.getByRole('main');
     const conversionLinks = within(main).getAllByRole('link', { name: 'Demander mon classement' });
@@ -203,7 +220,7 @@ describe('ClassementValleeDordogne', () => {
     });
     expect(document.querySelector("meta[name='description']")).toHaveAttribute(
       'content',
-      'Classement de meublé de tourisme dans la Vallée de la Dordogne lotoise : Rocamadour, Souillac, Gramat, Martel et Saint-Céré, tarif Lot et demande en ligne.'
+      'Faites classer votre meublé de tourisme dans la Vallée de la Dordogne. Visite sur place dans le Lot, tarifs clairs et demande en ligne avec Etoilys.'
     );
     expect(document.querySelector("link[rel='canonical']")).toHaveAttribute(
       'href',

@@ -267,7 +267,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       lastModified: '2026-09-27',
       title: 'Classement meublé de tourisme Vallée de la Dordogne',
       description:
-        'Classement de meublé de tourisme dans la Vallée de la Dordogne lotoise : Rocamadour, Souillac, Gramat, Martel et Saint-Céré, tarif Lot et demande en ligne.',
+        'Faites classer votre meublé de tourisme dans la Vallée de la Dordogne. Visite sur place dans le Lot, tarifs clairs et demande en ligne avec Etoilys.',
       breadcrumbLabel: 'Vallée de la Dordogne',
       ogImageKey: 'valleeDordogneHero',
       lcpImageKey: 'valleeDordogneHero',

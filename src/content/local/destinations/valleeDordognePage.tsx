@@ -35,7 +35,7 @@ export const VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
     title: 'Classement de meublé de tourisme dans la Vallée de la Dordogne',
     highlightedTitleText: 'dans la Vallée de la Dordogne',
     description:
-      'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement dans la Vallée de la Dordogne ? Etoilys réalise la visite officielle directement dans votre logement, autour de Rocamadour, Souillac, Gramat, Martel et Saint-Céré, avec une démarche simple et le tarif applicable dans le Lot.',
+      'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement dans la Vallée de la Dordogne ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'valleeDordogneHero',
       alt: 'Dordogne entre Lacave et Pinsac dans le Lot',
@@ -125,12 +125,6 @@ export const VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
     },
   },
   localModule: VALLEE_DORDOGNE_TAX_MODULE,
-  localNotice: {
-    title: 'Une destination touristique, une page rattachée au Lot',
-    paragraphs: [
-      'La Vallée de la Dordogne s’étend au-delà des limites du Lot. Cette page présente plus particulièrement notre intervention dans sa partie lotoise. Etoilys intervient également dans les autres secteurs de la Vallée de la Dordogne.',
-    ],
-  },
   faq: {
     eyebrow: 'AVANT DE VOUS LANCER',
     title: 'Questions fréquentes sur le classement dans la Vallée de la Dordogne',
