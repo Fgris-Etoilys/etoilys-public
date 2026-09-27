@@ -136,6 +136,10 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-lacanau-medoc-atlantique'
     );
+    expect(screen.getByRole('link', { name: 'Vallée de la Dordogne' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-vallee-dordogne'
+    );
     expect(screen.getByRole('link', { name: 'Classement en Aveyron' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-aveyron'
@@ -239,6 +243,16 @@ describe('routing', () => {
     expect(screen.getByRole('link', { name: /zone d.intervention en Gironde/i })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-gironde'
+    );
+  });
+
+  it('renders Vallée de la Dordogne destination local landing page', () => {
+    renderAt('/classement-meuble-tourisme-vallee-dordogne');
+    expectPageHeading(/classement/i, /vallée de la dordogne/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d.intervention dans le Lot/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-lot'
     );
   });
 

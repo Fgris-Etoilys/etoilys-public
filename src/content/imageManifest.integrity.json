@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "2363bd9604a9eae5a04ee836f4fedd7c6be164df563c2c565e12ade873cb4c31",
+  "pipelineSignature": "62d63be478d5f11035df88dbe911c9594dd17a76cffedeebe2aec57f01d373f9",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "c345a342f08b754e7103232723935931f0883e0803c89a4dbb4ebcdf9b9b7bbb"
+    "sha256": "a495689ca1bf9f00b1ce32b42fe8e46564196abf2264025f99ed8665692a7cba"
   },
   "sources": [
     {
@@ -225,6 +225,16 @@
       "key": "articleFacturationElectronique2026",
       "path": "src/assets/seo-images/source/sumup-ru18KXzFA4E-unsplash.jpg",
       "sha256": "6bc31900930497bfcb2933a2c2c19b648e83ea3542af5abeb240513e239cd047"
+    },
+    {
+      "key": "valleeDordogneBelcastel",
+      "path": "src/assets/seo-images/source/vallee-dordogne-belcastel-sonja-van-acolyen-unsplash.jpg",
+      "sha256": "c53c6c6378cf130be3639e630e349fe9bcc5b6c362d7f0e945357256e2c1e602"
+    },
+    {
+      "key": "valleeDordogneHero",
+      "path": "src/assets/seo-images/source/vallee-dordogne-river-krzysztof-golik-wikimedia.jpg",
+      "sha256": "3a483ff965d1ff9f351e7be6c3ecf1f809816a48a461b5cf92ffacd61381848d"
     }
   ],
   "outputs": [
@@ -2587,6 +2597,96 @@
       "path": "/images/optimized/sumup-ru18KXzFA4E-unsplash-768.webp",
       "bytes": 26402,
       "sha256": "bc842988908bc3cda2bc9a2616a1e78085d1de8f4350149cfbed7aada885e56e"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-1200.avif",
+      "bytes": 334258,
+      "sha256": "ff643937fa350f862085c08d33828a3b9f1e1ee49879902f90f5389894236458"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-1200.jpg",
+      "bytes": 252073,
+      "sha256": "2282bf7edce7300ce7a6308dcf6721601e0230f7673a62b67e88126fc3211c47"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-1200.webp",
+      "bytes": 292888,
+      "sha256": "d185f2434d3a61822e69315983207d603db11cf86dcb52d300d987dbb068b662"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-1600.avif",
+      "bytes": 575349,
+      "sha256": "fcec69709df2dc49d7bb24f1eae89188f9781461372c14ade1ff14b117f6bc87"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-1600.webp",
+      "bytes": 515910,
+      "sha256": "b445e4f84f611cfb427be874edaae7f982c60cc23b868369b941aafd5cb4f4d2"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-1920.avif",
+      "bytes": 798690,
+      "sha256": "1a272005a7a154661fa60a0f8ec80445190969107059ad19f88e5aba11d5e2e8"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-1920.webp",
+      "bytes": 725870,
+      "sha256": "83d3abbde64808fd3c2bf43fc372f1b1f518ac9dc1aa304d1e475ccab30b666f"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-480.avif",
+      "bytes": 53682,
+      "sha256": "2f7240f83003b5efe1768e2f3e3cea3d0a13c9040421f733d1ca6be59adf9576"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-480.webp",
+      "bytes": 48406,
+      "sha256": "73c509f34ca46f1bed0f400cd59376303b8e808087ca7c039018d344a263c8f6"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-768.avif",
+      "bytes": 141582,
+      "sha256": "4609652256a3ed4e633412160a67d2d58b1928097687a164be1fdfddb5049cbb"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-belcastel-768.webp",
+      "bytes": 121662,
+      "sha256": "eca3ad1dae53117bb6bc1247856f41f68342dfc2a7a9152426ceecf757b1823c"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-1200.avif",
+      "bytes": 246899,
+      "sha256": "3bfad0c658e2d7babc17427223856c6df0dbb91a9bb6d9f6ab652cae21382474"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-1200.jpg",
+      "bytes": 253839,
+      "sha256": "140c7445f46ab26adf637f805bb5357d4f8e7ec0e0aab4724195574ecdf80180"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-1200.webp",
+      "bytes": 282472,
+      "sha256": "b195c3a2453d729332d896613631e9971b22f41ee7929fa2051c1f4a0ab25bd5"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-480.avif",
+      "bytes": 29430,
+      "sha256": "4ba28392c0fae6aca50dc03d5e1a19bb65f5dcd5662ddd38bae144b1bef0b096"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-480.webp",
+      "bytes": 36310,
+      "sha256": "ca8405b2be898fb262cb13e16177d16cd388c327547e772afcfa34dff0bcae82"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-768.avif",
+      "bytes": 85695,
+      "sha256": "0afb2213ed0dcf8318a6a29ddd7a8759788fa902c7f32eee3b2e72b182f2621a"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-768.webp",
+      "bytes": 101716,
+      "sha256": "0d149faeea509784d5b2478dee9f3e3a4b0a25de5f1fee5bb24e4b2501e2abad"
     }
   ]
 }

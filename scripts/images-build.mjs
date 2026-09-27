@@ -25,6 +25,7 @@ const HERO_ASSET_KEYS = new Set([
   'girondeHero',
   'bassinArcachonHero',
   'cahorsValleeLotHero',
+  'valleeDordogneHero',
   'medocAtlantiqueHero',
   'lotHero',
   'lotEtGaronneHero',
@@ -119,6 +120,16 @@ const IMAGE_ASSETS = [
     key: 'cahorsValleeLotDouelle',
     fileName: 'riviere-lot-douelle-arbref-wikimedia.jpg',
     outputName: 'riviere-lot-douelle',
+  },
+  {
+    key: 'valleeDordogneHero',
+    fileName: 'vallee-dordogne-river-krzysztof-golik-wikimedia.jpg',
+    outputName: 'vallee-dordogne-river',
+  },
+  {
+    key: 'valleeDordogneBelcastel',
+    fileName: 'vallee-dordogne-belcastel-sonja-van-acolyen-unsplash.jpg',
+    outputName: 'vallee-dordogne-belcastel',
   },
   {
     key: 'medocAtlantiqueHero',

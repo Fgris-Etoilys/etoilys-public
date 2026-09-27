@@ -292,7 +292,10 @@ describe('local service areas data', () => {
       'bassin-arcachon',
       'medoc-atlantique',
     ]);
-    expect(lot.localPages.map((localPage) => localPage.id)).toEqual(['cahors-vallee-lot']);
+    expect(lot.localPages.map((localPage) => localPage.id)).toEqual([
+      'cahors-vallee-lot',
+      'vallee-dordogne',
+    ]);
     expect(dordogne.localPages.find((localPage) => localPage.id === 'bordeaux')).toBeUndefined();
     expect(gironde.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();
     expect(lot.localPages.find((localPage) => localPage.id === 'medoc-atlantique')).toBeUndefined();

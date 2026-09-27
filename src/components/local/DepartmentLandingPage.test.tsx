@@ -36,6 +36,7 @@ import {
   LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
   MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6,
+  VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
 
 const departmentConfigs = [
@@ -756,6 +757,7 @@ describe('DepartmentLandingPage', () => {
     BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
     CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
     MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6,
+    VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6,
   ])('keeps the tax module optional and department navigation absent for $localEntryId', (page) => {
     const config = { ...page };
     delete config.localModule;
@@ -847,7 +849,12 @@ describe('DepartmentLandingPage', () => {
     [
       'Cahors et Vallée du Lot',
       CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
-      ['Cahors depuis le Mont Saint-Cyr', 'Rivière Lot à Douelle, près de Cahors.'],
+      ['Cahors depuis le Mont Saint-Cyr', 'Le Lot à Douelle, en aval de Cahors.'],
+    ],
+    [
+      'Vallée de la Dordogne',
+      VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6,
+      ['Dordogne entre Lacave et Pinsac', 'Belcastel, Lacave, Vallée de la Dordogne.'],
     ],
     ['Lot', LOT_LOCAL_LANDING_PAGE_V6, ['Saint-Cirq-Lapopie, Lot', 'Rocamadour, Lot.']],
     [

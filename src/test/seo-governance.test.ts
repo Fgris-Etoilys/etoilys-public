@@ -184,6 +184,18 @@ describe('seo governance', () => {
     ]);
   });
 
+  it('builds the Vallée de la Dordogne breadcrumb hierarchy from zones to Lot', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-vallee-dordogne')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Lot', url: `${SITE_URL}/classement-meuble-tourisme-lot` },
+      {
+        name: 'Vallée de la Dordogne',
+        url: `${SITE_URL}/classement-meuble-tourisme-vallee-dordogne`,
+      },
+    ]);
+  });
+
   it('keeps dynamic public simulations noindex and out of the sitemap', () => {
     const dynamicSimulationSeo = getSeoRouteConfig('/simulateur/simulation-id');
 

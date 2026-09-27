@@ -32,6 +32,8 @@ export type ImageAssetKey =
   | 'bassinArcachonDunePilat'
   | 'cahorsValleeLotHero'
   | 'cahorsValleeLotDouelle'
+  | 'valleeDordogneHero'
+  | 'valleeDordogneBelcastel'
   | 'medocAtlantiqueHero'
   | 'medocAtlantiqueExpertise'
   | 'lotHero'
@@ -349,6 +351,24 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/riviere-lot-douelle-480.webp 480w, /images/optimized/riviere-lot-douelle-768.webp 768w, /images/optimized/riviere-lot-douelle-1200.webp 1200w, /images/optimized/riviere-lot-douelle-1600.webp 1600w, /images/optimized/riviere-lot-douelle-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/riviere-lot-douelle-480.avif 480w, /images/optimized/riviere-lot-douelle-768.avif 768w, /images/optimized/riviere-lot-douelle-1200.avif 1200w, /images/optimized/riviere-lot-douelle-1600.avif 1600w, /images/optimized/riviere-lot-douelle-1920.avif 1920w',
+  },
+  valleeDordogneHero: {
+    width: 1280,
+    height: 853,
+    src: '/images/optimized/vallee-dordogne-river-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/vallee-dordogne-river-480.webp 480w, /images/optimized/vallee-dordogne-river-768.webp 768w, /images/optimized/vallee-dordogne-river-1200.webp 1200w',
+    srcSetAvif:
+      '/images/optimized/vallee-dordogne-river-480.avif 480w, /images/optimized/vallee-dordogne-river-768.avif 768w, /images/optimized/vallee-dordogne-river-1200.avif 1200w',
+  },
+  valleeDordogneBelcastel: {
+    width: 3000,
+    height: 2000,
+    src: '/images/optimized/vallee-dordogne-belcastel-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/vallee-dordogne-belcastel-480.webp 480w, /images/optimized/vallee-dordogne-belcastel-768.webp 768w, /images/optimized/vallee-dordogne-belcastel-1200.webp 1200w, /images/optimized/vallee-dordogne-belcastel-1600.webp 1600w, /images/optimized/vallee-dordogne-belcastel-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/vallee-dordogne-belcastel-480.avif 480w, /images/optimized/vallee-dordogne-belcastel-768.avif 768w, /images/optimized/vallee-dordogne-belcastel-1200.avif 1200w, /images/optimized/vallee-dordogne-belcastel-1600.avif 1600w, /images/optimized/vallee-dordogne-belcastel-1920.avif 1920w',
   },
   medocAtlantiqueHero: {
     width: 3648,

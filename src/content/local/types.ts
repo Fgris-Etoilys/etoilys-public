@@ -7,7 +7,11 @@ export type DepartmentAreaId = 'aveyron' | 'dordogne' | 'gironde' | 'lot' | 'lot
 
 export type CityAreaId = 'bergerac' | 'bordeaux';
 
-export type DestinationAreaId = 'bassin-arcachon' | 'cahors-vallee-lot' | 'medoc-atlantique';
+export type DestinationAreaId =
+  | 'bassin-arcachon'
+  | 'cahors-vallee-lot'
+  | 'medoc-atlantique'
+  | 'vallee-dordogne';
 
 export type LocalChildAreaId = CityAreaId | DestinationAreaId;
 
