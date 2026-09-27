@@ -67,7 +67,9 @@ Pour garder `VITE_API_BASE_URL=/api` aussi en production, ce repo inclut un `ver
 
 - `/api/public/forms/contact` -> `api-dev.etoilys.fr/public/forms/contact`
 - `/api/public/forms/classement` -> `api-dev.etoilys.fr/public/forms/classement`
-- `/api/public/simulations` et sous-routes -> `api-dev.etoilys.fr/public/simulations`
+- `/api/public/simulations` et sous-routes -> `api-prod.etoilys.fr/public/simulations`
+
+Le simulateur public pointe donc sur le backend de production, contrairement aux formulaires (toujours sur `api-dev.etoilys.fr`). Les rewrites de `vercel.json` sont codés en dur et s'appliquent aussi aux déploiements Preview. En local, le proxy Vite garde `ETOILYS_API_BASE_URL` (dev par défaut). Le CORS du backend de production doit autoriser l'origine `https://www.etoilys.fr` : Vercel transmet l'en-tête `Origin` du navigateur, et le backend répond `403 Invalid CORS request` sinon.
 
 Variables à définir dans Vercel :
 
