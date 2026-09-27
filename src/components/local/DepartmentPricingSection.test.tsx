@@ -172,15 +172,18 @@ describe('Department pricing picker', () => {
     fireEvent.keyDown(input, { key: 'Enter' });
 
     expect(screen.getByText('Votre meublé à Bordeaux')).toBeInTheDocument();
-    expect(screen.getByText('Studio / T1')).toBeInTheDocument();
+    expect(screen.getByText('Tarif standard')).toBeInTheDocument();
+    expect(screen.getByText('Tarif préférentiel')).toBeInTheDocument();
+    expect(screen.getAllByText('Studio, T1 à T4')).toHaveLength(2);
     expect(screen.getByText(/180\s€/)).toBeInTheDocument();
-    expect(screen.getByText('T2 / T3 / T4')).toBeInTheDocument();
     expect(screen.getByText(/200\s€/)).toBeInTheDocument();
-    expect(screen.getByText('T5 et plus')).toBeInTheDocument();
+    expect(screen.getAllByText('T5 et plus')).toHaveLength(2);
+    expect(screen.getByText(/230\s€/)).toBeInTheDocument();
     expect(screen.getByText(/250\s€/)).toBeInTheDocument();
-    expect(screen.getByText('Renouvellement : -20 %')).toBeInTheDocument();
     expect(
-      screen.getByText(/classement initial a été réalisé par Etoilys ou Gironde Tourisme/i)
+      screen.getByText(
+        'Renouvellement · 4 meublés ou plus pour un même propriétaire · professionnels du tourisme'
+      )
     ).toBeInTheDocument();
     expect(screen.queryByText(/office de tourisme partenaire/i)).not.toBeInTheDocument();
     expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe(
@@ -205,7 +208,7 @@ describe('Department pricing picker', () => {
 
     expect(screen.getByText('Votre meublé à Sainte-Foy-la-Grande')).toBeInTheDocument();
     expect(screen.getAllByText(/240\s€/).length).toBeGreaterThan(0);
-    expect(screen.queryByText('Studio / T1')).not.toBeInTheDocument();
+    expect(screen.queryByText('Studio, T1 à T4')).not.toBeInTheDocument();
     expect(GIRONDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides['33402']).toBe(
       'dordogne-standard'
     );
@@ -236,13 +239,19 @@ describe('Department pricing picker', () => {
     );
 
     expect(screen.getByText('Votre meublé à Bordeaux')).toBeInTheDocument();
-    expect(screen.getByText('Studio / T1')).toBeInTheDocument();
+    expect(screen.getByText('Tarif standard')).toBeInTheDocument();
+    expect(screen.getByText('Tarif préférentiel')).toBeInTheDocument();
+    expect(screen.getAllByText('Studio, T1 à T4')).toHaveLength(2);
     expect(screen.getByText(/180\s€/)).toBeInTheDocument();
-    expect(screen.getByText('T2 / T3 / T4')).toBeInTheDocument();
     expect(screen.getByText(/200\s€/)).toBeInTheDocument();
-    expect(screen.getByText('T5 et plus')).toBeInTheDocument();
+    expect(screen.getAllByText('T5 et plus')).toHaveLength(2);
+    expect(screen.getByText(/230\s€/)).toBeInTheDocument();
     expect(screen.getByText(/250\s€/)).toBeInTheDocument();
-    expect(screen.getByText('Renouvellement : -20 %')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Renouvellement · 4 meublés ou plus pour un même propriétaire · professionnels du tourisme'
+      )
+    ).toBeInTheDocument();
     expect(
       screen.queryByText(getPricingProfile('bordeaux-standard').note ?? '')
     ).not.toBeInTheDocument();

@@ -8,6 +8,7 @@ import {
   getPricingProfile,
   type PricingProfile,
   type PricingProfileId,
+  type PricingTierRow,
 } from '../../content/local/pricing';
 import type { DepartmentPricingResolutionConfig } from '../../content/local/types';
 import {
@@ -393,22 +394,19 @@ export function LocalPricingProfileSummary({
           </p>
         </div>
       ) : (
-        <dl className="local-v6-pricing-tiers">
-          {pricingProfile.tiers.map((tier) => (
-            <div key={tier.key}>
-              <dt>{tier.label}</dt>
-              <dd>
-                {tier.amount} <small>{tier.qualifier}</small>
-              </dd>
+        <>
+          <div className="local-v6-pricing-tier-group">
+            {pricingProfile.standardTitle && <h3>{pricingProfile.standardTitle}</h3>}
+            <PricingTierList tiers={pricingProfile.tiers} />
+          </div>
+          {pricingProfile.preferential && (
+            <div className="local-v6-pricing-tier-group">
+              <h3>{pricingProfile.preferential.title}</h3>
+              <p>{pricingProfile.preferential.description}</p>
+              <PricingTierList tiers={pricingProfile.preferential.tiers} />
             </div>
-          ))}
-        </dl>
-      )}
-      {pricingProfile.offer && (
-        <div className="local-v6-pricing-offer">
-          <strong>{pricingProfile.offer.title}</strong>
-          <p>{pricingProfile.offer.description}</p>
-        </div>
+          )}
+        </>
       )}
       {pricingProfile.kind === 'flat' && pricingProfile.partner && (
         <div className="local-v6-pricing-partner">
@@ -419,6 +417,12 @@ export function LocalPricingProfileSummary({
             Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.
             {pricingProfile.partner.conditions && <> {pricingProfile.partner.conditions}</>}
           </p>
+        </div>
+      )}
+      {pricingProfile.kind === 'flat' && pricingProfile.offer && (
+        <div className="local-v6-pricing-offer">
+          <strong>{pricingProfile.offer.title}</strong>
+          <p>{pricingProfile.offer.description}</p>
         </div>
       )}
       {pricingProfile.kind === 'flat' && pricingProfile.multiProperty && (
@@ -441,5 +445,20 @@ export function LocalPricingProfileSummary({
         Demander mon classement
       </Button>
     </div>
+  );
+}
+
+function PricingTierList({ tiers }: { tiers: readonly PricingTierRow[] }) {
+  return (
+    <dl className="local-v6-pricing-tiers">
+      {tiers.map((tier) => (
+        <div key={tier.key}>
+          <dt>{tier.label}</dt>
+          <dd>
+            {tier.amount} <small>{tier.qualifier}</small>
+          </dd>
+        </div>
+      ))}
+    </dl>
   );
 }

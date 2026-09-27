@@ -91,15 +91,21 @@ describe('ClassementBassinArcachon', () => {
       'href',
       '/classement-meuble-tourisme-gironde'
     );
-    expect(screen.getByText('Studio / T1')).toBeInTheDocument();
+    expect(screen.getByText('Tarif standard')).toBeInTheDocument();
+    expect(screen.getByText('Tarif préférentiel')).toBeInTheDocument();
+    expect(screen.getAllByText('Studio, T1 à T4')).toHaveLength(2);
     expect(screen.getByText('Votre meublé sur le Bassin d’Arcachon')).toBeInTheDocument();
     expect(screen.queryByText('Votre meublé à Bassin d’Arcachon')).not.toBeInTheDocument();
-    expect(screen.getByText('T2 / T3 / T4')).toBeInTheDocument();
-    expect(screen.getByText('T5 et plus')).toBeInTheDocument();
+    expect(screen.getAllByText('T5 et plus')).toHaveLength(2);
     expect(document.body).toHaveTextContent(/180\s€\s*TTC/);
     expect(document.body).toHaveTextContent(/200\s€\s*TTC/);
+    expect(document.body).toHaveTextContent(/230\s€\s*TTC/);
     expect(document.body).toHaveTextContent(/250\s€\s*TTC/);
-    expect(screen.getByText('Renouvellement : -20 %')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Renouvellement · 4 meublés ou plus pour un même propriétaire · professionnels du tourisme'
+      )
+    ).toBeInTheDocument();
 
     expect(screen.getByText('Exemple à Arcachon')).toBeInTheDocument();
     expect(screen.getByText('Taxe de séjour pour 6 adultes')).toBeInTheDocument();

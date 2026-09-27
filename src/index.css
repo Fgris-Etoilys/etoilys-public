@@ -1140,6 +1140,25 @@
     letter-spacing: 0;
   }
 
+  .local-v6-pricing-tier-group {
+    margin-bottom: 22px;
+  }
+
+  .local-v6-pricing-tier-group h3 {
+    margin: 0 0 12px;
+    color: #173d49;
+    font-size: 15px;
+    font-weight: 650;
+  }
+
+  .local-v6-pricing-tier-group > p {
+    margin: -4px 0 12px;
+    color: #526b5e;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
   .local-v6-pricing-tiers {
     display: grid;
     gap: 10px;

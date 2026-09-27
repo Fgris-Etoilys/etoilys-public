@@ -36,6 +36,12 @@ export interface PricingTierRow {
   qualifier: 'TTC' | 'HT';
 }
 
+export interface PreferentialTieredPricing {
+  title: string;
+  description: string;
+  tiers: PricingTierRow[];
+}
+
 export interface FlatPricingProfile {
   kind: 'flat';
   id: PricingProfileId;
@@ -51,8 +57,9 @@ export interface FlatPricingProfile {
 export interface TieredPricingProfile {
   kind: 'tiered';
   id: PricingProfileId;
+  standardTitle?: string;
   tiers: PricingTierRow[];
-  offer?: PricingOffer;
+  preferential?: PreferentialTieredPricing;
   note?: string;
 }
 
@@ -131,16 +138,11 @@ const lotPricingProfile: PricingProfile = {
 
 const girondeStandardProfileValues = {
   kind: 'tiered',
+  standardTitle: 'Tarif standard',
   tiers: [
     {
-      key: 'studio-t1',
-      label: 'Studio / T1',
-      amount: '180 €',
-      qualifier: 'TTC',
-    },
-    {
-      key: 't2-t3-t4',
-      label: 'T2 / T3 / T4',
+      key: 'studio-t1-t4',
+      label: 'Studio, T1 à T4',
       amount: '200 €',
       qualifier: 'TTC',
     },
@@ -151,10 +153,24 @@ const girondeStandardProfileValues = {
       qualifier: 'TTC',
     },
   ],
-  offer: {
-    title: 'Renouvellement : -20 %',
+  preferential: {
+    title: 'Tarif préférentiel',
     description:
-      'Pour les logements dont le classement initial a été réalisé par Etoilys ou Gironde Tourisme.',
+      'Renouvellement · 4 meublés ou plus pour un même propriétaire · professionnels du tourisme',
+    tiers: [
+      {
+        key: 'preferential-studio-t1-t4',
+        label: 'Studio, T1 à T4',
+        amount: '180 €',
+        qualifier: 'TTC',
+      },
+      {
+        key: 'preferential-t5-plus',
+        label: 'T5 et plus',
+        amount: '230 €',
+        qualifier: 'TTC',
+      },
+    ],
   },
   note: standardProfileValues.note,
 } as const satisfies Omit<TieredPricingProfile, 'id'>;
@@ -165,8 +181,12 @@ function createGirondePricingProfile(
   return {
     id,
     kind: girondeStandardProfileValues.kind,
+    standardTitle: girondeStandardProfileValues.standardTitle,
     tiers: girondeStandardProfileValues.tiers.map((tier) => ({ ...tier })),
-    offer: { ...girondeStandardProfileValues.offer },
+    preferential: {
+      ...girondeStandardProfileValues.preferential,
+      tiers: girondeStandardProfileValues.preferential.tiers.map((tier) => ({ ...tier })),
+    },
     note: girondeStandardProfileValues.note,
   };
 }
