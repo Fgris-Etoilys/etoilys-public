@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "62d63be478d5f11035df88dbe911c9594dd17a76cffedeebe2aec57f01d373f9",
+  "pipelineSignature": "687c0c29b7b3c19436ad92cb5870f5804121d56000a1f32d4919e47151773ce0",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "a495689ca1bf9f00b1ce32b42fe8e46564196abf2264025f99ed8665692a7cba"
+    "sha256": "1968b142df1e3460a98f85c0004f65a818ba7b6a1b6be387f9ceab6ebc8b9725"
   },
   "sources": [
     {
@@ -25,11 +25,6 @@
       "key": "articleApresClassement",
       "path": "src/assets/seo-images/source/AdobeStock_445466807.jpeg",
       "sha256": "e5c027c1e367e7a796f14a42de7c81dcd128f5c8c65c03bf4592725717b9c04a"
-    },
-    {
-      "key": "homeHero",
-      "path": "src/assets/seo-images/source/AdobeStock_70255363.jpeg",
-      "sha256": "98463d63fecef30e3ec506e926b3597a366830bf56e4d83f716600a583a8672c"
     },
     {
       "key": "lotEtGaronneCanal",
@@ -78,13 +73,13 @@
     },
     {
       "key": "girondeHero",
-      "path": "src/assets/seo-images/source/axel-delansorne-fSpupJ0C95E-unsplash.jpg",
-      "sha256": "a8e0c49cfac48775bb77e664de93b39e5a658a3032a8d4b41bdb0088b2efd0b1"
+      "path": "src/assets/seo-images/source/axel-delansorne-fSpupJ0C95E-hero-crop.jpg",
+      "sha256": "be5674896bda709d769219dfe024c05a79274ce42fe438cc840fbcf643d56fb5"
     },
     {
       "key": "bassinArcachonHero",
-      "path": "src/assets/seo-images/source/bassin-arcachon-cabanes-tchanquees.jpg",
-      "sha256": "e354ebc2b18c36db0cabbaef09427768b7cc886b237679f69bc265892b0914fe"
+      "path": "src/assets/seo-images/source/bassin-arcachon-cabanes-tchanquees-hero-crop.jpg",
+      "sha256": "fa0297eae6c50d30343a0b97d5e0e88916285af00e4bb8e2bb9e9eaeb63f9ddc"
     },
     {
       "key": "bassinArcachonDunePilat",
@@ -108,8 +103,8 @@
     },
     {
       "key": "bergeracHero",
-      "path": "src/assets/seo-images/source/bergerac-view-late-afternoon.jpg",
-      "sha256": "5aab5b00d2ca69a89e1de233bbf2a2184175f08c7eeef8e3607a4f5896ae2a05"
+      "path": "src/assets/seo-images/source/bergerac-view-late-afternoon-hero-crop.jpg",
+      "sha256": "c3bf9ed6685aa30b651b111b3f8e578b6da40b82bc8aaf7f7f7eba2a41397f28"
     },
     {
       "key": "bordeauxExpertise",
@@ -125,6 +120,11 @@
       "key": "simulateurClassement",
       "path": "src/assets/seo-images/source/gunnar-ridderstrom-4I26owL4-yk-unsplash.jpg",
       "sha256": "3f130a0dd14df2eb2174f482f803f0f119127fb5f183ddeb018491da9db0ee67"
+    },
+    {
+      "key": "homeHero",
+      "path": "src/assets/seo-images/source/home-hero-crop-adobestock-70255363.jpg",
+      "sha256": "7f4a5e3e0d02f31ab9b407cbc2dd4738c021c97b1cee37d57cab3764bbff85a9"
     },
     {
       "key": "homePourquoiChoisir",
@@ -935,113 +935,113 @@
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1200.avif",
-      "bytes": 164203,
-      "sha256": "61510fd849382b22aa5cf4760341d74eef6a83104264b52b9e9584e914ab0a7e"
+      "bytes": 264280,
+      "sha256": "f7b6be8f8683147e09a2b540bcdca490b0d633a65b9a950066a21e7dfe242b04"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1200.jpg",
-      "bytes": 177919,
-      "sha256": "0bf717134448610960c280dd1c25ba01364cb186160d3efa8b161697cd0df0da"
+      "bytes": 285808,
+      "sha256": "51da52353d5561952ba79eef095e67d1836b94f46c1077b952f56cf6331df802"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1200.webp",
-      "bytes": 184808,
-      "sha256": "ac1e7fd66d295f463338824e0e0ba27f03113c5d9f95c53fba1b9ccfaa27fda3"
+      "bytes": 301418,
+      "sha256": "b88640ed4bd59eb90f46d72a804ca449820890037e3d0b1e0d94165b1e1e3e43"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1600.avif",
-      "bytes": 321251,
-      "sha256": "9c6b1b4433572b6c296a00a8e24f37c5e9d27caefb63e181a27333eb72c0c31a"
+      "bytes": 510295,
+      "sha256": "7c3cdf3fc5b1666f96524e23d6002e813d6a75bafaaec967167ad0f637ef6029"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1600.webp",
-      "bytes": 337442,
-      "sha256": "657a75ad5a2334fcd4193678e3d8a6975cf6afe4982877c4ef97cf9913981561"
+      "bytes": 533606,
+      "sha256": "5fdc130eeee0c17559cf02092d97d2e976636d32381e15e89f1a628ae88a0134"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1920.avif",
-      "bytes": 460784,
-      "sha256": "7ff46a269d1de5377cd5316198ac259bbc8e37da30c5961d065f6c890d1ed342"
+      "bytes": 717729,
+      "sha256": "d916c58b557da3a91de0194c680f2075416e5705bc744584eb2a658d0df92a37"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1920.webp",
-      "bytes": 477122,
-      "sha256": "dd51a39623a68afc4a43f1a691ab52f0e18c495ac80a43ee5167bab7fb9c0eb7"
+      "bytes": 753198,
+      "sha256": "6d177571dcd67d145f2c69c8da18cfc07e6c887941457b3068b95bca0882add0"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-480.avif",
-      "bytes": 23639,
-      "sha256": "b81aac9331b24e95ffc1b305a6b5a5711a75cc5944bdc642e00e6e670f4fd31a"
+      "bytes": 34588,
+      "sha256": "26b969e9208e0250f840a54d0c11e2d9c274d8b6a044b270e47b51935f0eab8a"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-480.webp",
-      "bytes": 28518,
-      "sha256": "34ef189e713cfdd428dc73dfa59cf313997c5abde3191718705c14594dcdbd40"
+      "bytes": 42418,
+      "sha256": "88e1243cdb5d86986ce60a51f6a4550a18698c5dce06a6bb04f450bd504e343c"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-768.avif",
-      "bytes": 55567,
-      "sha256": "d7c330136d3013248b0bdd27b0caec7907c6446ee2d9d0219adf0be488f6dbb8"
+      "bytes": 90773,
+      "sha256": "6a7c7c5e57cc222e98c54e78a153336bbf6a1f356c38560040eeef0ca6fc37c9"
     },
     {
       "path": "/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-768.webp",
-      "bytes": 68804,
-      "sha256": "6fc3a2335a293ff5f53be312253cb9ad01d4a1f48f6a7409933e4f1698c12795"
+      "bytes": 109078,
+      "sha256": "4b969be9d98ca5440ba717ee2b337d5cf408f06d63d66cad7a2293efa5e57974"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.avif",
-      "bytes": 34773,
-      "sha256": "de87193bd951dd0a70cd0d7a6b59aa4439371b2d5787952e0b37028a85152d34"
+      "bytes": 40768,
+      "sha256": "8019ae63d519f45261c27cee3410b6401f501ff8ddf537af3f43d56417cd079f"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.jpg",
-      "bytes": 67362,
-      "sha256": "b769ad81515a146520ef67182293627b56b228aa1084949eedd8ac5f9b49bba8"
+      "bytes": 89655,
+      "sha256": "318b157e23fe94393b745eef99b2aeafdb3ed6d72a4ae4520f14f77ba75f7578"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.webp",
-      "bytes": 51352,
-      "sha256": "33bebe1d369359cfe52ec132d879967baffd960da8fd26ae3d6f4a8de26499d5"
+      "bytes": 62746,
+      "sha256": "caec0c373ce87730bdda8da816a9304f135bdcc32426056f5bf29780d6bb1642"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1600.avif",
-      "bytes": 55906,
-      "sha256": "81e3621a6bb207c5269cb35eaf4cc7ce73cf3b24b5ab797be0594d9cd780c560"
+      "bytes": 62616,
+      "sha256": "189103c54a3a9e7c916721d41b7324a7a3184270bd589aadbd1d752839b54d7a"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1600.webp",
-      "bytes": 77004,
-      "sha256": "2d681f68edf7b9002bf94dbe68ff22eeb8bc0b569930daeaf59307b9e3145c02"
+      "bytes": 89446,
+      "sha256": "52c8bd8a6d885a104ede1f6f7411b98ae913b25970d76701c037c6105aeba344"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1920.avif",
-      "bytes": 69087,
-      "sha256": "958b26e316936e9d94604fbb3665592c70fc4214b87356202f7e5abf4eaf0347"
+      "bytes": 76530,
+      "sha256": "474e1e5e653116bcc1d17e16543b7311a7fbcbdddc762c46f7b09191024e79fe"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-1920.webp",
-      "bytes": 96692,
-      "sha256": "afded0b7dd0742f05154a78725f59d3887f9c8f033632f897cee019d8cd46319"
+      "bytes": 116230,
+      "sha256": "f77b91862112702332a10820cfcf2f50525b86622e2afab204aec87e826e1901"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-480.avif",
-      "bytes": 7412,
-      "sha256": "cd51c455e832d4f65ed9bb53e970fb764fbd80c8bb23de66fa2cc4cc2ec794c8"
+      "bytes": 9754,
+      "sha256": "d3f69be2586f2d20e4723d9e2516567f41b6a21ab4566f333645f1e2c159046e"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-480.webp",
-      "bytes": 10562,
-      "sha256": "c0ee1ed8a0c3b76c90068f87d3ac5980169829c95d763e84d08dcda1048d7a8f"
+      "bytes": 14708,
+      "sha256": "fd9b72764415b262dbb7edda89b80c3856207cf1c4f613ea7ca64bda16e19018"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-768.avif",
-      "bytes": 14692,
-      "sha256": "561e3f2e4437efb5c66595bd8c067e876762f299c19c330fe76ec6c897781eb9"
+      "bytes": 19208,
+      "sha256": "78543f349e3b6fc4e522a4850179d144b9de234201f5af4a430ba3d65af44daa"
     },
     {
       "path": "/images/optimized/bassin-arcachon-cabanes-tchanquees-768.webp",
-      "bytes": 22890,
-      "sha256": "b6a58f578a56274d1d096424de38433bd0d345809d9dc156c9c2410e00f114e3"
+      "bytes": 29880,
+      "sha256": "033d63219e14deeaf08fe30369d1b25d95c85d802b255abaed8aa7a7350c7832"
     },
     {
       "path": "/images/optimized/bassin-arcachon-dune-pilat-1200.avif",
@@ -1265,58 +1265,58 @@
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-1200.avif",
-      "bytes": 48311,
-      "sha256": "c4b019dc0c112380e2e54398b429ed284fde64b7e18637bfb8ee9dcde304b145"
+      "bytes": 79950,
+      "sha256": "200866307d28631a17ca8a2e55757d7bca37b487d8533ebd06d0f78d05847c0a"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-1200.jpg",
-      "bytes": 80680,
-      "sha256": "88460fadfea07c4b5ec57655626f9a6e1f3e16309765cf67c31a704e76aa2320"
+      "bytes": 135758,
+      "sha256": "c0aa24e3b9dac52c728f79e033571e3697737cd29c46453c55480c8118d37bb4"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-1200.webp",
-      "bytes": 69878,
-      "sha256": "00e2ffc388a4bd41d4031a86aac8d65c63f51debf5bf5fb1daf1226b6c589cf9"
+      "bytes": 117366,
+      "sha256": "763a499d2a3dc7a76572b5e9011ecea8bff78a5b3e50d1d85d31c9efdb6eb0a6"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-1600.avif",
-      "bytes": 98121,
-      "sha256": "3df7aed2cdc373c1a94bc86be91f87b6a0f5602572a746726460856001ffd16f"
+      "bytes": 152835,
+      "sha256": "67cb672ed0e414538ad8bc9acf8f2ab77482f48b2a12ea9e7f49799bc63f5d3f"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-1600.webp",
-      "bytes": 124040,
-      "sha256": "7630c89ac6169fd807bc629401c767d1646b9d52cd7050a53de4c749ae17250c"
+      "bytes": 202018,
+      "sha256": "fa19d22602620ef887ef38098206e023d149ea62f148567c24bc6019ccef1a13"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-1920.avif",
-      "bytes": 135066,
-      "sha256": "47358d3dae11fb9df91b0e47681bd77ba97573fe1699714d1032326fde426c51"
+      "bytes": 203511,
+      "sha256": "16a23fd30b0674c537a9c0973de287784074c19720f4b9405086377880fbaa82"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-1920.webp",
-      "bytes": 176140,
-      "sha256": "53204b3cabe366b008184974a0e1e5f64cccaa53d00412140d40b0ccefa4d4d6"
+      "bytes": 273162,
+      "sha256": "076854cad2200abcdd4e43930ee493d10c23f31a8dabe369bd651eee6f194bef"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-480.avif",
-      "bytes": 8455,
-      "sha256": "7e0e7089ce9b29c7e1341939626e16e97ce4cbf907f62bf663d1b6f8496c5710"
+      "bytes": 11611,
+      "sha256": "fedacbe1e3fdd4e8dd52e4f462b58e3584af6ab8ffc0f28642f8d3204f1ad979"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-480.webp",
-      "bytes": 10882,
-      "sha256": "4821b79bb92b364a7f847fbd2b7e523bb83e495bc1903c040fe9da0fee091288"
+      "bytes": 16966,
+      "sha256": "c120f66c3399d158bbf585985e5c569051ecd049c799529a991035356354b6b5"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-768.avif",
-      "bytes": 17437,
-      "sha256": "016c6eadf59b31069e13c78d25561deaf9d0d1e94b7c2ef6e710abb86274fc84"
+      "bytes": 26529,
+      "sha256": "a848c6b4470252d069a5e93281058f53bace5315465d862353ad133e41760d22"
     },
     {
       "path": "/images/optimized/bergerac-view-late-afternoon-768.webp",
-      "bytes": 25702,
-      "sha256": "f7336fa5d98420f466ee07370d541ff3efa3e5da10a15fb0e2b3d838bed9a2a1"
+      "bytes": 40998,
+      "sha256": "6f9d74c47bae9d3173282a88512b7b7ee4c0c819ba899c7f15ed93a2a757896b"
     },
     {
       "path": "/images/optimized/bordeaux-jardin-public-1200.avif",
@@ -1485,58 +1485,58 @@
     },
     {
       "path": "/images/optimized/home-hero-1200.avif",
-      "bytes": 73730,
-      "sha256": "4e77dea31525ee7f2f64a7cf022ead6e56db6268168a6b7a7c882064e7e4fba2"
+      "bytes": 76955,
+      "sha256": "fa4b333e82a5f21023ed29efff4af26b44f0f7e6dba7ca2469a4978fb6579170"
     },
     {
       "path": "/images/optimized/home-hero-1200.jpg",
-      "bytes": 93902,
-      "sha256": "d503c65328144a823768f286505c36e9c7b547a0da0a917b02b632d528e31687"
+      "bytes": 132792,
+      "sha256": "2c01d87d25a67d78384751fefd2e6588fc9aeebe4bef363f7a5f70718818db88"
     },
     {
       "path": "/images/optimized/home-hero-1200.webp",
-      "bytes": 83050,
-      "sha256": "53c84d734942c745d78a4ddb778dda7c50782329ef13d0033bdd0b437116c641"
+      "bytes": 102384,
+      "sha256": "782de480d3b47cba6e1ad4467d9238cf8df36e9e23e6308a8bceed1972aa397f"
     },
     {
       "path": "/images/optimized/home-hero-1600.avif",
-      "bytes": 132832,
-      "sha256": "f40b1a661854390a0d3a823efbcd85a89a23c99ae38466524f0059e608c980d8"
+      "bytes": 137577,
+      "sha256": "1104115007e5cf81281d3bb129785931ed0c87dfabb0b8ca86e6bff4c788e3aa"
     },
     {
       "path": "/images/optimized/home-hero-1600.webp",
-      "bytes": 135370,
-      "sha256": "fb26ac8d66d186e9f84e17884ff6961d1f88987700d0f18509312b558660b466"
+      "bytes": 171564,
+      "sha256": "fd2eb99ba8bbd0f0e323dd864c9b8a08883ea92ffeb9a039c146fa52861aa425"
     },
     {
       "path": "/images/optimized/home-hero-1920.avif",
-      "bytes": 188399,
-      "sha256": "e88fb4fad09e478e8db426b3d91e4d12b4a16250d08348d52ee230333478f98a"
+      "bytes": 180997,
+      "sha256": "4fefb8724a2a97732534dcc7dc6061cc3e355136535f4daebfffa54957eb9d0f"
     },
     {
       "path": "/images/optimized/home-hero-1920.webp",
-      "bytes": 193314,
-      "sha256": "78b6dd89e19ad397d657e4e8a95e76c5f0bd41b21f259446cca56c747b5f140f"
+      "bytes": 230608,
+      "sha256": "f311dc4ef804792f240cf89fc3b271da66fbdd5481593824d43bf3bad57be596"
     },
     {
       "path": "/images/optimized/home-hero-480.avif",
-      "bytes": 12206,
-      "sha256": "33f8a25e33f1693f464440a312eed2e7ebad5393affb8d970eb6113c1fee730b"
+      "bytes": 15366,
+      "sha256": "02a77fdeb5126691a962fe6bfcd58ab00050184c5f5ccea0715798ff456542d4"
     },
     {
       "path": "/images/optimized/home-hero-480.webp",
-      "bytes": 14630,
-      "sha256": "f24c569e5ade57bf32e41cd06a467062e59e81fe3bf6bffe53ead4fd16bc26dc"
+      "bytes": 19756,
+      "sha256": "7efe9e719c954cf5109577f788ab1352d3892aa06816cb7294fc51efadf7e0d4"
     },
     {
       "path": "/images/optimized/home-hero-768.avif",
-      "bytes": 26771,
-      "sha256": "146e060d9ffe487d2fdc617b225b47e2c9dcb567d4ee008fd67c75830df0a94d"
+      "bytes": 29523,
+      "sha256": "c7e2f69fb7f29be24bb1dc45a5d50d13d86e84922ec3114de8e4eec557c02a88"
     },
     {
       "path": "/images/optimized/home-hero-768.webp",
-      "bytes": 32342,
-      "sha256": "109fc719ac103170aedeb3fb3643507604fe74fde29c235fbb73fdde771d0aca"
+      "bytes": 40868,
+      "sha256": "01c5632068c08ef0516867aa1b3bce401d798b1748fb3a66369f306cf126f38c"
     },
     {
       "path": "/images/optimized/home-pourquoi-choisir-etoilys-1200.avif",

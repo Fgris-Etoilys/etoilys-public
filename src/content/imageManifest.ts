@@ -56,7 +56,7 @@ export interface ImageManifestEntry {
 
 export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
   homeHero: {
-    width: 8806,
+    width: 3908,
     height: 3257,
     src: '/images/optimized/home-hero-1200.jpg',
     srcSetWebp:
@@ -290,7 +290,7 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-480.avif 480w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-768.avif 768w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1200.avif 1200w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1600.avif 1600w, /images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-1920.avif 1920w',
   },
   girondeHero: {
-    width: 7440,
+    width: 4711,
     height: 3926,
     src: '/images/optimized/axel-delansorne-fSpupJ0C95E-unsplash-1200.jpg',
     srcSetWebp:
@@ -317,7 +317,7 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-480.avif 480w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-768.avif 768w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1200.avif 1200w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1600.avif 1600w, /images/optimized/benjamin-esteves-A_JaVydOsRk-unsplash-1920.avif 1920w',
   },
   bassinArcachonHero: {
-    width: 4397,
+    width: 2828,
     height: 2262,
     src: '/images/optimized/bassin-arcachon-cabanes-tchanquees-1200.jpg',
     srcSetWebp:
@@ -434,7 +434,7 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/AdobeStock_919223785-480.avif 480w, /images/optimized/AdobeStock_919223785-768.avif 768w, /images/optimized/AdobeStock_919223785-1200.avif 1200w, /images/optimized/AdobeStock_919223785-1600.avif 1600w, /images/optimized/AdobeStock_919223785-1920.avif 1920w',
   },
   bergeracHero: {
-    width: 6744,
+    width: 4046,
     height: 3372,
     src: '/images/optimized/bergerac-view-late-afternoon-1200.jpg',
     srcSetWebp:

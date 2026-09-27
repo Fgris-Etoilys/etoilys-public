@@ -15,6 +15,7 @@ const INTEGRITY_PATH = path.resolve(
 const TARGET_WIDTHS = [480, 768, 1200, 1600, 1920];
 const DEFAULT_WIDTH = 1200;
 const OG_ASPECT_RATIO = 1200 / 630;
+const MAX_HERO_SOURCE_ASPECT_RATIO = 1.3;
 const FORCE_REBUILD = process.argv.includes('--force');
 const CHECK_MODE = process.argv.includes('--check');
 const HERO_ASSET_KEYS = new Set([
@@ -32,9 +33,24 @@ const HERO_ASSET_KEYS = new Set([
   'bergeracHero',
   'bordeauxHero',
 ]);
+// Legacy hero sources already validated visually. Re-crop these if softness appears.
+const LEGACY_HERO_ASPECT_RATIO_ALLOWLIST = new Set([
+  'aveyronHero',
+  'bordeauxHero',
+  'dordogneHero',
+  'dordogneLaRoqueGageac',
+  'lotHero',
+  'lotEtGaronneHero',
+  'medocAtlantiqueHero',
+  'valleeDordogneHero',
+]);
 
 const IMAGE_ASSETS = [
-  { key: 'homeHero', fileName: 'AdobeStock_70255363.jpeg', outputName: 'home-hero' },
+  {
+    key: 'homeHero',
+    fileName: 'home-hero-crop-adobestock-70255363.jpg',
+    outputName: 'home-hero',
+  },
   { key: 'homeProcedure', fileName: 'home-procedure.jpg' },
   { key: 'homePourquoiChoisir', fileName: 'home-pourquoi-choisir-etoilys.png' },
   { key: 'pourquoiReferencement', fileName: 'pourquoi-referencement.jpg' },
@@ -98,12 +114,16 @@ const IMAGE_ASSETS = [
   { key: 'aveyronTerritory', fileName: 'joran-quinten-wYzuwwLKmGM-unsplash.jpg' },
   { key: 'dordogneLaRoqueGageac', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
   { key: 'dordogneLandscape', fileName: 'le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg' },
-  { key: 'girondeHero', fileName: 'axel-delansorne-fSpupJ0C95E-unsplash.jpg' },
+  {
+    key: 'girondeHero',
+    fileName: 'axel-delansorne-fSpupJ0C95E-hero-crop.jpg',
+    outputName: 'axel-delansorne-fSpupJ0C95E-unsplash',
+  },
   { key: 'girondeTerritory', fileName: 'arpad-czapp-J181eozqAd8-unsplash.jpg' },
   { key: 'girondeCoast', fileName: 'benjamin-esteves-A_JaVydOsRk-unsplash.jpg' },
   {
     key: 'bassinArcachonHero',
-    fileName: 'bassin-arcachon-cabanes-tchanquees.jpg',
+    fileName: 'bassin-arcachon-cabanes-tchanquees-hero-crop.jpg',
     outputName: 'bassin-arcachon-cabanes-tchanquees',
   },
   {
@@ -146,7 +166,11 @@ const IMAGE_ASSETS = [
   { key: 'lotEtGaronneHero', fileName: 'AdobeStock_1364523535.jpeg' },
   { key: 'lotEtGaronneTerritory', fileName: 'pexels-d-goth-37724280.jpg' },
   { key: 'lotEtGaronneCanal', fileName: 'AdobeStock_919223785.jpeg' },
-  { key: 'bergeracHero', fileName: 'bergerac-view-late-afternoon.jpg' },
+  {
+    key: 'bergeracHero',
+    fileName: 'bergerac-view-late-afternoon-hero-crop.jpg',
+    outputName: 'bergerac-view-late-afternoon',
+  },
   { key: 'bergeracSaintJacquesCyrano', fileName: 'bergerac-saint-jacques-cyrano.jpg' },
   {
     key: 'bordeauxHero',
@@ -264,7 +288,9 @@ function buildPipelineSignature() {
         targetWidths: TARGET_WIDTHS,
         defaultWidth: DEFAULT_WIDTH,
         ogAspectRatio: OG_ASPECT_RATIO,
+        maxHeroSourceAspectRatio: MAX_HERO_SOURCE_ASPECT_RATIO,
         heroAssetKeys: [...HERO_ASSET_KEYS].sort(),
+        legacyHeroAspectRatioAllowlist: [...LEGACY_HERO_ASPECT_RATIO_ALLOWLIST].sort(),
         imageAssets: IMAGE_ASSETS,
         sharpVersion: sharp.versions.sharp,
         formatSrcSet: normalizeFnSource(formatSrcSet),
@@ -272,6 +298,7 @@ function buildPipelineSignature() {
         getJpegQuality: normalizeFnSource(getJpegQuality),
         getWebpQuality: normalizeFnSource(getWebpQuality),
         getAvifQuality: normalizeFnSource(getAvifQuality),
+        assertHeroSourceAspectRatio: normalizeFnSource(assertHeroSourceAspectRatio),
         getOutputPaths: normalizeFnSource(getOutputPaths),
         shouldBuildAsset: normalizeFnSource(shouldBuildAsset),
         createAssetPlan: normalizeFnSource(createAssetPlan),
@@ -489,6 +516,28 @@ async function shouldBuildAsset(outputPaths, sourceMtimeMs) {
   return false;
 }
 
+function assertHeroSourceAspectRatio(asset, metadata, sourcePath) {
+  if (!HERO_ASSET_KEYS.has(asset.key) || LEGACY_HERO_ASPECT_RATIO_ALLOWLIST.has(asset.key)) {
+    return;
+  }
+
+  const ratio = metadata.width / metadata.height;
+  if (ratio <= MAX_HERO_SOURCE_ASPECT_RATIO) {
+    return;
+  }
+
+  throw new Error(
+    [
+      `Hero source is too panoramic for ${asset.key}.`,
+      `File: ${toRelativePath(sourcePath)}.`,
+      `Dimensions: ${metadata.width}x${metadata.height}.`,
+      `Observed ratio: ${ratio.toFixed(3)}.`,
+      `Allowed ratio: ${MAX_HERO_SOURCE_ASPECT_RATIO.toFixed(3)}.`,
+      'Create a dedicated cropped hero source, keep the same asset key and outputName, then run npm run images:build.',
+    ].join(' ')
+  );
+}
+
 async function createAssetPlan(asset, previousIntegrity, pipelineChanged) {
   const sourcePath = path.join(SOURCE_DIR, asset.fileName);
   const baseName = asset.outputName ?? asset.fileName.replace(/\.[a-zA-Z0-9]+$/, '');
@@ -498,6 +547,8 @@ async function createAssetPlan(asset, previousIntegrity, pipelineChanged) {
   if (!metadata.width || !metadata.height) {
     throw new Error(`Unable to read dimensions for ${asset.fileName}`);
   }
+
+  assertHeroSourceAspectRatio(asset, metadata, sourcePath);
 
   const validWidths = TARGET_WIDTHS.filter((width) => width <= metadata.width);
   const widths = validWidths.length > 0 ? validWidths : [metadata.width];

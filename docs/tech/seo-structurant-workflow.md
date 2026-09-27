@@ -25,6 +25,7 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
    - ajouter l'image source dans `src/assets/seo-images/source/`
    - déclarer la clé dans `scripts/images-build.mjs`
    - utiliser `SmartImage` dans la page
+   - pour un hero `PageHero` / `EditorialHeroMedia`, utiliser une source dédiée proche du cadre affiché, avec un ratio maximal `1.3`; si l'original est panoramique, créer une source dérivée recadrée sans modifier le crédit UI
 4. Régénérer les assets SEO :
    - `npm run images:build`
    - `npm run images:check`
@@ -70,7 +71,7 @@ Les dates articles alimentent les données structurées, la page article, la lis
 ## Commandes de référence
 
 - `npm run images:build` -> génère variantes AVIF/WebP/JPG + met à jour `src/content/imageManifest.ts` et `src/content/imageManifest.integrity.json`.
-- `npm run images:check` -> vérifie rapidement que les sources, les sorties optimisées, le manifeste et le lock d'intégrité sont alignés.
+- `npm run images:check` -> vérifie rapidement que les sources, les sorties optimisées, le manifeste, le lock d'intégrité et le ratio maximal des sources hero sont alignés.
 - `npm run seo:sitemap` -> régénère `public/sitemap.xml` depuis `seoRoutes` et les dates canoniques articles.
 - `npm run prerender` -> prerender React statique des routes indexables/prerenderables dans `dist/`, génère `dist/404.html` et un shell `noindex,follow` pour les URLs dynamiques de simulation, puis valide que chaque page indexable contient un body HTML non vide, un `h1`, une canonical et les balises SEO attendues.
 - `npm run build:seo` -> images:check + typecheck + sitemap + build vite + prerender. Vercel ne régénère pas les images optimisées : elles doivent être versionnées après `npm run images:build`.
@@ -92,7 +93,7 @@ Lors d'un renommage ou retrait de route, l'ancienne URL doit aussi être soumise
 ## Notes CI/CD
 
 - Le déploiement Vercel doit exécuter `npm run build:seo` et publier `dist` (config versionnée dans `vercel.json`).
-- La CI doit exécuter `npm run images:check` pour bloquer les sources images modifiées sans artefacts optimisés et manifeste régénérés.
+- La CI doit exécuter `npm run images:check` pour bloquer les sources images modifiées sans artefacts optimisés, manifeste régénéré ou source hero trop panoramique.
 - Le prerender ne doit pas avoir de fallback qui injecte seulement le `<head>` SEO. Un échec de rendu React, de sitemap ou de validation HTML doit faire échouer le build.
 - Ne pas réintroduire de rewrite SPA global `/(.*) -> /index.html` en production, afin de conserver un vrai statut HTTP 404 sur les routes inconnues.
 - Le workflow `.github/workflows/indexnow.yml` ne soumet plus IndexNow au `push main`. Il attend `repository_dispatch` `vercel.deployment.success`, filtre la production, checkout le commit réellement déployé via `github.event.client_payload.git.sha`, génère le sitemap attendu depuis ce SHA, puis poll `https://www.etoilys.fr/sitemap.xml` jusqu'à correspondance avant soumission.
