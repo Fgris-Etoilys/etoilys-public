@@ -79,7 +79,7 @@ export const CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinat
   serviceArea: {
     title: 'Où intervenons-nous à Cahors et dans la Vallée du Lot ?',
     intro:
-      'Nos inspecteurs interviennent à Cahors et dans la Vallée du Lot, du Vignoble de Cahors au Quercy Blanc, sans frais de déplacement, notamment à :',
+      'Nos inspecteurs interviennent à Cahors et dans la Vallée du Lot, du Vignoble de Cahors au Quercy Blanc, sans frais de déplacement. Nous couvrons notamment les communes suivantes :',
     communes: CAHORS_VALLEE_LOT_SERVICE_COMMUNES,
     parentLink: {
       label: 'Voir notre zone d’intervention dans le Lot',
@@ -112,7 +112,7 @@ export const CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinat
       alt: 'Rivière Lot à Douelle près de Cahors',
       sizes: '(min-width: 900px) 35vw, 100vw',
       className: 'h-full w-full object-cover object-[center_50%] max-[899px]:object-[center_46%]',
-      caption: 'Rivière Lot à Douelle, près de Cahors.',
+      caption: 'Le Lot à Douelle, en aval de Cahors.',
       credit: {
         sourceLabel: 'Arbref / Wikimedia Commons',
         sourceHref: 'https://commons.wikimedia.org/wiki/File:Rivi%C3%A8re_Lot_%C3%A0_Douelle.jpg',

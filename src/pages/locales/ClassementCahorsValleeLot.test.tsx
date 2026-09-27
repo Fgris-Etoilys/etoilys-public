@@ -75,7 +75,7 @@ describe('ClassementCahorsValleeLot', () => {
       'src',
       IMAGE_MANIFEST.cahorsValleeLotDouelle.src
     );
-    expect(screen.getByText('Rivière Lot à Douelle, près de Cahors.')).toBeInTheDocument();
+    expect(screen.getByText('Le Lot à Douelle, en aval de Cahors.')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Velvet / Wikimedia Commons' })).toHaveAttribute(
       'href',
       'https://commons.wikimedia.org/wiki/File:Cahors_vue_pano.jpg'
@@ -103,7 +103,7 @@ describe('ClassementCahorsValleeLot', () => {
     expect(document.body).toHaveTextContent('Vignoble de Cahors');
     expect(document.body).toHaveTextContent('Quercy Blanc');
     expect(document.body).toHaveTextContent(
-      'Nos inspecteurs interviennent à Cahors et dans la Vallée du Lot, du Vignoble de Cahors au Quercy Blanc, sans frais de déplacement, notamment à :'
+      'Nos inspecteurs interviennent à Cahors et dans la Vallée du Lot, du Vignoble de Cahors au Quercy Blanc, sans frais de déplacement. Nous couvrons notamment les communes suivantes :'
     );
     expect(screen.getByRole('link', { name: /zone d’intervention dans le Lot/i })).toHaveAttribute(
       'href',
