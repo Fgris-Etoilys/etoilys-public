@@ -408,6 +408,8 @@ describe('local publication rendering', () => {
         expect(within(section).getAllByRole('listitem')).toHaveLength(2);
         if (href) {
           expect(link).toHaveAttribute('href', href);
+          expect(link).not.toHaveAttribute('target');
+          expect(link).not.toHaveAttribute('rel');
           expect(link?.getAttribute('rel')?.split(/\s+/) ?? []).not.toContain('nofollow');
         } else {
           expect(link).not.toBeInTheDocument();
@@ -424,6 +426,8 @@ describe('local publication rendering', () => {
         );
         expect(serverSection?.textContent).toContain('Fixture body remains available.');
         expect(serverSection?.querySelector('a')?.getAttribute('href') ?? null).toBe(href);
+        expect(serverSection?.querySelector('a')?.getAttribute('target') ?? null).toBeNull();
+        expect(serverSection?.querySelector('a')?.getAttribute('rel') ?? null).toBeNull();
       }
     );
   });

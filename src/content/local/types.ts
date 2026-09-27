@@ -216,6 +216,7 @@ export interface LocalV6CityServiceArea {
 export interface LocalV6DepartmentServiceArea {
   title: string;
   intro: string;
+  localPagesLabel: string;
   sectors: readonly DepartmentSector[];
   parentLink?: {
     label: string;

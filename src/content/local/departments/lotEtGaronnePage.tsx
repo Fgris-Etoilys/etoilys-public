@@ -68,6 +68,7 @@ export const LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentC
     title: 'Dans quelles communes du Lot-et-Garonne intervenons-nous ?',
     intro:
       'Etoilys intervient dans le Lot-et-Garonne sur une zone couvrant notamment l’Agenais, la vallée de la Garonne, le Val de Garonne, le Villeneuvois, la vallée du Lot, le Fumélois, les bastides du Haut-Agenais, le Pays de Lauzun, le Pays de Duras et le secteur de Casteljaloux.',
+    localPagesLabel: 'Nos pages locales dans le Lot-et-Garonne',
     sectors: toCollapsedSectors(LOT_ET_GARONNE_SERVICE_SECTORS),
     parentLink: {
       href: '/zones-intervention',
@@ -110,27 +111,29 @@ export const LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentC
       },
     },
   },
-  // Sources Tourisme Lot-et-Garonne et portails intercommunaux vérifiés le 22 septembre 2026.
+  // Sources Tourisme Lot-et-Garonne vérifiées le 27 septembre 2026.
   localModule: {
     type: 'territorial-service',
     title: 'Après le classement en Lot-et-Garonne',
     intro:
-      'Le suivi départemental des meublés classés et la taxe de séjour relèvent d’interlocuteurs différents. Identifiez celui qui correspond à votre démarche et à la commune du logement.',
+      'Une fois votre classement obtenu, certaines démarches dépendent directement de la commune de votre meublé, notamment pour la taxe de séjour. Voici les principaux interlocuteurs à connaître dans le département.',
     items: [
       {
         title: 'Présenter votre classement',
-        // Source factuelle uniquement : cette page propose aussi la commande d’une visite concurrente.
-        // https://pro.tourisme-lotetgaronne.com/accompagnement/classement-2/classement-des-meubles-de-tourisme/
         body: 'Tourisme Lot-et-Garonne tient à jour la liste départementale des meublés classés. Après réception de votre décision, vérifiez que vos annonces et les informations transmises à votre office de tourisme présentent le bon nombre d’étoiles.',
+        link: {
+          label: 'Consulter les informations départementales sur le classement',
+          href: 'https://pro.tourisme-lotetgaronne.com/accompagnement/classement-2/classement-des-meubles-de-tourisme/',
+          nofollow: true,
+        },
       },
       {
         title: 'Taxe de séjour : retrouver votre intercommunalité',
-        // Portails recoupés : https://taxe.3douest.com/agen.php,
-        // https://grandvilleneuvois.taxesejour.fr/ et https://valdegaronne.taxesejour.fr/
         body: 'Agen, le Grand Villeneuvois et le Val de Garonne ont chacun leur portail de taxe de séjour. Une fois votre classement obtenu, signalez-le à la collectivité de votre commune et vérifiez le barème correspondant à vos étoiles : il n’existe pas de tarif unique pour tout le Lot-et-Garonne.',
         link: {
           label: 'Trouver le portail de taxe de séjour de ma collectivité',
           href: 'https://pro.tourisme-lotetgaronne.com/accompagnement/legislation-et-reglementation/taxe-de-sejour/',
+          nofollow: true,
         },
       },
     ],

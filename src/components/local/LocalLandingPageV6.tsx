@@ -90,11 +90,35 @@ const expertiseReasons = [
   },
 ] as const;
 
+type LocalV6SurfaceClassName = 'bg-paper' | 'bg-surface-neutral';
+
 function formatFrenchTitle(title: string) {
   return title.replace(/ ([?!:;])/g, '\u00a0$1');
 }
 
+function getPostExpertiseSurfaces(config: LocalLandingPageV6Config): {
+  localModuleSurface: LocalV6SurfaceClassName;
+  noticeSurface: LocalV6SurfaceClassName;
+  faqSurface: LocalV6SurfaceClassName;
+} {
+  if (config.scope === 'department') {
+    return {
+      localModuleSurface: 'bg-paper',
+      noticeSurface: 'bg-surface-neutral',
+      faqSurface: config.localNotice ? 'bg-paper' : 'bg-surface-neutral',
+    };
+  }
+
+  return {
+    localModuleSurface: 'bg-surface-neutral',
+    noticeSurface: 'bg-paper',
+    faqSurface: config.localNotice ? 'bg-surface-neutral' : 'bg-paper',
+  };
+}
+
 export default function LocalLandingPageV6({ config }: { config: LocalLandingPageV6Config }) {
+  const surfaces = getPostExpertiseSurfaces(config);
+
   return (
     <div className="local-v6-landing">
       <LocalV6Hero config={config} />
@@ -112,12 +136,23 @@ export default function LocalLandingPageV6({ config }: { config: LocalLandingPag
         <LocalV6TerritorialModuleSection
           module={config.localModule}
           departmentId={config.departmentId}
+          surfaceClassName={surfaces.localModuleSurface}
         />
       ) : (
-        config.localModule && <LocalV6TaxModuleSection module={config.localModule} />
+        config.localModule && (
+          <LocalV6TaxModuleSection
+            module={config.localModule}
+            surfaceClassName={surfaces.localModuleSurface}
+          />
+        )
       )}
-      {config.localNotice && <LocalV6EditorialNoticeSection notice={config.localNotice} />}
-      <LocalV6FaqSection config={config} />
+      {config.localNotice && (
+        <LocalV6EditorialNoticeSection
+          notice={config.localNotice}
+          surfaceClassName={surfaces.noticeSurface}
+        />
+      )}
+      <LocalV6FaqSection config={config} surfaceClassName={surfaces.faqSurface} />
       <LocalV6FinalCta config={config} />
     </div>
   );
@@ -269,7 +304,7 @@ function LocalV6DepartmentServiceAreaSection({
         <LocalV6DepartmentSectorList sectors={serviceArea.sectors} />
         {localPages.length > 0 && (
           <nav aria-label="Pages locales du département">
-            <p className="text-sm font-semibold">Nos pages locales dans ce département</p>
+            <p className="text-sm font-semibold">{serviceArea.localPagesLabel}</p>
             <ul className="local-v6-commune-list mt-3">
               {localPages.map((localPage) => (
                 <li key={localPage.id}>
@@ -539,13 +574,15 @@ function LocalV6ExpertiseSection({ config }: { config: LocalLandingPageV6Config 
 function LocalV6TerritorialModuleSection({
   module,
   departmentId,
+  surfaceClassName,
 }: {
   module: LocalV6TerritorialModule;
   departmentId: DepartmentAreaId;
+  surfaceClassName: LocalV6SurfaceClassName;
 }) {
   return (
     <section
-      className="editorial-section bg-surface-neutral"
+      className={`editorial-section ${surfaceClassName}`}
       aria-labelledby="local-v6-territorial-title"
     >
       <div className="container-editorial">
@@ -576,7 +613,10 @@ function LocalV6TerritorialModuleSection({
                       ('href' in link ? (
                         <a
                           href={link.href}
-                          rel={link.nofollow ? 'nofollow' : undefined}
+                          target="_blank"
+                          rel={
+                            link.nofollow ? 'nofollow noopener noreferrer' : 'noopener noreferrer'
+                          }
                           className="editorial-inline-link inline-block"
                         >
                           {link.label}
@@ -602,10 +642,16 @@ function LocalV6TerritorialModuleSection({
   );
 }
 
-function LocalV6TaxModuleSection({ module }: { module: LocalV6TaxModule }) {
+function LocalV6TaxModuleSection({
+  module,
+  surfaceClassName,
+}: {
+  module: LocalV6TaxModule;
+  surfaceClassName: LocalV6SurfaceClassName;
+}) {
   return (
     <section
-      className="editorial-section local-v6-tax-section bg-surface-neutral"
+      className={`editorial-section local-v6-tax-section ${surfaceClassName}`}
       aria-labelledby="local-v6-tax-title"
     >
       <div className="container-editorial local-v6-tax-grid">
@@ -659,10 +705,16 @@ function LocalV6TaxModuleSection({ module }: { module: LocalV6TaxModule }) {
   );
 }
 
-function LocalV6EditorialNoticeSection({ notice }: { notice: LocalV6EditorialNotice }) {
+function LocalV6EditorialNoticeSection({
+  notice,
+  surfaceClassName,
+}: {
+  notice: LocalV6EditorialNotice;
+  surfaceClassName: LocalV6SurfaceClassName;
+}) {
   return (
     <section
-      className="editorial-section local-v6-notice-section bg-paper"
+      className={`editorial-section local-v6-notice-section ${surfaceClassName}`}
       aria-labelledby="local-v6-notice-title"
     >
       <div className="container-editorial">
@@ -699,10 +751,16 @@ function LocalV6EditorialNoticeSection({ notice }: { notice: LocalV6EditorialNot
   );
 }
 
-function LocalV6FaqSection({ config }: { config: LocalLandingPageV6Config }) {
+function LocalV6FaqSection({
+  config,
+  surfaceClassName,
+}: {
+  config: LocalLandingPageV6Config;
+  surfaceClassName: LocalV6SurfaceClassName;
+}) {
   return (
     <section
-      className={`editorial-section ${config.localNotice ? 'bg-surface-neutral' : 'bg-paper'}`}
+      className={`editorial-section ${surfaceClassName}`}
       aria-labelledby="local-v6-faq-title"
     >
       <div className="container-editorial local-v6-faq">

@@ -61,6 +61,7 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
     title: 'Dans quelles communes du Lot intervenons-nous ?',
     intro:
       'Nos inspecteurs interviennent dans tout le Lot. Les communes ci-dessous sont regroupées par grands secteurs pour vous donner des repères ; votre commune reste couverte même si elle n’apparaît pas dans cette sélection.',
+    localPagesLabel: 'Nos pages locales dans le Lot',
     sectors: toCollapsedSectors(LOT_SERVICE_SECTORS),
     parentLink: {
       href: '/zones-intervention',
@@ -103,18 +104,20 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
       },
     },
   },
-  // Sources Lot Tourisme vérifiées le 22 septembre 2026.
+  // Sources Lot Tourisme vérifiées le 27 septembre 2026.
   localModule: {
     type: 'territorial-service',
     title: 'Après le classement de votre meublé dans le Lot',
     intro:
-      'Dans le Lot, le suivi des attestations et la mise à jour des fiches touristiques sont deux démarches distinctes après le classement.',
+      'Après la visite, votre classement est intégré au suivi départemental, tandis que les informations de votre hébergement peuvent être actualisées dans les outils touristiques locaux. Voici les deux repères utiles à connaître.',
     items: [
       {
         title: 'Le suivi départemental des attestations',
-        // Plan d’actions 2026, p. 12 : suivi après les visites, sans nouvelle démarche imposée au loueur.
-        // https://www.tourisme-lot.com/app/uploads/lot-tourisme/2025/12/251105-Plan-actions-2026-CA.pdf
         body: 'Lot Tourisme assure le suivi et l’enregistrement des attestations de classement dans l’outil national, après les visites des différents organismes, y compris privés accrédités. Ce rôle départemental est distinct de la visite de votre meublé réalisée par Etoilys.',
+        link: {
+          label: 'Consulter la source de Lot Tourisme',
+          href: 'https://www.tourisme-lot.com/app/uploads/lot-tourisme/2025/12/251105-Plan-actions-2026-CA.pdf',
+        },
       },
       {
         title: 'Actualiser votre fiche touristique',

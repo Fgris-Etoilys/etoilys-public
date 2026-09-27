@@ -48,17 +48,29 @@ Les types V6 sont des unions discriminées dans `src/content/local/types.ts` :
 - `hubDescription` est un contenu éditorial spécifique à chaque département. Il présente le territoire, pas la couverture opérationnelle d’Etoilys : ne pas le générer depuis un template du type `Etoilys intervient dans…`.
 - Un bon `hubDescription` comporte généralement deux phrases courtes : la première fait ressortir l’identité géographique ou touristique du département ; la seconde apporte, quand c’est naturel, un angle sur les séjours, gîtes, maisons de vacances ou meublés de tourisme. Varier la construction entre départements et éviter les slogans touristiques génériques, le keyword stuffing et les formulations interchangeables.
 
-## Module territorial de service (P1.1)
+## Zone d’intervention et module territorial (P1.1)
+
+La zone d’intervention et le module territorial ont deux rôles distincts.
+
+### Zone d’intervention
+
+La section zone d’intervention porte le maillage interne département -> pages filles. Les enfants locaux (`city` ou `destination`) sont dérivés automatiquement du registry via `getPublishedLocalChildEntriesForDepartment`, uniquement quand l’enfant et son parent sont effectivement publiés, et dans l’ordre `displayOrder`. Les liens internes restent suivis, rendus au pré-rendu, et les communes des secteurs restent du texte simple sans `communeLinks`.
+
+Le sous-bloc de navigation utilise le libellé localisé `serviceArea.localPagesLabel` fourni par chaque département, par exemple `Nos pages locales en Gironde`. Ce libellé n’est pas un H2, reste un petit intitulé de navigation et n’est rendu que lorsqu’au moins une page fille publiée existe. Sans enfant publié, aucun bloc vide n’est affiché.
+
+### Module territorial
 
 Une page locale publiée doit apporter une valeur territoriale propre, mais la structure d’affichage reste commune. **Tous les départements V6 doivent renseigner** `localModule` avec `type: 'territorial-service'`, y compris les futurs départements ; les villes et destinations conservent leur variante `tax-comparison` facultative.
+
+Le module territorial apporte de l’information locale autonome : ressources administratives ou institutionnelles vérifiables, sources consultables et démarches réellement propres au territoire. Il ne doit pas dupliquer mécaniquement le maillage interne déjà rendu dans la zone d’intervention. Le type `{ label, localEntryId }` reste disponible pour un futur cas réellement utile, mais un lien interne ne doit être utilisé que s’il apporte autre chose que la simple répétition d’une page fille déjà listée plus haut.
 
 Le contrat `LocalV6TerritorialModule` porte un `title` (H2), une `intro` de une à deux phrases et `items`, un tuple de **deux ou trois** informations. Chaque item contient `title` (H3), `body` (texte court) et un `link` facultatif : `{ label, localEntryId }` pour une ville/destination du registre, ou `{ label, href, nofollow? }` pour une ressource HTTPS. Aucun JSX ni choix de mise en page dans ces données. Le renderer reçoit le `departmentId` courant : un lien local n’est rendu que si l’entrée existe, est une ville/destination effectivement publiée et vérifie `entry.parentId === departmentId`. Un enfant brouillon, orphelin, rattaché à un parent brouillon ou à un autre département ne produit aucun lien ; le texte de l’item reste présent.
 
 `LocalV6TerritorialModuleSection`, dans la composition V6, réutilise les surfaces, titres, liens et espacements éditoriaux. Les informations sont des lignes séparées, empilées sur mobile, sans cartes ni interaction. Le bloc reste après l’expertise et avant la notice éventuelle, la FAQ et le CTA final ; tout son contenu est présent au pré-rendu.
 
-Une bonne information aide le propriétaire à agir : retrouver sa collectivité de taxe de séjour parmi les intercommunalités du Lot-et-Garonne, comprendre le suivi des attestations par Lot Tourisme après les visites des organismes, actualiser sa fiche touristique après classement ou rejoindre une page fille publiée en Gironde. Vérifier la source institutionnelle actuelle ; conserver l’URL et la date de vérification dans la config (lien visible ou commentaire), sans reprendre ses éventuels passages obsolètes. Ne pas confondre le suivi départemental avec la réalisation de la visite Etoilys. La couverture opérationnelle vient des données Etoilys existantes, jamais d’une déduction touristique.
+Une bonne information aide le propriétaire à agir : retrouver sa collectivité de taxe de séjour, comprendre un suivi départemental des attestations, actualiser une fiche touristique ou consulter une ressource institutionnelle locale. Vérifier la source actuelle avant publication, ne pas inventer de contenu pour obtenir un lien externe, et ne pas confondre le suivi départemental avec la réalisation de la visite Etoilys.
 
-Une source factuelle n’est pas nécessairement une action à proposer au lecteur. Priorité des liens visibles : page Etoilys enfant pertinente, ressource administrative/institutionnelle neutre utile, puis aucun lien. Une page permettant de commander une visite concurrente reste en commentaire de traçabilité ; si son lien est indispensable, utiliser explicitement `nofollow: true`. Un OT/ADT peut fournir une ressource neutre : examiner la page de destination, pas seulement le nom de l’organisme. Aucun couple obligatoire `source`/`cta` n’est ajouté au modèle.
+Si le texte s’appuie directement sur une ressource institutionnelle précise, le lecteur doit pouvoir la consulter. Une source concurrente peut rester visible en `nofollow` lorsqu’elle est réellement utile ; ne pas cacher systématiquement les sources en commentaire. Un OT/ADT peut fournir une ressource neutre : examiner la page de destination, pas seulement le nom de l’organisme. Aucun couple obligatoire `source`/`cta` n’est ajouté au modèle.
 
 Sont exclus : statistiques de fréquentation, paysages, listes de mots-clés, promesses de présence ou partenariat non vérifiées, paraphrases interchangeables des bénéfices nationaux et CTA commerciaux supplémentaires. Deux informations solides suffisent. Pour ajouter un département, renseigner ce module dans sa config sans modifier le renderer.
 
@@ -72,9 +84,11 @@ localModule: {
   items: [
     {
       title: 'Le suivi départemental des attestations',
-      // Plan d’actions 2026 de Lot Tourisme, p. 12, vérifié le 22 septembre 2026 :
-      // https://www.tourisme-lot.com/app/uploads/lot-tourisme/2025/12/251105-Plan-actions-2026-CA.pdf
       body: 'Lot Tourisme suit et enregistre les attestations après les visites des différents organismes, y compris privés accrédités. Ce suivi est distinct de la visite Etoilys.',
+      link: {
+        label: 'Consulter la source de Lot Tourisme',
+        href: 'https://www.tourisme-lot.com/app/uploads/lot-tourisme/2025/12/251105-Plan-actions-2026-CA.pdf',
+      },
     },
     {
       title: 'Actualiser votre fiche touristique',
@@ -84,9 +98,7 @@ localModule: {
 }
 ```
 
-Les liens externes du module s’ouvrent dans le même onglet et sont suivis par défaut. Seul `nofollow: true` ajoute `rel="nofollow"` ; aucun `rel` libre n’est accepté en config. Si une ouverture dans un nouvel onglet est ajoutée au renderer, elle doit inclure `noopener noreferrer`, avec `nofollow` uniquement sur demande explicite de la config. Les liens internes vers les pages Etoilys restent suivis.
-
-Le maillage département → enfants reste dérivé de `getPublishedLocalChildEntriesForDepartment`, dans l’ordre du registry et selon la publication effective du parent et des enfants. Les communes des secteurs restent du texte simple, sans `communeLinks`. Le sous-bloc de navigation porte le libellé visible « Nos pages locales dans ce département », sans nouveau H2 ni carte englobante. Il est entièrement absent si aucun enfant n’est publié.
+Les liens externes du module s’ouvrent dans un nouvel onglet avec `target="_blank"`. Un lien follow normal rend `rel="noopener noreferrer"`. Un lien avec `nofollow: true` rend `rel="nofollow noopener noreferrer"`. Aucun `rel` libre n’est accepté en config. Les liens internes vers les pages Etoilys restent dans l’onglet courant, suivis, et ne reçoivent pas `noopener`, `noreferrer` ou `nofollow`.
 
 ## Pricing
 
@@ -123,8 +135,8 @@ Ne pas modifier les tarifs, calculs, URLs, SEO centralisé ou assets LCP/OG pend
 - Tarifs : city, destination et department affichent le même bloc explicatif avec les trois garanties Etoilys et le lien procédure ; seule la partie droite diffère (`mode: 'direct'` ou `mode: 'picker'`).
 - Pricing `direct` : pas de divider de résultat ni de note tarifaire dupliquée dans le panneau ville.
 - Pricing `picker` : le divider et la note tarifaire sont conservés après sélection, car ils séparent le formulaire du résultat.
-- Module local : `territorial-service` obligatoire pour un département, `tax-comparison` facultatif pour une ville/destination. Ne pas imposer de surtitre générique `CONTEXTE LOCAL`. Garder un rythme titre -> texte cohérent avec les autres introductions de section ; sur desktop, la partie éditoriale reste plus large que la preuve ou carte chiffrée. `highlightedTitleText`, réservé à la variante fiscale, correspond actuellement à un suffixe du titre mis en cuivre.
-- Notice locale : utiliser `localNotice` pour une notice réglementaire ou éditoriale placée après le module local et avant la FAQ. Garder le motif `editorial-notice`; ne pas ajouter de moteur de sections. Le fond de la notice est `bg-paper`; quand une notice existe, la FAQ suivante passe sur `bg-surface-neutral`.
+- Module local : `territorial-service` obligatoire pour un département, `tax-comparison` facultatif pour une ville/destination. Ne pas imposer de surtitre générique `CONTEXTE LOCAL`. Garder un rythme titre -> texte cohérent avec les autres introductions de section ; sur desktop, la partie éditoriale reste plus large que la preuve ou carte chiffrée. `highlightedTitleText`, réservé à la variante fiscale, correspond actuellement à un suffixe du titre mis en cuivre. Après l’expertise, les départements utilisent `surface-sage -> paper -> neutral` sans notice, ou `surface-sage -> paper -> neutral -> paper` avec notice. Les villes/destinations gardent le module fiscal sur `bg-surface-neutral`.
+- Notice locale : utiliser `localNotice` pour une notice réglementaire ou éditoriale placée après le module local et avant la FAQ. Garder le motif `editorial-notice`; ne pas ajouter de moteur de sections. Pour une ville/destination avec module fiscal, la notice reste sur `bg-paper` et la FAQ suivante passe sur `bg-surface-neutral`. Pour un département avec module territorial, la notice passe sur `bg-surface-neutral` et la FAQ suivante sur `bg-paper`.
 - Index communes : générer les index départementaux depuis `scripts/build-taxe-sejour-dataset.ts` et la source INSEE/taxe de séjour. La liste des index à produire vient du registre. Ne pas maintenir manuellement `public/data/communes-*-index.v1.json`.
 - Images : une page locale ne réutilise pas par défaut le même asset pour le hero et l’expertise. `image.caption` et `expertise.image.caption` sont obligatoires dans la config V6 locale. La caption décrit le lieu photographié ; l’index département reste le repère territorial (`24 / LE PÉRIGORD`, `33 / LA GIRONDE`, `47 / LOT-ET-GARONNE`). La provenance/licence d’un asset externe doit toujours être documentée dans la table de traçabilité. Le champ `credit` de la config V6 est nécessaire lorsqu’une attribution visible est requise ; ne pas forcer de crédit visible pour Pexels lorsque la licence ne l’exige pas. La trace éditoriale peut vivre dans `src/content/local/departments/*Page.tsx`, `src/content/local/cities/*Page.tsx` ou `src/content/local/destinations/*Page.tsx`. Les libellés actifs sont Saint-Émilion + Arcachon pour la Gironde, place de la Bourse pour le hero Bordeaux, Nérac + Monflanquin pour le Lot-et-Garonne.
 - CTA final : reprendre le motif et la copy du département parent au lieu d’inventer une nouvelle formulation pour chaque ville, mais conserver le `Button.variant` analytics historique d’une page existante.

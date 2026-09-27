@@ -69,6 +69,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
     title: 'Dans quelles communes de Dordogne intervenons-nous ?',
     intro:
       'Etoilys intervient en Dordogne sur une large zone couvrant notamment le Bergeracois, le Périgord Noir, la vallée de la Dordogne, la vallée de la Vézère, le Grand Périgueux, la vallée de l’Isle, le Ribéracois et une partie du nord-ouest du département.',
+    localPagesLabel: 'Nos pages locales en Dordogne',
     sectors: DORDOGNE_V6_SERVICE_SECTORS,
     parentLink: {
       href: '/zones-intervention',
@@ -105,12 +106,12 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
       caption: 'Les pierres du Périgord.',
     },
   },
-  // Sources institutionnelles et liens locaux vérifiés le 22 septembre 2026.
+  // Sources institutionnelles vérifiées le 27 septembre 2026.
   localModule: {
     type: 'territorial-service',
     title: 'Vos interlocuteurs locaux en Dordogne',
     intro:
-      'Du Bergeracois au Périgord Noir, nos secteurs situent votre logement dans notre zone d’intervention. Votre commune permet ensuite d’identifier les interlocuteurs locaux.',
+      'En Dordogne, votre commune détermine notamment l’office de tourisme à contacter et la collectivité qui gère votre taxe de séjour. Voici quelques repères utiles pour vous orienter selon votre secteur.',
     items: [
       {
         title: 'Périgueux et vallée de l’Isle : des contacts distincts',
@@ -118,11 +119,11 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
         link: {
           label: 'Les offices de Périgueux et de la vallée de l’Isle',
           href: 'https://www.dordogne-perigord-tourisme.fr/sinspirer/nos-destinations/perigueux-vallee-isle/',
+          nofollow: true,
         },
       },
       {
         title: 'Taxe de séjour : partir de la collectivité',
-        // https://grandperigueux.taxesejour.fr/ et https://lacab.taxesejour.fr/
         body: 'Le Grand Périgueux et l’agglomération Bergeracoise ont des portails de taxe de séjour distincts. Pour signaler votre classement, identifiez la collectivité de votre commune : nos secteurs de visite ne définissent pas ce rattachement.',
         link: {
           label: 'Consulter le portail du Grand Périgueux',
@@ -131,11 +132,10 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
       },
       {
         title: 'Bergerac et le Bergeracois',
-        // Source de couverture : cities/bergeracPage.tsx et registry.ts.
-        body: 'Pour un meublé à Bergerac ou dans le Bergeracois, la page dédiée précise les communes desservies autour de la ville et les repères de classement du secteur. Utilisez-la pour préparer votre demande à la bonne adresse.',
+        body: 'Dans le Bergeracois, la taxe de séjour est télédéclarée sur un portail dédié à la Communauté d’agglomération Bergeracoise. Utilisez-le pour retrouver les informations de collecte et vérifier la prise en compte de votre classement.',
         link: {
-          label: 'Le classement à Bergerac et dans le Bergeracois',
-          localEntryId: 'bergerac',
+          label: 'Consulter le portail de taxe de séjour du Bergeracois',
+          href: 'https://lacab.taxesejour.fr/',
         },
       },
     ],
