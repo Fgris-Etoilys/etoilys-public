@@ -28,6 +28,7 @@ import {
   BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
   BERGERAC_LOCAL_LANDING_PAGE_V6,
   BORDEAUX_LOCAL_LANDING_PAGE_V6,
+  CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
@@ -753,6 +754,7 @@ describe('DepartmentLandingPage', () => {
     BERGERAC_LOCAL_LANDING_PAGE_V6,
     BORDEAUX_LOCAL_LANDING_PAGE_V6,
     BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
+    CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
     MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6,
   ])('keeps the tax module optional and department navigation absent for $localEntryId', (page) => {
     const config = { ...page };
@@ -841,6 +843,11 @@ describe('DepartmentLandingPage', () => {
         'Cabanes tchanquées, île aux Oiseaux',
         'Entrée du bassin d’Arcachon depuis la dune du Pilat.',
       ],
+    ],
+    [
+      'Cahors et Vallée du Lot',
+      CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
+      ['Cahors depuis le Mont Saint-Cyr', 'Rivière Lot à Douelle, près de Cahors.'],
     ],
     ['Lot', LOT_LOCAL_LANDING_PAGE_V6, ['Saint-Cirq-Lapopie, Lot', 'Rocamadour, Lot.']],
     [

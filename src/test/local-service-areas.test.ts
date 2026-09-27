@@ -284,6 +284,7 @@ describe('local service areas data', () => {
   it('keeps local page paths derived under their department', () => {
     const dordogne = getDepartmentInterventionArea('dordogne');
     const gironde = getDepartmentInterventionArea('gironde');
+    const lot = getDepartmentInterventionArea('lot');
 
     expect(dordogne.localPages.map((localPage) => localPage.id)).toEqual(['bergerac']);
     expect(gironde.localPages.map((localPage) => localPage.id)).toEqual([
@@ -291,8 +292,10 @@ describe('local service areas data', () => {
       'bassin-arcachon',
       'medoc-atlantique',
     ]);
+    expect(lot.localPages.map((localPage) => localPage.id)).toEqual(['cahors-vallee-lot']);
     expect(dordogne.localPages.find((localPage) => localPage.id === 'bordeaux')).toBeUndefined();
     expect(gironde.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();
+    expect(lot.localPages.find((localPage) => localPage.id === 'medoc-atlantique')).toBeUndefined();
   });
 
   it('keeps structured data areaServed derived from published departments only', () => {

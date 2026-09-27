@@ -30,6 +30,8 @@ export type ImageAssetKey =
   | 'girondeCoast'
   | 'bassinArcachonHero'
   | 'bassinArcachonDunePilat'
+  | 'cahorsValleeLotHero'
+  | 'cahorsValleeLotDouelle'
   | 'medocAtlantiqueHero'
   | 'medocAtlantiqueExpertise'
   | 'lotHero'
@@ -329,6 +331,24 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/bassin-arcachon-dune-pilat-480.webp 480w, /images/optimized/bassin-arcachon-dune-pilat-768.webp 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.webp 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.webp 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/bassin-arcachon-dune-pilat-480.avif 480w, /images/optimized/bassin-arcachon-dune-pilat-768.avif 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.avif 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.avif 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.avif 1920w',
+  },
+  cahorsValleeLotHero: {
+    width: 5000,
+    height: 1853,
+    src: '/images/optimized/cahors-vue-pano-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/cahors-vue-pano-480.webp 480w, /images/optimized/cahors-vue-pano-768.webp 768w, /images/optimized/cahors-vue-pano-1200.webp 1200w, /images/optimized/cahors-vue-pano-1600.webp 1600w, /images/optimized/cahors-vue-pano-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/cahors-vue-pano-480.avif 480w, /images/optimized/cahors-vue-pano-768.avif 768w, /images/optimized/cahors-vue-pano-1200.avif 1200w, /images/optimized/cahors-vue-pano-1600.avif 1600w, /images/optimized/cahors-vue-pano-1920.avif 1920w',
+  },
+  cahorsValleeLotDouelle: {
+    width: 4032,
+    height: 3024,
+    src: '/images/optimized/riviere-lot-douelle-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/riviere-lot-douelle-480.webp 480w, /images/optimized/riviere-lot-douelle-768.webp 768w, /images/optimized/riviere-lot-douelle-1200.webp 1200w, /images/optimized/riviere-lot-douelle-1600.webp 1600w, /images/optimized/riviere-lot-douelle-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/riviere-lot-douelle-480.avif 480w, /images/optimized/riviere-lot-douelle-768.avif 768w, /images/optimized/riviere-lot-douelle-1200.avif 1200w, /images/optimized/riviere-lot-douelle-1600.avif 1600w, /images/optimized/riviere-lot-douelle-1920.avif 1920w',
   },
   medocAtlantiqueHero: {
     width: 3648,

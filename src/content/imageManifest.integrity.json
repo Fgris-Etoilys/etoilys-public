@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "f45db34bac05d578a5258289f4c31eb12075b872f93e853b23b59991488cab68",
+  "pipelineSignature": "7727c5652680fce448c0d8e81df6b3e3b52a7d00fd253265333b6f81328f84e0",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "f34deaa90dda5e667f3201bd7e44108bd5927f54c6c72a8b9f6054f5ec1f6211"
+    "sha256": "a934b66e89cb69abdb61115200787727ccbc8fc3880c15e243aecc32a7f3ce13"
   },
   "sources": [
     {
@@ -117,6 +117,11 @@
       "sha256": "959feb26937ac55ece465319a17234b143faff4e4c1b4a01668281b92ecda6b2"
     },
     {
+      "key": "cahorsValleeLotHero",
+      "path": "src/assets/seo-images/source/cahors-vue-pano-velvet-wikimedia.jpg",
+      "sha256": "19e811a4f8b57c441cbea1adf6c7893d45334fb9d4f93b51d48a08dcf55100d5"
+    },
+    {
       "key": "simulateurClassement",
       "path": "src/assets/seo-images/source/gunnar-ridderstrom-4I26owL4-yk-unsplash.jpg",
       "sha256": "3f130a0dd14df2eb2174f482f803f0f119127fb5f183ddeb018491da9db0ee67"
@@ -205,6 +210,11 @@
       "key": "pourquoiReferencement",
       "path": "src/assets/seo-images/source/pourquoi-referencement.jpg",
       "sha256": "45b5562e9e3d90c930754a6e3265012b20f8709c744a2ef42818ffba1a89292d"
+    },
+    {
+      "key": "cahorsValleeLotDouelle",
+      "path": "src/assets/seo-images/source/riviere-lot-douelle-arbref-wikimedia.jpg",
+      "sha256": "8b50cf2826faf28d4ea838bf3142e76643b8a6506a7bf0b07dcf5a39a60232b6"
     },
     {
       "key": "lotRocamadour",
@@ -1409,6 +1419,61 @@
       "sha256": "c7f39727d90461c0c0e7ef00a34a118a7b2a606f811a18116fe2e9efbf26f698"
     },
     {
+      "path": "/images/optimized/cahors-vue-pano-1200.avif",
+      "bytes": 122697,
+      "sha256": "8b4d76be2c0e1a5b4554e58718146cf092fe632844c4f47400ad13dfdc94cd64"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-1200.jpg",
+      "bytes": 129587,
+      "sha256": "31774fbea51ee3622fc8dce394923d5cd22007e12ed0f4f648faf5688f335393"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-1200.webp",
+      "bytes": 136672,
+      "sha256": "2950c7d5bf51c8d74818332b43ad398eeac716e1de68a543d9cb3652d4e81a22"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-1600.avif",
+      "bytes": 241443,
+      "sha256": "26bbf8bf6b05d0d9f26a2c7bf70e43dc130090fbcfcda9e8bef791e6af6c35e2"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-1600.webp",
+      "bytes": 238916,
+      "sha256": "e1a22287a5233e3f213a400f12f520ef44a8ced215ffc492428144c49f91cd4b"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-1920.avif",
+      "bytes": 350171,
+      "sha256": "71915f46159c6fbc1fc6791382f71210df9d75d22c40f1ed594742d4ac803f6a"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-1920.webp",
+      "bytes": 352162,
+      "sha256": "0b42acaaa9b113dc924a79753e12ce6c0dcb20d61e7a51a813cbb6cc3c510547"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-480.avif",
+      "bytes": 17431,
+      "sha256": "ffa7567b640841e8f6ae6a0d046466dd69965305cc24519b2b8a1abc57a4553a"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-480.webp",
+      "bytes": 20076,
+      "sha256": "fc8f27626d46a97bab865612db1d0efd35006c0d69ccf59e0957f337615a44de"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-768.avif",
+      "bytes": 43862,
+      "sha256": "ae93f34dc9addb2026f1a26c9e2c378e43123b0a2f66927bc25ea76b7d087e3c"
+    },
+    {
+      "path": "/images/optimized/cahors-vue-pano-768.webp",
+      "bytes": 50456,
+      "sha256": "c1ea3c98a271e629683206f80c3226c2cd56b86b150cafa42de77b80867970f3"
+    },
+    {
       "path": "/images/optimized/home-hero-1200.avif",
       "bytes": 73730,
       "sha256": "4e77dea31525ee7f2f64a7cf022ead6e56db6268168a6b7a7c882064e7e4fba2"
@@ -2192,6 +2257,61 @@
       "path": "/images/optimized/pourquoi-referencement-768.webp",
       "bytes": 38290,
       "sha256": "7acb4d4618a0379a6321cd5b137c11f40848043da51161ecfa7063e538f84233"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-1200.avif",
+      "bytes": 186327,
+      "sha256": "48bca269532fce2fe940d2bf06ae7ad93f1ca2886eeac49f36e159e71509fe77"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-1200.jpg",
+      "bytes": 170974,
+      "sha256": "4b58281e1393c0960cbac041ae4b66088f9522ef66afc56f622cfe8cebe319ff"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-1200.webp",
+      "bytes": 197736,
+      "sha256": "206947f33889b4336257135c3a51c8a9c7ff0c93d6626d399c5d059cfc8de8e0"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-1600.avif",
+      "bytes": 340036,
+      "sha256": "031b8763fc753379ff82b5cf224288744b819ed13feb48c11bcfd3cc4834572d"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-1600.webp",
+      "bytes": 364562,
+      "sha256": "5a2476efc8abe0f4dddb0d56f079970e746796e6df3fca6c4a41ac90a7c45345"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-1920.avif",
+      "bytes": 478261,
+      "sha256": "fa57a5831a3fd6a43dae395863b5854b10e672147a6e4005c4519edaece49e22"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-1920.webp",
+      "bytes": 520340,
+      "sha256": "b53dede2c88334c87e5cd8f6bdca8fc72ae7d9ecbe5ddade5ebd5459b08bf4cf"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-480.avif",
+      "bytes": 26295,
+      "sha256": "ea66f0e6b6d06b1f1c609b182abb1352900f06facd1ed4cdd5163862cac06229"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-480.webp",
+      "bytes": 28730,
+      "sha256": "9f40943673260efbe13dd7fead871e943e6b94a0f1a7ec4b76a89ff329463230"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-768.avif",
+      "bytes": 70730,
+      "sha256": "7b098afbb28bec2ce505caab1a5538c321c9da9f06ce923839ce63d081edbd8c"
+    },
+    {
+      "path": "/images/optimized/riviere-lot-douelle-768.webp",
+      "bytes": 75950,
+      "sha256": "21515e2093eb5fa668a7c725e1c7fa64cd0de07c81b2c6b00d7806f87d938b8b"
     },
     {
       "path": "/images/optimized/rocamadour-2025-114909-1200.avif",
