@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "687c0c29b7b3c19436ad92cb5870f5804121d56000a1f32d4919e47151773ce0",
+  "pipelineSignature": "b90255fdf30f20d7a7cbd4d78f4bc39969816a095d2d230547164327938a327d",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "1968b142df1e3460a98f85c0004f65a818ba7b6a1b6be387f9ceab6ebc8b9725"
+    "sha256": "c7f5b203625df21f53174c50ba5ff3f1db84a7cebbd0ebcd2f5d72cf67128360"
   },
   "sources": [
     {
@@ -124,7 +124,7 @@
     {
       "key": "homeHero",
       "path": "src/assets/seo-images/source/home-hero-crop-adobestock-70255363.jpg",
-      "sha256": "7f4a5e3e0d02f31ab9b407cbc2dd4738c021c97b1cee37d57cab3764bbff85a9"
+      "sha256": "fac4e7154b68bcea1792ba8d9da56d20c5ea36f393099f5ea2e6af4a44381142"
     },
     {
       "key": "homePourquoiChoisir",
@@ -233,8 +233,8 @@
     },
     {
       "key": "valleeDordogneHero",
-      "path": "src/assets/seo-images/source/vallee-dordogne-river-krzysztof-golik-wikimedia.jpg",
-      "sha256": "3a483ff965d1ff9f351e7be6c3ecf1f809816a48a461b5cf92ffacd61381848d"
+      "path": "src/assets/seo-images/source/vallee-dordogne-river-hero-crop-krzysztof-golik-wikimedia.jpg",
+      "sha256": "808ad82f71a5f10bf238e5d578c225af4937c24ad87bc09c441f8bcb32bdfd16"
     }
   ],
   "outputs": [
@@ -1485,58 +1485,58 @@
     },
     {
       "path": "/images/optimized/home-hero-1200.avif",
-      "bytes": 76955,
-      "sha256": "fa4b333e82a5f21023ed29efff4af26b44f0f7e6dba7ca2469a4978fb6579170"
+      "bytes": 84821,
+      "sha256": "9bff4045977fd1d811b23cf5eb79fc3896ec2534bbb236351bd2600ad711030a"
     },
     {
       "path": "/images/optimized/home-hero-1200.jpg",
-      "bytes": 132792,
-      "sha256": "2c01d87d25a67d78384751fefd2e6588fc9aeebe4bef363f7a5f70718818db88"
+      "bytes": 143692,
+      "sha256": "703a4696e634dde58736c2d0033b40f8e497dddc445e7a6127cb15dff1be23e4"
     },
     {
       "path": "/images/optimized/home-hero-1200.webp",
-      "bytes": 102384,
-      "sha256": "782de480d3b47cba6e1ad4467d9238cf8df36e9e23e6308a8bceed1972aa397f"
+      "bytes": 113460,
+      "sha256": "ad1719033adf2b41ccf8c675006993e2765106f3a8b2e8dfb326b1309ccd5848"
     },
     {
       "path": "/images/optimized/home-hero-1600.avif",
-      "bytes": 137577,
-      "sha256": "1104115007e5cf81281d3bb129785931ed0c87dfabb0b8ca86e6bff4c788e3aa"
+      "bytes": 153208,
+      "sha256": "deeb2e7da87d1eab0b096d28c68336f5790f49346d45dfd121c97303469c750f"
     },
     {
       "path": "/images/optimized/home-hero-1600.webp",
-      "bytes": 171564,
-      "sha256": "fd2eb99ba8bbd0f0e323dd864c9b8a08883ea92ffeb9a039c146fa52861aa425"
+      "bytes": 190654,
+      "sha256": "5c94341d941fd15a28967570cfb6997f62f3c9cc7f3adeca3bb09d3e3110477d"
     },
     {
       "path": "/images/optimized/home-hero-1920.avif",
-      "bytes": 180997,
-      "sha256": "4fefb8724a2a97732534dcc7dc6061cc3e355136535f4daebfffa54957eb9d0f"
+      "bytes": 201547,
+      "sha256": "dec04ef2ede2cf11a06b0f8935aeeb6d8716f95f2b81728fcad57e442b43a758"
     },
     {
       "path": "/images/optimized/home-hero-1920.webp",
-      "bytes": 230608,
-      "sha256": "f311dc4ef804792f240cf89fc3b271da66fbdd5481593824d43bf3bad57be596"
+      "bytes": 256466,
+      "sha256": "27b4895484e59772cb4961bcb3f775338a7174742c59ac1a2edb7694ff196b89"
     },
     {
       "path": "/images/optimized/home-hero-480.avif",
-      "bytes": 15366,
-      "sha256": "02a77fdeb5126691a962fe6bfcd58ab00050184c5f5ccea0715798ff456542d4"
+      "bytes": 16445,
+      "sha256": "5717ac91edb30bddebaa50684067f3ee3fda2efa7cade01221b376ca7f2e399b"
     },
     {
       "path": "/images/optimized/home-hero-480.webp",
-      "bytes": 19756,
-      "sha256": "7efe9e719c954cf5109577f788ab1352d3892aa06816cb7294fc51efadf7e0d4"
+      "bytes": 21690,
+      "sha256": "6f672d1d978744c340b5e436016a9c6704997116816068ab4b0ff9d3e01c5358"
     },
     {
       "path": "/images/optimized/home-hero-768.avif",
-      "bytes": 29523,
-      "sha256": "c7e2f69fb7f29be24bb1dc45a5d50d13d86e84922ec3114de8e4eec557c02a88"
+      "bytes": 32316,
+      "sha256": "168856230c079013bc1363ab7403dc8b663a24a58a9e15e697eddd82f2d04ecf"
     },
     {
       "path": "/images/optimized/home-hero-768.webp",
-      "bytes": 40868,
-      "sha256": "01c5632068c08ef0516867aa1b3bce401d798b1748fb3a66369f306cf126f38c"
+      "bytes": 44738,
+      "sha256": "dd0a94f7330e62c34a16490dee7ebf534386dc678ef91e34b94c350a66f2fe5b"
     },
     {
       "path": "/images/optimized/home-pourquoi-choisir-etoilys-1200.avif",
@@ -2655,38 +2655,58 @@
     },
     {
       "path": "/images/optimized/vallee-dordogne-river-1200.avif",
-      "bytes": 246899,
-      "sha256": "3bfad0c658e2d7babc17427223856c6df0dbb91a9bb6d9f6ab652cae21382474"
+      "bytes": 235632,
+      "sha256": "151872632d3ad7b690d80b31897b11d4d35da7c259d620a3db26d12ca5173339"
     },
     {
       "path": "/images/optimized/vallee-dordogne-river-1200.jpg",
-      "bytes": 253839,
-      "sha256": "140c7445f46ab26adf637f805bb5357d4f8e7ec0e0aab4724195574ecdf80180"
+      "bytes": 261771,
+      "sha256": "4e84cebe6d55bffb55c49d91fabeb93e19e1e4a8611cbb6ea65fd30c33f72693"
     },
     {
       "path": "/images/optimized/vallee-dordogne-river-1200.webp",
-      "bytes": 282472,
-      "sha256": "b195c3a2453d729332d896613631e9971b22f41ee7929fa2051c1f4a0ab25bd5"
+      "bytes": 280152,
+      "sha256": "6e8cdf55005cebfcd66991fc68bc522f0c022e50f26dc693093b285919297fc2"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-1600.avif",
+      "bytes": 437854,
+      "sha256": "488d0635c652d6de505d2f4a5860d291d83218214637a13b672b4779bcabda36"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-1600.webp",
+      "bytes": 479588,
+      "sha256": "a62dbbb0539635a6cf1d2b3bd70ee2e1791205d791ac78838184a57107fac8f8"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-1920.avif",
+      "bytes": 625126,
+      "sha256": "04b338eb108918b46026fa0bf40b1f4d15bab00bbd5eedebd8c26579be269e90"
+    },
+    {
+      "path": "/images/optimized/vallee-dordogne-river-1920.webp",
+      "bytes": 689898,
+      "sha256": "b3dbf47e35da9eb1dc5570d3514fd05123df45dadf75a2c5a217941f3fac474c"
     },
     {
       "path": "/images/optimized/vallee-dordogne-river-480.avif",
-      "bytes": 29430,
-      "sha256": "4ba28392c0fae6aca50dc03d5e1a19bb65f5dcd5662ddd38bae144b1bef0b096"
+      "bytes": 29112,
+      "sha256": "c886cc513a0b0004d28039544c6f7177ab49aaf86cd751a268951a1c0827b9b7"
     },
     {
       "path": "/images/optimized/vallee-dordogne-river-480.webp",
-      "bytes": 36310,
-      "sha256": "ca8405b2be898fb262cb13e16177d16cd388c327547e772afcfa34dff0bcae82"
+      "bytes": 38678,
+      "sha256": "e86006c4dfd770da98ef4fdab333e0b89dbfaf019a161b3e139f1fde08d003bd"
     },
     {
       "path": "/images/optimized/vallee-dordogne-river-768.avif",
-      "bytes": 85695,
-      "sha256": "0afb2213ed0dcf8318a6a29ddd7a8759788fa902c7f32eee3b2e72b182f2621a"
+      "bytes": 79734,
+      "sha256": "0869c7119dcd2db4f925329251ab5705851c13829a7afa109c2214cfdf74dae7"
     },
     {
       "path": "/images/optimized/vallee-dordogne-river-768.webp",
-      "bytes": 101716,
-      "sha256": "0d149faeea509784d5b2478dee9f3e3a4b0a25de5f1fee5bb24e4b2501e2abad"
+      "bytes": 101606,
+      "sha256": "a23506c2402dae34865e953dd80c822ad68dd808375f06b576163ff9aa8da4a8"
     }
   ]
 }

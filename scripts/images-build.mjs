@@ -16,6 +16,8 @@ const TARGET_WIDTHS = [480, 768, 1200, 1600, 1920];
 const DEFAULT_WIDTH = 1200;
 const OG_ASPECT_RATIO = 1200 / 630;
 const MAX_HERO_SOURCE_ASPECT_RATIO = 1.3;
+const MIN_HERO_SOURCE_WIDTH = 1600;
+const MIN_HERO_SOURCE_HEIGHT = 1200;
 const FORCE_REBUILD = process.argv.includes('--force');
 const CHECK_MODE = process.argv.includes('--check');
 const HERO_ASSET_KEYS = new Set([
@@ -42,7 +44,6 @@ const LEGACY_HERO_ASPECT_RATIO_ALLOWLIST = new Set([
   'lotHero',
   'lotEtGaronneHero',
   'medocAtlantiqueHero',
-  'valleeDordogneHero',
 ]);
 
 const IMAGE_ASSETS = [
@@ -143,7 +144,7 @@ const IMAGE_ASSETS = [
   },
   {
     key: 'valleeDordogneHero',
-    fileName: 'vallee-dordogne-river-krzysztof-golik-wikimedia.jpg',
+    fileName: 'vallee-dordogne-river-hero-crop-krzysztof-golik-wikimedia.jpg',
     outputName: 'vallee-dordogne-river',
   },
   {
@@ -289,6 +290,8 @@ function buildPipelineSignature() {
         defaultWidth: DEFAULT_WIDTH,
         ogAspectRatio: OG_ASPECT_RATIO,
         maxHeroSourceAspectRatio: MAX_HERO_SOURCE_ASPECT_RATIO,
+        minHeroSourceWidth: MIN_HERO_SOURCE_WIDTH,
+        minHeroSourceHeight: MIN_HERO_SOURCE_HEIGHT,
         heroAssetKeys: [...HERO_ASSET_KEYS].sort(),
         legacyHeroAspectRatioAllowlist: [...LEGACY_HERO_ASPECT_RATIO_ALLOWLIST].sort(),
         imageAssets: IMAGE_ASSETS,
@@ -299,6 +302,7 @@ function buildPipelineSignature() {
         getWebpQuality: normalizeFnSource(getWebpQuality),
         getAvifQuality: normalizeFnSource(getAvifQuality),
         assertHeroSourceAspectRatio: normalizeFnSource(assertHeroSourceAspectRatio),
+        assertHeroSourceDimensions: normalizeFnSource(assertHeroSourceDimensions),
         getOutputPaths: normalizeFnSource(getOutputPaths),
         shouldBuildAsset: normalizeFnSource(shouldBuildAsset),
         createAssetPlan: normalizeFnSource(createAssetPlan),
@@ -538,6 +542,26 @@ function assertHeroSourceAspectRatio(asset, metadata, sourcePath) {
   );
 }
 
+function assertHeroSourceDimensions(asset, metadata, sourcePath) {
+  if (!HERO_ASSET_KEYS.has(asset.key) || LEGACY_HERO_ASPECT_RATIO_ALLOWLIST.has(asset.key)) {
+    return;
+  }
+
+  if (metadata.width >= MIN_HERO_SOURCE_WIDTH && metadata.height >= MIN_HERO_SOURCE_HEIGHT) {
+    return;
+  }
+
+  throw new Error(
+    [
+      `Hero source is too small for ${asset.key}.`,
+      `File: ${toRelativePath(sourcePath)}.`,
+      `Dimensions: ${metadata.width}x${metadata.height}.`,
+      `Minimum dimensions: ${MIN_HERO_SOURCE_WIDTH}x${MIN_HERO_SOURCE_HEIGHT}.`,
+      'Provide a dedicated hero source that is large enough, then run npm run images:build.',
+    ].join(' ')
+  );
+}
+
 async function createAssetPlan(asset, previousIntegrity, pipelineChanged) {
   const sourcePath = path.join(SOURCE_DIR, asset.fileName);
   const baseName = asset.outputName ?? asset.fileName.replace(/\.[a-zA-Z0-9]+$/, '');
@@ -549,6 +573,7 @@ async function createAssetPlan(asset, previousIntegrity, pipelineChanged) {
   }
 
   assertHeroSourceAspectRatio(asset, metadata, sourcePath);
+  assertHeroSourceDimensions(asset, metadata, sourcePath);
 
   const validWidths = TARGET_WIDTHS.filter((width) => width <= metadata.width);
   const widths = validWidths.length > 0 ? validWidths : [metadata.width];
