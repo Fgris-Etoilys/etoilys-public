@@ -30,7 +30,7 @@ export default function Tooltip({
   placement = 'bottom',
   className = '',
   triggerClassName = '',
-  triggerTabIndex,
+  triggerTabIndex = -1,
   trigger = 'i',
 }: TooltipProps) {
   const tooltipId = useId();
