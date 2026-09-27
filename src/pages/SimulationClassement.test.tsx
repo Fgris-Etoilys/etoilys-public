@@ -1490,6 +1490,7 @@ describe('SimulationClassement', () => {
     const alertButton = within(createdPieceCard).getByRole('button', {
       name: /alerte sur chambre bleue/i,
     });
+    expect(alertButton).toHaveProperty('tabIndex', 0);
     fireEvent.mouseEnter(alertButton);
     expect(
       await within(createdPieceCard).findByText(

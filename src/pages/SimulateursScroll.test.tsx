@@ -332,12 +332,17 @@ describe('parcours et restauration des simulateurs', () => {
     const nightsTooltip = screen.getByRole('button', {
       name: 'Information about the number of rented nights to compare.',
     });
+    expect(nightsTooltip).toHaveAttribute('tabindex', '-1');
+    expect(inputById('nights-input')).toHaveAttribute('aria-describedby', 'nights-help');
+    expect(document.getElementById('nights-help')).toHaveTextContent(
+      'Enter the number of nights to compare: one night, one week or a full rental period, for example 90 or 120 nights.'
+    );
     fireEvent.mouseEnter(nightsTooltip);
     expect(
-      screen.getByText(
+      screen.getAllByText(
         'Enter the number of nights to compare: one night, one week or a full rental period, for example 90 or 120 nights.'
-      )
-    ).toBeInTheDocument();
+      ).length
+    ).toBeGreaterThan(0);
     expect(
       screen.queryByText(
         'Indiquez le nombre de nuits à comparer : une nuit, une semaine ou une période complète de location, par exemple 90 ou 120 nuits.'
@@ -347,12 +352,20 @@ describe('parcours et restauration des simulateurs', () => {
     const exemptionsTooltip = screen.getByRole('button', {
       name: 'Who may be exempt: minors, seasonal workers employed in the municipality, people receiving emergency accommodation or temporary rehousing, and accommodation below the locally defined rent threshold.',
     });
+    expect(exemptionsTooltip).toHaveAttribute('tabindex', '-1');
+    expect(inputById('exempted-persons-input')).toHaveAttribute(
+      'aria-describedby',
+      'exempted-persons-hint'
+    );
+    expect(document.getElementById('exempted-persons-hint')).toHaveTextContent(
+      'Exemptions generally cover minors, seasonal workers employed in the municipality, people receiving emergency accommodation or temporary rehousing, and accommodation below the locally defined rent threshold.'
+    );
     fireEvent.mouseEnter(exemptionsTooltip);
     expect(
-      screen.getByText(
+      screen.getAllByText(
         'Exemptions generally cover minors, seasonal workers employed in the municipality, people receiving emergency accommodation or temporary rehousing, and accommodation below the locally defined rent threshold.'
-      )
-    ).toBeInTheDocument();
+      ).length
+    ).toBeGreaterThan(0);
     expect(
       screen.queryByText(
         'En général, sont exonérées: les personnes mineures, les salariés saisonniers employés dans la commune, les personnes hébergées en urgence ou relogées temporairement, et les logements dont le loyer est sous le seuil fixé localement.'
@@ -426,6 +439,22 @@ describe('parcours et restauration des simulateurs', () => {
     expect(screen.getByRole('button', { name: /exporter pdf/i })).toBeInTheDocument();
     const table = openComparisonTable();
     expect(table.getAllByRole('cell', { name: /^0,00\s€$/ }).length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('conserve les tooltips fiscaux avec lien dans le parcours clavier', () => {
+    renderWithProviders(
+      <SimulateurFiscalClassement />,
+      '/simulateur-fiscal-classement?revenue=30000&tmi=11'
+    );
+
+    const table = openComparisonTable();
+    const socialContributionsTooltip = table.getByRole('button', {
+      name: /information sur les cotisations sociales non classées/i,
+    });
+    expect(socialContributionsTooltip).toHaveProperty('tabIndex', 0);
+
+    fireEvent.focus(socialContributionsTooltip);
+    expect(table.getByRole('link', { name: /simulateur officiel urssaf/i })).toBeInTheDocument();
   });
 
   it('restaure le lien fiscal en anglais et donne priorité au lien sur la session', () => {

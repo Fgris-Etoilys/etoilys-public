@@ -64,20 +64,20 @@ describe('Tooltip', () => {
     expect(tooltip).toHaveClass('rounded-editorial', 'border-ink/15', 'bg-white', 'text-muted');
   });
 
-  it('keeps tooltip triggers out of tab order by default', () => {
+  it('keeps tooltip triggers focusable by default', () => {
     render(<Tooltip srLabel="Information">Contenu du tooltip</Tooltip>);
 
-    expect(screen.getByRole('button', { name: 'Information' })).toHaveAttribute('tabindex', '-1');
+    expect(screen.getByRole('button', { name: 'Information' })).toHaveProperty('tabIndex', 0);
   });
 
-  it('supports explicit tab order opt-in for a trigger', () => {
+  it('supports explicit tab order opt-out for a trigger', () => {
     render(
-      <Tooltip srLabel="Information" triggerTabIndex={0}>
+      <Tooltip srLabel="Information" triggerTabIndex={-1}>
         Contenu du tooltip
       </Tooltip>
     );
 
-    expect(screen.getByRole('button', { name: 'Information' })).toHaveAttribute('tabindex', '0');
+    expect(screen.getByRole('button', { name: 'Information' })).toHaveAttribute('tabindex', '-1');
   });
 
   it('stays open when the mouse reaches the tooltip before the dismiss delay', () => {

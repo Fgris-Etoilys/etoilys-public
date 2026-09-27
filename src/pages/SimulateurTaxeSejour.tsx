@@ -623,6 +623,12 @@ export default function SimulateurTaxeSejour() {
       locale === 'en' ? translateText(value, touristTaxSimulatorEnglishTranslations) : value,
     [locale]
   );
+  const nightsHelpText = localize(
+    'Indiquez le nombre de nuits à comparer : une nuit, une semaine ou une période complète de location, par exemple 90 ou 120 nuits.'
+  );
+  const exemptedPersonsHelpText = localize(
+    'En général, sont exonérées: les personnes mineures, les salariés saisonniers employés dans la commune, les personnes hébergées en urgence ou relogées temporairement, et les logements dont le loyer est sous le seuil fixé localement.'
+  );
   const { showToast } = useToast();
   const [dataset, setDataset] = useState<TaxeSejourDataset | null>(null);
   const [loadingError, setLoadingError] = useState<string | null>(null);
@@ -1554,6 +1560,9 @@ export default function SimulateurTaxeSejour() {
                             value={nights}
                             error={errors.nights ? localize(errors.nights) : undefined}
                             errorId="nights-error"
+                            helperId="nights-help"
+                            helperText={nightsHelpText}
+                            helperClassName="sr-only"
                             labelAccessory={
                               <Tooltip
                                 srLabel={localize(
@@ -1561,10 +1570,9 @@ export default function SimulateurTaxeSejour() {
                                 )}
                                 className="-my-3"
                                 triggerClassName="min-h-11 min-w-11 !border-0 !bg-transparent !text-sm"
+                                triggerTabIndex={-1}
                               >
-                                {localize(
-                                  'Indiquez le nombre de nuits à comparer : une nuit, une semaine ou une période complète de location, par exemple 90 ou 120 nuits.'
-                                )}
+                                {nightsHelpText}
                               </Tooltip>
                             }
                             onChange={(event) => {
@@ -1639,7 +1647,12 @@ export default function SimulateurTaxeSejour() {
                                   }
                                   errorId="exempted-persons-error"
                                   helperId="exempted-persons-hint"
-                                  helperText="Parmi les personnes accueillies · facultatif"
+                                  helperText={
+                                    <>
+                                      <span>Parmi les personnes accueillies · facultatif</span>
+                                      <span className="sr-only"> {exemptedPersonsHelpText}</span>
+                                    </>
+                                  }
                                   helperClassName="mt-2 text-xs text-muted"
                                   labelAccessory={
                                     <Tooltip
@@ -1648,10 +1661,9 @@ export default function SimulateurTaxeSejour() {
                                       )}
                                       className="-my-3"
                                       triggerClassName="min-h-11 min-w-11 !border-0 !bg-transparent !text-sm"
+                                      triggerTabIndex={-1}
                                     >
-                                      {localize(
-                                        'En général, sont exonérées: les personnes mineures, les salariés saisonniers employés dans la commune, les personnes hébergées en urgence ou relogées temporairement, et les logements dont le loyer est sous le seuil fixé localement.'
-                                      )}
+                                      {exemptedPersonsHelpText}
                                     </Tooltip>
                                   }
                                   onChange={(event) => {
