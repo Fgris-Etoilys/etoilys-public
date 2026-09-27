@@ -67,6 +67,7 @@ export const AVEYRON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
     title: 'Dans quelles communes de l’Aveyron intervenons-nous ?',
     intro:
       'Nos inspecteurs interviennent dans tout l’Aveyron. Les communes ci-dessous sont des repères autour des principaux secteurs du département ; votre commune reste couverte même si elle n’apparaît pas dans cette sélection.',
+    localPagesLabel: 'Nos pages locales en Aveyron',
     sectors: toCollapsedSectors(AVEYRON_SERVICE_SECTORS),
     parentLink: {
       href: '/zones-intervention',
@@ -109,6 +110,32 @@ export const AVEYRON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
         licenseHref: 'https://unsplash.com/license',
       },
     },
+  },
+  // Sources Aveyron Attractivité Tourisme et OT du Pays Decazevillois vérifiées le 27 septembre 2026.
+  localModule: {
+    type: 'territorial-service',
+    title: 'Vos repères pour un classement en Aveyron',
+    intro:
+      'Depuis 2026, Aveyron Attractivité Tourisme ne réalise plus les visites de classement. Si vous préparez votre démarche en Aveyron, voici les ressources locales utiles à connaître avant la visite.',
+    items: [
+      {
+        title: 'Votre interlocuteur en 2026',
+        body: 'Aveyron Attractivité Tourisme ne réalise plus de classements depuis la fin de son agrément, le 29 avril 2026. L’agence oriente désormais les propriétaires vers un organisme agréé ou accrédité.',
+        link: {
+          label: 'Lire l’annonce de l’agence',
+          href: 'https://www.aveyron-attractivite.fr/fin-de-lagrement-pour-le-classement-des-meubles-de-tourisme-29-avril-2026/',
+        },
+      },
+      {
+        title: 'Les ressources du Pays Decazevillois',
+        body: 'L’office de tourisme du Pays Decazevillois publie le référentiel et le mémo départemental « Les incontournables du classement ». Ces documents donnent des repères pour préparer votre meublé et vos questions avant la visite.',
+        link: {
+          label: 'Consulter les ressources du Pays Decazevillois',
+          href: 'https://www.tourisme-paysdecazevillois.fr/les-meubles-de-tourisme/',
+          nofollow: true,
+        },
+      },
+    ],
   },
   faq: {
     eyebrow: 'AVANT DE VOUS LANCER',

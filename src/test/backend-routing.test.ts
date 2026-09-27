@@ -42,10 +42,10 @@ describe('backend routing', () => {
       'https://api-dev.etoilys.fr/public/forms/classement'
     );
     expect(rewrites.get('/api/public/simulations')).toBe(
-      'https://api-dev.etoilys.fr/public/simulations'
+      'https://api-prod.etoilys.fr/public/simulations'
     );
     expect(rewrites.get('/api/public/simulations/:path*')).toBe(
-      'https://api-dev.etoilys.fr/public/simulations/:path*'
+      'https://api-prod.etoilys.fr/public/simulations/:path*'
     );
     expect(JSON.stringify(vercelConfig.rewrites)).not.toContain('supabase.co');
   });

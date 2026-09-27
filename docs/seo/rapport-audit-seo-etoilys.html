@@ -1,0 +1,2649 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Étoilys — audit SEO comparatif, 20 septembre 2026</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #182f36;
+        --paper: #f7f5ef;
+        --line: #d8dddd;
+        --accent: #885d3c;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font:
+          16px/1.65 Arial,
+          Helvetica,
+          sans-serif;
+      }
+      a {
+        color: #175d72;
+        text-underline-offset: 3px;
+      }
+      a:focus-visible {
+        outline: 3px solid #885d3c;
+        outline-offset: 3px;
+      }
+      main {
+        max-width: 1100px;
+        margin: auto;
+        padding: 56px 40px 100px;
+        background: white;
+      }
+      h1 {
+        font-size: 38px;
+        line-height: 1.16;
+        max-width: 900px;
+        margin: 0 0 24px;
+      }
+      h2 {
+        margin-top: 62px;
+        border-top: 2px solid var(--line);
+        padding-top: 26px;
+        font-size: 27px;
+        line-height: 1.25;
+        scroll-margin-top: 20px;
+      }
+      h3 {
+        font-size: 21px;
+        line-height: 1.3;
+        margin-top: 32px;
+      }
+      h4 {
+        font-size: 18px;
+      }
+      p {
+        margin: 16px 0;
+      }
+      strong {
+        font-weight: 700;
+      }
+      .topnote {
+        font-size: 12px;
+        letter-spacing: 2px;
+        color: var(--accent);
+        font-weight: bold;
+        margin-bottom: 22px;
+      }
+      nav {
+        border: 1px solid var(--line);
+        padding: 20px 24px;
+        background: var(--paper);
+        border-radius: 6px;
+        margin: 28px 0 42px;
+      }
+      nav summary {
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      nav .links {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 24px;
+        margin-top: 16px;
+      }
+      nav a {
+        font-size: 14px;
+        text-decoration: none;
+      }
+      .table-scroll {
+        overflow: auto;
+        margin: 24px 0;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      th {
+        background: var(--ink);
+        color: white;
+        font-weight: bold;
+      }
+      tr:nth-child(even) {
+        background: #f6f8f8;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      code {
+        font:
+          0.87em/1.5 Consolas,
+          monospace;
+        overflow-wrap: anywhere;
+        background: #eef1f1;
+        padding: 2px 4px;
+        border-radius: 3px;
+      }
+      pre {
+        overflow: auto;
+        padding: 20px;
+        background: #eef1f1;
+        line-height: 1.5;
+        border-left: 3px solid var(--accent);
+      }
+      pre code {
+        background: none;
+        padding: 0;
+        white-space: pre;
+      }
+      ul,
+      ol {
+        padding-left: 24px;
+      }
+      li {
+        margin: 8px 0;
+      }
+      hr {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 40px 0;
+      }
+      @media (max-width: 700px) {
+        main {
+          padding: 28px 20px 60px;
+        }
+        h1 {
+          font-size: 30px;
+        }
+        h2 {
+          font-size: 24px;
+        }
+        .table-scroll {
+          margin-left: -4px;
+          margin-right: -4px;
+        }
+        nav .links {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media print {
+        body,
+        main {
+          background: white;
+        }
+        main {
+          max-width: none;
+          padding: 0;
+        }
+        nav {
+          display: none;
+        }
+        h2 {
+          break-after: avoid;
+        }
+        h3 {
+          break-after: avoid;
+        }
+        tr {
+          break-inside: avoid;
+        }
+        a {
+          color: inherit;
+        }
+        table {
+          font-size: 9px;
+        }
+        th,
+        td {
+          padding: 5px;
+        }
+        pre {
+          white-space: pre-wrap;
+        }
+        .table-scroll {
+          overflow: visible;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="topnote">AUDIT INDÉPENDANT · 20 SEPTEMBRE 2026</div>
+      <nav aria-label="Sommaire du rapport">
+        <details>
+          <summary>Sommaire — 15 sections et 4 annexes</summary>
+          <div class="links">
+            <a href="#1-synthese-executive">1. Synthèse exécutive</a
+            ><a href="#2-perimetre-et-versions-analysees">2. Périmètre et versions analysées</a
+            ><a href="#3-methodologie-de-scoring">3. Méthodologie de scoring</a
+            ><a href="#4-scores-globaux">4. Scores globaux</a
+            ><a href="#5-breakdown-par-critere">5. Breakdown par critère</a
+            ><a href="#6-scores-individuels-departements">6. Scores individuels — départements</a
+            ><a href="#7-scores-individuels-villes-et-destinations"
+              >7. Scores individuels — villes et destinations</a
+            ><a href="#8-ameliorations-constatees">8. Améliorations constatées</a
+            ><a href="#9-regressions-constatees">9. Régressions constatées</a
+            ><a href="#10-effets-de-bord-et-risques-caches">10. Effets de bord et risques cachés</a
+            ><a href="#11-contenu-local-et-duplication">11. Contenu local et duplication</a
+            ><a href="#12-maillage-et-architecture">12. Maillage et architecture</a
+            ><a href="#13-recommandations-prioritaires">13. Recommandations prioritaires</a
+            ><a
+              href="#14-gains-encore-disponibles-une-troisieme-voie-meilleure-que-les-deux-versions"
+              >14. Gains encore disponibles : une troisième voie meilleure que les deux versions</a
+            ><a href="#15-conclusion">15. Conclusion</a
+            ><a href="#annexe-a-detail-des-points-par-page-et-critere"
+              >Annexe A — Détail des points par page et critère</a
+            ><a href="#annexe-b-sous-notes-brutes-et-reproductibilite"
+              >Annexe B — Sous-notes brutes et reproductibilité</a
+            ><a href="#annexe-c-controles-http-effectivement-realises"
+              >Annexe C — Contrôles HTTP effectivement réalisés</a
+            ><a href="#annexe-d-sources-verifiables">Annexe D — Sources vérifiables</a>
+          </div>
+        </details>
+      </nav>
+      <h1>Étoilys — Audit SEO intrinsèque comparatif des pages locales</h1>
+      <p>
+        <strong
+          >Date : 20 septembre 2026. Dépôt : <code>Fgris-Etoilys/etoilys-public</code>.</strong
+        >
+      </p>
+      <h2 id="1-synthese-executive">1. Synthèse exécutive</h2>
+      <p>
+        <strong
+          >Le redesign ne constitue ni une régression SEO générale, ni une amélioration
+          uniforme.</strong
+        >
+        Les pages départementales restent globalement au même niveau dans cette grille :
+        <strong>76,67 → 76,75/100</strong> sur les trois départements présents dans les deux
+        versions. Les deux pages villes progressent : <strong>79,38 → 82,88/100</strong>.
+      </p>
+      <p>
+        Ces décimales permettent de vérifier les calculs, pas de mesurer Google au centième. L’écart
+        départemental de 0,08 point est non significatif pour une appréciation experte de ce type.
+        Le gain des villes est modéré, non une transformation radicale.
+      </p>
+      <p>
+        Les gains proviennent de la navigation géographique explicite, de réponses pratiques mieux
+        organisées, de liens contextuels utiles et d’un meilleur encadrement de la publication.
+        <strong
+          >Le prérendu, les canonicals, les principales métadonnées, les liens HTML et les exemples
+          locaux des villes existaient déjà.</strong
+        >
+        Le redesign n’a pas rendu soudainement indexable un site qui ne l’était pas.
+      </p>
+      <p>
+        La principale perte concerne les <strong>départements</strong> : le contenu devient moins
+        distinctif. Les blocs de contexte territorial disparaissent et dix réponses de FAQ sur onze
+        sont désormais identiques entre départements. Les anciennes données touristiques ne
+        justifiaient pas à elles seules une excellente note locale ; leur disparition n’est
+        cependant pas compensée par une information locale plus utile.
+      </p>
+      <p>
+        La priorité n’est donc pas de revenir intégralement à l’ancien site. Elle est de
+        <strong
+          >conserver le V6, compléter les départements avec un véritable contenu territorial de
+          service, publier un résumé tarifaire sans interaction et rendre vérifiables les exemples
+          locaux</strong
+        >. Aucun problème P0 d’indexabilité n’a été établi dans les contrôles réalisés.
+      </p>
+      <p>
+        <strong>Limite essentielle :</strong> les configurations des 14 couples page/version ont été
+        inspectées ; les contrôles HTTP et HTML brut portent sur Bergerac et Gironde, dans les deux
+        versions. Il ne s’agit pas d’un crawl intégral des deux déploiements, d’un test
+        d’hydratation dans un navigateur ou d’une mesure des Core Web Vitals.
+      </p>
+      <h2 id="2-perimetre-et-versions-analysees">2. Périmètre et versions analysées</h2>
+      <h3>Versions Git figées</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Version</th>
+              <th>SHA complet</th>
+              <th>Date du commit, Europe/Paris</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Ancienne</td>
+              <td><code>5aa20a5a87612461514352fea89eaae04104cb09</code></td>
+              <td>8 septembre 2026, 15:54:41</td>
+            </tr>
+            <tr>
+              <td>Actuelle</td>
+              <td><code>0c176460889b2499a6c5b22b107faf4f704e483e</code></td>
+              <td>20 septembre 2026, 13:27:24</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Le commit actuel est le merge de la PR nº 12, branche
+        <code>epic/ETOILYS-393-ui-redesign</code>. Le baseline est son premier parent, également le
+        point de comparaison Git commun. L’état actuel est en avance de 66 commits sur ce baseline,
+        sans divergence du baseline. L’historique des fichiers des pages locales situe les
+        changements de redesign dans la branche intégrée : sélectionner le premier parent retient
+        donc le dernier <strong>état de main</strong>, et non un commit ancien choisi au hasard. Les
+        modifications progressives de la branche ne sont pas confondues avec des publications
+        progressives dans main. <a href="#source-GIT-A">GIT-A</a> <a href="#source-GIT-B">GIT-B</a>
+      </p>
+      <p>
+        Attention à l’attribution causale : la comparaison mesure tout ce qui est entré dans ce
+        merge, y compris l’extension géographique et les changements commerciaux. Elle ne permet pas
+        d’attribuer chaque différence à la seule refonte graphique.
+      </p>
+      <h3>Inventaire complet</h3>
+      <p>
+        Toutes les routes ci-dessous sont françaises. Leur domaine canonical est
+        <code>https://www.etoilys.fr</code>. Les quatre nouvelles pages n’ont pas de score ancien
+        fictif.
+      </p>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Page</th>
+              <th>Route</th>
+              <th>Ancienne</th>
+              <th>Actuelle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>departement</td>
+              <td>Dordogne</td>
+              <td><code>/classement-meuble-tourisme-dordogne</code></td>
+              <td>Oui</td>
+              <td>Oui</td>
+            </tr>
+            <tr>
+              <td>departement</td>
+              <td>Gironde</td>
+              <td><code>/classement-meuble-tourisme-gironde</code></td>
+              <td>Oui</td>
+              <td>Oui</td>
+            </tr>
+            <tr>
+              <td>departement</td>
+              <td>Lot-et-Garonne</td>
+              <td><code>/classement-meuble-tourisme-lot-et-garonne</code></td>
+              <td>Oui</td>
+              <td>Oui</td>
+            </tr>
+            <tr>
+              <td>departement</td>
+              <td>Lot</td>
+              <td><code>/classement-meuble-tourisme-lot</code></td>
+              <td>Absente</td>
+              <td>Oui</td>
+            </tr>
+            <tr>
+              <td>departement</td>
+              <td>Aveyron</td>
+              <td><code>/classement-meuble-tourisme-aveyron</code></td>
+              <td>Absente</td>
+              <td>Oui</td>
+            </tr>
+            <tr>
+              <td>ville</td>
+              <td>Bergerac</td>
+              <td><code>/classement-meuble-tourisme-bergerac</code></td>
+              <td>Oui</td>
+              <td>Oui</td>
+            </tr>
+            <tr>
+              <td>ville</td>
+              <td>Bordeaux</td>
+              <td><code>/classement-meuble-tourisme-bordeaux</code></td>
+              <td>Oui</td>
+              <td>Oui</td>
+            </tr>
+            <tr>
+              <td>destination</td>
+              <td>Bassin d’Arcachon</td>
+              <td><code>/classement-meuble-tourisme-bassin-arcachon</code></td>
+              <td>Absente</td>
+              <td>Oui</td>
+            </tr>
+            <tr>
+              <td>destination</td>
+              <td>Lacanau et Médoc Atlantique</td>
+              <td><code>/classement-meuble-tourisme-lacanau-medoc-atlantique</code></td>
+              <td>Absente</td>
+              <td>Oui</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        L’ancien site comporte <strong>3 départements et 2 villes</strong>. L’actuel comporte
+        <strong>5 départements, 2 villes et 2 destinations touristiques</strong>. Bassin d’Arcachon
+        et Lacanau/Médoc Atlantique ne sont pas assimilés artificiellement à des villes pour
+        améliorer la moyenne de cette catégorie. <a href="#source-ROUTES-A">ROUTES-A</a>
+        <a href="#source-ROUTES-B">ROUTES-B</a> <a href="#source-REG-B">REG-B</a>
+      </p>
+      <h3>Templates et sources effectivement utilisés</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Périmètre</th>
+              <th>Ancien rendu</th>
+              <th>Nouveau rendu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dordogne</td>
+              <td><code>DepartmentLandingPage</code>, branche <code>layoutVersion: 'v5'</code></td>
+              <td>Configuration <code>dordognePage.tsx</code>, renderer V6</td>
+            </tr>
+            <tr>
+              <td>Gironde, Lot-et-Garonne</td>
+              <td>Branche classique de <code>DepartmentLandingPage</code></td>
+              <td>
+                Configurations <code>girondePage.tsx</code>, <code>lotEtGaronnePage.tsx</code>,
+                renderer V6
+              </td>
+            </tr>
+            <tr>
+              <td>Bergerac, Bordeaux</td>
+              <td><code>CityLandingPage</code>, V4, données <code>cityLandingPages.tsx</code></td>
+              <td>Configurations individuelles de villes, renderer V6</td>
+            </tr>
+            <tr>
+              <td>Lot, Aveyron</td>
+              <td>Absentes</td>
+              <td>Configurations individuelles de départements, renderer V6</td>
+            </tr>
+            <tr>
+              <td>Bassin, Médoc</td>
+              <td>Absentes</td>
+              <td>Configurations de destinations, renderer V6</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        L’actuel mutualise le rendu dans <code>src/components/local/LocalLandingPageV6.tsx</code>,
+        le contenu commun dans <code>sharedLocalContent.tsx</code>, les tarifs dans
+        <code>pricing.ts</code>, les données géographiques dans les fichiers territoriaux et la
+        publication/hiérarchie/métadonnées dans <code>registry.ts</code>. La correspondance
+        renderer–configuration se trouve dans <code>v6Pages.tsx</code>.
+        <a href="#source-RENDER-A">RENDER-A</a> <a href="#source-RENDER-B">RENDER-B</a>
+        <a href="#source-CITY-A">CITY-A</a> <a href="#source-MAP-B">MAP-B</a>
+      </p>
+      <p>
+        <strong
+          >Une constante encore présente dans un fichier n’est pas une preuve qu’elle est
+          affichée.</strong
+        >
+        Le cas est concret : les exports de statistiques et de sources de certains départements
+        subsistent, mais les configurations V6 ne les rendent plus.
+      </p>
+      <h3>Couverture réelle des vérifications</h3>
+      <p>
+        Inspectés : historique et diff de périmètre ; routes et configurations des 14 couples
+        page/version ; templates communs avant/après ; métadonnées ; pipeline de prérendu ; registre
+        de publication ; liens des hubs et des pages locales ; données géographiques ; tarifs ; FAQ
+        ; schémas observés dans le HTML ; tests de publication lus ; sitemap actuel ; robots et
+        configuration Vercel.
+      </p>
+      <p>
+        Observés par HTTP : quatre réponses HTML, détaillées en annexe, toutes avec un statut 200.
+        La prévisualisation historique porte normalement un en-tête
+        <code>X-Robots-Tag: noindex</code>. Cet en-tête de prévisualisation n’est pas assimilé à un
+        blocage de l’ancienne production. Sur les réponses du domaine public actuel contrôlées, il
+        n’est pas présent.
+      </p>
+      <p>
+        Non réalisés : build local des deux commits, exécution des tests, crawl exhaustif de tous
+        les liens de l’ensemble du site, test interactif du calculateur, validation navigateur
+        post-hydratation, inspection visuelle responsive, téléchargement et comparaison pondérale de
+        toutes les ressources, Lighthouse et mesures de terrain. Les accès réseau du conteneur n’ont
+        pas permis de constituer une copie locale des deux dépôts ; les lectures ont utilisé les
+        connecteurs GitHub et Vercel.
+      </p>
+      <p>
+        Aucune position, SERP des requêtes ciblées, donnée Search Console, analytics, trafic,
+        conversion ou opinion d’un audit précédent n’a été utilisée. Aucun fichier du dépôt n’a été
+        modifié.
+      </p>
+      <h2 id="3-methodologie-de-scoring">3. Méthodologie de scoring</h2>
+      <p>
+        La grille a été enregistrée avant l’attribution des scores. Les huit pondérations sont
+        celles du brief et n’ont pas été réajustées selon les résultats. Chaque critère contient
+        quatre sous-critères équipondérés, notés de 0 à 5, avec demi-points possibles.
+      </p>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Code</th>
+              <th>Critère</th>
+              <th>Poids</th>
+              <th>Quatre dimensions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>T</td>
+              <td>Technique et indexabilite</td>
+              <td>15</td>
+              <td>
+                Rendu du contenu principal sans interaction et parite HTML/JS<br />Routes,
+                canonicals et variantes d'URL<br />Robots, sitemap et coherence de publication<br />Robustesse
+                du pipeline SEO et gouvernance des URLs
+              </td>
+            </tr>
+            <tr>
+              <td>O</td>
+              <td>On-page et semantique</td>
+              <td>15</td>
+              <td>
+                Title descriptif service + territoire<br />H1 et hierarchie logique<br />Description
+                et coherence promesse/contenu<br />HTML semantique, textes de liens et alternatives
+                d'images
+              </td>
+            </tr>
+            <tr>
+              <td>C</td>
+              <td>Contenu et intention</td>
+              <td>20</td>
+              <td>
+                Offre, eligibilite et modalites compréhensibles<br />Reponses operationnelles aux
+                questions du proprietaire<br />Precision, sources et absence de contradictions<br />Lisibilite
+                et densite d'information utile
+              </td>
+            </tr>
+            <tr>
+              <td>L</td>
+              <td>Pertinence locale</td>
+              <td>15</td>
+              <td>
+                Informations territoriales substantielles et utiles<br />Contextualisation locale du
+                service<br />Couverture et entites geographiques coherentes<br />Preuves ou
+                ressources locales propres au territoire
+              </td>
+            </tr>
+            <tr>
+              <td>M</td>
+              <td>Architecture et maillage</td>
+              <td>15</td>
+              <td>
+                Accessibilite depuis les hubs et profondeur<br />Relations departement-ville
+                bidirectionnelles<br />Liens contextuels vers services et ressources pertinentes<br />Absence
+                d'orphelins et coherence de navigation
+              </td>
+            </tr>
+            <tr>
+              <td>D</td>
+              <td>Duplication et scalabilite</td>
+              <td>10</td>
+              <td>
+                Distinctivite du contenu principal entre pairs<br />Separation d'intention
+                departement-ville-secteur<br />Valeur autonome et absence de pages intermediaires
+                pauvres<br />Garde-fous de publication et facilite de personnalisation
+              </td>
+            </tr>
+            <tr>
+              <td>S</td>
+              <td>Entites et confiance</td>
+              <td>5</td>
+              <td>
+                Identite et contact de l'organisme<br />Coherence Service/Organization et zone
+                desservie<br />Breadcrumbs et donnees structurees utiles<br />Concordance
+                balisage-contenu et preuves de confiance
+              </td>
+            </tr>
+            <tr>
+              <td>P</td>
+              <td>UX technique et performance</td>
+              <td>5</td>
+              <td>
+                Images, dimensions et priorisation<br />Architecture JS, chargement et rendu<br />Contenu
+                accessible et comportements progressifs<br />Responsive et prevention des
+                instabilites observables
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>Formule :</strong>
+        <code>points du critère = poids × moyenne des quatre sous-notes / 5</code>. Le total est la
+        somme des huit critères. Les notes détaillées sont conservées dans
+        <code>evaluations.json</code> et dans l’annexe des sous-notes. Les moyennes, médianes,
+        extrêmes et deltas sont recalculés par script.
+      </p>
+      <p>
+        Échelle : 0 = absent ou cassé ; 1 = très faible ; 2 = insuffisant ; 3 = correct ; 4 = bon ;
+        5 = excellent, sans amélioration matérielle évidente dans le périmètre.
+      </p>
+      <p>
+        Ces scores sont des <strong>jugements experts structurés</strong>, non une fonction connue
+        de l’algorithme de Google. Leur calcul est reproductible ; un autre auditeur peut
+        légitimement contester une sous-note à partir des mêmes preuves. Les faibles deltas ne sont
+        pas des mesures statistiquement significatives. Les nouvelles pages de départements ont
+        souvent la même note parce que les différences observées ne justifient pas une distinction
+        artificielle à la résolution de cette grille.
+      </p>
+      <p>
+        La longueur, la densité de mots-clés, le nombre brut de titres, l’apparence moderne et la
+        quantité de JSON-LD ne donnent pas de points. Une FAQ repliée mais déjà présente dans le
+        HTML n’est pas traitée comme du contenu absent. L’amélioration des tests et du registre est
+        une amélioration de robustesse : ce n’est pas un facteur de classement direct inventé.
+      </p>
+      <p>
+        Pour la performance, seules les dispositions observables dans les sources sont évaluées :
+        formats d’image, dimensions, priorités, chargement et accessibilité structurelle. Aucun
+        temps de chargement ou CWV n’est présenté comme mesuré. Le sous-critère de parité HTML/JS
+        n’est pas une certification d’hydratation ; sa note repose sur le prérendu observé, le
+        renderer lu et les dépendances à l’interaction identifiées.
+        <a href="#source-GOOGLE-JS">GOOGLE-JS</a> <a href="#source-GOOGLE-LINKS">GOOGLE-LINKS</a>
+        <a href="#source-GOOGLE-CWV">GOOGLE-CWV</a>
+      </p>
+      <p>
+        <strong>Agrégation :</strong> le delta du redesign utilise les pages présentes dans les deux
+        versions. Les pages nouvellement publiées figurent dans une moyenne de l’inventaire actuel
+        distincte, sans être ajoutées artificiellement à la comparaison appariée.
+      </p>
+      <h2 id="4-scores-globaux">4. Scores globaux</h2>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Périmètre constant</th>
+              <th>Ancien</th>
+              <th>Actuel</th>
+              <th>Delta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Départements communs, n=3</td>
+              <td>76,67</td>
+              <td>76,75</td>
+              <td>+0,08</td>
+            </tr>
+            <tr>
+              <td>Villes communes, n=2</td>
+              <td>79,38</td>
+              <td>82,88</td>
+              <td>+3,50</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Distribution et effets de population</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Périmètre</th>
+              <th>Moyenne</th>
+              <th>Médiane</th>
+              <th>Minimum</th>
+              <th>Maximum</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Départements, ancien, 3 pages</td>
+              <td>76,67</td>
+              <td>77,00</td>
+              <td>76,00</td>
+              <td>77,00</td>
+            </tr>
+            <tr>
+              <td>Départements, actuel, 3 pages communes</td>
+              <td>76,75</td>
+              <td>76,63</td>
+              <td>76,63</td>
+              <td>77,00</td>
+            </tr>
+            <tr>
+              <td>Départements, actuel, 5 pages</td>
+              <td>76,70</td>
+              <td>76,63</td>
+              <td>76,63</td>
+              <td>77,00</td>
+            </tr>
+            <tr>
+              <td>Villes, ancien, 2 pages</td>
+              <td>79,38</td>
+              <td>79,38</td>
+              <td>78,75</td>
+              <td>80,00</td>
+            </tr>
+            <tr>
+              <td>Villes, actuel, 2 pages</td>
+              <td>82,88</td>
+              <td>82,88</td>
+              <td>82,50</td>
+              <td>83,25</td>
+            </tr>
+            <tr>
+              <td>Destinations, actuel, 2 pages</td>
+              <td>82,50</td>
+              <td>82,50</td>
+              <td>82,50</td>
+              <td>82,50</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        La moyenne de l’ensemble des cinq départements actuels est de <strong>76,70/100</strong>.
+        Elle est descriptive de l’inventaire actuel ; la comparaison avec l’ancien utilise les trois
+        départements communs, dont la moyenne actuelle est <strong>76,75</strong>.
+      </p>
+      <p>
+        Le minimum départemental augmente de 0,63 point, la médiane baisse de 0,38 point et le
+        maximum reste inchangé. Chez les villes, minimum et maximum progressent respectivement de
+        3,75 et 3,25 points. Les distributions portent seulement sur trois et deux pages : elles ne
+        justifient aucune généralisation statistique à des centaines de pages futures.
+      </p>
+      <h2 id="5-breakdown-par-critere">5. Breakdown par critère</h2>
+      <h3>Départements — trois pages communes</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Critère</th>
+              <th>Maximum</th>
+              <th>Ancien</th>
+              <th>Actuel</th>
+              <th>Delta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Technique et indexabilite</td>
+              <td>15</td>
+              <td>13,00</td>
+              <td>13,13</td>
+              <td>+0,13</td>
+            </tr>
+            <tr>
+              <td>On-page et semantique</td>
+              <td>15</td>
+              <td>12,00</td>
+              <td>12,75</td>
+              <td>+0,75</td>
+            </tr>
+            <tr>
+              <td>Contenu et intention</td>
+              <td>20</td>
+              <td>14,67</td>
+              <td>16,00</td>
+              <td>+1,33</td>
+            </tr>
+            <tr>
+              <td>Pertinence locale</td>
+              <td>15</td>
+              <td>10,50</td>
+              <td>7,63</td>
+              <td>-2,88</td>
+            </tr>
+            <tr>
+              <td>Architecture et maillage</td>
+              <td>15</td>
+              <td>12,00</td>
+              <td>13,13</td>
+              <td>+1,13</td>
+            </tr>
+            <tr>
+              <td>Duplication et scalabilite</td>
+              <td>10</td>
+              <td>7,00</td>
+              <td>6,25</td>
+              <td>-0,75</td>
+            </tr>
+            <tr>
+              <td>Entites et confiance</td>
+              <td>5</td>
+              <td>4,00</td>
+              <td>4,13</td>
+              <td>+0,13</td>
+            </tr>
+            <tr>
+              <td>UX technique et performance</td>
+              <td>5</td>
+              <td>3,50</td>
+              <td>3,75</td>
+              <td>+0,25</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Le résultat stable masque une redistribution :
+        <strong>−2,88 points de pertinence locale</strong>,
+        <strong>−0,75 de différenciation/scalabilité</strong>, compensés principalement par
+        <strong>+1,33 de contenu pratique</strong>, <strong>+1,13 de maillage</strong> et
+        <strong>+0,75 de structure on-page</strong>. Ce ne sont pas des variations de ranking.
+      </p>
+      <h3>Villes — Bergerac et Bordeaux</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Critère</th>
+              <th>Maximum</th>
+              <th>Ancien</th>
+              <th>Actuel</th>
+              <th>Delta</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Technique et indexabilite</td>
+              <td>15</td>
+              <td>13,13</td>
+              <td>13,50</td>
+              <td>+0,38</td>
+            </tr>
+            <tr>
+              <td>On-page et semantique</td>
+              <td>15</td>
+              <td>12,00</td>
+              <td>12,75</td>
+              <td>+0,75</td>
+            </tr>
+            <tr>
+              <td>Contenu et intention</td>
+              <td>20</td>
+              <td>16,25</td>
+              <td>17,00</td>
+              <td>+0,75</td>
+            </tr>
+            <tr>
+              <td>Pertinence locale</td>
+              <td>15</td>
+              <td>11,25</td>
+              <td>11,25</td>
+              <td>0,00</td>
+            </tr>
+            <tr>
+              <td>Architecture et maillage</td>
+              <td>15</td>
+              <td>12,00</td>
+              <td>13,13</td>
+              <td>+1,13</td>
+            </tr>
+            <tr>
+              <td>Duplication et scalabilite</td>
+              <td>10</td>
+              <td>7,25</td>
+              <td>7,50</td>
+              <td>+0,25</td>
+            </tr>
+            <tr>
+              <td>Entites et confiance</td>
+              <td>5</td>
+              <td>4,00</td>
+              <td>4,00</td>
+              <td>0,00</td>
+            </tr>
+            <tr>
+              <td>UX technique et performance</td>
+              <td>5</td>
+              <td>3,50</td>
+              <td>3,75</td>
+              <td>+0,25</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        La pertinence locale reste inchangée : les éléments substantiels existaient avant et ont été
+        conservés. La progression vient surtout de la structuration, des liens utiles et de la
+        robustesse du rendu. L’ajout d’un fil d’Ariane visible est compté dans la navigation ;
+        l’existence du JSON-LD de breadcrumb n’est pas réattribuée comme une nouveauté.
+      </p>
+      <h3>Inventaire départemental actuel, cinq pages</h3>
+      <p>
+        Les moyennes par critère sont identiques à celles de la cohorte actuelle de trois
+        départements, sauf la pertinence locale : <strong>7,575/15</strong>, au lieu de
+        <strong>7,625/15</strong>. L’inventaire complet totalise donc 76,70/100.
+      </p>
+      <h2 id="6-scores-individuels-departements">6. Scores individuels — départements</h2>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Ancien</th>
+              <th>Actuel</th>
+              <th>Delta</th>
+              <th>Principales causes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dordogne</td>
+              <td>76,00</td>
+              <td>76,63</td>
+              <td>+0,63</td>
+              <td>Navigation et réponses pratiques en hausse ; contexte local perdu.</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>77,00</td>
+              <td>77,00</td>
+              <td>0,00</td>
+              <td>Meilleure navigation ; contexte et sources retirés ; couverture réorganisée.</td>
+            </tr>
+            <tr>
+              <td>Lot-et-Garonne</td>
+              <td>77,00</td>
+              <td>76,63</td>
+              <td>-0,38</td>
+              <td>Réponses pratiques et navigation compensent presque le recul local.</td>
+            </tr>
+            <tr>
+              <td>Lot</td>
+              <td>N/A</td>
+              <td>76,63</td>
+              <td>N/A</td>
+              <td>Nouvelle page ; différenciation principalement géographique.</td>
+            </tr>
+            <tr>
+              <td>Aveyron</td>
+              <td>N/A</td>
+              <td>76,63</td>
+              <td>N/A</td>
+              <td>Nouvelle page ; contenu territorial de service à renforcer.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>Dordogne.</strong> Le gain de navigation et de réponses pratiques compense la
+        disparition du bloc local de trois repères touristiques. Les 71 communes restent injectées.
+        Le calculateur sans montant initial n’est pas un défaut introduit par le V6 : il existait
+        déjà dans le V5 réellement routé. Le delta de +0,63 point se lit comme une stabilité.
+        <a href="#source-D24-A">D24-A</a> <a href="#source-D24-B">D24-B</a>
+        <a href="#source-D24-DATA">D24-DATA</a>
+      </p>
+      <p>
+        <strong>Gironde.</strong> Les anciennes précautions d’intervention sur le littoral sont
+        remplacées par une couverture de toute la Gironde et deux nouvelles pages de destinations.
+        Le contenu contextuel et les dix liens de sources disparaissent. Les listes géographiques
+        sont réorganisées, de 98 à 88 communes. Le nouveau calculateur apporte une fonctionnalité
+        utile, mais pas de montant tarifaire directement disponible dans le HTML initial. Le score
+        reste à 77. <a href="#source-G33-A">G33-A</a> <a href="#source-G33-B">G33-B</a>
+        <a href="#source-G33-DATA">G33-DATA</a> <a href="#source-PICKER-B">PICKER-B</a>
+      </p>
+      <p>
+        <strong>Lot-et-Garonne.</strong> Les 73 communes sont conservées. Le contexte touristique,
+        les cinq données chiffrées et la liste de six sources ne sont plus rendus. Le calculateur
+        remplace le tarif uniquement sur demande, mais exige une interaction. Les gains pratiques et
+        de navigation limitent la variation totale à −0,38 point : ce n’est pas une preuve d’une
+        baisse de ranking. <a href="#source-G47-A">G47-A</a> <a href="#source-G47-B">G47-B</a>
+        <a href="#source-G47-DATA">G47-DATA</a>
+      </p>
+      <p>
+        <strong>Lot et Aveyron.</strong> Pages nouvelles, respectivement 42 et 49 communes. Elles
+        sont correctement reliées et structurées dans le système de publication lu, mais leur
+        contenu éditorial de service demeure très proche des autres départements. Un tarif
+        spécifique au Lot est configuré ; tant qu’il dépend de la sélection d’une commune, il ne
+        différencie pas le HTML principal initial. <a href="#source-G46-B">G46-B</a>
+        <a href="#source-G12-B">G12-B</a> <a href="#source-PRICES-B">PRICES-B</a>
+      </p>
+      <h2 id="7-scores-individuels-villes-et-destinations">
+        7. Scores individuels — villes et destinations
+      </h2>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Ancien</th>
+              <th>Actuel</th>
+              <th>Delta</th>
+              <th>Principales causes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Bergerac</td>
+              <td>78,75</td>
+              <td>82,50</td>
+              <td>+3,75</td>
+              <td>Contenu local conservé ; fil visible, guides et structure améliorés.</td>
+            </tr>
+            <tr>
+              <td>Bordeaux</td>
+              <td>80,00</td>
+              <td>83,25</td>
+              <td>+3,25</td>
+              <td>Modules locaux conservés ; structure améliorée ; offre tarifaire modifiée.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        <strong>Bergerac.</strong> Les 13 communes, le cas de taxe de séjour, les tarifs
+        publics/partenaires et la grille multi-logements sont conservés. La navigation, les liens
+        vers la préparation et l’après-classement, les repères d’accessibilité et la présentation
+        sémantique progressent. La source du barème local reste insuffisamment traçable. Le CTA
+        final qui parle de Dordogne plutôt que de Bergerac est une petite perte de précision,
+        insuffisante pour changer la sous-note locale à cette échelle.
+        <a href="#source-CITY-A">CITY-A</a> <a href="#source-BERGERAC-B">BERGERAC-B</a>
+      </p>
+      <p>
+        <strong>Bordeaux.</strong> Les 12 communes, le cas local de taxe de séjour et
+        l’avertissement municipal existaient avant et sont conservés. Ils ne sont pas comptés comme
+        nouveaux. Le tarif change réellement : l’ancienne offre à 240 €, partenaire à 200 €, avec
+        grille 240/160/100 € pour plusieurs logements, est remplacée par des tarifs de 180/200/250 €
+        selon typologie et une offre de renouvellement. L’absence des anciens montants partenaires
+        et multi-logements ne prouve pas une erreur commerciale ; elle retire néanmoins une réponse
+        détaillée qui existait dans l’ancienne page. <a href="#source-CITY-A">CITY-A</a>
+        <a href="#source-BORDEAUX-B">BORDEAUX-B</a> <a href="#source-PRICES-A">PRICES-A</a>
+        <a href="#source-PRICES-B">PRICES-B</a>
+      </p>
+      <h3>Destinations nouvelles — hors moyenne des villes</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Ancien</th>
+              <th>Actuel</th>
+              <th>Delta</th>
+              <th>Principales causes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Bassin d’Arcachon</td>
+              <td>N/A</td>
+              <td>82,50</td>
+              <td>N/A</td>
+              <td>Nouveau secteur avec cas local ; barème à relier.</td>
+            </tr>
+            <tr>
+              <td>Lacanau et Médoc Atlantique</td>
+              <td>N/A</td>
+              <td>82,50</td>
+              <td>N/A</td>
+              <td>Nouveau secteur avec cas local ; barème à relier.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Le Bassin d’Arcachon et Lacanau/Médoc Atlantique disposent chacun de communes propres,
+        d’images propres et d’un exemple chiffré de taxe de séjour. Cela leur donne davantage
+        d’autonomie éditoriale que les nouveaux départements. Les deux exemples doivent être reliés
+        à un barème officiel et conservés dans leur périmètre exact : un exemple Arcachon ne
+        démontre pas un tarif identique pour tout le Bassin. Les calculs fiscaux et tarifs
+        réglementaires ne sont pas validés juridiquement par cet audit.
+        <a href="#source-BASSIN-B">BASSIN-B</a> <a href="#source-MEDOC-B">MEDOC-B</a>
+      </p>
+      <h2 id="8-ameliorations-constatees">8. Améliorations constatées</h2>
+      <h3>A. Une hiérarchie géographique rendue explicite</h3>
+      <p>
+        Le nouveau <code>PageHero</code> expose un véritable fil d’Ariane HTML, avec liste ordonnée,
+        ancres et page courante. Les départements sont rattachés au hub et les villes au
+        département. Le HTML de Gironde passe d’un breadcrumb JSON-LD
+        <code>Accueil &gt; Gironde</code> à
+        <code>Accueil &gt; Zones d’intervention &gt; Gironde</code>, cohérent avec le fil visible.
+      </p>
+      <p>
+        Le bénéfice est la lisibilité de la structure et des liens de remontée, pas un « bonus
+        breadcrumb » garanti. Les anciennes pages disposaient déjà de liens permettant de retrouver
+        les territoires : elles n’étaient pas orphelines. Critères O/M, et S pour la meilleure
+        description hiérarchique des départements. <a href="#source-HERO-B">HERO-B</a>
+        <a href="#source-SEO-A">SEO-A</a> <a href="#source-SEO-B">SEO-B</a>
+      </p>
+      <h3>B. Une publication mieux centralisée</h3>
+      <p>
+        Le registre relie statut, route, SEO, parent et exposition dans les hubs. Les tests lus
+        couvrent notamment les pages brouillon, les enfants d’un parent brouillon et les enfants
+        sans parent. Cette centralisation réduit le risque qu’une future page soit routée mais
+        absente du sitemap, ou publiée sans département parent.
+      </p>
+      <p>
+        Les tests ont été inspectés, pas exécutés dans cette mission. Leur valeur est celle d’un
+        garde-fou documenté. Le prérendu et ses contrôles de base existaient déjà. Critères T/D.
+        <a href="#source-REG-B">REG-B</a> <a href="#source-SEO-B">SEO-B</a>
+        <a href="#source-PUB-TEST-B">PUB-TEST-B</a> <a href="#source-PRERENDER-B">PRERENDER-B</a>
+      </p>
+      <h3>C. De meilleures réponses à la préparation et aux suites du classement</h3>
+      <p>
+        Le template ajoute des liens vers deux guides utiles : préparer la visite et agir après le
+        classement. La FAQ explique davantage le choix de la catégorie, les délais, les
+        justificatifs et les modalités. La procédure en trois étapes est plus directement
+        exploitable ; elle reste reliée à la procédure détaillée.
+      </p>
+      <p>
+        La note ne récompense pas le nombre de FAQ. Elle reconnaît des questions pratiques mieux
+        couvertes et des parcours explicites. Les rubriques de contexte retirées des départements
+        sont évaluées séparément. Critères C/M. <a href="#source-SHARED-B">SHARED-B</a>
+        <a href="#source-RENDER-B">RENDER-B</a>
+      </p>
+      <h3>D. Une extension géographique correctement intégrée</h3>
+      <p>
+        Les quatre nouvelles pages apparaissent dans le registre, les routes, le sitemap actuel et
+        les hubs. La Gironde contient les liens vers Bordeaux, Bassin et Médoc. Le renderer ajoute
+        automatiquement les pages filles qui ne sont pas déjà liées dans les noms de communes.
+      </p>
+      <p>
+        La disparition de l’ancien composant de pages filles ne signifie donc pas disparition des
+        liens. De même, le hub ne tronque plus sa liste à trois enfants : c’est un gain pour une
+        extension future, non la correction d’une page historiquement orpheline, puisque les
+        départements anciens n’avaient qu’une ville chacun. <a href="#source-REG-B">REG-B</a>
+        <a href="#source-MAP-B">MAP-B</a> <a href="#source-SITEMAP-B">SITEMAP-B</a>
+        <a href="#source-CARDS-A">CARDS-A</a> <a href="#source-CARDS-B">CARDS-B</a>
+        <a href="#source-RENDER-B">RENDER-B</a>
+      </p>
+      <h3>E. Des dispositions techniques mieux alignées sur le rendu</h3>
+      <p>
+        Le preload de l’image principale utilise désormais le même <code>sizes</code> que son
+        affichage en colonne : par exemple 570 px sur grand écran, au lieu de 100 vw dans l’ancien
+        hero plein écran. Les formats AVIF/WebP, dimensions et priorités existaient déjà. La mise à
+        jour peut réduire le téléchargement inutile, mais aucun gain en kilo-octets ou millisecondes
+        n’a été mesuré.
+      </p>
+      <p>
+        Les réponses repliées restent dans le HTML ; l’accordéon actuel les masque aussi pour
+        l’interaction clavier lorsqu’elles sont fermées. Le lien d’évitement et la cible de contenu
+        principal améliorent l’accès au document. Critère P, sans assimiler accessibilité et facteur
+        Google autonome. <a href="#source-PRERENDER-B">PRERENDER-B</a>
+        <a href="#source-HERO-B">HERO-B</a> <a href="#source-RENDER-B">RENDER-B</a>
+        <a href="#source-GOOGLE-CWV">GOOGLE-CWV</a>
+      </p>
+      <h2 id="9-regressions-constatees">9. Régressions constatées</h2>
+      <h3>A. Les départements perdent du contenu local sans remplacement substantiel</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Département</th>
+              <th>Ancien contenu réellement rendu</th>
+              <th>Situation actuelle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dordogne</td>
+              <td>Trois repères touristiques, paragraphes associés et note de source</td>
+              <td>Bloc absent ; listes de communes conservées</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>Contexte urbain/viticole/littoral, cinq statistiques, dix liens de sources</td>
+              <td>Contexte et liste retirés ; couverture et FAQ largement mutualisées</td>
+            </tr>
+            <tr>
+              <td>Lot-et-Garonne</td>
+              <td>Contexte rural/bastides, cinq statistiques, six liens de sources</td>
+              <td>Contexte et liste retirés ; FAQ et arguments communs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Le problème n’est
+        <strong
+          >ni la baisse du nombre de mots, ni la disparition obligatoire de chiffres
+          touristiques</strong
+        >. Une statistique sur les nuitées peut être périphérique à une recherche de prestataire de
+        classement. L’ancienne version restait d’ailleurs perfectible sur ce point.
+      </p>
+      <p>
+        La perte évaluée est celle d’une contextualisation et de ressources propres au territoire,
+        alors que le nouveau contenu principal des départements repose surtout sur les mêmes
+        arguments nationaux. Une courte explication locale réellement utile pourrait faire mieux que
+        les deux versions. Les notes locales baissent de 9,75 à 7,50 pour Dordogne ; de 10,875 à
+        7,875 pour Gironde ; et de 10,875 à 7,50 pour Lot-et-Garonne.
+        <a href="#source-D24-A">D24-A</a> <a href="#source-G33-A">G33-A</a>
+        <a href="#source-G47-A">G47-A</a> <a href="#source-D24-B">D24-B</a>
+        <a href="#source-G33-B">G33-B</a> <a href="#source-G47-B">G47-B</a>
+      </p>
+      <p>
+        <strong>Précision Dordogne :</strong> la page V5 ancienne ne rendait pas la liste générale
+        de six sources présente dans sa configuration. Cette liste n’est donc pas comptée comme une
+        perte. Lire uniquement le diff de données aurait conduit à un diagnostic faux.
+      </p>
+      <h3>B. La mutualisation réduit la différenciation éditoriale des départements</h3>
+      <p>
+        Les cinq départements ont chacun onze questions, dont dix réponses communes. Le hero
+        commercial, les bénéfices, la procédure et les arguments d’expertise sont également très
+        proches ou partagés. Ce n’est pas interdit ; un service national suit logiquement une
+        procédure commune. Mais les blocs communs occupent l’essentiel du discours, et le complément
+        territorial manque.
+      </p>
+      <p>
+        La baisse du critère D ne sanctionne pas l’usage de React ou d’un template : elle sanctionne
+        le manque d’autonomie informationnelle et les garde-fous éditoriaux encore insuffisants pour
+        industrialiser une qualité locale élevée. <a href="#source-SHARED-B">SHARED-B</a>
+        <a href="#source-RENDER-B">RENDER-B</a> <a href="#source-GOOGLE-SPAM">GOOGLE-SPAM</a>
+      </p>
+      <h3>C. Bordeaux : perte d’une information tarifaire détaillée</h3>
+      <p>
+        Le changement d’offre est observable dans les deux versions de <code>pricing.ts</code>. La
+        nouvelle page publie un tarif direct par typologie, donc elle n’a pas le problème de prix
+        caché derrière le calculateur départemental. En revanche, les montants spécifiques
+        partenaires et multi-logements de l’ancienne page ne sont pas repris.
+      </p>
+      <p>
+        Le score de contenu augmente moins à Bordeaux qu’à Bergerac pour cette raison. Il ne faut
+        pas réintroduire les anciens prix automatiquement : il faut d’abord faire correspondre la
+        FAQ et le détail tarifaire à l’offre commerciale réellement applicable.
+        <a href="#source-PRICES-A">PRICES-A</a> <a href="#source-PRICES-B">PRICES-B</a>
+        <a href="#source-BORDEAUX-B">BORDEAUX-B</a>
+      </p>
+      <h3>D. Petites pertes de précision</h3>
+      <p>
+        Le CTA final de Bergerac emploie « Dordogne ». Les listes de Gironde retirent notamment
+        Tresses, Saint-Loubès et Quinsac, tout en ajoutant des repères littoraux. Ce n’est pas une
+        suppression d’URL et la liste reste explicitement non exhaustive. La première modification
+        est une correction éditoriale facile ; la seconde est un arbitrage de couverture à
+        documenter, non une urgence SEO. <a href="#source-BERGERAC-B">BERGERAC-B</a>
+        <a href="#source-G33-A">G33-A</a> <a href="#source-G33-DATA">G33-DATA</a>
+      </p>
+      <h2 id="10-effets-de-bord-et-risques-caches">10. Effets de bord et risques cachés</h2>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Contrôle</th>
+              <th>Constat</th>
+              <th>Qualification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>HTML principal</td>
+              <td>
+                Prérendu existant dans les deux versions ; confirmé sur les pages HTTP contrôlées
+              </td>
+              <td>Préservé, pas un gain nouveau</td>
+            </tr>
+            <tr>
+              <td>Tarifs départementaux</td>
+              <td>Montant rendu seulement après sélection d’une commune</td>
+              <td>Lacune actuelle des cinq pages ; héritée sur Dordogne</td>
+            </tr>
+            <tr>
+              <td>FAQ repliées</td>
+              <td>Réponses déjà présentes dans le HTML ancien et nouveau</td>
+              <td>Pas de disparition SEO du contenu</td>
+            </tr>
+            <tr>
+              <td>Communes repliées</td>
+              <td>Les communes masquées restent des nœuds HTML</td>
+              <td>Pas de chargement uniquement après clic</td>
+            </tr>
+            <tr>
+              <td>Liens de pages filles</td>
+              <td>Ancres HTML et ajout automatique des enfants manquants</td>
+              <td>Préservés et mieux industrialisés</td>
+            </tr>
+            <tr>
+              <td>Routes anciennes</td>
+              <td>Les cinq URLs locales sont conservées</td>
+              <td>Pas de redirection spécifique nécessaire pour ces URLs</td>
+            </tr>
+            <tr>
+              <td>Titles/descriptions</td>
+              <td>
+                Quatre couples anciens conservés ; Dordogne reformulée sans disparition du sujet ou
+                du territoire
+              </td>
+              <td>Pas de title générique global</td>
+            </tr>
+            <tr>
+              <td>Canonicals</td>
+              <td>
+                Construction absolue vers le domaine public et URL propre ; contrôles HTML
+                concordants
+              </td>
+              <td>Pas d’anomalie établie</td>
+            </tr>
+            <tr>
+              <td>Sitemap actuel</td>
+              <td>Neuf routes locales listées, cohérentes avec le registre publié</td>
+              <td>Pas d’écart constaté sur l’inventaire local</td>
+            </tr>
+            <tr>
+              <td>Footer</td>
+              <td>Le lien vers le hub subsiste, malgré déplacement de la rubrique</td>
+              <td>Pas de perte du lien de découverte</td>
+            </tr>
+            <tr>
+              <td>Sous-menus du header</td>
+              <td>Liens non présents avant ouverture dans les HTML contrôlés, avant comme après</td>
+              <td>Faiblesse préexistante, partiellement compensée par footer/contenu</td>
+            </tr>
+            <tr>
+              <td>Source d’exemples de taxe</td>
+              <td>Mention textuelle sans lien direct de barème</td>
+              <td>Traçabilité à améliorer ; exactitude non certifiée</td>
+            </tr>
+            <tr>
+              <td>Typologies et multi-logements</td>
+              <td>Profil tarifaire bordelais changé, discours multi-logements à aligner</td>
+              <td>Point de cohérence commerciale, pas erreur démontrée</td>
+            </tr>
+            <tr>
+              <td>FAQPage</td>
+              <td>Absent des HTML contrôlés des deux versions</td>
+              <td>Aucune pénalité pour un balisage inutile</td>
+            </tr>
+            <tr>
+              <td>Prévisualisation Vercel noindex</td>
+              <td>En-tête sur le snapshot technique historique</td>
+              <td>Protection normale, pas preuve de blocage historique de production</td>
+            </tr>
+            <tr>
+              <td>Poids des images / CWV</td>
+              <td>Dispositions lues, pas de mesures exécutées</td>
+              <td>Aucun verdict chiffré de vitesse</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Pourquoi le calculateur n’est pas du contenu tarifaire indexable suffisant</h3>
+      <p>
+        Dans <code>DepartmentPricingSection</code>, <code>resolution</code> démarre à
+        <code>null</code>. L’index des communes se charge sur focus/saisie et le résumé de prix
+        n’est créé qu’après sélection. Attendre que le JavaScript s’exécute ne suffit pas à produire
+        le tarif : il faut une interaction utilisateur. Les résultats ne sont donc pas équivalents à
+        une réponse d’accordéon déjà incluse dans le HTML.
+      </p>
+      <p>
+        Cette distinction évite deux faux constats opposés : « toute la page dépend de JavaScript »
+        est faux ; « les tarifs sont disponibles aux robots parce que le site est prérendu » est
+        également faux pour ces montants. Le code est commun aux cinq départements et l’état vide a
+        été constaté dans le HTML de Gironde. <a href="#source-PICKER-B">PICKER-B</a>
+        <a href="#source-GOOGLE-JS">GOOGLE-JS</a>
+      </p>
+      <h3>Ce qui reste à établir techniquement</h3>
+      <p>
+        La cohérence du source et de quatre réponses HTTP ne prouve pas que les neuf pages sont
+        exemptes d’erreurs d’hydratation, de liens sortants morts ou d’un problème de performance
+        mobile. Le rapport ne transforme pas ces absences de mesure en contrôles réussis. Les
+        recommandations de CI et de mesure ciblent ces angles encore non vérifiés.
+      </p>
+      <h2 id="11-contenu-local-et-duplication">11. Contenu local et duplication</h2>
+      <h3>Départements</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Département</th>
+              <th>Communes anciennes</th>
+              <th>Actuelles</th>
+              <th>Secteurs actuels</th>
+              <th>Visibles / repliées</th>
+              <th>FAQ ancienne → actuelle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dordogne</td>
+              <td>71</td>
+              <td>71</td>
+              <td>7</td>
+              <td>35 / 36</td>
+              <td>7 → 11</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>98</td>
+              <td>88</td>
+              <td>7</td>
+              <td>35 / 53</td>
+              <td>13 → 11</td>
+            </tr>
+            <tr>
+              <td>Lot-et-Garonne</td>
+              <td>73</td>
+              <td>73</td>
+              <td>7</td>
+              <td>35 / 38</td>
+              <td>10 → 11</td>
+            </tr>
+            <tr>
+              <td>Lot</td>
+              <td>N/A</td>
+              <td>42</td>
+              <td>5</td>
+              <td>25 / 17</td>
+              <td>N/A → 11</td>
+            </tr>
+            <tr>
+              <td>Aveyron</td>
+              <td>N/A</td>
+              <td>49</td>
+              <td>6</td>
+              <td>30 / 19</td>
+              <td>N/A → 11</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Les nombres décrivent le contenu injecté par les configurations, pas un crawl géographique
+        extérieur. Ils incluent les communes initialement repliées. Les seules listes diminuant sont
+        celles de Gironde ; elles ont été réorganisées avec une nouvelle couverture annoncée.
+      </p>
+      <p>
+        Sur les cinq départements actuels, la variation repose surtout sur le H1/territoire, les
+        photos, les communes, la réponse de couverture et la configuration tarifaire. Les trois
+        premiers sont utiles pour l’orientation, mais ne remplacent pas une réponse spécifique au
+        besoin d’un propriétaire dans le territoire. Le tarif, potentiellement distinctif, n’est pas
+        affiché avant interaction.
+      </p>
+      <p>
+        La FAQ commune représente <strong>10/11 réponses</strong>, pas « 91 % de toute la page ».
+        Aucun pourcentage de similarité globale ou de mots communs n’a été calculé : ce serait
+        inventer une mesure. Le risque est évalué à partir de la provenance des blocs et de leur
+        contenu réel. <a href="#source-SHARED-B">SHARED-B</a>
+        <a href="#source-RENDER-B">RENDER-B</a>
+      </p>
+      <h3>Villes</h3>
+      <p>
+        Bergerac et Bordeaux gardent leurs exemples locaux. Bordeaux conserve également son
+        avertissement réglementaire et un lien municipal. Ces modules justifient mieux l’existence
+        autonome de la page qu’un remplacement du nom de ville dans une accroche nationale. La
+        mutualisation du reste est moins problématique tant que les réponses locales restent
+        spécifiques et vérifiables. <a href="#source-CITY-A">CITY-A</a>
+        <a href="#source-BERGERAC-B">BERGERAC-B</a> <a href="#source-BORDEAUX-B">BORDEAUX-B</a>
+      </p>
+      <h3>Destinations</h3>
+      <p>
+        Les deux nouvelles destinations ont un périmètre explicite, des communes et des cas chiffrés
+        différents. Elles sont à traiter comme des pages de secteur, pas comme une juxtaposition de
+        villes fictives. Il faut éviter que les exemples d’une commune deviennent une affirmation
+        sur toutes les collectivités du secteur. <a href="#source-BASSIN-B">BASSIN-B</a>
+        <a href="#source-MEDOC-B">MEDOC-B</a>
+      </p>
+      <h3>Interactions département/ville/destination</h3>
+      <p>
+        Une page Gironde et une page Bordeaux peuvent légitimement coexister. Le département doit
+        répondre à la couverture, aux modalités et aux différences entre secteurs ; Bordeaux doit
+        répondre au cas métropolitain et à ses particularités. Même principe pour Dordogne/Bergerac.
+      </p>
+      <p>
+        Le simple recouvrement des termes « classement », « meublé » et « tourisme » ne prouve pas
+        une cannibalisation. Sans consulter de résultats Google — volontairement exclus — il est
+        impossible de conclure à une cannibalisation effective. L’audit identifie seulement un
+        risque de manque de différenciation d’intention et de valeur autonome.
+      </p>
+      <p>
+        Un template commun et un formulaire final commun ne suffisent pas non plus à qualifier les
+        pages de doorway. Le risque augmente quand les pages territoriales n’apportent plus de
+        réponse autonome et servent surtout d’étape interchangeable vers le même formulaire. Il
+        s’agit ici d’une vigilance éditoriale, pas d’une violation Google démontrée.
+        <a href="#source-GOOGLE-SPAM">GOOGLE-SPAM</a>
+      </p>
+      <h2 id="12-maillage-et-architecture">12. Maillage et architecture</h2>
+      <h3>Chemins vérifiés par la lecture du code et du HTML ciblé</h3>
+      <pre><code class="language-text">Ancien
+Accueil — lien de footer → Zones d’intervention
+                           ├─ Dordogne ↔ Bergerac
+                           ├─ Gironde  ↔ Bordeaux
+                           └─ Lot-et-Garonne
+Le hub possède aussi les liens directs vers Bergerac et Bordeaux.
+
+Actuel
+Accueil — lien de footer → Zones d’intervention
+                           ├─ Dordogne ↔ Bergerac
+                           ├─ Gironde  ↔ Bordeaux
+                           │            Bassin d’Arcachon
+                           │            Lacanau/Médoc Atlantique
+                           ├─ Lot-et-Garonne
+                           ├─ Lot
+                           └─ Aveyron
+Le hub possède aussi les liens directs vers les quatre pages locales filles.
+Les pages filles remontent à leur département ; les départements renvoient aux filles.
+</code></pre>
+      <p>
+        Le chemin démontré depuis l’accueil comporte
+        <strong>au plus deux clics vers chaque page locale via le footer et le hub</strong>, avant
+        comme après pour les pages historiques. Ce n’est pas un calcul de profondeur minimale sur
+        l’intégralité du graphe du site : un autre lien contextuel pourrait créer un chemin plus
+        court.
+      </p>
+      <p>
+        Les boutons React qui utilisent un <code>Link</code> ou un <code>href</code> ne sont pas
+        pénalisés parce qu’ils sont stylisés. Les HTML contrôlés comportent bien des ancres
+        explorables. Les ancres territoriales du hub et des secteurs indiquent leur destination.
+        <a href="#source-CARDS-A">CARDS-A</a> <a href="#source-CARDS-B">CARDS-B</a>
+        <a href="#source-HUB-B">HUB-B</a> <a href="#source-RENDER-B">RENDER-B</a>
+        <a href="#source-GOOGLE-LINKS">GOOGLE-LINKS</a>
+      </p>
+      <p>
+        Le footer ne lie pas individuellement tous les départements, mais il lie le hub. Cela suffit
+        à établir un chemin de découverte ; il n’y a pas lieu de déclarer toutes les pages locales
+        orphelines. Le nouveau fil d’Ariane ajoute une structure explicite, plutôt qu’il ne répare
+        une architecture auparavant inaccessible.
+      </p>
+      <p>
+        Les liens vers les deux guides ajoutent un parcours utile entre page de service et
+        documentation. Le rapport n’affirme pas que les articles renvoient tous réciproquement aux
+        pages locales : ce contrôle intégral n’a pas été exécuté. Un maillage contextuel de retour
+        peut être ajouté lorsqu’il aide réellement le lecteur, sans fabriquer un réseau de liens
+        entre toutes les villes.
+      </p>
+      <p>
+        La centralisation du registre et la suppression de la limite de trois enfants dans le hub
+        améliorent la capacité d’extension. La valeur SEO de cette extension dépendra toutefois de
+        la qualité des nouvelles pages, pas du simple fait de les ajouter à la liste.
+      </p>
+      <h2 id="13-recommandations-prioritaires">13. Recommandations prioritaires</h2>
+      <h3>Vue d’ensemble</h3>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Priorité</th>
+              <th>Action</th>
+              <th style="text-align: right">Pages</th>
+              <th>Impact potentiel</th>
+              <th>Effort</th>
+              <th>Risque à maîtriser</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>P0</td>
+              <td>Aucun blocage critique démontré dans les contrôles réalisés</td>
+              <td style="text-align: right">—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>Ne pas confondre prévisualisation noindex et production</td>
+            </tr>
+            <tr>
+              <td>P1</td>
+              <td>Ajouter un bloc territorial de service réellement utile</td>
+              <td style="text-align: right">5 départements</td>
+              <td>Fort sur pertinence et différenciation</td>
+              <td>Moyen, surtout éditorial</td>
+              <td>Remplissage local artificiel, données inventées ou obsolètes</td>
+            </tr>
+            <tr>
+              <td>P1</td>
+              <td>Afficher un résumé tarifaire statique avant interaction</td>
+              <td style="text-align: right">5 départements</td>
+              <td>Fort sur complétude et accès au prix</td>
+              <td>Faible à moyen</td>
+              <td>Faux tarif uniforme, exceptions de Gironde ignorées</td>
+            </tr>
+            <tr>
+              <td>P1</td>
+              <td>Relier et vérifier les barèmes des exemples locaux</td>
+              <td style="text-align: right">2 villes + 2 destinations</td>
+              <td>Important pour fiabilité du contenu</td>
+              <td>Faible à moyen</td>
+              <td>Mauvaise année, mauvaise collectivité, hypothèses de calcul</td>
+            </tr>
+            <tr>
+              <td>P2</td>
+              <td>Aligner les conditions tarifaires/FAQ sur l’offre réelle</td>
+              <td style="text-align: right">Bordeaux et Gironde en priorité</td>
+              <td>Moyen</td>
+              <td>Faible après arbitrage commercial</td>
+              <td>Restaurer d’anciens prix devenus faux</td>
+            </tr>
+            <tr>
+              <td>P2</td>
+              <td>Ajouter un contrôle du HTML construit de toutes les pages</td>
+              <td style="text-align: right">9 pages actuelles et futures</td>
+              <td>Prévention transversale</td>
+              <td>Moyen</td>
+              <td>Tests trop rigides sur la copy, faux positif de preview</td>
+            </tr>
+            <tr>
+              <td>P2</td>
+              <td>Mesurer performances et interactions sur les deux builds</td>
+              <td style="text-align: right">Templates communs</td>
+              <td>À déterminer par mesure</td>
+              <td>Moyen</td>
+              <td>Transformer un test isolé en résultat général</td>
+            </tr>
+            <tr>
+              <td>P3</td>
+              <td>Corriger le CTA territorial de Bergerac</td>
+              <td style="text-align: right">1 ville</td>
+              <td>Faible</td>
+              <td>Très faible</td>
+              <td>Aucun si seul le libellé est modifié</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>P1.1 — Un bloc local de service, pas le retour du pavé touristique</h3>
+      <p>
+        <strong>Problème et cause.</strong> La configuration V6 des départements sélectionne
+        essentiellement des blocs nationaux et des listes de communes. La réduction du contexte
+        ancien n’est pas remplacée par une valeur locale autonome.
+      </p>
+      <p>
+        <strong>Modification.</strong> Réutiliser ou étendre le mécanisme de module local du V6 pour
+        publier une section territoriale courte mais substantielle, avec deux ou trois informations
+        utiles, vérifiées et maintenables. Les villes disposent déjà d’un exemple de module
+        spécifique ; il n’est pas nécessaire de créer un second framework.
+      </p>
+      <p>
+        Pour Dordogne, préciser l’articulation des principaux secteurs, la vérification de la taxe
+        de séjour et les modalités locales réellement applicables. Pour Gironde, distinguer
+        métropole, Bassin et Médoc par les démarches/organismes compétents lorsque ces différences
+        sont sourcées, avec renvois vers les pages filles plutôt que copie intégrale. Pour
+        Lot-et-Garonne, reprendre sélectivement une ressource territoriale de classement utile. Pour
+        Lot et Aveyron, établir une information propre au service dans le département avant de
+        multiplier les pages villes.
+      </p>
+      <p>
+        Les preuves de terrain doivent être réelles : interlocuteur de secteur, retour de visite
+        publiable, modalités de tournée ou partenariat vérifié. Ne pas inventer un inspecteur, une
+        adresse locale, un témoignage ou un volume de visites. Une preuve institutionnelle ou une
+        ressource territoriale utile peut convenir sans exposer de données clients.
+      </p>
+      <p>
+        <strong>Fichiers.</strong> Les cinq configurations
+        <code>src/content/local/departments/*Page.tsx</code>, <code>LocalLandingPageV6.tsx</code> et
+        éventuellement les types de module local. Conserver URLs, canonicals, hiérarchie et liens
+        existants. Ne pas noter la présence d’un bloc à son nombre de mots ; évaluer s’il change
+        réellement la réponse pour le territoire.
+      </p>
+      <h3>P1.2 — Un résumé tarifaire inclus dans le HTML</h3>
+      <p>
+        <strong>Problème et cause.</strong> Le renderer départemental ne crée les montants qu’après
+        résolution du calculateur.
+      </p>
+      <p>
+        <strong>Modification.</strong> Afficher avant le formulaire un résumé exact des tarifs et
+        conditions qui provient des mêmes <code>PRICING_PROFILES</code>. Garder le calculateur comme
+        précision par commune. Ne pas créer une copie manuelle concurrente des montants et ne pas se
+        limiter à un <code>&lt;noscript&gt;</code> : un moteur peut exécuter JavaScript sans
+        sélectionner une commune.
+      </p>
+      <p>
+        Dordogne, Lot-et-Garonne et Aveyron ont un profil standard/partenaire/multi-logements ; le
+        Lot possède son propre profil ; la Gironde comporte des tarifs par typologie et des communes
+        dérogatoires. Son résumé doit annoncer ces différences honnêtement, sans appliquer un prix
+        unique à tout le département.
+      </p>
+      <p>
+        <strong>Fichiers.</strong> <code>DepartmentPricingSection.tsx</code>, le branchement
+        tarifaire de <code>LocalLandingPageV6.tsx</code>, <code>pricing.ts</code> et les
+        configurations départementales. Tester que les montants sont présents dans le HTML de build,
+        que le calculateur garde le même résultat et que les communes dérogatoires conservent leur
+        traitement.
+      </p>
+      <h3>P1.3 — Exemples locaux traçables</h3>
+      <p>
+        <strong>Problème et cause.</strong> Les cas de taxe de séjour ont une note de source, mais
+        celle-ci ne donne pas un accès direct au barème permettant de les vérifier.
+      </p>
+      <p>
+        <strong>Modification.</strong> Associer à chaque module une source officielle cliquable,
+        l’année, le périmètre exact, la date de vérification et les hypothèses de l’exemple.
+        Vérifier le prix de nuitée, le nombre de personnes, les exonérations éventuelles, les taxes
+        additionnelles, les plafonds et les arrondis avant toute correction de valeur. L’audit ne
+        valide pas ces paramètres.
+      </p>
+      <p>
+        Sur le Bassin, un calcul Arcachon doit rester présenté comme un exemple Arcachon. À
+        Bordeaux, conserver l’avertissement local existant et son lien municipal. Une correction
+        factuelle doit avoir sa propre date de mise à jour, pas une date modifiée seulement pour
+        paraître fraîche.
+      </p>
+      <p>
+        <strong>Fichiers.</strong> Configuration <code>cities/bergeracPage.tsx</code>, données
+        <code>cities/bordeaux.ts</code>, <code>destinations/bassinArcachon.ts</code>,
+        <code>destinations/medocAtlantique.ts</code>, configurations correspondantes et type des
+        sources locales.
+      </p>
+      <h3>P2.1 — Cohérence des tarifs et de la FAQ</h3>
+      <p>
+        Comparer les promesses de tarifs dégressifs et les conditions de renouvellement avec le
+        profil réellement vendu. À Bordeaux, les anciens forfaits et avantages partenaires ne
+        doivent être rétablis que s’ils existent encore. Sinon, expliquer les nouvelles conditions
+        utiles et rendre les FAQ dépendantes de la politique réellement applicable, pas d’une
+        formulation nationale incompatible avec un secteur.
+      </p>
+      <p>
+        <strong>Fichiers.</strong> <code>pricing.ts</code>, <code>sharedLocalContent.tsx</code>,
+        <code>bordeauxPage.tsx</code>, <code>girondePage.tsx</code>. Le moteur de sélection doit
+        rester la source unique des montants ; la FAQ ne doit pas inventer une règle de calcul
+        absente du modèle.
+      </p>
+      <h3>P2.2 — Vérifier les artefacts HTML, pas seulement les constantes TypeScript</h3>
+      <p>
+        Le pipeline a déjà des contrôles de titre, description, canonical, H1 et publication. Les
+        compléter par une extraction automatique sur chaque page locale construite : un H1,
+        canonical attendu, robots attendus, statut à la mise en ligne, liens vers les
+        parents/enfants publiés, présence d’un résumé tarifaire, présence des informations locales
+        obligatoires et réponses d’accordéon dans le HTML.
+      </p>
+      <p>
+        Ajouter un contrôle de cohérence plutôt qu’un instantané rigide de tout le texte. Une source
+        orpheline dans un fichier ne suffit pas : le test doit examiner le HTML final. Distinguer
+        explicitement prévisualisation protégée et production. Tester également un brouillon et un
+        enfant de parent brouillon pour éviter une indexation involontaire.
+      </p>
+      <p>
+        Un véritable crawl interne des deux builds doit ensuite lister les href cassés et les liens
+        contextuels entrants/sortants de chaque page. Il ne doit pas être présenté comme réalisé par
+        les fichiers de ce dossier.
+      </p>
+      <h3>P2.3 — Mesures techniques indépendantes des rankings</h3>
+      <p>
+        Comparer les builds dans les mêmes conditions : mobile/desktop, cache et réseau comparables,
+        plusieurs passes de laboratoire. Mesurer au minimum image LCP choisie, poids transféré,
+        travail JavaScript initial, déplacement de mise en page et accessibilité au clavier des
+        menus/accordéons/calculateur. Utiliser les résultats pour décider d’un découpage JavaScript
+        ou d’une optimisation d’image, pas l’apparence visuelle.
+      </p>
+      <p>
+        Les imports de routes lus ne démontrent pas une stratégie nouvelle de découpage fin par
+        page. Cela mérite une mesure du bundle, pas l’affirmation non vérifiée que le nouveau site
+        est plus lourd ou plus rapide. <a href="#source-GOOGLE-CWV">GOOGLE-CWV</a>
+      </p>
+      <h3>P3 — Correction ponctuelle</h3>
+      <p>
+        Dans <code>bergeracPage.tsx</code>, remplacer le territoire du CTA final par Bergerac ou
+        Bergerac et le Bergeracois, selon le périmètre voulu. Préserver le lien du bouton. Cette
+        correction améliore la cohérence éditoriale, sans promettre un gain matériel de position.
+      </p>
+      <h2 id="14-gains-encore-disponibles-une-troisieme-voie-meilleure-que-les-deux-versions">
+        14. Gains encore disponibles : une troisième voie meilleure que les deux versions
+      </h2>
+      <p>
+        Le meilleur compromis est
+        <strong
+          >la structure V6 actuelle, enrichie d’informations territoriales plus utiles que les
+          anciens paragraphes touristiques</strong
+        >.
+      </p>
+      <p>
+        Une page départementale solide peut réunir une offre compréhensible, une couverture honnête,
+        un tarif lisible sans interaction, un module local fondé sur une vraie différence de
+        service, des ressources vérifiables, des liens vers les secteurs et une FAQ commune
+        complétée seulement lorsque le territoire le justifie. Il n’est pas nécessaire de réécrire
+        arbitrairement toute la procédure nationale pour créer de la variété.
+      </p>
+      <p>
+        Le mécanisme de publication devrait séparer deux validations : « techniquement publiable »
+        et « éditorialement suffisamment local ». Le registre et ses tests traitent surtout la
+        première. La seconde nécessite un contrôle humain d’utilité, pas une règle « 500 mots et
+        cinq noms de villes ».
+      </p>
+      <p>
+        Les deux versions peuvent aussi mieux exploiter des preuves réelles de l’activité locale.
+        L’accréditation Cofrac et l’identité de l’entreprise sont déjà présentes ; répéter davantage
+        ce numéro ou créer une fausse entité LocalBusiness dans chaque ville n’apporte pas une
+        meilleure preuve. Une page sur la visite locale, un cas documenté autorisé ou un lien vers
+        un interlocuteur réellement compétent serait plus substantiel.
+      </p>
+      <p>
+        Aucun score futur cible n’est chiffré : le contenu et les mesures techniques nécessaires
+        n’existent pas encore dans le périmètre audité. L’objectif est une amélioration vérifiable
+        des sous-critères, pas un « 90/100 » promis après trois ajouts.
+      </p>
+      <h2 id="15-conclusion">15. Conclusion</h2>
+      <p>
+        <strong>Objectivement améliorés :</strong> visibilité de la hiérarchie, cohérence de
+        publication, parcours de préparation et d’après-classement, plusieurs dispositions
+        sémantiques et d’accessibilité, intégration des nouvelles pages.
+      </p>
+      <p>
+        <strong>Objectivement dégradés :</strong> différenciation éditoriale des départements et
+        accès à certaines ressources territoriales ; disparition d’une information tarifaire
+        détaillée sur Bordeaux ; petite incohérence territoriale du CTA de Bergerac.
+      </p>
+      <p>
+        <strong>Globalement préservés ou neutres :</strong> URLs historiques, base de prérendu,
+        principaux titles/descriptions/canonicals, contenu des exemples locaux des villes, liens de
+        pages filles, accès au hub, contenu des accordéons. La nouvelle palette, les arrondis et le
+        style de cartes ne sont pas en eux-mêmes des améliorations SEO.
+      </p>
+      <p>
+        <strong>Différence entre catégories :</strong> les villes gagnent modestement en SEO
+        readiness parce qu’elles conservent leur contenu local en profitant du nouveau socle. Les
+        départements restent stables au total mais deviennent plus dépendants de leur template et de
+        leurs listes géographiques.
+      </p>
+      <p>
+        <strong
+          >Décision recommandée : conserver le V6 et renforcer en priorité les départements, les
+          tarifs statiques et la traçabilité locale.</strong
+        >
+        Les résultats ne permettent ni de prévoir un classement futur dans Google, ni d’affirmer une
+        hausse ou baisse de trafic, ni de certifier l’absence de problème dans les contrôles non
+        exécutés.
+      </p>
+      <hr />
+      <h2 id="annexe-a-detail-des-points-par-page-et-critere">
+        Annexe A — Détail des points par page et critère
+      </h2>
+      <p>
+        T = technique ; O = on-page ; C = contenu ; L = pertinence locale ; M = maillage ; D =
+        différenciation/scalabilité ; S = entités/confiance ; P = UX technique.
+      </p>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Version</th>
+              <th>T/15</th>
+              <th>O/15</th>
+              <th>C/20</th>
+              <th>L/15</th>
+              <th>M/15</th>
+              <th>D/10</th>
+              <th>S/5</th>
+              <th>P/5</th>
+              <th>Total/100</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dordogne</td>
+              <td>ancienne</td>
+              <td>12,750</td>
+              <td>12,000</td>
+              <td>15,000</td>
+              <td>9,750</td>
+              <td>12,000</td>
+              <td>7,000</td>
+              <td>4,000</td>
+              <td>3,500</td>
+              <td>76,000</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>ancienne</td>
+              <td>13,125</td>
+              <td>12,000</td>
+              <td>14,500</td>
+              <td>10,875</td>
+              <td>12,000</td>
+              <td>7,000</td>
+              <td>4,000</td>
+              <td>3,500</td>
+              <td>77,000</td>
+            </tr>
+            <tr>
+              <td>Lot-et-Garonne</td>
+              <td>ancienne</td>
+              <td>13,125</td>
+              <td>12,000</td>
+              <td>14,500</td>
+              <td>10,875</td>
+              <td>12,000</td>
+              <td>7,000</td>
+              <td>4,000</td>
+              <td>3,500</td>
+              <td>77,000</td>
+            </tr>
+            <tr>
+              <td>Bergerac</td>
+              <td>ancienne</td>
+              <td>13,125</td>
+              <td>12,000</td>
+              <td>16,000</td>
+              <td>10,875</td>
+              <td>12,000</td>
+              <td>7,250</td>
+              <td>4,000</td>
+              <td>3,500</td>
+              <td>78,750</td>
+            </tr>
+            <tr>
+              <td>Bordeaux</td>
+              <td>ancienne</td>
+              <td>13,125</td>
+              <td>12,000</td>
+              <td>16,500</td>
+              <td>11,625</td>
+              <td>12,000</td>
+              <td>7,250</td>
+              <td>4,000</td>
+              <td>3,500</td>
+              <td>80,000</td>
+            </tr>
+            <tr>
+              <td>Dordogne</td>
+              <td>actuelle</td>
+              <td>13,125</td>
+              <td>12,750</td>
+              <td>16,000</td>
+              <td>7,500</td>
+              <td>13,125</td>
+              <td>6,250</td>
+              <td>4,125</td>
+              <td>3,750</td>
+              <td>76,625</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>actuelle</td>
+              <td>13,125</td>
+              <td>12,750</td>
+              <td>16,000</td>
+              <td>7,875</td>
+              <td>13,125</td>
+              <td>6,250</td>
+              <td>4,125</td>
+              <td>3,750</td>
+              <td>77,000</td>
+            </tr>
+            <tr>
+              <td>Lot-et-Garonne</td>
+              <td>actuelle</td>
+              <td>13,125</td>
+              <td>12,750</td>
+              <td>16,000</td>
+              <td>7,500</td>
+              <td>13,125</td>
+              <td>6,250</td>
+              <td>4,125</td>
+              <td>3,750</td>
+              <td>76,625</td>
+            </tr>
+            <tr>
+              <td>Lot</td>
+              <td>actuelle</td>
+              <td>13,125</td>
+              <td>12,750</td>
+              <td>16,000</td>
+              <td>7,500</td>
+              <td>13,125</td>
+              <td>6,250</td>
+              <td>4,125</td>
+              <td>3,750</td>
+              <td>76,625</td>
+            </tr>
+            <tr>
+              <td>Aveyron</td>
+              <td>actuelle</td>
+              <td>13,125</td>
+              <td>12,750</td>
+              <td>16,000</td>
+              <td>7,500</td>
+              <td>13,125</td>
+              <td>6,250</td>
+              <td>4,125</td>
+              <td>3,750</td>
+              <td>76,625</td>
+            </tr>
+            <tr>
+              <td>Bergerac</td>
+              <td>actuelle</td>
+              <td>13,500</td>
+              <td>12,750</td>
+              <td>17,000</td>
+              <td>10,875</td>
+              <td>13,125</td>
+              <td>7,500</td>
+              <td>4,000</td>
+              <td>3,750</td>
+              <td>82,500</td>
+            </tr>
+            <tr>
+              <td>Bordeaux</td>
+              <td>actuelle</td>
+              <td>13,500</td>
+              <td>12,750</td>
+              <td>17,000</td>
+              <td>11,625</td>
+              <td>13,125</td>
+              <td>7,500</td>
+              <td>4,000</td>
+              <td>3,750</td>
+              <td>83,250</td>
+            </tr>
+            <tr>
+              <td>Bassin d’Arcachon</td>
+              <td>actuelle</td>
+              <td>13,500</td>
+              <td>12,750</td>
+              <td>17,000</td>
+              <td>10,875</td>
+              <td>13,125</td>
+              <td>7,500</td>
+              <td>4,000</td>
+              <td>3,750</td>
+              <td>82,500</td>
+            </tr>
+            <tr>
+              <td>Lacanau et Médoc Atlantique</td>
+              <td>actuelle</td>
+              <td>13,500</td>
+              <td>12,750</td>
+              <td>17,000</td>
+              <td>10,875</td>
+              <td>13,125</td>
+              <td>7,500</td>
+              <td>4,000</td>
+              <td>3,750</td>
+              <td>82,500</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h2 id="annexe-b-sous-notes-brutes-et-reproductibilite">
+        Annexe B — Sous-notes brutes et reproductibilité
+      </h2>
+      <p>
+        Chaque groupe comporte les quatre sous-notes dans l’ordre décrit par
+        <code>grille-figee.json</code>. Exemple : T <code>[4, 4.5, 4.5, 4]</code> donne
+        <code>15 × (17/4) / 5 = 12,75 points</code>.
+      </p>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Version</th>
+              <th>T</th>
+              <th>O</th>
+              <th>C</th>
+              <th>L</th>
+              <th>M</th>
+              <th>D</th>
+              <th>S</th>
+              <th>P</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dordogne</td>
+              <td>ancienne</td>
+              <td>4,4.5,4.5,4</td>
+              <td>4,4,4,4</td>
+              <td>4,3.5,3.5,4</td>
+              <td>3,3.5,4,2.5</td>
+              <td>4,4,4,4</td>
+              <td>3,4,4,3</td>
+              <td>4,4,4,4</td>
+              <td>4,3,3,4</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>ancienne</td>
+              <td>4.5,4.5,4.5,4</td>
+              <td>4,4,4,4</td>
+              <td>4,3,4,3.5</td>
+              <td>3.5,4,3.5,3.5</td>
+              <td>4,4,4,4</td>
+              <td>3,4,4,3</td>
+              <td>4,4,4,4</td>
+              <td>4,3,3,4</td>
+            </tr>
+            <tr>
+              <td>Lot-et-Garonne</td>
+              <td>ancienne</td>
+              <td>4.5,4.5,4.5,4</td>
+              <td>4,4,4,4</td>
+              <td>4,3,4,3.5</td>
+              <td>3.5,3.5,4,3.5</td>
+              <td>4,4,4,4</td>
+              <td>3,4,4,3</td>
+              <td>4,4,4,4</td>
+              <td>4,3,3,4</td>
+            </tr>
+            <tr>
+              <td>Bergerac</td>
+              <td>ancienne</td>
+              <td>4.5,4.5,4.5,4</td>
+              <td>4,4,4,4</td>
+              <td>4.5,4,3.5,4</td>
+              <td>4,4,4,2.5</td>
+              <td>4,4,4,4</td>
+              <td>3.5,4,4,3</td>
+              <td>4,4,4,4</td>
+              <td>4,3,3,4</td>
+            </tr>
+            <tr>
+              <td>Bordeaux</td>
+              <td>ancienne</td>
+              <td>4.5,4.5,4.5,4</td>
+              <td>4,4,4,4</td>
+              <td>4.5,4,4,4</td>
+              <td>4,4,4,3.5</td>
+              <td>4,4,4,4</td>
+              <td>3.5,4,4,3</td>
+              <td>4,4,4,4</td>
+              <td>4,3,3,4</td>
+            </tr>
+            <tr>
+              <td>Dordogne</td>
+              <td>actuelle</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4,4,3.5,4.5</td>
+              <td>2,2.5,4,1.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>2,3.5,3.5,3.5</td>
+              <td>4,4,4.5,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>actuelle</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4,4,3.5,4.5</td>
+              <td>2,2.5,4.5,1.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>2,3.5,3.5,3.5</td>
+              <td>4,4,4.5,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+            <tr>
+              <td>Lot-et-Garonne</td>
+              <td>actuelle</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4,4,3.5,4.5</td>
+              <td>2,2.5,4,1.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>2,3.5,3.5,3.5</td>
+              <td>4,4,4.5,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+            <tr>
+              <td>Lot</td>
+              <td>actuelle</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4,4,3.5,4.5</td>
+              <td>2,2.5,4,1.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>2,3.5,3.5,3.5</td>
+              <td>4,4,4.5,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+            <tr>
+              <td>Aveyron</td>
+              <td>actuelle</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4,4,3.5,4.5</td>
+              <td>2,2.5,4,1.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>2,3.5,3.5,3.5</td>
+              <td>4,4,4.5,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+            <tr>
+              <td>Bergerac</td>
+              <td>actuelle</td>
+              <td>4.5,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4.5,4.5,3.5,4.5</td>
+              <td>4,4,4,2.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>3.5,4,4,3.5</td>
+              <td>4,4,4,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+            <tr>
+              <td>Bordeaux</td>
+              <td>actuelle</td>
+              <td>4.5,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4.5,4,4,4.5</td>
+              <td>4,4,4,3.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>3.5,4,4,3.5</td>
+              <td>4,4,4,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+            <tr>
+              <td>Bassin d’Arcachon</td>
+              <td>actuelle</td>
+              <td>4.5,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4.5,4.5,3.5,4.5</td>
+              <td>4,4,4,2.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>3.5,4,4,3.5</td>
+              <td>4,4,4,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+            <tr>
+              <td>Lacanau et Médoc Atlantique</td>
+              <td>actuelle</td>
+              <td>4.5,4.5,4.5,4.5</td>
+              <td>4,4.5,4,4.5</td>
+              <td>4.5,4.5,3.5,4.5</td>
+              <td>4,4,4,2.5</td>
+              <td>4,4.5,4.5,4.5</td>
+              <td>3.5,4,4,3.5</td>
+              <td>4,4,4,4</td>
+              <td>4.5,3,3.5,4</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Les sous-notes sont des évaluations manuelles. <code>recalculer.py</code> ne lit ni Google
+        ni le dépôt et ne note pas automatiquement le contenu : il vérifie les 32 sous-notes de
+        chaque page, les totaux, les agrégats et les deltas du fichier JSON. Son exécution locale a
+        été vérifiée. Il permet de modifier explicitement une appréciation dans le JSON et de
+        recalculer les conséquences, sans changer silencieusement les poids.
+      </p>
+      <h2 id="annexe-c-controles-http-effectivement-realises">
+        Annexe C — Contrôles HTTP effectivement réalisés
+      </h2>
+      <div class="table-scroll" tabindex="0">
+        <table>
+          <thead>
+            <tr>
+              <th>Page</th>
+              <th>Version</th>
+              <th>Date UTC</th>
+              <th>Statut</th>
+              <th>X-Robots-Tag</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Bergerac</td>
+              <td>ancienne</td>
+              <td>2026-09-20T17:38:46Z</td>
+              <td>200</td>
+              <td>noindex</td>
+              <td>snapshot preview ; ne pas extrapoler cet en-tête à l’ancienne production</td>
+            </tr>
+            <tr>
+              <td>Bergerac</td>
+              <td>actuelle</td>
+              <td>2026-09-20T17:47:12Z</td>
+              <td>200</td>
+              <td>Absent</td>
+              <td>domaine public</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>ancienne</td>
+              <td>2026-09-20T17:58:58Z</td>
+              <td>200</td>
+              <td>noindex</td>
+              <td>snapshot preview ; ne pas extrapoler cet en-tête à l’ancienne production</td>
+            </tr>
+            <tr>
+              <td>Gironde</td>
+              <td>actuelle</td>
+              <td>2026-09-20T17:59:28Z</td>
+              <td>200</td>
+              <td>Absent</td>
+              <td>domaine public</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Les HTML complets ont été lus dans les réponses du connecteur Vercel. Le dossier conserve un
+        journal d’observation, pas une archive byte-for-byte de ces réponses. Les métadonnées des
+        déploiements ont permis de rattacher le snapshot ancien au baseline ; la réponse publique
+        actuelle et ses fichiers d’assets ont été confrontés à la configuration V6 et au déploiement
+        courant. Aucun navigateur n’a exécuté le JavaScript pour cet audit.
+      </p>
+      <h2 id="annexe-d-sources-verifiables">Annexe D — Sources vérifiables</h2>
+      <p>
+        Les liens GitHub ci-dessous pointent sur les commits figés. Ils peuvent nécessiter l’accès
+        au dépôt. Une référence à un fichier n’implique pas que ses tests aient été exécutés. Les
+        documents Google sont utilisés pour les mécanismes techniques généraux, jamais pour déduire
+        un score à partir de résultats de recherche.
+      </p>
+      <p>
+        <a id="source-GIT-A"></a><strong><a href="#source-GIT-A">GIT-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/commit/5aa20a5a87612461514352fea89eaae04104cb09"
+          >Commit baseline</a
+        >
+      </p>
+      <p>
+        <a id="source-GIT-B"></a><strong><a href="#source-GIT-B">GIT-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/commit/0c176460889b2499a6c5b22b107faf4f704e483e"
+          >Commit actuel / merge</a
+        >
+      </p>
+      <p>
+        <a id="source-ROUTES-A"></a><strong><a href="#source-ROUTES-A">ROUTES-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/AppRoutes.tsx"
+          >Routes anciennes</a
+        >
+      </p>
+      <p>
+        <a id="source-ROUTES-B"></a><strong><a href="#source-ROUTES-B">ROUTES-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/AppRoutes.tsx"
+          >Routes actuelles</a
+        >
+      </p>
+      <p>
+        <a id="source-REG-B"></a><strong><a href="#source-REG-B">REG-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/registry.ts"
+          >Registre territorial actuel</a
+        >
+      </p>
+      <p>
+        <a id="source-MAP-B"></a><strong><a href="#source-MAP-B">MAP-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/v6Pages.tsx"
+          >Correspondance des configurations V6</a
+        >
+      </p>
+      <p>
+        <a id="source-RENDER-A"></a><strong><a href="#source-RENDER-A">RENDER-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/components/local/DepartmentLandingPage.tsx"
+          >Renderer départemental ancien, branches classique et V5</a
+        >
+      </p>
+      <p>
+        <a id="source-RENDER-B"></a><strong><a href="#source-RENDER-B">RENDER-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/components/local/LocalLandingPageV6.tsx"
+          >Renderer local V6</a
+        >
+      </p>
+      <p>
+        <a id="source-CITY-A"></a><strong><a href="#source-CITY-A">CITY-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/content/cityLandingPages.tsx"
+          >Données et textes des villes avant refonte</a
+        >
+      </p>
+      <p>
+        <a id="source-D24-A"></a><strong><a href="#source-D24-A">D24-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/content/local/departments/dordogne.ts"
+          >Configuration Dordogne ancienne</a
+        >
+      </p>
+      <p>
+        <a id="source-D24-B"></a><strong><a href="#source-D24-B">D24-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/dordognePage.tsx"
+          >Configuration Dordogne actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-D24-DATA"></a><strong><a href="#source-D24-DATA">D24-DATA</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/dordogne.ts"
+          >Secteurs et anciens exports Dordogne</a
+        >
+      </p>
+      <p>
+        <a id="source-G33-A"></a><strong><a href="#source-G33-A">G33-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/content/local/departments/gironde.ts"
+          >Configuration Gironde ancienne</a
+        >
+      </p>
+      <p>
+        <a id="source-G33-B"></a><strong><a href="#source-G33-B">G33-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/girondePage.tsx"
+          >Configuration Gironde actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-G33-DATA"></a><strong><a href="#source-G33-DATA">G33-DATA</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/gironde.ts"
+          >Secteurs Gironde actuels</a
+        >
+      </p>
+      <p>
+        <a id="source-G47-A"></a><strong><a href="#source-G47-A">G47-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/content/local/departments/lot-et-garonne.ts"
+          >Configuration Lot-et-Garonne ancienne</a
+        >
+      </p>
+      <p>
+        <a id="source-G47-B"></a><strong><a href="#source-G47-B">G47-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/lotEtGaronnePage.tsx"
+          >Configuration Lot-et-Garonne actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-G47-DATA"></a><strong><a href="#source-G47-DATA">G47-DATA</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/lot-et-garonne.ts"
+          >Secteurs Lot-et-Garonne actuels</a
+        >
+      </p>
+      <p>
+        <a id="source-G46-B"></a><strong><a href="#source-G46-B">G46-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/lotPage.tsx"
+          >Configuration Lot actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-G12-B"></a><strong><a href="#source-G12-B">G12-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/aveyronPage.tsx"
+          >Configuration Aveyron actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-G46-DATA"></a><strong><a href="#source-G46-DATA">G46-DATA</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/lot.ts"
+          >Secteurs Lot</a
+        >
+      </p>
+      <p>
+        <a id="source-G12-DATA"></a><strong><a href="#source-G12-DATA">G12-DATA</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/departments/aveyron.ts"
+          >Secteurs Aveyron</a
+        >
+      </p>
+      <p>
+        <a id="source-BERGERAC-B"></a><strong><a href="#source-BERGERAC-B">BERGERAC-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/cities/bergeracPage.tsx"
+          >Configuration Bergerac actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-BORDEAUX-B"></a><strong><a href="#source-BORDEAUX-B">BORDEAUX-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/cities/bordeauxPage.tsx"
+          >Configuration Bordeaux actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-BASSIN-B"></a><strong><a href="#source-BASSIN-B">BASSIN-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/destinations/bassinArcachonPage.tsx"
+          >Configuration Bassin actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-BASSIN-DATA"></a
+        ><strong><a href="#source-BASSIN-DATA">BASSIN-DATA</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/destinations/bassinArcachon.ts"
+          >Textes et exemple Bassin</a
+        >
+      </p>
+      <p>
+        <a id="source-MEDOC-B"></a><strong><a href="#source-MEDOC-B">MEDOC-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/destinations/medocAtlantiquePage.tsx"
+          >Configuration Médoc actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-MEDOC-DATA"></a><strong><a href="#source-MEDOC-DATA">MEDOC-DATA</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/destinations/medocAtlantique.ts"
+          >Textes et exemple Médoc</a
+        >
+      </p>
+      <p>
+        <a id="source-PRICES-A"></a><strong><a href="#source-PRICES-A">PRICES-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/content/local/pricing.ts"
+          >Profils tarifaires anciens</a
+        >
+      </p>
+      <p>
+        <a id="source-PRICES-B"></a><strong><a href="#source-PRICES-B">PRICES-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/pricing.ts"
+          >Profils tarifaires actuels</a
+        >
+      </p>
+      <p>
+        <a id="source-PICKER-B"></a><strong><a href="#source-PICKER-B">PICKER-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/components/local/DepartmentPricingSection.tsx"
+          >Calculateur départemental</a
+        >
+      </p>
+      <p>
+        <a id="source-SHARED-B"></a><strong><a href="#source-SHARED-B">SHARED-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/local/sharedLocalContent.tsx"
+          >Contenu mutualisé V6</a
+        >
+      </p>
+      <p>
+        <a id="source-HERO-B"></a><strong><a href="#source-HERO-B">HERO-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/components/ui/PageHero.tsx"
+          >Hero et fil d’Ariane visibles</a
+        >
+      </p>
+      <p>
+        <a id="source-CARDS-A"></a><strong><a href="#source-CARDS-A">CARDS-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/components/local/InterventionAreaCards.tsx"
+          >Cartes du hub avant refonte</a
+        >
+      </p>
+      <p>
+        <a id="source-CARDS-B"></a><strong><a href="#source-CARDS-B">CARDS-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/components/local/InterventionAreaCards.tsx"
+          >Cartes du hub après refonte</a
+        >
+      </p>
+      <p>
+        <a id="source-HUB-B"></a><strong><a href="#source-HUB-B">HUB-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/pages/ZonesIntervention.tsx"
+          >Hub d’intervention actuel</a
+        >
+      </p>
+      <p>
+        <a id="source-SEO-A"></a><strong><a href="#source-SEO-A">SEO-A</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/5aa20a5a87612461514352fea89eaae04104cb09/src/content/seoRoutes.ts"
+          >Configuration SEO ancienne</a
+        >
+      </p>
+      <p>
+        <a id="source-SEO-B"></a><strong><a href="#source-SEO-B">SEO-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/content/seoRoutes.ts"
+          >Configuration SEO actuelle</a
+        >
+      </p>
+      <p>
+        <a id="source-SITEMAP-B"></a><strong><a href="#source-SITEMAP-B">SITEMAP-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/public/sitemap.xml"
+          >Sitemap actuel</a
+        >
+      </p>
+      <p>
+        <a id="source-ROBOTS-B"></a><strong><a href="#source-ROBOTS-B">ROBOTS-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/public/robots.txt"
+          >Robots actuel</a
+        >
+      </p>
+      <p>
+        <a id="source-VERCEL-B"></a><strong><a href="#source-VERCEL-B">VERCEL-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/vercel.json"
+          >Configuration Vercel</a
+        >
+      </p>
+      <p>
+        <a id="source-PUB-TEST-B"></a><strong><a href="#source-PUB-TEST-B">PUB-TEST-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/src/test/local-publication-seo.test.ts"
+          >Tests de publication SEO lus, non exécutés</a
+        >
+      </p>
+      <p>
+        <a id="source-PRERENDER-B"></a
+        ><strong><a href="#source-PRERENDER-B">PRERENDER-B</a></strong>
+        <a
+          href="https://github.com/Fgris-Etoilys/etoilys-public/blob/0c176460889b2499a6c5b22b107faf4f704e483e/scripts/prerender.ts"
+          >Prérendu et contrôles de build</a
+        >
+      </p>
+      <p>
+        <a id="source-GOOGLE-JS"></a><strong><a href="#source-GOOGLE-JS">GOOGLE-JS</a></strong>
+        <a
+          href="https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics"
+          >Google Search Central — JavaScript SEO</a
+        >
+      </p>
+      <p>
+        <a id="source-GOOGLE-LINKS"></a
+        ><strong><a href="#source-GOOGLE-LINKS">GOOGLE-LINKS</a></strong>
+        <a href="https://developers.google.com/search/docs/crawling-indexing/links-crawlable"
+          >Google Search Central — Liens explorables</a
+        >
+      </p>
+      <p>
+        <a id="source-GOOGLE-SPAM"></a
+        ><strong><a href="#source-GOOGLE-SPAM">GOOGLE-SPAM</a></strong>
+        <a href="https://developers.google.com/search/docs/essentials/spam-policies"
+          >Google Search Central — Règles antispam / doorway abuse</a
+        >
+      </p>
+      <p>
+        <a id="source-GOOGLE-CWV"></a><strong><a href="#source-GOOGLE-CWV">GOOGLE-CWV</a></strong>
+        <a href="https://developers.google.com/search/docs/appearance/core-web-vitals"
+          >Google Search Central — Core Web Vitals</a
+        >
+      </p>
+    </main>
+  </body>
+</html>

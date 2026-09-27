@@ -216,8 +216,8 @@ export interface LocalV6CityServiceArea {
 export interface LocalV6DepartmentServiceArea {
   title: string;
   intro: string;
+  localPagesLabel: string;
   sectors: readonly DepartmentSector[];
-  communeLinks?: Record<string, { localEntryId: LocalChildAreaId; label?: string }>;
   parentLink?: {
     label: string;
     href: string;
@@ -261,6 +261,23 @@ export interface LocalV6TaxModule {
   savingsHeadline: string;
   savingsDetail: string;
   sourceNote: string;
+}
+
+export interface LocalV6TerritorialItem {
+  title: string;
+  body: string;
+  link?:
+    | { label: string; localEntryId: LocalChildAreaId }
+    | { label: string; href: `https://${string}`; nofollow?: boolean };
+}
+
+export interface LocalV6TerritorialModule {
+  type: 'territorial-service';
+  title: string;
+  intro: string;
+  items:
+    | readonly [LocalV6TerritorialItem, LocalV6TerritorialItem]
+    | readonly [LocalV6TerritorialItem, LocalV6TerritorialItem, LocalV6TerritorialItem];
 }
 
 export interface LocalV6EditorialNotice {
@@ -352,7 +369,7 @@ export interface LocalLandingPageV6DepartmentConfig extends LocalLandingPageV6Ba
   departmentId: DepartmentAreaId;
   serviceArea: LocalV6DepartmentServiceArea;
   pricing: LocalV6PickerPricing;
-  localModule?: LocalV6TaxModule;
+  localModule: LocalV6TerritorialModule;
 }
 
 export type LocalLandingPageV6Config =

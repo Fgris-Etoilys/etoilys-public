@@ -206,10 +206,10 @@ describe('routing', () => {
   it('renders Gironde local landing page', () => {
     renderAt('/classement-meuble-tourisme-gironde');
     expectPageHeading(/classement/i, /gironde/i);
-    expect(screen.getByRole('link', { name: 'Bordeaux →' })).toHaveAttribute(
-      'href',
-      '/classement-meuble-tourisme-bordeaux'
-    );
+    const navigation = screen.getByRole('navigation', { name: 'Pages locales du département' });
+    expect(
+      navigation.querySelector('a[href="/classement-meuble-tourisme-bordeaux"]')
+    ).toBeInTheDocument();
   });
 
   it('renders Bordeaux city local landing page', () => {

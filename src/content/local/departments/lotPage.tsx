@@ -61,6 +61,7 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
     title: 'Dans quelles communes du Lot intervenons-nous ?',
     intro:
       'Nos inspecteurs interviennent dans tout le Lot. Les communes ci-dessous sont regroupées par grands secteurs pour vous donner des repères ; votre commune reste couverte même si elle n’apparaît pas dans cette sélection.',
+    localPagesLabel: 'Nos pages locales dans le Lot',
     sectors: toCollapsedSectors(LOT_SERVICE_SECTORS),
     parentLink: {
       href: '/zones-intervention',
@@ -102,6 +103,31 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
         licenseHref: 'https://creativecommons.org/licenses/by-sa/4.0/',
       },
     },
+  },
+  // Sources Lot Tourisme vérifiées le 27 septembre 2026.
+  localModule: {
+    type: 'territorial-service',
+    title: 'Après le classement de votre meublé dans le Lot',
+    intro:
+      'Après la visite, votre classement est intégré au suivi départemental, tandis que les informations de votre hébergement peuvent être actualisées dans les outils touristiques locaux. Voici les deux repères utiles à connaître.',
+    items: [
+      {
+        title: 'Le suivi départemental des attestations',
+        body: 'Lot Tourisme assure le suivi et l’enregistrement des attestations de classement dans l’outil national, après les visites des différents organismes, y compris privés accrédités. Ce rôle départemental est distinct de la visite de votre meublé réalisée par Etoilys.',
+        link: {
+          label: 'Consulter la source de Lot Tourisme',
+          href: 'https://www.tourisme-lot.com/app/uploads/lot-tourisme/2025/12/251105-Plan-actions-2026-CA.pdf',
+        },
+      },
+      {
+        title: 'Actualiser votre fiche touristique',
+        body: 'Votre classement obtenu, pensez à faire actualiser les étoiles de votre fiche auprès de votre office de tourisme. Pour les autres informations de l’hébergement, l’Extranet VIT du Lot permet des mises à jour toute l’année depuis « Mes Offres ».',
+        link: {
+          label: 'Mettre à jour ma fiche avec les outils du Lot',
+          href: 'https://www.tourisme-lot.com/pros-centre-de-ressources/nos-services/promotion-visibilite/sit/outils-pratiques-et-accompagnement/',
+        },
+      },
+    ],
   },
   faq: {
     eyebrow: 'AVANT DE VOUS LANCER',
