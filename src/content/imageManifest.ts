@@ -333,7 +333,7 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/bassin-arcachon-dune-pilat-480.avif 480w, /images/optimized/bassin-arcachon-dune-pilat-768.avif 768w, /images/optimized/bassin-arcachon-dune-pilat-1200.avif 1200w, /images/optimized/bassin-arcachon-dune-pilat-1600.avif 1600w, /images/optimized/bassin-arcachon-dune-pilat-1920.avif 1920w',
   },
   cahorsValleeLotHero: {
-    width: 5000,
+    width: 1920,
     height: 1853,
     src: '/images/optimized/cahors-vue-pano-1200.jpg',
     srcSetWebp:

@@ -112,7 +112,7 @@ const IMAGE_ASSETS = [
   },
   {
     key: 'cahorsValleeLotHero',
-    fileName: 'cahors-vue-pano-velvet-wikimedia.jpg',
+    fileName: 'cahors-vue-pano-hero-crop-velvet-wikimedia.jpg',
     outputName: 'cahors-vue-pano',
   },
   {

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "7727c5652680fce448c0d8e81df6b3e3b52a7d00fd253265333b6f81328f84e0",
+  "pipelineSignature": "2363bd9604a9eae5a04ee836f4fedd7c6be164df563c2c565e12ade873cb4c31",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "a934b66e89cb69abdb61115200787727ccbc8fc3880c15e243aecc32a7f3ce13"
+    "sha256": "c345a342f08b754e7103232723935931f0883e0803c89a4dbb4ebcdf9b9b7bbb"
   },
   "sources": [
     {
@@ -118,8 +118,8 @@
     },
     {
       "key": "cahorsValleeLotHero",
-      "path": "src/assets/seo-images/source/cahors-vue-pano-velvet-wikimedia.jpg",
-      "sha256": "19e811a4f8b57c441cbea1adf6c7893d45334fb9d4f93b51d48a08dcf55100d5"
+      "path": "src/assets/seo-images/source/cahors-vue-pano-hero-crop-velvet-wikimedia.jpg",
+      "sha256": "bee602291bbfbb0d0502822e58c6742357fc9fbab96fc6dbab9bbf896f2c7ad2"
     },
     {
       "key": "simulateurClassement",
@@ -1420,58 +1420,58 @@
     },
     {
       "path": "/images/optimized/cahors-vue-pano-1200.avif",
-      "bytes": 122697,
-      "sha256": "8b4d76be2c0e1a5b4554e58718146cf092fe632844c4f47400ad13dfdc94cd64"
+      "bytes": 306424,
+      "sha256": "db58d1d89ca3e7c92bb03b822ca4a0d3708347693d459a92dfa3d47d8b8ab499"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-1200.jpg",
-      "bytes": 129587,
-      "sha256": "31774fbea51ee3622fc8dce394923d5cd22007e12ed0f4f648faf5688f335393"
+      "bytes": 331080,
+      "sha256": "c8b36e5fa5ca9f1990bdd2d8f1e9d6ab25c79d94a7289b5fb671d777e9529ec0"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-1200.webp",
-      "bytes": 136672,
-      "sha256": "2950c7d5bf51c8d74818332b43ad398eeac716e1de68a543d9cb3652d4e81a22"
+      "bytes": 339894,
+      "sha256": "c4449a7f1074c4432759eba3fde1edc24425b45a4dcee3d4b355d7c7cec547df"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-1600.avif",
-      "bytes": 241443,
-      "sha256": "26bbf8bf6b05d0d9f26a2c7bf70e43dc130090fbcfcda9e8bef791e6af6c35e2"
+      "bytes": 516072,
+      "sha256": "4273c2ef1c55a1362f24d8c9b847c5f31f89a65387a60bf2393855602313f8f1"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-1600.webp",
-      "bytes": 238916,
-      "sha256": "e1a22287a5233e3f213a400f12f520ef44a8ced215ffc492428144c49f91cd4b"
+      "bytes": 574052,
+      "sha256": "26028c81066c3bb54a08030722c59f5a16d17c5443895f9f90be0271a93b085e"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-1920.avif",
-      "bytes": 350171,
-      "sha256": "71915f46159c6fbc1fc6791382f71210df9d75d22c40f1ed594742d4ac803f6a"
+      "bytes": 688810,
+      "sha256": "573809c28a5ff44b7af619663eac5354049a551e030962a5942c9a368d0810ef"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-1920.webp",
-      "bytes": 352162,
-      "sha256": "0b42acaaa9b113dc924a79753e12ce6c0dcb20d61e7a51a813cbb6cc3c510547"
+      "bytes": 770694,
+      "sha256": "6c5e6a9aa55af14960aec303c5e310504c129bb3a467bcfc1f773b9c66e9da18"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-480.avif",
-      "bytes": 17431,
-      "sha256": "ffa7567b640841e8f6ae6a0d046466dd69965305cc24519b2b8a1abc57a4553a"
+      "bytes": 44351,
+      "sha256": "d8138f64541d0f25401b535c99a8eaba95ca617e3e770a30d481a8242e46e7f7"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-480.webp",
-      "bytes": 20076,
-      "sha256": "fc8f27626d46a97bab865612db1d0efd35006c0d69ccf59e0957f337615a44de"
+      "bytes": 51274,
+      "sha256": "01bd5b22ef76172806c0868130afa3d89dc84fc39768df440004909831e7292d"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-768.avif",
-      "bytes": 43862,
-      "sha256": "ae93f34dc9addb2026f1a26c9e2c378e43123b0a2f66927bc25ea76b7d087e3c"
+      "bytes": 116460,
+      "sha256": "22ce801f4d884273b5d465166b5268149fe888e77fb2ef4cbcf49864a20cd1d9"
     },
     {
       "path": "/images/optimized/cahors-vue-pano-768.webp",
-      "bytes": 50456,
-      "sha256": "c1ea3c98a271e629683206f80c3226c2cd56b86b150cafa42de77b80867970f3"
+      "bytes": 131426,
+      "sha256": "619360a0fa7c8c5581b242769108932865de10c4e570ba056df419efb37117a1"
     },
     {
       "path": "/images/optimized/home-hero-1200.avif",

@@ -14,23 +14,24 @@ export const CAHORS_VALLEE_LOT_SERVICE_COMMUNES = [
 
 export const CAHORS_VALLEE_LOT_TAX_MODULE: LocalV6TaxModule = {
   type: 'tax-comparison',
-  title: 'À Cahors, le classement peut aussi réduire la taxe de séjour',
-  highlightedTitleText: 'réduire la taxe de séjour',
+  title: 'Un exemple concret à Cahors : l’effet du classement sur la taxe de séjour',
+  highlightedTitleText: 'taxe de séjour',
   paragraphs: [
-    'Entre Cahors, le vignoble, les villages de la vallée du Lot et les portes du Quercy Blanc, le classement donne à votre meublé un repère officiel lisible pour les voyageurs. Il peut aussi modifier concrètement le montant de taxe de séjour payé par vos hôtes.',
-    'À Cahors, pour une réservation à 150 € la nuit hors taxe de séjour et quatre personnes, un meublé classé 2 étoiles permet 5,28 € d’économie par nuit par rapport au même logement non classé.',
+    'Entre le centre historique de Cahors, le vignoble et les villages de la vallée du Lot, le secteur accueille de nombreux gîtes, maisons de vacances et appartements proposés en location saisonnière. Dans ce contexte local, l’écart de taxe de séjour entre un meublé non classé et un meublé classé donne un exemple concret de l’intérêt du classement.',
+    'À Cahors, un meublé non classé relève en 2026 d’un tarif proportionnel au prix de la nuitée. Un meublé classé bénéficie au contraire d’un montant fixe par personne selon son nombre d’étoiles.',
+    'Sur une réservation à 150 € la nuit hors taxe de séjour pour quatre adultes, un meublé classé 2 étoiles permet par exemple de réduire la taxe de séjour de 5,28 € par nuit.',
   ],
   exampleLabel: 'Exemple à Cahors',
-  exampleTitle: 'Taxe de séjour pour 4 personnes',
+  exampleTitle: 'Taxe de séjour pour 4 adultes',
   exampleSubtitle: 'Logement à 150 € la nuit',
   comparison: [
-    { key: 'unclassified', label: 'Meublé non classé', value: 'Montant de référence' },
-    { key: 'classified', label: 'Meublé classé 2 étoiles', value: '5,28 € de moins par nuit' },
+    { key: 'unclassified', label: 'Meublé non classé', value: '9,72 € par nuit' },
+    { key: 'classified', label: 'Meublé classé 2 étoiles', value: '4,44 € par nuit' },
   ],
-  savingsHeadline: '5,28 € de taxe de séjour en moins par nuit',
+  savingsHeadline: '5,28 € de taxe de séjour en moins par nuit, soit une baisse d’environ 54 %',
   savingsDetail:
-    'Pour les voyageurs, l’écart devient visible dès quelques nuits, en particulier sur les séjours familiaux dans la vallée du Lot.',
-  sourceNote: 'Exemple fourni pour Cahors : 150 € la nuit, 4 personnes, meublé classé 2 étoiles.',
+    'Pour les voyageurs, cela représente 36,96 € de taxe de séjour en moins sur une semaine.',
+  sourceNote: 'Tarifs 2026 du Grand Cahors, taxes additionnelles comprises.',
 };
 
 export const CAHORS_VALLEE_LOT_FAQ: LocalFaqItem[] = [
@@ -38,7 +39,7 @@ export const CAHORS_VALLEE_LOT_FAQ: LocalFaqItem[] = [
     question:
       'Intervenez-vous aussi autour de Saint-Cirq-Lapopie, du vignoble de Cahors et du Quercy Blanc ?',
     answer:
-      'Oui. Cette page couvre le bassin touristique de Cahors et de la vallée du Lot, notamment Cahors, Saint-Cirq-Lapopie, Puy-l’Évêque, Prayssac, Luzech, Montcuq-en-Quercy-Blanc, Lalbenque, Limogne-en-Quercy, le Vignoble de Cahors et le Quercy Blanc. Elle évite de disperser ces secteurs sur des pages locales séparées.',
+      'Oui. Cette page couvre le bassin touristique de Cahors et de la vallée du Lot, notamment Cahors, Saint-Cirq-Lapopie, Puy-l’Évêque, Prayssac, Luzech, Montcuq-en-Quercy-Blanc, Lalbenque, Limogne-en-Quercy, le Vignoble de Cahors et le Quercy Blanc.',
   },
   ...CITY_COMMON_FAQ,
 ];

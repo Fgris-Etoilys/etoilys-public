@@ -33,7 +33,7 @@ export const CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinat
     title: 'Classement de meublé de tourisme à Cahors et dans la Vallée du Lot',
     highlightedTitleText: 'à Cahors et dans la Vallée du Lot',
     description:
-      'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Cahors, dans le Vignoble de Cahors ou dans les villages de la vallée du Lot ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et le tarif applicable dans le Lot.',
+      'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Cahors ou dans la Vallée du Lot ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'cahorsValleeLotHero',
       alt: 'Vue panoramique de Cahors depuis le Mont Saint-Cyr',
@@ -79,7 +79,7 @@ export const CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinat
   serviceArea: {
     title: 'Où intervenons-nous à Cahors et dans la Vallée du Lot ?',
     intro:
-      'Nos inspecteurs interviennent à Cahors et dans les communes touristiques du sud-ouest du Lot, de la vallée du Lot au Quercy Blanc, sans créer de pages séparées pour chaque secteur.',
+      'Nos inspecteurs interviennent à Cahors et dans la Vallée du Lot, du Vignoble de Cahors au Quercy Blanc, sans frais de déplacement, notamment à :',
     communes: CAHORS_VALLEE_LOT_SERVICE_COMMUNES,
     parentLink: {
       label: 'Voir notre zone d’intervention dans le Lot',

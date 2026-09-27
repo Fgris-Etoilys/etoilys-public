@@ -61,6 +61,11 @@ describe('ClassementCahorsValleeLot', () => {
     expect(screen.getByText('à Cahors et dans la Vallée du Lot')).toHaveClass('text-copper');
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
     expect(document.querySelector('.local-v6-landing')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Cahors ou dans la Vallée du Lot ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.'
+      )
+    ).toBeInTheDocument();
 
     expect(screen.getByText('Cahors depuis le Mont Saint-Cyr')).toBeInTheDocument();
     expect(
@@ -87,7 +92,7 @@ describe('ClassementCahorsValleeLot', () => {
       'Combien coûte le classement d’un meublé à Cahors et dans la Vallée du Lot ?',
       'Votre classement en trois étapes',
       'Pourquoi choisir Etoilys pour votre classement à Cahors et dans la Vallée du Lot ?',
-      'À Cahors, le classement peut aussi réduire la taxe de séjour',
+      'Un exemple concret à Cahors : l’effet du classement sur la taxe de séjour',
       'Questions fréquentes sur le classement à Cahors et dans la Vallée du Lot',
       'Demandez le classement de votre meublé à Cahors et dans la Vallée du Lot',
     ]);
@@ -97,6 +102,9 @@ describe('ClassementCahorsValleeLot', () => {
     });
     expect(document.body).toHaveTextContent('Vignoble de Cahors');
     expect(document.body).toHaveTextContent('Quercy Blanc');
+    expect(document.body).toHaveTextContent(
+      'Nos inspecteurs interviennent à Cahors et dans la Vallée du Lot, du Vignoble de Cahors au Quercy Blanc, sans frais de déplacement, notamment à :'
+    );
     expect(screen.getByRole('link', { name: /zone d’intervention dans le Lot/i })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-lot'
@@ -108,11 +116,22 @@ describe('ClassementCahorsValleeLot', () => {
     expect(document.body).not.toHaveTextContent(/240\s€\s*TTC/);
 
     expect(screen.getByText('Exemple à Cahors')).toBeInTheDocument();
-    expect(screen.getByText('Taxe de séjour pour 4 personnes')).toBeInTheDocument();
+    expect(screen.getByText('Taxe de séjour pour 4 adultes')).toBeInTheDocument();
     expect(screen.getByText('Logement à 150 € la nuit')).toBeInTheDocument();
+    expect(screen.getByText('Meublé non classé')).toBeInTheDocument();
+    expect(screen.getByText('9,72 € par nuit')).toBeInTheDocument();
     expect(screen.getByText('Meublé classé 2 étoiles')).toBeInTheDocument();
-    expect(screen.getByText('5,28 € de moins par nuit')).toBeInTheDocument();
-    expect(screen.getByText('5,28 € de taxe de séjour en moins par nuit')).toBeInTheDocument();
+    expect(screen.getByText('4,44 € par nuit')).toBeInTheDocument();
+    expect(
+      screen.getByText('5,28 € de taxe de séjour en moins par nuit, soit une baisse d’environ 54 %')
+    ).toBeInTheDocument();
+    expect(document.body).toHaveTextContent(
+      'Pour les voyageurs, cela représente 36,96 € de taxe de séjour en moins sur une semaine.'
+    );
+    expect(document.body).toHaveTextContent(
+      'Tarifs 2026 du Grand Cahors, taxes additionnelles comprises.'
+    );
+    expect(screen.queryByText('Montant de référence')).not.toBeInTheDocument();
     expect(
       screen.getAllByRole('link', { name: 'Comparer la taxe de séjour de mon logement' })
     ).toHaveLength(2);
@@ -124,6 +143,9 @@ describe('ClassementCahorsValleeLot', () => {
     );
     expect(document.body).toHaveTextContent('Puy-l’Évêque');
     expect(document.body).toHaveTextContent('Limogne-en-Quercy');
+    expect(document.body).not.toHaveTextContent(
+      'Elle évite de disperser ces secteurs sur des pages locales séparées.'
+    );
 
     const main = screen.getByRole('main');
     const conversionLinks = within(main).getAllByRole('link', { name: 'Demander mon classement' });
