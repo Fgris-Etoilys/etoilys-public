@@ -138,6 +138,35 @@ describe('openAiAds', () => {
       expect(measureCall).toEqual(['measure', 'lead_created', { type: 'customer_action' }]);
     });
 
+    it('allows a later authorized action to retry after a script load error', () => {
+      acceptAdvertisingConsent();
+      dispatchScriptEvent('error');
+
+      expect(document.getElementById(SCRIPT_ID)).toBeNull();
+      expect(window.oaiq).toBeUndefined();
+
+      trackLeadCreatedConversion();
+
+      expect(document.getElementById(SCRIPT_ID)).not.toBeNull();
+      expect(getOaiqCalls()).toContainEqual([
+        'measure',
+        'lead_created',
+        { type: 'customer_action' },
+      ]);
+    });
+
+    it('does not load OpenAI Ads in local development unless explicitly enabled', () => {
+      vi.stubEnv('DEV', true);
+      vi.stubEnv('MODE', 'development');
+      vi.stubEnv('VITE_ENABLE_OPENAI_ADS_IN_DEV', 'false');
+
+      acceptAdvertisingConsent();
+      trackLeadCreatedConversion();
+
+      expect(document.getElementById(SCRIPT_ID)).toBeNull();
+      expect(window.oaiq).toBeUndefined();
+    });
+
     it('never calls measure without accepted consent', () => {
       trackLeadCreatedConversion();
       expect(window.oaiq).toBeUndefined();

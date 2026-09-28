@@ -1,6 +1,6 @@
-# Contrat de mesure OpenAI Ads (Pixel) — v2.1
+# Contrat de mesure OpenAI Ads (Pixel) — v2.2
 
-Version du 28 septembre 2026 (v2 : ajout de la préservation temporaire de `oppref`, v2.1 : nouvelle interface de consentement et store commun léger). Ce contrat couvre exclusivement le Pixel de mesure OpenAI Ads (`src/utils/openAiAds.ts`). Il est indépendant du [contrat analytics PostHog](analytics-tracking-contract.md) : les deux systèmes gardent des finalités et clés de consentement distinctes, mais leur lecture est orchestrée par un store navigateur commun. Ce document ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
+Version du 28 septembre 2026 (v2 : ajout de la préservation temporaire de `oppref`, v2.1 : nouvelle interface de consentement et store commun léger, v2.2 : retry simple après échec de script et garde-fous d'environnement). Ce contrat couvre exclusivement le Pixel de mesure OpenAI Ads (`src/utils/openAiAds.ts`). Il est indépendant du [contrat analytics PostHog](analytics-tracking-contract.md) : les deux systèmes gardent des finalités et clés de consentement distinctes, mais leur lecture est orchestrée par un store navigateur commun. Ce document ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
 
 ## Périmètre
 
@@ -27,6 +27,8 @@ L'idempotence du chargement/`init` et la transition de l'état `consent` sont de
 - `etoilys_advertising_consent_updated_at` : date du choix, validité maximale de six mois ;
 - `etoilys_ads_debug` : active `debug: true` à l'init, réglé via `?etoilys_ads_debug=1`. Totalement indépendant du flag `etoilys_analytics_debug` de PostHog ;
 - `etoilys_openai_ads_oppref` / `etoilys_openai_ads_oppref_captured_at` (`sessionStorage`, pas `localStorage`) : copie technique temporaire de `oppref`, voir section dédiée ci-dessous.
+- `VITE_ENABLE_OPENAI_ADS_IN_DEV=false` : bloque le chargement du Pixel en développement local sauf test explicite ;
+- `VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false` : bloque le Pixel hors `www.etoilys.fr` sauf recette contrôlée.
 
 `etoilys_advertising_consent` n'existait pas avant l'introduction de cette finalité : elle est absente pour tous les utilisateurs qui n'ont jamais vu la nouvelle bannière, y compris ceux ayant déjà accepté PostHog. Le code ne lit jamais `etoilys_analytics_consent` pour déterminer ce consentement — aucun opt-in publicitaire implicite n'est possible.
 
@@ -35,6 +37,8 @@ La bannière de consentement se réaffiche tant que l'une des deux finalités (a
 Depuis le lot 1 du 28 septembre 2026, les préférences sont modifiées dans une fenêtre à brouillon local : les switches n'écrivent rien et n'appellent pas le SDK avant le clic sur `Enregistrer mes choix`. Les boutons globaux `Tout refuser` et `Tout accepter` restent disponibles au premier niveau. Si le stockage navigateur échoue, le choix publicitaire est appliqué en mémoire pour la visite courante, sans bloquer le site.
 
 Le lot 1 ne change pas la politique `oppref` décrite ci-dessous : la copie `sessionStorage` préconsentement reste en place. L'accès à `sessionStorage` est seulement protégé pour éviter qu'un navigateur ou mode de confidentialité qui bloque le getter ne casse le site.
+
+Le lot 2 ne change ni `oppref`, ni Automatic Advanced Matching, ni le consentement publicitaire, ni le payload `lead_created`. Il ajoute seulement une nouvelle tentative simple si le tag `<script>` du SDK échoue : l'état d'injection local et le tag en erreur sont nettoyés, puis une action publicitaire autorisée ultérieure peut retenter. Il n'y a pas de retry périodique, pas de state machine complexe et pas de file persistante.
 
 ## Gestion de `oppref` par Etoilys
 
@@ -48,7 +52,7 @@ Le lot 1 ne change pas la politique `oppref` décrite ci-dessous : la copie `ses
 2. Une nouvelle valeur présente dans l'URL écrase toujours l'ancienne (dernier clic publicitaire gagnant).
 3. Au moment où le Pixel s'initialise réellement pour la première fois (à l'acceptation du consentement, ou au chargement d'une page si le consentement était déjà acquis) : si `oppref` est déjà dans l'URL courante, rien n'est fait. Sinon, si une valeur valide (non expirée) existe dans `sessionStorage`, elle est réinjectée **transitoirement** dans l'URL via `window.history.replaceState` (jamais `pushState` — aucune entrée d'historique créée, aucune interférence avec React Router) juste avant l'insertion du tag `<script>` du SDK.
 4. Au `load` du script (succès) : si une valeur était en attente, `sessionStorage` est purgé ; si Etoilys avait lui-même réinjecté `oppref` dans l'URL, ce paramètre en est retiré (l'URL retrouve son état sans `oppref`, sans jamais toucher au pathname, au hash ni aux autres paramètres).
-5. Au `error` du script (échec de chargement) : l'URL est nettoyée de la même façon, mais `sessionStorage` est **conservé** — cela sert principalement à permettre une nouvelle tentative après un véritable rechargement de page, qui réexécute `main.tsx` et relance l'initialisation depuis zéro. Un simple retrait puis ré-acceptation du consentement dans la même session ne relance pas l'injection du script, ce cas n'étant pas géré pour l'instant (voir « Limites connues »).
+5. Au `error` du script (échec de chargement) : l'URL est nettoyée de la même façon, mais `sessionStorage` est **conservé**. L'état local d'injection est remis en état retentable afin qu'un rechargement complet ou une action publicitaire autorisée ultérieure puisse relancer une tentative simple.
 6. Aucun timeout de secours ne nettoie l'URL automatiquement : si le script ne déclenche jamais ni `load` ni `error`, `oppref` reste visible dans l'URL — préféré à un retrait prématuré qui romprait l'attribution.
 
 **Pourquoi `sessionStorage` et pas `localStorage`/cookie maison** : `sessionStorage` n'est jamais envoyé au serveur, reste limité à l'onglet courant, survit aux navigations internes et à un rechargement de page dans le même onglet, et disparaît naturellement à la fermeture de l'onglet — sans introduire de cookie d'attribution maison alors qu'OpenAI crée déjà le sien (`__oppref`) une fois le Pixel chargé.
@@ -61,7 +65,7 @@ Le lot 1 ne change pas la politique `oppref` décrite ci-dessous : la copie `ses
 
 - Le moment exact où le SDK OpenAI lit l'URL n'est pas garanti par la documentation ; le nettoyage sur l'événement `load` du script est une hypothèse raisonnable (comportement standard de ce type de SDK à file d'attente), pas une garantie contractuelle d'OpenAI.
 - Entre l'injection et le `load`, `oppref` est visible dans la barre d'adresse ; un clic sur un lien externe pendant cette fenêtre (typiquement quelques centaines de ms) pourrait exceptionnellement le transmettre dans un en-tête `Referer`.
-- Un échec de chargement du script (bloqueur de publicité, réseau) conserve `sessionStorage` pour permettre une nouvelle tentative après un **rechargement complet de la page** ; cela ne couvre pas un simple retrait puis ré-acceptation du consentement dans la même session, qui ne relance pas l'injection du script tant que le Pixel a déjà été initialisé une première fois.
+- Un échec de chargement du script (bloqueur de publicité, réseau) conserve `sessionStorage` pour permettre une nouvelle tentative après un rechargement complet ou lors d'une action publicitaire autorisée ultérieure dans la même session SPA. Cette tentative reste bornée par l'action utilisateur ou métier ; aucun retry périodique n'est lancé.
 
 ## Événement mesuré
 

@@ -99,8 +99,7 @@ export default function ContactForm({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!hasTrackedFormStarted.current) {
-      trackFormStarted('contact');
-      hasTrackedFormStarted.current = true;
+      hasTrackedFormStarted.current = trackFormStarted('contact');
     }
 
     const { name, value, type } = e.target;
@@ -143,8 +142,7 @@ export default function ContactForm({
     e.preventDefault();
     if (submissionPending.current || isSuccess) return;
     if (!hasTrackedFormStarted.current) {
-      trackFormStarted('contact');
-      hasTrackedFormStarted.current = true;
+      hasTrackedFormStarted.current = trackFormStarted('contact');
     }
 
     setIsSuccess(false);

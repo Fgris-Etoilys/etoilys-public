@@ -94,8 +94,7 @@ export default function DemandeClassementForm({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (!hasTrackedFormStarted.current) {
-      trackFormStarted('demande_classement');
-      hasTrackedFormStarted.current = true;
+      hasTrackedFormStarted.current = trackFormStarted('demande_classement');
     }
 
     const { name, value, type } = e.target;
@@ -138,8 +137,7 @@ export default function DemandeClassementForm({
     e.preventDefault();
     if (submissionPending.current || isSuccess) return;
     if (!hasTrackedFormStarted.current) {
-      trackFormStarted('demande_classement');
-      hasTrackedFormStarted.current = true;
+      hasTrackedFormStarted.current = trackFormStarted('demande_classement');
     }
 
     setIsSuccess(false);

@@ -7,7 +7,7 @@ import { formContent } from '../i18n/formContent';
 import type { Locale } from '../i18n/locales';
 
 const analytics = vi.hoisted(() => ({
-  trackFormStarted: vi.fn(),
+  trackFormStarted: vi.fn(() => true),
   trackFormValidationFailed: vi.fn(),
   trackFormSubmitAttempted: vi.fn(),
   trackFormSubmitSucceeded: vi.fn(),
@@ -68,6 +68,8 @@ function fill(form: HTMLFormElement, kind: FormKind) {
 }
 
 beforeEach(() => {
+  Object.values(analytics).forEach((mock) => mock.mockClear());
+  analytics.trackFormStarted.mockReturnValue(true);
   vi.stubEnv('VITE_TURNSTILE_SITE_KEY', 'test-key');
   window.turnstile = {
     render: vi.fn((_container, options) => {
@@ -91,6 +93,16 @@ afterEach(() => {
 });
 
 describe('form interaction contracts', () => {
+  it('does not lock form_started when the analytics pipeline rejects the first interaction', () => {
+    analytics.trackFormStarted.mockReturnValueOnce(false).mockReturnValueOnce(true);
+    const form = renderForm('contact', 'fr');
+
+    fireEvent.change(field(form, 'email'), { target: { value: 'first@example.com' } });
+    fireEvent.change(field(form, 'message'), { target: { value: 'Second consented edit' } });
+
+    expect(analytics.trackFormStarted).toHaveBeenCalledTimes(2);
+  });
+
   it.each(cases)(
     'shows local validation and focuses the first invalid field: $kind / $locale',
     ({ kind, locale }) => {

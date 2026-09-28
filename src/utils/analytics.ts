@@ -4,6 +4,7 @@ import {
   classifyConsentedAcquisition,
   getAudienceLandingProperties,
   normalizeAnalyticsPath,
+  type ConsentedAcquisitionProperties,
   type VolatileAcquisitionContext,
 } from './acquisition';
 import {
@@ -16,6 +17,13 @@ import {
   type ConsentWriteResult,
 } from './consent';
 import { isSupportedLocale } from '../i18n/locales';
+import { getLocaleFromPath, getRouteIdFromPath } from '../i18n/routeHelpers';
+import {
+  isLocalDevelopmentMeasurementDisabled,
+  isNonCanonicalMeasurementDisabled,
+  readInternalMeasurementMode,
+  writeInternalMeasurementMode,
+} from './measurementEnvironment';
 
 export { normalizeAnalyticsPath } from './acquisition';
 export {
@@ -23,8 +31,8 @@ export {
   ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY,
   COOKIELESS_AUDIENCE_OPT_OUT_STORAGE_KEY,
 } from './consent';
-const INTERNAL_STORAGE_KEY = 'etoilys_analytics_internal';
 const DEBUG_STORAGE_KEY = 'etoilys_analytics_debug';
+const SESSION_ACQUISITION_STORAGE_KEY = 'etoilys_analytics_session_acquisition';
 
 export type AnalyticsConsent = ConsentChoice;
 type FormName = 'contact' | 'demande_classement';
@@ -98,8 +106,12 @@ const ALLOWED_CUSTOM_PROPERTIES = new Set<string>([
   'debug_mode',
   'landing_page',
   'locale',
+  'event_locale',
   'acquisition_channel',
   'acquisition_source',
+  'traffic_type',
+  'campaign_name',
+  'campaign_content',
   'ai_referrer',
   'contact_method',
   'form_name',
@@ -172,9 +184,15 @@ let postHogMode: 'uninitialized' | 'consented' | 'cookieless' = 'uninitialized';
 let lastTrackedPathname: string | null = null;
 let volatileAcquisitionContext: VolatileAcquisitionContext | null = null;
 let hasCapturedAudienceLanding = false;
-let hasRegisteredConsentedAcquisition = false;
+let registeredConsentedAcquisitionSessionId: string | null = null;
+let hasRegisteredConsentedAcquisitionWithoutSession = false;
 
 type PostHogClient = typeof import('posthog-js').default;
+
+interface PersistedSessionAcquisition {
+  sessionId: string;
+  acquisition: ConsentedAcquisitionProperties;
+}
 
 let postHogClient: PostHogClient | null = null;
 let postHogImportPromise: Promise<PostHogClient | null> | null = null;
@@ -197,6 +215,17 @@ function writeLocalStorage(key: string, value: string): void {
 
   try {
     storage.setItem(key, value);
+  } catch {
+    // Analytics must never break the user experience.
+  }
+}
+
+function removeLocalStorage(key: string): void {
+  const storage = getBrowserLocalStorage();
+  if (!storage) return;
+
+  try {
+    storage.removeItem(key);
   } catch {
     // Analytics must never break the user experience.
   }
@@ -233,17 +262,32 @@ function getCurrentPathname(): string {
 }
 
 function getPageType(pathname: string): string {
-  if (pathname === '/') return 'home';
-  if (pathname.startsWith('/actualites/')) return 'article';
-  if (pathname === '/actualites') return 'actualites';
-  if (pathname.includes('simulateur')) return 'simulateur';
-  if (pathname === '/contact' || pathname === '/demande-classement') return 'formulaire';
-  if (pathname === '/confidentialite' || pathname === '/mentions-legales') return 'legal';
+  const normalizedPathname = normalizeAnalyticsPath(pathname);
+  const routeId = getRouteIdFromPath(normalizedPathname);
+
+  if (routeId === 'home') return 'home';
+  if (routeId === 'contact' || routeId === 'demandeClassement') return 'formulaire';
+  if (routeId === 'confidentialite' || normalizedPathname === '/mentions-legales') return 'legal';
+  if (routeId === 'simulateurTaxeSejour' || routeId === 'simulateurFiscalClassement') {
+    return 'simulateur';
+  }
+
+  if (normalizedPathname === '/actualites') return 'actualites';
+  if (normalizedPathname.startsWith('/actualites/')) return 'article';
+  if (normalizedPathname === '/simulateur' || normalizedPathname === '/simulateur/:simulationId') {
+    return 'simulateur';
+  }
+  if (
+    normalizedPathname === '/zones-intervention' ||
+    normalizedPathname.startsWith('/classement-meuble-tourisme-')
+  ) {
+    return 'local';
+  }
   return 'page';
 }
 
 function isInternalAnalyticsDisabled(): boolean {
-  return readLocalStorage(INTERNAL_STORAGE_KEY) === 'true';
+  return readInternalMeasurementMode();
 }
 
 function isDebugModeEnabled(): boolean {
@@ -251,7 +295,7 @@ function isDebugModeEnabled(): boolean {
 }
 
 function isDetailedAnalyticsEnabled(): boolean {
-  return readConsent() === 'accepted' && !isInternalAnalyticsDisabled();
+  return readConsent() === 'accepted' && !isAnalyticsEnvironmentDisabled();
 }
 
 function isCookielessAudienceFeatureEnabled(): boolean {
@@ -271,6 +315,97 @@ function ensureVolatileAcquisitionContext(): VolatileAcquisitionContext | null {
   return volatileAcquisitionContext;
 }
 
+function getCurrentEventContext(pathname = getCurrentPathname()): {
+  sourcePath: string;
+  pageType: string;
+  eventLocale: string;
+} {
+  const sourcePath = normalizeAnalyticsPath(pathname);
+  return {
+    sourcePath,
+    pageType: getPageType(sourcePath),
+    eventLocale: getLocaleFromPath(sourcePath),
+  };
+}
+
+function isAcquisitionChannel(value: unknown): boolean {
+  return (
+    value === 'direct' ||
+    value === 'generative_ai' ||
+    value === 'organic_search' ||
+    value === 'paid_search' ||
+    value === 'social' ||
+    value === 'email' ||
+    value === 'referral' ||
+    value === 'campaign'
+  );
+}
+
+function isTrafficType(value: unknown): boolean {
+  return value === 'paid' || value === 'organic' || value === 'unknown';
+}
+
+function isAiReferrer(value: unknown): boolean {
+  return (
+    value === undefined ||
+    value === 'chatgpt' ||
+    value === 'perplexity' ||
+    value === 'claude' ||
+    value === 'gemini' ||
+    value === 'copilot' ||
+    value === 'other'
+  );
+}
+
+function isConsentedAcquisitionProperties(value: unknown): value is ConsentedAcquisitionProperties {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const record = value as Record<string, unknown>;
+  const hasRequiredFields =
+    isAcquisitionChannel(record.acquisition_channel) &&
+    typeof record.acquisition_source === 'string' &&
+    isTrafficType(record.traffic_type) &&
+    typeof record.landing_page === 'string' &&
+    isSupportedLocale(record.locale) &&
+    isAiReferrer(record.ai_referrer);
+
+  const optionalCampaignFieldsAreValid =
+    (record.campaign_name === undefined || typeof record.campaign_name === 'string') &&
+    (record.campaign_content === undefined || typeof record.campaign_content === 'string');
+
+  return hasRequiredFields && optionalCampaignFieldsAreValid;
+}
+
+function readPersistedSessionAcquisition(sessionId: string): ConsentedAcquisitionProperties | null {
+  const rawValue = readLocalStorage(SESSION_ACQUISITION_STORAGE_KEY);
+  if (!rawValue) return null;
+
+  try {
+    const parsed = JSON.parse(rawValue) as Partial<PersistedSessionAcquisition>;
+    if (parsed.sessionId === sessionId && isConsentedAcquisitionProperties(parsed.acquisition)) {
+      return parsed.acquisition;
+    }
+  } catch {
+    removeLocalStorage(SESSION_ACQUISITION_STORAGE_KEY);
+  }
+
+  return null;
+}
+
+function writePersistedSessionAcquisition(
+  sessionId: string,
+  acquisition: ConsentedAcquisitionProperties
+): void {
+  writeLocalStorage(SESSION_ACQUISITION_STORAGE_KEY, JSON.stringify({ sessionId, acquisition }));
+}
+
+function getPostHogSessionId(posthog: PostHogClient): string {
+  try {
+    return posthog.get_session_id();
+  } catch {
+    return '';
+  }
+}
+
 function getPostHogToken(): string | undefined {
   return import.meta.env?.VITE_PUBLIC_POSTHOG_TOKEN;
 }
@@ -280,10 +415,16 @@ function getPostHogHost(): string {
 }
 
 function isLocalDevelopmentAnalyticsDisabled(): boolean {
+  return isLocalDevelopmentMeasurementDisabled(
+    import.meta.env?.VITE_ENABLE_ANALYTICS_IN_DEV === 'true'
+  );
+}
+
+function isAnalyticsEnvironmentDisabled(): boolean {
   return (
-    import.meta.env?.DEV === true &&
-    import.meta.env?.MODE !== 'test' &&
-    import.meta.env?.VITE_ENABLE_ANALYTICS_IN_DEV !== 'true'
+    isLocalDevelopmentAnalyticsDisabled() ||
+    isInternalAnalyticsDisabled() ||
+    isNonCanonicalMeasurementDisabled()
   );
 }
 
@@ -376,7 +517,17 @@ function sanitizePostHogProperties(properties: Properties | null | undefined): P
       continue;
     }
 
-    sanitized[key] = rawValue;
+    if (typeof rawValue === 'string') {
+      if (hasSensitiveString(rawValue)) {
+        continue;
+      }
+      sanitized[key] = rawValue;
+      continue;
+    }
+
+    if (typeof rawValue === 'number' || typeof rawValue === 'boolean') {
+      sanitized[key] = rawValue;
+    }
   }
 
   return sanitized;
@@ -435,7 +586,10 @@ function loadPostHogClient(): Promise<PostHogClient | null> {
       postHogClient = module.default;
       return postHogClient;
     })
-    .catch(() => null);
+    .catch(() => {
+      postHogImportPromise = null;
+      return null;
+    });
 
   return postHogImportPromise;
 }
@@ -481,7 +635,24 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
 function registerConsentedAcquisition(posthog: PostHogClient): void {
   const context = ensureVolatileAcquisitionContext();
   if (!context) return;
-  posthog.register_for_session(classifyConsentedAcquisition(context));
+
+  const sessionId = getPostHogSessionId(posthog);
+  if (!sessionId) {
+    if (hasRegisteredConsentedAcquisitionWithoutSession) return;
+    posthog.register_for_session(classifyConsentedAcquisition(context));
+    hasRegisteredConsentedAcquisitionWithoutSession = true;
+    return;
+  }
+
+  if (registeredConsentedAcquisitionSessionId === sessionId) return;
+
+  const acquisition =
+    readPersistedSessionAcquisition(sessionId) ?? classifyConsentedAcquisition(context);
+
+  posthog.register_for_session(acquisition);
+  writePersistedSessionAcquisition(sessionId, acquisition);
+  registeredConsentedAcquisitionSessionId = sessionId;
+  hasRegisteredConsentedAcquisitionWithoutSession = false;
 }
 
 function captureCookielessAudienceLanding(posthog: PostHogClient): void {
@@ -511,7 +682,7 @@ async function initializePostHog(
   targetMode: PostHogTargetMode,
   options: { captureAudienceLanding?: boolean } = {}
 ): Promise<PostHogClient | null> {
-  if (isLocalDevelopmentAnalyticsDisabled() || isInternalAnalyticsDisabled()) return null;
+  if (isAnalyticsEnvironmentDisabled()) return null;
   if (targetMode === 'consented' && readConsent() !== 'accepted') return null;
   if (
     targetMode === 'cookieless' &&
@@ -531,10 +702,7 @@ async function initializePostHog(
       posthog.opt_in_capturing({ captureEventName: false });
       postHogMode = 'consented';
     }
-    if (!hasRegisteredConsentedAcquisition) {
-      registerConsentedAcquisition(posthog);
-      hasRegisteredConsentedAcquisition = true;
-    }
+    registerConsentedAcquisition(posthog);
     return posthog;
   }
 
@@ -550,7 +718,7 @@ export function initializeAnalytics(): void {
     const params = new URLSearchParams(window.location.search);
 
     if (params.get('etoilys_internal') === '1') {
-      writeLocalStorage(INTERNAL_STORAGE_KEY, 'true');
+      writeInternalMeasurementMode();
       return;
     }
 
@@ -589,7 +757,8 @@ export function rejectAnalyticsConsent(): ConsentWriteResult {
     postHogClient.opt_out_capturing();
     postHogClient.reset();
     postHogMode = 'cookieless';
-    hasRegisteredConsentedAcquisition = false;
+    registeredConsentedAcquisitionSessionId = null;
+    hasRegisteredConsentedAcquisitionWithoutSession = false;
     return result;
   }
 
@@ -599,25 +768,27 @@ export function rejectAnalyticsConsent(): ConsentWriteResult {
   return result;
 }
 
-export function trackPageView(pathname: string, options: { force?: boolean } = {}): void {
-  if (!isDetailedAnalyticsEnabled()) return;
+export function trackPageView(pathname: string, options: { force?: boolean } = {}): boolean {
+  if (!isDetailedAnalyticsEnabled()) return false;
+
+  const eventContext = getCurrentEventContext(pathname);
+  if (!options.force && lastTrackedPathname === eventContext.sourcePath) {
+    return false;
+  }
+
+  lastTrackedPathname = eventContext.sourcePath;
 
   void initializePostHog('consented').then((posthog) => {
     if (!posthog || !isDetailedAnalyticsEnabled()) {
       return;
     }
 
-    const normalizedPathname = normalizeAnalyticsPath(pathname);
-    if (!options.force && lastTrackedPathname === normalizedPathname) {
-      return;
-    }
-
-    lastTrackedPathname = normalizedPathname;
     const properties: AnalyticsProperties = {
-      $current_url: normalizedPathname,
-      $pathname: normalizedPathname,
-      source_path: normalizedPathname,
-      page_type: getPageType(normalizedPathname),
+      $current_url: eventContext.sourcePath,
+      $pathname: eventContext.sourcePath,
+      source_path: eventContext.sourcePath,
+      page_type: eventContext.pageType,
+      event_locale: eventContext.eventLocale,
     };
 
     if (isDebugModeEnabled()) {
@@ -626,10 +797,17 @@ export function trackPageView(pathname: string, options: { force?: boolean } = {
 
     posthog.capture('$pageview', sanitizeCustomProperties(properties));
   });
+
+  return true;
 }
 
-export function trackEvent(eventName: AnalyticsEventName, properties: AnalyticsProperties): void {
-  if (!isDetailedAnalyticsEnabled() || eventName === 'audience_landed') return;
+export function trackEvent(
+  eventName: AnalyticsEventName,
+  properties: AnalyticsProperties
+): boolean {
+  if (!isDetailedAnalyticsEnabled() || eventName === 'audience_landed') return false;
+
+  const eventContext = getCurrentEventContext();
 
   void initializePostHog('consented').then((posthog) => {
     if (!posthog || !isDetailedAnalyticsEnabled()) {
@@ -637,9 +815,10 @@ export function trackEvent(eventName: AnalyticsEventName, properties: AnalyticsP
     }
 
     const normalizedProperties: AnalyticsProperties = {
-      source_path: getCurrentPathname(),
-      page_type: getPageType(getCurrentPathname()),
       ...properties,
+      source_path: eventContext.sourcePath,
+      page_type: eventContext.pageType,
+      event_locale: eventContext.eventLocale,
     };
 
     if (isDebugModeEnabled()) {
@@ -648,26 +827,29 @@ export function trackEvent(eventName: AnalyticsEventName, properties: AnalyticsP
 
     posthog.capture(eventName, sanitizeCustomProperties(normalizedProperties));
   });
+
+  return true;
 }
 
 export function trackCtaClick(input: {
   ctaId: string;
   destinationPath: string;
   ctaLocation?: string;
-}): void {
-  trackEvent('cta_clicked', {
+}): boolean {
+  const eventContext = getCurrentEventContext();
+  return trackEvent('cta_clicked', {
     cta_id: input.ctaId,
-    cta_location: input.ctaLocation ?? getPageType(getCurrentPathname()),
+    cta_location: input.ctaLocation ?? eventContext.pageType,
     destination_path: normalizeAnalyticsPath(input.destinationPath),
   });
 }
 
-export function trackContactClick(contactMethod: ContactMethod): void {
-  trackEvent('contact_clicked', { contact_method: contactMethod });
+export function trackContactClick(contactMethod: ContactMethod): boolean {
+  return trackEvent('contact_clicked', { contact_method: contactMethod });
 }
 
-export function trackFormStarted(formName: FormName): void {
-  trackEvent('form_started', { form_name: formName });
+export function trackFormStarted(formName: FormName): boolean {
+  return trackEvent('form_started', { form_name: formName });
 }
 
 export function trackFormValidationFailed(formName: FormName, invalidFields: string[]): void {
@@ -992,7 +1174,8 @@ export const analyticsInternalsForTests = {
     lastTrackedPathname = null;
     volatileAcquisitionContext = null;
     hasCapturedAudienceLanding = false;
-    hasRegisteredConsentedAcquisition = false;
+    registeredConsentedAcquisitionSessionId = null;
+    hasRegisteredConsentedAcquisitionWithoutSession = false;
     postHogClient = null;
     postHogImportPromise = null;
     postHogInitializationPromise = null;

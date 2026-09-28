@@ -1,6 +1,12 @@
-# Contrat de tracking analytics — v3.1
+# Contrat de tracking analytics — v3.2
 
 Version du 28 septembre 2026.
+
+## Mise à jour lot 2 — acquisition et événements consentis
+
+Le lot 2 conserve le plan d'événements existant et n'ajoute aucune collecte avant consentement. Après accord analytics, le contexte d'acquisition assaini est associé à l'ID de session exposé par PostHog avec un stockage local minimal `{ sessionId, acquisition }` : même ID, même acquisition ; nouvel ID, remplacement. Il n'y a pas de TTL, timer ou logique cross-tab maison.
+
+Les événements consentis capturent leur contexte de page avant tout chargement asynchrone du SDK afin que `source_path`, `page_type` et `event_locale` décrivent la page d'interaction réelle. Une sauvegarde inchangée de préférences ne crée pas de pageview ; le pageview de transition n'est admis que lors d'un passage effectif vers l'accord analytics.
 
 Ce contrat sépare strictement la mesure minimale sans cookie après un refus explicite et les analytics détaillés après consentement. Il ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
 
@@ -41,12 +47,14 @@ Si `localStorage` est indisponible, le choix est appliqué uniquement en mémoir
 
 Au bootstrap, le navigateur conserve uniquement en mémoire :
 
-- `utm_source` et `utm_medium` ;
+- `utm_source`, `utm_medium`, `utm_campaign` et `utm_content` ;
 - le référent initial ;
 - la page d’entrée normalisée ;
 - la langue.
 
 Rien n’est transmis à PostHog avant consentement. Après acceptation, la classification est enregistrée avec `register_for_session` et se propage aux pageviews et événements. Un rechargement avant acceptation perd volontairement ce contexte.
+
+Après consentement, la première acquisition de la session PostHog est conservée à travers un F5 ou une navigation interne. Une nouvelle campagne reçue dans la même session ne remplace pas silencieusement cette première acquisition. Lorsque PostHog expose un nouvel ID de session, le contexte est recalculé depuis l'entrée courante et remplace l'ancien stockage.
 
 La priorité de classification est : UTM, référent externe, accès direct. Les domaines sont comparés au domaine exact ou à un sous-domaine réel afin d’exclure les domaines trompeurs. Les sources libres sont normalisées, limitées à 64 caractères et rejetées si elles ressemblent à un email ou à un téléphone.
 
@@ -54,7 +62,9 @@ Propriétés de session consenties :
 
 - `acquisition_channel` : `direct`, `generative_ai`, `organic_search`, `paid_search`, `social`, `email`, `referral` ou `campaign` ;
 - `acquisition_source` : source normalisée ou domaine référent ;
+- `traffic_type` : `paid`, `organic` ou `unknown` ;
 - `ai_referrer` : `chatgpt`, `perplexity`, `claude`, `gemini`, `copilot` ou `other`, uniquement pour une source IA ;
+- `campaign_name` et `campaign_content`, uniquement depuis `utm_campaign` / `utm_content` assainis ;
 - `landing_page` ;
 - `locale` : `fr`, `en` ou `nl`.
 
@@ -82,11 +92,14 @@ Le SDK ajoute les propriétés techniques strictement nécessaires au transport 
 
 Les clics de contact ne reconnaissent que `+33 6 49 55 15 40` et `contact@etoilys.fr`. Les coordonnées de tiers, notamment celles de l’hébergeur dans les mentions légales, sont exclues.
 
+Chaque événement consenti porte aussi `source_path`, `page_type` et `event_locale`. `locale` dans les propriétés de session reste la langue de l'entrée ; `event_locale` décrit la langue de la page courante.
+
 ## Données interdites
 
 - nom, prénom, email, téléphone, adresse, texte libre ou valeur de formulaire ;
 - identifiant de simulation, logement, pièce ou soumission backend ;
 - URL complète, query string, hash ou paramètres UTM bruts dans un événement ;
+- identifiant de clic publicitaire (`oppref`, `gclid`, `fbclid`, etc.) et valeur de campagne ressemblant à une URL ou à des coordonnées ;
 - valeur exacte lorsqu’un bucket existe ;
 - autocapture, replay, surveys, pageviews automatiques et dead clicks.
 

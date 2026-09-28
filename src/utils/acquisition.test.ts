@@ -4,6 +4,7 @@ import {
   classifyConsentedAcquisition,
   getAudienceLandingProperties,
   normalizeAcquisitionSource,
+  normalizeCampaignDimension,
 } from './acquisition';
 
 describe('acquisition', () => {
@@ -19,6 +20,8 @@ describe('acquisition', () => {
       locale: 'en',
       utmSource: 'chatgpt.com',
       utmMedium: 'referral',
+      utmCampaign: null,
+      utmContent: null,
       initialReferrer: 'https://chatgpt.com/c/secret',
     });
     expect(getAudienceLandingProperties(context)).toEqual({
@@ -46,6 +49,7 @@ describe('acquisition', () => {
     ).toEqual({
       acquisition_channel: 'generative_ai',
       acquisition_source: utmSource,
+      traffic_type: 'organic',
       ai_referrer: aiReferrer,
       landing_page: '/classement',
       locale: 'fr',
@@ -103,6 +107,7 @@ describe('acquisition', () => {
     ).toMatchObject({
       acquisition_channel: 'paid_search',
       acquisition_source: 'google_ads',
+      traffic_type: 'paid',
     });
 
     expect(
@@ -113,7 +118,11 @@ describe('acquisition', () => {
         utmMedium: null,
         initialReferrer: 'https://www.google.fr/search?q=etoilys',
       })
-    ).toMatchObject({ acquisition_channel: 'organic_search', acquisition_source: 'google' });
+    ).toMatchObject({
+      acquisition_channel: 'organic_search',
+      acquisition_source: 'google',
+      traffic_type: 'organic',
+    });
 
     expect(
       classifyConsentedAcquisition({
@@ -123,7 +132,11 @@ describe('acquisition', () => {
         utmMedium: null,
         initialReferrer: 'https://www.linkedin.com/feed/',
       })
-    ).toMatchObject({ acquisition_channel: 'social', acquisition_source: 'linkedin' });
+    ).toMatchObject({
+      acquisition_channel: 'social',
+      acquisition_source: 'linkedin',
+      traffic_type: 'organic',
+    });
   });
 
   it('classifies chatgpt_ads + cpc as paid_search, not generative_ai (OpenAI Ads campaign traffic)', () => {
@@ -138,6 +151,7 @@ describe('acquisition', () => {
     ).toEqual({
       acquisition_channel: 'paid_search',
       acquisition_source: 'chatgpt_ads',
+      traffic_type: 'paid',
       landing_page: '/demande-classement',
       locale: 'fr',
     });
@@ -153,7 +167,11 @@ describe('acquisition', () => {
           utmMedium: null,
           initialReferrer,
         })
-      ).toMatchObject({ acquisition_channel: 'direct', acquisition_source: 'direct' });
+      ).toMatchObject({
+        acquisition_channel: 'direct',
+        acquisition_source: 'direct',
+        traffic_type: 'unknown',
+      });
     }
   });
 
@@ -162,5 +180,34 @@ describe('acquisition', () => {
     expect(normalizeAcquisitionSource('06 49 55 15 40')).toBeNull();
     expect(normalizeAcquisitionSource('  Partner Campaign  ')).toBe('partner_campaign');
     expect(normalizeAcquisitionSource('a'.repeat(100))).toHaveLength(64);
+  });
+
+  it('keeps bounded campaign dimensions and rejects sensitive campaign-like values', () => {
+    expect(normalizeCampaignDimension(' Summer Launch 2026 ')).toBe('summer_launch_2026');
+    expect(normalizeCampaignDimension('test@example.com')).toBeNull();
+    expect(normalizeCampaignDimension('https://example.com/path')).toBeNull();
+    expect(normalizeCampaignDimension('oppref=ABC123')).toBeNull();
+  });
+
+  it('adds sanitized campaign dimensions to consented acquisition properties', () => {
+    expect(
+      classifyConsentedAcquisition({
+        landingPage: '/classement',
+        locale: 'fr',
+        utmSource: 'newsletter',
+        utmMedium: 'email',
+        utmCampaign: 'September Owners',
+        utmContent: 'CTA Header',
+        initialReferrer: null,
+      })
+    ).toEqual({
+      acquisition_channel: 'email',
+      acquisition_source: 'newsletter',
+      traffic_type: 'unknown',
+      landing_page: '/classement',
+      locale: 'fr',
+      campaign_name: 'september_owners',
+      campaign_content: 'cta_header',
+    });
   });
 });

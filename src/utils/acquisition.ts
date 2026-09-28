@@ -12,21 +12,27 @@ export type AcquisitionChannel =
   | 'campaign';
 
 export type AiReferrer = 'chatgpt' | 'perplexity' | 'claude' | 'gemini' | 'copilot' | 'other';
+export type TrafficType = 'paid' | 'organic' | 'unknown';
 
 export interface VolatileAcquisitionContext {
   landingPage: string;
   locale: Locale;
   utmSource: string | null;
   utmMedium: string | null;
+  utmCampaign?: string | null;
+  utmContent?: string | null;
   initialReferrer: string | null;
 }
 
 export interface ConsentedAcquisitionProperties {
   acquisition_channel: AcquisitionChannel;
   acquisition_source: string;
+  traffic_type: TrafficType;
   landing_page: string;
   locale: Locale;
   ai_referrer?: AiReferrer;
+  campaign_name?: string;
+  campaign_content?: string;
 }
 
 export interface AudienceLandingProperties {
@@ -41,6 +47,10 @@ const PHONE_PATTERN = /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/;
 const PAID_SEARCH_MEDIA = new Set(['cpc', 'ppc', 'paid_search', 'paidsearch']);
 const SOCIAL_MEDIA = new Set(['social', 'social_media', 'organic_social', 'paid_social']);
 const EMAIL_MEDIA = new Set(['email', 'e-mail', 'newsletter']);
+const PAID_MEDIA = new Set([...PAID_SEARCH_MEDIA, 'paid_social', 'paid']);
+const CLICK_IDENTIFIER_PATTERN =
+  /(?:^|[?&_\-.])(oppref|gclid|fbclid|msclkid|ttclid|gbraid|wbraid)(?:[=_\-.]|$)/i;
+const URL_LIKE_PATTERN = /(?:https?:\/\/|www\.|[a-z0-9-]+\.[a-z]{2,}\/)/i;
 
 const AI_SOURCE_ALIASES: Readonly<Record<string, AiReferrer>> = {
   chatgpt: 'chatgpt',
@@ -124,6 +134,22 @@ export function normalizeAcquisitionSource(value: string | null | undefined): st
     .slice(0, SOURCE_MAX_LENGTH);
 
   return normalizedValue || null;
+}
+
+export function normalizeCampaignDimension(value: string | null | undefined): string | null {
+  if (!value) return null;
+
+  const trimmedValue = value.trim();
+  if (
+    !trimmedValue ||
+    isSensitiveString(trimmedValue) ||
+    URL_LIKE_PATTERN.test(trimmedValue) ||
+    CLICK_IDENTIFIER_PATTERN.test(trimmedValue)
+  ) {
+    return null;
+  }
+
+  return normalizeAcquisitionSource(trimmedValue);
 }
 
 function normalizeHostname(hostname: string): string {
@@ -219,6 +245,8 @@ export function captureVolatileAcquisitionContext(input: {
     locale: getLocaleFromPath(locationUrl.pathname),
     utmSource: locationUrl.searchParams.get('utm_source'),
     utmMedium: locationUrl.searchParams.get('utm_medium'),
+    utmCampaign: locationUrl.searchParams.get('utm_campaign'),
+    utmContent: locationUrl.searchParams.get('utm_content'),
     initialReferrer: input.referrer || null,
   };
 }
@@ -237,16 +265,25 @@ export function classifyConsentedAcquisition(
 ): ConsentedAcquisitionProperties {
   const utmSource = normalizeAcquisitionSource(context.utmSource);
   const utmMedium = normalizeAcquisitionSource(context.utmMedium);
+  const trafficType: TrafficType = utmMedium && PAID_MEDIA.has(utmMedium) ? 'paid' : 'unknown';
   const utmAiReferrer = getAiReferrerFromSource(utmSource);
+  const campaign_name = normalizeCampaignDimension(context.utmCampaign) ?? undefined;
+  const campaign_content = normalizeCampaignDimension(context.utmContent) ?? undefined;
+  const campaignProperties = {
+    ...(campaign_name ? { campaign_name } : {}),
+    ...(campaign_content ? { campaign_content } : {}),
+  };
 
   if (utmSource) {
     if (utmAiReferrer) {
       return {
         acquisition_channel: 'generative_ai',
         acquisition_source: utmSource,
+        traffic_type: trafficType === 'paid' ? 'paid' : 'organic',
         ai_referrer: utmAiReferrer,
         landing_page: context.landingPage,
         locale: context.locale,
+        ...campaignProperties,
       };
     }
 
@@ -254,8 +291,10 @@ export function classifyConsentedAcquisition(
       return {
         acquisition_channel: 'paid_search',
         acquisition_source: utmSource,
+        traffic_type: 'paid',
         landing_page: context.landingPage,
         locale: context.locale,
+        ...campaignProperties,
       };
     }
 
@@ -263,8 +302,10 @@ export function classifyConsentedAcquisition(
       return {
         acquisition_channel: 'email',
         acquisition_source: utmSource,
+        traffic_type: trafficType,
         landing_page: context.landingPage,
         locale: context.locale,
+        ...campaignProperties,
       };
     }
 
@@ -275,16 +316,20 @@ export function classifyConsentedAcquisition(
       return {
         acquisition_channel: 'social',
         acquisition_source: utmSource,
+        traffic_type: trafficType === 'paid' ? 'paid' : 'organic',
         landing_page: context.landingPage,
         locale: context.locale,
+        ...campaignProperties,
       };
     }
 
     return {
       acquisition_channel: 'campaign',
       acquisition_source: utmSource,
+      traffic_type: trafficType,
       landing_page: context.landingPage,
       locale: context.locale,
+      ...campaignProperties,
     };
   }
 
@@ -293,6 +338,7 @@ export function classifyConsentedAcquisition(
     return {
       acquisition_channel: 'direct',
       acquisition_source: 'direct',
+      traffic_type: 'unknown',
       landing_page: context.landingPage,
       locale: context.locale,
     };
@@ -303,6 +349,7 @@ export function classifyConsentedAcquisition(
     return {
       acquisition_channel: 'generative_ai',
       acquisition_source: aiReferrer,
+      traffic_type: 'organic',
       ai_referrer: aiReferrer,
       landing_page: context.landingPage,
       locale: context.locale,
@@ -314,6 +361,7 @@ export function classifyConsentedAcquisition(
     return {
       acquisition_channel: 'organic_search',
       acquisition_source: searchProvider,
+      traffic_type: 'organic',
       landing_page: context.landingPage,
       locale: context.locale,
     };
@@ -324,6 +372,7 @@ export function classifyConsentedAcquisition(
     return {
       acquisition_channel: 'social',
       acquisition_source: socialProvider,
+      traffic_type: 'organic',
       landing_page: context.landingPage,
       locale: context.locale,
     };
@@ -332,6 +381,7 @@ export function classifyConsentedAcquisition(
   return {
     acquisition_channel: 'referral',
     acquisition_source: normalizeHostname(referrerUrl.hostname).slice(0, SOURCE_MAX_LENGTH),
+    traffic_type: 'organic',
     landing_page: context.landingPage,
     locale: context.locale,
   };

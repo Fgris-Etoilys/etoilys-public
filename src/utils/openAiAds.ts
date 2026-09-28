@@ -6,6 +6,12 @@ import {
   type ConsentChoice,
   type ConsentWriteResult,
 } from './consent';
+import {
+  isLocalDevelopmentMeasurementDisabled,
+  isNonCanonicalMeasurementDisabled,
+  readInternalMeasurementMode,
+  writeInternalMeasurementMode,
+} from './measurementEnvironment';
 
 export {
   ADVERTISING_CONSENT_STORAGE_KEY,
@@ -82,6 +88,16 @@ function isOpenAiAdsDebugEnabled(): boolean {
 
 function getOpenAiAdsPixelId(): string | undefined {
   return import.meta.env?.VITE_OPENAI_ADS_PIXEL_ID;
+}
+
+function isOpenAiAdsEnvironmentDisabled(): boolean {
+  return (
+    isLocalDevelopmentMeasurementDisabled(
+      import.meta.env?.VITE_ENABLE_OPENAI_ADS_IN_DEV === 'true'
+    ) ||
+    readInternalMeasurementMode() ||
+    isNonCanonicalMeasurementDisabled()
+  );
 }
 
 function getUrlOppref(): string | null {
@@ -206,18 +222,23 @@ function createOaiqQueueStub(): OaiqQueueFunction {
   return stub;
 }
 
+function resetFailedOpenAiAdsInjection(): void {
+  isOpenAiAdsPixelInitialized = false;
+  document.getElementById(OPENAI_ADS_SCRIPT_ID)?.remove();
+
+  if (Array.isArray(window.oaiq?.q)) {
+    delete window.oaiq;
+  }
+}
+
 // Cleanup uniquement sur load (succès) / error (échec) du tag <script> — aucun timeout de
 // secours : un oppref réinjecté ne doit jamais être retiré avant que le SDK n'ait eu une
 // vraie chance de le lire, quitte à rester visible dans l'URL plus longtemps qu'attendu si le
 // script ne déclenche jamais l'un ou l'autre événement.
 //
 // En cas d'error, la copie sessionStorage est conservée : cela sert surtout à permettre une
-// nouvelle tentative après un véritable rechargement de page (qui réexécute ce module et relance
-// ensureOpenAiAdsScriptLoaded() depuis zéro). Un simple refuse -> accept dans la même session SPA
-// ne relance PAS l'injection du script : isOpenAiAdsPixelInitialized reste vrai dès que cette
-// fonction a été appelée une première fois, que le script ait ensuite réussi ou échoué à charger.
-// Gérer ce cas précis (retenter automatiquement un script en échec sans reload) est explicitement
-// hors scope pour l'instant.
+// nouvelle tentative après un véritable rechargement de page ou une action publicitaire autorisée
+// ultérieure. Aucun retry périodique ni file persistante n'est créé.
 function injectOpenAiAdsLoaderScript(context: OpprefPixelContext): void {
   const { hasPendingStoredOppref, injectedValue } = context;
 
@@ -238,23 +259,22 @@ function injectOpenAiAdsLoaderScript(context: OpprefPixelContext): void {
   script.async = true;
   script.src = OPENAI_ADS_SCRIPT_SRC;
 
-  if (hasPendingStoredOppref || injectedValue) {
-    let settled = false;
-    const onLoadSuccess = () => {
-      if (settled) return;
-      settled = true;
-      if (injectedValue) removeInjectedOppref(injectedValue);
-      if (hasPendingStoredOppref) clearOpprefSessionStorage();
-    };
-    const onLoadFailureUrlOnly = () => {
-      if (settled) return;
-      settled = true;
-      if (injectedValue) removeInjectedOppref(injectedValue);
-      // sessionStorage volontairement conservé : voir le commentaire de fonction ci-dessus.
-    };
-    script.addEventListener('load', onLoadSuccess, { once: true });
-    script.addEventListener('error', onLoadFailureUrlOnly, { once: true });
-  }
+  let settled = false;
+  const onLoadSuccess = () => {
+    if (settled) return;
+    settled = true;
+    if (injectedValue) removeInjectedOppref(injectedValue);
+    if (hasPendingStoredOppref) clearOpprefSessionStorage();
+  };
+  const onLoadFailure = () => {
+    if (settled) return;
+    settled = true;
+    if (injectedValue) removeInjectedOppref(injectedValue);
+    resetFailedOpenAiAdsInjection();
+    // sessionStorage volontairement conservé : voir le commentaire de fonction ci-dessus.
+  };
+  script.addEventListener('load', onLoadSuccess, { once: true });
+  script.addEventListener('error', onLoadFailure, { once: true });
 
   const firstScript = document.getElementsByTagName('script')[0];
   if (firstScript?.parentNode) {
@@ -271,6 +291,7 @@ function injectOpenAiAdsLoaderScript(context: OpprefPixelContext): void {
  */
 function ensureOpenAiAdsScriptLoaded(): void {
   if (isOpenAiAdsPixelInitialized || typeof window === 'undefined') return;
+  if (isOpenAiAdsEnvironmentDisabled()) return;
 
   const pixelId = getOpenAiAdsPixelId();
   if (!pixelId) return;
@@ -291,6 +312,11 @@ export function initOpenAiAdsPixelIfConsented(): void {
 
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search);
+    if (params.get('etoilys_internal') === '1') {
+      writeInternalMeasurementMode();
+      return;
+    }
+
     if (params.get('etoilys_ads_debug') === '1') {
       writeLocalStorage(OPENAI_ADS_DEBUG_STORAGE_KEY, 'true');
     }
@@ -304,7 +330,10 @@ export function initOpenAiAdsPixelIfConsented(): void {
 export function acceptAdvertisingConsent(): ConsentWriteResult {
   const previousConsent = readAdvertisingConsent();
   const result = setConsentPreferences({ advertising: 'accepted' });
-  if (previousConsent === 'accepted') return result;
+  if (previousConsent === 'accepted') {
+    ensureOpenAiAdsScriptLoaded();
+    return result;
+  }
 
   try {
     if (isOpenAiAdsPixelInitialized) {
@@ -332,11 +361,16 @@ export function refuseAdvertisingConsent(): ConsentWriteResult {
 }
 
 export function trackLeadCreatedConversion(): void {
-  if (typeof window === 'undefined' || getAdvertisingConsentStatus() !== 'accepted') {
+  if (
+    typeof window === 'undefined' ||
+    getAdvertisingConsentStatus() !== 'accepted' ||
+    isOpenAiAdsEnvironmentDisabled()
+  ) {
     return;
   }
 
   try {
+    ensureOpenAiAdsScriptLoaded();
     window.oaiq?.('measure', 'lead_created', { type: 'customer_action' });
   } catch {
     // OpenAI Ads must never break the form's success flow.

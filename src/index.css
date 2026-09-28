@@ -31,6 +31,11 @@
     @apply font-roboto text-gray-900 antialiased;
   }
 
+  html,
+  body {
+    overflow-x: clip;
+  }
+
   h1,
   h2,
   h3,

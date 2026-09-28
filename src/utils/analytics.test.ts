@@ -23,6 +23,7 @@ const posthogMock = vi.hoisted(() => ({
   optOut: vi.fn(),
   registerForSession: vi.fn(),
   reset: vi.fn(),
+  getSessionId: vi.fn(),
 }));
 
 vi.mock('posthog-js', () => ({
@@ -33,6 +34,7 @@ vi.mock('posthog-js', () => ({
     opt_out_capturing: posthogMock.optOut,
     register_for_session: posthogMock.registerForSession,
     reset: posthogMock.reset,
+    get_session_id: posthogMock.getSessionId,
   },
 }));
 
@@ -51,6 +53,8 @@ describe('analytics', () => {
     posthogMock.optOut.mockReset();
     posthogMock.registerForSession.mockReset();
     posthogMock.reset.mockReset();
+    posthogMock.getSessionId.mockReset();
+    posthogMock.getSessionId.mockReturnValue('session-1');
     analyticsInternalsForTests.reset();
     consentInternalsForTests.reset();
     vi.stubEnv('VITE_PUBLIC_POSTHOG_TOKEN', 'phc_test');
@@ -197,6 +201,28 @@ describe('analytics', () => {
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
+  it('retries PostHog initialization on a later consented action after a failed init', async () => {
+    posthogMock.init.mockImplementationOnce(() => {
+      throw new Error('SDK unavailable');
+    });
+
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+    posthogMock.init.mockImplementation(() => undefined);
+
+    trackEvent('cta_clicked', {
+      cta_id: 'cta_primary_contact',
+      destination_path: '/contact',
+    });
+    await flushAnalyticsImports();
+
+    expect(posthogMock.init).toHaveBeenCalledTimes(2);
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      'cta_clicked',
+      expect.objectContaining({ cta_id: 'cta_primary_contact' })
+    );
+  });
+
   it('keeps consent functional for the session when localStorage is unavailable', async () => {
     const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
       throw new DOMException('Storage unavailable');
@@ -253,6 +279,7 @@ describe('analytics', () => {
     expect(posthogMock.registerForSession).toHaveBeenCalledWith(
       expect.objectContaining({
         acquisition_channel: 'direct',
+        traffic_type: 'unknown',
         landing_page: '/test',
         locale: 'fr',
       })
@@ -271,7 +298,7 @@ describe('analytics', () => {
     window.history.pushState(
       {},
       'Test',
-      '/demande-classement?utm_source=chatgpt.com&utm_medium=referral'
+      '/demande-classement?utm_source=chatgpt.com&utm_medium=referral&utm_campaign=AI Launch&utm_content=Hero CTA'
     );
     initializeAnalytics();
 
@@ -283,10 +310,65 @@ describe('analytics', () => {
     expect(posthogMock.registerForSession).toHaveBeenCalledWith({
       acquisition_channel: 'generative_ai',
       acquisition_source: 'chatgpt.com',
+      traffic_type: 'organic',
       ai_referrer: 'chatgpt',
       landing_page: '/demande-classement',
       locale: 'fr',
+      campaign_name: 'ai_launch',
+      campaign_content: 'hero_cta',
     });
+  });
+
+  it('reuses the first consented acquisition after a reload in the same PostHog session', async () => {
+    window.history.pushState(
+      {},
+      'Test',
+      '/classement?utm_source=chatgpt_ads&utm_medium=cpc&utm_campaign=Launch'
+    );
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+
+    analyticsInternalsForTests.reset();
+    consentInternalsForTests.reset();
+    posthogMock.init.mockClear();
+    posthogMock.registerForSession.mockClear();
+    window.history.pushState({}, 'Test', '/demande-classement');
+
+    initializeAnalytics();
+    await flushAnalyticsImports();
+
+    expect(posthogMock.registerForSession).toHaveBeenCalledWith({
+      acquisition_channel: 'paid_search',
+      acquisition_source: 'chatgpt_ads',
+      traffic_type: 'paid',
+      landing_page: '/classement',
+      locale: 'fr',
+      campaign_name: 'launch',
+    });
+  });
+
+  it('replaces persisted acquisition when PostHog exposes a new session id', async () => {
+    window.history.pushState({}, 'Test', '/classement?utm_source=chatgpt_ads&utm_medium=cpc');
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+
+    analyticsInternalsForTests.reset();
+    consentInternalsForTests.reset();
+    posthogMock.getSessionId.mockReturnValue('session-2');
+    posthogMock.registerForSession.mockClear();
+    window.history.pushState({}, 'Test', '/contact');
+
+    initializeAnalytics();
+    await flushAnalyticsImports();
+
+    expect(posthogMock.registerForSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        acquisition_channel: 'direct',
+        acquisition_source: 'direct',
+        traffic_type: 'unknown',
+        landing_page: '/contact',
+      })
+    );
   });
 
   it('adds debug_mode only after consent when debug mode is enabled', async () => {
@@ -301,6 +383,82 @@ describe('analytics', () => {
     expect(posthogMock.capture).toHaveBeenCalledWith(
       '$pageview',
       expect.objectContaining({ debug_mode: true })
+    );
+  });
+
+  it('deduplicates immediate duplicate pageviews before the async SDK import settles', async () => {
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+    posthogMock.capture.mockClear();
+
+    trackPageView('/contact');
+    trackPageView('/contact');
+    await flushAnalyticsImports();
+
+    expect(posthogMock.capture).toHaveBeenCalledTimes(1);
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      '$pageview',
+      expect.objectContaining({ source_path: '/contact' })
+    );
+  });
+
+  it('adds localized page type and event locale on pageviews', async () => {
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+    posthogMock.capture.mockClear();
+
+    trackPageView('/en/contact');
+    trackPageView('/nl');
+    trackPageView('/classement-meuble-tourisme-dordogne');
+    await flushAnalyticsImports();
+
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      '$pageview',
+      expect.objectContaining({
+        source_path: '/en/contact',
+        page_type: 'formulaire',
+        event_locale: 'en',
+      })
+    );
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      '$pageview',
+      expect.objectContaining({
+        source_path: '/nl',
+        page_type: 'home',
+        event_locale: 'nl',
+      })
+    );
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      '$pageview',
+      expect.objectContaining({
+        source_path: '/classement-meuble-tourisme-dordogne',
+        page_type: 'local',
+        event_locale: 'fr',
+      })
+    );
+  });
+
+  it('keeps the source path from the interaction when navigation happens before capture', async () => {
+    window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted');
+    window.localStorage.setItem(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY, String(Date.now()));
+    consentInternalsForTests.reset();
+    window.history.pushState({}, 'Test', '/classement');
+
+    trackEvent('cta_clicked', {
+      cta_id: 'cta_primary_contact',
+      destination_path: '/contact',
+    });
+    window.history.pushState({}, 'Test', '/contact');
+    await flushAnalyticsImports();
+
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      'cta_clicked',
+      expect.objectContaining({
+        cta_id: 'cta_primary_contact',
+        source_path: '/classement',
+        page_type: 'page',
+        event_locale: 'fr',
+      })
     );
   });
 
@@ -398,12 +556,17 @@ describe('analytics', () => {
     const sanitized = analyticsInternalsForTests.sanitizePostHogProperties({
       token: 'phc_test',
       distinct_id: 'anonymous-id',
+      $device_id: 'device-id',
       $session_id: 'session-id',
+      $window_id: 'window-id',
       $lib: 'web',
+      $lib_version: '1.393.0',
       $session_entry_url: 'https://www.etoilys.fr/contact?utm_source=test',
       $session_entry_referrer: 'https://www.google.com/search?q=etoilys',
       $session_entry_pathname: '/contact?utm_source=test',
       $referring_domain: 'www.google.com',
+      $set: { email: 'test@example.com' },
+      $set_once: { phone: '06 12 34 56 78' },
       source_path: '/contact?email=test@example.com#form',
       $current_url: 'https://www.etoilys.fr/contact?x=1',
       $referrer: 'https://www.google.com/search?q=etoilys',
@@ -418,8 +581,11 @@ describe('analytics', () => {
     expect(sanitized).toEqual({
       token: 'phc_test',
       distinct_id: 'anonymous-id',
+      $device_id: 'device-id',
       $session_id: 'session-id',
+      $window_id: 'window-id',
       $lib: 'web',
+      $lib_version: '1.393.0',
       $session_entry_url: '/contact',
       $session_entry_referrer: '/search',
       $session_entry_pathname: '/contact',

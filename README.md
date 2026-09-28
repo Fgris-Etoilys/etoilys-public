@@ -35,6 +35,8 @@ VITE_TURNSTILE_SITE_KEY=...
 VITE_ENABLE_ANALYTICS_IN_DEV=false
 VITE_ENABLE_COOKIELESS_AUDIENCE=false
 VITE_OPENAI_ADS_PIXEL_ID=your_openai_ads_pixel_id
+VITE_ENABLE_OPENAI_ADS_IN_DEV=false
+VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false
 ETOILYS_API_BASE_URL=https://api-dev.etoilys.fr
 ETOILYS_SIMULATOR_API_BASE_URL=https://api-dev.etoilys.fr
 ```
@@ -45,6 +47,8 @@ ETOILYS_SIMULATOR_API_BASE_URL=https://api-dev.etoilys.fr
 `VITE_ENABLE_ANALYTICS_IN_DEV=false` évite les appels PostHog en local, même si un ancien consentement analytics est stocké dans le navigateur. Utiliser `true` uniquement pour tester explicitement l’analytics.
 `VITE_ENABLE_COOKIELESS_AUDIENCE=false` maintient la mesure minimale après refus désactivée. Ce flag ne doit passer à `true` qu’après validation des textes, contrôle du payload réel, configuration du projet PostHog et test live.
 `VITE_OPENAI_ADS_PIXEL_ID` est l'identifiant public du Pixel OpenAI Ads (source « Etoilys | Site web »). Le laisser vide en local pour ne jamais charger le SDK pendant le développement ; ne le définir que sur les environnements où la mesure `lead_created` doit réellement être active.
+`VITE_ENABLE_OPENAI_ADS_IN_DEV=false` évite le chargement du Pixel OpenAI Ads en développement local, même avec un consentement publicitaire stocké.
+`VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false` bloque PostHog et OpenAI Ads hors `www.etoilys.fr` par défaut. Utiliser `true` uniquement pour une recette contrôlée sur preview ou environnement isolé.
 
 ## Backends publics
 
