@@ -1,6 +1,6 @@
 # Mesure GEO/AEO — audience minimale et acquisition consentie
 
-Référence du 10 juillet 2026. Cette documentation décrit l’implémentation du lot 2.3 et les vérifications encore nécessaires avant activation en production.
+Référence mise à jour le 28 septembre 2026. Cette documentation décrit l’implémentation de la mesure GEO/AEO et les vérifications encore nécessaires avant activation en production.
 
 ## Périmètre
 
@@ -13,13 +13,19 @@ Deux ensembles de données indépendants sont définis :
 
 Aucun événement PostHog n’est envoyé en l’absence de choix. L’audience minimale n’est jamais raccordée à une session, une source d’acquisition ou une conversion.
 
+## Statut interface depuis le lot 1 cookies
+
+La préférence d'audience minimale n'est affichée dans l'interface cookies que si la fonctionnalité est réellement disponible côté build. Tant que `VITE_ENABLE_COOKIELESS_AUDIENCE=false`, l'utilisateur ne voit pas de section dédiée et aucun texte de la bannière ne promet une mesure limitée active.
+
+Si cette fonctionnalité devient disponible, le bouton global `Tout refuser` doit aussi activer l'opposition `etoilys_cookieless_audience_opt_out=true`, afin de couper toutes les mesures facultatives. Le switch détaillé reste une opposition distincte à la mesure minimale, sans raccordement aux analytics consentis.
+
 ## Dictionnaire utile au GEO/AEO
 
 | Événement ou propriété  | Ensemble                              | Définition                                              |
 | ----------------------- | ------------------------------------- | ------------------------------------------------------- |
 | `audience_landed`       | Audience minimale                     | Un événement maximal par document après refus explicite |
 | `landing_page`          | Les deux, sans raccordement entre eux | Pathname sans query ni hash                             |
-| `locale`                | Les deux                              | `fr` ou `en`                                            |
+| `locale`                | Les deux                              | `fr`, `en` ou `nl`                                      |
 | `$pageview`             | Acquisition consentie                 | Pageview manuel après consentement                      |
 | `acquisition_channel`   | Acquisition consentie                 | Canal classé pour la session                            |
 | `acquisition_source`    | Acquisition consentie                 | Source normalisée ou domaine référent                   |

@@ -14,6 +14,7 @@ import {
   trackEvent,
   trackPageView,
 } from './analytics';
+import { consentInternalsForTests } from './consent';
 
 const posthogMock = vi.hoisted(() => ({
   init: vi.fn(),
@@ -51,6 +52,7 @@ describe('analytics', () => {
     posthogMock.registerForSession.mockReset();
     posthogMock.reset.mockReset();
     analyticsInternalsForTests.reset();
+    consentInternalsForTests.reset();
     vi.stubEnv('VITE_PUBLIC_POSTHOG_TOKEN', 'phc_test');
     vi.stubEnv('VITE_PUBLIC_POSTHOG_HOST', 'https://f.etoilys.fr');
     vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'false');

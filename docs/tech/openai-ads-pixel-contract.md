@@ -1,6 +1,6 @@
-# Contrat de mesure OpenAI Ads (Pixel) — v2
+# Contrat de mesure OpenAI Ads (Pixel) — v2.1
 
-Version du 4 septembre 2026 (v2 : ajout de la préservation temporaire de `oppref`, voir section dédiée). Ce contrat couvre exclusivement le Pixel de mesure OpenAI Ads (`src/utils/openAiAds.ts`). Il est indépendant du [contrat analytics PostHog](analytics-tracking-contract.md) : les deux systèmes ne partagent aucun état, aucune clé de storage et aucune finalité commune. Ce document ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
+Version du 28 septembre 2026 (v2 : ajout de la préservation temporaire de `oppref`, v2.1 : nouvelle interface de consentement et store commun léger). Ce contrat couvre exclusivement le Pixel de mesure OpenAI Ads (`src/utils/openAiAds.ts`). Il est indépendant du [contrat analytics PostHog](analytics-tracking-contract.md) : les deux systèmes gardent des finalités et clés de consentement distinctes, mais leur lecture est orchestrée par un store navigateur commun. Ce document ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
 
 ## Périmètre
 
@@ -31,6 +31,10 @@ L'idempotence du chargement/`init` et la transition de l'état `consent` sont de
 `etoilys_advertising_consent` n'existait pas avant l'introduction de cette finalité : elle est absente pour tous les utilisateurs qui n'ont jamais vu la nouvelle bannière, y compris ceux ayant déjà accepté PostHog. Le code ne lit jamais `etoilys_analytics_consent` pour déterminer ce consentement — aucun opt-in publicitaire implicite n'est possible.
 
 La bannière de consentement se réaffiche tant que l'une des deux finalités (analytics **ou** publicitaire) est indéfinie ou expirée ; ce n'est pas un mécanisme de version dédié, seulement une condition sur les deux valeurs de consentement déjà nécessaires par ailleurs.
+
+Depuis le lot 1 du 28 septembre 2026, les préférences sont modifiées dans une fenêtre à brouillon local : les switches n'écrivent rien et n'appellent pas le SDK avant le clic sur `Enregistrer mes choix`. Les boutons globaux `Tout refuser` et `Tout accepter` restent disponibles au premier niveau. Si le stockage navigateur échoue, le choix publicitaire est appliqué en mémoire pour la visite courante, sans bloquer le site.
+
+Le lot 1 ne change pas la politique `oppref` décrite ci-dessous : la copie `sessionStorage` préconsentement reste en place. L'accès à `sessionStorage` est seulement protégé pour éviter qu'un navigateur ou mode de confidentialité qui bloque le getter ne casse le site.
 
 ## Gestion de `oppref` par Etoilys
 

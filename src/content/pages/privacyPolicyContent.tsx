@@ -15,13 +15,13 @@ const strongClassName = 'text-ink';
 export const privacyPolicyContent = {
   fr: {
     title: 'Politique de confidentialité',
-    lastUpdated: 'Dernière mise à jour : 10 juillet 2026',
+    lastUpdated: 'Dernière mise à jour : 28 septembre 2026',
     cookiePreferencesLabel: 'Gérer mes cookies',
     body: undefined,
   },
   en: {
     title: 'Privacy policy',
-    lastUpdated: 'Last updated: July 10, 2026',
+    lastUpdated: 'Last updated: September 28, 2026',
     cookiePreferencesLabel: 'Manage cookies',
     body: (
       <>
@@ -359,17 +359,17 @@ export const privacyPolicyContent = {
             preferences, which stops any new event from being sent.
           </p>
           <p className="mb-3">
-            After an explicit refusal, and only if the dedicated production setting is enabled, at
-            most one cookieless event per page load may contain the landing page without query or
-            fragment and the language. It contains no campaign, UTM, AI referrer, conversion or
-            persistent identifier. This minimal measurement can be disabled independently in cookie
-            preferences.
+            After an explicit refusal, and only if a dedicated limited-audience measurement is
+            actually enabled, at most one cookieless event per page load may contain the landing
+            page without parameters and the language. It contains no campaign, UTM, AI referrer,
+            conversion or persistent identifier. When this optional measurement is not available, no
+            related control is shown in cookie preferences; if it becomes available, rejecting all
+            optional cookies also disables it.
           </p>
           <p>
-            Withdrawing consent stops detailed tracking and sends no new event on the current
-            document. Minimal measurement may resume on the next page load unless separately
-            disabled. A reload before a choice loses the volatile acquisition context and cannot be
-            linked to a later conversion.
+            Withdrawing consent stops detailed tracking for subsequent interactions. A reload before
+            a choice loses the volatile acquisition context and cannot be linked to a later
+            analytics conversion.
           </p>
         </div>
 
@@ -387,7 +387,7 @@ export const privacyPolicyContent = {
   },
   nl: {
     title: 'Privacybeleid',
-    lastUpdated: 'Laatst bijgewerkt: 10 juli 2026',
+    lastUpdated: 'Laatst bijgewerkt: 28 september 2026',
     cookiePreferencesLabel: 'Cookies beheren',
     body: (
       <>
@@ -747,18 +747,17 @@ export const privacyPolicyContent = {
             de voorkeuren, waardoor geen nieuwe gebeurtenis meer wordt verzonden.
           </p>
           <p className="mb-3">
-            Na een uitdrukkelijke weigering, en alleen als de specifieke productie-instelling is
-            ingeschakeld, kan maximaal één gebeurtenis zonder cookie per laadbeurt de landingspagina
-            zonder query of fragment en de taal bevatten. Zij bevat geen campagne, UTM, AI-referrer,
-            conversie of persistente identifier. Deze minimale meting kan afzonderlijk worden
-            uitgeschakeld in de cookievoorkeuren.
+            Na een uitdrukkelijke weigering, en alleen als een specifieke beperkte publieksmeting
+            daadwerkelijk is ingeschakeld, kan maximaal één gebeurtenis zonder cookie per laadbeurt
+            de landingspagina zonder parameters en de taal bevatten. Zij bevat geen campagne, UTM,
+            AI-referrer, conversie of persistente identifier. Wanneer deze optionele meting niet
+            beschikbaar is, wordt er geen bijbehorende instelling getoond in de cookievoorkeuren;
+            als zij beschikbaar wordt, schakelt alles weigeren haar ook uit.
           </p>
           <p>
-            Het intrekken van toestemming stopt gedetailleerde tracking en verzendt geen nieuwe
-            gebeurtenis op het huidige document. Minimale meting kan bij de volgende paginaweergave
-            worden hervat, tenzij zij afzonderlijk is uitgeschakeld. Bij herladen voordat een keuze
-            is gemaakt, gaat de tijdelijke acquisitiecontext verloren en kan deze niet aan een
-            latere conversie worden gekoppeld.
+            Het intrekken van toestemming stopt gedetailleerde tracking voor latere interacties. Bij
+            herladen voordat een keuze is gemaakt, gaat de tijdelijke acquisitiecontext verloren en
+            kan deze niet aan een latere analyticsconversie worden gekoppeld.
           </p>
         </div>
 

@@ -25,6 +25,7 @@
     "typecheck": "tsc -b",
     "test": "vitest",
     "test:run": "vitest run",
+    "test:cookie-consent:build": "tsx --tsconfig tsconfig.app.json scripts/test-cookie-consent-build.ts",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "prepare": "husky"

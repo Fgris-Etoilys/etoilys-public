@@ -1,39 +1,70 @@
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
+import { hydrateRoot, type Root } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import CookieConsentManager from './CookieConsentManager';
 import { openCookiePreferencesModal } from '../../utils/cookiePreferences';
+import {
+  ADVERTISING_CONSENT_STORAGE_KEY,
+  ADVERTISING_CONSENT_UPDATED_AT_STORAGE_KEY,
+  ANALYTICS_CONSENT_STORAGE_KEY,
+  ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY,
+  consentInternalsForTests,
+  setConsentPreferences,
+} from '../../utils/consent';
 
 const analyticsMock = vi.hoisted(() => ({
-  consentStatus: null as 'accepted' | 'refused' | null,
-  minimalAudienceEnabled: true,
   acceptAnalyticsConsent: vi.fn(),
   rejectAnalyticsConsent: vi.fn(),
-  getAnalyticsConsentStatus: vi.fn(() => analyticsMock.consentStatus),
-  isCookielessAudienceMeasurementEnabled: vi.fn(() => analyticsMock.minimalAudienceEnabled),
   setCookielessAudienceMeasurementEnabled: vi.fn(),
 }));
 
-vi.mock('../../utils/analytics', () => ({
-  acceptAnalyticsConsent: analyticsMock.acceptAnalyticsConsent,
-  rejectAnalyticsConsent: analyticsMock.rejectAnalyticsConsent,
-  getAnalyticsConsentStatus: analyticsMock.getAnalyticsConsentStatus,
-  isCookielessAudienceMeasurementEnabled: analyticsMock.isCookielessAudienceMeasurementEnabled,
-  setCookielessAudienceMeasurementEnabled: analyticsMock.setCookielessAudienceMeasurementEnabled,
-}));
+vi.mock('../../utils/analytics', async () => {
+  const consent =
+    await vi.importActual<typeof import('../../utils/consent')>('../../utils/consent');
+  return {
+    acceptAnalyticsConsent: analyticsMock.acceptAnalyticsConsent.mockImplementation(() => {
+      return consent.setConsentPreferences({ analytics: 'accepted' });
+    }),
+    rejectAnalyticsConsent: analyticsMock.rejectAnalyticsConsent.mockImplementation(() => {
+      return consent.setConsentPreferences({ analytics: 'refused' });
+    }),
+    setCookielessAudienceMeasurementEnabled:
+      analyticsMock.setCookielessAudienceMeasurementEnabled.mockImplementation(
+        (enabled: boolean) => {
+          return consent.setConsentPreferences({ cookielessAudienceOptOut: !enabled });
+        }
+      ),
+  };
+});
 
 const openAiAdsMock = vi.hoisted(() => ({
-  advertisingConsentStatus: null as 'accepted' | 'refused' | null,
   acceptAdvertisingConsent: vi.fn(),
   refuseAdvertisingConsent: vi.fn(),
-  getAdvertisingConsentStatus: vi.fn(() => openAiAdsMock.advertisingConsentStatus),
 }));
 
-vi.mock('../../utils/openAiAds', () => ({
-  acceptAdvertisingConsent: openAiAdsMock.acceptAdvertisingConsent,
-  refuseAdvertisingConsent: openAiAdsMock.refuseAdvertisingConsent,
-  getAdvertisingConsentStatus: openAiAdsMock.getAdvertisingConsentStatus,
-}));
+vi.mock('../../utils/openAiAds', async () => {
+  const consent =
+    await vi.importActual<typeof import('../../utils/consent')>('../../utils/consent');
+  return {
+    acceptAdvertisingConsent: openAiAdsMock.acceptAdvertisingConsent.mockImplementation(() => {
+      return consent.setConsentPreferences({ advertising: 'accepted' });
+    }),
+    refuseAdvertisingConsent: openAiAdsMock.refuseAdvertisingConsent.mockImplementation(() => {
+      return consent.setConsentPreferences({ advertising: 'refused' });
+    }),
+  };
+});
+
+function ensureDialogPolyfill() {
+  HTMLDialogElement.prototype.showModal ??= function showModal() {
+    this.setAttribute('open', '');
+  };
+  HTMLDialogElement.prototype.close ??= function close() {
+    this.removeAttribute('open');
+  };
+}
 
 function renderCookieConsentManager(pathname = '/') {
   return render(
@@ -43,164 +74,193 @@ function renderCookieConsentManager(pathname = '/') {
   );
 }
 
+function storeConsent(analytics: 'accepted' | 'refused', advertising: 'accepted' | 'refused') {
+  window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, analytics);
+  window.localStorage.setItem(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY, String(Date.now()));
+  window.localStorage.setItem(ADVERTISING_CONSENT_STORAGE_KEY, advertising);
+  window.localStorage.setItem(ADVERTISING_CONSENT_UPDATED_AT_STORAGE_KEY, String(Date.now()));
+}
+
 describe('CookieConsentManager', () => {
   beforeEach(() => {
-    analyticsMock.consentStatus = null;
-    analyticsMock.minimalAudienceEnabled = true;
+    vi.unstubAllEnvs();
+    consentInternalsForTests.reset();
+    window.localStorage.clear();
+    ensureDialogPolyfill();
     analyticsMock.acceptAnalyticsConsent.mockClear();
     analyticsMock.rejectAnalyticsConsent.mockClear();
-    analyticsMock.getAnalyticsConsentStatus.mockClear();
-    analyticsMock.isCookielessAudienceMeasurementEnabled.mockClear();
     analyticsMock.setCookielessAudienceMeasurementEnabled.mockClear();
-
-    openAiAdsMock.advertisingConsentStatus = null;
     openAiAdsMock.acceptAdvertisingConsent.mockClear();
     openAiAdsMock.refuseAdvertisingConsent.mockClear();
-    openAiAdsMock.getAdvertisingConsentStatus.mockClear();
   });
 
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+  });
 
-  it('shows the initial French privacy preferences banner', () => {
+  it('renders no banner before the client consent resolution pass', () => {
+    const html = renderToString(
+      <MemoryRouter>
+        <CookieConsentManager />
+      </MemoryRouter>
+    );
+
+    expect(html).not.toContain('Vos choix de cookies');
+    expect(html).not.toContain('Gestion des cookies');
+  });
+
+  it('hydrates with stored consent without flashing the banner or logging hydration errors', async () => {
+    storeConsent('accepted', 'refused');
+    const html = renderToString(
+      <MemoryRouter>
+        <CookieConsentManager />
+      </MemoryRouter>
+    );
+    const container = document.createElement('div');
+    container.innerHTML = html;
+    document.body.appendChild(container);
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const roots: Root[] = [];
+
+    await act(async () => {
+      roots.push(
+        hydrateRoot(
+          container,
+          <MemoryRouter>
+            <CookieConsentManager />
+          </MemoryRouter>
+        )
+      );
+      await Promise.resolve();
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByRole('region', { name: 'Gestion des cookies' })).not.toBeInTheDocument();
+    });
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+    roots[0]?.unmount();
+    container.remove();
+  });
+
+  it('shows the French banner after resolution for a new visitor', async () => {
     renderCookieConsentManager();
 
-    expect(screen.getByRole('region', { name: 'Gestion des cookies' })).toBeInTheDocument();
-    expect(
-      screen.getByText(/aucun cookie analytique ni publicitaire n’est utilisé/i)
-    ).toBeInTheDocument();
-    expect(screen.getByText(/mesure limitée, sans cookie/i)).toBeInTheDocument();
-    expect(screen.getByText(/OpenAI Ads/)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Refuser' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Accepter' })).toBeInTheDocument();
+    expect(await screen.findByRole('region', { name: 'Gestion des cookies' })).toBeInTheDocument();
+    expect(screen.getByText('Vos choix de cookies')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Tout refuser' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Personnaliser' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Tout accepter' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'En savoir plus' })).toHaveAttribute(
+      'href',
+      '/confidentialite'
+    );
   });
 
-  it('shows the localized English banner and privacy link', () => {
+  it('shows localized English banner copy and privacy link', async () => {
     renderCookieConsentManager('/en/contact');
 
-    expect(screen.getByRole('region', { name: 'Cookie management' })).toBeInTheDocument();
-    expect(
-      screen.getByText(/no analytics or advertising cookies will be used/i)
-    ).toBeInTheDocument();
-    expect(screen.getByText(/cookieless measurement of the landing page/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Privacy policy' })).toHaveAttribute(
+    expect(await screen.findByRole('region', { name: 'Cookie management' })).toBeInTheDocument();
+    expect(screen.getByText('Your cookie choices')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Learn more' })).toHaveAttribute(
       'href',
       '/en/privacy-policy'
     );
   });
 
-  it('hides the banner after refusal and refuses both purposes', () => {
+  it('applies reject all to analytics and advertising', async () => {
     renderCookieConsentManager();
-    fireEvent.click(screen.getByRole('button', { name: 'Refuser' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Tout refuser' }));
 
     expect(analyticsMock.rejectAnalyticsConsent).toHaveBeenCalledTimes(1);
     expect(openAiAdsMock.refuseAdvertisingConsent).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('region', { name: 'Gestion des cookies' })).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole('region', { name: 'Gestion des cookies' })).not.toBeInTheDocument();
+    });
   });
 
-  it('hides the banner after acceptance and accepts both purposes', () => {
+  it('applies accept all to analytics and advertising', async () => {
     renderCookieConsentManager();
-    fireEvent.click(screen.getByRole('button', { name: 'Accepter' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Tout accepter' }));
 
     expect(analyticsMock.acceptAnalyticsConsent).toHaveBeenCalledTimes(1);
     expect(openAiAdsMock.acceptAdvertisingConsent).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('region', { name: 'Gestion des cookies' })).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole('region', { name: 'Gestion des cookies' })).not.toBeInTheDocument();
+    });
   });
 
-  it('reopens the banner when analytics consent is set but advertising consent is still unset', () => {
-    analyticsMock.consentStatus = 'accepted';
-    openAiAdsMock.advertisingConsentStatus = null;
+  it('does not persist preference switch changes before saving', async () => {
     renderCookieConsentManager();
+    fireEvent.click(await screen.findByRole('button', { name: 'Personnaliser' }));
 
-    expect(screen.getByRole('region', { name: 'Gestion des cookies' })).toBeInTheDocument();
-  });
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Améliorer le site' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Mesurer nos publicités' }));
 
-  it('hides the banner once both analytics and advertising consent are set', () => {
-    analyticsMock.consentStatus = 'accepted';
-    openAiAdsMock.advertisingConsentStatus = 'refused';
-    renderCookieConsentManager();
-
-    expect(screen.queryByRole('region', { name: 'Gestion des cookies' })).not.toBeInTheDocument();
-  });
-
-  it('shows the three independent purpose blocks in preferences', () => {
-    analyticsMock.consentStatus = 'accepted';
-    openAiAdsMock.advertisingConsentStatus = null;
-    renderCookieConsentManager();
-
-    act(() => openCookiePreferencesModal());
-
-    expect(screen.getByRole('dialog', { name: 'Préférences cookies' })).toBeInTheDocument();
-    expect(screen.getByText('Analytics détaillés')).toBeInTheDocument();
-    expect(screen.getByText('Mesure publicitaire (OpenAI Ads)')).toBeInTheDocument();
-    expect(screen.getByText('Audience minimale après refus')).toBeInTheDocument();
-    expect(
-      screen.getByRole('checkbox', {
-        name: 'Autoriser la mesure d’audience minimale après un refus',
-      })
-    ).toBeChecked();
-    expect(
-      screen.getByRole('checkbox', { name: 'Autoriser la mesure publicitaire OpenAI Ads' })
-    ).not.toBeChecked();
-  });
-
-  it('does not check the advertising box when only analytics consent was previously accepted', () => {
-    analyticsMock.consentStatus = 'accepted';
-    openAiAdsMock.advertisingConsentStatus = null;
-    renderCookieConsentManager();
-    act(() => openCookiePreferencesModal());
-
-    expect(screen.getByText(/Consentement publicitaire : non défini/)).toBeInTheDocument();
-  });
-
-  it('accepting the advertising checkbox only affects advertising consent', () => {
-    analyticsMock.consentStatus = 'accepted';
-    openAiAdsMock.advertisingConsentStatus = null;
-    renderCookieConsentManager();
-    act(() => openCookiePreferencesModal());
-
-    fireEvent.click(
-      screen.getByRole('checkbox', { name: 'Autoriser la mesure publicitaire OpenAI Ads' })
-    );
-
-    expect(openAiAdsMock.acceptAdvertisingConsent).toHaveBeenCalledTimes(1);
     expect(analyticsMock.acceptAnalyticsConsent).not.toHaveBeenCalled();
+    expect(openAiAdsMock.acceptAdvertisingConsent).not.toHaveBeenCalled();
   });
 
-  it('unchecking the advertising checkbox after acceptance refuses only advertising consent', () => {
-    analyticsMock.consentStatus = 'accepted';
-    openAiAdsMock.advertisingConsentStatus = 'accepted';
+  it('saves independent analytics yes / advertising no preferences', async () => {
     renderCookieConsentManager();
-    act(() => openCookiePreferencesModal());
+    fireEvent.click(await screen.findByRole('button', { name: 'Personnaliser' }));
 
-    fireEvent.click(
-      screen.getByRole('checkbox', { name: 'Autoriser la mesure publicitaire OpenAI Ads' })
-    );
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Améliorer le site' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Enregistrer mes choix' }));
 
+    expect(analyticsMock.acceptAnalyticsConsent).toHaveBeenCalledTimes(1);
     expect(openAiAdsMock.refuseAdvertisingConsent).toHaveBeenCalledTimes(1);
-    expect(analyticsMock.rejectAnalyticsConsent).not.toHaveBeenCalled();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('allows opting out of cookieless minimal measurement independently', () => {
-    analyticsMock.consentStatus = 'refused';
+  it('saves independent analytics no / advertising yes preferences', async () => {
     renderCookieConsentManager();
-    act(() => openCookiePreferencesModal());
+    fireEvent.click(await screen.findByRole('button', { name: 'Personnaliser' }));
 
-    fireEvent.click(
-      screen.getByRole('checkbox', {
-        name: 'Autoriser la mesure d’audience minimale après un refus',
-      })
-    );
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Mesurer nos publicités' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Enregistrer mes choix' }));
+
+    expect(analyticsMock.rejectAnalyticsConsent).toHaveBeenCalledTimes(1);
+    expect(openAiAdsMock.acceptAdvertisingConsent).toHaveBeenCalledTimes(1);
+  });
+
+  it('cancels the draft when closing preferences', async () => {
+    renderCookieConsentManager();
+    fireEvent.click(await screen.findByRole('button', { name: 'Personnaliser' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Améliorer le site' }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Fermer les préférences' }));
+
+    expect(analyticsMock.acceptAnalyticsConsent).not.toHaveBeenCalled();
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('hides cookieless audience controls while the feature is inactive', async () => {
+    renderCookieConsentManager();
+    fireEvent.click(await screen.findByRole('button', { name: 'Personnaliser' }));
+
+    expect(
+      screen.queryByText('Statistiques de fréquentation sans cookies')
+    ).not.toBeInTheDocument();
+  });
+
+  it('reject all also opts out of cookieless audience when available', async () => {
+    vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
+    renderCookieConsentManager();
+    fireEvent.click(await screen.findByRole('button', { name: 'Tout refuser' }));
 
     expect(analyticsMock.setCookielessAudienceMeasurementEnabled).toHaveBeenCalledWith(false);
   });
 
-  it('allows changing detailed consent from preferences', () => {
-    analyticsMock.consentStatus = 'refused';
+  it('opens preferences from the footer event with the current stored choices', async () => {
+    setConsentPreferences({ analytics: 'accepted', advertising: 'refused' });
     renderCookieConsentManager();
-    act(() => openCookiePreferencesModal());
-    fireEvent.click(screen.getByRole('button', { name: 'Accepter' }));
 
-    expect(analyticsMock.acceptAnalyticsConsent).toHaveBeenCalledTimes(1);
-    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    act(() => openCookiePreferencesModal());
+
+    expect(screen.getByRole('dialog', { name: 'Vos préférences de cookies' })).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', { name: 'Améliorer le site' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'Mesurer nos publicités' })).not.toBeChecked();
   });
 });

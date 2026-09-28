@@ -412,18 +412,19 @@ export default function Confidentialite() {
                   qui arrête l&apos;envoi de tout nouvel événement.
                 </p>
                 <p className="mb-3">
-                  Après un refus explicite, et seulement si le réglage de production dédié est
-                  activé, au maximum un événement sans cookie par chargement peut contenir la page
-                  d&apos;entrée sans query ni fragment et la langue. Il ne contient ni campagne, ni
-                  UTM, ni référent IA, ni conversion, ni identifiant persistant. Cette mesure
-                  minimale peut être désactivée indépendamment dans les préférences.
+                  Après un refus explicite, et seulement si une mesure d&apos;audience limitée
+                  dédiée est réellement activée, au maximum un événement sans cookie par chargement
+                  peut contenir la page d&apos;entrée sans paramètres et la langue. Il ne contient
+                  ni campagne, ni UTM, ni référent IA, ni conversion, ni identifiant persistant.
+                  Lorsque cette mesure facultative n&apos;est pas disponible, aucun réglage
+                  correspondant n&apos;est affiché dans les préférences cookies ; si elle devient
+                  disponible, tout refuser la désactive aussi.
                 </p>
                 <p>
-                  Le retrait du consentement arrête le suivi détaillé et n&apos;envoie aucun nouvel
-                  événement sur le document courant. La mesure minimale peut reprendre au prochain
-                  chargement, sauf opposition distincte. Un rechargement avant tout choix perd le
-                  contexte d&apos;acquisition conservé en mémoire et ne peut pas être raccordé à une
-                  conversion ultérieure.
+                  Le retrait du consentement arrête le suivi détaillé pour les interactions
+                  suivantes. Un rechargement avant tout choix perd le contexte d&apos;acquisition
+                  conservé en mémoire et ne peut pas être raccordé à une conversion analytics
+                  ultérieure.
                 </p>
                 <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-ink hover:text-ink-hover">
                   Gérer mes cookies

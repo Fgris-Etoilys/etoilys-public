@@ -10,6 +10,7 @@ import {
   refuseAdvertisingConsent,
   trackLeadCreatedConversion,
 } from './openAiAds';
+import { consentInternalsForTests } from './consent';
 
 const SCRIPT_ID = 'openai-ads-pixel-script';
 const OPPREF_KEY = 'etoilys_openai_ads_oppref';
@@ -30,6 +31,7 @@ describe('openAiAds', () => {
     vi.unstubAllEnvs();
     vi.stubEnv('VITE_OPENAI_ADS_PIXEL_ID', 'test_pixel_id');
     openAiAdsInternalsForTests.reset();
+    consentInternalsForTests.reset();
     window.localStorage.clear();
     window.sessionStorage.clear();
     delete (window as { oaiq?: unknown }).oaiq;
@@ -175,6 +177,8 @@ describe('openAiAds', () => {
       acceptAdvertisingConsent();
 
       openAiAdsInternalsForTests.reset();
+      consentInternalsForTests.reset();
+      window.localStorage.clear();
       delete (window as { oaiq?: unknown }).oaiq;
       document.getElementById(SCRIPT_ID)?.remove();
 
@@ -198,6 +202,24 @@ describe('openAiAds', () => {
       initOpenAiAdsPixelIfConsented();
 
       expect(window.sessionStorage.getItem(OPPREF_KEY)).toBeNull();
+    });
+
+    it('does not crash when the sessionStorage getter is unavailable', () => {
+      const descriptor = Object.getOwnPropertyDescriptor(window, 'sessionStorage');
+      Object.defineProperty(window, 'sessionStorage', {
+        configurable: true,
+        get() {
+          throw new DOMException('Session storage blocked');
+        },
+      });
+
+      window.history.pushState({}, 'Test', '/classement-meuble-tourisme-dordogne?oppref=ABC');
+
+      expect(() => initOpenAiAdsPixelIfConsented()).not.toThrow();
+
+      if (descriptor) {
+        Object.defineProperty(window, 'sessionStorage', descriptor);
+      }
     });
 
     it('overwrites a previously stored oppref with a fresh one on a new real page load (Cas 9)', () => {

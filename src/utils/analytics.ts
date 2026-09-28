@@ -6,18 +6,27 @@ import {
   normalizeAnalyticsPath,
   type VolatileAcquisitionContext,
 } from './acquisition';
+import {
+  getBrowserLocalStorage,
+  getConsentSnapshot,
+  getConsentStatus,
+  setConsentPreferences,
+  setCookielessAudienceOptOut,
+  type ConsentChoice,
+  type ConsentWriteResult,
+} from './consent';
 import { isSupportedLocale } from '../i18n/locales';
 
 export { normalizeAnalyticsPath } from './acquisition';
-
-export const ANALYTICS_CONSENT_STORAGE_KEY = 'etoilys_analytics_consent';
-export const ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY = 'etoilys_analytics_consent_updated_at';
-export const COOKIELESS_AUDIENCE_OPT_OUT_STORAGE_KEY = 'etoilys_cookieless_audience_opt_out';
+export {
+  ANALYTICS_CONSENT_STORAGE_KEY,
+  ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY,
+  COOKIELESS_AUDIENCE_OPT_OUT_STORAGE_KEY,
+} from './consent';
 const INTERNAL_STORAGE_KEY = 'etoilys_analytics_internal';
 const DEBUG_STORAGE_KEY = 'etoilys_analytics_debug';
-const ANALYTICS_CONSENT_MAX_AGE_MS = 183 * 24 * 60 * 60 * 1000;
 
-export type AnalyticsConsent = 'accepted' | 'refused';
+export type AnalyticsConsent = ConsentChoice;
 type FormName = 'contact' | 'demande_classement';
 type SimulatorName = 'taxe_sejour' | 'fiscal_classement' | 'classement';
 type FormFailureType = 'validation' | 'api' | 'network' | 'turnstile';
@@ -161,9 +170,6 @@ const PHONE_PATTERN = /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/;
 let isPostHogInitialized = false;
 let postHogMode: 'uninitialized' | 'consented' | 'cookieless' = 'uninitialized';
 let lastTrackedPathname: string | null = null;
-let volatileConsent: AnalyticsConsent | null = null;
-let volatileConsentUpdatedAt: number | null = null;
-let volatileCookielessAudienceOptOut = false;
 let volatileAcquisitionContext: VolatileAcquisitionContext | null = null;
 let hasCapturedAudienceLanding = false;
 let hasRegisteredConsentedAcquisition = false;
@@ -174,65 +180,30 @@ let postHogClient: PostHogClient | null = null;
 let postHogImportPromise: Promise<PostHogClient | null> | null = null;
 let postHogInitializationPromise: Promise<PostHogClient | null> | null = null;
 
-function canUseBrowserStorage(): boolean {
-  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
-}
-
 function readLocalStorage(key: string): string | null {
-  if (!canUseBrowserStorage()) {
-    return null;
-  }
+  const storage = getBrowserLocalStorage();
+  if (!storage) return null;
 
   try {
-    return window.localStorage.getItem(key);
+    return storage.getItem(key);
   } catch {
     return null;
   }
 }
 
 function writeLocalStorage(key: string, value: string): void {
-  if (!canUseBrowserStorage()) {
-    return;
-  }
+  const storage = getBrowserLocalStorage();
+  if (!storage) return;
 
   try {
-    window.localStorage.setItem(key, value);
+    storage.setItem(key, value);
   } catch {
     // Analytics must never break the user experience.
   }
 }
 
-function readConsentUpdatedAt(): number | null {
-  const value = readLocalStorage(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY);
-  if (!value) {
-    return null;
-  }
-
-  const timestamp = Number(value);
-  return Number.isFinite(timestamp) ? timestamp : null;
-}
-
-function isConsentFresh(updatedAt: number | null): boolean {
-  return updatedAt !== null && Date.now() - updatedAt <= ANALYTICS_CONSENT_MAX_AGE_MS;
-}
-
 function readConsent(): AnalyticsConsent | null {
-  const value = readLocalStorage(ANALYTICS_CONSENT_STORAGE_KEY);
-  const updatedAt = readConsentUpdatedAt();
-
-  if ((value === 'accepted' || value === 'refused') && isConsentFresh(updatedAt)) {
-    return value;
-  }
-
-  return isConsentFresh(volatileConsentUpdatedAt) ? volatileConsent : null;
-}
-
-function writeConsent(value: AnalyticsConsent): void {
-  const updatedAt = Date.now();
-  volatileConsent = value;
-  volatileConsentUpdatedAt = updatedAt;
-  writeLocalStorage(ANALYTICS_CONSENT_STORAGE_KEY, value);
-  writeLocalStorage(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY, String(updatedAt));
+  return getConsentStatus('analytics');
 }
 
 export function getAnalyticsConsentStatus(): AnalyticsConsent | null {
@@ -240,19 +211,17 @@ export function getAnalyticsConsentStatus(): AnalyticsConsent | null {
 }
 
 export function isCookielessAudienceMeasurementEnabled(): boolean {
-  return (
-    readLocalStorage(COOKIELESS_AUDIENCE_OPT_OUT_STORAGE_KEY) !== 'true' &&
-    !volatileCookielessAudienceOptOut
-  );
+  return getConsentSnapshot().cookielessAudience.effectiveEnabled;
 }
 
-export function setCookielessAudienceMeasurementEnabled(enabled: boolean): void {
-  volatileCookielessAudienceOptOut = !enabled;
-  writeLocalStorage(COOKIELESS_AUDIENCE_OPT_OUT_STORAGE_KEY, enabled ? 'false' : 'true');
+export function setCookielessAudienceMeasurementEnabled(enabled: boolean): ConsentWriteResult {
+  const result = setCookielessAudienceOptOut(!enabled);
 
   if (enabled && readConsent() === 'refused') {
     void initializePostHog('cookieless', { captureAudienceLanding: true });
   }
+
+  return result;
 }
 
 function getCurrentPathname(): string {
@@ -598,18 +567,22 @@ export function initializeAnalytics(): void {
   }
 }
 
-export function acceptAnalyticsConsent(): void {
-  writeConsent('accepted');
+export function acceptAnalyticsConsent(): ConsentWriteResult {
+  const previousConsent = readConsent();
+  const result = setConsentPreferences({ analytics: 'accepted' });
+  if (previousConsent === 'accepted') return result;
+
   void initializePostHog('consented').then((posthog) => {
     if (posthog) {
       trackPageView(getCurrentPathname(), { force: true });
     }
   });
+  return result;
 }
 
-export function rejectAnalyticsConsent(): void {
+export function rejectAnalyticsConsent(): ConsentWriteResult {
   const previousConsent = readConsent();
-  writeConsent('refused');
+  const result = setConsentPreferences({ analytics: 'refused' });
   lastTrackedPathname = null;
 
   if (previousConsent === 'accepted' && isPostHogInitialized && postHogClient) {
@@ -617,10 +590,13 @@ export function rejectAnalyticsConsent(): void {
     postHogClient.reset();
     postHogMode = 'cookieless';
     hasRegisteredConsentedAcquisition = false;
-    return;
+    return result;
   }
 
-  void initializePostHog('cookieless', { captureAudienceLanding: true });
+  if (previousConsent !== 'refused') {
+    void initializePostHog('cookieless', { captureAudienceLanding: true });
+  }
+  return result;
 }
 
 export function trackPageView(pathname: string, options: { force?: boolean } = {}): void {
@@ -1014,9 +990,6 @@ export const analyticsInternalsForTests = {
     isPostHogInitialized = false;
     postHogMode = 'uninitialized';
     lastTrackedPathname = null;
-    volatileConsent = null;
-    volatileConsentUpdatedAt = null;
-    volatileCookielessAudienceOptOut = false;
     volatileAcquisitionContext = null;
     hasCapturedAudienceLanding = false;
     hasRegisteredConsentedAcquisition = false;

@@ -1,9 +1,20 @@
+import {
+  getBrowserLocalStorage,
+  getBrowserSessionStorage,
+  getConsentStatus,
+  setConsentPreferences,
+  type ConsentChoice,
+  type ConsentWriteResult,
+} from './consent';
+
+export {
+  ADVERTISING_CONSENT_STORAGE_KEY,
+  ADVERTISING_CONSENT_UPDATED_AT_STORAGE_KEY,
+} from './consent';
+
 const OPENAI_ADS_SCRIPT_ID = 'openai-ads-pixel-script';
 const OPENAI_ADS_SCRIPT_SRC = 'https://bzrcdn.openai.com/sdk/oaiq.min.js';
 
-export const ADVERTISING_CONSENT_STORAGE_KEY = 'etoilys_advertising_consent';
-export const ADVERTISING_CONSENT_UPDATED_AT_STORAGE_KEY = 'etoilys_advertising_consent_updated_at';
-const ADVERTISING_CONSENT_MAX_AGE_MS = 183 * 24 * 60 * 60 * 1000;
 const OPENAI_ADS_DEBUG_STORAGE_KEY = 'etoilys_ads_debug';
 
 const OPPREF_STORAGE_KEY = 'etoilys_openai_ads_oppref';
@@ -12,7 +23,7 @@ const OPPREF_CAPTURED_AT_STORAGE_KEY = 'etoilys_openai_ads_oppref_captured_at';
 // source (30 jours), pas sur la fenêtre view-through (1 jour, non pertinente pour oppref).
 const OPPREF_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
-export type AdvertisingConsent = 'accepted' | 'refused';
+export type AdvertisingConsent = ConsentChoice;
 
 interface OaiqQueueFunction {
   (...args: unknown[]): void;
@@ -34,70 +45,31 @@ interface OpprefPixelContext {
 }
 
 let isOpenAiAdsPixelInitialized = false;
-let volatileAdvertisingConsent: AdvertisingConsent | null = null;
-let volatileAdvertisingConsentUpdatedAt: number | null = null;
-
-function canUseBrowserStorage(): boolean {
-  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
-}
 
 function readLocalStorage(key: string): string | null {
-  if (!canUseBrowserStorage()) {
-    return null;
-  }
+  const storage = getBrowserLocalStorage();
+  if (!storage) return null;
 
   try {
-    return window.localStorage.getItem(key);
+    return storage.getItem(key);
   } catch {
     return null;
   }
 }
 
 function writeLocalStorage(key: string, value: string): void {
-  if (!canUseBrowserStorage()) {
-    return;
-  }
+  const storage = getBrowserLocalStorage();
+  if (!storage) return;
 
   try {
-    window.localStorage.setItem(key, value);
+    storage.setItem(key, value);
   } catch {
     // OpenAI Ads must never break the site.
   }
 }
 
-function readAdvertisingConsentUpdatedAt(): number | null {
-  const value = readLocalStorage(ADVERTISING_CONSENT_UPDATED_AT_STORAGE_KEY);
-  if (!value) {
-    return null;
-  }
-
-  const timestamp = Number(value);
-  return Number.isFinite(timestamp) ? timestamp : null;
-}
-
-function isAdvertisingConsentFresh(updatedAt: number | null): boolean {
-  return updatedAt !== null && Date.now() - updatedAt <= ADVERTISING_CONSENT_MAX_AGE_MS;
-}
-
 function readAdvertisingConsent(): AdvertisingConsent | null {
-  const value = readLocalStorage(ADVERTISING_CONSENT_STORAGE_KEY);
-  const updatedAt = readAdvertisingConsentUpdatedAt();
-
-  if ((value === 'accepted' || value === 'refused') && isAdvertisingConsentFresh(updatedAt)) {
-    return value;
-  }
-
-  return isAdvertisingConsentFresh(volatileAdvertisingConsentUpdatedAt)
-    ? volatileAdvertisingConsent
-    : null;
-}
-
-function writeAdvertisingConsent(value: AdvertisingConsent): void {
-  const updatedAt = Date.now();
-  volatileAdvertisingConsent = value;
-  volatileAdvertisingConsentUpdatedAt = updatedAt;
-  writeLocalStorage(ADVERTISING_CONSENT_STORAGE_KEY, value);
-  writeLocalStorage(ADVERTISING_CONSENT_UPDATED_AT_STORAGE_KEY, String(updatedAt));
+  return getConsentStatus('advertising');
 }
 
 export function getAdvertisingConsentStatus(): AdvertisingConsent | null {
@@ -112,10 +84,6 @@ function getOpenAiAdsPixelId(): string | undefined {
   return import.meta.env?.VITE_OPENAI_ADS_PIXEL_ID;
 }
 
-function canUseSessionStorage(): boolean {
-  return typeof window !== 'undefined' && typeof window.sessionStorage !== 'undefined';
-}
-
 function getUrlOppref(): string | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -126,20 +94,22 @@ function getUrlOppref(): string | null {
 }
 
 function writeOpprefToSessionStorage(value: string): void {
-  if (!canUseSessionStorage()) return;
+  const storage = getBrowserSessionStorage();
+  if (!storage) return;
   try {
-    window.sessionStorage.setItem(OPPREF_STORAGE_KEY, value);
-    window.sessionStorage.setItem(OPPREF_CAPTURED_AT_STORAGE_KEY, String(Date.now()));
+    storage.setItem(OPPREF_STORAGE_KEY, value);
+    storage.setItem(OPPREF_CAPTURED_AT_STORAGE_KEY, String(Date.now()));
   } catch {
     // OpenAI Ads must never break the site.
   }
 }
 
 function clearOpprefSessionStorage(): void {
-  if (!canUseSessionStorage()) return;
+  const storage = getBrowserSessionStorage();
+  if (!storage) return;
   try {
-    window.sessionStorage.removeItem(OPPREF_STORAGE_KEY);
-    window.sessionStorage.removeItem(OPPREF_CAPTURED_AT_STORAGE_KEY);
+    storage.removeItem(OPPREF_STORAGE_KEY);
+    storage.removeItem(OPPREF_CAPTURED_AT_STORAGE_KEY);
   } catch {
     // no-op
   }
@@ -148,10 +118,11 @@ function clearOpprefSessionStorage(): void {
 // Expiration vérifiée paresseusement à la lecture (même pattern que le TTL de consentement
 // ci-dessus). Purge les deux clés dès qu'elles sont incohérentes, incomplètes ou périmées.
 function readOpprefFromSessionStorage(): string | null {
-  if (!canUseSessionStorage()) return null;
+  const storage = getBrowserSessionStorage();
+  if (!storage) return null;
   try {
-    const value = window.sessionStorage.getItem(OPPREF_STORAGE_KEY);
-    const capturedAtRaw = window.sessionStorage.getItem(OPPREF_CAPTURED_AT_STORAGE_KEY);
+    const value = storage.getItem(OPPREF_STORAGE_KEY);
+    const capturedAtRaw = storage.getItem(OPPREF_CAPTURED_AT_STORAGE_KEY);
 
     if (!value || !capturedAtRaw) {
       clearOpprefSessionStorage();
@@ -330,8 +301,10 @@ export function initOpenAiAdsPixelIfConsented(): void {
   }
 }
 
-export function acceptAdvertisingConsent(): void {
-  writeAdvertisingConsent('accepted');
+export function acceptAdvertisingConsent(): ConsentWriteResult {
+  const previousConsent = readAdvertisingConsent();
+  const result = setConsentPreferences({ advertising: 'accepted' });
+  if (previousConsent === 'accepted') return result;
 
   try {
     if (isOpenAiAdsPixelInitialized) {
@@ -342,16 +315,20 @@ export function acceptAdvertisingConsent(): void {
   } catch {
     // OpenAI Ads must never break the site.
   }
+  return result;
 }
 
-export function refuseAdvertisingConsent(): void {
-  writeAdvertisingConsent('refused');
+export function refuseAdvertisingConsent(): ConsentWriteResult {
+  const previousConsent = readAdvertisingConsent();
+  const result = setConsentPreferences({ advertising: 'refused' });
+  if (previousConsent === 'refused') return result;
 
   try {
     window.oaiq?.('consent', false);
   } catch {
     // OpenAI Ads must never break the site.
   }
+  return result;
 }
 
 export function trackLeadCreatedConversion(): void {
@@ -369,8 +346,6 @@ export function trackLeadCreatedConversion(): void {
 export const openAiAdsInternalsForTests = {
   reset: () => {
     isOpenAiAdsPixelInitialized = false;
-    volatileAdvertisingConsent = null;
-    volatileAdvertisingConsentUpdatedAt = null;
     // sessionStorage n'est volontairement PAS vidé ici : il doit survivre à reset() pour
     // permettre de tester la persistance à travers un hard reload (le module JS est
     // réexécuté, mais sessionStorage, propriété du navigateur, ne l'est pas).

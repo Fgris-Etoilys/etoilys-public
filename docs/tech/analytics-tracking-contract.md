@@ -1,8 +1,20 @@
-# Contrat de tracking analytics — v3
+# Contrat de tracking analytics — v3.1
 
-Version du 10 juillet 2026.
+Version du 28 septembre 2026.
 
 Ce contrat sépare strictement la mesure minimale sans cookie après un refus explicite et les analytics détaillés après consentement. Il ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
+
+## Mise à jour lot 1 — consentement
+
+Le recueil du consentement repose sur une source de vérité commune côté navigateur, partagée avec la mesure publicitaire. Le lot 1 conserve les clés historiques existantes plutôt que d'introduire un nouveau format de stockage :
+
+- `etoilys_analytics_consent` et `etoilys_analytics_consent_updated_at` pour PostHog ;
+- `etoilys_advertising_consent` et `etoilys_advertising_consent_updated_at` pour OpenAI Ads ;
+- `etoilys_cookieless_audience_opt_out` pour l'opposition à une éventuelle mesure minimale.
+
+Les choix restent valables 183 jours. Si l'accès au stockage navigateur échoue, le choix utilisateur est appliqué en mémoire pour le document courant afin qu'un refus explicite ne soit pas ignoré au profit d'une ancienne valeur persistée. Il pourra être redemandé lors d'un rechargement si la persistance a réellement échoué.
+
+L'interface ne lit plus `localStorage` pendant le premier rendu hydraté : elle attend la résolution client avant d'afficher la bannière. La fenêtre de préférences applique les changements uniquement au clic sur `Enregistrer mes choix`; fermer la fenêtre annule le brouillon.
 
 ## Matrice des états
 
@@ -44,7 +56,7 @@ Propriétés de session consenties :
 - `acquisition_source` : source normalisée ou domaine référent ;
 - `ai_referrer` : `chatgpt`, `perplexity`, `claude`, `gemini`, `copilot` ou `other`, uniquement pour une source IA ;
 - `landing_page` ;
-- `locale` : `fr` ou `en`.
+- `locale` : `fr`, `en` ou `nl`.
 
 ## Événement d’audience minimale
 
@@ -53,7 +65,7 @@ Propriétés de session consenties :
 Propriétés fonctionnelles autorisées :
 
 - `landing_page` : pathname normalisé, sans query ni hash ;
-- `locale` : `fr` ou `en`.
+- `locale` : `fr`, `en` ou `nl`.
 
 Le SDK ajoute les propriétés techniques strictement nécessaires au transport cookieless, dont le hash cookieless non persistant et `$geoip_disable`. La sanitisation dédiée supprime URL complète, référent, UTM, campagne, acquisition, navigateur, écran, appareil, géolocalisation et toute autre propriété automatique non indispensable. `referrer_host` est exclu de la v3.
 

@@ -1,155 +1,68 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { X } from 'lucide-react';
 import {
   acceptAnalyticsConsent,
-  getAnalyticsConsentStatus,
-  isCookielessAudienceMeasurementEnabled,
   rejectAnalyticsConsent,
   setCookielessAudienceMeasurementEnabled,
-  type AnalyticsConsent,
 } from '../../utils/analytics';
-import {
-  acceptAdvertisingConsent,
-  getAdvertisingConsentStatus,
-  refuseAdvertisingConsent,
-  type AdvertisingConsent,
-} from '../../utils/openAiAds';
+import { acceptAdvertisingConsent, refuseAdvertisingConsent } from '../../utils/openAiAds';
 import { COOKIE_PREFERENCES_EVENT_NAME } from '../../utils/cookiePreferences';
-import { type Locale } from '../../i18n/locales';
+import {
+  getConsentSnapshot,
+  getServerConsentSnapshot,
+  subscribeConsent,
+  type ConsentSnapshot,
+} from '../../utils/consent';
+import { cookieConsentContent } from '../../i18n/cookieConsentContent';
 import { getLocaleFromPath, getLocalizedPath } from '../../i18n/routeHelpers';
 
-const cookieConsentContent = {
-  fr: {
-    bannerAriaLabel: 'Gestion des cookies',
-    bannerTitle: 'Vos préférences de confidentialité',
-    bannerText:
-      'Etoilys utilise PostHog pour mesurer l’utilisation du site et améliorer ses pages, formulaires et simulateurs, ainsi qu’OpenAI Ads pour mesurer l’efficacité de ses campagnes publicitaires. Avec votre accord, nous mesurons également l’origine des visites et les actions réalisées sur le site.\n\nSi vous refusez, aucun cookie analytique ni publicitaire n’est utilisé. Une mesure limitée, sans cookie, de la page d’entrée et de la langue peut toutefois rester active. Vous pouvez aussi la désactiver dans les préférences et modifier votre choix à tout moment.',
-    privacyLinkLabel: 'Politique de confidentialité',
-    rejectLabel: 'Refuser',
-    acceptLabel: 'Accepter',
-    preferencesTitle: 'Préférences cookies',
-    preferencesDescription:
-      'Le consentement détaillé, la mesure publicitaire et la mesure minimale après refus sont des réglages distincts.',
-    closePreferencesLabel: 'Fermer les préférences cookies',
-    detailedPurposeLabel: 'Analytics détaillés',
-    detailedPurposeValue:
-      'Pages consultées, acquisition, formulaires, contacts, simulateurs et conversions, uniquement après acceptation.',
-    advertisingPurposeLabel: 'Mesure publicitaire (OpenAI Ads)',
-    advertisingPurposeValue:
-      'Envoi d’un événement de conversion à OpenAI Ads uniquement lorsqu’une demande de classement est réellement envoyée avec succès. Le site n’y ajoute explicitement aucune donnée brute du formulaire ; si la correspondance avancée automatique d’OpenAI Ads est active pour cette source, elle peut toutefois transmettre séparément des informations client hachées détectées sur la page.',
-    advertisingToggleLabel: 'Autoriser la mesure publicitaire OpenAI Ads',
-    currentAdvertisingStatusLabel: 'Consentement publicitaire',
-    minimalPurposeLabel: 'Audience minimale après refus',
-    minimalPurposeValue:
-      'Au maximum un événement sans cookie par chargement, limité à la page d’entrée sans paramètres et à la langue. Le flag de production reste désactivé tant que les contrôles préalables ne sont pas terminés.',
-    minimalToggleLabel: 'Autoriser la mesure d’audience minimale après un refus',
-    toolLabel: 'Outil',
-    currentStatusLabel: 'Consentement détaillé',
-    statusLabels: {
-      accepted: 'accepté',
-      refused: 'refusé',
-      unset: 'non défini',
-    },
-  },
-  en: {
-    bannerAriaLabel: 'Cookie management',
-    bannerTitle: 'Your privacy preferences',
-    bannerText:
-      'Etoilys uses PostHog to understand how the website is used and improve its pages, forms and simulators, as well as OpenAI Ads to measure the effectiveness of its advertising campaigns. With your consent, we also measure where visits come from and the actions taken on the website.\n\nIf you decline, no analytics or advertising cookies will be used. A limited, cookieless measurement of the landing page and language may still remain active. You can also disable it in the preferences and change your choice at any time.',
-    privacyLinkLabel: 'Privacy policy',
-    rejectLabel: 'Refuse',
-    acceptLabel: 'Accept',
-    preferencesTitle: 'Cookie preferences',
-    preferencesDescription:
-      'Detailed consent, advertising measurement and minimal measurement after refusal are separate settings.',
-    closePreferencesLabel: 'Close cookie preferences',
-    detailedPurposeLabel: 'Detailed analytics',
-    detailedPurposeValue:
-      'Viewed pages, acquisition, forms, contact links, simulators and conversions, only after acceptance.',
-    advertisingPurposeLabel: 'Advertising measurement (OpenAI Ads)',
-    advertisingPurposeValue:
-      'Sends a conversion event to OpenAI Ads only when a classification request is actually submitted successfully. The site does not explicitly add any raw form data to it; OpenAI Ads’ automatic advanced matching, if active for this source, may separately send hashed customer information it detects on the page.',
-    advertisingToggleLabel: 'Allow OpenAI Ads advertising measurement',
-    currentAdvertisingStatusLabel: 'Advertising consent',
-    minimalPurposeLabel: 'Minimal audience measurement after refusal',
-    minimalPurposeValue:
-      'At most one cookieless event per page load, limited to the landing page without parameters and the language. The production flag remains disabled until the prerequisite checks are complete.',
-    minimalToggleLabel: 'Allow minimal audience measurement after refusal',
-    toolLabel: 'Tool',
-    currentStatusLabel: 'Detailed consent',
-    statusLabels: {
-      accepted: 'accepted',
-      refused: 'refused',
-      unset: 'not set',
-    },
-  },
-  nl: {
-    bannerAriaLabel: 'Cookiebeheer',
-    bannerTitle: 'Uw privacyvoorkeuren',
-    bannerText:
-      'Etoilys gebruikt PostHog om te begrijpen hoe de website wordt gebruikt en om pagina’s, formulieren en diensten te verbeteren, evenals OpenAI Ads om de effectiviteit van advertentiecampagnes te meten. Met uw toestemming meten wij ook waar bezoeken vandaan komen en welke acties op de website worden uitgevoerd.\n\nAls u weigert, worden er geen analytische of advertentiecookies gebruikt. Een beperkte meting zonder cookies van de landingspagina en de taal kan wel actief blijven. U kunt die ook uitschakelen in de voorkeuren en uw keuze op elk moment wijzigen.',
-    privacyLinkLabel: 'Privacybeleid',
-    rejectLabel: 'Weigeren',
-    acceptLabel: 'Accepteren',
-    preferencesTitle: 'Cookievoorkeuren',
-    preferencesDescription:
-      'Gedetailleerde toestemming, advertentiemeting en minimale meting na weigering zijn aparte instellingen.',
-    closePreferencesLabel: 'Cookievoorkeuren sluiten',
-    detailedPurposeLabel: 'Gedetailleerde analytics',
-    detailedPurposeValue:
-      'Bekeken pagina’s, acquisitie, formulieren, contactlinks, simulatoren en conversies, alleen na acceptatie.',
-    advertisingPurposeLabel: 'Advertentiemeting (OpenAI Ads)',
-    advertisingPurposeValue:
-      'Verzendt een conversiegebeurtenis naar OpenAI Ads alleen wanneer een classificatieaanvraag daadwerkelijk succesvol is verzonden. De site voegt hier expliciet geen ruwe formuliergegevens aan toe; de automatische advanced matching van OpenAI Ads kan, indien actief voor deze bron, afzonderlijk gehashte klantgegevens verzenden die op de pagina worden gedetecteerd.',
-    advertisingToggleLabel: 'Advertentiemeting via OpenAI Ads toestaan',
-    currentAdvertisingStatusLabel: 'Advertentietoestemming',
-    minimalPurposeLabel: 'Minimale bezoekersmeting na weigering',
-    minimalPurposeValue:
-      'Maximaal één gebeurtenis zonder cookie per paginaweergave, beperkt tot de landingspagina zonder parameters en de taal. Deze beperkte meting kan afzonderlijk worden uitgeschakeld in de cookievoorkeuren.',
-    minimalToggleLabel: 'Minimale bezoekersmeting na een weigering toestaan',
-    toolLabel: 'Tool',
-    currentStatusLabel: 'Gedetailleerde toestemming',
-    statusLabels: {
-      accepted: 'geaccepteerd',
-      refused: 'geweigerd',
-      unset: 'niet ingesteld',
-    },
-  },
-} as const satisfies Record<
-  Locale,
-  {
-    bannerAriaLabel: string;
-    bannerTitle: string;
-    bannerText: string;
-    privacyLinkLabel: string;
-    rejectLabel: string;
-    acceptLabel: string;
-    preferencesTitle: string;
-    preferencesDescription: string;
-    closePreferencesLabel: string;
-    detailedPurposeLabel: string;
-    detailedPurposeValue: string;
-    advertisingPurposeLabel: string;
-    advertisingPurposeValue: string;
-    advertisingToggleLabel: string;
-    currentAdvertisingStatusLabel: string;
-    minimalPurposeLabel: string;
-    minimalPurposeValue: string;
-    minimalToggleLabel: string;
-    toolLabel: string;
-    currentStatusLabel: string;
-    statusLabels: Record<AnalyticsConsent | AdvertisingConsent | 'unset', string>;
-  }
->;
+interface ConsentDraft {
+  analyticsEnabled: boolean;
+  advertisingEnabled: boolean;
+  cookielessAudienceEnabled: boolean;
+}
 
-function getStatusLabel(
-  status: AnalyticsConsent | null,
-  statusLabels: Record<AnalyticsConsent | 'unset', string>
-): string {
-  if (status === 'accepted') return statusLabels.accepted;
-  if (status === 'refused') return statusLabels.refused;
-  return statusLabels.unset;
+function createDraft(snapshot: ConsentSnapshot): ConsentDraft {
+  return {
+    analyticsEnabled: snapshot.analytics === 'accepted',
+    advertisingEnabled: snapshot.advertising === 'accepted',
+    cookielessAudienceEnabled: !snapshot.cookielessAudience.userOptOut,
+  };
+}
+
+function didPersist(result: { persisted: boolean } | undefined): boolean {
+  return result?.persisted !== false;
+}
+
+function ToggleSwitch({
+  checked,
+  label,
+  enabledLabel,
+  disabledLabel,
+  onChange,
+}: {
+  checked: boolean;
+  label: string;
+  enabledLabel: string;
+  disabledLabel: string;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label className="mt-3 flex cursor-pointer items-center justify-between gap-4 text-ink">
+      <span className="text-sm font-medium">{label}</span>
+      <span className="flex shrink-0 items-center gap-2">
+        <span className="text-xs text-muted">{checked ? enabledLabel : disabledLabel}</span>
+        <input
+          type="checkbox"
+          aria-label={label}
+          checked={checked}
+          onChange={(event) => onChange(event.target.checked)}
+          className="ui-focus h-5 w-5 rounded border-ink/30 [accent-color:rgb(var(--color-ink))]"
+        />
+      </span>
+    </label>
+  );
 }
 
 export default function CookieConsentManager() {
@@ -157,65 +70,113 @@ export default function CookieConsentManager() {
   const locale = getLocaleFromPath(location.pathname);
   const content = cookieConsentContent[locale];
   const privacyPath = getLocalizedPath('confidentialite', locale) ?? '/confidentialite';
-  const [consentStatus, setConsentStatus] = useState<AnalyticsConsent | null>(() =>
-    getAnalyticsConsentStatus()
+  const snapshot = useSyncExternalStore(
+    subscribeConsent,
+    getConsentSnapshot,
+    getServerConsentSnapshot
   );
-  const [advertisingConsentStatus, setAdvertisingConsentStatus] =
-    useState<AdvertisingConsent | null>(() => getAdvertisingConsentStatus());
-  const [isMinimalAudienceEnabled, setIsMinimalAudienceEnabled] = useState(() =>
-    isCookielessAudienceMeasurementEnabled()
-  );
-  const [isPreferencesOpen, setIsPreferencesOpen] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+  const [draft, setDraft] = useState<ConsentDraft | null>(null);
+  const [isDismissedForCurrentView, setIsDismissedForCurrentView] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
   const bannerRef = useRef<HTMLElement | null>(null);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+
+  const isPreferencesOpen = draft !== null;
   const showInitialBanner =
-    (consentStatus === null || advertisingConsentStatus === null) && !isPreferencesOpen;
-
-  const refreshPreferences = useCallback(() => {
-    setConsentStatus(getAnalyticsConsentStatus());
-    setAdvertisingConsentStatus(getAdvertisingConsentStatus());
-    setIsMinimalAudienceEnabled(isCookielessAudienceMeasurementEnabled());
-  }, []);
-
-  const handleAccept = useCallback(() => {
-    acceptAnalyticsConsent();
-    acceptAdvertisingConsent();
-    setConsentStatus('accepted');
-    setAdvertisingConsentStatus('accepted');
-    setIsPreferencesOpen(false);
-  }, []);
-
-  const handleReject = useCallback(() => {
-    rejectAnalyticsConsent();
-    refuseAdvertisingConsent();
-    setConsentStatus('refused');
-    setAdvertisingConsentStatus('refused');
-    setIsPreferencesOpen(false);
-  }, []);
-
-  const handleAdvertisingConsentChange = useCallback((enabled: boolean) => {
-    if (enabled) {
-      acceptAdvertisingConsent();
-    } else {
-      refuseAdvertisingConsent();
-    }
-    setAdvertisingConsentStatus(enabled ? 'accepted' : 'refused');
-  }, []);
-
-  const handleMinimalAudienceChange = useCallback((enabled: boolean) => {
-    setCookielessAudienceMeasurementEnabled(enabled);
-    setIsMinimalAudienceEnabled(enabled);
-  }, []);
+    isReady &&
+    !isPreferencesOpen &&
+    !isDismissedForCurrentView &&
+    (snapshot.analytics === null || snapshot.advertising === null);
 
   useEffect(() => {
-    const openPreferences = () => {
-      refreshPreferences();
-      setIsPreferencesOpen(true);
+    setIsReady(true);
+  }, []);
+
+  const openPreferences = useCallback((trigger?: HTMLElement | null) => {
+    triggerRef.current = trigger ?? null;
+    setDraft(createDraft(getConsentSnapshot()));
+  }, []);
+
+  const closePreferences = useCallback(() => {
+    setDraft(null);
+    triggerRef.current?.focus();
+  }, []);
+
+  const applyRejectAll = useCallback(() => {
+    const results = [];
+    if (snapshot.cookielessAudience.featureAvailable) {
+      results.push(setCookielessAudienceMeasurementEnabled(false));
+    }
+    results.push(rejectAnalyticsConsent());
+    results.push(refuseAdvertisingConsent());
+    setDraft(null);
+    setIsDismissedForCurrentView(true);
+    setStatusMessage(results.every(didPersist) ? content.savedMessage : content.memoryOnlyMessage);
+  }, [
+    content.memoryOnlyMessage,
+    content.savedMessage,
+    snapshot.cookielessAudience.featureAvailable,
+  ]);
+
+  const applyAcceptAll = useCallback(() => {
+    const results = [acceptAnalyticsConsent(), acceptAdvertisingConsent()];
+    if (snapshot.cookielessAudience.featureAvailable) {
+      results.push(setCookielessAudienceMeasurementEnabled(true));
+    }
+    setDraft(null);
+    setIsDismissedForCurrentView(true);
+    setStatusMessage(results.every(didPersist) ? content.savedMessage : content.memoryOnlyMessage);
+  }, [
+    content.memoryOnlyMessage,
+    content.savedMessage,
+    snapshot.cookielessAudience.featureAvailable,
+  ]);
+
+  const saveDraft = useCallback(() => {
+    if (!draft) return;
+
+    const currentSnapshot = getConsentSnapshot();
+    const results = [];
+
+    if (currentSnapshot.analytics !== (draft.analyticsEnabled ? 'accepted' : 'refused')) {
+      if (draft.analyticsEnabled) {
+        results.push(acceptAnalyticsConsent());
+      } else {
+        results.push(rejectAnalyticsConsent());
+      }
+    }
+
+    if (currentSnapshot.advertising !== (draft.advertisingEnabled ? 'accepted' : 'refused')) {
+      if (draft.advertisingEnabled) {
+        results.push(acceptAdvertisingConsent());
+      } else {
+        results.push(refuseAdvertisingConsent());
+      }
+    }
+
+    if (
+      currentSnapshot.cookielessAudience.featureAvailable &&
+      currentSnapshot.cookielessAudience.userOptOut === draft.cookielessAudienceEnabled
+    ) {
+      results.push(setCookielessAudienceMeasurementEnabled(draft.cookielessAudienceEnabled));
+    }
+
+    setDraft(null);
+    setIsDismissedForCurrentView(true);
+    setStatusMessage(results.every(didPersist) ? content.savedMessage : content.memoryOnlyMessage);
+  }, [content.memoryOnlyMessage, content.savedMessage, draft]);
+
+  useEffect(() => {
+    const handleOpenPreferences = () => {
+      openPreferences();
     };
 
-    window.addEventListener(COOKIE_PREFERENCES_EVENT_NAME, openPreferences);
-    return () => window.removeEventListener(COOKIE_PREFERENCES_EVENT_NAME, openPreferences);
-  }, [refreshPreferences]);
+    window.addEventListener(COOKIE_PREFERENCES_EVENT_NAME, handleOpenPreferences);
+    return () => window.removeEventListener(COOKIE_PREFERENCES_EVENT_NAME, handleOpenPreferences);
+  }, [openPreferences]);
 
   useEffect(() => {
     if (!showInitialBanner) return undefined;
@@ -255,24 +216,32 @@ export default function CookieConsentManager() {
   }, [showInitialBanner]);
 
   useEffect(() => {
-    if (!isPreferencesOpen) return undefined;
+    const dialog = dialogRef.current;
+    if (!dialog || !isPreferencesOpen) return undefined;
 
+    if (!dialog.open) {
+      dialog.showModal();
+    }
     closeButtonRef.current?.focus();
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsPreferencesOpen(false);
-    };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      if (dialog.open) {
+        dialog.close();
+      }
+    };
   }, [isPreferencesOpen]);
 
   const secondaryActionButtonClasses =
-    'ui-focus inline-flex min-h-11 w-full items-center justify-center rounded-editorial border border-ink/20 bg-transparent px-5 py-2.5 text-sm font-medium text-ink transition-colors duration-200 hover:bg-surface-hover hover:text-ink sm:min-w-32 motion-reduce:transition-none';
+    'ui-focus inline-flex min-h-11 w-full items-center justify-center rounded-editorial border border-ink/25 bg-transparent px-4 py-2.5 text-sm font-medium text-ink transition-colors duration-200 hover:bg-surface-hover hover:text-ink motion-reduce:transition-none';
   const primaryActionButtonClasses =
-    'ui-focus inline-flex min-h-11 w-full items-center justify-center rounded-editorial border border-ink bg-ink px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-ink-hover hover:text-white sm:min-w-32 motion-reduce:transition-none';
+    'ui-focus inline-flex min-h-11 w-full items-center justify-center rounded-editorial border border-ink bg-ink px-4 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-ink-hover hover:text-white motion-reduce:transition-none';
 
   return (
     <>
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {statusMessage}
+      </div>
+
       {showInitialBanner && (
         <section
           ref={bannerRef}
@@ -280,27 +249,38 @@ export default function CookieConsentManager() {
           aria-label={content.bannerAriaLabel}
           className="fixed inset-x-0 bottom-0 z-[60] px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-6 sm:pb-6"
         >
-          <div className="mx-auto max-w-4xl rounded-editorial border border-ink/15 bg-surface p-4 shadow-[0_10px_30px_rgb(var(--color-ink)/0.08)] transition-all duration-300 motion-reduce:transition-none sm:p-5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-5">
-              <div className="max-w-2xl">
-                <p className="mb-3 text-base font-playfair font-semibold text-ink">
+          <div className="mx-auto max-w-[720px] rounded-editorial border border-ink/15 bg-surface p-4 shadow-[0_10px_30px_rgb(var(--color-ink)/0.08)] transition-all duration-200 motion-reduce:transition-none sm:p-5">
+            <div className="space-y-4">
+              <div>
+                <p className="mb-2 font-playfair text-lg font-semibold text-ink">
                   {content.bannerTitle}
                 </p>
-                <p className="max-w-2xl text-sm leading-relaxed text-muted">{content.bannerText}</p>
-                <Link to={privacyPath} className="editorial-inline-link mt-4 inline-flex text-sm">
-                  {content.privacyLinkLabel}
+                <p className="text-sm leading-relaxed text-muted">{content.bannerText}</p>
+                <Link to={privacyPath} className="editorial-inline-link mt-3 inline-flex text-sm">
+                  {content.learnMoreLabel}
                 </Link>
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:shrink-0">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <button
                   type="button"
                   className={secondaryActionButtonClasses}
-                  onClick={handleReject}
+                  onClick={applyRejectAll}
                 >
-                  {content.rejectLabel}
+                  {content.rejectAllLabel}
                 </button>
-                <button type="button" className={primaryActionButtonClasses} onClick={handleAccept}>
-                  {content.acceptLabel}
+                <button
+                  type="button"
+                  className={secondaryActionButtonClasses}
+                  onClick={(event) => openPreferences(event.currentTarget)}
+                >
+                  {content.customizeLabel}
+                </button>
+                <button
+                  type="button"
+                  className={primaryActionButtonClasses}
+                  onClick={applyAcceptAll}
+                >
+                  {content.acceptAllLabel}
                 </button>
               </div>
             </div>
@@ -308,93 +288,144 @@ export default function CookieConsentManager() {
         </section>
       )}
 
-      {isPreferencesOpen && (
-        <div
-          className="fixed inset-0 z-[70] flex items-end justify-center bg-ink/35 px-4 py-6 sm:items-center"
+      {draft && (
+        <dialog
+          ref={dialogRef}
+          aria-labelledby="cookie-preferences-title"
+          aria-describedby="cookie-preferences-description"
+          className="m-0 h-full max-h-none w-full max-w-none bg-transparent p-0 backdrop:bg-ink/35"
+          onCancel={(event) => {
+            event.preventDefault();
+            closePreferences();
+          }}
           onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setIsPreferencesOpen(false);
+            if (event.target === event.currentTarget) closePreferences();
           }}
         >
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="cookie-preferences-title"
-            aria-describedby="cookie-preferences-description"
-            className="w-full max-w-lg rounded-editorial border border-ink/15 bg-surface p-5 shadow-[0_20px_55px_rgb(var(--color-ink)/0.14)] sm:p-6"
-          >
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <h2 id="cookie-preferences-title" className="text-xl text-ink">
-                  {content.preferencesTitle}
-                </h2>
-                <p id="cookie-preferences-description" className="mt-2 text-sm text-muted">
-                  {content.preferencesDescription}
-                </p>
+          <div className="flex min-h-full items-end justify-center px-4 py-4 sm:items-center sm:py-6">
+            <section className="flex max-h-[calc(100dvh-2rem)] w-full max-w-xl flex-col rounded-editorial border border-ink/15 bg-surface shadow-[0_20px_55px_rgb(var(--color-ink)/0.14)]">
+              <div className="flex items-start justify-between gap-4 border-b border-ink/10 p-5 sm:p-6">
+                <div>
+                  <h2 id="cookie-preferences-title" className="text-xl text-ink">
+                    {content.preferencesTitle}
+                  </h2>
+                  <p id="cookie-preferences-description" className="mt-2 text-sm text-muted">
+                    {content.preferencesIntro}
+                  </p>
+                </div>
+                <button
+                  ref={closeButtonRef}
+                  type="button"
+                  className="ui-focus inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-editorial border border-ink/20 text-ink transition-colors duration-200 hover:bg-surface-hover motion-reduce:transition-none"
+                  aria-label={content.closePreferencesLabel}
+                  onClick={closePreferences}
+                >
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
               </div>
-              <button
-                ref={closeButtonRef}
-                type="button"
-                className="ui-focus inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-editorial border border-ink/20 text-ink transition-colors duration-200 hover:bg-surface-hover motion-reduce:transition-none"
-                aria-label={content.closePreferencesLabel}
-                onClick={() => setIsPreferencesOpen(false)}
-              >
-                <X className="h-4 w-4" aria-hidden="true" />
-              </button>
-            </div>
 
-            <div className="space-y-4 rounded-editorial border border-ink/15 bg-surface-neutral p-4 text-sm">
-              <div>
-                <p className="font-medium text-ink">{content.detailedPurposeLabel}</p>
-                <p className="mt-1 text-muted">{content.detailedPurposeValue}</p>
-                <p className="mt-2 text-muted">
-                  {content.currentStatusLabel} :{' '}
-                  {getStatusLabel(consentStatus, content.statusLabels)}
-                </p>
-                <p className="mt-1 text-muted">{content.toolLabel} : PostHog</p>
-              </div>
-              <div className="border-t border-ink/15 pt-4">
-                <p className="font-medium text-ink">{content.advertisingPurposeLabel}</p>
-                <p className="mt-1 text-muted">{content.advertisingPurposeValue}</p>
-                <label className="mt-3 flex cursor-pointer items-start gap-3 text-ink">
-                  <input
-                    type="checkbox"
-                    checked={advertisingConsentStatus === 'accepted'}
-                    onChange={(event) => handleAdvertisingConsentChange(event.target.checked)}
-                    className="ui-focus mt-0.5 h-4 w-4 rounded border-ink/30 [accent-color:rgb(var(--color-ink))]"
-                  />
-                  <span>{content.advertisingToggleLabel}</span>
-                </label>
-                <p className="mt-2 text-muted">
-                  {content.currentAdvertisingStatusLabel} :{' '}
-                  {getStatusLabel(advertisingConsentStatus, content.statusLabels)}
-                </p>
-                <p className="mt-1 text-muted">{content.toolLabel} : OpenAI Ads</p>
-              </div>
-              <div className="border-t border-ink/15 pt-4">
-                <p className="font-medium text-ink">{content.minimalPurposeLabel}</p>
-                <p className="mt-1 text-muted">{content.minimalPurposeValue}</p>
-                <label className="mt-3 flex cursor-pointer items-start gap-3 text-ink">
-                  <input
-                    type="checkbox"
-                    checked={isMinimalAudienceEnabled}
-                    onChange={(event) => handleMinimalAudienceChange(event.target.checked)}
-                    className="ui-focus mt-0.5 h-4 w-4 rounded border-ink/30 [accent-color:rgb(var(--color-ink))]"
-                  />
-                  <span>{content.minimalToggleLabel}</span>
-                </label>
-              </div>
-            </div>
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto p-5 text-sm sm:p-6">
+                <section className="border-b border-ink/10 pb-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="font-medium text-ink">{content.necessaryTitle}</h3>
+                      <p className="mt-1 text-muted">{content.necessaryText}</p>
+                    </div>
+                    <span className="shrink-0 rounded-editorial bg-paper px-2.5 py-1 text-xs font-medium text-ink">
+                      {content.alwaysActiveLabel}
+                    </span>
+                  </div>
+                </section>
 
-            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <button type="button" className={secondaryActionButtonClasses} onClick={handleReject}>
-                {content.rejectLabel}
-              </button>
-              <button type="button" className={primaryActionButtonClasses} onClick={handleAccept}>
-                {content.acceptLabel}
-              </button>
-            </div>
-          </section>
-        </div>
+                <section className="border-b border-ink/10 pb-4">
+                  <h3 className="font-medium text-ink">{content.analyticsTitle}</h3>
+                  <p className="mt-1 text-muted">{content.analyticsText}</p>
+                  <p className="mt-2 text-xs text-muted">{content.analyticsTool}</p>
+                  <ToggleSwitch
+                    checked={draft.analyticsEnabled}
+                    label={content.analyticsTitle}
+                    enabledLabel={content.enabledLabel}
+                    disabledLabel={content.disabledLabel}
+                    onChange={(checked) =>
+                      setDraft((currentDraft) =>
+                        currentDraft ? { ...currentDraft, analyticsEnabled: checked } : currentDraft
+                      )
+                    }
+                  />
+                </section>
+
+                <section className="border-b border-ink/10 pb-4">
+                  <h3 className="font-medium text-ink">{content.advertisingTitle}</h3>
+                  <p className="mt-1 text-muted">{content.advertisingText}</p>
+                  <p className="mt-2 text-xs text-muted">{content.advertisingTool}</p>
+                  <p className="mt-2 text-xs leading-relaxed text-muted">
+                    {content.advertisingMatchingText}
+                  </p>
+                  <ToggleSwitch
+                    checked={draft.advertisingEnabled}
+                    label={content.advertisingTitle}
+                    enabledLabel={content.enabledLabel}
+                    disabledLabel={content.disabledLabel}
+                    onChange={(checked) =>
+                      setDraft((currentDraft) =>
+                        currentDraft
+                          ? { ...currentDraft, advertisingEnabled: checked }
+                          : currentDraft
+                      )
+                    }
+                  />
+                </section>
+
+                {snapshot.cookielessAudience.featureAvailable && (
+                  <section>
+                    <h3 className="font-medium text-ink">{content.cookielessTitle}</h3>
+                    <p className="mt-1 text-muted">{content.cookielessText}</p>
+                    <ToggleSwitch
+                      checked={draft.cookielessAudienceEnabled}
+                      label={content.cookielessTitle}
+                      enabledLabel={content.enabledLabel}
+                      disabledLabel={content.disabledLabel}
+                      onChange={(checked) =>
+                        setDraft((currentDraft) =>
+                          currentDraft
+                            ? { ...currentDraft, cookielessAudienceEnabled: checked }
+                            : currentDraft
+                        )
+                      }
+                    />
+                  </section>
+                )}
+              </div>
+
+              <div className="grid shrink-0 grid-cols-1 gap-3 border-t border-ink/10 p-5 sm:grid-cols-3 sm:p-6">
+                <button
+                  type="button"
+                  className={secondaryActionButtonClasses}
+                  onClick={applyRejectAll}
+                >
+                  {content.rejectAllLabel}
+                </button>
+                <button
+                  type="button"
+                  className={secondaryActionButtonClasses}
+                  onClick={applyAcceptAll}
+                >
+                  {content.acceptAllLabel}
+                </button>
+                <button type="button" className={primaryActionButtonClasses} onClick={saveDraft}>
+                  {content.saveLabel}
+                </button>
+                <Link
+                  to={privacyPath}
+                  className="editorial-inline-link inline-flex items-center justify-center text-sm sm:col-span-3"
+                  onClick={closePreferences}
+                >
+                  {content.privacyLinkLabel}
+                </Link>
+              </div>
+            </section>
+          </div>
+        </dialog>
       )}
     </>
   );
