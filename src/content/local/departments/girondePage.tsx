@@ -46,12 +46,6 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
       ),
       note: LOCAL_V6_HERO_NOTE,
       index: LOCAL_V6_DEPARTMENT_HERO_INDEXES.gironde,
-      credit: {
-        sourceLabel: 'Axel Delansorne / Unsplash',
-        sourceHref: 'https://unsplash.com/photos/fSpupJ0C95E',
-        licenseLabel: 'Unsplash License',
-        licenseHref: 'https://unsplash.com/license',
-      },
     },
     primaryAction: LOCAL_V6_HERO_PRIMARY_ACTION,
     secondaryAction: {

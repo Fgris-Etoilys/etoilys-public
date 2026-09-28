@@ -42,12 +42,6 @@ export const AVEYRON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
       ),
       note: LOCAL_V6_HERO_NOTE,
       index: LOCAL_V6_DEPARTMENT_HERO_INDEXES.aveyron,
-      credit: {
-        sourceLabel: 'Kallerna / Wikimedia Commons',
-        sourceHref: 'https://commons.wikimedia.org/wiki/File:Belcastel_4.jpg',
-        licenseLabel: 'CC BY-SA 4.0',
-        licenseHref: 'https://creativecommons.org/licenses/by-sa/4.0/',
-      },
     },
     primaryAction: LOCAL_V6_HERO_PRIMARY_ACTION,
     secondaryAction: {

@@ -48,13 +48,6 @@ export const BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
         </>
       ),
       note: LOCAL_V6_HERO_NOTE,
-      credit: {
-        sourceLabel: 'Grand Parc - Bordeaux, France / Wikimedia Commons',
-        sourceHref:
-          'https://commons.wikimedia.org/wiki/File:Bassin_d%27Arcachon_-_Cabanes_Tchanqu%C3%A9es_sur_l%27%C3%AFle_aux_oiseaux_-_Picture_Image_Photography_(14524551963).jpg',
-        licenseLabel: 'CC BY 2.0',
-        licenseHref: 'https://creativecommons.org/licenses/by/2.0/',
-      },
     },
     primaryAction: {
       href: '/demande-classement',

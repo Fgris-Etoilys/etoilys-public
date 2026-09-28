@@ -46,12 +46,6 @@ export const BORDEAUX_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
         </>
       ),
       note: LOCAL_V6_HERO_NOTE,
-      credit: {
-        sourceLabel: 'Miguel Cuenca / Pexels',
-        sourceHref: 'https://www.pexels.com/photo/place-de-la-bourse-in-bordeaux-france-17356595/',
-        licenseLabel: 'Pexels License',
-        licenseHref: 'https://www.pexels.com/license/',
-      },
     },
     primaryAction: {
       href: '/demande-classement',

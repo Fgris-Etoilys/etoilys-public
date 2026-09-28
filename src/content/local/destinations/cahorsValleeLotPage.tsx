@@ -46,12 +46,6 @@ export const CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinat
         </>
       ),
       note: LOCAL_V6_HERO_NOTE,
-      credit: {
-        sourceLabel: 'Velvet / Wikimedia Commons',
-        sourceHref: 'https://commons.wikimedia.org/wiki/File:Cahors_vue_pano.jpg',
-        licenseLabel: 'CC BY-SA 4.0',
-        licenseHref: 'https://creativecommons.org/licenses/by-sa/4.0/',
-      },
     },
     primaryAction: {
       href: '/demande-classement',

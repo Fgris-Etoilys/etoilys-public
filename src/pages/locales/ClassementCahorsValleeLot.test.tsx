@@ -76,10 +76,9 @@ describe('ClassementCahorsValleeLot', () => {
       IMAGE_MANIFEST.cahorsValleeLotDouelle.src
     );
     expect(screen.getByText('Le Lot à Douelle, en aval de Cahors.')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Velvet / Wikimedia Commons' })).toHaveAttribute(
-      'href',
-      'https://commons.wikimedia.org/wiki/File:Cahors_vue_pano.jpg'
-    );
+    expect(
+      screen.queryByRole('link', { name: 'Velvet / Wikimedia Commons' })
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Arbref / Wikimedia Commons' })).toHaveAttribute(
       'href',
       'https://commons.wikimedia.org/wiki/File:Rivi%C3%A8re_Lot_%C3%A0_Douelle.jpg'

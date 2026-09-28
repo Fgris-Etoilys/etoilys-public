@@ -48,12 +48,6 @@ export const MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinati
         </>
       ),
       note: LOCAL_V6_HERO_NOTE,
-      credit: {
-        sourceLabel: 'Paternel 1 / Wikimedia Commons',
-        sourceHref: 'https://commons.wikimedia.org/wiki/File:%C3%89tang_de_Lacanau_1.JPG',
-        licenseLabel: 'CC BY-SA 4.0',
-        licenseHref: 'https://creativecommons.org/licenses/by-sa/4.0/',
-      },
     },
     primaryAction: {
       href: '/demande-classement',

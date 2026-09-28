@@ -191,28 +191,6 @@ function LocalV6HeroMedia({ hero }: { hero: LocalV6Hero }) {
         note={<ClassificationHeroNote {...hero.image.note} />}
         index={hero.image.index}
       />
-      {hero.image.credit && (
-        <p className="local-v6-hero-credit">
-          Photo :{' '}
-          <a
-            href={hero.image.credit.sourceHref}
-            target="_blank"
-            rel="nofollow noopener noreferrer"
-            className="editorial-inline-link"
-          >
-            {hero.image.credit.sourceLabel}
-          </a>{' '}
-          -{' '}
-          <a
-            href={hero.image.credit.licenseHref}
-            target="_blank"
-            rel="nofollow noopener noreferrer"
-            className="editorial-inline-link"
-          >
-            {hero.image.credit.licenseLabel}
-          </a>
-        </p>
-      )}
     </div>
   );
 }

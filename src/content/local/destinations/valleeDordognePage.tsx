@@ -48,12 +48,6 @@ export const VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
         </>
       ),
       note: LOCAL_V6_HERO_NOTE,
-      credit: {
-        sourceLabel: 'Krzysztof Golik / Wikimedia Commons',
-        sourceHref: 'https://commons.wikimedia.org/wiki/File:Dordogne_River_01.jpg',
-        licenseLabel: 'CC BY-SA 4.0',
-        licenseHref: 'https://creativecommons.org/licenses/by-sa/4.0/',
-      },
     },
     primaryAction: {
       href: '/demande-classement',

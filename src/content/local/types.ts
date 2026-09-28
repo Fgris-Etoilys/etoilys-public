@@ -165,7 +165,7 @@ export interface LocalV6Action {
   className?: string;
 }
 
-export interface LocalV6HeroImageCredit {
+export interface LocalV6ImageCredit {
   sourceLabel: string;
   sourceHref: string;
   licenseLabel: string;
@@ -189,7 +189,6 @@ export interface LocalV6Hero {
       caption: string;
     };
     index?: ReactNode;
-    credit?: LocalV6HeroImageCredit;
   };
   primaryAction: LocalV6Action;
   secondaryAction?: LocalV6Action;
@@ -316,7 +315,7 @@ export interface LocalV6Expertise {
     sizes: string;
     className: string;
     caption: string;
-    credit?: LocalV6HeroImageCredit;
+    credit?: LocalV6ImageCredit;
   };
 }
 

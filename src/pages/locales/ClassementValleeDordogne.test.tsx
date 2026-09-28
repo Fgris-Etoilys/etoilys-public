@@ -92,8 +92,8 @@ describe('ClassementValleeDordogne', () => {
     ).toHaveAttribute('src', IMAGE_MANIFEST.valleeDordogneBelcastel.src);
     expect(screen.getByText('Belcastel, Lacave, Vallée de la Dordogne.')).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: 'Krzysztof Golik / Wikimedia Commons' })
-    ).toHaveAttribute('href', 'https://commons.wikimedia.org/wiki/File:Dordogne_River_01.jpg');
+      screen.queryByRole('link', { name: 'Krzysztof Golik / Wikimedia Commons' })
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Sonja Van Acolyen / Unsplash' })).toHaveAttribute(
       'href',
       'https://unsplash.com/fr/photos/un-chateau-perche-au-sommet-dune-falaise-entouree-darbres-MQH_rzprHhI'

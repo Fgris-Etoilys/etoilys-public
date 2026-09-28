@@ -65,7 +65,7 @@ describe('ClassementBergerac', () => {
     vi.mocked(trackCtaClick).mockClear();
   });
 
-  it('keeps the Bergerac hero with one H1 and the existing image credit', () => {
+  it('keeps the Bergerac hero with one H1 and no visible hero image credit', () => {
     renderBergeracPage();
 
     expect(
@@ -84,17 +84,7 @@ describe('ClassementBergerac', () => {
     expect(heroGrid?.children).toHaveLength(2);
     const mediaColumn = heroGrid?.children[1];
     expect(mediaColumn).toHaveClass('local-v6-hero-media');
-    expect(
-      within(mediaColumn as HTMLElement).getByRole('link', {
-        name: /Benjamin Smith \/ Wikimedia Commons/i,
-      })
-    ).toHaveAttribute(
-      'href',
-      'https://commons.wikimedia.org/wiki/File:Bergerac_-_View_in_late_afternoon.jpg'
-    );
-    expect(
-      within(mediaColumn as HTMLElement).getByRole('link', { name: 'CC BY-SA 4.0' })
-    ).toHaveAttribute('href', 'https://creativecommons.org/licenses/by-sa/4.0/');
+    expect(within(mediaColumn as HTMLElement).queryAllByRole('link')).toHaveLength(0);
     expect(
       within(document.querySelector('.editorial-hero-featured') as HTMLElement).getByRole('link', {
         name: 'Connaître mon tarif',

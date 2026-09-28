@@ -40,12 +40,6 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
         title: 'un classement de 1 à 5 étoiles.',
         caption: 'Un repère de qualité pour vos voyageurs.',
       },
-      credit: {
-        sourceLabel: 'Benjamin Smith / Wikimedia Commons',
-        sourceHref: 'https://commons.wikimedia.org/wiki/File:Bergerac_-_View_in_late_afternoon.jpg',
-        licenseLabel: 'CC BY-SA 4.0',
-        licenseHref: 'https://creativecommons.org/licenses/by-sa/4.0/',
-      },
     },
     primaryAction: {
       href: '/demande-classement',

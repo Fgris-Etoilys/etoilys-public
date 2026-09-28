@@ -43,12 +43,6 @@ export const LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentC
       ),
       note: LOCAL_V6_HERO_NOTE,
       index: LOCAL_V6_DEPARTMENT_HERO_INDEXES['lot-et-garonne'],
-      credit: {
-        sourceLabel: 'Adobe Stock',
-        sourceHref: 'https://stock.adobe.com/',
-        licenseLabel: 'Adobe Stock License',
-        licenseHref: 'https://stock.adobe.com/license-terms',
-      },
     },
     primaryAction: LOCAL_V6_HERO_PRIMARY_ACTION,
     secondaryAction: {
