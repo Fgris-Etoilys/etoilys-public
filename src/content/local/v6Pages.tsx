@@ -5,6 +5,7 @@ export { GIRONDE_LOCAL_LANDING_PAGE_V6 } from './departments/girondePage';
 export { BORDEAUX_LOCAL_LANDING_PAGE_V6 } from './cities/bordeauxPage';
 export { BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6 } from './destinations/bassinArcachonPage';
 export { CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6 } from './destinations/cahorsValleeLotPage';
+export { FIGEAC_GRAND_FIGEAC_LOCAL_LANDING_PAGE_V6 } from './destinations/figeacGrandFigeacPage';
 export { MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6 } from './destinations/medocAtlantiquePage';
 export { VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6 } from './destinations/valleeDordognePage';
 export { LOT_LOCAL_LANDING_PAGE_V6 } from './departments/lotPage';

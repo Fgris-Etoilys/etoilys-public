@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "b90255fdf30f20d7a7cbd4d78f4bc39969816a095d2d230547164327938a327d",
+  "pipelineSignature": "c5ec0d52890ab8ba926db57b101f18e1764c25a9af761c265319c5ebc5f1f377",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "c7f5b203625df21f53174c50ba5ff3f1db84a7cebbd0ebcd2f5d72cf67128360"
+    "sha256": "0cae33037d29fb473cce926382d287d49bce6f23d231cd0f8ebce388da65a015"
   },
   "sources": [
     {
@@ -117,6 +117,11 @@
       "sha256": "bee602291bbfbb0d0502822e58c6742357fc9fbab96fc6dbab9bbf896f2c7ad2"
     },
     {
+      "key": "figeacGrandFigeacHero",
+      "path": "src/assets/seo-images/source/figeac-place-ecritures-hero-crop-go69-wikimedia.jpg",
+      "sha256": "ca2d8910daf467a5b22638b4a96709c8568b12fd5d964f9d70ee1c3edec851a1"
+    },
+    {
       "key": "simulateurClassement",
       "path": "src/assets/seo-images/source/gunnar-ridderstrom-4I26owL4-yk-unsplash.jpg",
       "sha256": "3f130a0dd14df2eb2174f482f803f0f119127fb5f183ddeb018491da9db0ee67"
@@ -155,6 +160,11 @@
       "key": "dordogneLandscape",
       "path": "src/assets/seo-images/source/le-sixieme-reve-2gjxjF6BjWs-unsplash.jpg",
       "sha256": "f1ab643d07f65a54c8a5b2748871c7091ba1f04d65799392db7fc617507b2b03"
+    },
+    {
+      "key": "figeacGrandFigeacCajarc",
+      "path": "src/assets/seo-images/source/lot-river-cajarc-krzysztof-golik-wikimedia.jpg",
+      "sha256": "6c894805c4c0ba804d7a309b77ac10dc616a1c4448e76d7c8825633cd0f4fc88"
     },
     {
       "key": "medocAtlantiqueExpertise",
@@ -1484,6 +1494,61 @@
       "sha256": "619360a0fa7c8c5581b242769108932865de10c4e570ba056df419efb37117a1"
     },
     {
+      "path": "/images/optimized/figeac-place-ecritures-1200.avif",
+      "bytes": 97718,
+      "sha256": "3f8e4eb5508190900a24f944544fc3320b8114d469704fd7393357021925bb23"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-1200.jpg",
+      "bytes": 172099,
+      "sha256": "73357538c77a18d6923e4ba9cf07fb229a915056b13cbe51826b1a0fe26ef46d"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-1200.webp",
+      "bytes": 138700,
+      "sha256": "99c20194422ef11740661866304149c1581d45c02219ef50a4d4106b869bd877"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-1600.avif",
+      "bytes": 163240,
+      "sha256": "e527a9bb16b7cc8e0d397c49e865533acedc290679ab4da9f5e8e52cb87edbd1"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-1600.webp",
+      "bytes": 211456,
+      "sha256": "e3b2b180c20dbc09b1b2dfbc39ea92b9bb6e0ceebd066912252a1dab99e161cb"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-1920.avif",
+      "bytes": 219776,
+      "sha256": "415b6af1189f5d35cf73a5da189c45e91f73e2b918ffe3e16098b69a04d1e70b"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-1920.webp",
+      "bytes": 284946,
+      "sha256": "3325d08377b96a7d52cfc2c2b40913c9b103429b7fb1665e4b50788546e56245"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-480.avif",
+      "bytes": 20419,
+      "sha256": "3d7904f63fb3cb45c6d10d088f098fd91d0c2622b63a108f1cbc0cba3103815c"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-480.webp",
+      "bytes": 27600,
+      "sha256": "c06e04ea22360fb4fa7279db4ca215a32a4de04f4e3f80dfe44514ee340926b5"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-768.avif",
+      "bytes": 42861,
+      "sha256": "1174331c5d9558d6a0698034503329c5a47369aa01f56a1819b3e766041af017"
+    },
+    {
+      "path": "/images/optimized/figeac-place-ecritures-768.webp",
+      "bytes": 59778,
+      "sha256": "bb7f736fe762ecf8e2c3c6c12abb4387a34e0bcc5282e25343f64aa7f825d936"
+    },
+    {
       "path": "/images/optimized/home-hero-1200.avif",
       "bytes": 84821,
       "sha256": "9bff4045977fd1d811b23cf5eb79fc3896ec2534bbb236351bd2600ad711030a"
@@ -1792,6 +1857,61 @@
       "path": "/images/optimized/le-sixieme-reve-2gjxjF6BjWs-unsplash-768.webp",
       "bytes": 281264,
       "sha256": "4aca1808adbb7809b363472d99066a749e9dd9f7a328f2ea088c7732bec5aa30"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-1200.avif",
+      "bytes": 154176,
+      "sha256": "3393d95ca09289d1e2ad6ba24c0fc14f0e9d043df85e1d5c634703a84bfc070b"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-1200.jpg",
+      "bytes": 160097,
+      "sha256": "169a44a7b3413f5ad846ed5c365b476f4a0ec1b31efecf16861bc4426c975a8e"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-1200.webp",
+      "bytes": 164970,
+      "sha256": "0d5ef72b5520525b780655b9ebd8d5a51c739c335cc60216e63bb1eac1550cc3"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-1600.avif",
+      "bytes": 260518,
+      "sha256": "7f68237c2cebacaecd20126f62641132136f590b4f076a2ea0c8f0d002c9f480"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-1600.webp",
+      "bytes": 284084,
+      "sha256": "15a7d57b1caadce95e1e039749966cb168d15d73fc7c65ee11187eef9c5dd008"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-1920.avif",
+      "bytes": 356969,
+      "sha256": "09147f3479447fe616890aec10d2dfd53a1203e0bb96cdf90c666392c42e01ef"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-1920.webp",
+      "bytes": 396340,
+      "sha256": "8e1cc6672ace98a3251fb50229955626ffdcde07b9437a1daf61e4390402eba1"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-480.avif",
+      "bytes": 31612,
+      "sha256": "3969f5852a64635e27cbc598603193df07e296059d9124c33e8f87faf12621bf"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-480.webp",
+      "bytes": 32214,
+      "sha256": "6e0378ec2c3c70adaa04c5ae41058487f890578029c02ecc2a26c03199e147f8"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-768.avif",
+      "bytes": 70136,
+      "sha256": "76bd923c5b316fb0633fbbf524b0e0ef9fe0e3e4320c3a42d9ab889e9fc6aef8"
+    },
+    {
+      "path": "/images/optimized/lot-river-cajarc-768.webp",
+      "bytes": 73422,
+      "sha256": "c20c3c073aafe8f561b352e883d50059365c745694e54412a89ab54e36b85aad"
     },
     {
       "path": "/images/optimized/medoc-atlantique-carcans-plage-1200.avif",

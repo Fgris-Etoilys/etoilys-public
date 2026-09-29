@@ -12,6 +12,7 @@ import ClassementBergerac from './pages/locales/ClassementBergerac';
 import ClassementBordeaux from './pages/locales/ClassementBordeaux';
 import ClassementCahorsValleeLot from './pages/locales/ClassementCahorsValleeLot';
 import ClassementDordogne from './pages/locales/ClassementDordogne';
+import ClassementFigeacGrandFigeac from './pages/locales/ClassementFigeacGrandFigeac';
 import ClassementGironde from './pages/locales/ClassementGironde';
 import ClassementLot from './pages/locales/ClassementLot';
 import ClassementLotEtGaronne from './pages/locales/ClassementLotEtGaronne';
@@ -63,6 +64,7 @@ export default function AppRoutes() {
         <Route path="classement-meuble-tourisme-bordeaux" element={<ClassementBordeaux />} />
         <Route path="classement-meuble-tourisme-cahors" element={<ClassementCahorsValleeLot />} />
         <Route path="classement-meuble-tourisme-dordogne" element={<ClassementDordogne />} />
+        <Route path="classement-meuble-tourisme-figeac" element={<ClassementFigeacGrandFigeac />} />
         <Route path="classement-meuble-tourisme-gironde" element={<ClassementGironde />} />
         <Route
           path="classement-meuble-tourisme-lacanau-medoc-atlantique"

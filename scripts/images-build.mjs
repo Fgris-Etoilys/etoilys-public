@@ -28,6 +28,7 @@ const HERO_ASSET_KEYS = new Set([
   'girondeHero',
   'bassinArcachonHero',
   'cahorsValleeLotHero',
+  'figeacGrandFigeacHero',
   'valleeDordogneHero',
   'medocAtlantiqueHero',
   'lotHero',
@@ -141,6 +142,16 @@ const IMAGE_ASSETS = [
     key: 'cahorsValleeLotDouelle',
     fileName: 'riviere-lot-douelle-arbref-wikimedia.jpg',
     outputName: 'riviere-lot-douelle',
+  },
+  {
+    key: 'figeacGrandFigeacHero',
+    fileName: 'figeac-place-ecritures-hero-crop-go69-wikimedia.jpg',
+    outputName: 'figeac-place-ecritures',
+  },
+  {
+    key: 'figeacGrandFigeacCajarc',
+    fileName: 'lot-river-cajarc-krzysztof-golik-wikimedia.jpg',
+    outputName: 'lot-river-cajarc',
   },
   {
     key: 'valleeDordogneHero',

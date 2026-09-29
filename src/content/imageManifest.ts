@@ -32,6 +32,8 @@ export type ImageAssetKey =
   | 'bassinArcachonDunePilat'
   | 'cahorsValleeLotHero'
   | 'cahorsValleeLotDouelle'
+  | 'figeacGrandFigeacHero'
+  | 'figeacGrandFigeacCajarc'
   | 'valleeDordogneHero'
   | 'valleeDordogneBelcastel'
   | 'medocAtlantiqueHero'
@@ -351,6 +353,24 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/riviere-lot-douelle-480.webp 480w, /images/optimized/riviere-lot-douelle-768.webp 768w, /images/optimized/riviere-lot-douelle-1200.webp 1200w, /images/optimized/riviere-lot-douelle-1600.webp 1600w, /images/optimized/riviere-lot-douelle-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/riviere-lot-douelle-480.avif 480w, /images/optimized/riviere-lot-douelle-768.avif 768w, /images/optimized/riviere-lot-douelle-1200.avif 1200w, /images/optimized/riviere-lot-douelle-1600.avif 1600w, /images/optimized/riviere-lot-douelle-1920.avif 1920w',
+  },
+  figeacGrandFigeacHero: {
+    width: 1920,
+    height: 1600,
+    src: '/images/optimized/figeac-place-ecritures-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/figeac-place-ecritures-480.webp 480w, /images/optimized/figeac-place-ecritures-768.webp 768w, /images/optimized/figeac-place-ecritures-1200.webp 1200w, /images/optimized/figeac-place-ecritures-1600.webp 1600w, /images/optimized/figeac-place-ecritures-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/figeac-place-ecritures-480.avif 480w, /images/optimized/figeac-place-ecritures-768.avif 768w, /images/optimized/figeac-place-ecritures-1200.avif 1200w, /images/optimized/figeac-place-ecritures-1600.avif 1600w, /images/optimized/figeac-place-ecritures-1920.avif 1920w',
+  },
+  figeacGrandFigeacCajarc: {
+    width: 4249,
+    height: 2833,
+    src: '/images/optimized/lot-river-cajarc-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/lot-river-cajarc-480.webp 480w, /images/optimized/lot-river-cajarc-768.webp 768w, /images/optimized/lot-river-cajarc-1200.webp 1200w, /images/optimized/lot-river-cajarc-1600.webp 1600w, /images/optimized/lot-river-cajarc-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/lot-river-cajarc-480.avif 480w, /images/optimized/lot-river-cajarc-768.avif 768w, /images/optimized/lot-river-cajarc-1200.avif 1200w, /images/optimized/lot-river-cajarc-1600.avif 1600w, /images/optimized/lot-river-cajarc-1920.avif 1920w',
   },
   valleeDordogneHero: {
     width: 4800,

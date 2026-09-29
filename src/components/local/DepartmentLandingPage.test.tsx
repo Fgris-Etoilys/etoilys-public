@@ -30,6 +30,7 @@ import {
   BORDEAUX_LOCAL_LANDING_PAGE_V6,
   CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
+  FIGEAC_GRAND_FIGEAC_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
   LOCAL_V6_DEPARTMENT_HERO_INDEXES,
@@ -756,6 +757,7 @@ describe('DepartmentLandingPage', () => {
     BORDEAUX_LOCAL_LANDING_PAGE_V6,
     BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
     CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
+    FIGEAC_GRAND_FIGEAC_LOCAL_LANDING_PAGE_V6,
     MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6,
     VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6,
   ])('keeps the tax module optional and department navigation absent for $localEntryId', (page) => {
@@ -850,6 +852,11 @@ describe('DepartmentLandingPage', () => {
       'Cahors et Vallée du Lot',
       CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
       ['Cahors depuis le Mont Saint-Cyr', 'Le Lot à Douelle, en aval de Cahors.'],
+    ],
+    [
+      'Figeac et Grand-Figeac',
+      FIGEAC_GRAND_FIGEAC_LOCAL_LANDING_PAGE_V6,
+      ['Place des Écritures, Figeac', 'Le Lot à Cajarc, dans le bassin de Figeac.'],
     ],
     [
       'Vallée de la Dordogne',

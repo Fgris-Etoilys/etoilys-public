@@ -295,6 +295,7 @@ describe('local service areas data', () => {
     expect(lot.localPages.map((localPage) => localPage.id)).toEqual([
       'cahors-vallee-lot',
       'vallee-dordogne',
+      'figeac-grand-figeac',
     ]);
     expect(dordogne.localPages.find((localPage) => localPage.id === 'bordeaux')).toBeUndefined();
     expect(gironde.localPages.find((localPage) => localPage.id === 'bergerac')).toBeUndefined();

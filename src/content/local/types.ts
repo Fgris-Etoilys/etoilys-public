@@ -10,6 +10,7 @@ export type CityAreaId = 'bergerac' | 'bordeaux';
 export type DestinationAreaId =
   | 'bassin-arcachon'
   | 'cahors-vallee-lot'
+  | 'figeac-grand-figeac'
   | 'medoc-atlantique'
   | 'vallee-dordogne';
 

@@ -196,6 +196,18 @@ describe('seo governance', () => {
     ]);
   });
 
+  it('builds the Figeac and Grand-Figeac breadcrumb hierarchy from zones to Lot', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-figeac')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Lot', url: `${SITE_URL}/classement-meuble-tourisme-lot` },
+      {
+        name: 'Figeac et Grand-Figeac',
+        url: `${SITE_URL}/classement-meuble-tourisme-figeac`,
+      },
+    ]);
+  });
+
   it('keeps dynamic public simulations noindex and out of the sitemap', () => {
     const dynamicSimulationSeo = getSeoRouteConfig('/simulateur/simulation-id');
 
