@@ -115,6 +115,7 @@ V6 active :
 - Bassin d’Arcachon : `BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6` dans `src/content/local/destinations/bassinArcachonPage.tsx`.
 - Cahors et Vallée du Lot : `CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6` dans `src/content/local/destinations/cahorsValleeLotPage.tsx`.
 - Vallée de la Dordogne : `VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/destinations/valleeDordognePage.tsx`.
+- Figeac et Grand-Figeac : `FIGEAC_GRAND_FIGEAC_LOCAL_LANDING_PAGE_V6` dans `src/content/local/destinations/figeacGrandFigeacPage.tsx`.
 - Lacanau et Médoc Atlantique : `MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/destinations/medocAtlantiquePage.tsx`.
 - Lot-et-Garonne : `LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/lotEtGaronnePage.tsx`.
 - Lot : `LOT_LOCAL_LANDING_PAGE_V6` dans `src/content/local/departments/lotPage.tsx`.

@@ -218,7 +218,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       outputFileName: 'communes-lot-index.v1.json',
     },
     seo: {
-      lastModified: '2026-09-18',
+      lastModified: '2026-09-29',
       title: 'Classement gîte, Airbnb et meublé de tourisme dans le Lot',
       description:
         'Etoilys accompagne les propriétaires de gîtes, locations saisonnières et meublés de tourisme dans le Lot pour leur classement officiel.',
