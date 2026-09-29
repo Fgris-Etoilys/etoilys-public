@@ -185,7 +185,7 @@ let lastTrackedPathname: string | null = null;
 let volatileAcquisitionContext: VolatileAcquisitionContext | null = null;
 let hasCapturedAudienceLanding = false;
 let registeredConsentedAcquisitionSessionId: string | null = null;
-let hasRegisteredConsentedAcquisitionWithoutSession = false;
+let sessionAcquisitionUnsubscribe: (() => void) | null = null;
 
 type PostHogClient = typeof import('posthog-js').default;
 
@@ -396,14 +396,6 @@ function writePersistedSessionAcquisition(
   acquisition: ConsentedAcquisitionProperties
 ): void {
   writeLocalStorage(SESSION_ACQUISITION_STORAGE_KEY, JSON.stringify({ sessionId, acquisition }));
-}
-
-function getPostHogSessionId(posthog: PostHogClient): string {
-  try {
-    return posthog.get_session_id();
-  } catch {
-    return '';
-  }
 }
 
 function getPostHogToken(): string | undefined {
@@ -632,17 +624,9 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
   return initializedClient;
 }
 
-function registerConsentedAcquisition(posthog: PostHogClient): void {
+function registerConsentedAcquisitionForSession(posthog: PostHogClient, sessionId: string): void {
   const context = ensureVolatileAcquisitionContext();
   if (!context) return;
-
-  const sessionId = getPostHogSessionId(posthog);
-  if (!sessionId) {
-    if (hasRegisteredConsentedAcquisitionWithoutSession) return;
-    posthog.register_for_session(classifyConsentedAcquisition(context));
-    hasRegisteredConsentedAcquisitionWithoutSession = true;
-    return;
-  }
 
   if (registeredConsentedAcquisitionSessionId === sessionId) return;
 
@@ -652,7 +636,25 @@ function registerConsentedAcquisition(posthog: PostHogClient): void {
   posthog.register_for_session(acquisition);
   writePersistedSessionAcquisition(sessionId, acquisition);
   registeredConsentedAcquisitionSessionId = sessionId;
-  hasRegisteredConsentedAcquisitionWithoutSession = false;
+}
+
+function subscribeToPostHogSessionAcquisition(posthog: PostHogClient): void {
+  if (sessionAcquisitionUnsubscribe) return;
+
+  try {
+    sessionAcquisitionUnsubscribe = posthog.onSessionId((sessionId) => {
+      if (!sessionId || postHogMode !== 'consented' || !isDetailedAnalyticsEnabled()) return;
+      registerConsentedAcquisitionForSession(posthog, sessionId);
+    });
+  } catch {
+    sessionAcquisitionUnsubscribe = null;
+  }
+}
+
+function clearSessionAcquisitionRegistration(): void {
+  sessionAcquisitionUnsubscribe?.();
+  sessionAcquisitionUnsubscribe = null;
+  registeredConsentedAcquisitionSessionId = null;
 }
 
 function captureCookielessAudienceLanding(posthog: PostHogClient): void {
@@ -702,7 +704,7 @@ async function initializePostHog(
       posthog.opt_in_capturing({ captureEventName: false });
       postHogMode = 'consented';
     }
-    registerConsentedAcquisition(posthog);
+    subscribeToPostHogSessionAcquisition(posthog);
     return posthog;
   }
 
@@ -752,13 +754,13 @@ export function rejectAnalyticsConsent(): ConsentWriteResult {
   const previousConsent = readConsent();
   const result = setConsentPreferences({ analytics: 'refused' });
   lastTrackedPathname = null;
+  clearSessionAcquisitionRegistration();
+  removeLocalStorage(SESSION_ACQUISITION_STORAGE_KEY);
 
   if (previousConsent === 'accepted' && isPostHogInitialized && postHogClient) {
     postHogClient.opt_out_capturing();
     postHogClient.reset();
     postHogMode = 'cookieless';
-    registeredConsentedAcquisitionSessionId = null;
-    hasRegisteredConsentedAcquisitionWithoutSession = false;
     return result;
   }
 
@@ -1174,8 +1176,7 @@ export const analyticsInternalsForTests = {
     lastTrackedPathname = null;
     volatileAcquisitionContext = null;
     hasCapturedAudienceLanding = false;
-    registeredConsentedAcquisitionSessionId = null;
-    hasRegisteredConsentedAcquisitionWithoutSession = false;
+    clearSessionAcquisitionRegistration();
     postHogClient = null;
     postHogImportPromise = null;
     postHogInitializationPromise = null;

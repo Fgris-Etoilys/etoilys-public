@@ -16,6 +16,9 @@ import {
 } from './analytics';
 import { consentInternalsForTests } from './consent';
 
+const SESSION_ACQUISITION_STORAGE_KEY = 'etoilys_analytics_session_acquisition';
+type PostHogSessionCallback = (sessionId: string) => void;
+
 const posthogMock = vi.hoisted(() => ({
   init: vi.fn(),
   capture: vi.fn(),
@@ -23,7 +26,8 @@ const posthogMock = vi.hoisted(() => ({
   optOut: vi.fn(),
   registerForSession: vi.fn(),
   reset: vi.fn(),
-  getSessionId: vi.fn(),
+  onSessionId: vi.fn(),
+  sessionCallbacks: [] as PostHogSessionCallback[],
 }));
 
 vi.mock('posthog-js', () => ({
@@ -34,7 +38,7 @@ vi.mock('posthog-js', () => ({
     opt_out_capturing: posthogMock.optOut,
     register_for_session: posthogMock.registerForSession,
     reset: posthogMock.reset,
-    get_session_id: posthogMock.getSessionId,
+    onSessionId: posthogMock.onSessionId,
   },
 }));
 
@@ -42,6 +46,12 @@ async function flushAnalyticsImports() {
   await vi.dynamicImportSettled();
   await Promise.resolve();
   await Promise.resolve();
+}
+
+function emitPostHogSessionId(sessionId: string) {
+  for (const callback of [...posthogMock.sessionCallbacks]) {
+    callback(sessionId);
+  }
 }
 
 describe('analytics', () => {
@@ -53,8 +63,16 @@ describe('analytics', () => {
     posthogMock.optOut.mockReset();
     posthogMock.registerForSession.mockReset();
     posthogMock.reset.mockReset();
-    posthogMock.getSessionId.mockReset();
-    posthogMock.getSessionId.mockReturnValue('session-1');
+    posthogMock.onSessionId.mockReset();
+    posthogMock.sessionCallbacks.length = 0;
+    posthogMock.onSessionId.mockImplementation((callback: PostHogSessionCallback) => {
+      posthogMock.sessionCallbacks.push(callback);
+      callback('session-1');
+      return () => {
+        const callbackIndex = posthogMock.sessionCallbacks.indexOf(callback);
+        if (callbackIndex >= 0) posthogMock.sessionCallbacks.splice(callbackIndex, 1);
+      };
+    });
     analyticsInternalsForTests.reset();
     consentInternalsForTests.reset();
     vi.stubEnv('VITE_PUBLIC_POSTHOG_TOKEN', 'phc_test');
@@ -347,19 +365,30 @@ describe('analytics', () => {
     });
   });
 
-  it('replaces persisted acquisition when PostHog exposes a new session id', async () => {
+  it('renews persisted acquisition when PostHog reports a new session id after initialization', async () => {
     window.history.pushState({}, 'Test', '/classement?utm_source=chatgpt_ads&utm_medium=cpc');
     acceptAnalyticsConsent();
     await flushAnalyticsImports();
 
     analyticsInternalsForTests.reset();
     consentInternalsForTests.reset();
-    posthogMock.getSessionId.mockReturnValue('session-2');
     posthogMock.registerForSession.mockClear();
     window.history.pushState({}, 'Test', '/contact');
 
     initializeAnalytics();
     await flushAnalyticsImports();
+
+    expect(posthogMock.registerForSession).toHaveBeenCalledWith(
+      expect.objectContaining({
+        acquisition_channel: 'paid_search',
+        acquisition_source: 'chatgpt_ads',
+        traffic_type: 'paid',
+        landing_page: '/classement',
+      })
+    );
+
+    posthogMock.registerForSession.mockClear();
+    emitPostHogSessionId('session-2');
 
     expect(posthogMock.registerForSession).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -489,6 +518,7 @@ describe('analytics', () => {
     await flushAnalyticsImports();
 
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)).toBe('refused');
+    expect(window.localStorage.getItem(SESSION_ACQUISITION_STORAGE_KEY)).toBeNull();
     expect(posthogMock.optOut).toHaveBeenCalledTimes(1);
     expect(posthogMock.reset).toHaveBeenCalledTimes(1);
     expect(posthogMock.capture).toHaveBeenCalledTimes(1);
