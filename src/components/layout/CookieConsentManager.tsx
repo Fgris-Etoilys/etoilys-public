@@ -101,8 +101,22 @@ export default function CookieConsentManager() {
   }, []);
 
   const closePreferences = useCallback(() => {
+    const trigger = triggerRef.current;
     setDraft(null);
-    triggerRef.current?.focus();
+    window.setTimeout(() => {
+      if (trigger?.isConnected) {
+        trigger.focus();
+        return;
+      }
+
+      const triggerLabel = trigger?.textContent?.trim();
+      if (!triggerLabel) return;
+
+      const replacementTrigger = Array.from(document.querySelectorAll('button')).find(
+        (button) => button.textContent?.trim() === triggerLabel
+      );
+      replacementTrigger?.focus();
+    }, 0);
   }, []);
 
   const applyRejectAll = useCallback(() => {
@@ -298,11 +312,13 @@ export default function CookieConsentManager() {
             event.preventDefault();
             closePreferences();
           }}
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) closePreferences();
-          }}
         >
-          <div className="flex min-h-full items-end justify-center px-4 py-4 sm:items-center sm:py-6">
+          <div
+            className="flex min-h-full items-end justify-center px-4 py-4 sm:items-center sm:py-6"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) closePreferences();
+            }}
+          >
             <section className="flex max-h-[calc(100dvh-2rem)] w-full max-w-xl flex-col rounded-editorial border border-ink/15 bg-surface shadow-[0_20px_55px_rgb(var(--color-ink)/0.14)]">
               <div className="flex items-start justify-between gap-4 border-b border-ink/10 p-5 sm:p-6">
                 <div>

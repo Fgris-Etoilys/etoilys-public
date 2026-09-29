@@ -1,4 +1,4 @@
-import type { CaptureResult, Properties } from 'posthog-js';
+import type { CapturedNetworkRequest, CaptureResult, Properties } from 'posthog-js';
 import {
   captureVolatileAcquisitionContext,
   classifyConsentedAcquisition,
@@ -103,6 +103,7 @@ const DETAILED_AUTOCAPTURE_ALLOWED_PROPERTIES = new Set<string>([
   '$device_type',
   '$el_text',
   '$event_type',
+  '$elements_chain',
   '$host',
   '$lib',
   '$lib_version',
@@ -112,15 +113,24 @@ const DETAILED_AUTOCAPTURE_ALLOWED_PROPERTIES = new Set<string>([
   '$referrer',
   '$screen_height',
   '$screen_width',
+  '$session_id',
   '$viewport_height',
   '$viewport_width',
+  '$window_id',
+  'acquisition_channel',
+  'acquisition_source',
+  'ai_referrer',
+  'campaign_content',
+  'campaign_name',
   'classes',
   'distinct_id',
-  'elements_chain',
   'href',
+  'landing_page',
+  'locale',
   'tag_name',
   'title',
   'token',
+  'traffic_type',
 ]);
 const ALLOWED_CUSTOM_PROPERTIES = new Set<string>([
   '$current_url',
@@ -189,6 +199,8 @@ const COOKIELESS_AUDIENCE_TECHNICAL_PROPERTY_KEYS = new Set([
   '$lib_version',
   '$cookieless_mode',
   '$geoip_disable',
+  '$host',
+  '$raw_user_agent',
 ]);
 const COOKIELESS_AUDIENCE_PROPERTY_KEYS = new Set([
   ...COOKIELESS_AUDIENCE_TECHNICAL_PROPERTY_KEYS,
@@ -486,6 +498,31 @@ function sanitizeArray(value: string[]): string[] {
     .filter((entry) => entry.length > 0 && !hasSensitiveString(entry));
 }
 
+function sanitizeAutocaptureElementsChain(value: string): string {
+  const sanitized = value
+    .replace(/\b((?:attr__)?href)=("[^"]*"|'[^']*')/gi, (_match, key: string, quoted: string) => {
+      const quote = quoted.startsWith('"') ? '"' : "'";
+      const href = quoted.slice(1, -1);
+      return `${key}=${quote}${normalizeAnalyticsPath(href)}${quote}`;
+    })
+    .replace(/https?:\/\/[^\s"'<>]+/gi, (url) => normalizeAnalyticsPath(url));
+
+  return hasSensitiveString(sanitized) ? '' : sanitized;
+}
+
+function maskCapturedReplayNetworkRequest(
+  request: CapturedNetworkRequest
+): CapturedNetworkRequest | null {
+  if (typeof request.name !== 'string') {
+    return request;
+  }
+
+  return {
+    ...request,
+    name: normalizeAnalyticsPath(request.name),
+  };
+}
+
 function isPostHogUrlProperty(key: string): boolean {
   return (
     key === '$current_url' ||
@@ -590,6 +627,16 @@ function sanitizeAutocaptureProperties(properties: Properties | null | undefined
 
   for (const [key, rawValue] of Object.entries(properties)) {
     if (!DETAILED_AUTOCAPTURE_ALLOWED_PROPERTIES.has(key)) {
+      continue;
+    }
+
+    if (key === '$elements_chain') {
+      if (typeof rawValue === 'string') {
+        const nextValue = sanitizeAutocaptureElementsChain(rawValue);
+        if (nextValue) {
+          sanitized[key] = nextValue;
+        }
+      }
       continue;
     }
 
@@ -725,6 +772,7 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
           'data-email',
           'data-phone',
           'data-message',
+          'href',
         ],
         capture_copied_text: false,
       },
@@ -734,6 +782,7 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
         maskAllInputs: true,
         blockSelector: SESSION_REPLAY_BLOCK_SELECTOR,
         maskTextSelector: SESSION_REPLAY_MASK_TEXT_SELECTOR,
+        maskCapturedNetworkRequestFn: maskCapturedReplayNetworkRequest,
       },
       disable_surveys: true,
       opt_out_capturing_by_default: readConsent() !== 'accepted',
@@ -1032,8 +1081,8 @@ export function trackFormSubmitFailed(
   });
 }
 
-export function trackSimulatorStarted(simulator: SimulatorName): void {
-  trackEvent('simulator_started', { simulator });
+export function trackSimulatorStarted(simulator: SimulatorName): boolean {
+  return trackEvent('simulator_started', { simulator });
 }
 
 export function trackSimulatorCalculated(
@@ -1317,6 +1366,7 @@ export function trackClassementSimulatorHelpOpened(input: {
 export const analyticsInternalsForTests = {
   beforeSend,
   cookielessAudienceBeforeSend,
+  maskCapturedReplayNetworkRequest,
   sanitizeAutocaptureProperties,
   sanitizeCookielessAudienceProperties,
   sanitizeCustomProperties,

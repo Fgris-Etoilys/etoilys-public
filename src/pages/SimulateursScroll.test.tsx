@@ -121,7 +121,7 @@ async function expectCopiedQuery(expected: Record<string, string>) {
 describe('parcours et restauration des simulateurs', () => {
   beforeEach(() => {
     vi.spyOn(window, 'scrollTo').mockImplementation(() => undefined);
-    vi.spyOn(analytics, 'trackSimulatorStarted').mockImplementation(() => undefined);
+    vi.spyOn(analytics, 'trackSimulatorStarted').mockImplementation(() => true);
     vi.spyOn(analytics, 'trackSimulatorCalculated').mockImplementation(() => undefined);
     vi.spyOn(simulatorExport, 'copyToClipboard').mockResolvedValue(true);
     vi.spyOn(globalThis, 'fetch').mockImplementation(
@@ -176,6 +176,42 @@ describe('parcours et restauration des simulateurs', () => {
     await expectCopiedQuery({ revenue: '15000', tmi: '30' });
     expect(window.scrollTo).not.toHaveBeenCalled();
     expect(analytics.trackSimulatorCalculated).toHaveBeenCalledTimes(1);
+  });
+
+  it('masque les valeurs du tableau fiscal détaillé dans le replay desktop et mobile', async () => {
+    renderWithProviders(<SimulateurFiscalClassement />, '/simulateur-fiscal-classement');
+
+    changeInput('annual-revenue-input', '15000');
+    fireEvent.click(screen.getByRole('radio', { name: '30 %' }));
+    submitForm('annual-revenue-input');
+
+    expect(await screen.findByRole('region', { name: /comparatif 2026/i })).toBeInTheDocument();
+    const table = openComparisonTable();
+
+    const desktopValues = within(
+      table.getByRole('row', { name: /base imposable estimée/i })
+    ).getAllByText(/€/);
+    expect(
+      desktopValues.every((element) => Boolean(element.closest('[data-replay-mask="true"]')))
+    ).toBe(true);
+
+    const mobileCards = document.querySelectorAll(
+      '[data-responsive-comparison-variant="mobile"] article'
+    );
+    expect(mobileCards.length).toBeGreaterThan(0);
+    expect(
+      Array.from(mobileCards).some((card) => card.querySelector('[data-replay-mask="true"]'))
+    ).toBe(true);
+  });
+
+  it('retente le démarrage fiscal si le premier événement started n’est pas admis', () => {
+    vi.mocked(analytics.trackSimulatorStarted).mockReturnValue(false);
+    renderWithProviders(<SimulateurFiscalClassement />, '/simulateur-fiscal-classement');
+
+    changeInput('annual-revenue-input', '15000');
+    fireEvent.click(screen.getByRole('radio', { name: '30 %' }));
+
+    expect(analytics.trackSimulatorStarted).toHaveBeenCalledTimes(2);
   });
 
   it('calcule au réel, partage et restaure occupation et exonérations', async () => {
@@ -238,6 +274,16 @@ describe('parcours et restauration des simulateurs', () => {
     await expectCopiedQuery({ nightly: '100', persons: '4', exempted: '1' });
     expect(window.scrollTo).not.toHaveBeenCalled();
     expect(analytics.trackSimulatorCalculated).toHaveBeenCalledTimes(1);
+  });
+
+  it('retente le démarrage taxe de séjour si le premier événement started n’est pas admis', async () => {
+    vi.mocked(analytics.trackSimulatorStarted).mockReturnValue(false);
+    renderWithProviders(<SimulateurTaxeSejour />, '/simulateur-taxe-sejour');
+
+    await selectCity();
+    changeInput('nightly-price-input', '100');
+
+    expect(vi.mocked(analytics.trackSimulatorStarted).mock.calls.length).toBeGreaterThan(1);
   });
 
   it('relie les erreurs fiscales aux champs et ne calcule ni ne scrolle un formulaire invalide', () => {

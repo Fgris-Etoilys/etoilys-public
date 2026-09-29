@@ -235,6 +235,8 @@ describe('analytics', () => {
       distinct_id: 'server-hash',
       $cookieless_mode: true,
       $geoip_disable: true,
+      $host: 'www.etoilys.fr',
+      $raw_user_agent: 'Mozilla/5.0 test',
       landing_page: '/contact?utm_source=chatgpt',
       locale: 'fr',
       $current_url: 'https://www.etoilys.fr/contact?utm_source=chatgpt',
@@ -250,8 +252,45 @@ describe('analytics', () => {
       distinct_id: 'server-hash',
       $cookieless_mode: true,
       $geoip_disable: true,
+      $host: 'www.etoilys.fr',
+      $raw_user_agent: 'Mozilla/5.0 test',
       landing_page: '/contact',
       locale: 'fr',
+    });
+  });
+
+  it('keeps required cookieless PostHog transport properties in the dedicated before_send', () => {
+    expect(
+      analyticsInternalsForTests.cookielessAudienceBeforeSend({
+        event: 'audience_landed',
+        uuid: 'test-cookieless',
+        properties: {
+          token: 'phc_test',
+          distinct_id: 'server-hash',
+          $cookieless_mode: true,
+          $geoip_disable: true,
+          $host: 'www.etoilys.fr',
+          $raw_user_agent: 'Mozilla/5.0 test',
+          landing_page: '/contact?utm_source=chatgpt#form',
+          locale: 'fr',
+          $browser: 'Chrome',
+          $current_url: 'https://www.etoilys.fr/contact?utm_source=chatgpt#form',
+          utm_source: 'chatgpt',
+        },
+      })
+    ).toEqual({
+      event: 'audience_landed',
+      uuid: 'test-cookieless',
+      properties: {
+        token: 'phc_test',
+        distinct_id: 'server-hash',
+        $cookieless_mode: true,
+        $geoip_disable: true,
+        $host: 'www.etoilys.fr',
+        $raw_user_agent: 'Mozilla/5.0 test',
+        landing_page: '/contact',
+        locale: 'fr',
+      },
     });
   });
 
@@ -368,6 +407,7 @@ describe('analytics', () => {
           maskAllInputs: true,
           blockSelector: expect.stringContaining('.cf-turnstile'),
           maskTextSelector: expect.stringContaining('.simulator-result-value'),
+          maskCapturedNetworkRequestFn: expect.any(Function),
         }),
         autocapture: expect.objectContaining({
           dom_event_allowlist: ['click'],
@@ -382,6 +422,7 @@ describe('analytics', () => {
             '.simulator-form-panel',
             '[data-analytics-sensitive="true"]',
           ]),
+          element_attribute_ignorelist: expect.arrayContaining(['href', 'value']),
           capture_copied_text: false,
         }),
       })
@@ -725,14 +766,28 @@ describe('analytics', () => {
     });
   });
 
-  it('sanitizes allowed autocapture clicks without form values or raw URLs', () => {
+  it('sanitizes representative PostHog autocapture clicks without form values or raw URLs', () => {
     const sanitized = analyticsInternalsForTests.sanitizeAutocaptureProperties({
       token: 'phc_test',
       distinct_id: 'anonymous-id',
+      $session_id: 'session-1',
+      $window_id: 'window-1',
       $event_type: 'click',
-      tag_name: 'button',
+      $current_url: 'https://www.etoilys.fr/contact?utm_source=chatgpt#form',
+      $pathname: '/contact',
+      tag_name: 'a',
       $el_text: 'Demander un devis',
-      href: 'https://www.etoilys.fr/contact?email=test@example.com#form',
+      $elements_chain:
+        'a.cta[href="https://www.etoilys.fr/demande-classement?email=test@example.com#form"] > span',
+      href: 'https://www.etoilys.fr/demande-classement?utm_source=chatgpt#form',
+      acquisition_channel: 'generative_ai',
+      acquisition_source: 'chatgpt.com',
+      traffic_type: 'organic',
+      ai_referrer: 'chatgpt',
+      campaign_name: 'ai_launch',
+      campaign_content: 'hero_cta',
+      landing_page: '/contact',
+      locale: 'fr',
       value: 'test@example.com',
       $set: { email: 'test@example.com' },
       classes: ['ui-button', ''],
@@ -741,12 +796,40 @@ describe('analytics', () => {
     expect(sanitized).toEqual({
       token: 'phc_test',
       distinct_id: 'anonymous-id',
+      $session_id: 'session-1',
+      $window_id: 'window-1',
       $event_type: 'click',
-      tag_name: 'button',
+      $current_url: '/contact',
+      $pathname: '/contact',
+      tag_name: 'a',
       $el_text: 'Demander un devis',
-      href: '/contact',
+      $elements_chain: 'a.cta[href="/demande-classement"] > span',
+      href: '/demande-classement',
+      acquisition_channel: 'generative_ai',
+      acquisition_source: 'chatgpt.com',
+      traffic_type: 'organic',
+      ai_referrer: 'chatgpt',
+      campaign_name: 'ai_launch',
+      campaign_content: 'hero_cta',
+      landing_page: '/contact',
+      locale: 'fr',
       classes: ['ui-button'],
     });
+  });
+
+  it('masks query strings and hashes from replay network URLs with the SDK hook', () => {
+    expect(
+      analyticsInternalsForTests.maskCapturedReplayNetworkRequest({
+        name: 'https://www.etoilys.fr/simulateur-fiscal-classement?revenue=15000&tmi=30#result',
+        entryType: 'resource',
+        startTime: 0,
+        duration: 1,
+      })
+    ).toEqual(
+      expect.objectContaining({
+        name: '/simulateur-fiscal-classement',
+      })
+    );
   });
 
   it('passes session replay snapshots only while detailed analytics are effectively allowed', async () => {

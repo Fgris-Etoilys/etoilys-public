@@ -930,8 +930,7 @@ export default function SimulateurTaxeSejour() {
 
   function trackSimulatorStartOnce() {
     if (!hasTrackedSimulatorStarted.current) {
-      trackSimulatorStarted('taxe_sejour');
-      hasTrackedSimulatorStarted.current = true;
+      hasTrackedSimulatorStarted.current = trackSimulatorStarted('taxe_sejour');
     }
   }
 

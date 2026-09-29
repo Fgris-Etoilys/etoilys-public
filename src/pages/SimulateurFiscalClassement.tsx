@@ -293,10 +293,18 @@ function renderClasseAmount(
   const className = getClasseAmountClassName(classeAmount, nonClasseAmount);
 
   if (!className) {
-    return formatEuro(classeAmount, locale);
+    return renderReplayMaskedValue(formatEuro(classeAmount, locale));
   }
 
-  return <span className={className}>{formatEuro(classeAmount, locale)}</span>;
+  return (
+    <span className={className} data-replay-mask="true">
+      {formatEuro(classeAmount, locale)}
+    </span>
+  );
+}
+
+function renderReplayMaskedValue(value: ReactNode): ReactNode {
+  return <span data-replay-mask="true">{value}</span>;
 }
 
 function getFiscalDeltaClassName(delta: number): string {
@@ -341,6 +349,7 @@ function renderFiscalDelta(
       className={`inline-block max-w-[13rem] text-right font-semibold md:max-w-none md:text-center ${getFiscalDeltaClassName(
         delta
       )}`}
+      data-replay-mask="true"
     >
       {formatFiscalDelta(nonClasseAmount, classeAmount, locale, favorableSuffix, unfavorableSuffix)}
     </span>
@@ -403,7 +412,7 @@ function renderSocialContributionsCell(
 
   return (
     <span className="inline-flex items-center justify-center gap-2">
-      <span className={amountClassName}>
+      <span className={amountClassName} data-replay-mask="true">
         {formatEuro(scenario.socialContributionsAmount, locale)}
       </span>
       {shouldShowTooltip && (
@@ -487,8 +496,7 @@ export default function SimulateurFiscalClassement() {
       return;
     }
 
-    trackSimulatorStarted('fiscal_classement');
-    hasTrackedSimulatorStarted.current = true;
+    hasTrackedSimulatorStarted.current = trackSimulatorStarted('fiscal_classement');
   }
 
   useEffect(() => {
@@ -625,8 +633,8 @@ export default function SimulateurFiscalClassement() {
         rowClassName: 'border-b border-gray-100 bg-gray-50',
         cells: {
           metric: localize('Base imposable estimée'),
-          nonClasse: formatEuro(result.nonClasse.taxableBase, locale),
-          classe: formatEuro(result.classe.taxableBase, locale),
+          nonClasse: renderReplayMaskedValue(formatEuro(result.nonClasse.taxableBase, locale)),
+          classe: renderReplayMaskedValue(formatEuro(result.classe.taxableBase, locale)),
           delta: renderFiscalDelta(
             result.nonClasse.taxableBase,
             result.classe.taxableBase,
@@ -641,8 +649,10 @@ export default function SimulateurFiscalClassement() {
         rowClassName: 'border-b border-gray-100 bg-white',
         cells: {
           metric: localize('Impôt sur le revenu estimé'),
-          nonClasse: formatEuro(result.nonClasse.estimatedIncomeTax, locale),
-          classe: formatEuro(result.classe.estimatedIncomeTax, locale),
+          nonClasse: renderReplayMaskedValue(
+            formatEuro(result.nonClasse.estimatedIncomeTax, locale)
+          ),
+          classe: renderReplayMaskedValue(formatEuro(result.classe.estimatedIncomeTax, locale)),
           delta: renderFiscalDelta(
             result.nonClasse.estimatedIncomeTax,
             result.classe.estimatedIncomeTax,
@@ -655,8 +665,10 @@ export default function SimulateurFiscalClassement() {
         rowClassName: 'border-b border-gray-100 bg-gray-50',
         cells: {
           metric: localize('Prélèvements sociaux'),
-          nonClasse: formatEuro(result.nonClasse.socialLeviesAmount, locale),
-          classe: formatEuro(result.classe.socialLeviesAmount, locale),
+          nonClasse: renderReplayMaskedValue(
+            formatEuro(result.nonClasse.socialLeviesAmount, locale)
+          ),
+          classe: renderReplayMaskedValue(formatEuro(result.classe.socialLeviesAmount, locale)),
           delta: renderFiscalDelta(
             result.nonClasse.socialLeviesAmount,
             result.classe.socialLeviesAmount,
@@ -683,7 +695,7 @@ export default function SimulateurFiscalClassement() {
         rowClassName: 'bg-gray-50',
         cells: {
           metric: <span className="font-medium text-gray-900">{localize('Total estimé')}</span>,
-          nonClasse: formatEuro(result.nonClasse.estimatedTotal, locale),
+          nonClasse: renderReplayMaskedValue(formatEuro(result.nonClasse.estimatedTotal, locale)),
           classe: renderClasseAmount(
             result.classe.estimatedTotal,
             result.nonClasse.estimatedTotal,

@@ -236,6 +236,25 @@ describe('CookieConsentManager', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
+  it('closes preferences on backdrop click and restores focus to the trigger', async () => {
+    renderCookieConsentManager();
+    const trigger = await screen.findByRole('button', { name: 'Personnaliser' });
+    fireEvent.click(trigger);
+    const dialog = screen.getByRole('dialog', { name: 'Vos préférences de cookies' });
+    const backdropWrapper = dialog.firstElementChild;
+
+    if (!(backdropWrapper instanceof HTMLElement)) {
+      throw new Error('Missing cookie preferences backdrop wrapper');
+    }
+
+    fireEvent.mouseDown(backdropWrapper);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Personnaliser' })).toHaveFocus();
+    });
+  });
+
   it('hides cookieless audience controls while the feature is inactive', async () => {
     renderCookieConsentManager();
     fireEvent.click(await screen.findByRole('button', { name: 'Personnaliser' }));
