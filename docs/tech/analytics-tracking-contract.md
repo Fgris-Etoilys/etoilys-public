@@ -4,7 +4,7 @@ Version du 29 septembre 2026.
 
 ## Mise à jour lot 3 — cookieless séparé, replay consenti et autocapture limitée
 
-Le lot 3 sépare physiquement les deux populations PostHog :
+Le lot 3 sépare les mesures dans des instances/pipelines PostHog distincts :
 
 - l'instance principale est exclusivement dédiée aux analytics détaillés consentis ;
 - l'instance nommée `etoilys_cookieless_audience` est active dès l'arrivée lorsque `VITE_ENABLE_COOKIELESS_AUDIENCE=true`, sauf opposition `etoilys_cookieless_audience_opt_out=true`.

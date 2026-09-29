@@ -193,6 +193,42 @@ describe('analytics', () => {
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
+  it('does not capture cookieless audience in local dev unless analytics are enabled in dev', async () => {
+    vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
+    vi.stubEnv('DEV', true);
+    vi.stubEnv('MODE', 'development');
+    vi.stubEnv('VITE_ENABLE_ANALYTICS_IN_DEV', 'false');
+
+    initializeAnalytics();
+    await flushAnalyticsImports();
+
+    expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
+  });
+
+  it('does not capture cookieless audience on non-canonical hosts', async () => {
+    vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
+    vi.stubEnv('MODE', 'production');
+    vi.stubEnv('VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST', 'false');
+
+    initializeAnalytics();
+    await flushAnalyticsImports();
+
+    expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
+  });
+
+  it('does not capture cookieless audience in persisted internal mode', async () => {
+    vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
+    window.localStorage.setItem('etoilys_analytics_internal', 'true');
+
+    initializeAnalytics();
+    await flushAnalyticsImports();
+
+    expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
+  });
+
   it('removes automatic acquisition properties from the cookieless payload', () => {
     const sanitized = analyticsInternalsForTests.sanitizeCookielessAudienceProperties({
       token: 'phc_test',
@@ -335,7 +371,12 @@ describe('analytics', () => {
         }),
         autocapture: expect.objectContaining({
           dom_event_allowlist: ['click'],
-          element_allowlist: ['a', 'button'],
+          css_selector_allowlist: [
+            'a',
+            'button',
+            '[role="button"]',
+            '[data-ph-autocapture="true"]',
+          ],
           css_selector_ignorelist: expect.arrayContaining([
             '.inquiry-turnstile',
             '.simulator-form-panel',
@@ -706,6 +747,28 @@ describe('analytics', () => {
       href: '/contact',
       classes: ['ui-button'],
     });
+  });
+
+  it('passes session replay snapshots only while detailed analytics are effectively allowed', async () => {
+    const snapshotEvent = {
+      event: '$snapshot',
+      uuid: 'test-snapshot',
+      properties: {
+        $snapshot_data: [{ type: 3, data: { source: 0, text: 'nested replay payload' } }],
+        $session_id: 'session-1',
+      },
+    };
+
+    expect(analyticsInternalsForTests.beforeSend(snapshotEvent)).toBeNull();
+
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+
+    expect(analyticsInternalsForTests.beforeSend(snapshotEvent)).toBe(snapshotEvent);
+
+    window.localStorage.setItem('etoilys_analytics_internal', 'true');
+
+    expect(analyticsInternalsForTests.beforeSend(snapshotEvent)).toBeNull();
   });
 
   it('drops events outside the v1 contract', () => {

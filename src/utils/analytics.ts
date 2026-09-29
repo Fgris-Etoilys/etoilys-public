@@ -648,7 +648,15 @@ function sanitizeCookielessAudienceProperties(
 }
 
 function beforeSend(event: CaptureResult | null): CaptureResult | null {
-  if (!event || !ALLOWED_EVENT_NAMES.has(event.event)) {
+  if (!event) {
+    return null;
+  }
+
+  if (event.event === '$snapshot') {
+    return postHogMode === 'consented' && isDetailedAnalyticsEnabled() ? event : null;
+  }
+
+  if (!ALLOWED_EVENT_NAMES.has(event.event)) {
     return null;
   }
 
@@ -708,7 +716,6 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
       capture_pageleave: false,
       autocapture: {
         dom_event_allowlist: ['click'],
-        element_allowlist: ['a', 'button'],
         css_selector_allowlist: ['a', 'button', '[role="button"]', '[data-ph-autocapture="true"]'],
         css_selector_ignorelist: DETAILED_AUTOCAPTURE_IGNORELIST,
         element_attribute_ignorelist: [
@@ -744,6 +751,7 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
 }
 
 async function ensureCookielessAudiencePostHogInitialized(): Promise<PostHogClient | null> {
+  if (isAnalyticsEnvironmentDisabled()) return null;
   if (isCookielessAudiencePostHogInitialized && cookielessAudiencePostHogClient) {
     return cookielessAudiencePostHogClient;
   }
@@ -823,6 +831,7 @@ function clearSessionAcquisitionRegistration(): void {
 function captureCookielessAudienceLanding(): void {
   if (
     hasCapturedAudienceLanding ||
+    isAnalyticsEnvironmentDisabled() ||
     !isCookielessAudienceFeatureEnabled() ||
     !isCookielessAudienceMeasurementEnabled()
   ) {
