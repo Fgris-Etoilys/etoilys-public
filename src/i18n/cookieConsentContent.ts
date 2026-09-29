@@ -30,7 +30,7 @@ export const cookieConsentContent = {
       'OpenAI Ads peut utiliser une version hachée de certaines coordonnées saisies dans le formulaire pour relier une demande à une publicité. Le détail des données utilisées figure dans notre politique de confidentialité.',
     cookielessTitle: 'Statistiques de fréquentation sans cookies',
     cookielessText:
-      'Un comptage limité des pages d’entrée nous aide à suivre la fréquentation du site. Vous pouvez aussi le désactiver.',
+      'Un comptage limité de la page d’entrée peut être envoyé dès l’arrivée, sans cookies. Vous pouvez le désactiver pour les prochaines mesures.',
     enabledLabel: 'Activé',
     disabledLabel: 'Désactivé',
     saveLabel: 'Enregistrer mes choix',
@@ -65,7 +65,7 @@ export const cookieConsentContent = {
       'OpenAI Ads may use a hashed version of some contact details entered in the form to connect a request with an ad. Details of the data used are provided in our privacy policy.',
     cookielessTitle: 'Cookieless traffic statistics',
     cookielessText:
-      'A limited count of landing pages helps us monitor site traffic. You can also disable it.',
+      'A limited landing-page count may be sent on arrival, without cookies. You can disable it for future measurements.',
     enabledLabel: 'Enabled',
     disabledLabel: 'Disabled',
     saveLabel: 'Save my choices',
@@ -101,7 +101,7 @@ export const cookieConsentContent = {
       'OpenAI Ads kan een gehashte versie gebruiken van bepaalde contactgegevens die in het formulier zijn ingevuld om een aanvraag aan een advertentie te koppelen. Details over de gebruikte gegevens staan in ons privacybeleid.',
     cookielessTitle: 'Bezoekersstatistieken zonder cookies',
     cookielessText:
-      'Een beperkte telling van landingspagina’s helpt ons het websiteverkeer te volgen. U kunt dit ook uitschakelen.',
+      'Een beperkte telling van de landingspagina kan bij aankomst worden verzonden, zonder cookies. U kunt dit uitschakelen voor volgende metingen.',
     enabledLabel: 'Ingeschakeld',
     disabledLabel: 'Uitgeschakeld',
     saveLabel: 'Mijn keuzes opslaan',

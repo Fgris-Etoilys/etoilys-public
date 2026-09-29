@@ -49,7 +49,6 @@ type AnalyticsValue = string | number | boolean | string[];
 type AnalyticsProperties = Record<string, AnalyticsValue>;
 
 export type AnalyticsEventName =
-  | 'audience_landed'
   | 'contact_clicked'
   | 'cta_clicked'
   | 'form_started'
@@ -73,7 +72,7 @@ export type AnalyticsEventName =
 
 const ALLOWED_EVENT_NAMES = new Set<string>([
   '$pageview',
-  'audience_landed',
+  '$autocapture',
   'contact_clicked',
   'cta_clicked',
   'form_started',
@@ -96,6 +95,33 @@ const ALLOWED_EVENT_NAMES = new Set<string>([
   'simulator_help_opened',
 ]);
 
+const DETAILED_AUTOCAPTURE_ALLOWED_PROPERTIES = new Set<string>([
+  '$browser',
+  '$browser_version',
+  '$ce_version',
+  '$current_url',
+  '$device_type',
+  '$el_text',
+  '$event_type',
+  '$host',
+  '$lib',
+  '$lib_version',
+  '$os',
+  '$os_version',
+  '$pathname',
+  '$referrer',
+  '$screen_height',
+  '$screen_width',
+  '$viewport_height',
+  '$viewport_width',
+  'classes',
+  'distinct_id',
+  'elements_chain',
+  'href',
+  'tag_name',
+  'title',
+  'token',
+]);
 const ALLOWED_CUSTOM_PROPERTIES = new Set<string>([
   '$current_url',
   '$pathname',
@@ -175,12 +201,46 @@ const CUSTOM_URL_PROPERTY_KEYS = new Set([
   '$referrer',
   'source_path',
   'destination_path',
+  'href',
 ]);
 const EMAIL_PATTERN = /[^\s@]+@[^\s@]+\.[^\s@]+/;
 const PHONE_PATTERN = /(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}/;
+const DETAILED_AUTOCAPTURE_IGNORELIST = [
+  '.ph-no-autocapture',
+  '[data-ph-no-autocapture]',
+  '.ph-no-capture',
+  '.ph-block',
+  '.inquiry-form',
+  '.inquiry-fields',
+  '.inquiry-turnstile',
+  '.simulator-form-panel',
+  '.simulator-result-value',
+  '.simulator-comparison',
+  '.simulator-facts',
+  '.classement-result-scores',
+  '.classement-result-diagnostic',
+  '[data-analytics-sensitive="true"]',
+  '[data-replay-block="true"]',
+];
+const SESSION_REPLAY_BLOCK_SELECTOR = [
+  '.ph-block',
+  '.inquiry-turnstile',
+  '.cf-turnstile',
+  '[data-replay-block="true"]',
+].join(',');
+const SESSION_REPLAY_MASK_TEXT_SELECTOR = [
+  '.simulator-result-value',
+  '.simulator-comparison',
+  '.simulator-facts',
+  '.classement-result-scores',
+  '.classement-result-diagnostic',
+  '[data-analytics-sensitive="true"]',
+  '[data-replay-mask="true"]',
+].join(',');
 
 let isPostHogInitialized = false;
-let postHogMode: 'uninitialized' | 'consented' | 'cookieless' = 'uninitialized';
+let isCookielessAudiencePostHogInitialized = false;
+let postHogMode: 'uninitialized' | 'consented' = 'uninitialized';
 let lastTrackedPathname: string | null = null;
 let volatileAcquisitionContext: VolatileAcquisitionContext | null = null;
 let hasCapturedAudienceLanding = false;
@@ -195,8 +255,10 @@ interface PersistedSessionAcquisition {
 }
 
 let postHogClient: PostHogClient | null = null;
+let cookielessAudiencePostHogClient: PostHogClient | null = null;
 let postHogImportPromise: Promise<PostHogClient | null> | null = null;
 let postHogInitializationPromise: Promise<PostHogClient | null> | null = null;
+let cookielessAudienceInitializationPromise: Promise<PostHogClient | null> | null = null;
 
 function readLocalStorage(key: string): string | null {
   const storage = getBrowserLocalStorage();
@@ -244,13 +306,7 @@ export function isCookielessAudienceMeasurementEnabled(): boolean {
 }
 
 export function setCookielessAudienceMeasurementEnabled(enabled: boolean): ConsentWriteResult {
-  const result = setCookielessAudienceOptOut(!enabled);
-
-  if (enabled && readConsent() === 'refused') {
-    void initializePostHog('cookieless', { captureAudienceLanding: true });
-  }
-
-  return result;
+  return setCookielessAudienceOptOut(!enabled);
 }
 
 function getCurrentPathname(): string {
@@ -525,6 +581,47 @@ function sanitizePostHogProperties(properties: Properties | null | undefined): P
   return sanitized;
 }
 
+function sanitizeAutocaptureProperties(properties: Properties | null | undefined): Properties {
+  const sanitized: Properties = {};
+
+  if (!properties) {
+    return sanitized;
+  }
+
+  for (const [key, rawValue] of Object.entries(properties)) {
+    if (!DETAILED_AUTOCAPTURE_ALLOWED_PROPERTIES.has(key)) {
+      continue;
+    }
+
+    if (CUSTOM_URL_PROPERTY_KEYS.has(key)) {
+      sanitized[key] = normalizeAnalyticsPath(typeof rawValue === 'string' ? rawValue : undefined);
+      continue;
+    }
+
+    if (typeof rawValue === 'string') {
+      if (hasSensitiveString(rawValue)) {
+        continue;
+      }
+      sanitized[key] = rawValue;
+      continue;
+    }
+
+    if (typeof rawValue === 'number' || typeof rawValue === 'boolean') {
+      sanitized[key] = rawValue;
+      continue;
+    }
+
+    if (Array.isArray(rawValue) && rawValue.every((entry) => typeof entry === 'string')) {
+      const nextValue = sanitizeArray(rawValue);
+      if (nextValue.length > 0) {
+        sanitized[key] = nextValue;
+      }
+    }
+  }
+
+  return sanitized;
+}
+
 function sanitizeCookielessAudienceProperties(
   properties: Properties | null | undefined
 ): Properties {
@@ -555,16 +652,23 @@ function beforeSend(event: CaptureResult | null): CaptureResult | null {
     return null;
   }
 
-  if (event.event === 'audience_landed') {
-    event.properties = sanitizeCookielessAudienceProperties(event.properties);
-    return event;
-  }
-
   if (postHogMode !== 'consented') {
     return null;
   }
 
-  event.properties = sanitizePostHogProperties(event.properties);
+  event.properties =
+    event.event === '$autocapture'
+      ? sanitizeAutocaptureProperties(event.properties)
+      : sanitizePostHogProperties(event.properties);
+  return event;
+}
+
+function cookielessAudienceBeforeSend(event: CaptureResult | null): CaptureResult | null {
+  if (!event || event.event !== 'audience_landed') {
+    return null;
+  }
+
+  event.properties = sanitizeCookielessAudienceProperties(event.properties);
   return event;
 }
 
@@ -586,8 +690,6 @@ function loadPostHogClient(): Promise<PostHogClient | null> {
   return postHogImportPromise;
 }
 
-type PostHogTargetMode = 'consented' | 'cookieless';
-
 async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
   if (isPostHogInitialized && postHogClient) return postHogClient;
   if (postHogInitializationPromise) return postHogInitializationPromise;
@@ -597,7 +699,6 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
     const token = getPostHogToken();
     if (!posthog || !token) return null;
 
-    const startsConsented = readConsent() === 'accepted';
     posthog.init(token, {
       api_host: getPostHogHost(),
       ui_host: 'https://eu.posthog.com',
@@ -605,12 +706,30 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
       person_profiles: 'identified_only',
       capture_pageview: false,
       capture_pageleave: false,
-      autocapture: false,
+      autocapture: {
+        dom_event_allowlist: ['click'],
+        element_allowlist: ['a', 'button'],
+        css_selector_allowlist: ['a', 'button', '[role="button"]', '[data-ph-autocapture="true"]'],
+        css_selector_ignorelist: DETAILED_AUTOCAPTURE_IGNORELIST,
+        element_attribute_ignorelist: [
+          'value',
+          'placeholder',
+          'data-value',
+          'data-email',
+          'data-phone',
+          'data-message',
+        ],
+        capture_copied_text: false,
+      },
       capture_dead_clicks: false,
-      disable_session_recording: true,
+      disable_session_recording: false,
+      session_recording: {
+        maskAllInputs: true,
+        blockSelector: SESSION_REPLAY_BLOCK_SELECTOR,
+        maskTextSelector: SESSION_REPLAY_MASK_TEXT_SELECTOR,
+      },
       disable_surveys: true,
-      ...(isCookielessAudienceFeatureEnabled() ? ({ cookieless_mode: 'on_reject' } as const) : {}),
-      opt_out_capturing_by_default: !startsConsented,
+      opt_out_capturing_by_default: readConsent() !== 'accepted',
       opt_out_capturing_persistence_type: 'localStorage',
       before_send: beforeSend,
     });
@@ -621,6 +740,50 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
 
   const initializedClient = await postHogInitializationPromise;
   if (!initializedClient) postHogInitializationPromise = null;
+  return initializedClient;
+}
+
+async function ensureCookielessAudiencePostHogInitialized(): Promise<PostHogClient | null> {
+  if (isCookielessAudiencePostHogInitialized && cookielessAudiencePostHogClient) {
+    return cookielessAudiencePostHogClient;
+  }
+  if (cookielessAudienceInitializationPromise) return cookielessAudienceInitializationPromise;
+
+  cookielessAudienceInitializationPromise = (async () => {
+    const posthog = await loadPostHogClient();
+    const token = getPostHogToken();
+    if (!posthog || !token) return null;
+
+    const cookielessClient = posthog.init(
+      token,
+      {
+        api_host: getPostHogHost(),
+        ui_host: 'https://eu.posthog.com',
+        defaults: '2026-01-30',
+        persistence: 'memory',
+        person_profiles: 'never',
+        capture_pageview: false,
+        capture_pageleave: false,
+        autocapture: false,
+        capture_dead_clicks: false,
+        disable_session_recording: true,
+        disable_surveys: true,
+        save_referrer: false,
+        save_campaign_params: false,
+        cookieless_mode: 'always',
+        opt_out_capturing_by_default: false,
+        before_send: cookielessAudienceBeforeSend,
+      },
+      'etoilys_cookieless_audience'
+    );
+
+    cookielessAudiencePostHogClient = cookielessClient;
+    isCookielessAudiencePostHogInitialized = true;
+    return cookielessClient;
+  })().catch(() => null);
+
+  const initializedClient = await cookielessAudienceInitializationPromise;
+  if (!initializedClient) cookielessAudienceInitializationPromise = null;
   return initializedClient;
 }
 
@@ -657,7 +820,7 @@ function clearSessionAcquisitionRegistration(): void {
   registeredConsentedAcquisitionSessionId = null;
 }
 
-function captureCookielessAudienceLanding(posthog: PostHogClient): void {
+function captureCookielessAudienceLanding(): void {
   if (
     hasCapturedAudienceLanding ||
     !isCookielessAudienceFeatureEnabled() ||
@@ -670,48 +833,33 @@ function captureCookielessAudienceLanding(posthog: PostHogClient): void {
   if (!context) return;
 
   hasCapturedAudienceLanding = true;
-  posthog.capture(
-    'audience_landed',
-    {
-      ...getAudienceLandingProperties(context),
-      $geoip_disable: true,
-    },
-    { send_instantly: true }
-  );
+  void ensureCookielessAudiencePostHogInitialized().then((posthog) => {
+    if (!posthog || !isCookielessAudienceMeasurementEnabled()) return;
+
+    posthog.capture(
+      'audience_landed',
+      {
+        ...getAudienceLandingProperties(context),
+        $geoip_disable: true,
+      },
+      { send_instantly: true }
+    );
+  });
 }
 
-async function initializePostHog(
-  targetMode: PostHogTargetMode,
-  options: { captureAudienceLanding?: boolean } = {}
-): Promise<PostHogClient | null> {
+async function initializePostHog(): Promise<PostHogClient | null> {
   if (isAnalyticsEnvironmentDisabled()) return null;
-  if (targetMode === 'consented' && readConsent() !== 'accepted') return null;
-  if (
-    targetMode === 'cookieless' &&
-    (readConsent() !== 'refused' ||
-      !isCookielessAudienceFeatureEnabled() ||
-      !isCookielessAudienceMeasurementEnabled())
-  ) {
-    return null;
-  }
+  if (readConsent() !== 'accepted') return null;
 
   const posthog = await ensurePostHogInitialized();
   if (!posthog) return null;
 
-  if (targetMode === 'consented') {
-    if (readConsent() !== 'accepted') return null;
-    if (postHogMode !== 'consented') {
-      posthog.opt_in_capturing({ captureEventName: false });
-      postHogMode = 'consented';
-    }
-    subscribeToPostHogSessionAcquisition(posthog);
-    return posthog;
+  if (readConsent() !== 'accepted') return null;
+  if (postHogMode !== 'consented') {
+    posthog.opt_in_capturing({ captureEventName: false });
+    postHogMode = 'consented';
   }
-
-  if (readConsent() !== 'refused') return null;
-  if (postHogMode === 'consented') posthog.opt_out_capturing();
-  postHogMode = 'cookieless';
-  if (options.captureAudienceLanding) captureCookielessAudienceLanding(posthog);
+  subscribeToPostHogSessionAcquisition(posthog);
   return posthog;
 }
 
@@ -730,11 +878,8 @@ export function initializeAnalytics(): void {
   }
 
   ensureVolatileAcquisitionContext();
-  const consent = readConsent();
-  if (consent === 'accepted') void initializePostHog('consented');
-  if (consent === 'refused') {
-    void initializePostHog('cookieless', { captureAudienceLanding: true });
-  }
+  captureCookielessAudienceLanding();
+  if (readConsent() === 'accepted') void initializePostHog();
 }
 
 export function acceptAnalyticsConsent(): ConsentWriteResult {
@@ -742,7 +887,7 @@ export function acceptAnalyticsConsent(): ConsentWriteResult {
   const result = setConsentPreferences({ analytics: 'accepted' });
   if (previousConsent === 'accepted') return result;
 
-  void initializePostHog('consented').then((posthog) => {
+  void initializePostHog().then((posthog) => {
     if (posthog) {
       trackPageView(getCurrentPathname(), { force: true });
     }
@@ -760,12 +905,7 @@ export function rejectAnalyticsConsent(): ConsentWriteResult {
   if (previousConsent === 'accepted' && isPostHogInitialized && postHogClient) {
     postHogClient.opt_out_capturing();
     postHogClient.reset();
-    postHogMode = 'cookieless';
-    return result;
-  }
-
-  if (previousConsent !== 'refused') {
-    void initializePostHog('cookieless', { captureAudienceLanding: true });
+    postHogMode = 'uninitialized';
   }
   return result;
 }
@@ -780,7 +920,7 @@ export function trackPageView(pathname: string, options: { force?: boolean } = {
 
   lastTrackedPathname = eventContext.sourcePath;
 
-  void initializePostHog('consented').then((posthog) => {
+  void initializePostHog().then((posthog) => {
     if (!posthog || !isDetailedAnalyticsEnabled()) {
       return;
     }
@@ -807,11 +947,11 @@ export function trackEvent(
   eventName: AnalyticsEventName,
   properties: AnalyticsProperties
 ): boolean {
-  if (!isDetailedAnalyticsEnabled() || eventName === 'audience_landed') return false;
+  if (!isDetailedAnalyticsEnabled()) return false;
 
   const eventContext = getCurrentEventContext();
 
-  void initializePostHog('consented').then((posthog) => {
+  void initializePostHog().then((posthog) => {
     if (!posthog || !isDetailedAnalyticsEnabled()) {
       return;
     }
@@ -1167,18 +1307,23 @@ export function trackClassementSimulatorHelpOpened(input: {
 
 export const analyticsInternalsForTests = {
   beforeSend,
+  cookielessAudienceBeforeSend,
+  sanitizeAutocaptureProperties,
   sanitizeCookielessAudienceProperties,
   sanitizeCustomProperties,
   sanitizePostHogProperties,
   reset: () => {
     isPostHogInitialized = false;
+    isCookielessAudiencePostHogInitialized = false;
     postHogMode = 'uninitialized';
     lastTrackedPathname = null;
     volatileAcquisitionContext = null;
     hasCapturedAudienceLanding = false;
     clearSessionAcquisitionRegistration();
     postHogClient = null;
+    cookielessAudiencePostHogClient = null;
     postHogImportPromise = null;
     postHogInitializationPromise = null;
+    cookielessAudienceInitializationPromise = null;
   },
 };

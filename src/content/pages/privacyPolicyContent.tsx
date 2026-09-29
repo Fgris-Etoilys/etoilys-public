@@ -15,13 +15,13 @@ const strongClassName = 'text-ink';
 export const privacyPolicyContent = {
   fr: {
     title: 'Politique de confidentialité',
-    lastUpdated: 'Dernière mise à jour : 28 septembre 2026',
+    lastUpdated: 'Dernière mise à jour : 29 septembre 2026',
     cookiePreferencesLabel: 'Gérer mes cookies',
     body: undefined,
   },
   en: {
     title: 'Privacy policy',
-    lastUpdated: 'Last updated: September 28, 2026',
+    lastUpdated: 'Last updated: September 29, 2026',
     cookiePreferencesLabel: 'Manage cookies',
     body: (
       <>
@@ -111,8 +111,8 @@ export const privacyPolicyContent = {
             <li>
               <strong className={strongClassName}>audience measurement data</strong>: detailed
               journeys, acquisition and interactions only after analytics consent has been accepted;
-              after an explicit refusal, an optional cookieless count may contain only the landing
-              page without parameters and the language.
+              a separate optional cookieless count may contain only the landing page without
+              parameters and the language.
             </li>
           </ul>
           <p>
@@ -215,7 +215,7 @@ export const privacyPolicyContent = {
             <li>
               <strong className={strongClassName}>PostHog</strong> for detailed audience,
               acquisition and journey analysis after analytics consent, or for optional minimal
-              cookieless measurement after an explicit refusal.
+              cookieless measurement.
             </li>
             <li>
               <strong className={strongClassName}>OpenAI Ads</strong> to measure, with your separate
@@ -342,9 +342,11 @@ export const privacyPolicyContent = {
             strictly necessary may only be placed after your consent has been collected.
           </p>
           <p className="mb-3">
-            Until you make a choice, the PostHog SDK is not loaded and no PostHog event is sent. If
-            you accept, persistent analytics may measure viewed pages, acquisition, forms, contact
-            links, simulators and conversions. The choice is kept for up to 6 months.
+            Before an analytics choice, only a separate cookieless PostHog instance may send one
+            limited landing-page event if this measurement is enabled and you have not opted out. If
+            you accept analytics, persistent analytics may measure viewed pages, acquisition, forms,
+            contact links, simulators, conversions, useful clicks and masked session replays. The
+            choice is kept for up to 6 months.
           </p>
           <p className="mb-3">
             With your separate consent for advertising measurement, an OpenAI Ads measurement pixel
@@ -359,17 +361,17 @@ export const privacyPolicyContent = {
             preferences, which stops any new event from being sent.
           </p>
           <p className="mb-3">
-            After an explicit refusal, and only if a dedicated limited-audience measurement is
-            actually enabled, at most one cookieless event per page load may contain the landing
-            page without parameters and the language. It contains no campaign, UTM, AI referrer,
-            conversion or persistent identifier. When this optional measurement is not available, no
-            related control is shown in cookie preferences; if it becomes available, rejecting all
-            optional cookies also disables it.
+            If a dedicated limited-audience measurement is actually enabled, at most one cookieless
+            event per page load may contain the landing page without parameters and the language. It
+            contains no campaign, UTM, AI referrer, conversion, autocapture, replay or persistent
+            identifier. You can opt out of future cookieless measurements in the preferences;
+            rejecting all optional cookies also enables this opt-out. An event already sent on
+            arrival cannot be cancelled retroactively.
           </p>
           <p>
             Withdrawing consent stops detailed tracking for subsequent interactions. A reload before
-            a choice loses the volatile acquisition context and cannot be linked to a later
-            analytics conversion.
+            accepting analytics loses the volatile acquisition context and cannot be linked to a
+            later analytics conversion.
           </p>
         </div>
 
@@ -387,7 +389,7 @@ export const privacyPolicyContent = {
   },
   nl: {
     title: 'Privacybeleid',
-    lastUpdated: 'Laatst bijgewerkt: 28 september 2026',
+    lastUpdated: 'Laatst bijgewerkt: 29 september 2026',
     cookiePreferencesLabel: 'Cookies beheren',
     body: (
       <>
@@ -482,8 +484,8 @@ export const privacyPolicyContent = {
             <li>
               <strong className={strongClassName}>gegevens voor bezoekersmeting</strong>:
               gedetailleerde trajecten, acquisitie en interacties uitsluitend na aanvaarding van
-              analytics-toestemming; na een uitdrukkelijke weigering kan een optionele telling
-              zonder cookie uitsluitend de landingspagina zonder parameters en de taal bevatten.
+              analytics-toestemming; een afzonderlijke optionele telling zonder cookie kan
+              uitsluitend de landingspagina zonder parameters en de taal bevatten.
             </li>
           </ul>
           <p>
@@ -592,8 +594,7 @@ export const privacyPolicyContent = {
             <li>
               <strong className={strongClassName}>PostHog</strong> voor gedetailleerde analyse van
               bezoekersgedrag, de herkomst van bezoeken en gebruikersroutes na toestemming voor
-              analytics, of voor optionele minimale meting zonder cookie na een uitdrukkelijke
-              weigering.
+              analytics, of voor optionele minimale meting zonder cookie.
             </li>
             <li>
               <strong className={strongClassName}>OpenAI Ads</strong> om, met uw afzonderlijke
@@ -728,10 +729,12 @@ export const privacyPolicyContent = {
             worden geplaatst.
           </p>
           <p className="mb-3">
-            Zolang geen keuze is gemaakt, wordt de PostHog SDK niet geladen en wordt geen
-            PostHog-gebeurtenis verzonden. Bij acceptatie kunnen persistente analytics bekeken
-            pagina’s, acquisitie, formulieren, contactlinks, simulatoren en conversies meten. De
-            keuze wordt maximaal 6 maanden bewaard.
+            Voordat een keuze voor analytics is gemaakt, kan alleen een afzonderlijke cookieless
+            PostHog-instantie één beperkte gebeurtenis over de landingspagina verzenden, als deze
+            meting is ingeschakeld en u geen bezwaar hebt gemaakt. Bij acceptatie kunnen persistente
+            analytics bekeken pagina’s, acquisitie, formulieren, contactlinks, simulatoren,
+            conversies, nuttige klikken en gemaskeerde sessiereplays meten. De keuze wordt maximaal
+            6 maanden bewaard.
           </p>
           <p className="mb-3">
             Met uw afzonderlijke toestemming voor advertentiemeting kan een OpenAI Ads-meetpixel
@@ -747,17 +750,17 @@ export const privacyPolicyContent = {
             de voorkeuren, waardoor geen nieuwe gebeurtenis meer wordt verzonden.
           </p>
           <p className="mb-3">
-            Na een uitdrukkelijke weigering, en alleen als een specifieke beperkte publieksmeting
-            daadwerkelijk is ingeschakeld, kan maximaal één gebeurtenis zonder cookie per laadbeurt
-            de landingspagina zonder parameters en de taal bevatten. Zij bevat geen campagne, UTM,
-            AI-referrer, conversie of persistente identifier. Wanneer deze optionele meting niet
-            beschikbaar is, wordt er geen bijbehorende instelling getoond in de cookievoorkeuren;
-            als zij beschikbaar wordt, schakelt alles weigeren haar ook uit.
+            Als een specifieke beperkte publieksmeting daadwerkelijk is ingeschakeld, kan maximaal
+            één gebeurtenis zonder cookie per laadbeurt de landingspagina zonder parameters en de
+            taal bevatten. Zij bevat geen campagne, UTM, AI-referrer, conversie, autocapture, replay
+            of persistente identifier. U kunt bezwaar maken tegen toekomstige cookieless metingen in
+            de voorkeuren; alles weigeren activeert dit bezwaar ook. Een gebeurtenis die bij
+            aankomst al is verzonden, kan niet met terugwerkende kracht worden geannuleerd.
           </p>
           <p>
             Het intrekken van toestemming stopt gedetailleerde tracking voor latere interacties. Bij
-            herladen voordat een keuze is gemaakt, gaat de tijdelijke acquisitiecontext verloren en
-            kan deze niet aan een latere analyticsconversie worden gekoppeld.
+            herladen voordat analytics is geaccepteerd, gaat de tijdelijke acquisitiecontext
+            verloren en kan deze niet aan een latere analyticsconversie worden gekoppeld.
           </p>
         </div>
 

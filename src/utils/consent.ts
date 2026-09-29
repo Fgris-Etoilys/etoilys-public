@@ -178,7 +178,7 @@ function buildSnapshot(): ConsentSnapshot {
     cookielessAudience: {
       featureAvailable,
       userOptOut,
-      effectiveEnabled: featureAvailable && analytics === 'refused' && !userOptOut,
+      effectiveEnabled: featureAvailable && !userOptOut,
     },
     lastWriteSucceeded,
   };

@@ -28,6 +28,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           ref={ref}
           className={`ui-field resize-none ${error ? 'ui-field-error' : ''} ${className}`}
+          data-ph-no-autocapture="true"
           {...props}
           id={inputId}
           aria-invalid={props['aria-invalid'] ?? (error ? true : undefined)}

@@ -122,9 +122,8 @@ export default function Confidentialite() {
                   <li>
                     <strong className="text-ink">données de mesure d&apos;audience</strong> :
                     parcours détaillé, acquisition et interactions uniquement après acceptation du
-                    consentement analytics ; après un refus explicite, un comptage facultatif sans
-                    cookie peut contenir uniquement la page d&apos;entrée sans paramètres et la
-                    langue.
+                    consentement analytics ; un comptage cookieless séparé et facultatif peut
+                    contenir uniquement la page d&apos;entrée sans paramètres et la langue.
                   </li>
                 </ul>
                 <p>
@@ -240,7 +239,7 @@ export default function Confidentialite() {
                   <li>
                     <strong className="text-ink">PostHog</strong> pour la mesure détaillée de
                     l&apos;audience, de l&apos;acquisition et des parcours après consentement, ou
-                    pour une mesure minimale facultative sans cookie après un refus explicite.
+                    pour une mesure minimale facultative sans cookie.
                   </li>
                   <li>
                     <strong className="text-ink">OpenAI Ads</strong> pour mesurer, avec votre accord
@@ -391,11 +390,12 @@ export default function Confidentialite() {
                   déposés qu&apos;après recueil de votre consentement.
                 </p>
                 <p className="mb-3">
-                  Tant qu&apos;aucun choix n&apos;est exprimé, le SDK PostHog n&apos;est pas chargé
-                  et aucun événement PostHog n&apos;est envoyé. En cas d&apos;acceptation, les
-                  analytics persistants peuvent mesurer les pages consultées, l&apos;acquisition,
-                  les formulaires, les contacts, les simulateurs et les conversions. Le choix est
-                  conservé au maximum 6 mois.
+                  Avant tout choix analytics, seule une instance PostHog cookieless séparée peut
+                  envoyer un événement limité à la page d&apos;entrée, si cette mesure est active et
+                  si vous ne vous y êtes pas opposé. En cas d&apos;acceptation, les analytics
+                  persistants peuvent mesurer les pages consultées, l&apos;acquisition, les
+                  formulaires, les contacts, les simulateurs, les conversions, les clics utiles et
+                  des replays de session masqués. Le choix est conservé au maximum 6 mois.
                 </p>
                 <p className="mb-3">
                   Avec votre accord distinct pour la mesure publicitaire, un pixel de mesure OpenAI
@@ -412,19 +412,19 @@ export default function Confidentialite() {
                   qui arrête l&apos;envoi de tout nouvel événement.
                 </p>
                 <p className="mb-3">
-                  Après un refus explicite, et seulement si une mesure d&apos;audience limitée
-                  dédiée est réellement activée, au maximum un événement sans cookie par chargement
-                  peut contenir la page d&apos;entrée sans paramètres et la langue. Il ne contient
-                  ni campagne, ni UTM, ni référent IA, ni conversion, ni identifiant persistant.
-                  Lorsque cette mesure facultative n&apos;est pas disponible, aucun réglage
-                  correspondant n&apos;est affiché dans les préférences cookies ; si elle devient
-                  disponible, tout refuser la désactive aussi.
+                  Si une mesure d&apos;audience limitée dédiée est réellement activée, au maximum un
+                  événement sans cookie par chargement peut contenir la page d&apos;entrée sans
+                  paramètres et la langue. Il ne contient ni campagne, ni UTM, ni référent IA, ni
+                  conversion, ni autocapture, ni replay, ni identifiant persistant. Vous pouvez vous
+                  opposer aux prochaines mesures cookieless dans les préférences ; tout refuser
+                  active aussi cette opposition. Un événement déjà envoyé à l&apos;arrivée ne peut
+                  pas être annulé rétroactivement.
                 </p>
                 <p>
                   Le retrait du consentement arrête le suivi détaillé pour les interactions
-                  suivantes. Un rechargement avant tout choix perd le contexte d&apos;acquisition
-                  conservé en mémoire et ne peut pas être raccordé à une conversion analytics
-                  ultérieure.
+                  suivantes. Un rechargement avant acceptation analytics perd le contexte
+                  d&apos;acquisition conservé en mémoire et ne peut pas être raccordé à une
+                  conversion analytics ultérieure.
                 </p>
                 <CookiePreferencesButton className="mt-4 inline-flex text-sm font-medium text-ink hover:text-ink-hover">
                   Gérer mes cookies

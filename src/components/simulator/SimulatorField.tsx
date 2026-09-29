@@ -48,6 +48,7 @@ const SimulatorField = forwardRef<HTMLInputElement, SimulatorFieldProps>(
         name={name}
         required={required}
         className={`ui-field ${error ? 'ui-field-error' : ''} ${className}`}
+        data-ph-no-autocapture="true"
         {...props}
         aria-invalid={props['aria-invalid'] ?? (error ? true : undefined)}
         aria-describedby={describedBy}

@@ -1,6 +1,6 @@
-# Contrat de mesure OpenAI Ads (Pixel) — v2.2
+# Contrat de mesure OpenAI Ads (Pixel) — v2.3
 
-Version du 28 septembre 2026 (v2 : ajout de la préservation temporaire de `oppref`, v2.1 : nouvelle interface de consentement et store commun léger, v2.2 : retry simple après échec de script et garde-fous d'environnement). Ce contrat couvre exclusivement le Pixel de mesure OpenAI Ads (`src/utils/openAiAds.ts`). Il est indépendant du [contrat analytics PostHog](analytics-tracking-contract.md) : les deux systèmes gardent des finalités et clés de consentement distinctes, mais leur lecture est orchestrée par un store navigateur commun. Ce document ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
+Version du 29 septembre 2026 (v2 : ajout de la préservation temporaire de `oppref`, v2.1 : nouvelle interface de consentement et store commun léger, v2.2 : retry simple après échec de script et garde-fous d'environnement, v2.3 : runbook AAM lot 3). Ce contrat couvre exclusivement le Pixel de mesure OpenAI Ads (`src/utils/openAiAds.ts`). Il est indépendant du [contrat analytics PostHog](analytics-tracking-contract.md) : les deux systèmes gardent des finalités et clés de consentement distinctes, mais leur lecture est orchestrée par un store navigateur commun. Ce document ne constitue ni une validation juridique, ni une approbation ou certification de la CNIL.
 
 ## Périmètre
 
@@ -39,6 +39,8 @@ Depuis le lot 1 du 28 septembre 2026, les préférences sont modifiées dans une
 Le lot 1 ne change pas la politique `oppref` décrite ci-dessous : la copie `sessionStorage` préconsentement reste en place. L'accès à `sessionStorage` est seulement protégé pour éviter qu'un navigateur ou mode de confidentialité qui bloque le getter ne casse le site.
 
 Le lot 2 ne change ni `oppref`, ni Automatic Advanced Matching, ni le consentement publicitaire, ni le payload `lead_created`. Il ajoute seulement une nouvelle tentative simple si le tag `<script>` du SDK échoue : l'état d'injection local et le tag en erreur sont nettoyés, puis une action publicitaire autorisée ultérieure peut retenter. Il n'y a pas de retry périodique, pas de state machine complexe et pas de file persistante.
+
+Le lot 3 ne change ni `oppref`, ni le payload `lead_created`, ni l'absence de CAPI. Automatic Advanced Matching reste un mécanisme du SDK et d'Ads Manager à vérifier par inspection réseau et dans l'interface OpenAI Ads ; le frontend Etoilys n'ajoute aucun matching manuel, aucun hash maison et aucun champ `user`.
 
 ## Gestion de `oppref` par Etoilys
 
@@ -103,8 +105,10 @@ La campagne reste en pause tant que ce runbook n'a pas été exécuté et valid�
 4. Atterrir avec `?oppref=test123` sur `/classement-meuble-tourisme-dordogne`, naviguer vers `/demande-classement` **sans** accepter la mesure publicitaire, puis accepter sur le formulaire → vérifier dans l'onglet Réseau que l'URL au moment du chargement du script SDK contient bien `oppref=test123`, et qu'elle en est retirée juste après (`?etoilys_ads_debug=1` pour voir `consent(true)` puis `init` en console).
 5. Répéter le point 4 puis recharger la page (F5) juste après avoir quitté la landing, avant d'accepter → vérifier que `oppref` est toujours réinjecté à l'acceptation malgré le rechargement.
 6. Soumettre une demande de classement de test valide → message de succès.
-7. Onglet Réseau : payload `lead_created`/`customer_action`, aucune donnée brute de formulaire (des champs hachés peuvent apparaître si Automatic Advanced Matching est actif — attendu, pas une anomalie).
-8. Ads Manager → Conversions → flux d'événements → vérifier l'arrivée de `lead_created` avec une attribution de clic cohérente.
-9. Soumission invalide → aucun `lead_created`. Storage vidé, refus explicite, soumission réussie → aucun `lead_created`.
-10. Vérifier en parallèle que PostHog reçoit toujours `form_submit_succeeded` avec `acquisition_source=chatgpt_ads`.
-11. Uniquement après validation complète et captures datées → lever la pause de la campagne côté Ads Manager.
+7. Onglet Réseau : payload `lead_created`/`customer_action`, aucune donnée brute de formulaire explicitement envoyée par le code Etoilys.
+8. Vérifier AAM réellement actif : inspecter les requêtes Pixel et l'interface Ads Manager pour documenter les champs observés, leur forme hachée ou brute, et les conditions de consentement. Des champs hachés peuvent apparaître si Automatic Advanced Matching est actif ; une donnée brute inattendue bloque l'activation.
+9. Si AAM dépend d'un réglage Ads Manager, traiter l'activation/désactivation comme une configuration externe documentée. Ne pas ajouter de matching manuel côté frontend.
+10. Ads Manager → Conversions → flux d'événements → vérifier l'arrivée de `lead_created` avec une attribution de clic cohérente.
+11. Soumission invalide → aucun `lead_created`. Storage vidé, refus explicite, soumission réussie → aucun `lead_created`.
+12. Vérifier en parallèle que PostHog reçoit toujours `form_submit_succeeded` avec `acquisition_source=chatgpt_ads`.
+13. Uniquement après validation complète et captures datées → lever la pause de la campagne côté Ads Manager.

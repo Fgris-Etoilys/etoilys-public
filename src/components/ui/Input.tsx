@@ -30,6 +30,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           id={inputId}
           name={name}
           className={`ui-field  ${error ? 'ui-field-error' : ''} ${className}`}
+          data-ph-no-autocapture="true"
           {...props}
           aria-invalid={props['aria-invalid'] ?? (error ? true : undefined)}
           aria-describedby={describedBy}

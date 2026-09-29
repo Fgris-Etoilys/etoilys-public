@@ -36,6 +36,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <select
             ref={ref}
             className={`ui-field appearance-none pl-4 pr-12 text-base ${error ? 'ui-field-error' : ''} ${className}`}
+            data-ph-no-autocapture="true"
             {...props}
             id={inputId}
             aria-invalid={props['aria-invalid'] ?? (error ? true : undefined)}

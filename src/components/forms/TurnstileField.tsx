@@ -163,7 +163,9 @@ export default function TurnstileField({
 
   return (
     <div
-      className="inquiry-turnstile ui-focus"
+      className="inquiry-turnstile ph-no-autocapture ph-block ui-focus"
+      data-ph-no-autocapture="true"
+      data-replay-block="true"
       role="group"
       aria-label={messages.label ?? defaultMessages.label}
       aria-invalid={error || localError ? true : undefined}

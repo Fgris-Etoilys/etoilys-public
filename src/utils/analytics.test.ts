@@ -73,6 +73,14 @@ describe('analytics', () => {
         if (callbackIndex >= 0) posthogMock.sessionCallbacks.splice(callbackIndex, 1);
       };
     });
+    posthogMock.init.mockImplementation(() => ({
+      capture: posthogMock.capture,
+      opt_in_capturing: posthogMock.optInDirect,
+      opt_out_capturing: posthogMock.optOut,
+      register_for_session: posthogMock.registerForSession,
+      reset: posthogMock.reset,
+      onSessionId: posthogMock.onSessionId,
+    }));
     analyticsInternalsForTests.reset();
     consentInternalsForTests.reset();
     vi.stubEnv('VITE_PUBLIC_POSTHOG_TOKEN', 'phc_test');
@@ -93,13 +101,38 @@ describe('analytics', () => {
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
-  it('does not initialize PostHog without a choice even when cookieless is enabled', () => {
+  it('captures one cookieless audience landing without a banner choice when enabled', async () => {
     vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
+    window.history.pushState({}, 'Test', '/contact?utm_source=chatgpt.com#form');
 
     initializeAnalytics();
+    await flushAnalyticsImports();
 
-    expect(posthogMock.init).not.toHaveBeenCalled();
-    expect(posthogMock.capture).not.toHaveBeenCalled();
+    expect(posthogMock.init).toHaveBeenCalledWith(
+      'phc_test',
+      expect.objectContaining({
+        cookieless_mode: 'always',
+        persistence: 'memory',
+        opt_out_capturing_by_default: false,
+        person_profiles: 'never',
+        autocapture: false,
+        capture_pageview: false,
+        disable_session_recording: true,
+        save_referrer: false,
+        save_campaign_params: false,
+      }),
+      'etoilys_cookieless_audience'
+    );
+    expect(posthogMock.capture).toHaveBeenCalledTimes(1);
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      'audience_landed',
+      {
+        landing_page: '/contact',
+        locale: 'fr',
+        $geoip_disable: true,
+      },
+      { send_instantly: true }
+    );
   });
 
   it('does not initialize PostHog when consent is refused', () => {
@@ -114,24 +147,27 @@ describe('analytics', () => {
     expect(posthogMock.init).not.toHaveBeenCalled();
   });
 
-  it('captures one minimal event after an explicit refusal when the feature is enabled', async () => {
+  it('does not capture a second cookieless audience landing after an explicit refusal', async () => {
     vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
     window.history.pushState({}, 'Test', '/contact?utm_source=chatgpt.com#form');
 
-    rejectAnalyticsConsent();
+    initializeAnalytics();
     await flushAnalyticsImports();
+    rejectAnalyticsConsent();
     initializeAnalytics();
     await flushAnalyticsImports();
 
     expect(posthogMock.init).toHaveBeenCalledWith(
       'phc_test',
       expect.objectContaining({
-        cookieless_mode: 'on_reject',
-        opt_out_capturing_by_default: true,
+        cookieless_mode: 'always',
+        persistence: 'memory',
+        opt_out_capturing_by_default: false,
         autocapture: false,
         capture_pageview: false,
         disable_session_recording: true,
-      })
+      }),
+      'etoilys_cookieless_audience'
     );
     expect(posthogMock.capture).toHaveBeenCalledTimes(1);
     expect(posthogMock.capture).toHaveBeenCalledWith(
@@ -149,7 +185,7 @@ describe('analytics', () => {
     vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
     setCookielessAudienceMeasurementEnabled(false);
 
-    rejectAnalyticsConsent();
+    initializeAnalytics();
     await flushAnalyticsImports();
 
     expect(window.localStorage.getItem(COOKIELESS_AUDIENCE_OPT_OUT_STORAGE_KEY)).toBe('true');
@@ -291,7 +327,27 @@ describe('analytics', () => {
         defaults: '2026-01-30',
         person_profiles: 'identified_only',
         opt_out_capturing_persistence_type: 'localStorage',
+        disable_session_recording: false,
+        session_recording: expect.objectContaining({
+          maskAllInputs: true,
+          blockSelector: expect.stringContaining('.cf-turnstile'),
+          maskTextSelector: expect.stringContaining('.simulator-result-value'),
+        }),
+        autocapture: expect.objectContaining({
+          dom_event_allowlist: ['click'],
+          element_allowlist: ['a', 'button'],
+          css_selector_ignorelist: expect.arrayContaining([
+            '.inquiry-turnstile',
+            '.simulator-form-panel',
+            '[data-analytics-sensitive="true"]',
+          ]),
+          capture_copied_text: false,
+        }),
       })
+    );
+    expect(posthogMock.init).not.toHaveBeenCalledWith(
+      'phc_test',
+      expect.objectContaining({ cookieless_mode: 'on_reject' })
     );
     expect(posthogMock.optInDirect).toHaveBeenCalledWith({ captureEventName: false });
     expect(posthogMock.registerForSession).toHaveBeenCalledWith(
@@ -625,6 +681,30 @@ describe('analytics', () => {
       $referrer: '/search',
       form_name: 'contact',
       invalid_fields: ['email', 'message'],
+    });
+  });
+
+  it('sanitizes allowed autocapture clicks without form values or raw URLs', () => {
+    const sanitized = analyticsInternalsForTests.sanitizeAutocaptureProperties({
+      token: 'phc_test',
+      distinct_id: 'anonymous-id',
+      $event_type: 'click',
+      tag_name: 'button',
+      $el_text: 'Demander un devis',
+      href: 'https://www.etoilys.fr/contact?email=test@example.com#form',
+      value: 'test@example.com',
+      $set: { email: 'test@example.com' },
+      classes: ['ui-button', ''],
+    });
+
+    expect(sanitized).toEqual({
+      token: 'phc_test',
+      distinct_id: 'anonymous-id',
+      $event_type: 'click',
+      tag_name: 'button',
+      $el_text: 'Demander un devis',
+      href: '/contact',
+      classes: ['ui-button'],
     });
   });
 

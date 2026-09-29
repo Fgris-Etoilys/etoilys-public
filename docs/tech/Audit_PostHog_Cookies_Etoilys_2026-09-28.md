@@ -57,17 +57,17 @@ PostHog est importé dynamiquement. L’autocapture, le replay, les surveys et l
 
 ### 3.2 Matrice réellement prévue par le code
 
-| Situation                                       | PostHog                                                                                         | OpenAI Ads                              | Point notable                                                                   |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------- |
-| Aucun choix enregistré                          | Pas d’initialisation ni d’événement analytics                                                   | Pas de chargement du Pixel              | `oppref` peut pourtant déjà être copié dans `sessionStorage`.                   |
-| Analytics accepté, publicité refusée            | Événements détaillés                                                                            | Pas de nouvelle conversion publicitaire | Les finalités peuvent être distinctes, mais le menu les présente mal.           |
-| Publicité acceptée, analytics refusé            | Audience minimale éventuelle seulement                                                          | Pixel et conversion `lead_created`      | Combinaison possible, sans parcours de réglage évident.                         |
-| Refus des deux finalités                        | `audience_landed` au plus une fois par document si flag actif et sans opposition                | Pas de conversion permise par le helper | Le refus ne purge pas la copie maison de `oppref`.                              |
-| Retrait d’un accord analytics                   | Opt-out, reset et aucun nouvel événement minimal sur le document courant dans la branche prévue | Indépendant                             | L’audience minimale peut reprendre au chargement suivant.                       |
-| Refus minimal explicite                         | Pas de nouvel événement minimal autorisé                                                        | Indépendant                             | L’interface ne doit pas exposer une option inactive comme si elle fonctionnait. |
-| Choix absent ou expiré pour l’une des finalités | Nouvelle demande de choix                                                                       | Nouvelle demande de choix               | Un ancien accord analytics ne doit jamais devenir un accord publicitaire.       |
+| Situation                                       | PostHog                                                                                                                  | OpenAI Ads                              | Point notable                                                               |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- | --------------------------------------------------------------------------- |
+| Aucun choix enregistré                          | Instance cookieless séparée : `audience_landed` si flag actif et sans opposition ; instance principale inactive          | Pas de chargement du Pixel              | `oppref` peut pourtant déjà être copié dans `sessionStorage`.               |
+| Analytics accepté, publicité refusée            | Instance principale : événements détaillés consentis, replay masqué et autocapture limitée ; instance cookieless séparée | Pas de nouvelle conversion publicitaire | Les finalités restent distinctes.                                           |
+| Publicité acceptée, analytics refusé            | Aucun événement détaillé ; audience cookieless seulement si flag actif et sans opposition                                | Pixel et conversion `lead_created`      | Combinaison possible sans rapprochement PostHog.                            |
+| Refus des deux finalités                        | Aucun événement détaillé ; pas de second `audience_landed` sur le document courant                                       | Pas de conversion permise par le helper | Le refus ne purge pas la copie maison de `oppref`.                          |
+| Retrait d’un accord analytics                   | Opt-out, reset et aucun nouvel événement détaillé sur le document courant                                                | Indépendant                             | L’opposition cookieless empêche les mesures suivantes.                      |
+| Opposition cookieless explicite                 | Pas de nouvel événement minimal autorisé                                                                                 | Indépendant                             | L’événement éventuellement déjà envoyé à l’arrivée ne peut pas être annulé. |
+| Choix absent ou expiré pour l’une des finalités | Nouvelle demande de choix                                                                                                | Nouvelle demande de choix               | Un ancien accord analytics ne doit jamais devenir un accord publicitaire.   |
 
-La durée applicative des choix est de 183 jours. La mesure minimale est désactivée dans l’exemple d’environnement et son activation est soumise à un dossier de vérification encore indiqué comme incomplet dans la documentation de juillet. Cela ne prouve pas que le flag est actuellement désactivé en production. [R5, R7, R10, R12, R13]
+La durée applicative des choix est de 183 jours. La mesure minimale est activée dans l’exemple d’environnement du lot 3, mais l’activation production reste conditionnée aux contrôles techniques bloquants. [R5, R7, R10, R12, R13]
 
 ### 3.3 Conversion publicitaire : ce qui fonctionne déjà
 
@@ -515,9 +515,15 @@ Une dépendance déclarée avec `^` ne garantit pas la version résolue. Vérifi
 
 ### Lot 3 — Audience indépendante et autres options
 
-Ce lot ne démarre qu’après arbitrages. Pour A2 : préciser données, finalité, destinataire, stockage, opposition, absence de recoupement, rétention et traitement des métadonnées réseau. Confirmer les paramètres PostHog et du proxy, puis seulement activer la variante retenue.
+Arbitrage retenu le 29 septembre 2026 : option 2, couverture cookieless séparée dès l’arrivée pour tous les visiteurs, sauf opposition `etoilys_cookieless_audience_opt_out`. La mesure est portée par une instance PostHog nommée distincte en `cookieless_mode: "always"` et `persistence: "memory"`, qui envoie uniquement `audience_landed` avec `landing_page`, `locale` et `$geoip_disable`.
 
-Pour A4 : vérifier le matching réel et tester les charges utiles avant modification de copy. Pour A5 : un replay éventuel nécessite une spécification séparée ; le présent rapport n’autorise pas son activation.
+L’instance PostHog principale ne doit plus utiliser `cookieless_mode: "on_reject"` ni envoyer `audience_landed`. Elle reste réservée aux analytics détaillés consentis. Les contrats et dashboards doivent conserver les populations séparées : aucune conversion consentie ne doit être divisée par l’audience cookieless.
+
+Pour A5, replay et autocapture sont autorisés uniquement après consentement analytics : replay éligible à 100 % des sessions consenties sous réserve du sampling projet PostHog, `maskAllInputs: true`, Turnstile bloqué, résultats sensibles masqués, structure/labels/boutons/erreurs visibles, autocapture limitée aux clics utiles via allowlists/ignorelists natives du SDK.
+
+Pour A4, `oppref` reste inchangé. Automatic Advanced Matching doit être vérifié par inspection réseau et Ads Manager ; si son activation dépend d’Ads Manager, il s’agit d’une configuration externe/runbook, sans matching manuel ajouté côté frontend.
+
+Les contrôles techniques restent bloquants avant activation production. Les vérifications juridiques/CNIL sont documentées mais ne bloquent pas ce lot.
 
 Le backend ne doit pas être ajouté au lot public : un éventuel compteur métier ou CAPI fait l’objet d’un ticket distinct dans son dépôt, avec contrat explicite entre front et back.
 

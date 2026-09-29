@@ -103,7 +103,7 @@ describe('consent store', () => {
 
   it('exposes cookieless audience only when the feature is available and not opted out', () => {
     vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'true');
-    setConsentPreferences({ analytics: 'refused', cookielessAudienceOptOut: false });
+    setConsentPreferences({ analytics: 'accepted', cookielessAudienceOptOut: false });
 
     expect(getConsentSnapshot().cookielessAudience).toEqual({
       featureAvailable: true,
