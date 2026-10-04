@@ -17,9 +17,9 @@ type ImageAltText = {
 
 export const IMAGE_ALT_TEXT = {
   homeHero: {
-    fr: "Terrasse avec piscine d'un meublé de tourisme",
-    en: 'Terrace with swimming pool at furnished tourist accommodation',
-    nl: 'Terras met zwembad bij een Franse vakantiewoning',
+    fr: 'Terrasse en bois avec fauteuils blancs et table basse ronde, face à une piscine, une pelouse et des montagnes',
+    en: 'Wooden terrace with white armchairs and a round coffee table, facing a pool, a lawn and mountains',
+    nl: 'Houten terras met witte fauteuils en een ronde salontafel, met zicht op een zwembad, een gazon en bergen',
   },
   pourquoiReferencement: {
     fr: 'Façades contemporaines blanches avec grandes baies vitrées et balcons en verre',
