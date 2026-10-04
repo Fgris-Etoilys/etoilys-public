@@ -120,6 +120,11 @@ Articles routés actuellement :
 - `/actualites/facturation-electronique-2026-proprietaires-meubles`
 - `/actualites/dpe-meubles-tourisme-2026-2034`
 - `/actualites/api-meubles-declaration-meuble-tourisme`
+- `/actualites/airbnb-booking-abritel-donnees-communes-api-meubles`
+- `/actualites/que-faire-apres-classement-meuble-tourisme`
+- `/actualites/preparer-visite-classement-meuble-tourisme`
+- `/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost`
+- `/actualites/plf-2027-meubles-tourisme`
 
 ## Arborescence du repo
 

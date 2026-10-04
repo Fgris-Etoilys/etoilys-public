@@ -111,6 +111,10 @@ const IMAGE_ASSETS = [
     key: 'articleRipostVoyageurRefuseQuitter',
     fileName: 'article-ripost-voyageur-refuse-quitter.png',
   },
+  {
+    key: 'articlePlf2027MeublesTourisme',
+    fileName: 'article-plf-2027-meubles-tourisme.png',
+  },
   { key: 'dordogneHero', fileName: 'pexels-slimmars-13-197677686-14298615.jpg' },
   { key: 'aveyronHero', fileName: 'belcastel-4-kallerna-wikimedia.jpg' },
   { key: 'aveyronTerritory', fileName: 'joran-quinten-wYzuwwLKmGM-unsplash.jpg' },

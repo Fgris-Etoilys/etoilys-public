@@ -20,6 +20,7 @@ export type ImageAssetKey =
   | 'articleApresClassement'
   | 'articlePreparerVisiteClassement'
   | 'articleRipostVoyageurRefuseQuitter'
+  | 'articlePlf2027MeublesTourisme'
   | 'dordogneHero'
   | 'aveyronHero'
   | 'aveyronTerritory'
@@ -245,6 +246,15 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/article-ripost-voyageur-refuse-quitter-480.webp 480w, /images/optimized/article-ripost-voyageur-refuse-quitter-768.webp 768w, /images/optimized/article-ripost-voyageur-refuse-quitter-1200.webp 1200w, /images/optimized/article-ripost-voyageur-refuse-quitter-1600.webp 1600w',
     srcSetAvif:
       '/images/optimized/article-ripost-voyageur-refuse-quitter-480.avif 480w, /images/optimized/article-ripost-voyageur-refuse-quitter-768.avif 768w, /images/optimized/article-ripost-voyageur-refuse-quitter-1200.avif 1200w, /images/optimized/article-ripost-voyageur-refuse-quitter-1600.avif 1600w',
+  },
+  articlePlf2027MeublesTourisme: {
+    width: 1672,
+    height: 941,
+    src: '/images/optimized/article-plf-2027-meubles-tourisme-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/article-plf-2027-meubles-tourisme-480.webp 480w, /images/optimized/article-plf-2027-meubles-tourisme-768.webp 768w, /images/optimized/article-plf-2027-meubles-tourisme-1200.webp 1200w, /images/optimized/article-plf-2027-meubles-tourisme-1600.webp 1600w',
+    srcSetAvif:
+      '/images/optimized/article-plf-2027-meubles-tourisme-480.avif 480w, /images/optimized/article-plf-2027-meubles-tourisme-768.avif 768w, /images/optimized/article-plf-2027-meubles-tourisme-1200.avif 1200w, /images/optimized/article-plf-2027-meubles-tourisme-1600.avif 1600w',
   },
   dordogneHero: {
     width: 5120,

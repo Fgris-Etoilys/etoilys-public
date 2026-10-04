@@ -297,6 +297,22 @@ const articleContent: ActualiteArticleContent[] = [
       'airbnb-booking-abritel-donnees-communes-api-meubles',
     ],
   },
+  {
+    title: 'PLF 2027 : ce qui pourrait changer pour les propriétaires de meublés de tourisme',
+    excerpt:
+      'Amortissement plafonné à 1,5 % et 5 000 € par an, fin du report : ce que le PLF 2027 propose pour les meublés de tourisme au régime réel.',
+    relatedSummary:
+      'Amortissement plafonné et fin du report : ce que le projet de budget 2027 prévoit pour les meublés de tourisme au réel.',
+    imageKey: 'articlePlf2027MeublesTourisme',
+    href: '/actualites/plf-2027-meubles-tourisme',
+    category: 'fiscalite',
+    readingTimeMinutes: 7,
+    relatedArticleSlugs: [
+      'micro-bic-2026-meuble-classe-vs-non-classe',
+      'meuble-classe-non-classe-seuils-micro-bic',
+      'meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
+    ],
+  },
 ];
 
 function buildArticle(article: ActualiteArticleContent): ActualiteArticle {

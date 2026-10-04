@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "c5ec0d52890ab8ba926db57b101f18e1764c25a9af761c265319c5ebc5f1f377",
+  "pipelineSignature": "331c63ff42e146ca8ad73b311b17d9e4c02b870dd8ff4745c332375e97eff9bf",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "0cae33037d29fb473cce926382d287d49bce6f23d231cd0f8ebce388da65a015"
+    "sha256": "5aade09903dfc1e89854b200ad3c57a14974a348c51fe57bffb75eec0ebd2e35"
   },
   "sources": [
     {
@@ -50,6 +50,11 @@
       "key": "articleMicroBic2026",
       "path": "src/assets/seo-images/source/article-micro-bic-2026.jpg",
       "sha256": "ac0eb19d8ec16521ccdfcfeca3b6423982876a3e86bcad02df54edf9e71d712e"
+    },
+    {
+      "key": "articlePlf2027MeublesTourisme",
+      "path": "src/assets/seo-images/source/article-plf-2027-meubles-tourisme.png",
+      "sha256": "5909a2665bba19892b9f0c8a559bf728a8d8ca3f0037b990a354adfb6732ba23"
     },
     {
       "key": "articlePreparerVisiteClassement",
@@ -687,6 +692,51 @@
       "path": "/images/optimized/article-micro-bic-2026-768.webp",
       "bytes": 29836,
       "sha256": "2d040d04dea8253817ac4911e22303d354c80c31b0b0da9ba66e4663a0d44c76"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-1200.avif",
+      "bytes": 77049,
+      "sha256": "ae638a30289d8caf603945cf292ee5c529c658690253da6891fc5280f42fd9d8"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-1200.jpg",
+      "bytes": 115040,
+      "sha256": "ec127bae98e9050506bbc81c68f092c110f1d21a3a0af378a09e92ffd7f8a159"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-1200.webp",
+      "bytes": 89896,
+      "sha256": "fd6cbdbd2922267a4b3b3abd0bd358abddd26ba038aafef9f3c0d66d07f0034d"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-1600.avif",
+      "bytes": 102436,
+      "sha256": "82529c32c3b377ac26c1b8986796405c657ed9609b6751750a7c76c76c14d985"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-1600.webp",
+      "bytes": 127696,
+      "sha256": "dba8bd880814a54652c38db1bde896f7e3e29dbaa2211480323e78a0f5bea364"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-480.avif",
+      "bytes": 26523,
+      "sha256": "a103ddb96b6901b5a7ca322265bce062865c7bb7509300e4783a6a14cf5a96f2"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-480.webp",
+      "bytes": 27358,
+      "sha256": "daf77e1092607ee80b69ba4615d1ebe6c1429f88e1b2b10ec9ce9f91bcbc0ea1"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-768.avif",
+      "bytes": 46381,
+      "sha256": "ff0d155146479de45ca890ef357d1634920135e6f3d0561c1c72e02b45b14df0"
+    },
+    {
+      "path": "/images/optimized/article-plf-2027-meubles-tourisme-768.webp",
+      "bytes": 51608,
+      "sha256": "eee681fa23e19e2dac26dead338bcfd5acd3d394dab92be6f692aae91c824efc"
     },
     {
       "path": "/images/optimized/article-preparer-visite-classement-1200.avif",

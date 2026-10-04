@@ -142,6 +142,16 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     imageKey: 'articleRipostVoyageurRefuseQuitter',
     authorId: 'florian-grisorio',
   },
+  {
+    path: '/actualites/plf-2027-meubles-tourisme',
+    headline: 'PLF 2027 : ce qui pourrait changer pour les propriétaires de meublés de tourisme',
+    description:
+      'Amortissement LMNP, régime réel, micro-BIC : les mesures du PLF 2027 qui concernent les propriétaires de meublés de tourisme.',
+    datePublished: '2026-10-04',
+    dateModified: '2026-10-04',
+    imageKey: 'articlePlf2027MeublesTourisme',
+    authorId: 'florian-grisorio',
+  },
 ];
 
 function normalizePath(pathname: string): string {

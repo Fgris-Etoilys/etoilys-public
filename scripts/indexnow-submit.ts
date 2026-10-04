@@ -227,6 +227,7 @@ function articlePathFromPage(filePath: string): string | null {
       '/actualites/que-faire-apres-classement-meuble-tourisme',
     'src/pages/actualites/VoyageurRefuseQuitterMeubleTourismeLoiRipost.tsx':
       '/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost',
+    'src/pages/actualites/Plf2027MeublesTourisme.tsx': '/actualites/plf-2027-meubles-tourisme',
   };
 
   return articlePageRoutes[filePath.replace(/\\/g, '/')] ?? null;

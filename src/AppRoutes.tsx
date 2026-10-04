@@ -38,6 +38,7 @@ import ArticleTransmissionDonneesPlateformesCommunes from './pages/actualites/Tr
 import ArticleQueFaireApresClassementMeubleTourisme from './pages/actualites/QueFaireApresClassementMeubleTourisme';
 import ArticlePreparerVisiteClassementMeubleTourisme from './pages/actualites/PreparerVisiteClassementMeubleTourisme';
 import ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost from './pages/actualites/VoyageurRefuseQuitterMeubleTourismeLoiRipost';
+import ArticlePlf2027MeublesTourisme from './pages/actualites/Plf2027MeublesTourisme';
 import Recrutement from './pages/Recrutement';
 import Contact from './pages/Contact';
 import DemandeClassement from './pages/DemandeClassement';
@@ -138,6 +139,10 @@ export default function AppRoutes() {
         <Route
           path="actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost"
           element={<ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost />}
+        />
+        <Route
+          path="actualites/plf-2027-meubles-tourisme"
+          element={<ArticlePlf2027MeublesTourisme />}
         />
         <Route path="recrutement" element={<Recrutement />} />
         <Route path="contact" element={<Contact />} />

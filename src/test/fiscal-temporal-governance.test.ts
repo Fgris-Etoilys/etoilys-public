@@ -20,6 +20,7 @@ const PUBLIC_FISCAL_CONTENT_FILES = [
   'src/pages/actualites/MicroBic2026.tsx',
   'src/pages/actualites/MeublesChangements20252026.tsx',
   'src/pages/actualites/MeubleClasseNonClasseSeuils.tsx',
+  'src/pages/actualites/Plf2027MeublesTourisme.tsx',
 ] as const;
 
 const LEGACY_CONTEXT_PATTERN =
