@@ -169,11 +169,14 @@ describe('form interaction contracts', () => {
       fill(form, kind);
       fireEvent.submit(form);
 
-      await waitFor(() => expect(field(form, 'email')).toHaveAttribute('aria-invalid', 'true'));
+      // Focus moves in a passive effect after the error commit: wait for it as well.
+      await waitFor(() => {
+        expect(field(form, 'email')).toHaveAttribute('aria-invalid', 'true');
+        expect(field(form, 'email')).toHaveFocus();
+      });
       expect(field(form, 'email')).toHaveAccessibleDescription(
         formContent[locale].api.fieldErrors.email.INVALID_EMAIL
       );
-      expect(field(form, 'email')).toHaveFocus();
       expect(field(form, 'email')).toHaveValue(values.email);
       expect(field(form, 'nom')).toHaveValue(values.nom);
       expect(screen.getByText(formContent[locale].api.errorCodes.VALIDATION_FAILED)).toBeVisible();
