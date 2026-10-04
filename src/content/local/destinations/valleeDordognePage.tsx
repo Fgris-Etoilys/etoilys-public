@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DestinationConfig } from '../types';
 import {
   VALLEE_DORDOGNE_FAQ,
@@ -38,7 +39,7 @@ export const VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
       'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement dans la Vallée de la Dordogne ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'valleeDordogneHero',
-      alt: 'Dordogne entre Lacave et Pinsac dans le Lot',
+      alt: IMAGE_ALT_TEXT.valleeDordogneHero.fr,
       sizes: valleeDordogneHeroImageSizes,
       className:
         'h-full w-full object-cover object-[center_48%] max-[899px]:object-[center_50%] max-[680px]:object-[center_52%]',

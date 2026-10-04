@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
 import { contactPageContent } from '../content/pages/contactPageContent';
+import { IMAGE_ALT_TEXT } from '../content/imageAltText';
 import { EN_MVP_PATHS, NL_MVP_PATHS } from './i18nMvpTestData';
 
 const renderAt = (path: string) => {
@@ -404,7 +405,7 @@ describe('routing', () => {
     );
     expect(document.querySelector('meta[property="og:image:alt"]')).toHaveAttribute(
       'content',
-      'Etoilys - Classificatie van vakantiewoningen in Frankrijk'
+      IMAGE_ALT_TEXT.pourquoiReferencement.nl
     );
     expect(document.querySelector('link[hreflang="fr"]')).toHaveAttribute(
       'href',

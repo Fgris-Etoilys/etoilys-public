@@ -9,6 +9,7 @@ interface ArticleCardProps {
   title: string;
   excerpt: string;
   imageKey: ImageAssetKey;
+  imageAlt: string;
   imageSizes?: string;
   href: string;
   category?: ArticleCategory;
@@ -19,6 +20,7 @@ export default function ArticleCard({
   title,
   excerpt,
   imageKey,
+  imageAlt,
   imageSizes = '(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw',
   href,
   category,
@@ -34,7 +36,7 @@ export default function ArticleCard({
         <div className="aspect-[16/9] overflow-hidden">
           <SmartImage
             assetKey={imageKey}
-            alt={title}
+            alt={imageAlt}
             sizes={imageSizes}
             className="w-full h-full object-cover"
           />

@@ -173,6 +173,14 @@ Règles obligatoires :
 - Les articles utilisent `ArticleStructuredData` et `src/content/articleStructuredData.ts`.
 - Ne pas injecter manuellement de JSON-LD dans une page.
 
+Contrat du `<head>` SEO (résolution centrale) :
+
+- Tout le head SEO est résolu une seule fois par `resolveSeoMetadata(pathname)` dans `src/content/seoMetadata.ts`. Les balises émises sont listées dans `SEO_MANAGED_META_KEYS` et produites par `buildSeoMetaTags`. Cette même liste sert au runtime SPA (`SEO.tsx`) et au prerender (`scripts/prerender.ts`) : les deux chemins ne doivent jamais diverger, et aucune page ne doit écrire ces balises.
+- Une route présente dans le registre `src/content/articleStructuredData.ts` sort automatiquement en `og:type=article`, avec `article:published_time` et `article:modified_time` dérivés de `datePublished` / `dateModified`. Toutes les autres pages sortent en `og:type=website`, sans balise `article:*`. La détection ne repose jamais sur un préfixe d’URL.
+- Robots : une page indexable sort en `index,follow,max-image-preview:large` (grandes previews Google, dont Discover). Une directive restrictive explicite (`noindex`, `none`) et toute règle `max-image-preview:*` explicite sont conservées telles quelles : la simulation dynamique, la 404 et les routes non prêtes restent en `noindex,follow`.
+- Image OG : image de l’article, sinon `ogImageKey`, sinon `homeHero`. Son `og:image:alt` décrit ce que montre l’image (Open Graph) et provient du registre canonique `src/content/imageAltText.ts`, dans la langue de la route. Pas d’alt générique de marque pour une image éditoriale spécifique, et pas de titre recopié automatiquement comme alt.
+- En navigation SPA, `SEO.tsx` retire toute balise gérée qui ne s’applique plus à la nouvelle route (par exemple `article:*` en quittant un article).
+
 Pour ajouter ou supprimer une route indexable :
 
 1. Modifier `src/AppRoutes.tsx`.
@@ -192,6 +200,7 @@ Les images critiques SEO/CWV doivent passer par `SmartImage` et le pipeline loca
 3. Lancer `npm run images:check`.
 4. Utiliser la clé générée dans `src/content/imageManifest.ts`.
 5. Renseigner `ogImageKey` et, si pertinent, `lcpImageKey` dans `seoRoutes.ts`.
+6. Si l’image peut être exposée comme image préférée (`ogImageKey`, image d’article, hero local), déclarer son alt descriptif dans `src/content/imageAltText.ts`, dans chaque langue des routes qui l’exposent. Le typage `DescribedImageAssetKey` bloque une image OG ou d’article sans alt. Les composants réutilisent cet alt (`IMAGE_ALT_TEXT.<clé>.<langue>`) au lieu de le recopier.
 
 Éviter les images externes pour les images critiques des routes actives. Ne pas utiliser de `background-image` pour les héros SEO critiques.
 

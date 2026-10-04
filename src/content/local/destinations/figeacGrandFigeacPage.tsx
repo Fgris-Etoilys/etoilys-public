@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DestinationConfig } from '../types';
 import {
   FIGEAC_GRAND_FIGEAC_FAQ,
@@ -38,7 +39,7 @@ export const FIGEAC_GRAND_FIGEAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destin
       'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Figeac, dans les vallées du Lot et du Célé ou dans la partie lotoise du Grand-Figeac ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'figeacGrandFigeacHero',
-      alt: 'Place des Écritures à Figeac dans le Lot',
+      alt: IMAGE_ALT_TEXT.figeacGrandFigeacHero.fr,
       sizes: figeacGrandFigeacHeroImageSizes,
       className:
         'h-full w-full object-cover object-[center_50%] max-[899px]:object-[center_50%] max-[680px]:object-[center_52%]',

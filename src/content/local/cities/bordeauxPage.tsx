@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6CityConfig } from '../types';
 import {
   BORDEAUX_FAQ,
@@ -37,7 +38,7 @@ export const BORDEAUX_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Bordeaux ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'bordeauxHero',
-      alt: 'Place de la Bourse et miroir d’eau à Bordeaux',
+      alt: IMAGE_ALT_TEXT.bordeauxHero.fr,
       sizes: bordeauxHeroImageSizes,
       className: 'h-full w-full object-cover object-[center_55%] max-[899px]:object-[center_45%]',
       caption: (

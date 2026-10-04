@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DepartmentConfig } from '../types';
 import { DORDOGNE_V6_SERVICE_SECTORS } from './dordogne';
 import {
@@ -28,7 +29,7 @@ export const DORDOGNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig 
     description: LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
     image: {
       assetKey: 'dordogneLaRoqueGageac',
-      alt: 'Les maisons de pierre de La Roque-Gageac au bord de la Dordogne',
+      alt: IMAGE_ALT_TEXT.dordogneLaRoqueGageac.fr,
       sizes: dordogneHeroImageSizes,
       className: 'h-full w-full object-cover object-[38%_center] max-[680px]:object-[center_48%]',
       caption: (

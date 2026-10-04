@@ -13,7 +13,10 @@ import ArticleReadingUtilities from './ArticleReadingUtilities';
 import ArticleRelatedArticles from './ArticleRelatedArticles';
 import ArticleTableOfContents, { type ArticleTableOfContentsItem } from './ArticleTableOfContents';
 
-export type ArticleLayoutArticle = Omit<ActualiteArticle, 'date' | 'imageKey' | 'updatedDate'>;
+export type ArticleLayoutArticle = Omit<
+  ActualiteArticle,
+  'date' | 'imageKey' | 'imageAlt' | 'updatedDate'
+>;
 
 interface ArticleLayoutProps {
   article: ArticleLayoutArticle;

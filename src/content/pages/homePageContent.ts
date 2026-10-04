@@ -1,5 +1,6 @@
 import type { Locale } from '../../i18n/locales';
 import { COFRAC_ACCREDITATION_URL } from '../accreditationLinks';
+import { IMAGE_ALT_TEXT } from '../imageAltText';
 
 export type HomeIconKey = 'shield' | 'star' | 'clock' | 'calculator' | 'users' | 'globe';
 
@@ -98,7 +99,7 @@ export const homePageContent = {
   fr: {
     hero: {
       eyebrow: 'Propriétaires de meublés de tourisme',
-      imageAlt: "Terrasse avec piscine d'un meublé de tourisme",
+      imageAlt: IMAGE_ALT_TEXT.homeHero.fr,
       title: {
         lead: 'Classement officiel de votre',
         accent: 'meublé de tourisme',
@@ -265,7 +266,7 @@ export const homePageContent = {
   en: {
     hero: {
       eyebrow: 'Owners of furnished tourist accommodation',
-      imageAlt: 'Terrace with swimming pool at furnished tourist accommodation',
+      imageAlt: IMAGE_ALT_TEXT.homeHero.en,
       title: {
         lead: 'Official classification of your',
         accent: 'furnished tourist accommodation',
@@ -462,7 +463,7 @@ export const homePageContent = {
   nl: {
     hero: {
       eyebrow: 'Eigenaren van vakantiewoningen in Frankrijk',
-      imageAlt: 'Terras met zwembad bij een Franse vakantiewoning',
+      imageAlt: IMAGE_ALT_TEXT.homeHero.nl,
       title: {
         lead: 'Officiële classificatie van uw',
         accent: 'vakantiewoning in Frankrijk',

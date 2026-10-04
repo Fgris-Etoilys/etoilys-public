@@ -2,6 +2,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { actualitesArticlesByRecency } from '../../content/actualitesArticles';
+import { IMAGE_ALT_TEXT } from '../../content/imageAltText';
 import ActualitesArticleCard from './ActualitesArticleCard';
 import FeaturedActualiteCard from './FeaturedActualiteCard';
 
@@ -31,6 +32,7 @@ describe('Actualites article cards', () => {
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveAttribute('href', article.href);
     expect(links[0]).toContainElement(screen.getByRole('heading', { name: article.title }));
+    expect(card.querySelector('img')).toHaveAttribute('alt', IMAGE_ALT_TEXT[article.imageKey].fr);
   });
 
   it('renders the featured card as one semantic article with one full-card link', () => {
@@ -48,5 +50,6 @@ describe('Actualites article cards', () => {
     expect(links).toHaveLength(1);
     expect(links[0]).toHaveAttribute('href', article.href);
     expect(links[0]).toContainElement(screen.getByRole('heading', { name: article.title }));
+    expect(card.querySelector('img')).toHaveAttribute('alt', IMAGE_ALT_TEXT[article.imageKey].fr);
   });
 });

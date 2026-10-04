@@ -668,6 +668,14 @@ Règle Etoilys :
 - éviter les visuels “banque d’image générique propriétaire souriant avec des clés” ;
 - éviter d’abuser des images : mieux vaut **1 visuel utile** que 5 images de remplissage.
 
+Image préférée et métadonnées (mise à jour 2026) :
+
+- Google Image SEO (MAJ 2026) indique que l’image préférée d’une page se signale soit par la propriété schema.org pertinente (`image` de l’entité principale ou `primaryImageOfPage`), soit par `og:image`. Chez Etoilys, l’image de couverture de l’article alimente **à la fois** `og:image` et l’`image` du JSON-LD `BlogPosting` : elle doit donc être réellement représentative du sujet, en haute résolution.
+- L’`og:image:alt` (et l’alt des cartes Actualités) décrit **ce qui est visible dans l’image**, comme le demande l’Open Graph Protocol (« a description of what is in the image, not a caption »). Il ne répète pas automatiquement le titre de l’article.
+- Un alt ne déduit rien du contexte de la page : pas de lieu précis non confirmé, pas de « logement classé » ni de « meublé de tourisme » si ce n’est pas identifiable sur l’image, pas d’intention ou d’activité invisible. Un texte réellement imprimé sur l’image peut être cité.
+- L’alt de l’image d’article se déclare une seule fois dans `src/content/imageAltText.ts`.
+- L’auteur ne doit **jamais** écrire `og:type`, `og:image`, `og:image:alt`, `article:published_time`, `article:modified_time` ni la directive robots dans la page. Le pipeline SEO central (`src/content/seoMetadata.ts`) les génère à partir des métadonnées canoniques de l’article : `og:type=article`, dates issues de `datePublished` / `dateModified`, `max-image-preview:large` sur les pages indexables.
+
 Types de visuels pertinents pour Etoilys :
 
 - tableau transformé en visuel simple ;
@@ -1161,6 +1169,11 @@ Pour les sujets déjà identifiés comme prioritaires dans la rubrique Actualit�
   https://support.google.com/news/publisher-center/answer/9607104
 - Google News policies  
   https://support.google.com/news/publisher-center/answer/6204050
+
+### Open Graph
+
+- The Open Graph protocol (`og:type`, `og:image:alt`, `article:published_time`, `article:modified_time`)  
+  https://ogp.me/
 
 ### Base Etoilys
 

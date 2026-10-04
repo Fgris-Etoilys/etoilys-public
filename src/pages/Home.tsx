@@ -224,6 +224,7 @@ export default function Home() {
                   title={article.title}
                   excerpt={article.excerpt}
                   imageKey={article.imageKey}
+                  imageAlt={article.imageAlt}
                   imageSizes="(min-width: 1336px) 604px, (min-width: 768px) 50vw, 100vw"
                   href={article.href}
                   date={article.date}

@@ -1,4 +1,5 @@
 import type { Locale } from '../../i18n/locales';
+import { IMAGE_ALT_TEXT } from '../imageAltText';
 
 export type BenefitsIconKey = 'award' | 'calculator' | 'globe' | 'percent' | 'piggyBank' | 'ticket';
 
@@ -364,7 +365,7 @@ export const classificationBenefitsPageContent = {
     },
     tourismReference: {
       title: 'Référencement touristique',
-      imageAlt: 'Meuble de tourisme',
+      imageAlt: IMAGE_ALT_TEXT.pourquoiReferencement.fr,
       items: [
         {
           title: 'Un classement qui rend votre bien plus visible',
@@ -615,7 +616,7 @@ export const classificationBenefitsPageContent = {
     },
     tourismReference: {
       title: 'Tourism listing',
-      imageAlt: 'Furnished tourist accommodation',
+      imageAlt: IMAGE_ALT_TEXT.pourquoiReferencement.en,
       items: [
         {
           title: 'A classification that makes your property more visible',
@@ -872,7 +873,7 @@ export const classificationBenefitsPageContent = {
     },
     tourismReference: {
       title: 'Toeristische vermelding',
-      imageAlt: 'Vakantiewoning',
+      imageAlt: IMAGE_ALT_TEXT.pourquoiReferencement.nl,
       items: [
         {
           title: 'Een classificatie die uw woning een officieel referentiepunt geeft',

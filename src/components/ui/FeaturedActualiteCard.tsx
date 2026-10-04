@@ -62,7 +62,7 @@ export default function FeaturedActualiteCard({ article }: FeaturedActualiteCard
           <div className="aspect-[16/9] overflow-hidden rounded-b-editorial bg-paper lg:aspect-auto lg:min-h-full lg:rounded-b-none lg:rounded-r-editorial">
             <SmartImage
               assetKey={article.imageKey}
-              alt={article.title}
+              alt={article.imageAlt}
               priority
               sizes="(min-width: 1024px) 38vw, 100vw"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"

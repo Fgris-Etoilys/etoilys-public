@@ -1,100 +1,57 @@
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 import {
-  getHtmlLang,
-  getCanonicalUrl,
-  getOgLocale,
-  getSeoTitle,
-  SITE_NAME,
-  type SeoAlternateLink,
-} from '../../content/seoRoutes';
-
-const OG_IMAGE_ALT_BY_LANG = {
-  fr: 'Etoilys - Classement des meublés de tourisme',
-  en: 'Etoilys - Furnished tourist accommodation classification',
-  nl: 'Etoilys - Classificatie van vakantiewoningen in Frankrijk',
-} as const;
+  SEO_MANAGED_META_KEYS,
+  buildSeoMetaTags,
+  getSeoMetaAttribute,
+  type ResolvedSeoMetadata,
+  type SeoMetaKey,
+  type SeoMetaTag,
+} from '../../content/seoMetadata';
 
 interface SEOProps {
-  title: string;
-  description: string;
-  robots?: string | undefined;
-  ogImage?: string | undefined;
-  preloadImage?: string | undefined;
-  preloadImageSrcSet?: string | undefined;
-  preloadImageSizes?: string | undefined;
-  alternateLinks?: SeoAlternateLink[] | undefined;
-  includeCanonical?: boolean | undefined;
+  metadata: ResolvedSeoMetadata;
 }
 
-export default function SEO({
-  title,
-  description,
-  robots = 'index,follow',
-  ogImage,
-  preloadImage,
-  preloadImageSrcSet,
-  preloadImageSizes,
-  alternateLinks = [],
-  includeCanonical = true,
-}: SEOProps) {
-  const location = useLocation();
-  const fullTitle = getSeoTitle(title);
-  const currentUrl = getCanonicalUrl(location.pathname);
-  const image = ogImage?.trim();
-  const htmlLang = getHtmlLang(location.pathname);
-  const ogLocale = getOgLocale(location.pathname);
+function getMetaSelector(key: SeoMetaKey): string {
+  return `meta[${getSeoMetaAttribute(key)}='${key}']`;
+}
 
+function syncSeoMetaTags(tags: readonly SeoMetaTag[]) {
+  const activeKeys = new Set<SeoMetaKey>(tags.map((tag) => tag.key));
+
+  SEO_MANAGED_META_KEYS.forEach((key) => {
+    if (!activeKeys.has(key)) {
+      document.head.querySelectorAll(getMetaSelector(key)).forEach((element) => element.remove());
+    }
+  });
+
+  tags.forEach(({ attribute, key, content }) => {
+    const [element, ...duplicates] = Array.from(
+      document.head.querySelectorAll(getMetaSelector(key))
+    );
+    duplicates.forEach((duplicate) => duplicate.remove());
+
+    const meta = element ?? document.createElement('meta');
+    meta.setAttribute(attribute, key);
+    meta.setAttribute('content', content);
+    if (!element) {
+      document.head.appendChild(meta);
+    }
+  });
+}
+
+export default function SEO({ metadata }: SEOProps) {
   useEffect(() => {
-    document.title = fullTitle;
-    document.documentElement.lang = htmlLang;
+    document.title = metadata.title;
+    document.documentElement.lang = metadata.htmlLang;
 
-    const metaTags = [
-      { name: 'description', content: description },
-      { name: 'robots', content: robots },
-      { property: 'og:title', content: fullTitle },
-      { property: 'og:description', content: description },
-      { property: 'og:url', content: currentUrl },
-      { property: 'og:type', content: 'website' },
-      { property: 'og:site_name', content: SITE_NAME },
-      { property: 'og:locale', content: ogLocale },
-      { name: 'twitter:card', content: image ? 'summary_large_image' : 'summary' },
-      { name: 'twitter:title', content: fullTitle },
-      { name: 'twitter:description', content: description },
-    ];
-    if (image) {
-      metaTags.push({ property: 'og:image', content: image });
-      metaTags.push({ property: 'og:image:alt', content: OG_IMAGE_ALT_BY_LANG[htmlLang] });
-      metaTags.push({ name: 'twitter:image', content: image });
-    }
-
-    metaTags.forEach(({ name, property, content }) => {
-      const selector = name ? `meta[name='${name}']` : `meta[property='${property}']`;
-      let element = document.querySelector(selector);
-
-      if (!element) {
-        element = document.createElement('meta');
-        if (name) element.setAttribute('name', name);
-        if (property) element.setAttribute('property', property);
-        document.head.appendChild(element);
-      }
-
-      element.setAttribute('content', content);
-    });
-
-    if (!image) {
-      [
-        "meta[property='og:image']",
-        "meta[property='og:image:alt']",
-        "meta[name='twitter:image']",
-      ].forEach((selector) => document.querySelector(selector)?.remove());
-    }
+    syncSeoMetaTags(buildSeoMetaTags(metadata));
 
     const canonical = document.querySelector("link[rel='canonical']");
-    if (includeCanonical) {
+    if (metadata.canonicalUrl) {
       const canonicalLink = canonical ?? document.createElement('link');
       canonicalLink.setAttribute('rel', 'canonical');
-      canonicalLink.setAttribute('href', currentUrl);
+      canonicalLink.setAttribute('href', metadata.canonicalUrl);
       if (!canonical) {
         document.head.appendChild(canonicalLink);
       }
@@ -106,7 +63,7 @@ export default function SEO({
       element.remove();
     });
 
-    alternateLinks.forEach((alternate) => {
+    metadata.alternateLinks.forEach((alternate) => {
       const link = document.createElement('link');
       link.setAttribute('rel', 'alternate');
       link.setAttribute('hreflang', alternate.hreflang);
@@ -117,22 +74,15 @@ export default function SEO({
 
     const preloadSelector = "link[data-seo-lcp-preload='true']";
     const preloadLink = document.querySelector<HTMLLinkElement>(preloadSelector);
+    const preload = metadata.lcpPreload;
 
-    if (preloadImage?.trim()) {
+    if (preload) {
       const link = preloadLink ?? document.createElement('link');
       link.setAttribute('rel', 'preload');
       link.setAttribute('as', 'image');
-      link.setAttribute('href', preloadImage);
-      if (preloadImageSrcSet?.trim()) {
-        link.setAttribute('imagesrcset', preloadImageSrcSet);
-      } else {
-        link.removeAttribute('imagesrcset');
-      }
-      if (preloadImageSizes?.trim()) {
-        link.setAttribute('imagesizes', preloadImageSizes);
-      } else {
-        link.removeAttribute('imagesizes');
-      }
+      link.setAttribute('href', preload.href);
+      link.setAttribute('imagesrcset', preload.imageSrcSet);
+      link.setAttribute('imagesizes', preload.imageSizes);
       link.setAttribute('data-seo-lcp-preload', 'true');
       if (!preloadLink) {
         document.head.appendChild(link);
@@ -140,20 +90,7 @@ export default function SEO({
     } else if (preloadLink) {
       preloadLink.remove();
     }
-  }, [
-    fullTitle,
-    description,
-    robots,
-    currentUrl,
-    image,
-    htmlLang,
-    ogLocale,
-    alternateLinks,
-    includeCanonical,
-    preloadImage,
-    preloadImageSrcSet,
-    preloadImageSizes,
-  ]);
+  }, [metadata]);
 
   return null;
 }

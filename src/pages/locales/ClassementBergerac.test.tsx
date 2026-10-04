@@ -356,7 +356,7 @@ describe('ClassementBergerac', () => {
     );
     expect(document.querySelector("meta[name='robots']")).toHaveAttribute(
       'content',
-      'index,follow'
+      'index,follow,max-image-preview:large'
     );
     expect(document.querySelectorAll("link[data-seo-alternate='true']")).toHaveLength(0);
 

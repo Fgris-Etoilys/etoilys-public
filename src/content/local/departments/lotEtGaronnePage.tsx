@@ -1,4 +1,5 @@
 import { ArrowDown, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DepartmentConfig } from '../types';
 import { LOT_ET_GARONNE_SERVICE_SECTORS } from './lot-et-garonne';
 import {
@@ -33,7 +34,7 @@ export const LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentC
     description: LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
     image: {
       assetKey: 'lotEtGaronneHero',
-      alt: 'Nérac et son pont sur la Baïse',
+      alt: IMAGE_ALT_TEXT.lotEtGaronneHero.fr,
       sizes: lotEtGaronneHeroImageSizes,
       className: 'h-full w-full object-cover object-center',
       caption: (

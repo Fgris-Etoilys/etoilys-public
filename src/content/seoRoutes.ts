@@ -1,4 +1,5 @@
 import type { ImageAssetKey } from './imageManifest';
+import type { DescribedImageAssetKey } from './imageAltText';
 import { DEFAULT_LOCALE, OG_LOCALES, type Locale } from '../i18n/locales';
 import { isContentReadyForIndexing } from '../i18n/contentReadiness';
 import {
@@ -21,7 +22,7 @@ export interface SeoRouteConfig {
   robots?: string;
   breadcrumbLabel?: string;
   breadcrumbParentPaths?: string[];
-  ogImageKey?: ImageAssetKey;
+  ogImageKey?: DescribedImageAssetKey;
   indexable?: boolean;
   prerender?: boolean;
   lcpImageKey?: ImageAssetKey;

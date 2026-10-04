@@ -162,7 +162,7 @@ describe('ClassementBordeaux', () => {
     );
     expect(document.querySelector("meta[name='robots']")).toHaveAttribute(
       'content',
-      'index,follow'
+      'index,follow,max-image-preview:large'
     );
 
     await waitFor(() => {

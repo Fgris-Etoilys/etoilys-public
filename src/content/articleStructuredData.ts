@@ -1,4 +1,4 @@
-import type { ImageAssetKey } from './imageManifest';
+import type { DescribedImageAssetKey } from './imageAltText';
 import type { ArticleAuthorId } from './articleAuthors';
 
 export interface ArticleStructuredDataConfig {
@@ -7,7 +7,7 @@ export interface ArticleStructuredDataConfig {
   description: string;
   datePublished: string;
   dateModified: string;
-  imageKey: ImageAssetKey;
+  imageKey: DescribedImageAssetKey;
   authorId: ArticleAuthorId;
 }
 

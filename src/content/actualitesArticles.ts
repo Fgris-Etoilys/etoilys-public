@@ -5,14 +5,15 @@ import {
 } from './articleStructuredData';
 import { getArticleAuthor, type ArticleAuthorId } from './articleAuthors';
 import { formatFrenchDate } from './dateFormatting';
-import type { ImageAssetKey } from './imageManifest';
+import { IMAGE_ALT_TEXT, type DescribedImageAssetKey } from './imageAltText';
 
 export interface ActualiteArticle {
   slug: string;
   title: string;
   excerpt: string;
   relatedSummary: string;
-  imageKey: ImageAssetKey;
+  imageKey: DescribedImageAssetKey;
+  imageAlt: string;
   href: string;
   category: ArticleCategory;
   readingTimeMinutes: number;
@@ -57,7 +58,14 @@ export const ACTUALITES_CATEGORY_FILTERS: readonly ActualitesCategoryFilterOptio
 
 type ActualiteArticleContent = Omit<
   ActualiteArticle,
-  'slug' | 'authorId' | 'authorName' | 'date' | 'publishedAt' | 'updatedDate' | 'updatedAt'
+  | 'slug'
+  | 'imageAlt'
+  | 'authorId'
+  | 'authorName'
+  | 'date'
+  | 'publishedAt'
+  | 'updatedDate'
+  | 'updatedAt'
 >;
 
 export interface RelatedArticleConfigEntry {
@@ -326,6 +334,7 @@ function buildArticle(article: ActualiteArticleContent): ActualiteArticle {
   const result: ActualiteArticle = {
     ...article,
     slug: getSlugFromHref(article.href),
+    imageAlt: IMAGE_ALT_TEXT[article.imageKey].fr,
     date: formatFrenchDate(canonicalArticle.datePublished),
     publishedAt: canonicalArticle.datePublished,
     authorId: canonicalArticle.authorId,

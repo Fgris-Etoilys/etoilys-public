@@ -1,4 +1,5 @@
 import { ArrowDown, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DepartmentConfig } from '../types';
 import { AVEYRON_SERVICE_SECTORS } from './aveyron';
 import {
@@ -31,7 +32,7 @@ export const AVEYRON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
     description: LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
     image: {
       assetKey: 'aveyronHero',
-      alt: 'Village de Belcastel et château au bord de la rivière Aveyron',
+      alt: IMAGE_ALT_TEXT.aveyronHero.fr,
       sizes: aveyronHeroImageSizes,
       className:
         'h-full w-full object-cover object-[45%_center] max-[899px]:object-[48%_center] max-[680px]:object-[52%_center]',

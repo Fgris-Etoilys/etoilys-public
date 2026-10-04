@@ -6,6 +6,7 @@ import {
   validateRelatedArticleSlugs,
   type ActualiteArticle,
 } from './actualitesArticles';
+import { IMAGE_ALT_TEXT } from './imageAltText';
 
 function makeArticle(input: {
   slug: string;
@@ -20,6 +21,7 @@ function makeArticle(input: {
     excerpt: `Résumé ${input.slug}`,
     relatedSummary: `Résumé connexe ${input.slug}.`,
     imageKey: 'articleMeubles20252026',
+    imageAlt: IMAGE_ALT_TEXT.articleMeubles20252026.fr,
     href: `/actualites/${input.slug}`,
     category: input.category,
     readingTimeMinutes: 5,

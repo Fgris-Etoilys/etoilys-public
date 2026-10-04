@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import type { ImageAssetKey } from '../imageManifest';
+import type { DescribedImageAssetKey } from '../imageAltText';
 import type { PricingProfileId } from './pricing';
 
 export type DepartmentAreaId = 'aveyron' | 'dordogne' | 'gironde' | 'lot' | 'lot-et-garonne';
@@ -31,7 +32,7 @@ export interface LocalSeoMetadata {
   description: string;
   lastModified: string;
   breadcrumbLabel: string;
-  ogImageKey: ImageAssetKey;
+  ogImageKey: DescribedImageAssetKey;
   lcpImageKey: ImageAssetKey;
   lcpImageSizes: string;
 }

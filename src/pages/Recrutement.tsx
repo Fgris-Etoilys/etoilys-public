@@ -15,6 +15,7 @@ import PageCta from '../components/ui/PageCta';
 import PageHero from '../components/ui/PageHero';
 import SmartImage from '../components/ui/SmartImage';
 import Timeline from '../components/ui/Timeline';
+import { IMAGE_ALT_TEXT } from '../content/imageAltText';
 
 const missionSteps = [
   {
@@ -290,7 +291,7 @@ export default function Recrutement() {
             <div className="aspect-[4/3] overflow-hidden rounded-editorial shadow-[0_18px_45px_rgb(var(--color-ink)/0.10)] lg:max-w-[585px] lg:justify-self-end">
               <SmartImage
                 assetKey="recrutementInspection"
-                alt="Consultante Etoilys réalisant une visite de classement dans un hébergement touristique"
+                alt={IMAGE_ALT_TEXT.recrutementInspection.fr}
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 className="h-full w-full object-cover"
               />

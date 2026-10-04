@@ -1,4 +1,5 @@
 import { ArrowDown, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DepartmentConfig } from '../types';
 import { LOT_SERVICE_SECTORS } from './lot';
 import {
@@ -31,7 +32,7 @@ export const LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig = {
     description: LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
     image: {
       assetKey: 'lotHero',
-      alt: 'Vue sur la vallée du Lot depuis Saint-Cirq-Lapopie',
+      alt: IMAGE_ALT_TEXT.lotHero.fr,
       sizes: lotHeroImageSizes,
       className:
         'h-full w-full object-cover object-[55%_center] max-[899px]:object-[57%_center] max-[680px]:object-[59%_center]',

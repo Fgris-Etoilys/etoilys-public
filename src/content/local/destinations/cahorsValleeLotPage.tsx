@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DestinationConfig } from '../types';
 import {
   CAHORS_VALLEE_LOT_FAQ,
@@ -36,7 +37,7 @@ export const CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinat
       'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Cahors ou dans la Vallée du Lot ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'cahorsValleeLotHero',
-      alt: 'Vue panoramique de Cahors depuis le Mont Saint-Cyr',
+      alt: IMAGE_ALT_TEXT.cahorsValleeLotHero.fr,
       sizes: cahorsValleeLotHeroImageSizes,
       className:
         'h-full w-full object-cover object-[center_48%] max-[899px]:object-[center_50%] max-[680px]:object-[center_52%]',

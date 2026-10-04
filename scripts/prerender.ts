@@ -5,20 +5,24 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router-dom';
 import AppRoutes from '../src/AppRoutes.tsx';
 import {
-  SITE_NAME,
   SITE_URL,
   getBreadcrumbItems,
   getCanonicalUrl,
   getHtmlLang,
-  getOgLocale,
   getIndexablePaths,
   getPrerenderPaths,
-  getSeoRouteConfig,
   getSeoAlternateLinks,
-  getSeoTitle,
 } from '../src/content/seoRoutes.ts';
 import { getArticleStructuredData } from '../src/content/articleStructuredData.ts';
-import { IMAGE_MANIFEST } from '../src/content/imageManifest.ts';
+import {
+  SEO_MANAGED_META_KEYS,
+  buildSeoMetaTags,
+  getSeoMetaAttribute,
+  parseRobotsDirectives,
+  resolveSeoMetadata,
+  type SeoMetaKey,
+  type SeoMetaTag,
+} from '../src/content/seoMetadata.ts';
 import {
   buildArticleStructuredData,
   buildBreadcrumbStructuredData as buildBreadcrumbStructuredDataFromItems,
@@ -35,11 +39,8 @@ const NL_NOT_FOUND_RENDER_PATH = '/nl/route-inconnue';
 const NL_NOT_FOUND_OUTPUT_PATH = 'nl/404.html';
 const DYNAMIC_SIMULATION_RENDER_PATH = '/simulateur/seo-shell';
 const DYNAMIC_SIMULATION_SHELL_OUTPUT = 'simulation-noindex.html';
-const OG_IMAGE_ALT_BY_LANG = {
-  fr: 'Etoilys - Classement des meublés de tourisme',
-  en: 'Etoilys - Furnished tourist accommodation classification',
-  nl: 'Etoilys - Classificatie van vakantiewoningen in Frankrijk',
-} as const;
+const INDEXABLE_ROBOTS_DIRECTIVES = ['index', 'follow', 'max-image-preview:large'] as const;
+const NOINDEX_ROBOTS_DIRECTIVES = ['noindex', 'follow'] as const;
 const ROOT_PLACEHOLDER_PATTERN = /<div id="root"><\/div>/i;
 const ROOT_CONTAINER_PATTERN = /<div id="root">[\s\S]*<\/div>\s*<\/body>/i;
 const ROOT_CONTENT_PATTERN = /<div id="root">([\s\S]*)<\/div>\s*<\/body>/i;
@@ -115,64 +116,29 @@ function serializeJsonLd(data: Record<string, unknown>): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function getManagedMetaPattern(key: SeoMetaKey, suffix = ''): RegExp {
+  return new RegExp(
+    `<meta[^>]+${getSeoMetaAttribute(key)}=['"]${escapeRegExp(key)}['"][^>]*>${suffix}`,
+    'gi'
+  );
+}
+
+function serializeMetaTag({ attribute, key, content }: SeoMetaTag): string {
+  return `    <meta ${attribute}="${key}" content="${escapeHtml(content)}">`;
+}
+
 function buildBreadcrumbStructuredData(pathname: string): Record<string, unknown> | null {
   return buildBreadcrumbStructuredDataFromItems(getBreadcrumbItems(pathname));
-}
-
-function buildArticleStructuredDataForPath(pathname: string): Record<string, unknown> | null {
-  const article = getArticleStructuredData(pathname);
-  if (!article) {
-    return null;
-  }
-
-  return buildArticleStructuredData({
-    url: `${SITE_URL}${article.path}`,
-    headline: article.headline,
-    description: article.description,
-    datePublished: article.datePublished,
-    dateModified: article.dateModified,
-    image: `${SITE_URL}${IMAGE_MANIFEST[article.imageKey].src}`,
-    authorId: article.authorId,
-  });
-}
-
-function getOgImage(pathname: string): string {
-  const seoConfig = getSeoRouteConfig(pathname);
-  const article = getArticleStructuredData(pathname);
-  const defaultOgImage = `${SITE_URL}${IMAGE_MANIFEST.homeHero.src}`;
-
-  if (article) {
-    return `${SITE_URL}${IMAGE_MANIFEST[article.imageKey].src}`;
-  }
-
-  if (seoConfig.ogImageKey) {
-    return `${SITE_URL}${IMAGE_MANIFEST[seoConfig.ogImageKey].src}`;
-  }
-
-  return defaultOgImage;
-}
-
-function getOgImageAlt(pathname: string): string {
-  return OG_IMAGE_ALT_BY_LANG[getHtmlLang(pathname)];
 }
 
 function stripSeoTags(html: string): string {
   const patterns = [
     /<title>[\s\S]*?<\/title>\s*/gi,
-    /<meta[^>]+name=['"]description['"][^>]*>\s*/gi,
-    /<meta[^>]+name=['"]robots['"][^>]*>\s*/gi,
-    /<meta[^>]+property=['"]og:title['"][^>]*>\s*/gi,
-    /<meta[^>]+property=['"]og:description['"][^>]*>\s*/gi,
-    /<meta[^>]+property=['"]og:url['"][^>]*>\s*/gi,
-    /<meta[^>]+property=['"]og:type['"][^>]*>\s*/gi,
-    /<meta[^>]+property=['"]og:site_name['"][^>]*>\s*/gi,
-    /<meta[^>]+property=['"]og:locale['"][^>]*>\s*/gi,
-    /<meta[^>]+property=['"]og:image['"][^>]*>\s*/gi,
-    /<meta[^>]+property=['"]og:image:alt['"][^>]*>\s*/gi,
-    /<meta[^>]+name=['"]twitter:card['"][^>]*>\s*/gi,
-    /<meta[^>]+name=['"]twitter:title['"][^>]*>\s*/gi,
-    /<meta[^>]+name=['"]twitter:description['"][^>]*>\s*/gi,
-    /<meta[^>]+name=['"]twitter:image['"][^>]*>\s*/gi,
+    ...SEO_MANAGED_META_KEYS.map((key) => getManagedMetaPattern(key, '\\s*')),
     /<link[^>]+rel=['"]canonical['"][^>]*>\s*/gi,
     /<link[^>]+rel=['"]alternate['"][^>]*>\s*/gi,
     /<link[^>]+data-seo-lcp-preload=['"]true['"][^>]*>\s*/gi,
@@ -190,50 +156,29 @@ function stripSeoTags(html: string): string {
 }
 
 function buildSeoHead(pathname: string): string {
-  const seoConfig = getSeoRouteConfig(pathname);
-  const title = getSeoTitle(seoConfig.title);
-  const description = seoConfig.description;
-  const robots = seoConfig.robots ?? 'index,follow';
-  const currentUrl = getCanonicalUrl(pathname);
-  const ogImage = getOgImage(pathname);
-  const preloadImage = seoConfig.lcpImageKey ? IMAGE_MANIFEST[seoConfig.lcpImageKey] : null;
-  const alternateLinks = getSeoAlternateLinks(pathname);
-
+  const metadata = resolveSeoMetadata(pathname);
   const tags = [
-    `    <title>${escapeHtml(title)}</title>`,
-    `    <meta name="description" content="${escapeHtml(description)}">`,
-    `    <meta name="robots" content="${escapeHtml(robots)}">`,
-    `    <meta property="og:title" content="${escapeHtml(title)}">`,
-    `    <meta property="og:description" content="${escapeHtml(description)}">`,
-    `    <meta property="og:url" content="${escapeHtml(currentUrl)}">`,
-    '    <meta property="og:type" content="website">',
-    `    <meta property="og:site_name" content="${escapeHtml(SITE_NAME)}">`,
-    `    <meta property="og:locale" content="${escapeHtml(getOgLocale(pathname))}">`,
-    `    <meta property="og:image" content="${escapeHtml(ogImage)}">`,
-    `    <meta property="og:image:alt" content="${escapeHtml(getOgImageAlt(pathname))}">`,
-    '    <meta name="twitter:card" content="summary_large_image">',
-    `    <meta name="twitter:title" content="${escapeHtml(title)}">`,
-    `    <meta name="twitter:description" content="${escapeHtml(description)}">`,
-    `    <meta name="twitter:image" content="${escapeHtml(ogImage)}">`,
+    `    <title>${escapeHtml(metadata.title)}</title>`,
+    ...buildSeoMetaTags(metadata).map(serializeMetaTag),
   ];
 
-  if (seoConfig.includeCanonical !== false) {
-    tags.push(`    <link rel="canonical" href="${escapeHtml(currentUrl)}">`);
+  if (metadata.canonicalUrl) {
+    tags.push(`    <link rel="canonical" href="${escapeHtml(metadata.canonicalUrl)}">`);
   }
 
-  alternateLinks.forEach((alternate) => {
+  metadata.alternateLinks.forEach((alternate) => {
     tags.push(
       `    <link rel="alternate" hreflang="${escapeHtml(alternate.hreflang)}" href="${escapeHtml(alternate.href)}" data-seo-alternate="true">`
     );
   });
 
-  if (preloadImage) {
+  if (metadata.lcpPreload) {
     tags.push(
-      `    <link rel="preload" as="image" href="${escapeHtml(preloadImage.src)}" imagesrcset="${escapeHtml(preloadImage.srcSetAvif)}" imagesizes="${escapeHtml(seoConfig.lcpImageSizes ?? '100vw')}" data-seo-lcp-preload="true">`
+      `    <link rel="preload" as="image" href="${escapeHtml(metadata.lcpPreload.href)}" imagesrcset="${escapeHtml(metadata.lcpPreload.imageSrcSet)}" imagesizes="${escapeHtml(metadata.lcpPreload.imageSizes)}" data-seo-lcp-preload="true">`
     );
   }
 
-  if (seoConfig.includeStructuredData !== false) {
+  if (metadata.includeStructuredData) {
     const pageStructuredData = buildPageStructuredData(pathname);
     if (pageStructuredData) {
       tags.push(
@@ -248,8 +193,8 @@ function buildSeoHead(pathname: string): string {
       );
     }
 
-    const articleData = buildArticleStructuredDataForPath(pathname);
-    if (articleData) {
+    if (metadata.article) {
+      const articleData = buildArticleStructuredData(metadata.article.structuredData);
       tags.push(
         `    <script type="application/ld+json" id="structured-data-article">${serializeJsonLd(articleData)}</script>`
       );
@@ -412,6 +357,94 @@ function assertNoSeoLinksOrJsonLd(html: string, pathname: string): void {
   }
 }
 
+function getMetaContents(html: string, key: SeoMetaKey): string[] {
+  return [...html.matchAll(getManagedMetaPattern(key))].map(
+    (match) => /\scontent="([^"]*)"/i.exec(match[0])?.[1] ?? ''
+  );
+}
+
+function assertSeoMetaParity(pathname: string, html: string): void {
+  const expectedContentByKey = new Map(
+    buildSeoMetaTags(resolveSeoMetadata(pathname)).map((tag) => [tag.key, tag.content])
+  );
+
+  SEO_MANAGED_META_KEYS.forEach((key) => {
+    const contents = getMetaContents(html, key);
+    const expectedContent = expectedContentByKey.get(key);
+
+    if (expectedContent === undefined) {
+      if (contents.length > 0) {
+        throw new Error(`${pathname} contains an unexpected ${key} meta tag.`);
+      }
+      return;
+    }
+
+    if (contents.length !== 1) {
+      throw new Error(`${pathname} must contain exactly one ${key} meta tag (${contents.length}).`);
+    }
+    if (contents[0] !== escapeHtml(expectedContent)) {
+      throw new Error(`${pathname} ${key} meta tag differs from the central SEO resolver.`);
+    }
+  });
+}
+
+function assertRobotsDirectives(
+  pathname: string,
+  html: string,
+  expected: { required: readonly string[]; exact?: boolean; forbidden?: readonly string[] }
+): void {
+  const contents = getMetaContents(html, 'robots');
+  if (contents.length !== 1) {
+    throw new Error(`${pathname} must contain exactly one robots meta tag.`);
+  }
+
+  const directives = new Set(parseRobotsDirectives(contents[0] ?? ''));
+  const missing = expected.required.filter((directive) => !directives.has(directive));
+  const forbidden = (expected.forbidden ?? []).filter((directive) => directives.has(directive));
+
+  if (missing.length > 0 || forbidden.length > 0) {
+    throw new Error(
+      `${pathname} robots directives are invalid (missing: ${missing.join(', ') || 'none'}; forbidden: ${forbidden.join(', ') || 'none'}).`
+    );
+  }
+  if (expected.exact === true && directives.size !== expected.required.length) {
+    throw new Error(
+      `${pathname} robots directives must be exactly ${expected.required.join(',')}.`
+    );
+  }
+}
+
+function assertIndexableRobots(pathname: string, html: string): void {
+  assertRobotsDirectives(pathname, html, {
+    required: INDEXABLE_ROBOTS_DIRECTIVES,
+    forbidden: ['noindex', 'none'],
+  });
+}
+
+function assertNoindexRobots(pathname: string, html: string): void {
+  assertRobotsDirectives(pathname, html, { required: NOINDEX_ROBOTS_DIRECTIVES, exact: true });
+}
+
+function assertOpenGraphContract(pathname: string, html: string): void {
+  const article = getArticleStructuredData(pathname);
+  const [ogType] = getMetaContents(html, 'og:type');
+  const imageAlts = getMetaContents(html, 'og:image:alt');
+
+  if (ogType !== (article ? 'article' : 'website')) {
+    throw new Error(`${pathname} has an invalid og:type (${ogType ?? 'missing'}).`);
+  }
+  if (imageAlts.length !== 1 || !imageAlts[0]?.trim()) {
+    throw new Error(`${pathname} must expose one non-empty og:image:alt.`);
+  }
+  if (article) {
+    const [publishedTime] = getMetaContents(html, 'article:published_time');
+    const [modifiedTime] = getMetaContents(html, 'article:modified_time');
+    if (publishedTime !== article.datePublished || modifiedTime !== article.dateModified) {
+      throw new Error(`${pathname} article Open Graph dates differ from the article registry.`);
+    }
+  }
+}
+
 function assertPrerenderedHtml(pathname: string, html: string): void {
   const rootContent = getRootContent(html);
   const rootText = rootContent
@@ -439,9 +472,9 @@ function assertPrerenderedHtml(pathname: string, html: string): void {
   if (!/<meta\s+name=["']description["']\s+content=["'][^"']+["']/i.test(html)) {
     throw new Error(`${pathname} is missing a meta description.`);
   }
-  if (!/<meta\s+name=["']robots["']\s+content=["']index,follow["']/i.test(html)) {
-    throw new Error(`${pathname} is missing index,follow robots metadata.`);
-  }
+  assertIndexableRobots(pathname, html);
+  assertSeoMetaParity(pathname, html);
+  assertOpenGraphContract(pathname, html);
   if (!html.includes(`<link rel="canonical" href="${expectedCanonical}">`)) {
     throw new Error(`${pathname} has an invalid canonical URL.`);
   }
@@ -476,9 +509,9 @@ function assertPrerenderedNotFoundHtml(pathname: string, html: string): void {
   ) {
     throw new Error(`${pathname} 404 is missing localized heading ${expectedHeading}.`);
   }
-  if (!/<meta\s+name=["']robots["']\s+content=["']noindex,follow["']/i.test(html)) {
-    throw new Error(`${pathname} 404 is missing noindex,follow robots metadata.`);
-  }
+  assertNoindexRobots(pathname, html);
+  assertSeoMetaParity(pathname, html);
+  assertOpenGraphContract(pathname, html);
   if (!new RegExp(`<html[^>]+lang=["']${expectedLang}["']`, 'i').test(html)) {
     throw new Error(`${pathname} 404 has an invalid html lang attribute.`);
   }
@@ -565,9 +598,9 @@ async function main() {
     DYNAMIC_SIMULATION_RENDER_PATH,
     simulationShellOutputPath
   );
-  if (!/<meta\s+name=["']robots["']\s+content=["']noindex,follow["']/i.test(simulationShell.html)) {
-    throw new Error('Dynamic simulation shell is missing noindex,follow robots metadata.');
-  }
+  assertNoindexRobots(DYNAMIC_SIMULATION_RENDER_PATH, simulationShell.html);
+  assertSeoMetaParity(DYNAMIC_SIMULATION_RENDER_PATH, simulationShell.html);
+  assertOpenGraphContract(DYNAMIC_SIMULATION_RENDER_PATH, simulationShell.html);
   console.log(`Prerendered: ${DYNAMIC_SIMULATION_RENDER_PATH} -> ${simulationShellOutputPath}`);
 }
 

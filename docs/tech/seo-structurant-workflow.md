@@ -18,7 +18,8 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
    - `description`
    - `breadcrumbLabel`
    - `lastModified` au format `YYYY-MM-DD`, à mettre à jour lors de chaque changement éditorial significatif de la page
-   - `ogImageKey` recommandé pour définir une image de partage Open Graph/Twitter
+   - `ogImageKey` recommandé pour définir une image de partage Open Graph/Twitter. La clé doit avoir un alt descriptif dans `src/content/imageAltText.ts`, dans la langue de la route (le typage `DescribedImageAssetKey` l’impose). Cet alt décrit ce que montre l’image, pas la page.
+   - `robots` uniquement pour une restriction explicite (`noindex,follow`). Ne pas écrire `max-image-preview:large` : il est ajouté automatiquement aux pages indexables.
    - `indexable` laissé implicite `true` sauf exception
    - `prerender` laissé implicite `true` sauf exception
 3. Si la page contient une image critique :
@@ -34,13 +35,15 @@ Documenter le flux obligatoire pour que chaque ajout de page/article respecte au
    - `npm run test:run`
    - `npm run typecheck`
 
+Aucune balise SEO (`og:*`, `article:*`, `twitter:*`, robots, canonical, JSON-LD) ne s'écrit dans la page. Le head est résolu par `resolveSeoMetadata` (`src/content/seoMetadata.ts`) et rendu par `SEO.tsx` et le prerender.
+
 ## Ajout d'une page locale
 
 Une page locale correspond à un département ou à une ville/zone rattachée à une page départementale. Le contrat détaillé est `docs/tech/local-framework-v6.md`.
 
 1. Ajouter l'ID typé dans `src/content/local/types.ts`, puis créer la config V6 dans `src/content/local/departments/*Page.tsx` ou `src/content/local/cities/*Page.tsx`.
 2. Déclarer la route publique explicite dans `src/AppRoutes.tsx` via le wrapper fin `DepartmentLandingPage` ou `CityLandingPage`.
-3. Ajouter l'entrée dans `src/content/local/registry.ts` : hiérarchie, statut, URL, hub, SEO local, image LCP/OG et données de script.
+3. Ajouter l'entrée dans `src/content/local/registry.ts` : hiérarchie, statut, URL, hub, SEO local, image LCP/OG et données de script. L'alt de l'image hero, qui est aussi l'image OG, est déclaré une seule fois dans `src/content/imageAltText.ts`, puis référencé par la config V6 (`hero.image.alt: IMAGE_ALT_TEXT.<clé>.fr`).
 4. Ne pas ajouter de route SEO locale parallèle dans `src/content/seoRoutes.ts` : les routes locales sont composées depuis le registre.
 5. Ne pas maintenir de liste `localPages` : les enfants publiés sont dérivés de `parentId` et du statut effectif.
 6. Si la page ajoute un index communes ou des images critiques, passer par les scripts existants (`npm run taxe-sejour:data`, `npm run images:build`, `npm run images:check`).
@@ -58,6 +61,8 @@ Un brouillon, une ville orpheline ou une ville rattachée à un parent brouillon
    les dates affichées sont dérivées de `src/content/articleStructuredData.ts`.
 5. Ajouter l'image source dans `src/assets/seo-images/source/` puis régénérer :
    - `npm run images:build`
+   - choisir une image pertinente et représentative de l'article (pas de logo, pas d'image chargée de texte), idéalement d'au moins 1200 px de large et au format 16:9 pour Google Discover ;
+   - déclarer son alt éditorial descriptif dans `src/content/imageAltText.ts`. Il est obligatoire et vérifié par le typage. Il décrit uniquement ce qui est visible dans l'image : pas de lieu non confirmé, pas de statut (« classé ») ni d'intention déduits du sujet de l'article, pas de titre recopié. Les cartes Actualités et `og:image:alt` réutilisent cet alt.
 6. Vérifier les assets SEO :
    - `npm run images:check`
 7. Régénérer le sitemap :
@@ -68,12 +73,32 @@ Un brouillon, une ville orpheline ou une ville rattachée à un parent brouillon
 
 Les dates articles alimentent les données structurées, la page article, la liste Actualités et le sitemap. Ne pas créer de date parallèle dans une page article ou dans `actualitesArticles.ts`.
 
+Générés automatiquement depuis les métadonnées canoniques, et à ne jamais écrire à la main dans l'article :
+
+- `og:type=article` (la route est reconnue via `src/content/articleStructuredData.ts`) ;
+- `article:published_time` et `article:modified_time`, issus de `datePublished` et `dateModified` ;
+- `og:image` et le `image` du JSON-LD `BlogPosting`, qui pointent vers la même image résolue ;
+- `og:image:alt`, issu de `src/content/imageAltText.ts` ;
+- `robots` = `index,follow,max-image-preview:large`.
+
+## Validation du contrat SEO head
+
+`npm run test:run` (`src/test/seo-metadata.test.tsx`) et `npm run build:seo` (assertions du prerender) vérifient :
+
+- la parité runtime/prerender : chaque balise de `SEO_MANAGED_META_KEYS` est présente une seule fois avec le contenu calculé par `resolveSeoMetadata`, et aucune balise gérée non attendue n'apparaît ;
+- `og:type` : `article` pour les routes du registre d'articles, `website` partout ailleurs, sans `article:*` hors article ;
+- `og:image` et `og:image:alt` : alt non vide, issu du registre canonique, dans la langue de la route ;
+- robots, comparés en ensemble de directives et non en chaîne : `index`, `follow`, `max-image-preview:large` sur les pages indexables, exactement `noindex,follow` sur la 404 et le shell de simulation ;
+- JSON-LD, canonical et hreflang inchangés (une seule canonical, aucune sur la 404).
+
+Pour une inspection manuelle après `npm run build:seo`, contrôler par exemple `dist/actualites/<slug>/index.html`, `dist/classement/index.html`, une page locale, une page EN/NL, `dist/simulation-noindex.html` et `dist/404.html`.
+
 ## Commandes de référence
 
 - `npm run images:build` -> génère variantes AVIF/WebP/JPG + met à jour `src/content/imageManifest.ts` et `src/content/imageManifest.integrity.json`.
 - `npm run images:check` -> vérifie rapidement que les sources, les sorties optimisées, le manifeste, le lock d'intégrité, le ratio maximal et les dimensions minimales des sources hero sont alignés.
 - `npm run seo:sitemap` -> régénère `public/sitemap.xml` depuis `seoRoutes` et les dates canoniques articles.
-- `npm run prerender` -> prerender React statique des routes indexables/prerenderables dans `dist/`, génère `dist/404.html` et un shell `noindex,follow` pour les URLs dynamiques de simulation, puis valide que chaque page indexable contient un body HTML non vide, un `h1`, une canonical et les balises SEO attendues.
+- `npm run prerender` -> prerender React statique des routes indexables/prerenderables dans `dist/`, génère `dist/404.html` et un shell `noindex,follow` pour les URLs dynamiques de simulation, puis valide que chaque page indexable contient un body HTML non vide, un `h1`, une canonical et les balises SEO attendues (parité avec `resolveSeoMetadata`, robots analysés comme ensemble de directives, `og:type`, `og:image:alt` et dates `article:*`).
 - `npm run build:seo` -> images:check + typecheck + sitemap + build vite + prerender. Vercel ne régénère pas les images optimisées : elles doivent être versionnées après `npm run images:build`.
 
 ## Commandes IndexNow manuelles

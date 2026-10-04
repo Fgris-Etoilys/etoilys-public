@@ -1,4 +1,5 @@
 import { ArrowDown, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DepartmentConfig } from '../types';
 import { GIRONDE_SERVICE_SECTORS } from './gironde';
 import {
@@ -36,7 +37,7 @@ export const GIRONDE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6DepartmentConfig =
     description: LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION,
     image: {
       assetKey: 'girondeHero',
-      alt: 'Vue de Saint-Émilion en Gironde',
+      alt: IMAGE_ALT_TEXT.girondeHero.fr,
       sizes: girondeHeroImageSizes,
       className: 'h-full w-full object-cover object-center',
       caption: (

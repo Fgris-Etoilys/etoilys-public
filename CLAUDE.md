@@ -58,6 +58,7 @@ Whenever you write code, apply this instruction:
 - For local pages, follow `docs/tech/local-framework-v6.md`: the React route stays explicit, while local SEO entries, sitemap, prerender and IndexNow are derived from the local registry.
 - Do not reintroduce `meta keywords`.
 - Absolute SEO URLs (canonical, `og:url`, JSON-LD `url`) must stay on `https://www.etoilys.fr`.
+- The SEO `<head>` (robots with `max-image-preview:large` on indexable pages only, `og:type` article/website, `og:image`/`og:image:alt`, `article:*`) is resolved only by `resolveSeoMetadata` in `src/content/seoMetadata.ts`, shared by `SEO.tsx` and the prerender. OG/article image alts live in `src/content/imageAltText.ts`. Never write these tags in pages. See `docs/tech/seo-structurant-workflow.md`.
 
 ### Structured Data Rules (Medium-Term Phase)
 

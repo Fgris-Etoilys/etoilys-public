@@ -40,7 +40,7 @@ export default function ActualitesArticleCard({ article }: ActualitesArticleCard
           <div className="aspect-[16/9] overflow-hidden rounded-t-editorial bg-paper">
             <SmartImage
               assetKey={article.imageKey}
-              alt={article.title}
+              alt={article.imageAlt}
               sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
             />

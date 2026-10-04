@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DestinationConfig } from '../types';
 import {
   BASSIN_ARCACHON_FAQ,
@@ -38,7 +39,7 @@ export const BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinatio
       'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement sur le Bassin d’Arcachon ? Etoilys réalise la visite officielle directement dans votre logement, dans les 12 communes du Bassin, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'bassinArcachonHero',
-      alt: 'Cabanes tchanquées sur l’île aux Oiseaux dans le Bassin d’Arcachon',
+      alt: IMAGE_ALT_TEXT.bassinArcachonHero.fr,
       sizes: bassinArcachonHeroImageSizes,
       className:
         'h-full w-full object-cover object-[center_52%] max-[899px]:object-[center_50%] max-[680px]:object-[center_48%]',

@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6CityConfig } from '../types';
 import { BERGERAC_FAQ, BERGERAC_SERVICE_COMMUNES } from './bergerac';
 import {
@@ -26,7 +27,7 @@ export const BERGERAC_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6CityConfig = {
       'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Bergerac ? Etoilys réalise la visite officielle directement dans votre logement, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'bergeracHero',
-      alt: 'Vue sur la Dordogne et le quai Cyrano à Bergerac en fin d’après-midi',
+      alt: IMAGE_ALT_TEXT.bergeracHero.fr,
       sizes: bergeracHeroImageSizes,
       className:
         'h-full w-full object-cover object-[76%_center] max-[899px]:object-[78%_center] max-[680px]:object-[76%_center]',

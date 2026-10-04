@@ -1,4 +1,5 @@
 import { ArrowDown, ArrowUpRight, MapPin } from 'lucide-react';
+import { IMAGE_ALT_TEXT } from '../../imageAltText';
 import type { LocalLandingPageV6DestinationConfig } from '../types';
 import {
   MEDOC_ATLANTIQUE_FAQ,
@@ -38,7 +39,7 @@ export const MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6: LocalLandingPageV6Destinati
       'Vous souhaitez faire classer un gîte, une maison de vacances ou un appartement à Lacanau ou sur le littoral médocain ? Etoilys réalise la visite officielle directement dans votre logement, de Lacanau au Verdon-sur-Mer, avec une démarche simple et des tarifs clairs.',
     image: {
       assetKey: 'medocAtlantiqueHero',
-      alt: 'Étang de Lacanau dans le Médoc Atlantique',
+      alt: IMAGE_ALT_TEXT.medocAtlantiqueHero.fr,
       sizes: medocAtlantiqueHeroImageSizes,
       className:
         'h-full w-full object-cover object-[center_50%] max-[899px]:object-[center_48%] max-[680px]:object-[center_45%]',

@@ -2,6 +2,7 @@ import { cleanup, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { ActualiteArticle } from '../../content/actualitesArticles';
+import { IMAGE_ALT_TEXT } from '../../content/imageAltText';
 import ArticleRelatedArticles from './ArticleRelatedArticles';
 
 function makeArticle(slug: string, updated = false): ActualiteArticle {
@@ -11,6 +12,7 @@ function makeArticle(slug: string, updated = false): ActualiteArticle {
     excerpt: `Résumé court ${slug}`,
     relatedSummary: `Résumé connexe complet ${slug}.`,
     imageKey: 'articleMeubles20252026',
+    imageAlt: IMAGE_ALT_TEXT.articleMeubles20252026.fr,
     href: `/actualites/${slug}`,
     category: 'reglementation',
     readingTimeMinutes: 5,
