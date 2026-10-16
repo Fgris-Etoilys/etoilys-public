@@ -14,6 +14,7 @@ export const EN_INDEXABLE_ROUTE_IDS = [
   'faq',
   'simulateurTaxeSejour',
   'simulateurFiscalClassement',
+  'preparerVisiteClassementArticle',
 ] as const satisfies readonly LocalizedRouteId[];
 
 export const NL_INDEXABLE_ROUTE_IDS = [

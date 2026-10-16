@@ -23,6 +23,16 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     authorId: 'florian-grisorio',
   },
   {
+    path: '/en/articles/prepare-holiday-rental-star-rating-inspection',
+    headline: 'How to prepare your holiday rental for its star-rating inspection',
+    description:
+      'Prepare your holiday rental for its French star-rating inspection: 133 criteria, equipment, tableware, guest information and a practical checklist.',
+    datePublished: '2026-07-19',
+    dateModified: '2026-07-19',
+    imageKey: 'articlePreparerVisiteClassement',
+    authorId: 'florian-grisorio',
+  },
+  {
     path: '/actualites/que-faire-apres-classement-meuble-tourisme',
     headline: 'Meublé de tourisme classé : que faire après la décision de classement ?',
     description:
@@ -167,4 +177,8 @@ export function getArticleStructuredData(pathname: string): ArticleStructuredDat
 
 export function getAllArticleStructuredData(): ArticleStructuredDataConfig[] {
   return ARTICLE_STRUCTURED_DATA;
+}
+
+export function getAllFrenchActualitesArticleStructuredData(): ArticleStructuredDataConfig[] {
+  return ARTICLE_STRUCTURED_DATA.filter((article) => article.path.startsWith('/actualites/'));
 }

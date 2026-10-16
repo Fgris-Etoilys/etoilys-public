@@ -15,14 +15,17 @@ interface ArticleSourcesProps {
   sources: readonly ArticleSource[];
   description?: ReactNode;
   className?: string;
+  locale?: 'fr' | 'en';
 }
 
 function SourceList({
   sources,
   startIndex = 0,
+  locale,
 }: {
   sources: readonly ArticleSource[];
   startIndex?: number;
+  locale: 'fr' | 'en';
 }) {
   return (
     <ol className="space-y-3 text-sm text-muted" start={startIndex + 1}>
@@ -41,7 +44,10 @@ function SourceList({
             >
               <span className="min-w-0 break-words">{source.title}</span>
               <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              <span className="sr-only"> (ouvre dans un nouvel onglet)</span>
+              <span className="sr-only">
+                {' '}
+                ({locale === 'en' ? 'Opens in a new tab' : 'ouvre dans un nouvel onglet'})
+              </span>
             </a>
             {source.detail && <p className="mt-1 leading-snug text-muted">{source.detail}</p>}
           </div>
@@ -55,6 +61,7 @@ export default function ArticleSources({
   sources,
   description,
   className = '',
+  locale = 'fr',
 }: ArticleSourcesProps) {
   if (sources.length === 0) {
     return null;
@@ -65,7 +72,15 @@ export default function ArticleSources({
   const headingId = 'sources-officielles';
   const hiddenCount = hiddenSources.length;
   const closedSummaryLabel =
-    hiddenCount === 1 ? "Afficher l'autre source" : `Afficher les ${hiddenCount} autres sources`;
+    locale === 'en'
+      ? hiddenCount === 1
+        ? 'Show the other source'
+        : `Show ${hiddenCount} more sources`
+      : hiddenCount === 1
+        ? "Afficher l'autre source"
+        : `Afficher les ${hiddenCount} autres sources`;
+  const openSummaryLabel =
+    locale === 'en' ? 'Hide additional sources' : 'Masquer les sources supplémentaires';
 
   return (
     <section
@@ -74,22 +89,22 @@ export default function ArticleSources({
       className={`mt-12 border-t border-ink/15 pt-8 ${className}`}
     >
       <h2 id={`${headingId}-title`} className="mb-3 text-h4">
-        Sources officielles
+        {locale === 'en' ? 'Official sources' : 'Sources officielles'}
       </h2>
       {description && <div className="mb-4 text-sm text-muted">{description}</div>}
-      <SourceList sources={visibleSources} />
+      <SourceList sources={visibleSources} locale={locale} />
       {hiddenCount > 0 && (
         <details className="group mt-4 rounded-editorial border border-ink/15 bg-paper px-4 py-3">
           <summary className="ui-focus flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-control text-sm font-semibold text-ink [&::-webkit-details-marker]:hidden">
             <span className="group-open:hidden">{closedSummaryLabel}</span>
-            <span className="hidden group-open:inline">Masquer les sources supplémentaires</span>
+            <span className="hidden group-open:inline">{openSummaryLabel}</span>
             <ChevronDown
               aria-hidden="true"
               className="h-5 w-5 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
             />
           </summary>
           <div className="mt-3 border-t border-ink/15 pt-3">
-            <SourceList sources={hiddenSources} startIndex={VISIBLE_SOURCE_COUNT} />
+            <SourceList sources={hiddenSources} startIndex={VISIBLE_SOURCE_COUNT} locale={locale} />
           </div>
         </details>
       )}

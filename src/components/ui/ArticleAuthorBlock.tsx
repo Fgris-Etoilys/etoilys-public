@@ -2,9 +2,10 @@ import type { ArticleAuthor } from '../../content/articleAuthors';
 
 interface ArticleAuthorBlockProps {
   author: ArticleAuthor;
+  locale?: 'fr' | 'en';
 }
 
-export default function ArticleAuthorBlock({ author }: ArticleAuthorBlockProps) {
+export default function ArticleAuthorBlock({ author, locale = 'fr' }: ArticleAuthorBlockProps) {
   return (
     <section className="mt-8 border-t border-ink/15 pt-8" aria-labelledby="article-author-title">
       <div className="flex gap-4 rounded-editorial border border-ink/15 bg-paper px-5 py-4">
@@ -21,7 +22,9 @@ export default function ArticleAuthorBlock({ author }: ArticleAuthorBlockProps) 
           <h2 id="article-author-title" className="mb-2 text-lg font-semibold text-ink">
             {author.name}
           </h2>
-          <p className="text-sm leading-comfortable text-muted">{author.bio}</p>
+          <p className="text-sm leading-comfortable text-muted">
+            {author.localizedBios?.[locale] ?? author.bio}
+          </p>
         </div>
       </div>
     </section>

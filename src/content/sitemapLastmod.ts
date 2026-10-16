@@ -1,4 +1,7 @@
-import { getAllArticleStructuredData, getArticleStructuredData } from './articleStructuredData';
+import {
+  getAllFrenchActualitesArticleStructuredData,
+  getArticleStructuredData,
+} from './articleStructuredData';
 import { getSeoRouteConfig } from './seoRoutes';
 
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -34,7 +37,9 @@ export function maxIsoDate(first: string, second: string): string {
 }
 
 function getLatestArticleModifiedDate(): string {
-  const dates = getAllArticleStructuredData().map((article) => article.dateModified);
+  const dates = getAllFrenchActualitesArticleStructuredData().map(
+    (article) => article.dateModified
+  );
 
   if (dates.length === 0) {
     throw new Error('No article metadata available to compute /actualites lastmod.');

@@ -12,6 +12,7 @@ export const LOCALIZED_ROUTE_IDS = [
   'confidentialite',
   'simulateurTaxeSejour',
   'simulateurFiscalClassement',
+  'preparerVisiteClassementArticle',
 ] as const;
 
 export type LocalizedRouteId = (typeof LOCALIZED_ROUTE_IDS)[number];
@@ -73,5 +74,9 @@ export const localizedRoutes: LocalizedRoutes = {
   simulateurFiscalClassement: {
     fr: '/simulateur-fiscal-classement',
     en: '/en/furnished-tourist-accommodation-tax-simulator',
+  },
+  preparerVisiteClassementArticle: {
+    fr: '/actualites/preparer-visite-classement-meuble-tourisme',
+    en: '/en/articles/prepare-holiday-rental-star-rating-inspection',
   },
 } as const;

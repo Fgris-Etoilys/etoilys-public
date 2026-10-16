@@ -1,5 +1,5 @@
 import {
-  getAllArticleStructuredData,
+  getAllFrenchActualitesArticleStructuredData,
   getArticleStructuredData,
   type ArticleStructuredDataConfig,
 } from './articleStructuredData';
@@ -32,6 +32,8 @@ export type ArticleCategory =
   | 'reglementation'
   | 'obligations'
   | 'guides-pratiques';
+
+export type ArticleLocale = 'fr' | 'en';
 
 export const ARTICLE_CATEGORY_LABELS: Record<ArticleCategory, string> = {
   classement: 'Classement',
@@ -83,12 +85,25 @@ function getSlugFromHref(href: string): string {
   return normalizePath(href).replace(/^\/actualites\//, '');
 }
 
-export function getArticleCategoryLabel(category: ArticleCategory): string {
-  return ARTICLE_CATEGORY_LABELS[category];
+const ENGLISH_ARTICLE_CATEGORY_LABELS: Record<ArticleCategory, string> = {
+  classement: 'Classification',
+  fiscalite: 'Tax',
+  reglementation: 'Regulation',
+  obligations: 'Requirements',
+  'guides-pratiques': 'Practical guides',
+};
+
+export function getArticleCategoryLabel(
+  category: ArticleCategory,
+  locale: ArticleLocale = 'fr'
+): string {
+  return locale === 'en'
+    ? ENGLISH_ARTICLE_CATEGORY_LABELS[category]
+    : ARTICLE_CATEGORY_LABELS[category];
 }
 
-export function formatReadingTime(minutes: number): string {
-  return `${minutes} min de lecture`;
+export function formatReadingTime(minutes: number, locale: ArticleLocale = 'fr'): string {
+  return locale === 'en' ? `${minutes} min read` : `${minutes} min de lecture`;
 }
 
 export function isArticleCategory(value: string | null): value is ArticleCategory {
@@ -390,7 +405,7 @@ if (shouldValidateArticleConfiguration) {
 const articles = articleContent.map(buildArticle);
 const articlePaths = new Set(articleContent.map((article) => article.href));
 
-getAllArticleStructuredData().forEach((article: ArticleStructuredDataConfig) => {
+getAllFrenchActualitesArticleStructuredData().forEach((article: ArticleStructuredDataConfig) => {
   if (!articlePaths.has(article.path)) {
     throw new Error(`Missing article list content for ${article.path}`);
   }

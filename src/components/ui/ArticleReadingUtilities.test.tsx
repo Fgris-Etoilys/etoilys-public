@@ -74,13 +74,13 @@ function setDocumentBounds(element: Element, top: number, bottom: number) {
   }));
 }
 
-function ReadingUtilitiesFixture() {
+function ReadingUtilitiesFixture({ locale = 'fr' }: { locale?: 'fr' | 'en' }) {
   const startRef = useRef<HTMLHeadingElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
   return (
     <>
-      <ArticleReadingUtilities startRef={startRef} endRef={endRef} />
+      <ArticleReadingUtilities startRef={startRef} endRef={endRef} locale={locale} />
       <h1 ref={startRef} tabIndex={-1}>
         Titre article
       </h1>
@@ -96,14 +96,16 @@ function renderMeasuredUtilities({
   viewportHeight = 500,
   startY = 100,
   endY = 2100,
+  locale = 'fr',
 }: {
   scrollY?: number;
   viewportHeight?: number;
   startY?: number;
   endY?: number;
+  locale?: 'fr' | 'en';
 } = {}) {
   setViewport(scrollY, viewportHeight);
-  const result = render(<ReadingUtilitiesFixture />);
+  const result = render(<ReadingUtilitiesFixture locale={locale} />);
   const heading = screen.getByRole('heading', { level: 1, name: 'Titre article' });
   const editorialContent = screen.getByTestId('editorial-content');
 
@@ -243,6 +245,15 @@ describe('ArticleReadingUtilities', () => {
     const button = screen.getByRole('button', { name: BACK_TO_TOP_LABEL });
     expect(button).toHaveClass('xl:hidden');
     expect(button).toHaveClass('opacity-100');
+  });
+
+  it('localizes the back-to-top accessible label in English', () => {
+    renderMeasuredUtilities({
+      scrollY: ARTICLE_BACK_TO_TOP_SCROLL_THRESHOLD,
+      locale: 'en',
+    });
+
+    expect(screen.getByRole('button', { name: 'Back to top of article' })).toBeInTheDocument();
   });
 
   it('hides the back-to-top button when the measured editorial end enters the viewport', () => {

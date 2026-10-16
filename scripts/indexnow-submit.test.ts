@@ -91,6 +91,16 @@ describe('indexnow-submit helpers', () => {
     expect(urls).toContain('https://www.etoilys.fr/en/request-a-classification');
   });
 
+  it('maps the standalone English article without treating it as a French listing update', () => {
+    const changedFiles = parseChangedFileEntries(
+      'A\tsrc/pages/actualites/PreparerVisiteClassementMeubleTourismeEn.tsx'
+    );
+
+    expect(dedupeAndValidateUrls(getUrlsForChangedFiles(changedFiles))).toEqual([
+      'https://www.etoilys.fr/en/articles/prepare-holiday-rental-star-rating-inspection',
+    ]);
+  });
+
   it('maps local V6 content changes to every local public route', () => {
     const changedFiles = parseChangedFileEntries(
       [

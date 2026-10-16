@@ -12,6 +12,7 @@ type ArticleTableOfContentsVariant = 'desktop' | 'mobile';
 interface ArticleTableOfContentsProps {
   items: readonly ArticleTableOfContentsItem[];
   variant: ArticleTableOfContentsVariant;
+  locale?: 'fr' | 'en';
 }
 
 function getHashId(): string | null {
@@ -40,12 +41,18 @@ function getScrollBehavior(): ScrollBehavior {
   return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 }
 
-export default function ArticleTableOfContents({ items, variant }: ArticleTableOfContentsProps) {
+export default function ArticleTableOfContents({
+  items,
+  variant,
+  locale = 'fr',
+}: ArticleTableOfContentsProps) {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(() =>
     getActiveHashId(items)
   );
   const mobileDetailsRef = useRef<HTMLDetailsElement>(null);
   const clickedSectionIdRef = useRef<string | null>(activeSectionId);
+  const heading = locale === 'en' ? 'In this article' : 'Dans cet article';
+  const ariaLabel = locale === 'en' ? 'Article table of contents' : 'Sommaire de l’article';
 
   useEffect(() => {
     const handleHashChange = () => {
@@ -139,9 +146,9 @@ export default function ArticleTableOfContents({ items, variant }: ArticleTableO
     return (
       <aside className="hidden xl:block">
         <Card hover={false} className="sticky top-24 flex max-h-[calc(100vh-7rem)] flex-col p-4">
-          <p className="mb-3 font-playfair text-xl font-semibold text-ink">Dans cet article</p>
+          <p className="mb-3 font-playfair text-xl font-semibold text-ink">{heading}</p>
           <nav
-            aria-label="Sommaire de l’article"
+            aria-label={ariaLabel}
             className="table-of-contents-scrollbar -mx-1 flex-1 overflow-y-auto px-1 pr-2"
           >
             {links}
@@ -157,13 +164,13 @@ export default function ArticleTableOfContents({ items, variant }: ArticleTableO
       className="group mb-10 rounded-editorial border border-ink/15 bg-paper p-4 xl:hidden"
     >
       <summary className="ui-focus flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 rounded-control text-base font-semibold text-ink [&::-webkit-details-marker]:hidden">
-        <span>Dans cet article</span>
+        <span>{heading}</span>
         <ChevronDown
           aria-hidden="true"
           className="h-5 w-5 shrink-0 transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
         />
       </summary>
-      <nav aria-label="Sommaire de l’article" className="mt-3 border-t border-ink/15 pt-3">
+      <nav aria-label={ariaLabel} className="mt-3 border-t border-ink/15 pt-3">
         {links}
       </nav>
     </details>

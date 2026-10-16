@@ -44,6 +44,17 @@ function makeArticle(input: {
 }
 
 describe('actualites article related articles', () => {
+  it('keeps localized English equivalents out of the French news listing', () => {
+    expect(
+      actualitesArticlesByRecency.every((article) => article.href.startsWith('/actualites/'))
+    ).toBe(true);
+    expect(
+      actualitesArticlesByRecency.some(
+        (article) => article.href === '/en/articles/prepare-holiday-rental-star-rating-inspection'
+      )
+    ).toBe(false);
+  });
+
   it('selects the featured list article from the most recent publication date only', () => {
     const oldestUpdated = makeArticle({
       slug: 'oldest-updated',

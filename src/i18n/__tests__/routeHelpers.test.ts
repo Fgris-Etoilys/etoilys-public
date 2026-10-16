@@ -64,6 +64,11 @@ const localizedRouteCases: Array<{
     fr: '/simulateur-fiscal-classement',
     en: '/en/furnished-tourist-accommodation-tax-simulator',
   },
+  {
+    routeId: 'preparerVisiteClassementArticle',
+    fr: '/actualites/preparer-visite-classement-meuble-tourisme',
+    en: '/en/articles/prepare-holiday-rental-star-rating-inspection',
+  },
 ];
 
 describe('i18n route helpers', () => {
@@ -121,6 +126,15 @@ describe('i18n route helpers', () => {
     expect(getLocalizedPathFromPathname('/en/contact/', 'fr')).toBe('/contact');
     expect(getLocalizedPathFromPathname('/confidentialite', 'en')).toBe('/en/privacy-policy');
     expect(getLocalizedPathFromPathname('/confidentialite', 'nl')).toBe('/nl/privacybeleid');
+    expect(
+      getLocalizedPathFromPathname('/actualites/preparer-visite-classement-meuble-tourisme', 'en')
+    ).toBe('/en/articles/prepare-holiday-rental-star-rating-inspection');
+    expect(
+      getLocalizedPathFromPathname(
+        '/en/articles/prepare-holiday-rental-star-rating-inspection',
+        'fr'
+      )
+    ).toBe('/actualites/preparer-visite-classement-meuble-tourisme');
   });
 
   it('returns null for paths without localized MVP equivalents', () => {
@@ -149,6 +163,22 @@ describe('i18n route helpers', () => {
     expect(getAlternateLocaleLinks('/en/tourist-tax-simulator', 'https://www.etoilys.fr')).toEqual([
       { locale: 'fr', href: 'https://www.etoilys.fr/simulateur-taxe-sejour' },
       { locale: 'en', href: 'https://www.etoilys.fr/en/tourist-tax-simulator' },
+    ]);
+
+    expect(
+      getAlternateLocaleLinks(
+        '/en/articles/prepare-holiday-rental-star-rating-inspection',
+        'https://www.etoilys.fr'
+      )
+    ).toEqual([
+      {
+        locale: 'fr',
+        href: 'https://www.etoilys.fr/actualites/preparer-visite-classement-meuble-tourisme',
+      },
+      {
+        locale: 'en',
+        href: 'https://www.etoilys.fr/en/articles/prepare-holiday-rental-star-rating-inspection',
+      },
     ]);
   });
 

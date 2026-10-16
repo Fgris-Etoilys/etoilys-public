@@ -37,6 +37,7 @@ import ArticleApiMeubles from './pages/actualites/ApiMeublesDeclarationMeubleTou
 import ArticleTransmissionDonneesPlateformesCommunes from './pages/actualites/TransmissionDonneesPlateformesCommunes';
 import ArticleQueFaireApresClassementMeubleTourisme from './pages/actualites/QueFaireApresClassementMeubleTourisme';
 import ArticlePreparerVisiteClassementMeubleTourisme from './pages/actualites/PreparerVisiteClassementMeubleTourisme';
+import ArticlePreparerVisiteClassementMeubleTourismeEn from './pages/actualites/PreparerVisiteClassementMeubleTourismeEn';
 import ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost from './pages/actualites/VoyageurRefuseQuitterMeubleTourismeLoiRipost';
 import ArticlePlf2027MeublesTourisme from './pages/actualites/Plf2027MeublesTourisme';
 import Recrutement from './pages/Recrutement';
@@ -160,6 +161,10 @@ export default function AppRoutes() {
         <Route path="en/contact" element={<Contact />} />
         <Route path="en/request-a-classification" element={<DemandeClassement />} />
         <Route path="en/privacy-policy" element={<Confidentialite />} />
+        <Route
+          path="en/articles/prepare-holiday-rental-star-rating-inspection"
+          element={<ArticlePreparerVisiteClassementMeubleTourismeEn />}
+        />
         <Route path="nl" element={<Home />} />
         <Route path="nl/classificatie-vakantiewoning-frankrijk" element={<Classement />} />
         <Route path="nl/voordelen-classificatie-vakantiewoning" element={<PourquoiClasser />} />

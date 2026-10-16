@@ -301,6 +301,8 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
       '133 critères, vaisselle, équipements, documents et informations clients : les points à vérifier avant la visite de classement de votre meublé.',
     breadcrumbLabel: 'Préparer la visite de classement',
     ogImageKey: 'articlePreparerVisiteClassement',
+    locale: 'fr',
+    routeId: 'preparerVisiteClassementArticle',
   },
   '/actualites/voyageur-refuse-quitter-meuble-tourisme-loi-ripost': {
     lastModified: '2026-08-30',
@@ -352,6 +354,16 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     breadcrumbLabel: 'Confidentialité',
     locale: 'fr',
     routeId: 'confidentialite',
+  },
+  '/en/articles/prepare-holiday-rental-star-rating-inspection': {
+    lastModified: '2026-07-19',
+    title: "Prepare for your holiday rental's star-rating inspection",
+    description:
+      'Prepare your holiday rental for its French star-rating inspection: 133 criteria, equipment, tableware, guest information and a practical checklist.',
+    breadcrumbLabel: 'How to prepare your holiday rental for its star-rating inspection',
+    ogImageKey: 'articlePreparerVisiteClassement',
+    locale: 'en',
+    routeId: 'preparerVisiteClassementArticle',
   },
   '/en': {
     lastModified: '2026-07-10',

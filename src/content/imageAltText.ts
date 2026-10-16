@@ -74,6 +74,7 @@ export const IMAGE_ALT_TEXT = {
     fr: 'Chambre contemporaine avec placards bleu nuit, lit double, banquette et grande baie vitrée',
   },
   articlePreparerVisiteClassement: {
+    en: 'Wooden table set with plates, glasses, a carafe and illustrated brochures, in front of a grey sofa and an open-plan kitchen',
     fr: 'Table en bois dressée avec assiettes, verres, carafe et brochures illustrées, devant un canapé gris et une cuisine ouverte',
   },
   articleRipostVoyageurRefuseQuitter: {

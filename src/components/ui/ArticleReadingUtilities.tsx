@@ -8,6 +8,7 @@ import {
 interface ArticleReadingUtilitiesProps {
   startRef: RefObject<HTMLElement | null>;
   endRef: RefObject<HTMLElement | null>;
+  locale?: 'fr' | 'en';
 }
 
 function getDocumentTop(element: HTMLElement, scrollY: number): number {
@@ -29,6 +30,7 @@ function roundProgress(progress: number): number {
 export default function ArticleReadingUtilities({
   startRef,
   endRef,
+  locale = 'fr',
 }: ArticleReadingUtilitiesProps) {
   const [progress, setProgress] = useState(0);
   const [isProgressVisible, setIsProgressVisible] = useState(false);
@@ -152,7 +154,7 @@ export default function ArticleReadingUtilities({
 
       <button
         type="button"
-        aria-label="Retour en haut de l’article"
+        aria-label={locale === 'en' ? 'Back to top of article' : 'Retour en haut de l’article'}
         aria-hidden={isBackToTopVisible ? undefined : 'true'}
         tabIndex={isBackToTopVisible ? 0 : -1}
         className={`ui-focus fixed bottom-[calc(var(--etoilys-cookie-banner-offset,0px)+5rem+env(safe-area-inset-bottom))] right-4 z-[50] inline-flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 bg-surface text-ink shadow-[0_4px_16px_rgb(var(--color-ink)/0.08)] transition-[opacity,transform,background-color,border-color,color] duration-200 hover:bg-surface-hover motion-reduce:transition-none sm:right-6 xl:hidden ${

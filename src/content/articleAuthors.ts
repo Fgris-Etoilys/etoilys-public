@@ -5,6 +5,7 @@ export interface ArticleAuthor {
   name: string;
   initials: string;
   bio: string;
+  localizedBios?: Readonly<Partial<Record<'fr' | 'en', string>>>;
   imageSrc: string;
   imageAlt: string;
   structuredDataId: string;
@@ -16,6 +17,9 @@ export const ARTICLE_AUTHORS = {
     name: 'Florian Grisorio',
     initials: 'FG',
     bio: 'Président d’Etoilys, organisme accrédité par le Cofrac pour le classement des meublés de tourisme. Il supervise la veille réglementaire et la rédaction des contenus publiés sur le site.',
+    localizedBios: {
+      en: 'President of Etoilys, a Cofrac-accredited inspection body for the classification of furnished tourist accommodation. He oversees regulatory monitoring and the editorial content published on the website.',
+    },
     imageSrc: '/images/authors/florian-grisorio.jpg',
     imageAlt: 'Florian Grisorio',
     structuredDataId: '#person-florian-grisorio',
@@ -27,6 +31,7 @@ export const ARTICLE_AUTHORS = {
     name: string;
     initials: string;
     bio: string;
+    localizedBios?: Readonly<Partial<Record<'fr' | 'en', string>>>;
     imageSrc: string;
     imageAlt: string;
     structuredDataId: string;

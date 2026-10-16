@@ -9,6 +9,7 @@ const MAX_ITEM_COUNT = 5;
 
 interface BaseKeyTakeawaysProps {
   className?: string;
+  locale?: 'fr' | 'en';
 }
 
 export interface KeyTakeawaysTextItem {
@@ -87,6 +88,7 @@ function BulletList({ items }: { items: readonly KeyTakeawaysTextItem[] }) {
 export default function KeyTakeaways(props: KeyTakeawaysProps) {
   const headingId = 'article-key-takeaways';
   const className = props.className ?? '';
+  const heading = props.locale === 'en' ? 'Key takeaways' : 'À retenir';
 
   if (props.variant === 'comparison') {
     validateComparisonRows(props.rows);
@@ -95,7 +97,7 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
     return (
       <section aria-labelledby={headingId} className={`article-callout mb-12 ${className}`}>
         <h2 id={headingId} className="mb-4 text-h4">
-          À retenir
+          {heading}
         </h2>
         <ResponsiveComparisonTable
           appearance="editorial"
@@ -116,7 +118,7 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
     return (
       <section aria-labelledby={headingId} className={`article-callout mb-12 ${className}`}>
         <h2 id={headingId} className="mb-4 text-h4">
-          À retenir
+          {heading}
         </h2>
         <dl className="grid gap-4 sm:grid-cols-2">
           {props.items.map((item) => (
@@ -144,7 +146,7 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
         <div className="mb-4 flex items-center gap-3">
           <AlertTriangle className="h-5 w-5 shrink-0 text-warning-500" aria-hidden="true" />
           <h2 id={headingId} className="text-h4">
-            À retenir
+            {heading}
           </h2>
         </div>
         <p className="mb-4 font-medium leading-comfortable text-ink">{props.message}</p>
@@ -158,7 +160,7 @@ export default function KeyTakeaways(props: KeyTakeawaysProps) {
   return (
     <section aria-labelledby={headingId} className={`article-callout mb-12 ${className}`}>
       <h2 id={headingId} className="mb-4 text-h4">
-        À retenir
+        {heading}
       </h2>
       <BulletList items={props.items} />
     </section>

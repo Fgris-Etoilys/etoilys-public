@@ -4,10 +4,11 @@ import { ArrowLeft } from 'lucide-react';
 import {
   formatReadingTime,
   getArticleCategoryLabel,
+  type ArticleLocale,
   type ActualiteArticle,
 } from '../../content/actualitesArticles';
 import type { ArticleAuthor } from '../../content/articleAuthors';
-import { formatFrenchDate } from '../../content/dateFormatting';
+import { formatArticleDate } from '../../content/dateFormatting';
 import ArticleAuthorBlock from './ArticleAuthorBlock';
 import ArticleReadingUtilities from './ArticleReadingUtilities';
 import ArticleRelatedArticles from './ArticleRelatedArticles';
@@ -30,7 +31,26 @@ interface ArticleLayoutProps {
   relatedArticlesSlot?: ReactNode;
   author?: ArticleAuthor;
   authorBlock?: ReactNode;
+  locale?: ArticleLocale;
 }
+
+const ARTICLE_LAYOUT_LABELS = {
+  fr: {
+    backHref: '/actualites',
+    backLabel: 'Retour aux actualités',
+    published: 'Publié le',
+    updated: 'Mis à jour le',
+  },
+  en: {
+    backHref: '/en',
+    backLabel: 'Back to home',
+    published: 'Published on',
+    updated: 'Updated on',
+  },
+} as const satisfies Record<
+  ArticleLocale,
+  { backHref: string; backLabel: string; published: string; updated: string }
+>;
 
 function buildHeadingId(href: string): string {
   const slug = href
@@ -53,6 +73,7 @@ export default function ArticleLayout({
   relatedArticlesSlot,
   author,
   authorBlock,
+  locale = 'fr',
 }: ArticleLayoutProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const editorialContentRef = useRef<HTMLDivElement>(null);
@@ -64,32 +85,34 @@ export default function ArticleLayout({
     (relatedArticles && relatedArticles.length > 0 ? (
       <ArticleRelatedArticles articles={relatedArticles} />
     ) : null);
-  const authorBlockNode = authorBlock ?? (author ? <ArticleAuthorBlock author={author} /> : null);
+  const authorBlockNode =
+    authorBlock ?? (author ? <ArticleAuthorBlock author={author} locale={locale} /> : null);
+  const labels = ARTICLE_LAYOUT_LABELS[locale];
   const hasFooter = Boolean(footerCta || sources || relatedArticlesNode || authorBlockNode);
   const shouldShowTableOfContents =
     tableOfContents.length > 0 && (tableOfContents.length >= 5 || article.readingTimeMinutes >= 6);
 
   return (
     <article aria-labelledby={headingId}>
-      <ArticleReadingUtilities startRef={headingRef} endRef={editorialContentRef} />
+      <ArticleReadingUtilities startRef={headingRef} endRef={editorialContentRef} locale={locale} />
       <header>
         <section className="bg-paper pb-10 pt-14 text-ink sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
           <div className="container-editorial">
             <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
               <div className="mx-auto w-full min-w-0 max-w-[56rem] xl:col-start-2 xl:mx-0 xl:max-w-none">
                 <Link
-                  to="/actualites"
+                  to={labels.backHref}
                   className="ui-focus group mb-5 inline-flex min-h-11 items-center gap-2 rounded-control border border-ink/15 bg-surface px-4 py-2 text-sm font-semibold text-ink no-underline transition-colors duration-200 hover:bg-surface-hover hover:text-ink motion-reduce:transition-none"
                 >
                   <ArrowLeft
                     aria-hidden="true"
                     className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
                   />
-                  <span>Retour aux actualités</span>
+                  <span>{labels.backLabel}</span>
                 </Link>
                 <div className="mb-5">
                   <span className="inline-flex rounded-control border border-ink/15 bg-surface px-3 py-1 text-sm font-medium text-ink">
-                    {getArticleCategoryLabel(article.category)}
+                    {getArticleCategoryLabel(article.category, locale)}
                   </span>
                 </div>
                 <h1
@@ -102,18 +125,20 @@ export default function ArticleLayout({
                 </h1>
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted">
                   <time dateTime={article.publishedAt}>
-                    Publié le {formatFrenchDate(article.publishedAt)}
+                    {labels.published} {formatArticleDate(article.publishedAt, locale)}
                   </time>
                   {updatedAt && (
                     <>
                       <span aria-hidden="true">·</span>
-                      <time dateTime={updatedAt}>Mis à jour le {formatFrenchDate(updatedAt)}</time>
+                      <time dateTime={updatedAt}>
+                        {labels.updated} {formatArticleDate(updatedAt, locale)}
+                      </time>
                     </>
                   )}
                   <span aria-hidden="true">·</span>
                   <span>{article.authorName}</span>
                   <span aria-hidden="true">·</span>
-                  <span>{formatReadingTime(article.readingTimeMinutes)}</span>
+                  <span>{formatReadingTime(article.readingTimeMinutes, locale)}</span>
                 </div>
               </div>
             </div>
@@ -127,7 +152,7 @@ export default function ArticleLayout({
         <div className="container-editorial">
           <div className="grid gap-8 xl:grid-cols-[minmax(0,16rem)_minmax(0,56rem)]">
             {shouldShowTableOfContents && (
-              <ArticleTableOfContents items={tableOfContents} variant="desktop" />
+              <ArticleTableOfContents items={tableOfContents} variant="desktop" locale={locale} />
             )}
             <div
               ref={editorialContentRef}
@@ -138,7 +163,7 @@ export default function ArticleLayout({
               </div>
               {keyTakeaways}
               {shouldShowTableOfContents && (
-                <ArticleTableOfContents items={tableOfContents} variant="mobile" />
+                <ArticleTableOfContents items={tableOfContents} variant="mobile" locale={locale} />
               )}
               {children}
             </div>

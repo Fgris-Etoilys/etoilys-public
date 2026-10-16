@@ -65,6 +65,9 @@ const FORBIDDEN_EN_MVP_INTERNAL_LINK_PATTERNS = [
 ] as const;
 const FORBIDDEN_EN_MVP_VISIBLE_TEXT_PATTERN =
   /nos dernières actualités|actualités|latest news|news articles|zones d’intervention|service areas|recrutement|recruitment|mentions légales|legal notice/i;
+const ENGLISH_MVP_ALLOWED_INTERNAL_HREFS_BY_PATH = new Map<string, ReadonlySet<string>>([
+  ['/en/articles/prepare-holiday-rental-star-rating-inspection', new Set(['/simulateur'])],
+]);
 const FORBIDDEN_NL_MVP_INTERNAL_LINK_PATTERNS = [
   /^\/nl\/actualites(?:\/|$)/,
   /^\/nl\/simulateur(?:\/|-|$)/,
@@ -290,9 +293,10 @@ function assertEnglishMvpPrerenderScope(
   }
 
   const internalHrefs = getInternalHrefs(rootContent);
+  const allowedInternalHrefs = ENGLISH_MVP_ALLOWED_INTERNAL_HREFS_BY_PATH.get(pathname);
   const outOfScopeHrefs = internalHrefs.filter(
     (href) =>
-      isForbiddenEnglishMvpInternalHref(href) ||
+      (isForbiddenEnglishMvpInternalHref(href) && !allowedInternalHrefs?.has(href)) ||
       (href.startsWith('/en/') && !EN_MVP_PRERENDER_PATHS.has(href))
   );
 

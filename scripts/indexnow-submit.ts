@@ -3,6 +3,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { getCanonicalUrl, getIndexablePaths, SITE_URL } from '../src/content/seoRoutes.ts';
 import { getPublishedLocalPaths } from '../src/content/local/registry.ts';
+import { getAllArticleStructuredData } from '../src/content/articleStructuredData.ts';
 
 const SITE_HOST = 'www.etoilys.fr';
 const INDEXNOW_KEY = 'a4f9bc0d1e4b47b9b0e2b438d9d8f2aa';
@@ -202,6 +203,10 @@ function localPublicUrls(): string[] {
   return ['/zones-intervention', ...getPublishedLocalPaths()].map(routeUrl);
 }
 
+function structuredArticleUrls(): string[] {
+  return getAllArticleStructuredData().map((article) => routeUrl(article.path));
+}
+
 function articlePathFromPage(filePath: string): string | null {
   const articlePageRoutes: Record<string, string> = {
     'src/pages/actualites/MeublesChangements20252026.tsx':
@@ -258,6 +263,9 @@ function staticRoutesFromPage(filePath: string): string[] {
     'src/pages/DemandeClassement.tsx': ['/demande-classement', '/en/request-a-classification'],
     'src/pages/Confidentialite.tsx': ['/confidentialite', '/en/privacy-policy'],
     'src/pages/MentionsLegales.tsx': ['/mentions-legales'],
+    'src/pages/actualites/PreparerVisiteClassementMeubleTourismeEn.tsx': [
+      '/en/articles/prepare-holiday-rental-star-rating-inspection',
+    ],
   };
 
   return pageRoutes[normalizedPath] ?? [];
@@ -291,7 +299,7 @@ export function getUrlsForChangedFiles(entries: ChangedFileEntry[]): string[] {
         normalizedPath === 'src/content/actualitesArticles.ts'
       ) {
         urls.push(routeUrl('/actualites'));
-        urls.push(...allIndexableUrls().filter((url) => url.includes('/actualites/')));
+        urls.push(...structuredArticleUrls());
         continue;
       }
 
