@@ -187,6 +187,7 @@ describe('English conversion pages', () => {
     const main = screen.getByRole('main');
 
     expectHref(main, '/en/privacy-policy');
+    expectHref(main, ENGLISH_ARTICLE_PATH);
     expectEnglishMvpPageGovernance();
   });
 

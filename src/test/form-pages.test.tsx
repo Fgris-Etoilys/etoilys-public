@@ -52,6 +52,12 @@ describe('public form pages', () => {
           'href',
           '/simulateur'
         );
+      } else if (locale === 'en') {
+        expect(screen.getByRole('link', { name: /Read the guide/i })).toHaveAttribute(
+          'href',
+          '/en/articles/prepare-holiday-rental-star-rating-inspection'
+        );
+        expect(container.querySelector('a[href="/simulateur"]')).not.toBeInTheDocument();
       } else {
         expect(
           container.querySelector(

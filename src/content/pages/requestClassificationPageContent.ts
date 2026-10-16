@@ -73,6 +73,14 @@ export const requestClassificationPageContent = {
       description:
         'We get in touch to confirm the inspection arrangements, the fee and the available dates.',
     },
+    resources: [
+      {
+        title: 'Prepare for your inspection',
+        description: "The equipment and key points to check before the inspector's visit.",
+        cta: 'Read the guide',
+        href: '/en/articles/prepare-holiday-rental-star-rating-inspection',
+      },
+    ],
     reassurance: {
       title: 'Why Etoilys?',
       items: [
