@@ -335,6 +335,7 @@ function getPageType(pathname: string): string {
 
   if (routeId === 'home') return 'home';
   if (routeId === 'contact' || routeId === 'demandeClassement') return 'formulaire';
+  if (routeId === 'preparerVisiteClassementArticle') return 'article';
   if (routeId === 'confidentialite' || normalizedPathname === '/mentions-legales') return 'legal';
   if (routeId === 'simulateurTaxeSejour' || routeId === 'simulateurFiscalClassement') {
     return 'simulateur';

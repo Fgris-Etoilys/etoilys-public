@@ -577,6 +577,7 @@ describe('analytics', () => {
     trackPageView('/en/contact');
     trackPageView('/nl');
     trackPageView('/classement-meuble-tourisme-dordogne');
+    trackPageView('/en/articles/prepare-holiday-rental-star-rating-inspection');
     await flushAnalyticsImports();
 
     expect(posthogMock.capture).toHaveBeenCalledWith(
@@ -601,6 +602,14 @@ describe('analytics', () => {
         source_path: '/classement-meuble-tourisme-dordogne',
         page_type: 'local',
         event_locale: 'fr',
+      })
+    );
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      '$pageview',
+      expect.objectContaining({
+        source_path: '/en/articles/prepare-holiday-rental-star-rating-inspection',
+        page_type: 'article',
+        event_locale: 'en',
       })
     );
   });
