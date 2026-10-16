@@ -27,6 +27,7 @@ export const NL_INDEXABLE_ROUTE_IDS = [
   'contact',
   'demandeClassement',
   'confidentialite',
+  'preparerVisiteClassementArticle',
 ] as const satisfies readonly LocalizedRouteId[];
 
 const INDEXABLE_ROUTE_IDS_BY_LOCALE: Partial<Record<Locale, ReadonlySet<LocalizedRouteId>>> = {

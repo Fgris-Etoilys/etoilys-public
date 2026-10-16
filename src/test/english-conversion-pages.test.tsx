@@ -13,6 +13,8 @@ const renderAt = (path: string) => {
 };
 
 const ENGLISH_ARTICLE_PATH = '/en/articles/prepare-holiday-rental-star-rating-inspection';
+const DUTCH_ARTICLE_PATH =
+  '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie';
 
 function expectRenderedEnglishPage() {
   const heading = screen.getByRole('heading', { level: 1 });
@@ -250,7 +252,6 @@ describe('English conversion pages', () => {
       name: 'Guest services that must be verifiable in writing',
     });
     expect(within(servicesTable).getAllByRole('row')).toHaveLength(5);
-
     const sources = within(article)
       .getByRole('heading', { level: 2, name: 'Official sources' })
       .closest('section');
@@ -272,7 +273,126 @@ describe('English conversion pages', () => {
     fireEvent.click(
       screen.getAllByRole('button', { name: /^Language selector/i })[0] as HTMLElement
     );
-    expect(screen.getByRole('button', { name: /unavailable in Nederlands/i })).toBeDisabled();
-    expect(screen.queryByRole('link', { name: /switch to Nederlands/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /switch to Nederlands/i })).toHaveAttribute(
+      'href',
+      DUTCH_ARTICLE_PATH
+    );
+  });
+});
+
+describe('Dutch inspection-preparation article', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('renders the complete article structure, navigation and prescribed links', () => {
+    renderAt(DUTCH_ARTICLE_PATH);
+
+    const main = screen.getByRole('main');
+    const article = screen.getByRole('article', {
+      name: 'Hoe bereidt u uw vakantiewoning voor op het inspectiebezoek voor de sterrenclassificatie?',
+    });
+
+    expect(within(article).getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(
+      within(article).getByRole('link', { name: 'Terug naar de startpagina' })
+    ).toHaveAttribute('href', '/nl');
+    expect(within(article).getByText('Praktische gidsen')).toBeInTheDocument();
+    expect(within(article).getByText('Gepubliceerd op 19 juli 2026')).toBeInTheDocument();
+    expect(within(article).getByText('10 min leestijd')).toBeInTheDocument();
+    expect(
+      within(article).getAllByRole('navigation', { name: 'Inhoudsopgave van het artikel' })
+    ).toHaveLength(2);
+
+    const sectionIds = [
+      'criteria-voor-de-aangevraagde-sterrencategorie',
+      'uitrusting-en-capaciteit',
+      'informatie-en-documenten-voor-gasten',
+      'woning-presenteren-zoals-verhuurd',
+      'checklist-voor-het-inspectiebezoek',
+      'aanvullend-bewijs-na-de-inspectie',
+    ];
+    sectionIds.forEach((id) => expect(document.getElementById(id)?.tagName).toBe('H2'));
+    expect(article).toHaveTextContent(/133 criteria/);
+    expect(article).toHaveTextContent(/minstens 95%/);
+    expect(article).toHaveTextContent(/maximum van 7 personen/);
+    expect(article).toHaveTextContent(/minstens 5 folders/);
+    expect(article).toHaveTextContent(/daarvan minstens 3/);
+    expect(article).toHaveTextContent(/15 werkdagen/);
+    expect(within(article).getByRole('heading', { name: /Criterium 100/ })).toBeInTheDocument();
+    expect(within(article).getByRole('heading', { name: /Criterium 116/ })).toBeInTheDocument();
+    expect(within(article).getByRole('heading', { name: /Criterium 130/ })).toBeInTheDocument();
+
+    const takeaways = within(article)
+      .getByRole('heading', { level: 2, name: 'Kort samengevat' })
+      .closest('section');
+    expect(within(takeaways as HTMLElement).getAllByRole('listitem')).toHaveLength(3);
+    expect(
+      within(screen.getByTestId('criterion-63-tableware')).getAllByRole('listitem')
+    ).toHaveLength(11);
+    expect(
+      within(screen.getByTestId('criterion-65-equipment-groups')).getAllByRole('listitem')
+    ).toHaveLength(3);
+    expect(
+      within(screen.getByTestId('pre-inspection-checklist')).getAllByRole('listitem')
+    ).toHaveLength(12);
+    expect(article.querySelectorAll('blockquote')).toHaveLength(2);
+
+    expect(
+      within(article).getByRole('table', {
+        name: 'Voorbeelden van criteria per aangevraagde sterrencategorie',
+      })
+    ).toBeInTheDocument();
+    const servicesTable = within(article).getByRole('table', {
+      name: 'Diensten voor gasten die schriftelijk controleerbaar moeten zijn',
+    });
+    expect(within(servicesTable).getAllByRole('row')).toHaveLength(5);
+    ['105', '106', '108', '110'].forEach((criterion) =>
+      expect(within(servicesTable).getByRole('rowheader', { name: criterion })).toBeInTheDocument()
+    );
+
+    const sources = within(article)
+      .getByRole('heading', { level: 2, name: 'Officiële bronnen' })
+      .closest('section');
+    expect(within(sources as HTMLElement).getAllByRole('listitem')).toHaveLength(4);
+    expect(
+      within(article).getAllByRole('link', { name: /simulator \(in het Frans\)/i })
+    ).toHaveLength(2);
+    within(article)
+      .getAllByRole('link', { name: /simulator \(in het Frans\)/i })
+      .forEach((link) => expect(link).toHaveAttribute('href', '/simulateur'));
+    expect(within(article).getByRole('link', { name: 'classificatieprocedure' })).toHaveAttribute(
+      'href',
+      '/nl/classificatieprocedure-vakantiewoning'
+    );
+    expect(within(article).getByRole('heading', { name: 'Florian Grisorio' })).toBeInTheDocument();
+    expect(
+      within(article).queryByRole('heading', { name: 'À lire aussi' })
+    ).not.toBeInTheDocument();
+    expect(main).not.toHaveTextContent(
+      /Retour aux actualités|À retenir|Sources officielles|Publié le|Dans cet article/
+    );
+
+    fireEvent.click(screen.getAllByRole('button', { name: /^Taalkiezer/i })[0] as HTMLElement);
+    expect(screen.getByRole('link', { name: /Overschakelen naar Français/i })).toHaveAttribute(
+      'href',
+      '/actualites/preparer-visite-classement-meuble-tourisme'
+    );
+    expect(screen.getByRole('link', { name: /Overschakelen naar English/i })).toHaveAttribute(
+      'href',
+      '/en/articles/prepare-holiday-rental-star-rating-inspection'
+    );
+  });
+
+  it('makes the Dutch translation available from the French article switcher', () => {
+    renderAt('/actualites/preparer-visite-classement-meuble-tourisme');
+
+    fireEvent.click(
+      screen.getAllByRole('button', { name: /^Sélecteur de langue/i })[0] as HTMLElement
+    );
+    expect(screen.getByRole('link', { name: /Passer en Nederlands/i })).toHaveAttribute(
+      'href',
+      DUTCH_ARTICLE_PATH
+    );
   });
 });

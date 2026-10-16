@@ -34,6 +34,8 @@ import {
 } from '../content/seoRoutes';
 
 const ARTICLE_PATH = '/actualites/plf-2027-meubles-tourisme';
+const DUTCH_ARTICLE_PATH =
+  '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie';
 const DORDOGNE_PATH = '/classement-meuble-tourisme-dordogne';
 const DYNAMIC_SIMULATION_PATH = '/simulateur/simulation-id';
 const NOT_FOUND_PATHS = ['/route-inexistante', '/en/not-ready-route', '/nl/route-inconnue'];
@@ -156,6 +158,42 @@ describe('central SEO metadata resolver', () => {
     expect(getMetaTagContent(ARTICLE_PATH, 'article:modified_time')).toBe('2026-10-04');
   });
 
+  it('resolves the Dutch article SEO, Open Graph and BlogPosting contract', () => {
+    const metadata = resolveSeoMetadata(DUTCH_ARTICLE_PATH);
+
+    expect(metadata.title).toBe('Vakantiewoning voorbereiden op sterrenclassificatie | Etoilys');
+    expect(metadata.description).toBe(
+      'Bereid uw vakantiewoning voor op het inspectiebezoek voor de sterrenclassificatie: 133 criteria, servies, uitrusting en een handige checklist.'
+    );
+    expect(metadata.canonicalUrl).toBe(`${SITE_URL}${DUTCH_ARTICLE_PATH}`);
+    expect(metadata.htmlLang).toBe('nl');
+    expect(metadata.ogLocale).toBe('nl_NL');
+    expect(metadata.ogType).toBe('article');
+    expect(metadata.image.key).toBe('articlePreparerVisiteClassement');
+    expect(metadata.image.alt).toBe(IMAGE_ALT_TEXT.articlePreparerVisiteClassement.nl);
+    expect(metadata.article?.publishedTime).toBe('2026-07-19');
+    expect(metadata.article?.modifiedTime).toBe('2026-07-19');
+    expect(metadata.article?.structuredData.headline).toBe(
+      'Hoe bereidt u uw vakantiewoning voor op het inspectiebezoek voor de sterrenclassificatie?'
+    );
+    expect(metadata.article?.structuredData.description).toBe(metadata.description);
+    expect(metadata.alternateLinks).toEqual([
+      {
+        hreflang: 'fr',
+        href: `${SITE_URL}/actualites/preparer-visite-classement-meuble-tourisme`,
+      },
+      {
+        hreflang: 'en',
+        href: `${SITE_URL}/en/articles/prepare-holiday-rental-star-rating-inspection`,
+      },
+      { hreflang: 'nl', href: `${SITE_URL}${DUTCH_ARTICLE_PATH}` },
+      {
+        hreflang: 'x-default',
+        href: `${SITE_URL}/actualites/preparer-visite-classement-meuble-tourisme`,
+      },
+    ]);
+  });
+
   it.each(['/classement', '/contact'])('keeps %s as a website without article metadata', (path) => {
     const metadata = resolveSeoMetadata(path);
     const tagKeys = buildSeoMetaTags(metadata).map((tag) => tag.key);
@@ -269,6 +307,7 @@ describe('runtime SEO head', () => {
     '/classement',
     DORDOGNE_PATH,
     '/nl/voordelen-classificatie-vakantiewoning',
+    DUTCH_ARTICLE_PATH,
     '/route-inexistante',
   ])('renders exactly the resolved SEO head on %s', (path) => {
     renderAt(path);

@@ -365,6 +365,17 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     locale: 'en',
     routeId: 'preparerVisiteClassementArticle',
   },
+  '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie': {
+    lastModified: '2026-07-19',
+    title: 'Vakantiewoning voorbereiden op sterrenclassificatie',
+    description:
+      'Bereid uw vakantiewoning voor op het inspectiebezoek voor de sterrenclassificatie: 133 criteria, servies, uitrusting en een handige checklist.',
+    breadcrumbLabel:
+      'Hoe bereidt u uw vakantiewoning voor op het inspectiebezoek voor de sterrenclassificatie?',
+    ogImageKey: 'articlePreparerVisiteClassement',
+    locale: 'nl',
+    routeId: 'preparerVisiteClassementArticle',
+  },
   '/en': {
     lastModified: '2026-07-10',
     title: 'Official classification of your furnished tourist accommodation',

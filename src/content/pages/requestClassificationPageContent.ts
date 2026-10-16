@@ -110,6 +110,15 @@ export const requestClassificationPageContent = {
       title: 'Wat gebeurt er daarna?',
       description: 'Samen bespreken we de inspectievoorwaarden, het tarief en de beschikbare data.',
     },
+    resources: [
+      {
+        title: 'Uw inspectiebezoek voorbereiden',
+        description:
+          'De uitrusting en aandachtspunten die u vóór de komst van de inspecteur kunt controleren.',
+        cta: 'Lees de gids',
+        href: '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
+      },
+    ],
     reassurance: {
       title: 'Waarom Etoilys?',
       items: [

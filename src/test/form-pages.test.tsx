@@ -59,11 +59,10 @@ describe('public form pages', () => {
         );
         expect(container.querySelector('a[href="/simulateur"]')).not.toBeInTheDocument();
       } else {
-        expect(
-          container.querySelector(
-            'a[href="/actualites/preparer-visite-classement-meuble-tourisme"]'
-          )
-        ).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /Lees de gids/i })).toHaveAttribute(
+          'href',
+          '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie'
+        );
         expect(container.querySelector('a[href="/simulateur"]')).not.toBeInTheDocument();
       }
       expect(

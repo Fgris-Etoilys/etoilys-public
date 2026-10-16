@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { ChevronDown } from 'lucide-react';
+import type { Locale } from '../../i18n/locales';
 import Card from './Card';
 
 export interface ArticleTableOfContentsItem {
@@ -12,8 +13,14 @@ type ArticleTableOfContentsVariant = 'desktop' | 'mobile';
 interface ArticleTableOfContentsProps {
   items: readonly ArticleTableOfContentsItem[];
   variant: ArticleTableOfContentsVariant;
-  locale?: 'fr' | 'en';
+  locale?: Locale;
 }
+
+const TABLE_OF_CONTENTS_LABELS = {
+  fr: { heading: 'Dans cet article', ariaLabel: 'Sommaire de l’article' },
+  en: { heading: 'In this article', ariaLabel: 'Article table of contents' },
+  nl: { heading: 'In dit artikel', ariaLabel: 'Inhoudsopgave van het artikel' },
+} as const satisfies Record<Locale, { heading: string; ariaLabel: string }>;
 
 function getHashId(): string | null {
   if (typeof window === 'undefined') {
@@ -51,8 +58,7 @@ export default function ArticleTableOfContents({
   );
   const mobileDetailsRef = useRef<HTMLDetailsElement>(null);
   const clickedSectionIdRef = useRef<string | null>(activeSectionId);
-  const heading = locale === 'en' ? 'In this article' : 'Dans cet article';
-  const ariaLabel = locale === 'en' ? 'Article table of contents' : 'Sommaire de l’article';
+  const { heading, ariaLabel } = TABLE_OF_CONTENTS_LABELS[locale];
 
   useEffect(() => {
     const handleHashChange = () => {

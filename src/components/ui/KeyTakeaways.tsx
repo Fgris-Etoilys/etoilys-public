@@ -1,5 +1,6 @@
 import { AlertTriangle } from 'lucide-react';
 import type { ReactNode } from 'react';
+import type { Locale } from '../../i18n/locales';
 import ResponsiveComparisonTable, {
   type ResponsiveComparisonColumn,
   type ResponsiveComparisonRow,
@@ -9,8 +10,14 @@ const MAX_ITEM_COUNT = 5;
 
 interface BaseKeyTakeawaysProps {
   className?: string;
-  locale?: 'fr' | 'en';
+  locale?: Locale;
 }
+
+const KEY_TAKEAWAYS_HEADINGS = {
+  fr: 'À retenir',
+  en: 'Key takeaways',
+  nl: 'Kort samengevat',
+} as const satisfies Record<Locale, string>;
 
 export interface KeyTakeawaysTextItem {
   id: string;
@@ -88,7 +95,7 @@ function BulletList({ items }: { items: readonly KeyTakeawaysTextItem[] }) {
 export default function KeyTakeaways(props: KeyTakeawaysProps) {
   const headingId = 'article-key-takeaways';
   const className = props.className ?? '';
-  const heading = props.locale === 'en' ? 'Key takeaways' : 'À retenir';
+  const heading = KEY_TAKEAWAYS_HEADINGS[props.locale ?? 'fr'];
 
   if (props.variant === 'comparison') {
     validateComparisonRows(props.rows);

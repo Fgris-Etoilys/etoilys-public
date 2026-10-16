@@ -6,6 +6,7 @@ import {
 import { getArticleAuthor, type ArticleAuthorId } from './articleAuthors';
 import { formatFrenchDate } from './dateFormatting';
 import { IMAGE_ALT_TEXT, type DescribedImageAssetKey } from './imageAltText';
+import type { Locale } from '../i18n/locales';
 
 export interface ActualiteArticle {
   slug: string;
@@ -33,7 +34,7 @@ export type ArticleCategory =
   | 'obligations'
   | 'guides-pratiques';
 
-export type ArticleLocale = 'fr' | 'en';
+export type ArticleLocale = Locale;
 
 export const ARTICLE_CATEGORY_LABELS: Record<ArticleCategory, string> = {
   classement: 'Classement',
@@ -93,17 +94,31 @@ const ENGLISH_ARTICLE_CATEGORY_LABELS: Record<ArticleCategory, string> = {
   'guides-pratiques': 'Practical guides',
 };
 
+const DUTCH_ARTICLE_CATEGORY_LABELS: Record<ArticleCategory, string> = {
+  classement: 'Classificatie',
+  fiscalite: 'Fiscaliteit',
+  reglementation: 'Regelgeving',
+  obligations: 'Verplichtingen',
+  'guides-pratiques': 'Praktische gidsen',
+};
+
+const ARTICLE_CATEGORY_LABELS_BY_LOCALE = {
+  fr: ARTICLE_CATEGORY_LABELS,
+  en: ENGLISH_ARTICLE_CATEGORY_LABELS,
+  nl: DUTCH_ARTICLE_CATEGORY_LABELS,
+} as const satisfies Record<ArticleLocale, Record<ArticleCategory, string>>;
+
 export function getArticleCategoryLabel(
   category: ArticleCategory,
   locale: ArticleLocale = 'fr'
 ): string {
-  return locale === 'en'
-    ? ENGLISH_ARTICLE_CATEGORY_LABELS[category]
-    : ARTICLE_CATEGORY_LABELS[category];
+  return ARTICLE_CATEGORY_LABELS_BY_LOCALE[locale][category];
 }
 
 export function formatReadingTime(minutes: number, locale: ArticleLocale = 'fr'): string {
-  return locale === 'en' ? `${minutes} min read` : `${minutes} min de lecture`;
+  if (locale === 'en') return `${minutes} min read`;
+  if (locale === 'nl') return `${minutes} min leestijd`;
+  return `${minutes} min de lecture`;
 }
 
 export function isArticleCategory(value: string | null): value is ArticleCategory {

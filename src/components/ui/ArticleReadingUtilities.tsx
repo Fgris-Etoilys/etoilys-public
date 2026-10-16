@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { ArrowUp } from 'lucide-react';
+import type { Locale } from '../../i18n/locales';
 import {
   ARTICLE_BACK_TO_TOP_SCROLL_THRESHOLD,
   calculateReadingProgress,
@@ -8,8 +9,14 @@ import {
 interface ArticleReadingUtilitiesProps {
   startRef: RefObject<HTMLElement | null>;
   endRef: RefObject<HTMLElement | null>;
-  locale?: 'fr' | 'en';
+  locale?: Locale;
 }
+
+const BACK_TO_TOP_LABELS = {
+  fr: 'Retour en haut de l’article',
+  en: 'Back to top of article',
+  nl: 'Terug naar het begin van het artikel',
+} as const satisfies Record<Locale, string>;
 
 function getDocumentTop(element: HTMLElement, scrollY: number): number {
   return element.getBoundingClientRect().top + scrollY;
@@ -154,7 +161,7 @@ export default function ArticleReadingUtilities({
 
       <button
         type="button"
-        aria-label={locale === 'en' ? 'Back to top of article' : 'Retour en haut de l’article'}
+        aria-label={BACK_TO_TOP_LABELS[locale]}
         aria-hidden={isBackToTopVisible ? undefined : 'true'}
         tabIndex={isBackToTopVisible ? 0 : -1}
         className={`ui-focus fixed bottom-[calc(var(--etoilys-cookie-banner-offset,0px)+5rem+env(safe-area-inset-bottom))] right-4 z-[50] inline-flex h-12 w-12 items-center justify-center rounded-full border border-ink/15 bg-surface text-ink shadow-[0_4px_16px_rgb(var(--color-ink)/0.08)] transition-[opacity,transform,background-color,border-color,color] duration-200 hover:bg-surface-hover motion-reduce:transition-none sm:right-6 xl:hidden ${

@@ -78,5 +78,6 @@ export const localizedRoutes: LocalizedRoutes = {
   preparerVisiteClassementArticle: {
     fr: '/actualites/preparer-visite-classement-meuble-tourisme',
     en: '/en/articles/prepare-holiday-rental-star-rating-inspection',
+    nl: '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
   },
 } as const;

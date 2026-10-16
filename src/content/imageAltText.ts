@@ -76,6 +76,7 @@ export const IMAGE_ALT_TEXT = {
   articlePreparerVisiteClassement: {
     en: 'Wooden table set with plates, glasses, a carafe and illustrated brochures, in front of a grey sofa and an open-plan kitchen',
     fr: 'Table en bois dressée avec assiettes, verres, carafe et brochures illustrées, devant un canapé gris et une cuisine ouverte',
+    nl: 'Houten tafel gedekt met borden, glazen, een karaf en geïllustreerde brochures, met een grijze bank en een open keuken op de achtergrond',
   },
   articleRipostVoyageurRefuseQuitter: {
     fr: 'Homme tenant un dossier « Procédure administrative » face à un homme debout sur le pas d’une porte à côté d’une valise, près d’une plaque « Meublé de tourisme »',

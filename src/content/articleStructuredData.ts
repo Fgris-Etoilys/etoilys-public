@@ -33,6 +33,17 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     authorId: 'florian-grisorio',
   },
   {
+    path: '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
+    headline:
+      'Hoe bereidt u uw vakantiewoning voor op het inspectiebezoek voor de sterrenclassificatie?',
+    description:
+      'Bereid uw vakantiewoning voor op het inspectiebezoek voor de sterrenclassificatie: 133 criteria, servies, uitrusting en een handige checklist.',
+    datePublished: '2026-07-19',
+    dateModified: '2026-07-19',
+    imageKey: 'articlePreparerVisiteClassement',
+    authorId: 'florian-grisorio',
+  },
+  {
     path: '/actualites/que-faire-apres-classement-meuble-tourisme',
     headline: 'Meublé de tourisme classé : que faire après la décision de classement ?',
     description:

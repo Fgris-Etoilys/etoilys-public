@@ -81,6 +81,18 @@ describe('ArticleSources', () => {
     expect(screen.getByRole('link', { name: /Document officiel 10/ })).toBeInTheDocument();
   });
 
+  it('renders Dutch source labels for singular, plural and external links', () => {
+    const { rerender } = render(<ArticleSources locale="nl" sources={makeSources(4)} />);
+
+    expect(screen.getByRole('heading', { name: 'Officiële bronnen' })).toBeInTheDocument();
+    expect(screen.getByText('Toon de andere bron')).toBeInTheDocument();
+    expect(screen.getByText('Verberg aanvullende bronnen')).toBeInTheDocument();
+    expect(screen.getAllByText('(Opent in een nieuw tabblad)')).toHaveLength(4);
+
+    rerender(<ArticleSources locale="nl" sources={makeSources(5)} />);
+    expect(screen.getByText('Toon nog 2 bronnen')).toBeInTheDocument();
+  });
+
   it('keeps external links secure and announces the new tab accessibly', () => {
     render(<ArticleSources sources={makeSources(1)} />);
 

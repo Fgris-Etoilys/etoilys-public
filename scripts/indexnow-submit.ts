@@ -266,6 +266,9 @@ function staticRoutesFromPage(filePath: string): string[] {
     'src/pages/actualites/PreparerVisiteClassementMeubleTourismeEn.tsx': [
       '/en/articles/prepare-holiday-rental-star-rating-inspection',
     ],
+    'src/pages/actualites/PreparerVisiteClassementMeubleTourismeNl.tsx': [
+      '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
+    ],
   };
 
   return pageRoutes[normalizedPath] ?? [];

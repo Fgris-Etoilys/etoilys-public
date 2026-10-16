@@ -53,6 +53,13 @@ describe('actualites article related articles', () => {
         (article) => article.href === '/en/articles/prepare-holiday-rental-star-rating-inspection'
       )
     ).toBe(false);
+    expect(
+      actualitesArticlesByRecency.some(
+        (article) =>
+          article.href ===
+          '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie'
+      )
+    ).toBe(false);
   });
 
   it('selects the featured list article from the most recent publication date only', () => {

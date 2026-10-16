@@ -1,8 +1,9 @@
 import type { ArticleAuthor } from '../../content/articleAuthors';
+import type { Locale } from '../../i18n/locales';
 
 interface ArticleAuthorBlockProps {
   author: ArticleAuthor;
-  locale?: 'fr' | 'en';
+  locale?: Locale;
 }
 
 export default function ArticleAuthorBlock({ author, locale = 'fr' }: ArticleAuthorBlockProps) {

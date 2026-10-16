@@ -578,6 +578,7 @@ describe('analytics', () => {
     trackPageView('/nl');
     trackPageView('/classement-meuble-tourisme-dordogne');
     trackPageView('/en/articles/prepare-holiday-rental-star-rating-inspection');
+    trackPageView('/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie');
     await flushAnalyticsImports();
 
     expect(posthogMock.capture).toHaveBeenCalledWith(
@@ -610,6 +611,15 @@ describe('analytics', () => {
         source_path: '/en/articles/prepare-holiday-rental-star-rating-inspection',
         page_type: 'article',
         event_locale: 'en',
+      })
+    );
+    expect(posthogMock.capture).toHaveBeenCalledWith(
+      '$pageview',
+      expect.objectContaining({
+        source_path:
+          '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
+        page_type: 'article',
+        event_locale: 'nl',
       })
     );
   });

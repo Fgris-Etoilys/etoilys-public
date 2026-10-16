@@ -1,3 +1,5 @@
+import type { Locale } from '../i18n/locales';
+
 const FRENCH_DATE_FORMATTER = new Intl.DateTimeFormat('fr-FR', {
   day: 'numeric',
   month: 'long',
@@ -12,7 +14,18 @@ const ENGLISH_DATE_FORMATTER = new Intl.DateTimeFormat('en-GB', {
   timeZone: 'UTC',
 });
 
-type ArticleDateLocale = 'fr' | 'en';
+const DUTCH_DATE_FORMATTER = new Intl.DateTimeFormat('nl-NL', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
+const ARTICLE_DATE_FORMATTERS = {
+  fr: FRENCH_DATE_FORMATTER,
+  en: ENGLISH_DATE_FORMATTER,
+  nl: DUTCH_DATE_FORMATTER,
+} as const satisfies Record<Locale, Intl.DateTimeFormat>;
 
 function parseIsoDate(isoDate: string): Date | null {
   const [year, month, day] = isoDate.split('-').map(Number);
@@ -28,11 +41,11 @@ export function formatFrenchDate(isoDate: string): string {
   return formatArticleDate(isoDate, 'fr');
 }
 
-export function formatArticleDate(isoDate: string, locale: ArticleDateLocale = 'fr'): string {
+export function formatArticleDate(isoDate: string, locale: Locale = 'fr'): string {
   const date = parseIsoDate(isoDate);
   if (date === null) {
     return isoDate;
   }
 
-  return locale === 'en' ? ENGLISH_DATE_FORMATTER.format(date) : FRENCH_DATE_FORMATTER.format(date);
+  return ARTICLE_DATE_FORMATTERS[locale].format(date);
 }

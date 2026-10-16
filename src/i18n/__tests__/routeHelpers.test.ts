@@ -68,6 +68,7 @@ const localizedRouteCases: Array<{
     routeId: 'preparerVisiteClassementArticle',
     fr: '/actualites/preparer-visite-classement-meuble-tourisme',
     en: '/en/articles/prepare-holiday-rental-star-rating-inspection',
+    nl: '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
   },
 ];
 
@@ -135,6 +136,12 @@ describe('i18n route helpers', () => {
         'fr'
       )
     ).toBe('/actualites/preparer-visite-classement-meuble-tourisme');
+    expect(
+      getLocalizedPathFromPathname(
+        '/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
+        'en'
+      )
+    ).toBe('/en/articles/prepare-holiday-rental-star-rating-inspection');
   });
 
   it('returns null for paths without localized MVP equivalents', () => {
@@ -178,6 +185,10 @@ describe('i18n route helpers', () => {
       {
         locale: 'en',
         href: 'https://www.etoilys.fr/en/articles/prepare-holiday-rental-star-rating-inspection',
+      },
+      {
+        locale: 'nl',
+        href: 'https://www.etoilys.fr/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
       },
     ]);
   });

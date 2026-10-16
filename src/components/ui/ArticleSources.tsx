@@ -1,5 +1,6 @@
 import { ChevronDown, ExternalLink } from 'lucide-react';
 import type { ReactNode } from 'react';
+import type { Locale } from '../../i18n/locales';
 
 const VISIBLE_SOURCE_COUNT = 3;
 
@@ -15,8 +16,41 @@ interface ArticleSourcesProps {
   sources: readonly ArticleSource[];
   description?: ReactNode;
   className?: string;
-  locale?: 'fr' | 'en';
+  locale?: Locale;
 }
+
+const ARTICLE_SOURCES_LABELS = {
+  fr: {
+    heading: 'Sources officielles',
+    externalLink: 'ouvre dans un nouvel onglet',
+    showOther: "Afficher l'autre source",
+    showMore: (count: number) => `Afficher les ${count} autres sources`,
+    hideMore: 'Masquer les sources supplémentaires',
+  },
+  en: {
+    heading: 'Official sources',
+    externalLink: 'Opens in a new tab',
+    showOther: 'Show the other source',
+    showMore: (count: number) => `Show ${count} more sources`,
+    hideMore: 'Hide additional sources',
+  },
+  nl: {
+    heading: 'Officiële bronnen',
+    externalLink: 'Opent in een nieuw tabblad',
+    showOther: 'Toon de andere bron',
+    showMore: (count: number) => `Toon nog ${count} bronnen`,
+    hideMore: 'Verberg aanvullende bronnen',
+  },
+} as const satisfies Record<
+  Locale,
+  {
+    heading: string;
+    externalLink: string;
+    showOther: string;
+    showMore: (count: number) => string;
+    hideMore: string;
+  }
+>;
 
 function SourceList({
   sources,
@@ -25,8 +59,10 @@ function SourceList({
 }: {
   sources: readonly ArticleSource[];
   startIndex?: number;
-  locale: 'fr' | 'en';
+  locale: Locale;
 }) {
+  const labels = ARTICLE_SOURCES_LABELS[locale];
+
   return (
     <ol className="space-y-3 text-sm text-muted" start={startIndex + 1}>
       {sources.map((source, index) => (
@@ -44,10 +80,7 @@ function SourceList({
             >
               <span className="min-w-0 break-words">{source.title}</span>
               <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-              <span className="sr-only">
-                {' '}
-                ({locale === 'en' ? 'Opens in a new tab' : 'ouvre dans un nouvel onglet'})
-              </span>
+              <span className="sr-only"> ({labels.externalLink})</span>
             </a>
             {source.detail && <p className="mt-1 leading-snug text-muted">{source.detail}</p>}
           </div>
@@ -71,16 +104,9 @@ export default function ArticleSources({
   const hiddenSources = sources.slice(VISIBLE_SOURCE_COUNT);
   const headingId = 'sources-officielles';
   const hiddenCount = hiddenSources.length;
-  const closedSummaryLabel =
-    locale === 'en'
-      ? hiddenCount === 1
-        ? 'Show the other source'
-        : `Show ${hiddenCount} more sources`
-      : hiddenCount === 1
-        ? "Afficher l'autre source"
-        : `Afficher les ${hiddenCount} autres sources`;
-  const openSummaryLabel =
-    locale === 'en' ? 'Hide additional sources' : 'Masquer les sources supplémentaires';
+  const labels = ARTICLE_SOURCES_LABELS[locale];
+  const closedSummaryLabel = hiddenCount === 1 ? labels.showOther : labels.showMore(hiddenCount);
+  const openSummaryLabel = labels.hideMore;
 
   return (
     <section
@@ -89,7 +115,7 @@ export default function ArticleSources({
       className={`mt-12 border-t border-ink/15 pt-8 ${className}`}
     >
       <h2 id={`${headingId}-title`} className="mb-3 text-h4">
-        {locale === 'en' ? 'Official sources' : 'Sources officielles'}
+        {labels.heading}
       </h2>
       {description && <div className="mb-4 text-sm text-muted">{description}</div>}
       <SourceList sources={visibleSources} locale={locale} />

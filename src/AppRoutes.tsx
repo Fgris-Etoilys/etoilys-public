@@ -38,6 +38,7 @@ import ArticleTransmissionDonneesPlateformesCommunes from './pages/actualites/Tr
 import ArticleQueFaireApresClassementMeubleTourisme from './pages/actualites/QueFaireApresClassementMeubleTourisme';
 import ArticlePreparerVisiteClassementMeubleTourisme from './pages/actualites/PreparerVisiteClassementMeubleTourisme';
 import ArticlePreparerVisiteClassementMeubleTourismeEn from './pages/actualites/PreparerVisiteClassementMeubleTourismeEn';
+import ArticlePreparerVisiteClassementMeubleTourismeNl from './pages/actualites/PreparerVisiteClassementMeubleTourismeNl';
 import ArticleVoyageurRefuseQuitterMeubleTourismeLoiRipost from './pages/actualites/VoyageurRefuseQuitterMeubleTourismeLoiRipost';
 import ArticlePlf2027MeublesTourisme from './pages/actualites/Plf2027MeublesTourisme';
 import Recrutement from './pages/Recrutement';
@@ -174,6 +175,10 @@ export default function AppRoutes() {
         <Route path="nl/contact" element={<Contact />} />
         <Route path="nl/classificatie-aanvragen" element={<DemandeClassement />} />
         <Route path="nl/privacybeleid" element={<Confidentialite />} />
+        <Route
+          path="nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie"
+          element={<ArticlePreparerVisiteClassementMeubleTourismeNl />}
+        />
         <Route path="en/tourist-tax-simulator" element={<SimulateurTaxeSejour />} />
         <Route
           path="en/furnished-tourist-accommodation-tax-simulator"

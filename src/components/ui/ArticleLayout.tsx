@@ -47,6 +47,12 @@ const ARTICLE_LAYOUT_LABELS = {
     published: 'Published on',
     updated: 'Updated on',
   },
+  nl: {
+    backHref: '/nl',
+    backLabel: 'Terug naar de startpagina',
+    published: 'Gepubliceerd op',
+    updated: 'Bijgewerkt op',
+  },
 } as const satisfies Record<
   ArticleLocale,
   { backHref: string; backLabel: string; published: string; updated: string }

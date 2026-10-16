@@ -21,6 +21,16 @@ const englishArticle = {
   publishedAt: '2026-07-19',
 } satisfies ArticleLayoutArticle;
 
+const dutchArticle = {
+  ...englishArticle,
+  slug: 'nederlands-artikel',
+  title: 'Nederlands artikel',
+  excerpt: 'Nederlandse samenvatting',
+  relatedSummary: 'Nederlandse gerelateerde samenvatting',
+  href: '/nl/artikelen/nederlands-artikel',
+  readingTimeMinutes: 10,
+} satisfies ArticleLayoutArticle;
+
 describe('English article shell', () => {
   afterEach(() => {
     cleanup();
@@ -90,5 +100,84 @@ describe('English article shell', () => {
       'President of Etoilys, a Cofrac-accredited inspection body for the classification of furnished tourist accommodation.'
     );
     expect(screen.getByRole('heading', { level: 2, name: 'Florian Grisorio' })).toBeInTheDocument();
+  });
+});
+
+describe('Dutch article shell', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('localizes layout metadata, navigation, category, date and reading time', () => {
+    render(
+      <MemoryRouter>
+        <ArticleLayout
+          article={{ ...dutchArticle, updatedAt: '2026-07-20' }}
+          locale="nl"
+          lede={<p>Nederlandse inleiding</p>}
+          keyTakeaways={<p>Nederlandse kernpunten</p>}
+          tableOfContents={[
+            { id: 'een', label: 'Een' },
+            { id: 'twee', label: 'Twee' },
+            { id: 'drie', label: 'Drie' },
+            { id: 'vier', label: 'Vier' },
+            { id: 'vijf', label: 'Vijf' },
+          ]}
+        >
+          <h2 id="een">Een</h2>
+        </ArticleLayout>
+      </MemoryRouter>
+    );
+
+    expect(screen.getByRole('link', { name: 'Terug naar de startpagina' })).toHaveAttribute(
+      'href',
+      '/nl'
+    );
+    expect(screen.getByText('Praktische gidsen')).toBeInTheDocument();
+    expect(screen.getByText('Gepubliceerd op 19 juli 2026')).toBeInTheDocument();
+    expect(screen.getByText('Bijgewerkt op 20 juli 2026')).toBeInTheDocument();
+    expect(screen.getByText('10 min leestijd')).toBeInTheDocument();
+    expect(
+      screen.getAllByRole('navigation', { name: 'Inhoudsopgave van het artikel' })
+    ).toHaveLength(2);
+    expect(screen.getAllByText('In dit artikel')).toHaveLength(2);
+  });
+
+  it('localizes takeaways, sources, external links and the existing author identity', () => {
+    const author = getArticleAuthor('florian-grisorio');
+    const { container } = render(
+      <>
+        <KeyTakeaways
+          locale="nl"
+          variant="bullets"
+          items={[{ id: 'een', content: 'Een praktisch punt.' }]}
+        />
+        <ArticleSources
+          locale="nl"
+          sources={Array.from({ length: 4 }, (_, index) => ({
+            id: `bron-${index}`,
+            organization: 'Atout France',
+            title: `Bron ${index + 1}`,
+            url: `https://example.com/${index + 1}`,
+          }))}
+        />
+        <ArticleAuthorBlock author={author} locale="nl" />
+      </>
+    );
+
+    expect(screen.getByRole('heading', { level: 2, name: 'Kort samengevat' })).toBeInTheDocument();
+    const sources = screen
+      .getByRole('heading', { level: 2, name: 'Officiële bronnen' })
+      .closest('section');
+    expect(within(sources as HTMLElement).getByText('Toon de andere bron')).toBeInTheDocument();
+    expect(
+      within(sources as HTMLElement).getByText('Verberg aanvullende bronnen')
+    ).toBeInTheDocument();
+    expect(
+      within(sources as HTMLElement).getAllByText('(Opent in een nieuw tabblad)')
+    ).toHaveLength(4);
+    expect(container).toHaveTextContent(
+      'Bestuurder van Etoilys, een door Cofrac geaccrediteerde inspectie-instelling voor de classificatie van vakantiewoningen.'
+    );
   });
 });

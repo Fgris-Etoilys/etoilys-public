@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { StrictMode, useRef } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ArticleReadingUtilities from './ArticleReadingUtilities';
+import type { Locale } from '../../i18n/locales';
 import {
   ARTICLE_BACK_TO_TOP_SCROLL_THRESHOLD,
   calculateReadingProgress,
@@ -74,7 +75,7 @@ function setDocumentBounds(element: Element, top: number, bottom: number) {
   }));
 }
 
-function ReadingUtilitiesFixture({ locale = 'fr' }: { locale?: 'fr' | 'en' }) {
+function ReadingUtilitiesFixture({ locale = 'fr' }: { locale?: Locale }) {
   const startRef = useRef<HTMLHeadingElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -102,7 +103,7 @@ function renderMeasuredUtilities({
   viewportHeight?: number;
   startY?: number;
   endY?: number;
-  locale?: 'fr' | 'en';
+  locale?: Locale;
 } = {}) {
   setViewport(scrollY, viewportHeight);
   const result = render(<ReadingUtilitiesFixture locale={locale} />);
@@ -254,6 +255,17 @@ describe('ArticleReadingUtilities', () => {
     });
 
     expect(screen.getByRole('button', { name: 'Back to top of article' })).toBeInTheDocument();
+  });
+
+  it('localizes the back-to-top accessible label in Dutch', () => {
+    renderMeasuredUtilities({
+      scrollY: ARTICLE_BACK_TO_TOP_SCROLL_THRESHOLD,
+      locale: 'nl',
+    });
+
+    expect(
+      screen.getByRole('button', { name: 'Terug naar het begin van het artikel' })
+    ).toBeInTheDocument();
   });
 
   it('hides the back-to-top button when the measured editorial end enters the viewport', () => {

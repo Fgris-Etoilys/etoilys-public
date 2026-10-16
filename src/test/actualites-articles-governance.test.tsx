@@ -37,6 +37,15 @@ describe('actualites article governance', () => {
     });
   });
 
+  it('localizes every article category and reading time in Dutch', () => {
+    expect(getArticleCategoryLabel('classement', 'nl')).toBe('Classificatie');
+    expect(getArticleCategoryLabel('fiscalite', 'nl')).toBe('Fiscaliteit');
+    expect(getArticleCategoryLabel('reglementation', 'nl')).toBe('Regelgeving');
+    expect(getArticleCategoryLabel('obligations', 'nl')).toBe('Verplichtingen');
+    expect(getArticleCategoryLabel('guides-pratiques', 'nl')).toBe('Praktische gidsen');
+    expect(formatReadingTime(10, 'nl')).toBe('10 min leestijd');
+  });
+
   it('renders one H1 per active article page through the shared layout', () => {
     actualitesArticlesByRecency.forEach((article) => {
       const { unmount } = renderAt(article.href);

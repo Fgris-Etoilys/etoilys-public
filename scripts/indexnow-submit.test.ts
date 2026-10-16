@@ -101,6 +101,16 @@ describe('indexnow-submit helpers', () => {
     ]);
   });
 
+  it('maps the standalone Dutch article without treating it as a French listing update', () => {
+    const changedFiles = parseChangedFileEntries(
+      'A\tsrc/pages/actualites/PreparerVisiteClassementMeubleTourismeNl.tsx'
+    );
+
+    expect(dedupeAndValidateUrls(getUrlsForChangedFiles(changedFiles))).toEqual([
+      'https://www.etoilys.fr/nl/artikelen/vakantiewoning-voorbereiden-inspectiebezoek-sterrenclassificatie',
+    ]);
+  });
+
   it('maps local V6 content changes to every local public route', () => {
     const changedFiles = parseChangedFileEntries(
       [
