@@ -27,8 +27,8 @@ import {
   type FactuelleGridTarget,
   type FactuelleSource,
 } from '../../../utils/factuelleGrille';
-import type { GlobalPayload } from '../../../utils/factuelleGlobaux';
-import { getSimulatorApiErrorMessage } from '../../../utils/simulatorApi';
+import { mapGlobalFieldErrors, type GlobalPayload } from '../../../utils/factuelleGlobaux';
+import { getSimulatorApiErrorMessage, SimulatorApiError } from '../../../utils/simulatorApi';
 import {
   answerCriterion,
   saveGlobalBlock,
@@ -123,6 +123,7 @@ export default function FactuelleGridTab({
   const [onlyMissing, setOnlyMissing] = useState(false);
   const [modal, setModal] = useState<GlobalModalState | null>(null);
   const [modalMessage, setModalMessage] = useState<FactuelleModalMessage | null>(null);
+  const [modalErrors, setModalErrors] = useState<Record<string, string>>({});
   const [focusCriterion, setFocusCriterion] = useState<{ numero: number; nonce: number } | null>(
     null
   );
@@ -154,6 +155,7 @@ export default function FactuelleGridTab({
   function openGlobal(bloc: BlocGlobal, numero: number, champ: string | null) {
     modalKeyRef.current += 1;
     setModalMessage(null);
+    setModalErrors({});
     setModal({ key: modalKeyRef.current, bloc, numero, champ });
   }
 
@@ -246,6 +248,7 @@ export default function FactuelleGridTab({
 
   async function saveGlobal(built: GlobalPayload) {
     setModalMessage(null);
+    setModalErrors({});
     const outcome = await factuelle.mutate({ kind: 'global', bloc: built.bloc }, (id) =>
       saveGlobalBlock(id, built.bloc, built.payload)
     );
@@ -261,6 +264,9 @@ export default function FactuelleGridTab({
           tone: 'error',
           text: getSimulatorApiErrorMessage(outcome.error, GLOBAL_FALLBACK),
         });
+        if (outcome.error instanceof SimulatorApiError) {
+          setModalErrors(mapGlobalFieldErrors(built, outcome.error.fieldErrors));
+        }
         return;
       case 'uncertain':
         onFactsChanged();
@@ -278,6 +284,7 @@ export default function FactuelleGridTab({
     if (pending?.kind === 'global') return;
     setModal(null);
     setModalMessage(null);
+    setModalErrors({});
   }
 
   function openCriterionHelp(numero: number, status: string | undefined) {
@@ -552,6 +559,7 @@ export default function FactuelleGridTab({
           saving={pending?.kind === 'global'}
           submitBlocked={locked}
           message={modalMessage}
+          serverErrors={modalErrors}
           needsRefresh={factuelle.needsRefresh}
           isRefreshing={factuelle.isRefreshing}
           helpOpen={help !== null}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BookOpen, Loader2 } from 'lucide-react';
 import SimulatorDialog from '../SimulatorDialog';
 import type { FactuelleModalMessage } from './FactuellePieceModal';
@@ -54,6 +54,8 @@ interface FactuelleGlobalDialogProps {
   saving: boolean;
   submitBlocked: boolean;
   message: FactuelleModalMessage | null;
+  /** `fieldErrors` d'un refus backend, rattachés aux champs de la modale. */
+  serverErrors: Record<string, string>;
   needsRefresh: boolean;
   isRefreshing: boolean;
   helpOpen: boolean;
@@ -93,6 +95,7 @@ export default function FactuelleGlobalDialog({
   saving,
   submitBlocked,
   message,
+  serverErrors,
   needsRefresh,
   isRefreshing,
   helpOpen,
@@ -105,10 +108,13 @@ export default function FactuelleGlobalDialog({
   // Corps des faits enregistrés à l'ouverture : une sauvegarde identique n'envoie rien.
   const [initial] = useState(() => buildGlobalPayload(createGlobalDraft(bloc, globaux), catalogue));
   const [highlights] = useState(() => buildHighlights(needs, champ));
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [attempted, setAttempted] = useState(false);
   const [focusRequest, setFocusRequest] = useState<{ field: string; nonce: number } | null>(() =>
     champ ? { field: champ, nonce: 0 } : null
   );
+  const built = useMemo(() => buildGlobalPayload(draft, catalogue), [draft, catalogue]);
+  // Après une première tentative, les erreurs de structure suivent la saisie (parité fenêtre Pièce).
+  const errors = { ...serverErrors, ...(attempted && !built.ok ? built.errors : {}) };
   const disabled = saving;
 
   useEffect(() => {
@@ -130,18 +136,24 @@ export default function FactuelleGlobalDialog({
       ?.focus({ preventScroll: true });
   }, [focusRequest]);
 
+  useEffect(() => {
+    const first = Object.keys(serverErrors)[0];
+    if (!first) return;
+    setFocusRequest((current) => ({ field: first, nonce: (current?.nonce ?? 0) + 1 }));
+  }, [serverErrors]);
+
+  function requestFocus(field: string) {
+    setFocusRequest((current) => ({ field, nonce: (current?.nonce ?? 0) + 1 }));
+  }
+
   function submit() {
     if (saving || submitBlocked) return;
-    const built = buildGlobalPayload(draft, catalogue);
+    setAttempted(true);
     if (!built.ok) {
-      setErrors(built.errors);
       const first = Object.keys(built.errors)[0];
-      if (first) {
-        setFocusRequest((current) => ({ field: first, nonce: (current?.nonce ?? 0) + 1 }));
-      }
+      if (first) requestFocus(first);
       return;
     }
-    setErrors({});
     if (isGlobalSaveNoop(built, initial, globaux, capacity)) {
       onClose();
       return;
@@ -149,7 +161,7 @@ export default function FactuelleGlobalDialog({
     onSubmit(built);
   }
 
-  const common = { disabled, highlights };
+  const common = { disabled, highlights, errors };
   const inventory =
     draft.bloc === 'c63' || draft.bloc === 'c64' || draft.bloc === 'c65'
       ? inventaireCatalogue(catalogue, draft.bloc)
@@ -227,7 +239,6 @@ export default function FactuelleGlobalDialog({
         <CuissonForm
           value={draft.value}
           catalogue={catalogue}
-          errors={errors}
           onChange={(value) => setDraft({ bloc: 'cuisson', value })}
           {...common}
         />

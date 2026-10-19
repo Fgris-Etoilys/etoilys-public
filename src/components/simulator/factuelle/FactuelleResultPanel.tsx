@@ -8,6 +8,7 @@ import type { FactuelleSnapshot } from '../../../hooks/useFactuelleSimulation';
 import type { FactuelleResultState } from '../../../hooks/useFactuelleResult';
 import { getFactuellePieceName } from '../../../utils/factuellePieces';
 import {
+  criterionSource,
   formatCategoriesLabel,
   formatCategory,
   resolveFactuelleSource,
@@ -20,6 +21,7 @@ import {
   usefulCategories,
   type CritereNonValide,
 } from '../../../utils/factuelleResultats';
+import type { EvaluationFactuelle } from '../../../utils/simulatorFactuelle.types';
 import type {
   BlocageFactuel,
   ComparaisonCategorie,
@@ -48,6 +50,14 @@ const PARAMETER_LABELS: Record<string, string> = {
 };
 
 const VISIBLE_CRITERIA = 5;
+
+/** Libellé de l'accès à la source d'un critère non validé, selon sa destination. */
+const SOURCE_LABELS: Record<FactuelleSource['kind'], string> = {
+  critere: 'Voir dans la grille',
+  global: 'Voir dans la grille',
+  piece: 'Voir dans les pièces',
+  parametre: 'Voir les paramètres',
+};
 
 function formatPoints(points: number): string {
   return `${points} ${points > 1 ? 'points' : 'point'}`;
@@ -284,52 +294,64 @@ function CategorySelectors({
 function InvalidCriteria({
   title,
   criteria,
+  evaluation,
   onShowCriteria,
+  onOpenSource,
 }: {
   title: string;
   criteria: CritereNonValide[];
+  evaluation: EvaluationFactuelle | null;
   onShowCriteria: (numbers: number[]) => void;
+  onOpenSource: (source: FactuelleSource) => void;
 }) {
   return (
     <div className="classement-result-diagnostic">
       <h4 className="text-lg font-semibold text-ink">{title}</h4>
       <div className="mt-5 divide-y divide-ink/10">
-        {criteria.map((criterion) => (
-          <div
-            key={criterion.numero}
-            className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between"
-          >
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold uppercase tracking-wide text-copper">
-                Critère {criterion.numero}
-                {criterion.nonCompensable && (
-                  <span className="ml-2 normal-case tracking-normal text-alert-500">
-                    · Non compensable
-                  </span>
-                )}
-              </p>
-              <p className="mt-1 text-sm font-medium leading-snug text-gray-900">
-                {criterion.libelle}
-              </p>
+        {criteria.map((criterion) => {
+          // Automatique : ses faits, même connus et quelle que soit la catégorie consultée.
+          const source = criterionSource(criterion.numero, evaluation);
+          return (
+            <div
+              key={criterion.numero}
+              className="flex flex-col gap-3 py-4 first:pt-0 last:pb-0 lg:flex-row lg:items-center lg:justify-between"
+            >
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold uppercase tracking-wide text-copper">
+                  Critère {criterion.numero}
+                  {criterion.nonCompensable && (
+                    <span className="ml-2 normal-case tracking-normal text-alert-500">
+                      · Non compensable
+                    </span>
+                  )}
+                </p>
+                <p className="mt-1 text-sm font-medium leading-snug text-gray-900">
+                  {criterion.libelle}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-3 lg:shrink-0">
+                <span className="text-sm font-medium text-muted">
+                  {criterion.points === undefined
+                    ? 'Points non disponibles'
+                    : formatPoints(criterion.points)}
+                </span>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="min-h-11 whitespace-nowrap"
+                  onClick={() =>
+                    source.kind === 'critere'
+                      ? onShowCriteria([criterion.numero])
+                      : onOpenSource(source)
+                  }
+                >
+                  {SOURCE_LABELS[source.kind]}
+                </Button>
+              </div>
             </div>
-            <div className="flex flex-wrap items-center justify-between gap-3 lg:shrink-0">
-              <span className="text-sm font-medium text-muted">
-                {criterion.points === undefined
-                  ? 'Points non disponibles'
-                  : formatPoints(criterion.points)}
-              </span>
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                className="min-h-11 whitespace-nowrap"
-                onClick={() => onShowCriteria([criterion.numero])}
-              >
-                Voir dans la grille
-              </Button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -338,14 +360,18 @@ function InvalidCriteria({
 /** Détail en lecture seule de la catégorie consultée : points, compensation et critères non validés. */
 function CategoryDetail({
   entry,
+  evaluation,
   onExportPdf,
   onShowCriteria,
+  onOpenSource,
   onReturnToPieces,
   onReturnToGrid,
 }: {
   entry: ComparaisonCategorie;
+  evaluation: EvaluationFactuelle | null;
   onExportPdf: (entry: ComparaisonCategorie) => void;
   onShowCriteria: (numbers: number[]) => void;
+  onOpenSource: (source: FactuelleSource) => void;
   onReturnToPieces: () => void;
   onReturnToGrid: () => void;
 }) {
@@ -424,14 +450,18 @@ function CategoryDetail({
         <InvalidCriteria
           title="Critères obligatoires non validés"
           criteria={invalid.obligatoires}
+          evaluation={evaluation}
           onShowCriteria={onShowCriteria}
+          onOpenSource={onOpenSource}
         />
       )}
       {!rapport.points_optionnels_atteints && invalid.aLaCarte.length > 0 && (
         <InvalidCriteria
           title="Critères à la carte non validés"
           criteria={invalid.aLaCarte}
+          evaluation={evaluation}
           onShowCriteria={onShowCriteria}
+          onOpenSource={onOpenSource}
         />
       )}
 
@@ -459,14 +489,18 @@ function CategoryDetail({
 
 function ComparaisonPanel({
   comparaison,
+  evaluation,
   onExportPdf,
   onShowCriteria,
+  onOpenSource,
   onReturnToPieces,
   onReturnToGrid,
 }: {
   comparaison: ComparaisonFactuelle;
+  evaluation: EvaluationFactuelle | null;
   onExportPdf: (entry: ComparaisonCategorie) => void;
   onShowCriteria: (numbers: number[]) => void;
+  onOpenSource: (source: FactuelleSource) => void;
   onReturnToPieces: () => void;
   onReturnToGrid: () => void;
 }) {
@@ -494,8 +528,10 @@ function ComparaisonPanel({
       {entry && (
         <CategoryDetail
           entry={entry}
+          evaluation={evaluation}
           onExportPdf={onExportPdf}
           onShowCriteria={onShowCriteria}
+          onOpenSource={onOpenSource}
           onReturnToPieces={onReturnToPieces}
           onReturnToGrid={onReturnToGrid}
         />
@@ -548,8 +584,10 @@ export default function FactuelleResultPanel({
       ) : (
         <ComparaisonPanel
           comparaison={result.comparaison}
+          evaluation={snapshot.evaluation}
           onExportPdf={onExportPdf}
           onShowCriteria={onShowCriteria}
+          onOpenSource={onOpenSource}
           onReturnToPieces={onReturnToPieces}
           onReturnToGrid={onReturnToGrid}
         />

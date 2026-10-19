@@ -100,6 +100,34 @@ describe('useFactuelleSimulation', () => {
     expect(result.current.snapshot?.faits.logement.pieces).toHaveLength(2);
   });
 
+  it('signale sans attendre de rendu une écriture ou une relecture en cours', async () => {
+    mockReads();
+    const { result } = await renderLoaded();
+    const write = deferred<ReturnType<typeof parseMutationFaits>>();
+    expect(result.current.isBusy()).toBe(false);
+
+    let mutation: Promise<unknown> | undefined;
+    act(() => {
+      mutation = result.current.mutate({ kind: 'create' }, () => write.promise);
+    });
+    expect(result.current.isBusy()).toBe(true);
+    await act(async () => {
+      write.resolve(parseMutationFaits(mutationResponse([chambre])));
+      await mutation;
+    });
+    expect(result.current.isBusy()).toBe(false);
+
+    let refresh: Promise<unknown> | undefined;
+    act(() => {
+      refresh = result.current.refresh();
+    });
+    expect(result.current.isBusy()).toBe(true);
+    await act(async () => {
+      await refresh;
+    });
+    expect(result.current.isBusy()).toBe(false);
+  });
+
   it('ne relit rien après un refus certain du backend', async () => {
     const fetchMock = mockReads();
     const { result } = await renderLoaded();

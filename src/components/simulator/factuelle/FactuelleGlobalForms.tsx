@@ -35,10 +35,16 @@ interface FormProps<T> {
   onChange: (value: T) => void;
   disabled: boolean;
   highlights: FieldHighlights;
+  /** Erreurs locales (structure incomplète) et `fieldErrors` backend, par champ de la modale. */
+  errors: Record<string, string>;
 }
 
 function highlightOf(highlights: FieldHighlights, field: string) {
   return highlights[field];
+}
+
+function FieldErrorText({ message }: { message: string | undefined }) {
+  return message ? <p className="factuelle-error">{message}</p> : null;
 }
 
 export function CommunForm({
@@ -47,6 +53,7 @@ export function CommunForm({
   onChange,
   disabled,
   highlights,
+  errors,
 }: FormProps<EquipementCommunFaits> & { bloc: 'c18' | 'c19' }) {
   const labelId = useId();
   const label = bloc === 'c18' ? 'Lave-linge' : 'Sèche-linge';
@@ -64,6 +71,7 @@ export function CommunForm({
         value={communChoice(value) ?? ''}
         options={COMMUN_CHOICES}
         disabled={disabled}
+        invalid={Boolean(errors[bloc])}
         clearLabel={label}
         onChange={(next) =>
           onChange(
@@ -71,6 +79,7 @@ export function CommunForm({
           )
         }
       />
+      <FieldErrorText message={errors[bloc]} />
     </div>
   );
 }
@@ -84,6 +93,7 @@ function AssisesFields({
   labels,
   disabled,
   highlights,
+  errors,
   onAppreciation,
   onPrecision,
 }: {
@@ -94,6 +104,7 @@ function AssisesFields({
   labels: { appreciation: string; precision: string };
   disabled: boolean;
   highlights: FieldHighlights;
+  errors: Record<string, string>;
   onAppreciation: (value: boolean | null) => void;
   onPrecision: (value: boolean | null) => void;
 }) {
@@ -105,6 +116,7 @@ function AssisesFields({
         value={appreciation}
         disabled={disabled}
         highlights={highlights}
+        error={errors[`${bloc}.appreciation_commune`]}
         onChange={onAppreciation}
       />
       {appreciation !== false && (
@@ -114,6 +126,7 @@ function AssisesFields({
           value={precision}
           disabled={disabled}
           highlights={highlights}
+          error={errors[`${bloc}.${precisionField}`]}
           onChange={onPrecision}
         />
       )}
@@ -126,6 +139,7 @@ export function TableAssisesForm({
   onChange,
   disabled,
   highlights,
+  errors,
 }: FormProps<AssisesTableFaits>) {
   return (
     <AssisesFields
@@ -140,6 +154,7 @@ export function TableAssisesForm({
       }}
       disabled={disabled}
       highlights={highlights}
+      errors={errors}
       onAppreciation={(appreciation_commune) => onChange({ ...value, appreciation_commune })}
       onPrecision={(besoin_assises_sans_dossier) =>
         onChange({ ...value, besoin_assises_sans_dossier })
@@ -153,6 +168,7 @@ export function SalonAssisesForm({
   onChange,
   disabled,
   highlights,
+  errors,
 }: FormProps<AssisesSalonFaits>) {
   return (
     <AssisesFields
@@ -166,6 +182,7 @@ export function SalonAssisesForm({
       }}
       disabled={disabled}
       highlights={highlights}
+      errors={errors}
       onAppreciation={(appreciation_commune) => onChange({ ...value, appreciation_commune })}
       onPrecision={(assises_uniquement_convertibles) =>
         onChange({ ...value, assises_uniquement_convertibles })
@@ -184,6 +201,7 @@ export function LivretAccueilForm({
   onChange,
   disabled,
   highlights,
+  errors,
 }: FormProps<LivretAccueilFaits>) {
   const labelId = useId();
   return (
@@ -200,6 +218,7 @@ export function LivretAccueilForm({
         value={value.situation ?? ''}
         options={LIVRET_OPTIONS}
         disabled={disabled}
+        invalid={Boolean(errors['c101.situation'])}
         clearLabel="Livret d’accueil"
         onChange={(next) =>
           onChange({
@@ -210,6 +229,7 @@ export function LivretAccueilForm({
           })
         }
       />
+      <FieldErrorText message={errors['c101.situation']} />
     </div>
   );
 }
@@ -223,7 +243,7 @@ export function CuissonForm({
   highlights,
   catalogue,
   errors,
-}: FormProps<CuissonDraft> & { catalogue: CatalogueFaits; errors: Record<string, string> }) {
+}: FormProps<CuissonDraft> & { catalogue: CatalogueFaits }) {
   // Ligne neutre affichée tant qu'aucune plaque n'est saisie : elle ne devient réelle qu'au choix d'un type.
   const [placeholderId] = useState(() => emptyCuissonLine().id);
   const { presence, lignes } = value;
@@ -338,6 +358,7 @@ export function CuissonForm({
           Ajouter une plaque
         </button>
       )}
+      <FieldErrorText message={errors.cuisson} />
     </div>
   );
 }
@@ -348,6 +369,7 @@ export function FourForm({
   disabled,
   highlights,
   catalogue,
+  errors,
 }: FormProps<FourMicroOndesFaits> & { catalogue: CatalogueFaits }) {
   const configurationId = useId();
   const choiceId = useId();
@@ -369,6 +391,7 @@ export function FourForm({
             label: CONFIGURATION_FOUR_LABELS[configuration],
           }))}
           disabled={disabled}
+          invalid={Boolean(errors['four_micro_ondes.configuration'])}
           clearLabel="Équipements"
           onChange={(next) => {
             const configuration =
@@ -378,6 +401,7 @@ export function FourForm({
             }
           }}
         />
+        <FieldErrorText message={errors['four_micro_ondes.configuration']} />
       </div>
       {value.configuration === 'COMBINE_SEUL' && (
         <div
@@ -397,6 +421,7 @@ export function FourForm({
               { value: 'MICRO_ONDES', label: 'Micro-ondes' },
             ]}
             disabled={disabled}
+            invalid={Boolean(errors['four_micro_ondes.choix_combine'])}
             clearLabel="Équipement retenu"
             onChange={(next) =>
               onChange({
@@ -405,6 +430,7 @@ export function FourForm({
               })
             }
           />
+          <FieldErrorText message={errors['four_micro_ondes.choix_combine']} />
         </div>
       )}
     </div>
@@ -422,6 +448,7 @@ export function ChauffageForm({
   disabled,
   highlights,
   catalogue,
+  errors,
 }: FormProps<ChauffageFaits> & { catalogue: CatalogueFaits }) {
   const negative = value.etat === 'AUCUN' || value.etat === 'MOBILES_UNIQUEMENT';
   return (
@@ -468,6 +495,7 @@ export function ChauffageForm({
             {option.label}
           </CheckRow>
         ))}
+        <FieldErrorText message={errors.chauffage} />
       </div>
       {!negative && value.types.includes('AUTRE') && (
         <TextField
@@ -476,6 +504,7 @@ export function ChauffageForm({
           value={value.autre ?? ''}
           maxLength={255}
           disabled={disabled}
+          error={errors['chauffage.autre']}
           onChange={(autre) => onChange({ ...value, autre })}
         />
       )}
@@ -489,6 +518,7 @@ export function MesuresForm({
   onChange,
   disabled,
   highlights,
+  errors,
   options,
 }: FormProps<MesuresDraft> & {
   field: 'mesures_energie' | 'mesures_eau';
@@ -543,6 +573,7 @@ export function MesuresForm({
                   value={text}
                   maxLength={255}
                   disabled={disabled}
+                  error={errors[`${field}.autres.${index}`]}
                   onChange={(next) =>
                     onChange({
                       ...value,
@@ -593,6 +624,7 @@ export function MesuresForm({
       >
         Aucune mesure
       </CheckRow>
+      <FieldErrorText message={errors[field]} />
     </div>
   );
 }
@@ -603,6 +635,7 @@ export function InventaireForm({
   onChange,
   disabled,
   highlights,
+  errors,
   inventaire,
 }: FormProps<Record<string, boolean>> & {
   field: 'c63' | 'c64' | 'c65';
@@ -629,6 +662,7 @@ export function InventaireForm({
           ))}
         </section>
       ))}
+      <FieldErrorText message={errors[field]} />
     </div>
   );
 }

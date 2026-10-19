@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { GridCriterion } from '../../content/simulatorGrid';
 import { besoin, critere, evaluationResponse } from '../../test/factuelleFixtures';
 import {
+  criterionSource,
   factuelleCriterionState,
   missingCriterionNumbers,
   resolveFactuelleSource,
@@ -133,6 +134,67 @@ describe('Grille FACTUELLE — navigation exacte', () => {
     ).toEqual({
       kind: 'piece',
       target: { piece_id: null, champ: 'sanitaires', num_critere: 44, section: 'sanitaires' },
+    });
+  });
+
+  it('mène un automatique non validé à ses faits déjà connus, sans choisir parmi plusieurs pièces', () => {
+    const known = (champ: string, piece_id: string | null, num_critere: number) =>
+      besoin({ champ, piece_id, num_critere, manquant: false });
+    const evaluation = parseEvaluationFactuelle(
+      evaluationResponse({
+        criteres: [
+          critere(69),
+          critere(101, { automatique: true, statut_validation: 'NON_VALIDE' }),
+          critere(37, { automatique: true }),
+          critere(41, { automatique: true }),
+          critere(120, { automatique: true }),
+        ],
+        besoins: [
+          known('c101.situation', null, 101),
+          known('inspection.occultation', 'p1', 37),
+          known('inspection.prise', 'p1', 41),
+          known('inspection.prise', 'p2', 41),
+        ],
+      })
+    );
+
+    // Manuel : la réponse se donne dans la Grille.
+    expect(criterionSource(69, evaluation)).toEqual({ kind: 'critere', numero: 69 });
+    // Bloc global : sa modale, sans champ manquant à cibler.
+    expect(criterionSource(101, evaluation)).toEqual({
+      kind: 'global',
+      bloc: 'c101',
+      numero: 101,
+      champ: null,
+    });
+    // Une seule pièce : sa fenêtre, sur le fait connu.
+    expect(criterionSource(37, evaluation)).toEqual({
+      kind: 'piece',
+      target: { piece_id: 'p1', champ: 'inspection.occultation', num_critere: 37 },
+    });
+    // Plusieurs pièces : la section de la première, sans ouvrir de fenêtre.
+    expect(criterionSource(41, evaluation)).toEqual({
+      kind: 'piece',
+      target: { piece_id: 'p1', champ: 'inspection.prise', num_critere: 41, cardOnly: true },
+    });
+    // Automatique sans besoin : la carte du critère, faute de source connue.
+    expect(criterionSource(120, evaluation)).toEqual({ kind: 'critere', numero: 120 });
+    expect(criterionSource(37, null)).toEqual({ kind: 'critere', numero: 37 });
+  });
+
+  it('cible d’abord la pièce dont un fait manque encore', () => {
+    const evaluation = parseEvaluationFactuelle(
+      evaluationResponse({
+        criteres: [critere(41, { automatique: true })],
+        besoins: [
+          besoin({ champ: 'inspection.prise', piece_id: 'p1', num_critere: 41, manquant: false }),
+          besoin({ champ: 'inspection.prise', piece_id: 'p2', num_critere: 41 }),
+        ],
+      })
+    );
+    expect(criterionSource(41, evaluation)).toEqual({
+      kind: 'piece',
+      target: { piece_id: 'p2', champ: 'inspection.prise', num_critere: 41 },
     });
   });
 });

@@ -119,7 +119,7 @@ export default function FactuelleCriterionAnswer({
           <button
             type="button"
             className="factuelle-secondary-action ui-focus"
-            disabled={pending}
+            disabled={locked}
             onClick={onOpenFacts}
           >
             Renseigner
@@ -162,7 +162,7 @@ export default function FactuelleCriterionAnswer({
             className="factuelle-icon-action ui-focus"
             aria-label={`Modifier les informations du critère ${numero}`}
             title="Modifier les informations"
-            disabled={pending}
+            disabled={locked}
             onClick={onOpenFacts}
           >
             <Pencil aria-hidden="true" className="h-4 w-4" />

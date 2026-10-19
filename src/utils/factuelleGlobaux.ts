@@ -219,15 +219,26 @@ function catalogueOrder(selected: string[], order: { id: string }[]): string[] {
   return order.map((option) => option.id).filter((id) => selected.includes(id));
 }
 
-function mesuresPayload(value: MesuresDraft, order: { id: string }[]): MesuresFaits {
+function mesuresResult(
+  bloc: 'mesures_energie' | 'mesures_eau',
+  value: MesuresDraft,
+  order: { id: string }[]
+): GlobalDraftResult {
   const selected = value.aucune ? [] : catalogueOrder(value.mesures, order);
-  const lines = value.aucune || !value.autresOuvert ? [] : value.autres;
-  return {
+  const lines = value.aucune || !value.autresOuvert ? [] : value.autres.map((line) => line.trim());
+  const errors = Object.fromEntries(
+    lines.flatMap((line, index) => (line ? [] : [[`${bloc}.autres.${index}`, AUTRE_MESURE_VIDE]]))
+  );
+  if (Object.keys(errors).length > 0) {
+    return { ok: false, errors };
+  }
+  const payload: MesuresFaits = {
     // Non renseigné ≠ zéro : sans sélection ni « Aucune mesure », le constat reste inconnu.
     aucune_mesure: value.aucune ? true : selected.length > 0 || lines.length > 0 ? false : null,
     mesures: selected,
     autres: lines,
   };
+  return { ok: true, bloc, payload };
 }
 
 /** Toutes les cases du catalogue : une case décochée est une réponse négative connue. */
@@ -245,9 +256,16 @@ function inventairePayload(
 }
 
 const INVENTAIRE_INDISPONIBLE = 'L’inventaire est indisponible.';
+const CHOIX_COMBINE_MANQUANT = 'Choisissez l’équipement retenu : four ou micro-ondes.';
+const AUTRE_CHAUFFAGE_VIDE = 'Précisez l’autre système de chauffage.';
+const AUTRE_MESURE_VIDE = 'Précisez la mesure ou retirez la ligne.';
 const NOMBRE_FOYERS_PATTERN = /^\d+$/;
 
-/** Corps unique du PUT ; seules les lignes de plaques incomplètes empêchent l'envoi. */
+/**
+ * Corps unique du PUT. Seules les structures incomplètes évidentes empêchent l'envoi : ligne de
+ * plaque, combiné seul sans équipement retenu, chauffage « Autre » sans précision, ligne « Autres »
+ * vide. Aucune règle de cotation n'est appliquée ici.
+ */
 export function buildGlobalPayload(
   draft: GlobalDraft,
   catalogue: CatalogueFaits
@@ -313,42 +331,42 @@ export function buildGlobalPayload(
         },
       };
     }
-    case 'four_micro_ondes':
+    case 'four_micro_ondes': {
+      const { configuration, choix_combine } = draft.value;
+      if (configuration === 'COMBINE_SEUL' && choix_combine === null) {
+        return { ok: false, errors: { 'four_micro_ondes.choix_combine': CHOIX_COMBINE_MANQUANT } };
+      }
       return {
         ok: true,
         bloc: 'four_micro_ondes',
         payload: {
-          configuration: draft.value.configuration,
-          choix_combine:
-            draft.value.configuration === 'COMBINE_SEUL' ? draft.value.choix_combine : null,
+          configuration,
+          choix_combine: configuration === 'COMBINE_SEUL' ? choix_combine : null,
         },
       };
+    }
     case 'chauffage': {
       const { etat, types, autre } = draft.value;
       const negative = etat === 'AUCUN' || etat === 'MOBILES_UNIQUEMENT';
       const ordered = negative ? [] : catalogueOrder(types, catalogue.types_chauffage);
+      const precision = autre?.trim() ?? '';
+      if (ordered.includes('AUTRE') && !precision) {
+        return { ok: false, errors: { 'chauffage.autre': AUTRE_CHAUFFAGE_VIDE } };
+      }
       return {
         ok: true,
         bloc: 'chauffage',
         payload: {
           etat: negative ? etat : ordered.length > 0 ? 'INSTALLATIONS' : null,
           types: ordered,
-          autre: ordered.includes('AUTRE') && autre?.trim() ? autre.trim() : null,
+          autre: ordered.includes('AUTRE') ? precision : null,
         },
       };
     }
     case 'mesures_energie':
-      return {
-        ok: true,
-        bloc: 'mesures_energie',
-        payload: mesuresPayload(draft.value, catalogue.mesures_energie),
-      };
+      return mesuresResult('mesures_energie', draft.value, catalogue.mesures_energie);
     case 'mesures_eau':
-      return {
-        ok: true,
-        bloc: 'mesures_eau',
-        payload: mesuresPayload(draft.value, catalogue.mesures_eau),
-      };
+      return mesuresResult('mesures_eau', draft.value, catalogue.mesures_eau);
     case 'c63': {
       const payload = inventairePayload(draft.value, inventaireCatalogue(catalogue, 'c63'));
       return payload
@@ -389,4 +407,50 @@ export function isGlobalSaveNoop(
     return saved !== null && (result.bloc === 'c65' || saved.capacite_constatee === capacity);
   }
   return true;
+}
+
+/** Champ de la modale visé par un chemin backend du bloc (snake_case), sinon le conteneur du bloc. */
+function globalErrorField(built: GlobalPayload, path: string): string {
+  switch (built.bloc) {
+    case 'cuisson': {
+      const match = /^lignes\[(\d+)\]\.(technologie|nombre_foyers)$/.exec(path);
+      const id = match ? built.payload.lignes[Number(match[1])]?.id : undefined;
+      return match && id ? `cuisson.${id}.${match[2]}` : 'cuisson';
+    }
+    case 'mesures_energie':
+    case 'mesures_eau': {
+      const match = /^autres\[(\d+)\]$/.exec(path);
+      return match ? `${built.bloc}.autres.${match[1]}` : built.bloc;
+    }
+    case 'chauffage':
+      return path === 'autre' ? 'chauffage.autre' : 'chauffage';
+    case 'c25':
+    case 'c26':
+    case 'c101':
+    case 'four_micro_ondes':
+      return `${built.bloc}.${path}`;
+    default:
+      // C18/C19 et inventaires : un seul conteneur de réponse.
+      return built.bloc;
+  }
+}
+
+/**
+ * Rattache les `fieldErrors` backend (chemins Java camelCase relatifs au corps du bloc, ex.
+ * `lignes[0].nombreFoyers`, `autres[1]`) aux champs de la modale ; l'index d'une plaque est résolu
+ * par le corps envoyé.
+ */
+export function mapGlobalFieldErrors(
+  built: GlobalPayload,
+  fieldErrors: Record<string, string> | undefined
+): Record<string, string> {
+  const errors: Record<string, string> = {};
+  for (const [path, message] of Object.entries(fieldErrors ?? {})) {
+    const field = globalErrorField(
+      built,
+      path.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
+    );
+    errors[field] ??= message;
+  }
+  return errors;
 }

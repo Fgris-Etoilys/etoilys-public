@@ -8,6 +8,7 @@ import {
   inventaireGroups,
   inventaireLabel,
   isGlobalSaveNoop,
+  mapGlobalFieldErrors,
   type GlobalDraft,
 } from '../factuelleGlobaux';
 import { parseCatalogueFaits, parseFaitsGlobaux } from '../simulatorFactuelle.types';
@@ -72,7 +73,7 @@ describe('faits globaux FACTUELLE — brouillons et corps de PUT', () => {
     });
   });
 
-  it('n’envoie le choix du combiné que pour un combiné seul, sans champ déprécié', () => {
+  it('n’envoie le choix du combiné que pour un combiné seul, et l’exige alors', () => {
     expect(
       build({
         bloc: 'four_micro_ondes',
@@ -82,9 +83,20 @@ describe('faits globaux FACTUELLE — brouillons et corps de PUT', () => {
     expect(
       build({
         bloc: 'four_micro_ondes',
-        value: { configuration: 'COMBINE_SEUL', choix_combine: null },
+        value: { configuration: 'COMBINE_SEUL', choix_combine: 'MICRO_ONDES' },
       }).payload
-    ).toEqual({ configuration: 'COMBINE_SEUL', choix_combine: null });
+    ).toEqual({ configuration: 'COMBINE_SEUL', choix_combine: 'MICRO_ONDES' });
+    expect(
+      buildGlobalPayload(
+        { bloc: 'four_micro_ondes', value: { configuration: 'COMBINE_SEUL', choix_combine: null } },
+        catalogue
+      )
+    ).toEqual({
+      ok: false,
+      errors: {
+        'four_micro_ondes.choix_combine': 'Choisissez l’équipement retenu : four ou micro-ondes.',
+      },
+    });
   });
 
   it('ordonne le chauffage selon le catalogue et n’envoie ni motif ni appréciation commune', () => {
@@ -105,6 +117,42 @@ describe('faits globaux FACTUELLE — brouillons et corps de PUT', () => {
       build({ bloc: 'chauffage', value: { etat: 'AUCUN', types: ['ELECTRIQUE_FIXE'], autre: 'x' } })
         .payload
     ).toEqual({ etat: 'AUCUN', types: [], autre: null });
+  });
+
+  it('exige la précision du chauffage « Autre », sans la demander pour un état négatif', () => {
+    expect(
+      buildGlobalPayload(
+        { bloc: 'chauffage', value: { etat: 'INSTALLATIONS', types: ['AUTRE'], autre: '  ' } },
+        catalogue
+      )
+    ).toEqual({
+      ok: false,
+      errors: { 'chauffage.autre': 'Précisez l’autre système de chauffage.' },
+    });
+    expect(
+      build({ bloc: 'chauffage', value: { etat: 'MOBILES_UNIQUEMENT', types: [], autre: null } })
+        .payload
+    ).toEqual({ etat: 'MOBILES_UNIQUEMENT', types: [], autre: null });
+  });
+
+  it('refuse une ligne « Autres » vide et envoie les lignes sans espaces superflus', () => {
+    const value = {
+      aucune: false,
+      mesures: [],
+      autresOuvert: true,
+      autres: [' Ventilation ', ' '],
+    };
+    expect(buildGlobalPayload({ bloc: 'mesures_eau', value }, catalogue)).toEqual({
+      ok: false,
+      errors: { 'mesures_eau.autres.1': 'Précisez la mesure ou retirez la ligne.' },
+    });
+    expect(
+      build({ bloc: 'mesures_eau', value: { ...value, autres: [' Ventilation '] } }).payload
+    ).toEqual({ aucune_mesure: false, mesures: [], autres: ['Ventilation'] });
+    // « Aucune mesure » ou « Autres » décoché : les lignes saisies ne sont ni contrôlées ni envoyées.
+    expect(
+      build({ bloc: 'mesures_eau', value: { ...value, autresOuvert: false } }).payload
+    ).toEqual({ aucune_mesure: null, mesures: [], autres: [] });
   });
 
   it('distingue mesures inconnues, aucune mesure et mesures ordonnées par le backend', () => {
@@ -138,6 +186,48 @@ describe('faits globaux FACTUELLE — brouillons et corps de PUT', () => {
     const inventaire = catalogue.inventaires[0];
     expect(inventaire && inventaireLabel(inventaire.items[1]!)).toBe('4 verres à eau');
     expect(inventaire && inventaireGroups(inventaire.items)).toHaveLength(1);
+  });
+});
+
+describe('faits globaux FACTUELLE — fieldErrors backend', () => {
+  it('rattache chaque chemin Java au champ de la modale, sinon au conteneur du bloc', () => {
+    const cuisson = build({
+      bloc: 'cuisson',
+      value: { presence: true, lignes: [{ id: 'l1', technologie: 'GAZ', nombre: '2' }] },
+    });
+    expect(
+      mapGlobalFieldErrors(cuisson, {
+        'lignes[0].nombreFoyers': 'doit être positif',
+        'lignes[3].technologie': 'inconnue',
+      })
+    ).toEqual({ 'cuisson.l1.nombre_foyers': 'doit être positif', cuisson: 'inconnue' });
+
+    const mesures = build({
+      bloc: 'mesures_energie',
+      value: { aucune: false, mesures: [], autresOuvert: true, autres: ['A', 'B'] },
+    });
+    expect(mapGlobalFieldErrors(mesures, { 'autres[1]': 'invalide', mesures: 'requis' })).toEqual({
+      'mesures_energie.autres.1': 'invalide',
+      mesures_energie: 'requis',
+    });
+
+    const chauffage = build({
+      bloc: 'chauffage',
+      value: { etat: 'INSTALLATIONS', types: ['AUTRE'], autre: 'Poêle' },
+    });
+    expect(mapGlobalFieldErrors(chauffage, { autre: 'trop long', 'types[0]': 'requis' })).toEqual({
+      'chauffage.autre': 'trop long',
+      chauffage: 'requis',
+    });
+
+    const four = build({
+      bloc: 'four_micro_ondes',
+      value: { configuration: 'COMBINE_SEUL', choix_combine: 'FOUR' },
+    });
+    expect(mapGlobalFieldErrors(four, { choixCombine: 'invalide' })).toEqual({
+      'four_micro_ondes.choix_combine': 'invalide',
+    });
+    expect(mapGlobalFieldErrors(four, undefined)).toEqual({});
   });
 });
 

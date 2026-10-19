@@ -113,6 +113,7 @@ export default function FactuellePiecesTab({
   const [creationBaseline, setCreationBaseline] = useState<ReadonlySet<string> | null>(null);
   const { help, open: openHelp, close: closeHelp } = useCriterionHelp(gridSummary);
   const [focusAdd, setFocusAdd] = useState(0);
+  const [focusCard, setFocusCard] = useState<{ pieceId: string; nonce: number } | null>(null);
   const modalKeyRef = useRef(0);
   const tabRefs = useRef<Partial<Record<FactuellePieceSection, HTMLButtonElement | null>>>({});
   const addRefs = useRef<Partial<Record<FactuellePieceSection, HTMLButtonElement | null>>>({});
@@ -148,7 +149,11 @@ export default function FactuellePiecesTab({
     const nextSection = sectionForTarget(next, pieces);
     setSection(nextSection);
     const piece = pieces.find((candidate) => candidate.id === next.piece_id);
-    if (piece) {
+    if (piece && next.cardOnly) {
+      // Plusieurs pièces concernées : aucune n'est choisie à la place de l'utilisateur.
+      setModal(null);
+      setFocusCard((current) => ({ pieceId: piece.id, nonce: (current?.nonce ?? 0) + 1 }));
+    } else if (piece) {
       openEdit(piece, next.champ, next.num_critere);
     } else {
       // Besoin sans pièce existante : l'action d'ajout de la bonne section reçoit le focus.
@@ -168,6 +173,15 @@ export default function FactuellePiecesTab({
     button?.scrollIntoView?.({ block: 'center' });
     button?.focus({ preventScroll: true });
   }, [focusAdd, section]);
+
+  useEffect(() => {
+    if (!focusCard) return;
+    const card = document.querySelector<HTMLElement>(
+      `[data-factuelle-piece="${focusCard.pieceId}"]`
+    );
+    card?.scrollIntoView?.({ block: 'center' });
+    card?.querySelector<HTMLElement>('button:not(:disabled)')?.focus({ preventScroll: true });
+  }, [focusCard]);
 
   function closeModal() {
     if (pending && (pending.kind === 'create' || pending.kind === 'update')) return;

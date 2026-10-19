@@ -803,7 +803,7 @@ export default function SimulationClassement() {
   const isFactuelle = simulation !== null && resolveGridMode(simulation) === 'FACTUELLE';
   const factuelleSnapshot = isFactuelle ? factuelle.snapshot : null;
   const isFactuelleWriteLocked =
-    isFactuelle && (factuelle.pending !== null || factuelle.needsRefresh);
+    isFactuelle && (factuelle.pending !== null || factuelle.needsRefresh || factuelle.isRefreshing);
 
   const loadSimulation = useCallback(async () => {
     if (!simulationId) {
@@ -979,21 +979,32 @@ export default function SimulationClassement() {
   const resultActionLabel = hasSimulationResult
     ? 'Relancer la simulation'
     : 'Voir le résultat de ma simulation';
+  // Écriture FACTUELLE ou relecture canonique en cours : l'ancien résultat n'est plus garanti à jour
+  // (ni verdict, ni consultation, ni export). Il réapparaît après un refus certain ; un succès ou une
+  // issue incertaine l'invalident.
+  const hasSuspendedFactuelleResult =
+    isFactuelle &&
+    ((factuelle.pending !== null && factuelle.pending.kind !== 'verify') ||
+      factuelle.isRefreshing) &&
+    (factuelleResultState.status === 'blocked' || factuelleResultState.status === 'fresh');
   const isResultBusinessSuccess = isFactuelle
-    ? factuelleResultState.status === 'fresh' &&
+    ? !hasSuspendedFactuelleResult &&
+      factuelleResultState.status === 'fresh' &&
       requestedOutcome(factuelleResultState.comparaison) === 'favorable'
     : resultStatus === 'fresh' &&
       resultState?.kind === 'rapport' &&
       resultState.rapport.resultat === true;
   const isResultCalculatedWithoutSuccess =
-    displayedResultStatus === 'fresh' && !isResultBusinessSuccess;
+    displayedResultStatus === 'fresh' && !hasSuspendedFactuelleResult && !isResultBusinessSuccess;
   const resultStatusLabel = !isFactuelle
     ? getResultStatusLabel(resultStatus, resultState)
-    : factuelleResultState.status === 'blocked'
-      ? 'À compléter'
-      : isResultBusinessSuccess
-        ? 'Classement atteint'
-        : getResultStatusLabel(displayedResultStatus, null);
+    : hasSuspendedFactuelleResult
+      ? 'Mise à jour en cours'
+      : factuelleResultState.status === 'blocked'
+        ? 'À compléter'
+        : isResultBusinessSuccess
+          ? 'Classement atteint'
+          : getResultStatusLabel(displayedResultStatus, null);
   const resultErrorText =
     isFactuelle && factuelleResultState.status === 'error'
       ? factuelleResultState.message
@@ -1401,6 +1412,14 @@ export default function SimulationClassement() {
   async function handleExportFactuellePdf(entry: ComparaisonCategorie) {
     if (!simulationId || factuelleResultState.status !== 'fresh') {
       showToast('Aucun résultat à exporter.', { type: 'info' });
+      return;
+    }
+    // Verrou lu de façon synchrone : une écriture ou une relecture démarrée avant le rendu suivant
+    // suffit à refuser l'export d'un résultat qui n'est plus garanti à jour.
+    if (hasSuspendedFactuelleResult || factuelle.isBusy()) {
+      showToast('Le résultat est en cours de mise à jour. Réessayez dans un instant.', {
+        type: 'info',
+      });
       return;
     }
 
@@ -3028,8 +3047,26 @@ export default function SimulationClassement() {
                   />
                 )}
 
+                {hasSuspendedFactuelleResult && (
+                  <Card hover={false} className="classement-feedback" role="status">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ink/15 bg-white text-copper">
+                        <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
+                      </span>
+                      <div>
+                        <h2 className="mb-3 text-gray-900">Mise à jour en cours</h2>
+                        <p className="max-w-3xl text-sm text-muted">
+                          Une modification de la simulation est en cours d’enregistrement. Le
+                          résultat sera actualisé une fois celle-ci terminée.
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                )}
+
                 {isFactuelle &&
                   factuelleSnapshot &&
+                  !hasSuspendedFactuelleResult &&
                   (factuelleResultState.status === 'blocked' ||
                     factuelleResultState.status === 'fresh') && (
                     <FactuelleResultPanel

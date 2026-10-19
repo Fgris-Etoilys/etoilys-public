@@ -227,7 +227,7 @@ export interface FactuelleSourceCoordinates {
 
 export type FactuelleSource =
   | { kind: 'parametre'; champ: string }
-  | { kind: 'global'; bloc: BlocGlobal; numero: number; champ: string }
+  | { kind: 'global'; bloc: BlocGlobal; numero: number; champ: string | null }
   | { kind: 'piece'; target: Omit<FactuellePieceTarget, 'requestId'> }
   | { kind: 'critere'; numero: number };
 
@@ -264,4 +264,40 @@ export function resolveFactuelleSource(coordinates: FactuelleSourceCoordinates):
     return { kind: 'global', bloc, numero, champ: coordinates.champ };
   }
   return { kind: 'critere', numero: numero ?? 0 };
+}
+
+/**
+ * Source d'un critère non validé du rapport, à parité avec `openSource` du BO sans cible : un
+ * automatique mène à ses faits (bloc global, pièce, paramètre) même déjà connus, quelle que soit la
+ * catégorie consultée ; plusieurs pièces affichent leur section sans en choisir une. Un manuel, ou un
+ * automatique sans besoin, reste dans la Grille.
+ */
+export function criterionSource(
+  numero: number,
+  evaluation: EvaluationFactuelle | null
+): FactuelleSource {
+  const critere = evaluation?.criteres.find((entry) => entry.num_critere === numero);
+  if (!evaluation || !critere?.automatique) {
+    return { kind: 'critere', numero };
+  }
+  const besoins = evaluation.besoins.filter((besoin) => besoin.num_critere === numero);
+  const missing = besoins.filter((besoin) => besoin.manquant);
+  const bloc = GLOBAL_CRITERIA[numero];
+  if (bloc) {
+    return { kind: 'global', bloc, numero, champ: missing[0]?.champ ?? null };
+  }
+  // Faits manquants d'abord, sinon les faits déjà connus qui ont produit le verdict.
+  const candidates = missing.length > 0 ? missing : besoins;
+  const pieceBesoins = candidates.filter(
+    (besoin) => besoin.destination === 'PIECE' && besoin.piece_id !== null
+  );
+  const first = pieceBesoins[0] ?? candidates[0];
+  if (!first) {
+    return { kind: 'critere', numero };
+  }
+  const severalPieces = new Set(pieceBesoins.map((besoin) => besoin.piece_id)).size > 1;
+  const source = resolveFactuelleSource(first);
+  return severalPieces && source.kind === 'piece'
+    ? { kind: 'piece', target: { ...source.target, cardOnly: true } }
+    : source;
 }

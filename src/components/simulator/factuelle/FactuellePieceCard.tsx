@@ -84,7 +84,12 @@ export default function FactuellePieceCard({
   const hasCouchages = piece.couchages.length > 0;
 
   return (
-    <div className="classement-piece" data-testid={`factuelle-piece-${piece.id}`} aria-busy={busy}>
+    <div
+      className="classement-piece"
+      data-testid={`factuelle-piece-${piece.id}`}
+      data-factuelle-piece={piece.id}
+      aria-busy={busy}
+    >
       <div className="min-w-0">
         <div className="flex items-center gap-2">
           <h3 className="classement-piece-heading min-w-0 flex-1">

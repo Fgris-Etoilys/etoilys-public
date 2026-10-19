@@ -211,6 +211,9 @@ export function useFactuelleSimulation(
     return true;
   }, []);
 
+  /** Écriture, vérification ou relecture en cours, lue sans attendre le rendu suivant. */
+  const isBusy = useCallback(() => lockRef.current || refreshingRef.current, []);
+
   const release = useCallback((session: number) => {
     if (session !== sessionRef.current) {
       return;
@@ -376,6 +379,7 @@ export function useFactuelleSimulation(
     pending,
     needsRefresh,
     isRefreshing,
+    isBusy,
     load,
     refresh,
     mutate,

@@ -802,4 +802,204 @@ describe('SimulationClassement — Grille et résultats FACTUELLE', () => {
       body: { studio: true },
     });
   });
+
+  /** Réponse retenue jusqu'à `release()` : observe l'interface pendant l'écriture ou la relecture. */
+  function heldRoute(response: RouteResponse) {
+    let release: () => void = () => undefined;
+    const gate = new Promise<void>((done) => {
+      release = done;
+    });
+    return { route: () => gate.then(() => response), release: () => release() };
+  }
+
+  async function showComparaison() {
+    fireEvent.click(await screen.findByRole('tab', { name: /^résultat/i }));
+    fireEvent.click(screen.getByRole('button', { name: /voir le résultat de ma simulation/i }));
+    return screen.findByRole('radiogroup', { name: /résultat par catégorie/i });
+  }
+
+  it('refuse un chauffage « Autre » sans précision et rattache les fieldErrors backend au champ', async () => {
+    const evaluation = evaluationResponse({
+      criteres: [critere(16, { automatique: true })],
+      besoins: [besoin({ champ: 'chauffage.etat', num_critere: 16, destination: 'GRILLE' })],
+    });
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre], evaluation),
+      [`PUT ${BASE}/faits/chauffage`]: {
+        status: 400,
+        body: {
+          code: 'INVALID_REQUEST',
+          message: 'Requête invalide',
+          fieldErrors: { autre: 'La précision est trop longue.' },
+        },
+      },
+    });
+    renderSimulation();
+    await openGrid();
+
+    fireEvent.click(within(card(16)).getByRole('button', { name: 'Renseigner' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Chauffage' });
+    fireEvent.click(within(dialog).getByRole('checkbox', { name: 'Autre' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Sauvegarder' }));
+
+    expect(within(dialog).getByText('Précisez l’autre système de chauffage.')).toBeInTheDocument();
+    expect(calls.some(({ method }) => method === 'PUT')).toBe(false);
+
+    const precision = within(dialog).getByRole('textbox', { name: 'Autre' });
+    fireEvent.change(precision, { target: { value: 'Poêle à bois' } });
+    expect(within(dialog).queryByText('Précisez l’autre système de chauffage.')).toBeNull();
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Sauvegarder' }));
+
+    expect(await within(dialog).findByText('La précision est trop longue.')).toBeInTheDocument();
+    expect(precision).toHaveAttribute('aria-invalid', 'true');
+    await waitFor(() => expect(precision).toHaveFocus());
+    expect(calls.filter(({ method }) => method === 'PUT')).toEqual([
+      {
+        method: 'PUT',
+        url: `${BASE}/faits/chauffage`,
+        body: { etat: 'INSTALLATIONS', types: ['AUTRE'], autre: 'Poêle à bois' },
+      },
+    ]);
+  });
+
+  it('mène un automatique non validé du rapport à ses faits connus, depuis une autre catégorie', async () => {
+    // C37 et C101 : NA en 3★ (demandée), non validés en 4★ (consultée), faits déjà renseignés.
+    const naEn3 = ['OBLIGATOIRE', 'OBLIGATOIRE', 'NON_APPLICABLE', 'OBLIGATOIRE', 'OBLIGATOIRE'];
+    const evaluation = evaluationResponse({
+      criteres: [
+        critere(37, { automatique: true, statut_validation: 'NON_VALIDE' }, naEn3),
+        critere(101, { automatique: true, statut_validation: 'NON_VALIDE' }, naEn3),
+      ],
+      besoins: [
+        besoin({ champ: 'surface', piece_id: 'piece-chambre', num_critere: 37, manquant: false }),
+        besoin({
+          champ: 'c101.situation',
+          num_critere: 101,
+          destination: 'GRILLE',
+          manquant: false,
+        }),
+      ],
+    });
+    const nonValides = {
+      rapport: {
+        resultat: false,
+        points_obligatoires_atteints: false,
+        criteres_obligatoires_non_valides: [37, 101],
+      },
+    };
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre], evaluation),
+      [`POST ${BASE}/verifier`]: { body: true },
+      [`GET ${BASE}/comparaison`]: { body: comparaisonResponse({ '4*': nonValides }) },
+    });
+    renderSimulation();
+
+    let selectors = await showComparaison();
+    fireEvent.click(within(selectors).getByRole('radio', { name: /4★/ }));
+    const pieceRow = screen.getByText('Critère 37').closest('div')?.parentElement as HTMLElement;
+    fireEvent.click(within(pieceRow).getByRole('button', { name: 'Voir dans les pièces' }));
+    expect(
+      await screen.findByRole('dialog', { name: /modifier — chambre parentale/i })
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Annuler' }));
+
+    fireEvent.click(screen.getByRole('tab', { name: /^résultat/i }));
+    selectors = await screen.findByRole('radiogroup', { name: /résultat par catégorie/i });
+    fireEvent.click(within(selectors).getByRole('radio', { name: /4★/ }));
+    const globalRow = screen.getByText('Critère 101').closest('div')?.parentElement as HTMLElement;
+    fireEvent.click(within(globalRow).getByRole('button', { name: 'Voir dans la grille' }));
+    expect(await screen.findByRole('dialog', { name: 'Livret d’accueil' })).toBeInTheDocument();
+    expect(calls.some(({ method }) => method === 'PUT')).toBe(false);
+  });
+
+  it('suspend le résultat pendant un PUT de paramètre, le rétablit après un refus et l’invalide après un succès', async () => {
+    const refusal = heldRoute({ status: 400, body: { code: 'INVALID_REQUEST' } });
+    const success = heldRoute({
+      body: factuelleSimulationResponse(evaluationResponse(), { studio: true }),
+    });
+    mockApi({
+      ...factuelleRoutes([chambre]),
+      [`POST ${BASE}/verifier`]: { body: true },
+      [`GET ${BASE}/comparaison`]: { body: comparaisonResponse() },
+      [`PUT ${BASE}/studio`]: [refusal.route, success.route],
+    });
+    renderSimulation();
+    await showComparaison();
+
+    fireEvent.click(screen.getByRole('button', { name: /modifier les paramètres/i }));
+    fireEvent.change(screen.getByLabelText('Studio'), { target: { value: 'true' } });
+    expect(
+      await screen.findByRole('heading', { name: 'Mise à jour en cours' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /télécharger le résultat/i })).toBeNull();
+
+    // Refus certain : rien n'a été écrit, l'ancien résultat reste valide.
+    await act(async () => refusal.release());
+    expect(await screen.findByRole('radiogroup')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Télécharger le résultat 3★' })).toBeEnabled();
+
+    fireEvent.change(screen.getByLabelText('Studio'), { target: { value: 'true' } });
+    expect(
+      await screen.findByRole('heading', { name: 'Mise à jour en cours' })
+    ).toBeInTheDocument();
+    await act(async () => success.release());
+    expect(
+      await screen.findByRole('heading', { name: 'Résultat à recalculer' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();
+    expect(exportSimulationClassementPdf).not.toHaveBeenCalled();
+  });
+
+  it('verrouille Renseigner et le crayon des automatiques pendant une autre écriture', async () => {
+    const evaluation = evaluationResponse({
+      criteres: [
+        critere(68),
+        critere(18, { automatique: true, statut_validation: 'VALIDE' }),
+        critere(101, { automatique: true }),
+      ],
+      besoins: [besoin({ champ: 'c101.situation', num_critere: 101, destination: 'GRILLE' })],
+    });
+    const answer = heldRoute({ body: mutationResponse([chambre], evaluation) });
+    mockApi({
+      ...factuelleRoutes([chambre], evaluation),
+      [`PUT ${BASE}/faits/criteres/68/reponse`]: answer.route,
+    });
+    renderSimulation();
+    await openGrid();
+    const renseigner = within(card(101)).getByRole('button', { name: 'Renseigner' });
+    const crayon = within(card(18)).getByRole('button', {
+      name: 'Modifier les informations du critère 18',
+    });
+    expect(renseigner).toBeEnabled();
+    expect(crayon).toBeEnabled();
+
+    fireEvent.click(within(card(68)).getByRole('button', { name: 'Oui' }));
+    await waitFor(() => expect(renseigner).toBeDisabled());
+    expect(crayon).toBeDisabled();
+
+    await act(async () => answer.release());
+    await waitFor(() => expect(renseigner).toBeEnabled());
+    expect(crayon).toBeEnabled();
+  });
+
+  it('désactive les paramètres pendant une relecture canonique', async () => {
+    const reload = heldRoute({ body: factuelleSimulationResponse() });
+    mockApi({
+      ...factuelleRoutes([chambre]),
+      // Évaluation indisponible au chargement : la Grille propose une relecture.
+      [`GET ${BASE}`]: [
+        { body: factuelleSimulationResponse(evaluationResponse(), { evaluation: null }) },
+        reload.route,
+      ],
+    });
+    renderSimulation();
+    fireEvent.click(await screen.findByRole('tab', { name: /grille de contrôle/i }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Actualiser la simulation' }));
+    fireEvent.click(screen.getByRole('button', { name: /modifier les paramètres/i }));
+
+    expect(screen.getByLabelText('Studio')).toBeDisabled();
+    await act(async () => reload.release());
+    await waitFor(() => expect(screen.getByLabelText('Studio')).toBeEnabled());
+  });
 });

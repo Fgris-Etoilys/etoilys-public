@@ -407,6 +407,8 @@ export interface FactuellePieceTarget {
   champ: string;
   num_critere?: number | null;
   section?: FactuellePieceSection;
+  /** Plusieurs pièces concernées : leur section s'affiche, focus sur la carte, sans fenêtre. */
+  cardOnly?: boolean;
 }
 
 export const INVALID_RESPONSE_MESSAGE = 'Réponse API simulateur invalide';
