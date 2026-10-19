@@ -333,20 +333,19 @@ export function fieldHighlight(
 const formatNumber = (value: number) => value.toLocaleString('fr-FR', { maximumFractionDigits: 2 });
 
 /**
- * Alerte de surface d'une carte, uniquement depuis les résultats explicites du backend.
- * L'exclusion des pièces d'habitation prime ; le minimum local est masqué si le plafond de couchages est signalé.
+ * Alerte unique d'une carte, issue des seuls résultats backend de la catégorie demandée, par priorité :
+ * exclusion des pièces d'habitation, puis plafond de couchages (alertes backend), puis minimum local.
  */
-export function pieceSurfaceAlert(
-  surfaces: SurfacesFactuelles | null,
+export function pieceAlert(
+  evaluation: EvaluationFactuelle | null,
   piece: PieceFactuelle,
-  hidesLocalMinimum: boolean
+  category: string | null
 ): { tone: 'warning' | 'error'; text: string } | null {
-  if (!surfaces) {
-    return null;
-  }
-
+  const surfaces = surfacesForCategory(evaluation, category);
   const hasCouchages = piece.couchages.length > 0 || piece.inspection?.couchage === true;
-  const qualification = surfaces.qualifications_pieces.find((entry) => entry.piece_id === piece.id);
+  const qualification = surfaces?.qualifications_pieces.find(
+    (entry) => entry.piece_id === piece.id
+  );
   const withoutOpening = hasCouchages && qualification?.ouvrant === false;
   const belowThreshold = qualification?.seuil_atteint === false;
   if (belowThreshold || withoutOpening) {
@@ -371,11 +370,16 @@ export function pieceSurfaceAlert(
     };
   }
 
-  const local = hidesLocalMinimum
-    ? undefined
-    : surfaces.minima_locaux.find(
-        (entry) => entry.piece_id === piece.id && entry.applicable !== false
-      );
+  const backendAlerts = pieceAlerts(evaluation, piece.id, category);
+  const backendAlert =
+    backendAlerts.find((alerte) => alerte.code === 'PLAFOND_COUCHAGES_DEPASSE') ?? backendAlerts[0];
+  if (backendAlert) {
+    return { tone: 'error', text: backendAlert.message };
+  }
+
+  const local = surfaces?.minima_locaux.find(
+    (entry) => entry.piece_id === piece.id && entry.applicable !== false
+  );
   if (local?.atteint === false) {
     const places = piece.total_places;
     return {

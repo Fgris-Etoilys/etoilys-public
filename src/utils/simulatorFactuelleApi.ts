@@ -1,11 +1,9 @@
 import { encodePathSegment, requestSimulatorJson } from './simulatorApi';
 import {
   parseCatalogueFaits,
-  parseEvaluationFactuelle,
   parseFaitsGrille,
   parseMutationFaits,
   type CatalogueFaits,
-  type EvaluationFactuelle,
   type FaitsGrille,
   type MutationFaits,
   type PieceFactuelleInput,
@@ -23,12 +21,6 @@ export function getFaits(simulationId: string): Promise<FaitsGrille> {
 export function getFaitsCatalogue(simulationId: string): Promise<CatalogueFaits> {
   return requestSimulatorJson<unknown>(faitsEndpoint(simulationId, '/catalogue')).then(
     parseCatalogueFaits
-  );
-}
-
-export function getFaitsEvaluation(simulationId: string): Promise<EvaluationFactuelle> {
-  return requestSimulatorJson<unknown>(faitsEndpoint(simulationId, '/evaluation')).then(
-    parseEvaluationFactuelle
   );
 }
 

@@ -218,7 +218,7 @@ export function factuelleSimulationResponse(
 ) {
   return {
     id: FACTUELLE_SIMULATION_ID,
-    statut: 'BROUILLON',
+    statut: 'BROUILLON' as const,
     grille: {
       categorie_demandee: '3*',
       capacite_accueil: 2,

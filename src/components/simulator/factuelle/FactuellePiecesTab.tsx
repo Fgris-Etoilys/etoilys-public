@@ -8,7 +8,6 @@ import { useToast } from '../../ui/Toast';
 import type { CritereAide } from '../../../content/criteresAide';
 import type { GridCriterion, GridSummary } from '../../../content/simulatorGrid';
 import type {
-  FactuelleMutationOutcome,
   FactuelleSimulationState,
   FactuelleSnapshot,
 } from '../../../hooks/useFactuelleSimulation';
@@ -20,7 +19,6 @@ import { getCachedCriterionHelp, loadCriterionHelp } from '../../../utils/criter
 import {
   availableFactuelleTypes,
   FACTUELLE_SECTIONS,
-  getFactuellePieceName,
   moveSanitaire,
   pieceNeeds,
   piecesOfSection,
@@ -28,7 +26,11 @@ import {
   sectionForTarget,
   surfacesForCategory,
 } from '../../../utils/factuellePieces';
-import { getSimulatorApiErrorMessage } from '../../../utils/simulatorApi';
+import {
+  mapServerFieldErrors,
+  type FactuelleFieldErrors,
+} from '../../../utils/factuellePieceDraft';
+import { getSimulatorApiErrorMessage, SimulatorApiError } from '../../../utils/simulatorApi';
 import {
   createFactuellePiece,
   deleteFactuellePiece,
@@ -83,29 +85,17 @@ function defaultType(types: FactuellePieceType[]): FactuellePieceType | undefine
   return types.includes('CHAMBRE') ? 'CHAMBRE' : types[0];
 }
 
-/** Message d'une création ou modification dont l'issue n'a pas pu être confirmée. */
-function uncertainSaveMessage(
-  outcome: Extract<FactuelleMutationOutcome, { status: 'uncertain' }>,
-  isCreation: boolean
-): FactuelleModalMessage {
-  if (outcome.newPieces === null) {
-    return {
-      tone: 'error',
-      text: 'L’enregistrement n’a pas pu être confirmé. Actualisez les pièces avant de réessayer ; votre saisie est conservée.',
-    };
-  }
-  if (isCreation && outcome.newPieces.length > 0) {
-    const names = outcome.newPieces.map(getFactuellePieceName).join(', ');
-    return {
-      tone: 'warning',
-      text: `L’enregistrement n’a pas pu être confirmé. Pièces apparues depuis : ${names}. Vérifiez la liste avant de réessayer ; votre saisie est conservée.`,
-    };
-  }
-
-  return {
-    tone: 'warning',
-    text: 'L’enregistrement n’a pas pu être confirmé. Les pièces ont été actualisées : vérifiez-les avant de réessayer ; votre saisie est conservée.',
-  };
+/** Issue non confirmée : l'état a été relu (ou doit l'être), la saisie est conservée. */
+function uncertainSaveMessage(reconciled: boolean): FactuelleModalMessage {
+  return reconciled
+    ? {
+        tone: 'warning',
+        text: 'L’enregistrement n’a pas pu être confirmé. Les pièces ont été actualisées : vérifiez-les avant de réessayer ; votre saisie est conservée.',
+      }
+    : {
+        tone: 'error',
+        text: 'L’enregistrement n’a pas pu être confirmé. Actualisez les pièces avant de réessayer ; votre saisie est conservée.',
+      };
 }
 
 export default function FactuellePiecesTab({
@@ -124,6 +114,10 @@ export default function FactuellePiecesTab({
   const [section, setSection] = useState<FactuellePieceSection>('interieurs');
   const [modal, setModal] = useState<ModalState | null>(null);
   const [modalMessage, setModalMessage] = useState<FactuelleModalMessage | null>(null);
+  const [serverErrors, setServerErrors] = useState<FactuelleFieldErrors>({});
+  // Pièces connues avant une création non confirmée : toute pièce apparue depuis doit être vérifiée
+  // explicitement avant un nouvel ajout, sans deviner laquelle a été créée.
+  const [creationBaseline, setCreationBaseline] = useState<ReadonlySet<string> | null>(null);
   const [help, setHelp] = useState<HelpState | null>(null);
   const [focusAdd, setFocusAdd] = useState(0);
   const modalKeyRef = useRef(0);
@@ -134,6 +128,9 @@ export default function FactuellePiecesTab({
   const locked = pending !== null || contextBusy || factuelle.needsRefresh;
   const sectionPieces = piecesOfSection(pieces, section);
   const creatableTypes = availableFactuelleTypes(catalogue, pieces, section);
+  const creationReview = creationBaseline
+    ? pieces.filter((piece) => !creationBaseline.has(piece.id))
+    : [];
 
   function openModal(
     piece: PieceFactuelle | null,
@@ -143,6 +140,7 @@ export default function FactuellePiecesTab({
   ) {
     modalKeyRef.current += 1;
     setModalMessage(null);
+    setServerErrors({});
     setModal({ key: modalKeyRef.current, piece, initialType, needs, targetField });
   }
 
@@ -182,12 +180,15 @@ export default function FactuellePiecesTab({
     if (pending && (pending.kind === 'create' || pending.kind === 'update')) return;
     setModal(null);
     setModalMessage(null);
+    setServerErrors({});
   }
 
   async function submitPiece(payload: PieceFactuelleInput) {
     if (!modal) return;
     const piece = modal.piece;
+    const idsBeforeCreation = new Set(pieces.map((candidate) => candidate.id));
     setModalMessage(null);
+    setServerErrors({});
     const outcome = await factuelle.mutate(
       piece ? { kind: 'update', pieceId: piece.id } : { kind: 'create' },
       (id) =>
@@ -197,6 +198,7 @@ export default function FactuellePiecesTab({
     switch (outcome.status) {
       case 'success':
         setModal(null);
+        if (!piece) setCreationBaseline(null);
         onFactsChanged();
         trackClassementSimulatorPieceSaved({
           pieceAction: piece ? 'updated' : 'created',
@@ -213,10 +215,14 @@ export default function FactuellePiecesTab({
           tone: 'error',
           text: getSimulatorApiErrorMessage(outcome.error, SAVE_FALLBACK, 'savePiece'),
         });
+        if (outcome.error instanceof SimulatorApiError) {
+          setServerErrors(mapServerFieldErrors(outcome.error.fieldErrors, payload));
+        }
         return;
       case 'uncertain':
         onFactsChanged();
-        setModalMessage(uncertainSaveMessage(outcome, piece === null));
+        if (!piece) setCreationBaseline(idsBeforeCreation);
+        setModalMessage(uncertainSaveMessage(outcome.reconciled));
         return;
       case 'blocked':
         setModalMessage({ tone: 'warning', text: BLOCKED_MESSAGE });
@@ -475,6 +481,9 @@ export default function FactuellePiecesTab({
           }
           submitBlocked={locked}
           message={modalMessage}
+          serverErrors={serverErrors}
+          creationReview={modal.piece ? [] : creationReview}
+          onAcknowledgeReview={() => setCreationBaseline(null)}
           needsRefresh={factuelle.needsRefresh}
           isRefreshing={factuelle.isRefreshing}
           helpOpen={help !== null}

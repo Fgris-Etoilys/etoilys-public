@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import App from '../App';
 import structureGrilleRaw from '../../docs/data/structureGrille.json?raw';
 import {
@@ -40,7 +40,8 @@ vi.mock('../utils/analytics', async (importOriginal) => {
 const BASE = `/api/public/simulations/${ID}`;
 const LEGACY_ROUTES = /\/(logement|pieces|reponse|verifier|verification|rapport)(\/|$)/;
 
-type Route = { body: unknown; status?: number } | (() => { body: unknown; status?: number });
+type RouteResponse = { body: unknown; status?: number };
+type Route = RouteResponse | (() => RouteResponse | Promise<RouteResponse>);
 type Calls = Array<{ method: string; url: string; body: unknown }>;
 
 const jsonResponse = (body: unknown, status = 200) =>
@@ -64,7 +65,7 @@ function mockApi(routes: Record<string, Route | Route[]>) {
     if (!route) {
       throw new TypeError(`Unexpected fetch call: ${method} ${url}`);
     }
-    const { body, status } = typeof route === 'function' ? route() : route;
+    const { body, status } = typeof route === 'function' ? await route() : route;
     if (status === 0) {
       throw new TypeError('Failed to fetch');
     }
@@ -197,7 +198,14 @@ describe('SimulationClassement — Pièces FACTUELLE', () => {
     const { calls } = mockApi({
       ...factuelleRoutes([chambre]),
       [`PUT ${BASE}/faits/pieces/piece-chambre`]: [
-        { body: { code: 'INVALID_REQUEST', message: 'Requête invalide' }, status: 400 },
+        {
+          body: {
+            code: 'INVALID_REQUEST',
+            message: 'Requête invalide',
+            fieldErrors: { surface: 'doit être inférieur à 10000' },
+          },
+          status: 400,
+        },
         { body: mutationResponse([chambre]) },
       ],
     });
@@ -210,6 +218,8 @@ describe('SimulationClassement — Pièces FACTUELLE', () => {
     expect(await within(dialog).findByRole('alert')).toBeInTheDocument();
     expect(screen.getByRole('dialog')).toBe(dialog);
     expect(within(dialog).getByLabelText(/surface/i)).toHaveValue('13');
+    expect(within(dialog).getByLabelText(/surface/i)).toHaveAttribute('aria-invalid', 'true');
+    expect(within(dialog).getByText('doit être inférieur à 10000')).toBeInTheDocument();
     expect(calls.filter(({ method }) => method === 'PUT')).toHaveLength(1);
 
     fireEvent.click(within(dialog).getByRole('button', { name: 'Sauvegarder' }));
@@ -217,7 +227,7 @@ describe('SimulationClassement — Pièces FACTUELLE', () => {
     expect(calls.filter(({ method }) => method === 'PUT')).toHaveLength(2);
   });
 
-  it('relit l’état sans rejouer une création incertaine et signale les pièces apparues', async () => {
+  it('relit l’état sans rejouer une création incertaine et impose une vérification avant un nouvel ajout', async () => {
     const cuisine = piece({
       id: 'piece-cuisine',
       type_piece: 'CUISINE',
@@ -230,8 +240,10 @@ describe('SimulationClassement — Pièces FACTUELLE', () => {
         { body: faitsResponse([chambre]) },
         { body: faitsResponse([chambre, cuisine]) },
       ],
-      [`POST ${BASE}/faits/pieces`]: { body: null, status: 0 },
-      [`GET ${BASE}/faits/evaluation`]: { body: evaluationResponse() },
+      [`POST ${BASE}/faits/pieces`]: [
+        { body: null, status: 0 },
+        { body: mutationResponse([chambre, cuisine]) },
+      ],
     });
     renderSimulation();
 
@@ -243,10 +255,19 @@ describe('SimulationClassement — Pièces FACTUELLE', () => {
 
     expect(await within(dialog).findByText(/cuisine ouverte/i)).toBeInTheDocument();
     expect(calls.filter(({ method }) => method === 'POST')).toHaveLength(1);
-    expect(calls.map(({ method, url }) => `${method} ${url}`)).toEqual(
-      expect.arrayContaining([`GET ${BASE}/faits/evaluation`])
-    );
+    expect(calls.filter(({ method, url }) => method === 'GET' && url === BASE)).toHaveLength(2);
     expect(within(dialog).getByLabelText(/surface/i)).toHaveValue('8');
+
+    const addButton = within(dialog).getByRole('button', { name: 'Ajouter' });
+    expect(addButton).toBeDisabled();
+    fireEvent.click(addButton);
+    expect(calls.filter(({ method }) => method === 'POST')).toHaveLength(1);
+
+    fireEvent.click(within(dialog).getByRole('button', { name: /j’ai vérifié la liste/i }));
+    expect(addButton).toBeEnabled();
+    fireEvent.click(addButton);
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(calls.filter(({ method }) => method === 'POST')).toHaveLength(2);
   });
 
   it('affiche l’alerte de plafond seulement pour la catégorie demandée', async () => {
@@ -325,6 +346,109 @@ describe('SimulationClassement — Pièces FACTUELLE', () => {
     await waitFor(() => expect(calls.some(({ method }) => method === 'PUT')).toBe(true));
     await waitFor(() => expect(capacity).toBeEnabled());
     expect(calls.some(({ url }) => LEGACY_ROUTES.test(url.replace(BASE, '')))).toBe(false);
+  });
+
+  it('ignore la réponse d’un PUT de paramètre lancé avant un changement de simulation', async () => {
+    const otherId = 'simulation-b';
+    const otherBase = `/api/public/simulations/${otherId}`;
+    let releasePut: (response: RouteResponse) => void = () => undefined;
+    mockApi({
+      ...factuelleRoutes([chambre]),
+      [`PUT ${BASE}/capaciteAccueil/3`]: () =>
+        new Promise<RouteResponse>((resolve) => {
+          releasePut = resolve;
+        }),
+      [`GET ${otherBase}`]: {
+        body: {
+          ...factuelleSimulationResponse(evaluationResponse(), { capacite_accueil: 6 }),
+          id: otherId,
+        },
+      },
+      [`GET ${otherBase}/faits`]: {
+        body: faitsResponse([petiteChambre], { capacite_accueil: 6 }),
+      },
+      [`GET ${otherBase}/faits/catalogue`]: { body: catalogueResponse },
+    });
+    renderSimulation();
+
+    fireEvent.click(await screen.findByRole('button', { name: /modifier les paramètres/i }));
+    const capacity = screen.getByLabelText(/capacité d’accueil/i);
+    fireEvent.change(capacity, { target: { value: '3' } });
+    fireEvent.blur(capacity);
+
+    act(() => {
+      window.history.pushState({}, 'Test page', `/simulateur/${otherId}`);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
+    expect(await screen.findByRole('heading', { name: 'Petite chambre' })).toBeInTheDocument();
+
+    await act(async () => {
+      releasePut({
+        body: factuelleSimulationResponse(evaluationResponse(), { capacite_accueil: 3 }),
+      });
+    });
+
+    await waitFor(() => expect(screen.getByLabelText(/capacité d’accueil/i)).toBeEnabled());
+    expect(screen.getByLabelText(/capacité d’accueil/i)).toHaveValue(6);
+    expect(screen.queryByText(/paramètres ont été enregistrés/i)).not.toBeInTheDocument();
+  });
+
+  it('réconcilie les paramètres depuis le backend après un PUT incertain, sans le rejouer', async () => {
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre]),
+      [`PUT ${BASE}/capaciteAccueil/3`]: { body: null, status: 0 },
+    });
+    renderSimulation();
+
+    fireEvent.click(await screen.findByRole('button', { name: /modifier les paramètres/i }));
+    const capacity = screen.getByLabelText(/capacité d’accueil/i);
+    fireEvent.change(capacity, { target: { value: '3' } });
+    fireEvent.blur(capacity);
+
+    await waitFor(() =>
+      expect(calls.filter(({ method, url }) => method === 'GET' && url === BASE)).toHaveLength(2)
+    );
+    await waitFor(() => expect(capacity).toBeEnabled());
+    expect(capacity).toHaveValue(2);
+    expect(calls.filter(({ method }) => method === 'PUT')).toHaveLength(1);
+    expect(calls.some(({ url }) => LEGACY_ROUTES.test(url.replace(BASE, '')))).toBe(false);
+  });
+
+  it('affiche la moyenne globalisée telle que calculée, avec une pièce d’habitation sans couchage', async () => {
+    const bureau = piece({ id: 'piece-bureau', type_piece: 'BUREAU', nom: 'Bureau', surface: 7 });
+    mockApi(
+      factuelleRoutes(
+        [chambre, bureau],
+        evaluationResponse({
+          surfaces: {
+            categorie: '3*',
+            nombre_pieces_habitation: 2,
+            surface_totale: 19,
+            nombre_couchages: 2,
+            minimum_global: 18,
+            minimum_global_atteint: true,
+            diagnostic_moyenne_surface: {
+              applicable: true,
+              piece_ids: ['piece-chambre', 'piece-bureau'],
+              surface_moyenne: 8.5,
+              minimum_moyen: 9,
+              atteint: false,
+            },
+            minima_locaux: [],
+            qualifications_pieces: [],
+          },
+        })
+      )
+    );
+    renderSimulation();
+
+    const diagnostic = (await screen.findByText(/surface moyenne insuffisante/i)).closest(
+      '[role="status"]'
+    );
+    expect(diagnostic).toHaveTextContent('8,5 m²');
+    expect(diagnostic).toHaveTextContent('9 m²');
+    expect(diagnostic).toHaveTextContent(/Chambre parentale, Bureau/);
+    expect(screen.getByRole('heading', { name: 'Bureau' })).toBeInTheDocument();
   });
 
   it('ajoute un couchage depuis le catalogue avec l’aide gigogne, sans appel réseau', async () => {

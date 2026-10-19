@@ -55,6 +55,11 @@ interface FactuellePieceModalProps {
   /** Autre écriture en cours ou actualisation requise : la saisie reste possible, pas l'enregistrement. */
   submitBlocked: boolean;
   message: FactuelleModalMessage | null;
+  /** Erreurs de champ renvoyées par le backend pour la dernière tentative. */
+  serverErrors: FactuelleFieldErrors;
+  /** Pièces apparues depuis une création non confirmée : vérification explicite avant un nouvel ajout. */
+  creationReview: PieceFactuelle[];
+  onAcknowledgeReview: () => void;
   needsRefresh: boolean;
   isRefreshing: boolean;
   helpOpen: boolean;
@@ -98,6 +103,9 @@ export default function FactuellePieceModal({
   saving,
   submitBlocked,
   message,
+  serverErrors,
+  creationReview,
+  onAcknowledgeReview,
   needsRefresh,
   isRefreshing,
   helpOpen,
@@ -126,6 +134,7 @@ export default function FactuellePieceModal({
   const built = useMemo(() => buildFactuellePieceInput(draft, catalogue), [draft, catalogue]);
   const checkedRow = draft.couchages.find((row) => row.id === rowCheckId);
   const errors: FactuelleFieldErrors = {
+    ...serverErrors,
     ...(checkedRow ? buildFactuelleCouchage(checkedRow, catalogue).errors : {}),
     ...(attempted && !built.ok ? built.errors : {}),
   };
@@ -146,6 +155,14 @@ export default function FactuellePieceModal({
     control.focus({ preventScroll: true });
   }, [focusRequest, expandedId]);
 
+  useEffect(() => {
+    const first = Object.keys(serverErrors)[0];
+    if (!first) return;
+    const rowId = couchageIdOf(first);
+    if (rowId) setExpandedId(rowId);
+    setFocusRequest((current) => ({ field: first, nonce: (current?.nonce ?? 0) + 1 }));
+  }, [serverErrors]);
+
   function requestFocus(field: string) {
     const rowId = couchageIdOf(field);
     if (rowId) {
@@ -158,8 +175,10 @@ export default function FactuellePieceModal({
     setDraft((current) => ({ ...current, ...partial }));
   }
 
+  const reviewRequired = creationReview.length > 0;
+
   function submit() {
-    if (saving || submitBlocked) return;
+    if (saving || submitBlocked || reviewRequired) return;
     setAttempted(true);
     if (!built.ok) {
       const firstError = Object.keys(built.errors)[0];
@@ -206,7 +225,7 @@ export default function FactuellePieceModal({
           <button
             type="submit"
             className="factuelle-dialog-submit ui-focus"
-            disabled={saving || submitBlocked}
+            disabled={saving || submitBlocked || reviewRequired}
           >
             {saving && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
             {saving ? 'Enregistrement...' : piece ? 'Sauvegarder' : 'Ajouter'}
@@ -381,6 +400,22 @@ export default function FactuellePieceModal({
           >
             {isRefreshing ? 'Actualisation...' : 'Actualiser les pièces'}
           </button>
+        )}
+        {reviewRequired && (
+          <div className="factuelle-message-warning" role="alert">
+            <p>
+              Pièces apparues depuis l’envoi :{' '}
+              {creationReview.map(getFactuellePieceName).join(', ')}. Vérifiez la liste avant un
+              nouvel ajout.
+            </p>
+            <button
+              type="button"
+              className="factuelle-secondary-action ui-focus mt-3"
+              onClick={onAcknowledgeReview}
+            >
+              J’ai vérifié la liste
+            </button>
+          </div>
         )}
       </div>
     </SimulatorDialog>

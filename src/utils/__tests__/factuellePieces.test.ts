@@ -4,7 +4,7 @@ import {
   moveSanitaire,
   pieceAlerts,
   pieceCompletion,
-  pieceSurfaceAlert,
+  pieceAlert,
   resolveFieldAnchor,
   sectionForTarget,
 } from '../factuellePieces';
@@ -80,39 +80,56 @@ describe('factuellePieces', () => {
     expect(pieceAlerts(evaluation, 'piece-chambre', '5*')).toHaveLength(1);
   });
 
-  it('fait primer l’exclusion des pièces d’habitation et masque le minimum local sous plafond', () => {
-    const surfaces = parseEvaluationFactuelle(
-      evaluationResponse({
-        surfaces: {
-          categorie: '3*',
-          minima_locaux: [
-            {
-              piece_id: 'piece-chambre',
-              applicable: true,
-              surface: 12,
-              minimum: 13,
-              atteint: false,
-            },
-          ],
-          qualifications_pieces: [
-            {
-              piece_id: 'piece-petite',
-              surface: 6,
-              seuil_surface: 7,
-              seuil_atteint: false,
-              ouvrant: null,
-              piece_habitation: false,
-            },
-          ],
-        },
-      })
-    ).surfaces;
+  it('affiche au plus une alerte : exclusion PH, puis plafond, puis minimum local', () => {
     const [principale, petite] = pieces;
     if (!principale || !petite) throw new Error('Pièces de test manquantes');
+    const plafond = (pieceId: string) => ({
+      piece_id: pieceId,
+      code: 'PLAFOND_COUCHAGES_DEPASSE',
+      message: 'Plafond dépassé',
+      categories_concernees: ['3*'],
+    });
+    const evaluation = (alertes: unknown[], minimaLocaux: unknown[] = []) =>
+      parseEvaluationFactuelle(
+        evaluationResponse({
+          alertes_pieces: alertes,
+          surfaces: {
+            categorie: '3*',
+            minima_locaux: minimaLocaux,
+            qualifications_pieces: [
+              {
+                piece_id: 'piece-petite',
+                surface: 6,
+                seuil_surface: 7,
+                seuil_atteint: false,
+                ouvrant: null,
+                piece_habitation: false,
+              },
+            ],
+          },
+        })
+      );
+    const localMinimum = {
+      piece_id: 'piece-chambre',
+      applicable: true,
+      surface: 12,
+      minimum: 13,
+      atteint: false,
+    };
 
-    expect(pieceSurfaceAlert(surfaces, petite, false)?.tone).toBe('warning');
-    expect(pieceSurfaceAlert(surfaces, principale, false)?.tone).toBe('error');
-    expect(pieceSurfaceAlert(surfaces, principale, true)).toBeNull();
+    // Exclusion PH et plafond sur la même pièce : seule l'exclusion est affichée.
+    expect(pieceAlert(evaluation([plafond('piece-petite')]), petite, '3*')).toMatchObject({
+      tone: 'warning',
+      text: expect.stringMatching(/pièce d’habitation/),
+    });
+    // Plafond et minimum local : seul le plafond est affiché.
+    expect(
+      pieceAlert(evaluation([plafond('piece-chambre')], [localMinimum]), principale, '3*')
+    ).toEqual({ tone: 'error', text: 'Plafond dépassé' });
+    // Minimum local seul.
+    expect(pieceAlert(evaluation([], [localMinimum]), principale, '3*')?.text).toMatch(/13 m²/);
+    // Plafond d'une autre catégorie : ignoré.
+    expect(pieceAlert(evaluation([plafond('piece-chambre')]), principale, '5*')).toBeNull();
   });
 
   it('résout la section et le champ d’une cible sans lire la clé opaque', () => {

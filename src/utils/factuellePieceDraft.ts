@@ -416,6 +416,27 @@ export function buildFactuellePieceInput(
 }
 
 /**
+ * Rattache les `fieldErrors` backend (chemins Java camelCase, ex. `couchages[0].nombrePlaces`)
+ * aux champs du formulaire ; l'index d'une ligne de couchage est résolu par le payload envoyé.
+ */
+export function mapServerFieldErrors(
+  fieldErrors: Record<string, string> | undefined,
+  payload: PieceFactuelleInput
+): FactuelleFieldErrors {
+  const errors: FactuelleFieldErrors = {};
+  for (const [path, message] of Object.entries(fieldErrors ?? {})) {
+    const field = path
+      .replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
+      .replace(/^couchages\[(\d+)\]/, (_, index: string) => {
+        const id = payload.couchages[Number(index)]?.id;
+        return id ? `couchages.${id}` : 'couchages';
+      });
+    errors[field] = message;
+  }
+  return errors;
+}
+
+/**
  * Avertissement informatif : dimensions déclarées supérieures mais mesures au plus égales au seuil
  * (douche > 6 400 cm², baignoire > 12 750 cm²). Le backend décide de la cotation.
  */

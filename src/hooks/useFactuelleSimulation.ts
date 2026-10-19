@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { SimulatorApiError } from '../utils/simulatorApi';
-import { getFaits, getFaitsCatalogue, getFaitsEvaluation } from '../utils/simulatorFactuelleApi';
+import {
+  getPublicSimulation,
+  SimulatorApiError,
+  type PublicSimulationDto,
+} from '../utils/simulatorApi';
+import { getFaits, getFaitsCatalogue } from '../utils/simulatorFactuelleApi';
 import {
   parseEvaluationFactuelle,
   type CatalogueFaits,
   type EvaluationFactuelle,
   type FaitsGrille,
   type MutationFaits,
-  type PieceFactuelle,
 } from '../utils/simulatorFactuelle.types';
 
 export interface FactuelleSnapshot {
@@ -30,13 +33,17 @@ export type FactuelleMutationOutcome =
   | { status: 'refused'; error: unknown }
   /**
    * Issue inconnue (réseau, 5xx, réponse illisible) : l'état canonique est relu, jamais l'écriture rejouée.
-   * `newPieces` liste les pièces apparues depuis l'envoi d'une création (`null` si la relecture a échoué).
+   * `reconciled` : la relecture a réussi ; sinon les écritures restent bloquées jusqu'à une actualisation.
    */
-  | { status: 'uncertain'; error: unknown; newPieces: PieceFactuelle[] | null }
+  | { status: 'uncertain'; error: unknown; reconciled: boolean }
   /** Une autre mutation est en cours ou une actualisation est requise. */
   | { status: 'blocked' }
   /** La simulation ou le contexte a changé pendant l'appel : réponse ignorée. */
   | { status: 'stale' };
+
+export type FactuelleParametersOutcome =
+  | { status: 'success'; simulation: PublicSimulationDto }
+  | Exclude<FactuelleMutationOutcome, { status: 'success' }>;
 
 function isCertainRefusal(error: unknown): boolean {
   return error instanceof SimulatorApiError && error.status >= 400 && error.status < 500;
@@ -58,8 +65,12 @@ export function readEvaluation(value: unknown): EvaluationFactuelle | null {
 /**
  * État FACTUELLE d'une simulation publique. Toutes les écritures (pièces et paramètres) passent par
  * un verrou unique ; une réponse arrivée après un changement de simulation est ignorée.
+ * `onSimulationReconciled` reçoit la simulation relue (paramètres, statut) après une actualisation.
  */
-export function useFactuelleSimulation(simulationId: string | undefined) {
+export function useFactuelleSimulation(
+  simulationId: string | undefined,
+  onSimulationReconciled?: (simulation: PublicSimulationDto) => void
+) {
   const [snapshot, setSnapshot] = useState<FactuelleSnapshot | null>(null);
   const [pending, setPending] = useState<FactuellePendingMutation | null>(null);
   const [needsRefresh, setNeedsRefresh] = useState(false);
@@ -69,10 +80,15 @@ export function useFactuelleSimulation(simulationId: string | undefined) {
   const snapshotRef = useRef<FactuelleSnapshot | null>(null);
   const lockRef = useRef(false);
   const needsRefreshRef = useRef(false);
+  const onSimulationReconciledRef = useRef(onSimulationReconciled);
 
   useEffect(() => {
     snapshotRef.current = snapshot;
   }, [snapshot]);
+
+  useEffect(() => {
+    onSimulationReconciledRef.current = onSimulationReconciled;
+  });
 
   useEffect(() => {
     sessionRef.current += 1;
@@ -106,7 +122,7 @@ export function useFactuelleSimulation(simulationId: string | undefined) {
     [markNeedsRefresh]
   );
 
-  /** Relecture canonique (faits + évaluation), sans aucune écriture. */
+  /** Relecture canonique (simulation avec paramètres et évaluation, puis faits), sans aucune écriture. */
   const refresh = useCallback(async (): Promise<FactuelleSnapshot | null> => {
     const id = simulationIdRef.current;
     const current = snapshotRef.current;
@@ -117,14 +133,15 @@ export function useFactuelleSimulation(simulationId: string | undefined) {
     const session = sessionRef.current;
     setIsRefreshing(true);
     try {
-      const [faits, evaluation] = await Promise.all([getFaits(id), getFaitsEvaluation(id)]);
+      const [simulation, faits] = await Promise.all([getPublicSimulation(id), getFaits(id)]);
       if (session !== sessionRef.current) {
         return null;
       }
 
-      const next = { ...current, faits, evaluation };
+      const next = { ...current, faits, evaluation: readEvaluation(simulation.grille?.evaluation) };
       setSnapshot(next);
       markNeedsRefresh(false);
+      onSimulationReconciledRef.current?.(simulation);
       return next;
     } catch {
       if (session === sessionRef.current) {
@@ -169,9 +186,6 @@ export function useFactuelleSimulation(simulationId: string | undefined) {
       }
 
       const session = sessionRef.current;
-      const previousIds = new Set(
-        snapshotRef.current?.faits.logement.pieces.map((piece) => piece.id)
-      );
       try {
         const result = await operation(id);
         if (session !== sessionRef.current) {
@@ -195,14 +209,7 @@ export function useFactuelleSimulation(simulationId: string | undefined) {
         if (session !== sessionRef.current) {
           return { status: 'stale' };
         }
-        const newPieces = reloaded
-          ? reloaded.faits.logement.pieces.filter((piece) => !previousIds.has(piece.id))
-          : null;
-        return {
-          status: 'uncertain',
-          error,
-          newPieces: mutation.kind === 'create' ? newPieces : [],
-        };
+        return { status: 'uncertain', error, reconciled: reloaded !== null };
       } finally {
         release(session);
       }
@@ -210,40 +217,68 @@ export function useFactuelleSimulation(simulationId: string | undefined) {
     [acquire, markNeedsRefresh, refresh, release]
   );
 
-  /** Paramètre enregistré : la réponse porte l'évaluation recalculée, sans relecture des faits. */
-  const applyParameters = useCallback(
-    (parametres: Partial<FaitsGrille['parametres']>, evaluation: EvaluationFactuelle | null) => {
-      setSnapshot((current) =>
-        current
-          ? {
-              ...current,
-              faits: {
-                ...current.faits,
-                parametres: { ...current.faits.parametres, ...parametres },
-              },
-              evaluation,
-            }
-          : current
-      );
-    },
-    []
-  );
-
-  /** Verrou partagé avec les mutations de paramètres de la page. */
-  const runExclusive = useCallback(
-    async <T>(operation: () => Promise<T>): Promise<T | null> => {
-      if (!acquire({ kind: 'parameters' })) {
-        return null;
+  /**
+   * PUT d'un paramètre, sous le même verrou que les pièces. La réponse porte l'évaluation recalculée ;
+   * une issue incertaine relit simulation et faits sans rejouer l'écriture.
+   */
+  const mutateParameters = useCallback(
+    async (operation: () => Promise<PublicSimulationDto>): Promise<FactuelleParametersOutcome> => {
+      if (!simulationIdRef.current || !acquire({ kind: 'parameters' })) {
+        return { status: 'blocked' };
       }
 
       const session = sessionRef.current;
       try {
-        return await operation();
+        const simulation = await operation();
+        if (session !== sessionRef.current) {
+          return { status: 'stale' };
+        }
+
+        const grille = simulation.grille;
+        const evaluation = readEvaluation(grille?.evaluation);
+        setSnapshot((current) =>
+          current
+            ? {
+                ...current,
+                faits: {
+                  ...current.faits,
+                  parametres: {
+                    ...current.faits.parametres,
+                    categorie_demandee: grille?.categorie_demandee ?? null,
+                    capacite_accueil: grille?.capacite_accueil ?? null,
+                    etage: grille?.etage ?? null,
+                    type_habitation: grille?.type_habitation ?? null,
+                    studio: grille?.studio ?? null,
+                    parametres_manquants: grille?.parametres_manquants ?? [],
+                  },
+                },
+                evaluation,
+              }
+            : current
+        );
+        if (!evaluation) {
+          void refresh();
+        }
+        return { status: 'success', simulation };
+      } catch (error) {
+        if (session !== sessionRef.current) {
+          return { status: 'stale' };
+        }
+        if (isCertainRefusal(error)) {
+          return { status: 'refused', error };
+        }
+
+        markNeedsRefresh(true);
+        const reloaded = await refresh();
+        if (session !== sessionRef.current) {
+          return { status: 'stale' };
+        }
+        return { status: 'uncertain', error, reconciled: reloaded !== null };
       } finally {
         release(session);
       }
     },
-    [acquire, release]
+    [acquire, markNeedsRefresh, refresh, release]
   );
 
   return {
@@ -254,8 +289,7 @@ export function useFactuelleSimulation(simulationId: string | undefined) {
     load,
     refresh,
     mutate,
-    applyParameters,
-    runExclusive,
+    mutateParameters,
   };
 }
 

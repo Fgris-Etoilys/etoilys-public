@@ -750,7 +750,8 @@ export default function SimulationClassement() {
   const latestParameterSaveRequestIdRef = useRef(0);
   const latestGridModelRequestIdRef = useRef(0);
   const latestLoadRequestIdRef = useRef(0);
-  const factuelle = useFactuelleSimulation(simulationId);
+  // Une relecture FACTUELLE (issue incertaine, actualisation) rapporte aussi paramètres et statut.
+  const factuelle = useFactuelleSimulation(simulationId, setSimulation);
   const loadFactuelle = factuelle.load;
   const [factuellePiecesTarget, setFactuellePiecesTarget] = useState<FactuellePieceTarget | null>(
     null
@@ -768,7 +769,8 @@ export default function SimulationClassement() {
   // Le mode est attribué par le backend et immuable : FACTUELLE n'appelle aucune route LEGACY.
   const isFactuelle = simulation !== null && resolveGridMode(simulation) === 'FACTUELLE';
   const factuelleSnapshot = isFactuelle ? factuelle.snapshot : null;
-  const isFactuelleMutating = isFactuelle && factuelle.pending !== null;
+  const isFactuelleWriteLocked =
+    isFactuelle && (factuelle.pending !== null || factuelle.needsRefresh);
 
   const loadSimulation = useCallback(async () => {
     if (!simulationId) {
@@ -1486,69 +1488,60 @@ export default function SimulationClassement() {
 
   /**
    * FACTUELLE : la réponse du PUT porte les paramètres et l'évaluation recalculée, sans relecture de
-   * `/logement` ni recalcul LEGACY. Le verrou unique empêche une écriture de pièce concurrente.
+   * `/logement` ni recalcul LEGACY. Le hook sérialise les écritures, ignore une réponse arrivée après
+   * un changement de simulation et relit l'état canonique après une issue incertaine, sans rejeu.
    */
   async function applyFactuelleParameterMutation(
     mutation: () => Promise<PublicSimulationDto>
   ): Promise<void> {
     const requestId = latestParameterSaveRequestIdRef.current + 1;
     latestParameterSaveRequestIdRef.current = requestId;
-    const isCurrentRequest = () => latestParameterSaveRequestIdRef.current === requestId;
 
     setIsSavingParameters(true);
     setParameterErrors({});
     showToast('Enregistrement des paramètres...', { type: 'info', durationMs: 1500 });
 
-    try {
-      const nextSimulation = await factuelle.runExclusive(mutation);
-      if (!isCurrentRequest()) {
+    const outcome = await factuelle.mutateParameters(mutation);
+    if (latestParameterSaveRequestIdRef.current !== requestId) {
+      return;
+    }
+    setIsSavingParameters(false);
+
+    switch (outcome.status) {
+      case 'success':
+        setSimulation(outcome.simulation);
+        setParameterForm(createSimulationParametersForm(outcome.simulation.grille));
+        markResultStale();
+        showToast('Les paramètres ont été enregistrés.', { type: 'success' });
         return;
-      }
-      if (nextSimulation === null) {
+      case 'refused':
+        setParameterForm(createSimulationParametersForm(grille));
+        showToast(
+          getSimulatorApiErrorMessage(
+            outcome.error,
+            'Les paramètres n’ont pas pu être enregistrés. Veuillez réessayer.',
+            'saveParameters'
+          ),
+          { type: 'error' }
+        );
+        return;
+      case 'uncertain':
+        markResultStale();
+        showToast(
+          outcome.reconciled
+            ? 'L’enregistrement des paramètres n’a pas pu être confirmé. Les valeurs enregistrées ont été rechargées.'
+            : 'L’enregistrement des paramètres n’a pas pu être confirmé. Actualisez les pièces avant de continuer.',
+          { type: 'error' }
+        );
+        return;
+      case 'blocked':
         setParameterForm(createSimulationParametersForm(grille));
         showToast('Une autre modification est en cours. Réessayez dans un instant.', {
           type: 'info',
         });
         return;
-      }
-
-      const nextGrille = nextSimulation.grille;
-      setSimulation(nextSimulation);
-      setParameterForm(createSimulationParametersForm(nextGrille));
-      const evaluation = readEvaluation(nextGrille?.evaluation);
-      factuelle.applyParameters(
-        {
-          categorie_demandee: nextGrille?.categorie_demandee ?? null,
-          capacite_accueil: nextGrille?.capacite_accueil ?? null,
-          etage: nextGrille?.etage ?? null,
-          type_habitation: nextGrille?.type_habitation ?? null,
-          studio: nextGrille?.studio ?? null,
-          parametres_manquants: nextGrille?.parametres_manquants ?? [],
-        },
-        evaluation
-      );
-      if (!evaluation) {
-        void factuelle.refresh();
-      }
-      markResultStale();
-      showToast('Les paramètres ont été enregistrés.', { type: 'success' });
-    } catch (error) {
-      if (!isCurrentRequest()) {
+      case 'stale':
         return;
-      }
-      setParameterForm(createSimulationParametersForm(grille));
-      showToast(
-        getSimulatorApiErrorMessage(
-          error,
-          'Les paramètres n’ont pas pu être enregistrés. Veuillez réessayer.',
-          'saveParameters'
-        ),
-        { type: 'error' }
-      );
-    } finally {
-      if (isCurrentRequest()) {
-        setIsSavingParameters(false);
-      }
     }
   }
 
@@ -2313,7 +2306,7 @@ export default function SimulationClassement() {
                       label="Classement demandé"
                       options={REQUESTED_CATEGORY_OPTIONS}
                       value={parameterForm.requestedCategory}
-                      disabled={isSavingParameters || isFactuelleMutating}
+                      disabled={isSavingParameters || isFactuelleWriteLocked}
                       onChange={handleRequestedCategoryChange}
                     />
 
@@ -2324,7 +2317,7 @@ export default function SimulationClassement() {
                       inputMode="numeric"
                       min="1"
                       value={parameterForm.capacity}
-                      disabled={isSavingParameters || isFactuelleMutating}
+                      disabled={isSavingParameters || isFactuelleWriteLocked}
                       onChange={handleCapacityChange}
                       onBlur={handleCapacityBlur}
                       error={parameterErrors.capacity}
@@ -2336,7 +2329,7 @@ export default function SimulationClassement() {
                       label="Type d’habitation"
                       options={HOUSING_TYPE_OPTIONS}
                       value={parameterForm.housingType}
-                      disabled={isSavingParameters || isFactuelleMutating}
+                      disabled={isSavingParameters || isFactuelleWriteLocked}
                       onChange={handleHousingTypeChange}
                     />
 
@@ -2346,7 +2339,7 @@ export default function SimulationClassement() {
                       label="Étage"
                       options={FLOOR_OPTIONS}
                       value={parameterForm.floor}
-                      disabled={isSavingParameters || isFactuelleMutating}
+                      disabled={isSavingParameters || isFactuelleWriteLocked}
                       onChange={handleFloorChange}
                     />
                   </div>

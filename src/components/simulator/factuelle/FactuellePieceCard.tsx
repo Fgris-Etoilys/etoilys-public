@@ -22,11 +22,9 @@ import {
 import {
   formatFactuellePieceType,
   getFactuellePieceName,
-  pieceAlerts,
   pieceCompletion,
-  pieceSurfaceAlert,
+  pieceAlert,
   sanitaireUsedInGrid,
-  surfacesForCategory,
 } from '../../../utils/factuellePieces';
 import type {
   EvaluationFactuelle,
@@ -81,12 +79,7 @@ export default function FactuellePieceCard({
   const name = getFactuellePieceName(piece);
   const Icon = PIECE_ICONS[piece.type_piece];
   const completion = pieceCompletion(evaluation, piece.id);
-  const alerts = pieceAlerts(evaluation, piece.id, category);
-  const surfaceAlert = pieceSurfaceAlert(
-    surfacesForCategory(evaluation, category),
-    piece,
-    alerts.some((alert) => alert.code === 'PLAFOND_COUCHAGES_DEPASSE')
-  );
+  const alert = pieceAlert(evaluation, piece, category);
   const sanitaryUsage = priority ? sanitaireUsedInGrid(evaluation, piece.id, category) : null;
   const hasCouchages = piece.couchages.length > 0;
 
@@ -160,17 +153,12 @@ export default function FactuellePieceCard({
             <AlertCircle aria-hidden="true" className="h-4 w-4 shrink-0" />À compléter
           </p>
         )}
-        {alerts.map((alert) => (
-          <p key={alert.code} className="mt-2 text-sm text-alert-400" role="note">
-            {alert.message}
-          </p>
-        ))}
-        {surfaceAlert && (
+        {alert && (
           <p
-            className={`mt-2 text-sm ${surfaceAlert.tone === 'error' ? 'text-alert-400' : 'text-warning-500'}`}
+            className={`mt-2 text-sm ${alert.tone === 'error' ? 'text-alert-400' : 'text-warning-500'}`}
             role="note"
           >
-            {surfaceAlert.text}
+            {alert.text}
           </p>
         )}
       </div>

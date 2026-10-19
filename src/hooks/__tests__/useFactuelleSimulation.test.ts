@@ -1,13 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { useFactuelleSimulation } from '../useFactuelleSimulation';
-import { SimulatorApiError } from '../../utils/simulatorApi';
+import { SimulatorApiError, type PublicSimulationDto } from '../../utils/simulatorApi';
 import { parseMutationFaits } from '../../utils/simulatorFactuelle.types';
 import {
   catalogueResponse,
   chambre,
   evaluationResponse,
   FACTUELLE_SIMULATION_ID,
+  factuelleSimulationResponse,
   faitsResponse,
   mutationResponse,
   piece,
@@ -16,20 +17,38 @@ import {
 const jsonResponse = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
-function mockFetchByUrl(handler: (url: string, init?: RequestInit) => Promise<Response>) {
-  return vi
-    .spyOn(globalThis, 'fetch')
-    .mockImplementation((input, init) => handler(String(input), init));
+const SIMULATION_URL = `/api/public/simulations/${FACTUELLE_SIMULATION_ID}`;
+
+/** Lectures : simulation, faits et catalogue ; `pieces()` permet de faire évoluer les faits relus. */
+function mockReads(
+  pieces: () => Record<string, unknown>[] = () => [chambre],
+  simulation = factuelleSimulationResponse()
+) {
+  return vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+    const url = String(input);
+    if (url.endsWith('/faits/catalogue')) return jsonResponse(catalogueResponse);
+    if (url.endsWith('/faits')) return jsonResponse(faitsResponse(pieces()));
+    if (url === SIMULATION_URL) return jsonResponse(simulation);
+    throw new TypeError(`Unexpected fetch call: ${url}`);
+  });
 }
 
-async function renderLoaded(simulationId = FACTUELLE_SIMULATION_ID) {
-  const hook = renderHook(({ id }) => useFactuelleSimulation(id), {
-    initialProps: { id: simulationId },
+async function renderLoaded(onSimulationReconciled?: (simulation: PublicSimulationDto) => void) {
+  const hook = renderHook(({ id }) => useFactuelleSimulation(id, onSimulationReconciled), {
+    initialProps: { id: FACTUELLE_SIMULATION_ID },
   });
   await act(async () => {
-    await hook.result.current.load(simulationId, null);
+    await hook.result.current.load(FACTUELLE_SIMULATION_ID, null);
   });
   return hook;
+}
+
+function deferred<T>() {
+  let resolve: (value: T) => void = () => undefined;
+  const promise = new Promise<T>((done) => {
+    resolve = done;
+  });
+  return { promise, resolve };
 }
 
 const nouvelleCuisine = piece({ id: 'piece-cuisine', type_piece: 'CUISINE', surface: 8 });
@@ -40,68 +59,49 @@ describe('useFactuelleSimulation', () => {
   });
 
   it('charge faits et catalogue sans relire l’évaluation', async () => {
-    const fetchMock = mockFetchByUrl(async (url) =>
-      url.endsWith('/faits/catalogue')
-        ? jsonResponse(catalogueResponse)
-        : jsonResponse(faitsResponse())
-    );
+    const fetchMock = mockReads();
     const { result } = await renderLoaded();
 
     expect(result.current.snapshot?.faits.logement.pieces).toHaveLength(1);
     expect(fetchMock.mock.calls.map(([url]) => String(url)).sort()).toEqual([
-      `/api/public/simulations/${FACTUELLE_SIMULATION_ID}/faits`,
-      `/api/public/simulations/${FACTUELLE_SIMULATION_ID}/faits/catalogue`,
+      `${SIMULATION_URL}/faits`,
+      `${SIMULATION_URL}/faits/catalogue`,
     ]);
   });
 
-  it('refuse une seconde écriture pendant qu’une première est en cours', async () => {
-    mockFetchByUrl(async (url) =>
-      url.endsWith('/faits/catalogue')
-        ? jsonResponse(catalogueResponse)
-        : jsonResponse(faitsResponse())
-    );
+  it('refuse une seconde écriture, pièce ou paramètre, pendant qu’une première est en cours', async () => {
+    mockReads();
     const { result } = await renderLoaded();
-    let resolveFirst: ((value: ReturnType<typeof parseMutationFaits>) => void) | undefined;
-    const operation = vi.fn(
-      () =>
-        new Promise<ReturnType<typeof parseMutationFaits>>((resolve) => {
-          resolveFirst = resolve;
-        })
-    );
+    const first = deferred<ReturnType<typeof parseMutationFaits>>();
+    const operation = vi.fn(() => first.promise);
+    const parameterOperation = vi.fn();
 
-    let first: Promise<unknown> | undefined;
+    let pendingMutation: Promise<unknown> | undefined;
     act(() => {
-      first = result.current.mutate({ kind: 'create' }, operation);
+      pendingMutation = result.current.mutate({ kind: 'create' }, operation);
     });
     let second: unknown;
-    await act(async () => {
-      second = await result.current.mutate({ kind: 'create' }, operation);
-    });
-    const parametersRun = vi.fn();
     let parameters: unknown;
     await act(async () => {
-      parameters = await result.current.runExclusive(async () => parametersRun());
+      second = await result.current.mutate({ kind: 'create' }, operation);
+      parameters = await result.current.mutateParameters(parameterOperation);
     });
 
     expect(second).toEqual({ status: 'blocked' });
-    expect(parameters).toBeNull();
-    expect(parametersRun).not.toHaveBeenCalled();
+    expect(parameters).toEqual({ status: 'blocked' });
+    expect(parameterOperation).not.toHaveBeenCalled();
     expect(operation).toHaveBeenCalledTimes(1);
 
     await act(async () => {
-      resolveFirst?.(parseMutationFaits(mutationResponse([chambre, nouvelleCuisine])));
-      await first;
+      first.resolve(parseMutationFaits(mutationResponse([chambre, nouvelleCuisine])));
+      await pendingMutation;
     });
     expect(result.current.pending).toBeNull();
     expect(result.current.snapshot?.faits.logement.pieces).toHaveLength(2);
   });
 
   it('ne relit rien après un refus certain du backend', async () => {
-    const fetchMock = mockFetchByUrl(async (url) =>
-      url.endsWith('/faits/catalogue')
-        ? jsonResponse(catalogueResponse)
-        : jsonResponse(faitsResponse())
-    );
+    const fetchMock = mockReads();
     const { result } = await renderLoaded();
     fetchMock.mockClear();
 
@@ -117,36 +117,36 @@ describe('useFactuelleSimulation', () => {
     expect(result.current.needsRefresh).toBe(false);
   });
 
-  it('relit l’état canonique sans rejouer une création incertaine et signale les nouvelles pièces', async () => {
-    const fetchMock = mockFetchByUrl(async (url) => {
-      if (url.endsWith('/faits/catalogue')) return jsonResponse(catalogueResponse);
-      if (url.endsWith('/faits/evaluation')) return jsonResponse(evaluationResponse());
-      return jsonResponse(
-        faitsResponse(fetchMock.mock.calls.length > 2 ? [chambre, nouvelleCuisine] : [chambre])
-      );
-    });
+  it('relit simulation et faits sans rejouer une création incertaine', async () => {
+    let created = false;
+    mockReads(() => (created ? [chambre, nouvelleCuisine] : [chambre]));
     const { result } = await renderLoaded();
-    const create = vi.fn(() => Promise.reject(new TypeError('Failed to fetch')));
+    const create = vi.fn(() => {
+      created = true;
+      return Promise.reject(new TypeError('Failed to fetch'));
+    });
 
-    let outcome: { status: string; newPieces?: Array<{ id: string }> | null } | undefined;
+    let outcome: unknown;
     await act(async () => {
-      outcome = (await result.current.mutate({ kind: 'create' }, create)) as typeof outcome;
+      outcome = await result.current.mutate({ kind: 'create' }, create);
     });
 
     expect(create).toHaveBeenCalledTimes(1);
-    expect(outcome?.status).toBe('uncertain');
-    expect(outcome?.newPieces?.map((entry) => entry.id)).toEqual(['piece-cuisine']);
+    expect(outcome).toMatchObject({ status: 'uncertain', reconciled: true });
     expect(result.current.needsRefresh).toBe(false);
-    expect(result.current.snapshot?.faits.logement.pieces).toHaveLength(2);
+    expect(result.current.snapshot?.faits.logement.pieces.map((entry) => entry.id)).toEqual([
+      'piece-chambre',
+      'piece-cuisine',
+    ]);
   });
 
   it('bloque les écritures tant que la relecture après une issue incertaine échoue', async () => {
     let failReads = false;
-    mockFetchByUrl(async (url) => {
-      if (url.endsWith('/faits/catalogue')) return jsonResponse(catalogueResponse);
-      if (failReads) return Promise.reject(new TypeError('Failed to fetch'));
-      if (url.endsWith('/faits/evaluation')) return jsonResponse(evaluationResponse());
-      return jsonResponse(faitsResponse());
+    const fetchMock = mockReads();
+    const reads = fetchMock.getMockImplementation();
+    fetchMock.mockImplementation(async (input, init) => {
+      if (failReads) throw new TypeError('Failed to fetch');
+      return reads ? reads(input, init) : jsonResponse(null);
     });
     const { result } = await renderLoaded();
     failReads = true;
@@ -157,7 +157,7 @@ describe('useFactuelleSimulation', () => {
         Promise.reject(new SimulatorApiError(502))
       );
     });
-    expect(outcome).toMatchObject({ status: 'uncertain', newPieces: null });
+    expect(outcome).toMatchObject({ status: 'uncertain', reconciled: false });
     expect(result.current.needsRefresh).toBe(true);
 
     const blocked = vi.fn();
@@ -175,34 +175,90 @@ describe('useFactuelleSimulation', () => {
     expect(result.current.needsRefresh).toBe(false);
   });
 
-  it('ignore une réponse arrivée après un changement de simulation', async () => {
-    mockFetchByUrl(async (url) =>
-      url.endsWith('/faits/catalogue')
-        ? jsonResponse(catalogueResponse)
-        : jsonResponse(faitsResponse())
-    );
+  it('ignore une écriture de pièce terminée après un changement de simulation', async () => {
+    mockReads();
     const hook = await renderLoaded();
-    let resolveLate: ((value: ReturnType<typeof parseMutationFaits>) => void) | undefined;
+    const late = deferred<ReturnType<typeof parseMutationFaits>>();
     let pendingMutation: Promise<unknown> | undefined;
     act(() => {
-      pendingMutation = hook.result.current.mutate(
-        { kind: 'create' },
-        () =>
-          new Promise((resolve) => {
-            resolveLate = resolve;
-          })
-      );
+      pendingMutation = hook.result.current.mutate({ kind: 'create' }, () => late.promise);
     });
 
     hook.rerender({ id: 'autre-simulation' });
     let outcome: unknown;
     await act(async () => {
-      resolveLate?.(parseMutationFaits(mutationResponse([chambre, nouvelleCuisine])));
+      late.resolve(parseMutationFaits(mutationResponse([chambre, nouvelleCuisine])));
       outcome = await pendingMutation;
     });
 
     expect(outcome).toEqual({ status: 'stale' });
     expect(hook.result.current.snapshot).toBeNull();
     await waitFor(() => expect(hook.result.current.pending).toBeNull());
+  });
+
+  it('applique paramètres et évaluation renvoyés par un PUT de paramètre', async () => {
+    mockReads();
+    const { result } = await renderLoaded();
+    const saved = factuelleSimulationResponse(
+      evaluationResponse({
+        surfaces: { categorie: '4*', minima_locaux: [], qualifications_pieces: [] },
+      }),
+      { categorie_demandee: '4*' }
+    );
+
+    let outcome: unknown;
+    await act(async () => {
+      outcome = await result.current.mutateParameters(async () => saved);
+    });
+
+    expect(outcome).toEqual({ status: 'success', simulation: saved });
+    expect(result.current.snapshot?.faits.parametres.categorie_demandee).toBe('4*');
+    expect(result.current.snapshot?.evaluation?.surfaces?.categorie).toBe('4*');
+  });
+
+  it('ignore un PUT de paramètre lancé sur une autre simulation', async () => {
+    mockReads();
+    const hook = await renderLoaded();
+    const late = deferred<PublicSimulationDto>();
+    let pendingMutation: Promise<unknown> | undefined;
+    act(() => {
+      pendingMutation = hook.result.current.mutateParameters(() => late.promise);
+    });
+
+    hook.rerender({ id: 'autre-simulation' });
+    await act(async () => {
+      await hook.result.current.load('autre-simulation', null);
+    });
+    const otherSnapshot = hook.result.current.snapshot;
+    let outcome: unknown;
+    await act(async () => {
+      late.resolve(factuelleSimulationResponse(evaluationResponse(), { capacite_accueil: 9 }));
+      outcome = await pendingMutation;
+    });
+
+    expect(outcome).toEqual({ status: 'stale' });
+    expect(hook.result.current.snapshot).toBe(otherSnapshot);
+    expect(hook.result.current.snapshot?.faits.parametres.capacite_accueil).toBe(2);
+  });
+
+  it('réconcilie simulation et paramètres après un PUT de paramètre incertain, sans le rejouer', async () => {
+    const serverSimulation = factuelleSimulationResponse(evaluationResponse(), {
+      capacite_accueil: 3,
+    });
+    mockReads(() => [chambre], serverSimulation);
+    const onSimulationReconciled = vi.fn();
+    const { result } = await renderLoaded(onSimulationReconciled);
+    const operation = vi.fn(() => Promise.reject(new SimulatorApiError(503)));
+
+    let outcome: unknown;
+    await act(async () => {
+      outcome = await result.current.mutateParameters(operation);
+    });
+
+    expect(operation).toHaveBeenCalledTimes(1);
+    expect(outcome).toMatchObject({ status: 'uncertain', reconciled: true });
+    expect(onSimulationReconciled).toHaveBeenCalledWith(serverSimulation);
+    expect(result.current.needsRefresh).toBe(false);
+    expect(result.current.pending).toBeNull();
   });
 });

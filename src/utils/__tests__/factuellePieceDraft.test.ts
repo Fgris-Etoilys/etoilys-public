@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildFactuellePieceInput,
   createFactuellePieceDraft,
+  mapServerFieldErrors,
   sanitaryDimensionsUnconfirmed,
   withCouchageType,
   type FactuellePieceDraft,
@@ -167,6 +168,30 @@ describe('factuellePieceDraft', () => {
     expect(payload.surface).toBe(0);
     expect(payload.sanitaires?.douche?.protection).toBe('RIDEAU_SEUL');
     expect(payload.inspection?.seche_cheveux).toBe(0);
+  });
+
+  it('rattache les erreurs de champ du backend aux champs du formulaire', () => {
+    const payload = buildPayload(
+      draftWithBed('SIMPLE_FIXE', { largeur_cm: '90', longueur_cm: '190' })
+    );
+
+    expect(
+      mapServerFieldErrors(
+        {
+          surface: 'doit être positif',
+          'couchages[0].nombrePlaces': 'doit être positif',
+          'sanitaires.douche.largeurCm': 'doit être positif',
+          'couchages[5].largeurCm': 'ligne inconnue',
+        },
+        payload
+      )
+    ).toEqual({
+      surface: 'doit être positif',
+      'couchages.33333333-3333-4333-8333-333333333333.nombre_places': 'doit être positif',
+      'sanitaires.douche.largeur_cm': 'doit être positif',
+      'couchages.largeur_cm': 'ligne inconnue',
+    });
+    expect(mapServerFieldErrors(undefined, payload)).toEqual({});
   });
 
   it('signale des dimensions supérieures non confirmées seulement à seuil atteint ou en dessous', () => {
