@@ -21,6 +21,8 @@ Exigence backend : la configuration CORS de `api-prod.etoilys.fr` doit autoriser
 ## Client frontend
 
 Toutes les actions du simulateur public doivent passer par `src/utils/simulatorApi.ts`.
+Les simulations en mode FACTUELLE (faits du logement, ETOILYS-436/437) utilisent en plus
+`src/utils/simulatorFactuelleApi.ts` ; voir `docs/tech/simulateur-factuelle.md`.
 La grille de contrôle affichée dans `/simulateur/:simulationId` est chargée depuis
 `GET /public/simulations/modele`; le frontend ne doit pas utiliser de copie locale de la grille
 comme fallback runtime.

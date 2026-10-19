@@ -24,7 +24,8 @@ import {
   type GridCriterion,
   type GridSummary,
 } from '../../content/simulatorGrid';
-import type { CritereAide, CriteresAides } from '../../content/criteresAide';
+import type { CritereAide } from '../../content/criteresAide';
+import { getCachedCriterionHelp, loadCriterionHelp } from '../../utils/criterionHelp';
 import {
   submitResponse,
   type CriterionStatus,
@@ -94,43 +95,6 @@ const RESPONSE_SAVE_MAX_ATTEMPTS = 3;
 const RESPONSE_SAVE_RETRY_DELAY_MS = 150;
 const RESPONSE_SAVE_ERROR_MESSAGE =
   'La réponse n’a pas pu être enregistrée. Vérifiez votre connexion puis réessayez.';
-
-let criterionHelpCache: CriteresAides | null = null;
-let criterionHelpPromise: Promise<CriteresAides> | null = null;
-let hasPreloadedCriterionHelpImages = false;
-
-function preloadCriterionHelpImages(criteresAides: CriteresAides) {
-  if (hasPreloadedCriterionHelpImages || typeof Image === 'undefined') {
-    return;
-  }
-
-  hasPreloadedCriterionHelpImages = true;
-  const imageSources = new Set(
-    Object.values(criteresAides)
-      .map((aide) => aide.illustration)
-      .filter((illustration): illustration is string => typeof illustration === 'string')
-  );
-
-  imageSources.forEach((source) => {
-    const image = new Image();
-    image.decoding = 'async';
-    image.src = source;
-  });
-}
-
-function loadCriterionHelp(): Promise<CriteresAides> {
-  if (criterionHelpCache) {
-    return Promise.resolve(criterionHelpCache);
-  }
-
-  criterionHelpPromise ??= import('../../content/criteresAide').then(({ criteresAides }) => {
-    criterionHelpCache = criteresAides;
-    preloadCriterionHelpImages(criteresAides);
-    return criteresAides;
-  });
-
-  return criterionHelpPromise;
-}
 
 function getResponsesByCriterionNumber(responses: ReponseDto[]): Map<number, ReponseDto> {
   return new Map(
@@ -1253,6 +1217,7 @@ export default function SimulationGridTab({
 
   function handleOpenCriterionHelp(criterion: GridCriterion) {
     const criterionHelpKey = String(criterion.num_critere);
+    const criterionHelpCache = getCachedCriterionHelp();
     const cachedAide = criterionHelpCache?.[criterionHelpKey] ?? null;
     const criterionStatus = getEffectiveCriterionStatus(
       criterion,
