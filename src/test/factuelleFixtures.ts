@@ -69,12 +69,170 @@ export const catalogueResponse = {
   ],
   technologies_cuisson: ['INDUCTION', 'VITROCERAMIQUE', 'GAZ', 'ELECTRIQUE_CLASSIQUE'],
   protections_sanitaires: ['CONFORME_SANS_RIDEAU', 'RIDEAU_SEUL', 'INSUFFISANTE'],
-  configurations_four_micro_ondes: [],
-  types_chauffage: [],
-  mesures_energie: [],
-  mesures_eau: [],
-  inventaires: [],
+  configurations_four_micro_ondes: [
+    'AUCUN',
+    'FOUR_SEUL',
+    'MICRO_ONDES_SEUL',
+    'COMBINE_SEUL',
+    'APPAREILS_DISTINCTS',
+  ],
+  types_chauffage: [
+    { id: 'ELECTRIQUE_FIXE', libelle: 'Électrique fixe' },
+    { id: 'POMPE_A_CHALEUR', libelle: 'Pompe à chaleur' },
+    { id: 'AUTRE', libelle: 'Autre' },
+  ],
+  mesures_energie: [
+    { id: 'VITRAGE', libelle: 'Double ou triple vitrage' },
+    { id: 'POMPE_A_CHALEUR', libelle: 'Pompe à chaleur' },
+    { id: 'ISOLATION', libelle: 'Isolation' },
+  ],
+  mesures_eau: [{ id: 'MOUSSEURS', libelle: 'Mousseurs' }],
+  inventaires: [
+    {
+      num_critere: 63,
+      items: [
+        { id: 'ASSIETTES_PLATES', libelle: 'Assiettes plates', groupe: null, minimum: 4 },
+        { id: 'VERRES_EAU', libelle: 'Verres à eau', groupe: null, minimum: 4 },
+      ],
+    },
+  ],
 };
+
+const CATEGORIES = ['1*', '2*', '3*', '4*', '5*'];
+
+/** Cotation d'un critère dans les cinq catégories (statut réglementaire par catégorie). */
+export function critere(
+  numero: number,
+  overrides: Json = {},
+  statuts: string[] = CATEGORIES.map(() => 'OBLIGATOIRE')
+): Json {
+  return {
+    num_critere: numero,
+    automatique: false,
+    statut_validation: null,
+    points_obtenus: null,
+    reponse_manuelle: null,
+    justificatif_attendu: false,
+    source_cascade: null,
+    commentaire_gere_par_faits: false,
+    categories: CATEGORIES.map((categorie, index) => ({
+      categorie,
+      statut_critere: statuts[index] ?? 'OBLIGATOIRE',
+      points: 2,
+      statut_validation: overrides.statut_validation ?? null,
+      points_obtenus: null,
+    })),
+    ...overrides,
+  };
+}
+
+/** Rapport favorable par défaut ; `points_optionnels_a_atteindre` inclut la compensation. */
+export function rapport(overrides: Json = {}): Json {
+  return {
+    points_totaux_obligatoires: 100,
+    points_minimaux_obligatoires: 90,
+    points_obligatoires_obtenus: 95,
+    points_obligatoires_atteints: true,
+    points_obligatoires_a_compenser: 0,
+    points_optionnels_disponibles: 60,
+    points_optionnels_necessaires: 10,
+    points_optionnels_a_atteindre: 10,
+    points_optionnels_obtenus: 12,
+    points_optionnels_atteints: true,
+    resultat: true,
+    criteres_obligatoires_non_valides: [],
+    criteres_optionnels_non_valides: [],
+    ...overrides,
+  };
+}
+
+/** Modèle réduit, libellés résolus pour la catégorie de l'entrée. */
+export function modele(): Json {
+  const criterion = (num_critere: number, libelle: string) => ({
+    num_critere,
+    libelle,
+    points: 2,
+    peut_etre_non_applicable: false,
+    categories: CATEGORIES.map((nom) => ({ nom, statut: 'OBLIGATOIRE' })),
+  });
+  return {
+    chapitres: [
+      {
+        libelle: 'Équipements',
+        sous_chapitres: [
+          {
+            libelle: 'Cuisine',
+            rubriques: [
+              {
+                libelle: '',
+                criteres: [
+                  criterion(68, 'Cafetière'),
+                  criterion(69, 'Machine à expresso'),
+                  criterion(101, 'Mise à disposition d’un livret d’accueil'),
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  };
+}
+
+/** Cinq entrées 1★→5★ ; `entries` remplace le rapport ou les ONC d'une catégorie. */
+export function comparaisonResponse(
+  entries: Record<string, { rapport?: Json; onc?: number[] }> = {},
+  categorieDemandee = '3*',
+  pieces: Json[] = [chambre]
+): Json {
+  return {
+    categorie_demandee: categorieDemandee,
+    faits: faitsResponse(pieces, { categorie_demandee: categorieDemandee }),
+    surface_totale: 12,
+    categories: CATEGORIES.map((categorie) => ({
+      categorie,
+      rapport: rapport(entries[categorie]?.rapport),
+      criteres_onc_non_valides: entries[categorie]?.onc ?? [],
+      reponses: [
+        {
+          num_critere: 68,
+          points_obtenus: 2,
+          statut_validation: 'VALIDE',
+          statut_critere: 'OBLIGATOIRE',
+        },
+      ],
+      modele: modele(),
+      verification: {},
+    })),
+  };
+}
+
+export function blocage(overrides: Json & { code: string }): Json {
+  return {
+    cle: `blocage:${overrides.code}:${String(overrides.num_critere ?? overrides.piece_id ?? '')}`,
+    message: 'Le fait nécessaire au calcul doit être renseigné.',
+    destination: 'GRILLE',
+    champ: 'reponse_manuelle',
+    piece_id: null,
+    num_critere: null,
+    categories_utilisatrices: CATEGORIES,
+    ...overrides,
+  };
+}
+
+/** `VerificationDto` public : champs historiques et bloc `factuelle`. */
+export function verificationResponse(blocages: Json[] = [], comparaisonDisponible = false): Json {
+  return {
+    nb_couchages_suffisants: true,
+    salle_de_bain_presente: true,
+    commentaires_obligatoires_a_fournir: {
+      tous_fournis: true,
+      commentaires_obligatoires_non_fournis: [],
+      nb_commentaires_obligatoires: 0,
+    },
+    factuelle: { comparaison_disponible: comparaisonDisponible, blocages },
+  };
+}
 
 export function piece(overrides: Json & { id: string; type_piece: string }): Json {
   return {
@@ -160,7 +318,11 @@ export const terrasse = piece({
   ouvrant: null,
 });
 
-export function faitsResponse(pieces: Json[] = [chambre], parametres: Json = {}): Json {
+export function faitsResponse(
+  pieces: Json[] = [chambre],
+  parametres: Json = {},
+  globaux: Json = {}
+): Json {
   return {
     grille_id: 'grille-factuelle',
     parametres: {
@@ -174,7 +336,7 @@ export function faitsResponse(pieces: Json[] = [chambre], parametres: Json = {})
       ...parametres,
     },
     logement: { id: 'logement-factuel', pieces },
-    faits_globaux: {},
+    faits_globaux: globaux,
   };
 }
 
@@ -234,11 +396,15 @@ export function factuelleSimulationResponse(
   };
 }
 
-export function mutationResponse(pieces: Json[], evaluation: Json = evaluationResponse()): Json {
+export function mutationResponse(
+  pieces: Json[],
+  evaluation: Json = evaluationResponse(),
+  extra: { globaux?: Json; changements_cascade?: Json[] } = {}
+): Json {
   return {
-    faits: faitsResponse(pieces),
+    faits: faitsResponse(pieces, {}, extra.globaux),
     evaluation,
     criteres_personnalisation_remplacee: [],
-    changements_cascade: [],
+    changements_cascade: extra.changements_cascade ?? [],
   };
 }

@@ -1,7 +1,9 @@
 /**
- * Contrats publics FACTUELLE (ETOILYS-430/431/432), alignés sur `docs/data/swagger.json`.
+ * Contrats publics FACTUELLE (ETOILYS-430/431/432/443), alignés sur `docs/data/swagger.json`.
  * Les parseurs vérifient la forme utile au front et conservent les champs additifs du serveur.
  */
+
+import type { CriterionStatus } from './simulatorApi';
 
 export const FACTUELLE_PIECE_TYPES = [
   'CUISINE',
@@ -126,12 +128,134 @@ export interface ParametresFaits {
   parametres_manquants: string[];
 }
 
+export const TECHNOLOGIES_CUISSON = [
+  'INDUCTION',
+  'VITROCERAMIQUE',
+  'GAZ',
+  'ELECTRIQUE_CLASSIQUE',
+] as const;
+export type TechnologieCuisson = (typeof TECHNOLOGIES_CUISSON)[number];
+
+export const CONFIGURATIONS_FOUR_MICRO_ONDES = [
+  'AUCUN',
+  'FOUR_SEUL',
+  'MICRO_ONDES_SEUL',
+  'COMBINE_SEUL',
+  'APPAREILS_DISTINCTS',
+] as const;
+export type ConfigurationFourMicroOndes = (typeof CONFIGURATIONS_FOUR_MICRO_ONDES)[number];
+
+export const CHOIX_COMBINE = ['FOUR', 'MICRO_ONDES'] as const;
+export type ChoixCombine = (typeof CHOIX_COMBINE)[number];
+
+export const ETATS_CHAUFFAGE = ['INSTALLATIONS', 'AUCUN', 'MOBILES_UNIQUEMENT'] as const;
+export type EtatChauffage = (typeof ETATS_CHAUFFAGE)[number];
+
+export const SITUATIONS_LIVRET_ACCUEIL = [
+  'ABSENT',
+  'PRESENT_NON_BILINGUE',
+  'PRESENT_BILINGUE',
+] as const;
+export type SituationLivretAccueil = (typeof SITUATIONS_LIVRET_ACCUEIL)[number];
+
+/** C18/C19 : Non (`appreciation_commune: false`), Oui privatif ou Oui commun. */
+export interface EquipementCommunFaits {
+  appreciation_commune: boolean | null;
+  commun: boolean | null;
+}
+
+export interface AssisesTableFaits {
+  appreciation_commune: boolean | null;
+  besoin_assises_sans_dossier: boolean | null;
+}
+
+export interface AssisesSalonFaits {
+  appreciation_commune: boolean | null;
+  assises_uniquement_convertibles: boolean | null;
+}
+
+export interface LigneCuissonFaits {
+  id: string;
+  technologie: TechnologieCuisson | null;
+  nombre_foyers: number | null;
+}
+
+/** C57/C58 : `presence_plaques: false` avec une liste vide = absence connue. */
+export interface CuissonFaits {
+  presence_plaques: boolean | null;
+  lignes: LigneCuissonFaits[];
+}
+
+/** C59/C60 : `appreciation_four` / `appreciation_micro_ondes` sont dépréciés et jamais envoyés. */
+export interface FourMicroOndesFaits {
+  configuration: ConfigurationFourMicroOndes | null;
+  choix_combine: ChoixCombine | null;
+}
+
+/** C16 : `appreciation_commune` et `motif_inspection` (BO) ne sont jamais envoyés par le public. */
+export interface ChauffageFaits {
+  etat: EtatChauffage | null;
+  types: string[];
+  autre: string | null;
+}
+
+export interface MesuresFaits {
+  aucune_mesure: boolean | null;
+  mesures: string[];
+  autres: string[];
+}
+
+/** `capacite_constatee` est fixée par le serveur à chaque sauvegarde de C63/C64 (null pour C65). */
+export interface InventaireFaits {
+  items: Record<string, boolean>;
+  capacite_constatee: number | null;
+}
+
+export interface LivretAccueilFaits {
+  situation: SituationLivretAccueil | null;
+}
+
+/** Blocs globaux de la Grille ; un bloc `null` est inconnu, jamais une absence. */
+export interface FaitsGlobaux {
+  c18: EquipementCommunFaits;
+  c19: EquipementCommunFaits;
+  c25: AssisesTableFaits;
+  c26: AssisesSalonFaits;
+  cuisson: CuissonFaits;
+  four_micro_ondes: FourMicroOndesFaits;
+  chauffage: ChauffageFaits | null;
+  mesures_energie: MesuresFaits | null;
+  mesures_eau: MesuresFaits | null;
+  c63: InventaireFaits | null;
+  c64: InventaireFaits | null;
+  c65: InventaireFaits | null;
+  c101: LivretAccueilFaits;
+}
+
+export type BlocGlobal = keyof FaitsGlobaux;
+
+/** Corps des PUT de blocs globaux (`/faits/{bloc}`), chacun remplaçant un seul bloc. */
+export interface GlobalBlockPayloads {
+  c18: EquipementCommunFaits;
+  c19: EquipementCommunFaits;
+  c25: AssisesTableFaits;
+  c26: AssisesSalonFaits;
+  cuisson: CuissonFaits;
+  four_micro_ondes: FourMicroOndesFaits;
+  chauffage: ChauffageFaits;
+  mesures_energie: MesuresFaits;
+  mesures_eau: MesuresFaits;
+  c63: { items: Record<string, boolean> };
+  c64: { items: Record<string, boolean> };
+  c65: { items: Record<string, boolean> };
+  c101: LivretAccueilFaits;
+}
+
 export interface FaitsGrille {
   grille_id: string;
   parametres: ParametresFaits;
   logement: { id: string; pieces: PieceFactuelle[] };
-  /** Blocs globaux de la Grille, consommés par ETOILYS-437. */
-  faits_globaux: Record<string, unknown>;
+  faits_globaux: FaitsGlobaux;
 }
 
 export interface CouchageCatalogue {
@@ -144,10 +268,28 @@ export interface CouchageCatalogue {
   formats: { largeur_cm: number; longueur_cm: number }[];
 }
 
+export interface CatalogueOption {
+  id: string;
+  libelle: string;
+}
+
+/** Items d'un inventaire C63/C64/C65 ; minima de la capacité actuelle, null pour C63/C64 sans capacité. */
+export interface InventaireCatalogue {
+  num_critere: number;
+  items: { id: string; libelle: string; groupe: string | null; minimum: number | null }[];
+}
+
 export interface CatalogueFaits {
   types_pieces: FactuellePieceType[];
   couchages: CouchageCatalogue[];
   protections_sanitaires: SanitaireProtection[];
+  technologies_cuisson: TechnologieCuisson[];
+  configurations_four_micro_ondes: ConfigurationFourMicroOndes[];
+  /** Listes ordonnées par le backend (énergie : VITRAGE, POMPE_A_CHALEUR, …, ISOLATION). */
+  types_chauffage: CatalogueOption[];
+  mesures_energie: CatalogueOption[];
+  mesures_eau: CatalogueOption[];
+  inventaires: InventaireCatalogue[];
 }
 
 export interface BesoinFait {
@@ -200,20 +342,60 @@ export interface AlertePieceFactuelle {
   categories_concernees: string[];
 }
 
+export const STATUTS_VALIDATION_FACTUELS = [
+  'VALIDE',
+  'NON_VALIDE',
+  'NON_APPLICABLE',
+  'JUSTIFICATIF_ATTENDU',
+] as const;
+export type StatutValidationFactuel = (typeof STATUTS_VALIDATION_FACTUELS)[number];
+
+/** Cotation d'une catégorie : `null` = inconnu, jamais Non ni zéro. */
+export interface CotationCategorie {
+  categorie: string;
+  statut_critere: CriterionStatus;
+  points: number | null;
+  statut_validation: StatutValidationFactuel | null;
+  points_obtenus: number | null;
+}
+
+/**
+ * Cotation d'un critère. `statut_validation` / `points_obtenus` portent la catégorie demandée ;
+ * `reponse_manuelle` vaut `NON_APPLICABLE` quand une dérogation NA d'un automatique est active.
+ * Le public ne reçoit aucun commentaire.
+ */
+export interface CritereFactuel {
+  num_critere: number;
+  automatique: boolean;
+  statut_validation: StatutValidationFactuel | null;
+  points_obtenus: number | null;
+  reponse_manuelle: StatutValidationFactuel | null;
+  justificatif_attendu: boolean;
+  source_cascade: number | null;
+  categories: CotationCategorie[];
+}
+
 export interface EvaluationFactuelle {
   besoins: BesoinFait[];
-  /** Cotations par critère, consommées par ETOILYS-437. */
-  criteres: unknown[];
+  criteres: CritereFactuel[];
   couchages: { id: string; places_principales: number | null; places_appoint: number | null }[];
   alertes_pieces: AlertePieceFactuelle[];
   /** `null` : récapitulatif indisponible, jamais un total nul. */
   surfaces: SurfacesFactuelles | null;
 }
 
+/** Effet visible d'une cascade C69 → C68 / C90 → C89, à afficher une seule fois après succès. */
+export interface ChangementCascade {
+  critere_source: number;
+  critere_cible: number;
+  type: 'VALIDATION' | 'REMISE_A_RENSEIGNER';
+  message: string;
+}
+
 export interface MutationFaits {
   faits: FaitsGrille;
   evaluation: EvaluationFactuelle | null;
-  changements_cascade: unknown[];
+  changements_cascade: ChangementCascade[];
 }
 
 export type FactuellePieceSection = 'interieurs' | 'sanitaires' | 'exterieurs';
@@ -227,17 +409,21 @@ export interface FactuellePieceTarget {
   section?: FactuellePieceSection;
 }
 
-const INVALID_RESPONSE_MESSAGE = 'Réponse API simulateur invalide';
+export const INVALID_RESPONSE_MESSAGE = 'Réponse API simulateur invalide';
 
-function isRecord(value: unknown): value is Record<string, unknown> {
+export function invalidResponse(): never {
+  throw new Error(INVALID_RESPONSE_MESSAGE);
+}
+
+export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-function isArrayOf<T>(value: unknown, guard: (entry: unknown) => entry is T): value is T[] {
+export function isArrayOf<T>(value: unknown, guard: (entry: unknown) => entry is T): value is T[] {
   return Array.isArray(value) && value.every(guard);
 }
 
-function isString(value: unknown): value is string {
+export function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 
@@ -245,11 +431,19 @@ function isNullableString(value: unknown): value is string | null {
   return value === null || typeof value === 'string';
 }
 
-function isNullableNumber(value: unknown): value is number | null {
+export function isNullableNumber(value: unknown): value is number | null {
   return value === null || (typeof value === 'number' && Number.isFinite(value));
 }
 
-function isOneOf<T extends string>(values: readonly T[]) {
+function isNullableBoolean(value: unknown): value is boolean | null {
+  return value === null || typeof value === 'boolean';
+}
+
+export function isInteger(value: unknown): value is number {
+  return typeof value === 'number' && Number.isInteger(value);
+}
+
+export function isOneOf<T extends string>(values: readonly T[]) {
   return (value: unknown): value is T => typeof value === 'string' && values.includes(value as T);
 }
 
@@ -257,6 +451,34 @@ const isFactuellePieceType = isOneOf(FACTUELLE_PIECE_TYPES);
 const isCouchageType = isOneOf(COUCHAGE_TYPES);
 const isCouchageProfil = isOneOf(COUCHAGE_PROFILS);
 const isSanitaireProtection = isOneOf(SANITAIRE_PROTECTIONS);
+const isTechnologieCuisson = isOneOf(TECHNOLOGIES_CUISSON);
+const isConfigurationFourMicroOndes = isOneOf(CONFIGURATIONS_FOUR_MICRO_ONDES);
+const isChoixCombine = isOneOf(CHOIX_COMBINE);
+const isEtatChauffage = isOneOf(ETATS_CHAUFFAGE);
+const isSituationLivretAccueil = isOneOf(SITUATIONS_LIVRET_ACCUEIL);
+export const isStatutValidationFactuel = isOneOf(STATUTS_VALIDATION_FACTUELS);
+export const isCriterionStatus = isOneOf<CriterionStatus>([
+  'OPTIONNEL',
+  'OBLIGATOIRE',
+  'ONC',
+  'NON_APPLICABLE',
+]);
+
+/** Valeur nullable : absente ou `null` donne `null`, sinon elle doit satisfaire le garde. */
+function nullable<T>(value: unknown, guard: (entry: unknown) => entry is T): T | null {
+  const current = value ?? null;
+  if (current === null) {
+    return null;
+  }
+  return guard(current) ? current : invalidResponse();
+}
+
+function list<T>(value: unknown, guard: (entry: unknown) => entry is T): T[] {
+  if (value == null) {
+    return [];
+  }
+  return isArrayOf(value, guard) ? value : invalidResponse();
+}
 
 function isCouchage(value: unknown): value is CouchageFactuel {
   return (
@@ -335,6 +557,142 @@ function parseParametres(value: unknown): ParametresFaits {
   };
 }
 
+/** Bloc de booléens nullable ; un bloc absent est inconnu (toutes les valeurs à `null`). */
+function parseBooleanBlock<T extends object>(
+  value: unknown,
+  keys: readonly (keyof T & string)[]
+): T {
+  if (value != null && !isRecord(value)) {
+    invalidResponse();
+  }
+  const block: Record<string, unknown> = { ...(value ?? {}) };
+  for (const key of keys) {
+    block[key] = nullable(block[key], isNullableBoolean);
+  }
+  return block as T;
+}
+
+function isLigneCuisson(value: unknown): value is LigneCuissonFaits {
+  return (
+    isRecord(value) &&
+    isString(value.id) &&
+    (value.technologie == null || isTechnologieCuisson(value.technologie)) &&
+    isNullableNumber(value.nombre_foyers ?? null)
+  );
+}
+
+function parseCuisson(value: unknown): CuissonFaits {
+  if (value != null && !isRecord(value)) {
+    invalidResponse();
+  }
+  return {
+    ...value,
+    presence_plaques: nullable(value?.presence_plaques, isNullableBoolean),
+    lignes: list(value?.lignes, isLigneCuisson).map((ligne) => ({
+      ...ligne,
+      technologie: ligne.technologie ?? null,
+      nombre_foyers: ligne.nombre_foyers ?? null,
+    })),
+  };
+}
+
+function parseFourMicroOndes(value: unknown): FourMicroOndesFaits {
+  if (value != null && !isRecord(value)) {
+    invalidResponse();
+  }
+  return {
+    ...value,
+    configuration: nullable(value?.configuration, isConfigurationFourMicroOndes),
+    choix_combine: nullable(value?.choix_combine, isChoixCombine),
+  };
+}
+
+function parseChauffage(value: unknown): ChauffageFaits | null {
+  if (value == null) {
+    return null;
+  }
+  if (!isRecord(value)) {
+    invalidResponse();
+  }
+  return {
+    ...value,
+    etat: nullable(value.etat, isEtatChauffage),
+    types: list(value.types, isString),
+    autre: nullable(value.autre, isString),
+  };
+}
+
+function parseMesures(value: unknown): MesuresFaits | null {
+  if (value == null) {
+    return null;
+  }
+  if (!isRecord(value)) {
+    invalidResponse();
+  }
+  return {
+    ...value,
+    aucune_mesure: nullable(value.aucune_mesure, isNullableBoolean),
+    mesures: list(value.mesures, isString),
+    autres: list(value.autres, isString),
+  };
+}
+
+function parseInventaire(value: unknown): InventaireFaits | null {
+  if (value == null) {
+    return null;
+  }
+  const items = isRecord(value) ? value.items : undefined;
+  if (
+    !isRecord(value) ||
+    !isRecord(items) ||
+    !Object.values(items).every((entry) => typeof entry === 'boolean')
+  ) {
+    invalidResponse();
+  }
+  return {
+    ...value,
+    items: items as Record<string, boolean>,
+    capacite_constatee: nullable(value.capacite_constatee, isInteger),
+  };
+}
+
+function parseLivretAccueil(value: unknown): LivretAccueilFaits {
+  if (value != null && !isRecord(value)) {
+    invalidResponse();
+  }
+  return { ...value, situation: nullable(value?.situation, isSituationLivretAccueil) };
+}
+
+/** Blocs globaux ; un bloc absent (backend antérieur) reste inconnu, un type inattendu est refusé. */
+export function parseFaitsGlobaux(value: unknown): FaitsGlobaux {
+  if (value != null && !isRecord(value)) {
+    invalidResponse();
+  }
+  const globaux = value ?? {};
+  return {
+    ...globaux,
+    c18: parseBooleanBlock<EquipementCommunFaits>(globaux.c18, ['appreciation_commune', 'commun']),
+    c19: parseBooleanBlock<EquipementCommunFaits>(globaux.c19, ['appreciation_commune', 'commun']),
+    c25: parseBooleanBlock<AssisesTableFaits>(globaux.c25, [
+      'appreciation_commune',
+      'besoin_assises_sans_dossier',
+    ]),
+    c26: parseBooleanBlock<AssisesSalonFaits>(globaux.c26, [
+      'appreciation_commune',
+      'assises_uniquement_convertibles',
+    ]),
+    cuisson: parseCuisson(globaux.cuisson),
+    four_micro_ondes: parseFourMicroOndes(globaux.four_micro_ondes),
+    chauffage: parseChauffage(globaux.chauffage),
+    mesures_energie: parseMesures(globaux.mesures_energie),
+    mesures_eau: parseMesures(globaux.mesures_eau),
+    c63: parseInventaire(globaux.c63),
+    c64: parseInventaire(globaux.c64),
+    c65: parseInventaire(globaux.c65),
+    c101: parseLivretAccueil(globaux.c101),
+  };
+}
+
 export function parseFaitsGrille(value: unknown): FaitsGrille {
   const logement = isRecord(value) ? value.logement : undefined;
   if (
@@ -352,7 +710,7 @@ export function parseFaitsGrille(value: unknown): FaitsGrille {
     grille_id: value.grille_id,
     parametres: parseParametres(value.parametres),
     logement: { ...logement, id: logement.id, pieces: logement.pieces.map(normalizePiece) },
-    faits_globaux: isRecord(value.faits_globaux) ? value.faits_globaux : {},
+    faits_globaux: parseFaitsGlobaux(value.faits_globaux),
   };
 }
 
@@ -376,6 +734,26 @@ function isCouchageCatalogue(value: unknown): value is CouchageCatalogue {
   );
 }
 
+function isCatalogueOption(value: unknown): value is CatalogueOption {
+  return isRecord(value) && isString(value.id) && isString(value.libelle);
+}
+
+function isInventaireCatalogue(value: unknown): value is InventaireCatalogue {
+  return (
+    isRecord(value) &&
+    isInteger(value.num_critere) &&
+    isArrayOf(
+      value.items,
+      (item): item is InventaireCatalogue['items'][number] =>
+        isRecord(item) &&
+        isString(item.id) &&
+        isString(item.libelle) &&
+        isNullableString(item.groupe ?? null) &&
+        isNullableNumber(item.minimum ?? null)
+    )
+  );
+}
+
 export function parseCatalogueFaits(value: unknown): CatalogueFaits {
   if (
     !isRecord(value) ||
@@ -392,6 +770,21 @@ export function parseCatalogueFaits(value: unknown): CatalogueFaits {
     types_pieces: value.types_pieces.filter(isFactuellePieceType),
     couchages: value.couchages,
     protections_sanitaires: value.protections_sanitaires.filter(isSanitaireProtection),
+    technologies_cuisson: list(value.technologies_cuisson, isString).filter(isTechnologieCuisson),
+    configurations_four_micro_ondes: list(value.configurations_four_micro_ondes, isString).filter(
+      isConfigurationFourMicroOndes
+    ),
+    types_chauffage: list(value.types_chauffage, isCatalogueOption),
+    mesures_energie: list(value.mesures_energie, isCatalogueOption),
+    mesures_eau: list(value.mesures_eau, isCatalogueOption),
+    inventaires: list(value.inventaires, isInventaireCatalogue).map((inventaire) => ({
+      ...inventaire,
+      items: inventaire.items.map((item) => ({
+        ...item,
+        groupe: item.groupe ?? null,
+        minimum: item.minimum ?? null,
+      })),
+    })),
   };
 }
 
@@ -434,6 +827,55 @@ function isSurfaces(value: unknown): value is SurfacesFactuelles {
   );
 }
 
+function isCotationCategorie(value: unknown): value is CotationCategorie {
+  return (
+    isRecord(value) &&
+    isString(value.categorie) &&
+    isCriterionStatus(value.statut_critere) &&
+    isNullableNumber(value.points ?? null) &&
+    (value.statut_validation == null || isStatutValidationFactuel(value.statut_validation)) &&
+    isNullableNumber(value.points_obtenus ?? null)
+  );
+}
+
+function parseCritereFactuel(value: unknown): CritereFactuel {
+  if (
+    !isRecord(value) ||
+    !isInteger(value.num_critere) ||
+    typeof value.automatique !== 'boolean' ||
+    !isArrayOf(value.categories, isCotationCategorie)
+  ) {
+    invalidResponse();
+  }
+
+  return {
+    ...value,
+    num_critere: value.num_critere,
+    automatique: value.automatique,
+    statut_validation: nullable(value.statut_validation, isStatutValidationFactuel),
+    points_obtenus: nullable(value.points_obtenus, isNullableNumber),
+    reponse_manuelle: nullable(value.reponse_manuelle, isStatutValidationFactuel),
+    justificatif_attendu: value.justificatif_attendu === true,
+    source_cascade: nullable(value.source_cascade, isInteger),
+    categories: value.categories.map((categorie) => ({
+      ...categorie,
+      points: categorie.points ?? null,
+      statut_validation: categorie.statut_validation ?? null,
+      points_obtenus: categorie.points_obtenus ?? null,
+    })),
+  };
+}
+
+function isChangementCascade(value: unknown): value is ChangementCascade {
+  return (
+    isRecord(value) &&
+    isInteger(value.critere_source) &&
+    isInteger(value.critere_cible) &&
+    (value.type === 'VALIDATION' || value.type === 'REMISE_A_RENSEIGNER') &&
+    isString(value.message)
+  );
+}
+
 export function parseEvaluationFactuelle(value: unknown): EvaluationFactuelle {
   const alertes = isRecord(value) ? (value.alertes_pieces ?? []) : undefined;
   const surfaces = isRecord(value) ? (value.surfaces ?? null) : undefined;
@@ -454,7 +896,7 @@ export function parseEvaluationFactuelle(value: unknown): EvaluationFactuelle {
       num_critere: besoin.num_critere ?? null,
       actions: Array.isArray(besoin.actions) ? besoin.actions : [],
     })),
-    criteres: Array.isArray(value.criteres) ? value.criteres : [],
+    criteres: (Array.isArray(value.criteres) ? value.criteres : []).map(parseCritereFactuel),
     couchages: Array.isArray(value.couchages) ? value.couchages : [],
     alertes_pieces: alertes,
     surfaces,
@@ -470,6 +912,6 @@ export function parseMutationFaits(value: unknown): MutationFaits {
     ...value,
     faits: parseFaitsGrille(value.faits),
     evaluation: value.evaluation == null ? null : parseEvaluationFactuelle(value.evaluation),
-    changements_cascade: Array.isArray(value.changements_cascade) ? value.changements_cascade : [],
+    changements_cascade: list(value.changements_cascade, isChangementCascade),
   };
 }

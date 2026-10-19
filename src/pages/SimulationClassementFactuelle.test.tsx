@@ -4,8 +4,11 @@ import App from '../App';
 import structureGrilleRaw from '../../docs/data/structureGrille.json?raw';
 import {
   besoin,
+  blocage,
   catalogueResponse,
   chambre,
+  comparaisonResponse,
+  critere,
   evaluationResponse,
   FACTUELLE_SIMULATION_ID as ID,
   factuelleSimulationResponse,
@@ -15,10 +18,17 @@ import {
   piece,
   salleEau1,
   salleEau2,
+  verificationResponse,
 } from '../test/factuelleFixtures';
 import { expectNoA11yViolations } from '../test/a11y';
+import { exportSimulationClassementPdf } from '../utils/simulatorExport';
 
 vi.setConfig({ testTimeout: 15_000 });
+
+vi.mock('../utils/simulatorExport', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../utils/simulatorExport')>();
+  return { ...actual, exportSimulationClassementPdf: vi.fn().mockResolvedValue(undefined) };
+});
 
 vi.mock('../utils/analytics', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../utils/analytics')>();
@@ -38,7 +48,8 @@ vi.mock('../utils/analytics', async (importOriginal) => {
 });
 
 const BASE = `/api/public/simulations/${ID}`;
-const LEGACY_ROUTES = /\/(logement|pieces|reponse|verifier|verification|rapport)(\/|$)/;
+// `/verifier` et `/verification` sont partagés avec FACTUELLE depuis 432 ; ces routes restent LEGACY.
+const LEGACY_ROUTES = /\/(logement|pieces|reponse|rapport)(\/|$)/;
 
 type RouteResponse = { body: unknown; status?: number };
 type Route = RouteResponse | (() => RouteResponse | Promise<RouteResponse>);
@@ -466,5 +477,329 @@ describe('SimulationClassement — Pièces FACTUELLE', () => {
     );
     expect(calls).toHaveLength(callsAtOpening);
     await expectNoA11yViolations(dialog);
+  });
+});
+
+describe('SimulationClassement — Grille et résultats FACTUELLE', () => {
+  afterEach(() => {
+    cleanup();
+    document.body.style.overflow = '';
+    vi.restoreAllMocks();
+    vi.mocked(exportSimulationClassementPdf).mockClear();
+  });
+
+  async function openGrid() {
+    fireEvent.click(await screen.findByRole('tab', { name: /grille de contrôle/i }));
+    return screen.findByRole('heading', { name: /complétez la grille de contrôle/i });
+  }
+
+  const card = (numero: number) => screen.getByTestId(`criterion-card-${numero}`);
+
+  it('enregistre une réponse manuelle et annonce la cascade backend dans un toast sans action', async () => {
+    const evaluation = evaluationResponse({
+      criteres: [critere(68), critere(69)],
+      besoins: [besoin({ champ: 'reponse_manuelle', num_critere: 69, destination: 'GRILLE' })],
+    });
+    const message =
+      'Critère 68 validé automatiquement : la machine à expresso satisfait également le critère « Cafetière ».';
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre], evaluation),
+      [`PUT ${BASE}/faits/criteres/69/reponse`]: {
+        body: mutationResponse(
+          [chambre],
+          evaluationResponse({
+            criteres: [
+              critere(68, { source_cascade: 69 }),
+              critere(69, { reponse_manuelle: 'VALIDE' }),
+            ],
+          }),
+          {
+            changements_cascade: [
+              { critere_source: 69, critere_cible: 68, type: 'VALIDATION', message },
+            ],
+          }
+        ),
+      },
+    });
+    renderSimulation();
+    await openGrid();
+
+    fireEvent.click(within(card(69)).getByRole('button', { name: 'Oui' }));
+
+    expect(await screen.findByText(message)).toBeInTheDocument();
+    expect(calls.find(({ method }) => method === 'PUT')).toMatchObject({
+      url: `${BASE}/faits/criteres/69/reponse`,
+      body: { statut_validation: 'VALIDE' },
+    });
+    await waitFor(() =>
+      expect(within(card(69)).getByRole('button', { name: 'Oui' })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      )
+    );
+    const toast = screen.getByText(message).parentElement as HTMLElement;
+    expect(within(toast).queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  it('présente un automatique non cliquable, ouvre sa modale et n’écrit qu’à l’enregistrement', async () => {
+    const evaluation = evaluationResponse({
+      criteres: [critere(101, { automatique: true })],
+      besoins: [besoin({ champ: 'c101.situation', num_critere: 101, destination: 'GRILLE' })],
+    });
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre], evaluation),
+      [`PUT ${BASE}/faits/c101`]: {
+        body: mutationResponse(
+          [chambre],
+          evaluationResponse({
+            criteres: [critere(101, { automatique: true, statut_validation: 'VALIDE' })],
+          }),
+          { globaux: { c101: { situation: 'PRESENT_BILINGUE' } } }
+        ),
+      },
+    });
+    renderSimulation();
+    await openGrid();
+    const callsBefore = calls.length;
+
+    expect(within(card(101)).getByText('Auto')).toBeInTheDocument();
+    fireEvent.click(within(card(101)).getByRole('button', { name: 'Renseigner' }));
+    let dialog = await screen.findByRole('dialog', { name: 'Livret d’accueil' });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Présent, bilingue' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Annuler' }));
+    expect(calls).toHaveLength(callsBefore);
+
+    fireEvent.click(within(card(101)).getByRole('button', { name: 'Renseigner' }));
+    dialog = await screen.findByRole('dialog', { name: 'Livret d’accueil' });
+    expect(within(dialog).getByRole('button', { name: 'Présent, bilingue' })).toHaveAttribute(
+      'aria-pressed',
+      'false'
+    );
+    await expectNoA11yViolations(dialog);
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Présent, bilingue' }));
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Enregistrer' }));
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(calls.slice(callsBefore)).toEqual([
+      { method: 'PUT', url: `${BASE}/faits/c101`, body: { situation: 'PRESENT_BILINGUE' } },
+    ]);
+    const verdict = within(card(101)).getByRole('button', { name: 'Oui' });
+    expect(verdict).toBeDisabled();
+    expect(verdict).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('active la dérogation NA d’un automatique C16 sans le rendre répondable Oui/Non', async () => {
+    const evaluation = evaluationResponse({
+      criteres: [critere(16, { automatique: true, statut_validation: 'VALIDE' })],
+    });
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre], evaluation),
+      [`PUT ${BASE}/faits/criteres/16/reponse`]: {
+        body: mutationResponse(
+          [chambre],
+          evaluationResponse({
+            criteres: [
+              critere(16, {
+                automatique: true,
+                statut_validation: 'NON_APPLICABLE',
+                reponse_manuelle: 'NON_APPLICABLE',
+              }),
+            ],
+          })
+        ),
+      },
+    });
+    renderSimulation();
+    await openGrid();
+
+    expect(within(card(16)).getByRole('button', { name: 'Oui' })).toBeDisabled();
+    fireEvent.click(within(card(16)).getByRole('button', { name: 'Non applicable' }));
+
+    await waitFor(() =>
+      expect(within(card(16)).getByRole('button', { name: 'Non applicable' })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      )
+    );
+    expect(calls.find(({ method }) => method === 'PUT')?.body).toEqual({
+      statut_validation: 'NON_APPLICABLE',
+    });
+    expect(within(card(16)).queryByRole('button', { name: 'Oui' })).not.toBeInTheDocument();
+  });
+
+  it('bloque les cinq résultats et ouvre le champ exact depuis chaque blocage', async () => {
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre]),
+      [`POST ${BASE}/verifier`]: { body: false },
+      [`GET ${BASE}/verification`]: {
+        body: verificationResponse([
+          blocage({
+            code: 'REPONSE_MANQUANTE',
+            num_critere: 69,
+            categories_utilisatrices: ['4*', '5*'],
+          }),
+          blocage({
+            code: 'STUDIO_PIECES_HABITATION_INCOHERENTES',
+            message:
+              'Le logement est déclaré comme studio, mais 2 pièces d’habitation sont renseignées. Corrigez le paramètre Studio ou les pièces.',
+            destination: 'PIECE',
+            champ: 'type_piece',
+          }),
+          blocage({
+            code: 'PRQ_NON_RESPECTE',
+            message: 'La pièce d’habitation unique doit mesurer au moins 12 m².',
+            destination: 'PIECE',
+            champ: 'surface',
+            piece_id: 'piece-chambre',
+          }),
+        ]),
+      },
+    });
+    renderSimulation();
+    fireEvent.click(await screen.findByRole('tab', { name: /^résultat/i }));
+    fireEvent.click(screen.getByRole('button', { name: /voir le résultat de ma simulation/i }));
+
+    expect(await screen.findByText(/informations à compléter/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /critère 69 — machine à expresso/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText(/utile pour les catégories 4★, 5★/i)).toBeInTheDocument();
+    expect(screen.getByText(/déclaré comme studio/i)).toBeInTheDocument();
+    expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();
+
+    const prq = screen.getByText(/doit mesurer au moins 12 m²/i).closest('div');
+    fireEvent.click(within(prq as HTMLElement).getByRole('button', { name: 'Modifier' }));
+    expect(
+      await screen.findByRole('dialog', { name: /modifier — chambre parentale/i })
+    ).toBeInTheDocument();
+
+    expect(calls.map(({ method, url }) => `${method} ${url}`)).toEqual(
+      expect.arrayContaining([`POST ${BASE}/verifier`, `GET ${BASE}/verification`])
+    );
+    expect(calls.some(({ url }) => LEGACY_ROUTES.test(url.replace(BASE, '')))).toBe(false);
+  });
+
+  it('compare les cinq catégories, consulte et exporte une catégorie sans aucune écriture', async () => {
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre]),
+      [`POST ${BASE}/verifier`]: { body: true },
+      [`GET ${BASE}/comparaison`]: {
+        body: comparaisonResponse({
+          '4*': {
+            rapport: {
+              resultat: false,
+              points_minimaux_obligatoires: 98,
+              points_obligatoires_atteints: false,
+              points_obligatoires_a_compenser: 3,
+              points_optionnels_a_atteindre: 14,
+              points_optionnels_atteints: false,
+              criteres_obligatoires_non_valides: [69],
+            },
+          },
+        }),
+      },
+    });
+    renderSimulation();
+    fireEvent.click(await screen.findByRole('tab', { name: /^résultat/i }));
+    fireEvent.click(screen.getByRole('button', { name: /voir le résultat de ma simulation/i }));
+
+    const selectors = await screen.findByRole('radiogroup', { name: /résultat par catégorie/i });
+    const radios = within(selectors).getAllByRole('radio');
+    expect(radios).toHaveLength(5);
+    expect(within(selectors).getByRole('radio', { name: /3★/ })).toHaveAttribute(
+      'aria-checked',
+      'true'
+    );
+    const four = within(selectors).getByRole('radio', { name: /4★/ });
+    expect(four).toHaveTextContent('Classement non atteint');
+    expect(four).toHaveTextContent('3 pts obligatoires manquants • 2 pts à la carte manquants');
+    await expectNoA11yViolations(screen.getByRole('tabpanel'));
+    const callsAfterResult = calls.length;
+
+    fireEvent.click(four);
+    expect(
+      screen.getByRole('heading', { name: 'Le classement 4 étoiles ne semble pas encore atteint' })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Il manque 3 points')).toBeInTheDocument();
+    expect(screen.getByText('Il manque 2 points')).toBeInTheDocument();
+    expect(screen.getByText(/3 points obligatoires à compenser/i)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Télécharger le résultat 4★' }));
+    await waitFor(() => expect(exportSimulationClassementPdf).toHaveBeenCalledTimes(1));
+    fireEvent.click(within(selectors).getByRole('radio', { name: /3★/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Télécharger le résultat 3★' }));
+    await waitFor(() => expect(exportSimulationClassementPdf).toHaveBeenCalledTimes(2));
+
+    const exported = vi
+      .mocked(exportSimulationClassementPdf)
+      .mock.calls.map(([input]) => input.grille?.categorie_demandee);
+    expect(exported).toEqual(['4*', '3*']);
+    expect(calls).toHaveLength(callsAfterResult);
+    expect(screen.getByText(/objectif · 3 étoiles/i)).toBeInTheDocument();
+  });
+
+  it('rend le résultat à recalculer après une mutation réelle', async () => {
+    const evaluation = evaluationResponse({ criteres: [critere(68)] });
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre], evaluation),
+      [`POST ${BASE}/verifier`]: { body: true },
+      [`GET ${BASE}/comparaison`]: { body: comparaisonResponse() },
+      [`PUT ${BASE}/faits/criteres/68/reponse`]: {
+        body: mutationResponse(
+          [chambre],
+          evaluationResponse({ criteres: [critere(68, { reponse_manuelle: 'NON_VALIDE' })] })
+        ),
+      },
+    });
+    renderSimulation();
+    fireEvent.click(await screen.findByRole('tab', { name: /^résultat/i }));
+    fireEvent.click(screen.getByRole('button', { name: /voir le résultat de ma simulation/i }));
+    expect(await screen.findByRole('radiogroup')).toBeInTheDocument();
+
+    await openGrid();
+    fireEvent.click(within(card(68)).getByRole('button', { name: 'Non' }));
+    await waitFor(() => expect(calls.some(({ method }) => method === 'PUT')).toBe(true));
+    fireEvent.click(screen.getByRole('tab', { name: /^résultat/i }));
+
+    expect(
+      await screen.findByRole('heading', { name: 'Résultat à recalculer' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('radiogroup')).not.toBeInTheDocument();
+  });
+
+  it('relit la comparaison enregistrée à la reprise sans relancer la vérification', async () => {
+    const { calls } = mockApi({
+      [`GET ${BASE}`]: {
+        body: { ...factuelleSimulationResponse(), statut: 'DEFAVORABLE' },
+      },
+      [`GET ${BASE}/faits`]: { body: faitsResponse([chambre]) },
+      [`GET ${BASE}/faits/catalogue`]: { body: catalogueResponse },
+      [`GET ${BASE}/comparaison`]: {
+        body: comparaisonResponse({ '3*': { rapport: { resultat: false } } }),
+      },
+    });
+    renderSimulation();
+    fireEvent.click(await screen.findByRole('tab', { name: /^résultat/i }));
+
+    expect(await screen.findByRole('radiogroup')).toBeInTheDocument();
+    expect(calls.some(({ method }) => method !== 'GET')).toBe(false);
+  });
+
+  it('modifie Studio depuis les paramètres par sa route dédiée', async () => {
+    const { calls } = mockApi({
+      ...factuelleRoutes([chambre]),
+      [`PUT ${BASE}/studio`]: {
+        body: factuelleSimulationResponse(evaluationResponse(), { studio: true }),
+      },
+    });
+    renderSimulation();
+    fireEvent.click(await screen.findByRole('button', { name: /modifier les paramètres/i }));
+    fireEvent.change(screen.getByLabelText('Studio'), { target: { value: 'true' } });
+
+    await waitFor(() => expect(screen.getByLabelText('Studio')).toHaveValue('true'));
+    expect(calls.find(({ method }) => method === 'PUT')).toMatchObject({
+      url: `${BASE}/studio`,
+      body: { studio: true },
+    });
   });
 });

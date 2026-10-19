@@ -29,7 +29,7 @@ export interface PublicSimulationCreateRequest {
   capacite_accueil: number;
   etage: number;
   type_habitation: HousingType;
-  /** Cinquième paramètre préalable FACTUELLE. */
+  /** Cinquième paramètre préalable FACTUELLE, stocké sans effet sur une création LEGACY. */
   studio?: boolean;
 }
 
@@ -502,6 +502,14 @@ export function updateHousingType(
     `/public/simulations/${encodePathSegment(id)}/typeHabitation/${encodePathSegment(housingType)}`,
     { method: 'PUT' }
   ).then(parsePublicSimulation);
+}
+
+/** FACTUELLE uniquement (LEGACY : 409 `MODE_GRILLE_INCOMPATIBLE`). */
+export function updateStudio(id: string, studio: boolean): Promise<PublicSimulationDto> {
+  return requestSimulatorJson<unknown>(`/public/simulations/${encodePathSegment(id)}/studio`, {
+    method: 'PUT',
+    body: { studio },
+  }).then(parsePublicSimulation);
 }
 
 export function getSimulationLogement(id: string): Promise<LogementDto> {

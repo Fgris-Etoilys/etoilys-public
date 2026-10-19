@@ -1,15 +1,15 @@
 # Simulateur public — parcours FACTUELLE (ETOILYS-436 / 437)
 
 EPIC ETOILYS-427. Contrats backend 430/431/432/443/452 (`docs/data/swagger.json`, routes publiques `/public/simulations/{id}/faits`).
-Ce document décrit l’onglet Pièces livré par 436 ; 437 le complète pour les paramètres (dont Studio), la Grille, la vérification, la comparaison et le PDF.
+Ce document décrit l’onglet Pièces livré par 436, puis les paramètres (dont Studio), la Grille, la vérification, la comparaison et le PDF livrés par 437.
 
 ## Mode de grille
 
 - Le backend attribue le mode à la création et ne le change jamais : `grille.mode_grille` vaut `LEGACY` ou `FACTUELLE` (`GET /public/simulations/{id}`).
 - `resolveGridMode` (`src/utils/simulatorApi.ts`) : un mode absent est traité comme `LEGACY` (backend antérieur au déploiement FACTUELLE) ; une valeur inconnue rend la simulation indisponible, sans aucune mutation.
 - Le parcours LEGACY est inchangé (formulaires, WC, reprise, résultat, PDF). Seule différence : la simulation est lue avant `/logement` pour connaître le mode.
-- En FACTUELLE, `SimulationClassement` n’appelle aucune route LEGACY (`/logement`, `/pieces`, `/reponse`, `/verifier`, `/verification`, `/rapport`). Le modèle `/modele` reste partagé pour les aides contextuelles.
-- La création FACTUELLE dépend du flag backend `GRILLE_FACTUELLE_ENABLED` et des cinq paramètres, `studio` compris (437). Les Preview Vercel pointent sur `api-prod` : la recette FACTUELLE se fait uniquement sur un environnement relié au backend dev/staging.
+- En FACTUELLE, `SimulationClassement` n’appelle aucune route réservée à LEGACY (`/logement`, `/pieces`, `/reponse`, `/rapport`). `/modele`, `/verifier` et `/verification` sont partagés (432).
+- Studio est toujours demandé à la création (Oui/Non sans présélection) ; une création LEGACY le stocke sans effet. L’activation des créations FACTUELLE dépend du flag backend `GRILLE_FACTUELLE_ENABLED` et de la recette intégrée des versions candidates, jamais du seul merge. Les Preview Vercel pointent sur `api-prod` : la recette FACTUELLE se fait uniquement sur un environnement relié au backend dev/staging.
 
 ## Routes et état
 
@@ -49,9 +49,18 @@ Ce document décrit l’onglet Pièces livré par 436 ; 437 le complète pour le
 - Douche/baignoire présente : protection et « Dimensions supérieures ? » requises, mesures si Oui. L’avertissement de dimensions non confirmées (≤ 6 400 / 12 750 cm²) est informatif ; la cotation reste backend. C37/C38/C43/C52 restent dans la Grille.
 - Navigation : `FactuellePiecesTab` reçoit `target { requestId, piece_id, champ, num_critere?, section? }`. Une pièce existante s’ouvre sur le champ ciblé (surbrillance, défilement, focus) ; sans pièce, la section s’ouvre et l’action d’ajout prend le focus. La clé opaque `cle` des besoins n’est jamais analysée.
 
+## Paramètres, Grille, résultats et PDF (437)
+
+- Paramètres : Studio dans le panneau en FACTUELLE (`PUT /studio`). Un changement de capacité relit `/faits/catalogue` (minima C63/C64) sous le verrou ; `refresh()` relit aussi le catalogue. Le verrou unique refuse toute écriture pendant une relecture et pendant la vérification (`exclusive`).
+- Grille (`FactuelleGridTab`) : chapitres, aides et sommaire du simulateur (primitives exportées de `SimulationGridTab`, rendu LEGACY inchangé). Projection par critère dans `src/utils/factuelleGrille.ts`, à parité BO : manuels Oui/Non/NA (si le modèle l’autorise) et retrait ; automatiques non cliquables avec badge Auto, « Renseigner » tant qu’un besoin manque, puis crayon pour les blocs globaux ; dérogation NA C15/C16/C19/C26 par bascule « Non applicable » (liste codée en miroir de `SaisieCritere.autoriseNaAutomatique`, aucun champ backend ne l’expose). Mention « Pour la catégorie X★ » quand le besoin concerne d’autres catégories. `changements_cascade` : toast info après succès, sans action.
+- Modales de faits globaux (`FactuelleGlobalDialog`, brouillons dans `src/utils/factuelleGlobaux.ts`) : C18/C19, C25/C26, C101, cuisson, four/micro-ondes (`configuration`, `choix_combine` seulement), chauffage (`etat`, `types`, `autre` ; jamais `motif_inspection` ni `appreciation_commune`), mesures énergie/eau (ordre du catalogue), inventaires C63/C64/C65 (toutes les cases envoyées). Annuler n’écrit rien ; un brouillon inchangé ferme sans appel, sauf un inventaire jamais enregistré ou C63/C64 quand la capacité actuelle diffère de `capacite_constatee`. Aucune reconfirmation automatique (arbitrage 443).
+- Résultat (`useFactuelleResult`, `FactuelleResultPanel`) : `POST /verifier` → `false` : `/verification` (blocages regroupés, navigation exacte vers paramètre, pièce, bloc ou critère) ; `true` : `/comparaison` (cinq sélecteurs, un détail, catégorie demandée par défaut). 409 `GRILLE_FACTUELLE_INCOMPLETE` → une seule relecture de `/verification`. Reprise : FAVORABLE/DEFAVORABLE → `/comparaison`, A_COMPLETER → `/verification`, A_RECALCULER → à recalculer. Toute mutation invalide le résultat ; consulter ou exporter n’écrit rien. Les déficits viennent d’une seule fonction (`pointsManquants`, `src/utils/factuelleResultats.ts`) partagée par sélecteur, détail et PDF ; la cible à la carte inclut déjà la compensation.
+- PDF : `buildFactuellePdfInput` (`src/utils/simulationClassementFactuellePdf.ts`) fige au clic l’entrée consultée (titre « RÉSULTAT : X ÉTOILES », modèle, réponses, rapport, ONC) ; la catégorie demandée reste un paramètre. Couchages déclarés par pièce (`total_places`) et comptabilisés (`surfaces.nombre_couchages`, pièce d’habitation reconnue) sont distingués, sans recalcul. Sans `factuelle`, le PDF LEGACY est inchangé.
+
 ## Tests
 
 - `src/hooks/__tests__/useFactuelleSimulation.test.ts` : verrou, refus, issues incertaines (pièce et paramètre) sans rejeu, réponses tardives (pièce et paramètre).
 - `src/pages/SimulationClassementFactuelle.test.tsx` : isolation des modes, brouillon local, erreurs, création incertaine, plafond, réordre, paramètres, a11y de la fenêtre.
 - `src/components/simulator/factuelle/FactuellePiecesTab.test.tsx` : navigation ciblée.
 - `src/utils/__tests__/factuellePieceDraft.test.ts`, `factuellePieces.test.ts`, `src/utils/simulatorFactuelleApi.test.ts`.
+- 437 : `src/hooks/__tests__/useFactuelleResult.test.ts` (verrou, 409, reprise périmée, catalogue), `src/utils/__tests__/factuelleGrille.test.ts`, `factuelleGlobaux.test.ts`, `factuelleResultats.test.ts`, `simulationClassementFactuellePdf.test.ts`, et le bloc « Grille et résultats FACTUELLE » de `SimulationClassementFactuelle.test.tsx`.

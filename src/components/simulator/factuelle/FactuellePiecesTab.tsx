@@ -5,8 +5,8 @@ import FactuellePieceCard from './FactuellePieceCard';
 import FactuellePieceModal, { type FactuelleModalMessage } from './FactuellePieceModal';
 import { FactuelleSurfaceGroup, FactuelleSurfaceSummary } from './FactuelleSurfaces';
 import { useToast } from '../../ui/Toast';
-import type { CritereAide } from '../../../content/criteresAide';
-import type { GridCriterion, GridSummary } from '../../../content/simulatorGrid';
+import type { GridSummary } from '../../../content/simulatorGrid';
+import { useCriterionHelp } from '../../../hooks/useCriterionHelp';
 import type {
   FactuelleSimulationState,
   FactuelleSnapshot,
@@ -15,7 +15,6 @@ import {
   trackClassementSimulatorPieceDeleted,
   trackClassementSimulatorPieceSaved,
 } from '../../../utils/analytics';
-import { getCachedCriterionHelp, loadCriterionHelp } from '../../../utils/criterionHelp';
 import {
   availableFactuelleTypes,
   FACTUELLE_SECTIONS,
@@ -66,12 +65,6 @@ interface ModalState {
   targetField?: string | undefined;
 }
 
-interface HelpState {
-  criterion: GridCriterion;
-  aide: CritereAide | null;
-  isLoading: boolean;
-}
-
 const ADD_LABELS: Record<FactuellePieceSection, string> = {
   interieurs: 'Ajouter une pièce',
   sanitaires: 'Ajouter une salle d’eau',
@@ -118,7 +111,7 @@ export default function FactuellePiecesTab({
   // Pièces connues avant une création non confirmée : toute pièce apparue depuis doit être vérifiée
   // explicitement avant un nouvel ajout, sans deviner laquelle a été créée.
   const [creationBaseline, setCreationBaseline] = useState<ReadonlySet<string> | null>(null);
-  const [help, setHelp] = useState<HelpState | null>(null);
+  const { help, open: openHelp, close: closeHelp } = useCriterionHelp(gridSummary);
   const [focusAdd, setFocusAdd] = useState(0);
   const modalKeyRef = useRef(0);
   const tabRefs = useRef<Partial<Record<FactuellePieceSection, HTMLButtonElement | null>>>({});
@@ -289,33 +282,6 @@ export default function FactuellePiecesTab({
     } else if (outcome.status === 'blocked') {
       showToast(BLOCKED_MESSAGE, { type: 'info' });
     }
-  }
-
-  function openHelp(criterionNumber: number) {
-    const criterion: GridCriterion = gridSummary?.criteriaByNumber.get(criterionNumber) ?? {
-      num_critere: criterionNumber,
-      libelle: `Critère ${criterionNumber}`,
-      points: 0,
-      peut_etre_non_applicable: false,
-      categories: [],
-    };
-    const cache = getCachedCriterionHelp();
-    setHelp({
-      criterion,
-      aide: cache?.[String(criterionNumber)] ?? null,
-      isLoading: cache === null,
-    });
-    if (cache) return;
-    void loadCriterionHelp()
-      .then((aides) => aides[String(criterionNumber)] ?? null)
-      .catch(() => null)
-      .then((aide) =>
-        setHelp((current) =>
-          current?.criterion.num_critere === criterionNumber
-            ? { criterion, aide, isLoading: false }
-            : current
-        )
-      );
   }
 
   function handleSectionKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
@@ -498,7 +464,7 @@ export default function FactuellePiecesTab({
         criterion={help?.criterion ?? null}
         aide={help?.aide ?? null}
         isLoading={help?.isLoading ?? false}
-        onClose={() => setHelp(null)}
+        onClose={closeHelp}
       />
     </>
   );

@@ -298,7 +298,10 @@ export function Counter({
   );
 }
 
-/** Choix exclusif en boutons (profil, format) : toutes les options visibles. */
+/**
+ * Choix exclusif en boutons (profil, format, constats globaux) : toutes les options visibles.
+ * `clearLabel` ajoute « Retirer la réponse » quand une option est retenue (choix retirable).
+ */
 export function ChoiceButtons({
   labelledBy,
   value,
@@ -306,13 +309,15 @@ export function ChoiceButtons({
   onChange,
   disabled = false,
   invalid = false,
+  clearLabel,
 }: {
   labelledBy: string;
   value: string;
-  options: { value: string; label: string }[];
+  options: readonly { value: string; label: string }[];
   onChange: (value: string) => void;
   disabled?: boolean | undefined;
   invalid?: boolean;
+  clearLabel?: string | undefined;
 }) {
   return (
     <div role="group" aria-labelledby={labelledBy} className="flex flex-wrap gap-2">
@@ -331,7 +336,46 @@ export function ChoiceButtons({
           {option.label}
         </button>
       ))}
+      {clearLabel && value !== '' && !disabled && (
+        <button
+          type="button"
+          className="ui-focus inline-flex h-11 w-11 items-center justify-center rounded-control text-muted hover:bg-surface-neutral hover:text-ink"
+          aria-label={`Retirer la réponse : ${clearLabel}`}
+          title="Retirer la réponse"
+          onClick={() => onChange('')}
+        >
+          <X aria-hidden="true" className="h-4 w-4" />
+        </button>
+      )}
     </div>
+  );
+}
+
+/** Case à cocher pleine largeur, cible tactile de 44 px (inventaires, mesures, chauffage). */
+export function CheckRow({
+  checked,
+  disabled = false,
+  onChange,
+  children,
+}: {
+  checked: boolean;
+  disabled?: boolean | undefined;
+  onChange: (checked: boolean) => void;
+  children: ReactNode;
+}) {
+  const id = useId();
+  return (
+    <label htmlFor={id} className="factuelle-check" data-checked={checked || undefined}>
+      <input
+        id={id}
+        type="checkbox"
+        className="ui-focus h-5 w-5 shrink-0 accent-ink"
+        checked={checked}
+        disabled={disabled}
+        onChange={(event) => onChange(event.target.checked)}
+      />
+      <span className="min-w-0">{children}</span>
+    </label>
   );
 }
 

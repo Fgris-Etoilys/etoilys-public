@@ -2830,6 +2830,37 @@
     @apply border-warning-200 bg-warning-100 text-warning-500;
   }
 
+  /* Grille et résultats FACTUELLE (ETOILYS-437). */
+  .factuelle-check {
+    @apply flex min-h-11 cursor-pointer items-center gap-3 rounded-control border border-gray-200 bg-white px-3 py-2 text-sm leading-5 text-ink transition-colors hover:border-ink/30;
+  }
+
+  .factuelle-check[data-checked] {
+    @apply border-ink bg-paper;
+  }
+
+  .factuelle-check:has(input:disabled) {
+    @apply cursor-not-allowed opacity-70;
+  }
+
+  .factuelle-auto-badge {
+    @apply inline-flex items-center rounded-full border border-ink/20 px-2 py-0.5 text-[11px] font-medium text-muted;
+  }
+
+  .factuelle-category-selectors {
+    @apply -mx-1 flex gap-2 overflow-x-auto px-1 pb-2 md:grid md:grid-cols-5 md:overflow-visible md:pb-0;
+    scroll-snap-type: x proximity;
+  }
+
+  .factuelle-category-selector {
+    @apply flex min-h-24 min-w-[11rem] shrink-0 flex-col items-start gap-1.5 rounded-editorial border border-ink/15 bg-white p-3 text-left transition-colors hover:border-ink/40 md:min-w-0;
+    scroll-snap-align: start;
+  }
+
+  .factuelle-category-selector[aria-checked='true'] {
+    @apply border-ink bg-paper shadow-sm;
+  }
+
   @media (max-width: 680px) {
     .classement-workspace-topline > span {
       @apply hidden;

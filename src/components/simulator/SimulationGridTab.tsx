@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import type { ChangeEvent } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
 import {
   ArrowRight,
   ArrowUp,
@@ -26,6 +26,15 @@ import {
 } from '../../content/simulatorGrid';
 import type { CritereAide } from '../../content/criteresAide';
 import { getCachedCriterionHelp, loadCriterionHelp } from '../../utils/criterionHelp';
+import {
+  buildSectionLinkGroups,
+  filterGridChapters,
+  getSectionAnchorId,
+  getSectionIds,
+  scrollToElement,
+  type SectionLinkGroup,
+} from '../../utils/simulatorGridNavigation';
+import { useActiveGridSection } from '../../hooks/useActiveGridSection';
 import {
   submitResponse,
   type CriterionStatus,
@@ -70,16 +79,6 @@ export interface SimulationGridProgressSummary {
   totalCount: number;
   remainingCount: number;
   missingMandatoryCount: number;
-}
-
-interface SectionLink {
-  id: string;
-  label: string;
-}
-
-interface SectionLinkGroup {
-  chapterLabel: string;
-  links: SectionLink[];
 }
 
 const STATUS_LABELS: Record<CriterionStatus, string> = {
@@ -232,89 +231,6 @@ function mergeOptimisticResponses(
   return mergedResponses;
 }
 
-function scrollToElement(id: string, shouldFocus = false) {
-  const element = document.getElementById(id);
-  if (!element) {
-    return;
-  }
-
-  const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  element.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
-  if (shouldFocus && element instanceof HTMLElement) {
-    element.focus({ preventScroll: true });
-  }
-}
-
-function slugifySectionPart(value: string): string {
-  return value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLocaleLowerCase('fr-FR')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-function getSectionAnchorId(chapterLabel: string, subChapterLabel: string): string {
-  return `section-${slugifySectionPart(chapterLabel)}-${slugifySectionPart(subChapterLabel)}`;
-}
-
-function buildSectionLinkGroups(chapters: GridChapter[]): SectionLinkGroup[] {
-  return chapters.map((chapter) => ({
-    chapterLabel: chapter.libelle,
-    links: chapter.sous_chapitres.map((subChapter) => ({
-      id: getSectionAnchorId(chapter.libelle, subChapter.libelle),
-      label: subChapter.libelle,
-    })),
-  }));
-}
-
-function getSectionIds(groups: SectionLinkGroup[]): string[] {
-  return groups.flatMap((group) => group.links.map((link) => link.id));
-}
-
-function filterGridChapters(
-  chapters: GridChapter[],
-  query: string,
-  criterionFilterNumbers: number[],
-  isCriterionFilterActive: boolean
-): GridChapter[] {
-  const normalizedQuery = query.trim().toLocaleLowerCase('fr-FR');
-  const filteredCriterionNumbers = new Set(criterionFilterNumbers);
-
-  if (!normalizedQuery && !isCriterionFilterActive) {
-    return chapters;
-  }
-
-  return chapters
-    .map((chapter) => {
-      const sous_chapitres = chapter.sous_chapitres
-        .map((subChapter) => {
-          const rubriques = subChapter.rubriques
-            .map((rubrique) => {
-              const criteres = rubrique.criteres.filter((criterion) => {
-                const matchesCriterionFilter =
-                  !isCriterionFilterActive || filteredCriterionNumbers.has(criterion.num_critere);
-                const matchesSearch =
-                  !normalizedQuery ||
-                  String(criterion.num_critere).includes(normalizedQuery) ||
-                  criterion.libelle.toLocaleLowerCase('fr-FR').includes(normalizedQuery);
-
-                return matchesCriterionFilter && matchesSearch;
-              });
-
-              return { ...rubrique, criteres };
-            })
-            .filter((rubrique) => rubrique.criteres.length > 0);
-
-          return { ...subChapter, rubriques };
-        })
-        .filter((subChapter) => subChapter.rubriques.length > 0);
-
-      return { ...chapter, sous_chapitres };
-    })
-    .filter((chapter) => chapter.sous_chapitres.length > 0);
-}
-
 function getReportCriterionDetails(grid: GridSummary, number: number) {
   const criterion = getCriterionByNumber(grid, number);
 
@@ -353,7 +269,7 @@ function RatioBar({
   );
 }
 
-function ResultScoreCard({
+export function ResultScoreCard({
   title,
   obtained,
   available,
@@ -398,7 +314,7 @@ function ResultScoreCard({
   );
 }
 
-function GridTableOfContents({
+export function GridTableOfContents({
   groups,
   activeSectionId,
   onSectionSelect,
@@ -494,7 +410,7 @@ function GridTableOfContents({
   );
 }
 
-function ResponseButton({
+export function ResponseButton({
   children,
   validation,
   selected,
@@ -613,25 +529,18 @@ function AutomaticCriterionStatus({ response }: { response: ReponseDto | undefin
   );
 }
 
-function GridCriterionCard({
+/** Cadre visuel d'un critère (numéro, points, statut, aide) ; la zone de réponse est fournie par le parcours. */
+export function GridCriterionFrame({
   criterion,
-  response,
-  requestedCategory,
-  onSave,
+  status,
   onOpenHelp,
+  children,
 }: {
   criterion: GridCriterion;
-  response: ReponseDto | undefined;
-  requestedCategory: string | undefined;
-  onSave: (criterion: GridCriterion, validation: CriterionValidationStatus) => void;
+  status: CriterionStatus | undefined;
   onOpenHelp: (criterion: GridCriterion) => void;
+  children: ReactNode;
 }) {
-  const status = getEffectiveCriterionStatus(criterion, response, requestedCategory);
-  const isBusinessNotApplicable = status === 'NON_APPLICABLE';
-  const isSurfaceReadOnly = isSurfaceCriterion(criterion);
-  const isReadOnly = isBusinessNotApplicable || isSurfaceReadOnly;
-  const canAnswerNotApplicable = criterion.peut_etre_non_applicable && !isBusinessNotApplicable;
-
   return (
     <article
       id={getCriterionAnchorId(criterion.num_critere)}
@@ -665,45 +574,64 @@ function GridCriterionCard({
         </button>
       </div>
 
-      <div className="classement-criterion-answer">
-        {isSurfaceReadOnly && (
-          <>
-            <AutomaticCriterionStatus response={response} />
-            <p className="mt-2 text-xs leading-relaxed text-muted">{SURFACE_CRITERION_MESSAGE}</p>
-          </>
-        )}
-
-        {isBusinessNotApplicable && !isSurfaceReadOnly && (
-          <p className="rounded-control bg-paper px-3 py-2 text-xs leading-relaxed text-muted">
-            Ce critère n’est pas applicable à cette simulation.
-          </p>
-        )}
-
-        {!isReadOnly && (
-          <CriterionResponseButtons
-            criterion={criterion}
-            response={response}
-            canAnswerNotApplicable={canAnswerNotApplicable}
-            onSave={onSave}
-          />
-        )}
-      </div>
+      <div className="classement-criterion-answer">{children}</div>
     </article>
   );
 }
 
-function GridChapterSection({
-  chapters,
-  responsesByCriterionNumber,
+function GridCriterionCard({
+  criterion,
+  response,
   requestedCategory,
   onSave,
   onOpenHelp,
 }: {
-  chapters: GridChapter[];
-  responsesByCriterionNumber: Map<number, ReponseDto>;
+  criterion: GridCriterion;
+  response: ReponseDto | undefined;
   requestedCategory: string | undefined;
   onSave: (criterion: GridCriterion, validation: CriterionValidationStatus) => void;
   onOpenHelp: (criterion: GridCriterion) => void;
+}) {
+  const status = getEffectiveCriterionStatus(criterion, response, requestedCategory);
+  const isBusinessNotApplicable = status === 'NON_APPLICABLE';
+  const isSurfaceReadOnly = isSurfaceCriterion(criterion);
+  const isReadOnly = isBusinessNotApplicable || isSurfaceReadOnly;
+  const canAnswerNotApplicable = criterion.peut_etre_non_applicable && !isBusinessNotApplicable;
+
+  return (
+    <GridCriterionFrame criterion={criterion} status={status} onOpenHelp={onOpenHelp}>
+      {isSurfaceReadOnly && (
+        <>
+          <AutomaticCriterionStatus response={response} />
+          <p className="mt-2 text-xs leading-relaxed text-muted">{SURFACE_CRITERION_MESSAGE}</p>
+        </>
+      )}
+
+      {isBusinessNotApplicable && !isSurfaceReadOnly && (
+        <p className="rounded-control bg-paper px-3 py-2 text-xs leading-relaxed text-muted">
+          Ce critère n’est pas applicable à cette simulation.
+        </p>
+      )}
+
+      {!isReadOnly && (
+        <CriterionResponseButtons
+          criterion={criterion}
+          response={response}
+          canAnswerNotApplicable={canAnswerNotApplicable}
+          onSave={onSave}
+        />
+      )}
+    </GridCriterionFrame>
+  );
+}
+
+/** Chapitres, sections et rubriques de la Grille ; chaque critère est rendu par le parcours. */
+export function GridChapterSection({
+  chapters,
+  renderCriterion,
+}: {
+  chapters: GridChapter[];
+  renderCriterion: (criterion: GridCriterion) => ReactNode;
 }) {
   if (chapters.length === 0) {
     return (
@@ -766,14 +694,9 @@ function GridChapterSection({
                     )}
                     <div className="classement-criterion-list">
                       {rubrique.criteres.map((criterion) => (
-                        <GridCriterionCard
-                          key={criterion.num_critere}
-                          criterion={criterion}
-                          response={responsesByCriterionNumber.get(criterion.num_critere)}
-                          requestedCategory={requestedCategory}
-                          onSave={onSave}
-                          onOpenHelp={onOpenHelp}
-                        />
+                        <Fragment key={criterion.num_critere}>
+                          {renderCriterion(criterion)}
+                        </Fragment>
                       ))}
                     </div>
                   </div>
@@ -1117,7 +1040,7 @@ export default function SimulationGridTab({
   );
   const sectionLinkGroups = useMemo(() => buildSectionLinkGroups(grid.chapitres), [grid]);
   const sectionIds = useMemo(() => getSectionIds(sectionLinkGroups), [sectionLinkGroups]);
-  const [activeSectionId, setActiveSectionId] = useState<string | null>(sectionIds[0] ?? null);
+  const [activeSectionId, setActiveSectionId] = useActiveGridSection(sectionIds);
   const displayedCriterionFilterNumbers = criterionFilterNumbers;
   const isCriterionFilterActive = criterionFilterNumbers.length > 0;
   const filteredChapters = useMemo(
@@ -1144,54 +1067,6 @@ export default function SimulationGridTab({
   useEffect(() => {
     void loadCriterionHelp();
   }, []);
-
-  useEffect(() => {
-    if (sectionIds.length === 0) {
-      setActiveSectionId(null);
-      return;
-    }
-
-    const firstSectionId = sectionIds[0];
-    if (!firstSectionId) {
-      setActiveSectionId(null);
-      return;
-    }
-
-    setActiveSectionId((currentSectionId) =>
-      currentSectionId && sectionIds.includes(currentSectionId) ? currentSectionId : firstSectionId
-    );
-  }, [sectionIds]);
-
-  useEffect(() => {
-    if (sectionIds.length === 0 || typeof IntersectionObserver === 'undefined') {
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const activeEntry = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort(
-            (firstEntry, secondEntry) =>
-              secondEntry.intersectionRatio - firstEntry.intersectionRatio
-          )[0];
-
-        if (activeEntry?.target.id) {
-          setActiveSectionId(activeEntry.target.id);
-        }
-      },
-      { rootMargin: '-25% 0px -60% 0px', threshold: [0, 0.1, 0.25, 0.5] }
-    );
-
-    sectionIds.forEach((sectionId) => {
-      const section = document.getElementById(sectionId);
-      if (section) {
-        observer.observe(section);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, [sectionIds]);
 
   function handleSectionSelect(sectionId: string) {
     setActiveSectionId(sectionId);
@@ -1483,10 +1358,17 @@ export default function SimulationGridTab({
           <div id="grid-criteria-start">
             <GridChapterSection
               chapters={filteredChapters}
-              responsesByCriterionNumber={responsesByCriterionNumber}
-              requestedCategory={requestedCategory}
-              onSave={(criterion, validation) => void handleSaveResponse(criterion, validation)}
-              onOpenHelp={handleOpenCriterionHelp}
+              renderCriterion={(criterion) => (
+                <GridCriterionCard
+                  criterion={criterion}
+                  response={responsesByCriterionNumber.get(criterion.num_critere)}
+                  requestedCategory={requestedCategory}
+                  onSave={(savedCriterion, validation) =>
+                    void handleSaveResponse(savedCriterion, validation)
+                  }
+                  onOpenHelp={handleOpenCriterionHelp}
+                />
+              )}
             />
           </div>
 

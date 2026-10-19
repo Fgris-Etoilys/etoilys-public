@@ -1,20 +1,27 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
+  answerCriterion,
   createFactuellePiece,
   deleteFactuellePiece,
+  getComparaison,
+  getFactuelleVerification,
   getFaits,
   getFaitsCatalogue,
   reorderSanitaires,
+  saveGlobalBlock,
   updateFactuellePiece,
 } from './simulatorFactuelleApi';
 import { resolveGridMode } from './simulatorApi';
 import type { PieceFactuelleInput } from './simulatorFactuelle.types';
 import {
+  blocage,
   catalogueResponse,
   chambre,
+  comparaisonResponse,
   FACTUELLE_SIMULATION_ID as ID,
   faitsResponse,
   mutationResponse,
+  verificationResponse,
 } from '../test/factuelleFixtures';
 
 const jsonResponse = (body: unknown, status = 200) =>
@@ -83,6 +90,64 @@ describe('simulatorFactuelleApi', () => {
         credentials: 'include',
         body: { piece_ids: ['b', 'a'] },
       },
+    ]);
+  });
+
+  it('envoie réponses, dérogations NA et blocs globaux sur leurs routes publiques', async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () => jsonResponse(mutationResponse([chambre])));
+
+    await answerCriterion(ID, 68, 'VALIDE');
+    await answerCriterion(ID, 16, null);
+    await saveGlobalBlock(ID, 'four_micro_ondes', {
+      configuration: 'FOUR_SEUL',
+      choix_combine: null,
+    });
+    await saveGlobalBlock(ID, 'c64', { items: { VERRES: false } });
+
+    const base = `/api/public/simulations/${ID}/faits`;
+    expect(
+      fetchMock.mock.calls.map(([url, init]) => [
+        init?.method,
+        String(url),
+        JSON.parse(String(init?.body)),
+      ])
+    ).toEqual([
+      ['PUT', `${base}/criteres/68/reponse`, { statut_validation: 'VALIDE' }],
+      ['PUT', `${base}/criteres/16/reponse`, { statut_validation: null }],
+      ['PUT', `${base}/four-micro-ondes`, { configuration: 'FOUR_SEUL', choix_combine: null }],
+      ['PUT', `${base}/inventaires/64`, { items: { VERRES: false } }],
+    ]);
+  });
+
+  it('lit la vérification globale et la comparaison sans écriture', async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async (input) =>
+        String(input).endsWith('/verification')
+          ? jsonResponse(
+              verificationResponse([blocage({ code: 'REPONSE_MANQUANTE', num_critere: 69 })])
+            )
+          : jsonResponse(comparaisonResponse())
+      );
+
+    const verification = await getFactuelleVerification(ID);
+    const comparaison = await getComparaison(ID);
+
+    expect(verification.blocages).toMatchObject([
+      { code: 'REPONSE_MANQUANTE', num_critere: 69, piece_id: null },
+    ]);
+    expect(comparaison.categories.map((entry) => entry.categorie)).toEqual([
+      '1*',
+      '2*',
+      '3*',
+      '4*',
+      '5*',
+    ]);
+    expect(fetchMock.mock.calls.map(([url, init]) => [init?.method, String(url)])).toEqual([
+      ['GET', `/api/public/simulations/${ID}/verification`],
+      ['GET', `/api/public/simulations/${ID}/comparaison`],
     ]);
   });
 
