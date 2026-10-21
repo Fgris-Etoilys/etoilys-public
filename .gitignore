@@ -41,6 +41,10 @@ docs/data/dordogne-tourisme-meubles.json
 docs/data/gironde-tourisme-hebergements-locatif.json
 docs/data/lot-et-garonne-tourisme-meubles.json
 
+# Local AirDNA credentials, geographic reference and dated exports
+tools/airdna/reference/*.geojson
+tools/airdna/exports/*.json
+
 .vercel
 .env*
 
