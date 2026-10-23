@@ -18,7 +18,7 @@ export default function FormSuccess({ title, message, actionLabel, onRestart }: 
 
   return (
     <div className="inquiry-success">
-      <div ref={statusRef} role="status" tabIndex={-1} className="ui-focus">
+      <div ref={statusRef} role="status" tabIndex={-1}>
         <span className="inquiry-success-icon" aria-hidden="true">
           <Check />
         </span>

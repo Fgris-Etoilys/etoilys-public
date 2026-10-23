@@ -1590,8 +1590,7 @@
   }
 
   .inquiry-success [role='status']:focus {
-    outline: 2px solid rgb(var(--color-ink));
-    outline-offset: 8px;
+    outline: none;
   }
   .inquiry-success-icon {
     @apply mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-paper;
