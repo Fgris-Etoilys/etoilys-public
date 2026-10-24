@@ -373,6 +373,18 @@ describe('analytics', () => {
     setItemSpy.mockRestore();
   });
 
+  it('does not initialize a pending SDK import after consent is withdrawn', async () => {
+    acceptAnalyticsConsent();
+    rejectAnalyticsConsent();
+
+    await flushAnalyticsImports();
+
+    expect(getAnalyticsConsentStatus()).toBe('refused');
+    expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.optInDirect).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
+  });
+
   it('disables analytics completely in internal mode', () => {
     window.localStorage.setItem(ANALYTICS_CONSENT_STORAGE_KEY, 'accepted');
     window.history.pushState({}, 'Test', '/?etoilys_internal=1');
@@ -663,7 +675,7 @@ describe('analytics', () => {
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });
 
-  it('opts out and resets PostHog when accepted consent is withdrawn', async () => {
+  it('opts out, resets, and restores PostHog refusal when consent is withdrawn', async () => {
     acceptAnalyticsConsent();
     await flushAnalyticsImports();
     rejectAnalyticsConsent();
@@ -676,8 +688,14 @@ describe('analytics', () => {
 
     expect(window.localStorage.getItem(ANALYTICS_CONSENT_STORAGE_KEY)).toBe('refused');
     expect(window.localStorage.getItem(SESSION_ACQUISITION_STORAGE_KEY)).toBeNull();
-    expect(posthogMock.optOut).toHaveBeenCalledTimes(1);
+    expect(posthogMock.optOut).toHaveBeenCalledTimes(2);
     expect(posthogMock.reset).toHaveBeenCalledTimes(1);
+    expect(posthogMock.optOut.mock.invocationCallOrder[0]!).toBeLessThan(
+      posthogMock.reset.mock.invocationCallOrder[0]!
+    );
+    expect(posthogMock.reset.mock.invocationCallOrder[0]!).toBeLessThan(
+      posthogMock.optOut.mock.invocationCallOrder[1]!
+    );
     expect(posthogMock.capture).toHaveBeenCalledTimes(1);
   });
 

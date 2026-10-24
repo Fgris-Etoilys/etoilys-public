@@ -58,6 +58,7 @@ let volatileCookielessAudienceOptOut: boolean | null = null;
 let cachedSnapshot: ConsentSnapshot = SERVER_SNAPSHOT;
 let lastWriteSucceeded = true;
 let listeners: ConsentListener[] = [];
+let storageListenerAttached = false;
 
 function isBrowser(): boolean {
   return typeof window !== 'undefined';
@@ -202,6 +203,7 @@ export function getServerConsentSnapshot(): ConsentSnapshot {
 export function getConsentSnapshot(): ConsentSnapshot {
   if (!isBrowser()) return SERVER_SNAPSHOT;
 
+  ensureStorageListener();
   const nextSnapshot = buildSnapshot();
   if (areSnapshotsEqual(cachedSnapshot, nextSnapshot)) {
     return cachedSnapshot;
@@ -216,7 +218,45 @@ function notifyConsentListeners(): void {
   listeners.forEach((listener) => listener());
 }
 
+function handleStorageEvent(event: StorageEvent): void {
+  if (
+    event.storageArea !== getBrowserLocalStorage() ||
+    (event.key !== ANALYTICS_CONSENT_STORAGE_KEY &&
+      event.key !== ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY)
+  ) {
+    return;
+  }
+
+  const storedUpdatedAt = readTimestamp(ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY);
+  const storedConsent = readStoredPurposeConsent(
+    ANALYTICS_CONSENT_STORAGE_KEY,
+    ANALYTICS_CONSENT_UPDATED_AT_STORAGE_KEY
+  );
+  if (
+    storedConsent === null ||
+    (volatileAnalyticsConsent !== null &&
+      !(storedConsent === 'refused' && volatileAnalyticsConsent.status === 'accepted') &&
+      (storedUpdatedAt === null || storedUpdatedAt < volatileAnalyticsConsent.updatedAt))
+  ) {
+    return;
+  }
+
+  volatileAnalyticsConsent = null;
+  const nextSnapshot = buildSnapshot();
+  if (!areSnapshotsEqual(cachedSnapshot, nextSnapshot)) {
+    notifyConsentListeners();
+  }
+}
+
+function ensureStorageListener(): void {
+  if (!isBrowser() || storageListenerAttached) return;
+
+  window.addEventListener('storage', handleStorageEvent);
+  storageListenerAttached = true;
+}
+
 export function subscribeConsent(listener: ConsentListener): () => void {
+  ensureStorageListener();
   listeners = [...listeners, listener];
   return () => {
     listeners = listeners.filter((currentListener) => currentListener !== listener);
@@ -299,6 +339,10 @@ export function setCookielessAudienceOptOut(optOut: boolean): ConsentWriteResult
 
 export const consentInternalsForTests = {
   reset: () => {
+    if (storageListenerAttached && isBrowser()) {
+      window.removeEventListener('storage', handleStorageEvent);
+      storageListenerAttached = false;
+    }
     volatileAnalyticsConsent = null;
     volatileAdvertisingConsent = null;
     volatileCookielessAudienceOptOut = null;
