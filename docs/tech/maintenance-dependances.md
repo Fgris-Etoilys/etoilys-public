@@ -2,13 +2,13 @@
 
 ## Automatisation
 
-| Source                         | Déclenchement                                                 | Branche cible              | Traitement                                                                                                  |
-| ------------------------------ | ------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Versions npm                   | Lundi, 08:00, `Europe/Paris`                                  | `dev`                      | Correctifs et versions mineures compatibles regroupés ; versions majeures séparées ; au plus 5 PR ouvertes. |
-| Versions GitHub Actions        | Lundi, 08:00, `Europe/Paris`                                  | `dev`                      | Correctifs et versions mineures compatibles regroupés ; versions majeures séparées ; au plus 3 PR ouvertes. |
-| Alertes de sécurité Dependabot | Dès qu'une alerte peut être corrigée, indépendamment du lundi | `main`, branche par défaut | PR à traiter selon sa gravité, puis synchronisation de `dev`.                                               |
+| Source                         | Déclenchement                                                 | Branche cible              | Traitement                                                                                                                                                       |
+| ------------------------------ | ------------------------------------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Versions npm                   | Lundi, 08:00, `Europe/Paris`                                  | `dev`                      | Quatre groupes mineurs/correctifs (PostHog, React/routage, tests/navigateur, build/lint) ; autres PR individuelles ; majeures séparées ; au plus 12 PR ouvertes. |
+| Versions GitHub Actions        | Lundi, 08:00, `Europe/Paris`                                  | `dev`                      | Correctifs et versions mineures compatibles regroupés ; versions majeures séparées ; au plus 3 PR ouvertes.                                                      |
+| Alertes de sécurité Dependabot | Dès qu'une alerte peut être corrigée, indépendamment du lundi | `main`, branche par défaut | PR à traiter selon sa gravité, puis synchronisation de `dev`.                                                                                                    |
 
-La configuration est dans `.github/dependabot.yml`. Les groupes s'appliquent uniquement aux **mises à jour de version**. `sharp` est exclu du groupe npm correctif/mineur par `exclude-patterns` : Dependabot continue de le surveiller et doit proposer sa mise à jour de version dans une PR séparée. Cette exclusion ne constitue ni un `ignore` ni une dispense de traitement d'une alerte de sécurité. Aucune PR n'est fusionnée automatiquement. Les alertes et PR de sécurité nécessitent les fonctions GitHub décrites plus bas ; la présence du fichier YAML seule ne les active pas.
+La configuration est dans `.github/dependabot.yml`. Les groupes npm s'appliquent uniquement aux **mises à jour de version mineures et correctives** : `posthog-js` et `@posthog/react` restent ensemble ; React/routage, tests/navigateur et build/lint ont chacun leur groupe. `jspdf-autotable`, `fast-xml-parser`, `sharp` et toute autre dépendance non listée restent individuels. Aucun `ignore` ne masque leurs mises à jour ou les alertes de sécurité. Aucune PR n'est fusionnée automatiquement. Les alertes et PR de sécurité nécessitent les fonctions GitHub décrites plus bas ; la présence du fichier YAML seule ne les active pas.
 
 ## Examiner, intégrer et publier une PR
 
@@ -48,7 +48,17 @@ La migration de `sharp` vers `0.35.5` requiert une PR dédiée et une revue du p
 
 Le dépôt (`.nvmrc`, `package.json`) et la CI spécifient Node 22 ; Vercel était configuré en Node `24.x` lors de l'inspection. Valider Node 22 sur une Preview, puis traiter l'alignement de Vercel dans un changement séparé. Ne pas modifier la version Node dans ce ticket.
 
-## Mise en service des fichiers de ce ticket
+## Remplacement de la PR groupée #20
+
+1. Publier cette configuration et cette documentation sur `dev`, puis vérifier le job `quality`.
+2. Promouvoir ces deux fichiers sur `main` par une PR dédiée basée sur `main` si `dev` porte encore des changements applicatifs, notamment le correctif PostHog. Vérifier la CI de cette PR et du nouveau commit de `main`.
+3. Synchroniser `dev` avec `main` en conservant les commits propres à `dev` ; si les branches ont divergé, utiliser un merge ordinaire et vérifier sa CI.
+4. Contrôler le job Dependabot déclenché par la nouvelle configuration sur `main`. Si nécessaire, lancer **Insights → Dependency graph → Dependabot → Recent update jobs → [Check for updates](https://docs.github.com/en/code-security/how-tos/secure-your-supply-chain/manage-your-dependency-security/re-run-dependabot-jobs)** pour npm ; cette action requiert un administrateur du dépôt ou un propriétaire de l'organisation.
+5. Comparer les nouvelles PR visant `dev` aux 20 packages et versions cibles de la PR #20 : quatre groupes fonctionnels et deux PR individuelles (`jspdf-autotable`, `fast-xml-parser`). Vérifier aussi que les mises à jour majeures restent séparées et que `sharp` n'entre dans aucun groupe.
+6. Si une mise à jour manque, consulter les logs du job, la limite de PR ouvertes et relancer la vérification après correction. La modification des groupes ne garantit pas la fermeture ou la recréation automatique de la PR #20.
+7. Fermer la PR #20 uniquement lorsque chaque mise à jour est couverte par une nouvelle PR, ou déjà intégrée, sans perte de version cible.
+
+## Mise en service initiale de l'automatisation
 
 1. Publier sur `dev` les quatre fichiers `.github/dependabot.yml`, `.github/workflows/ci.yml`, `.github/workflows/dependency-audit.yml` et cette documentation. Contrôler le run `quality` du push et la Preview Vercel.
 2. Ouvrir une PR de `dev` vers `main`, vérifier `quality` sur cette PR et fusionner par merge commit. Vérifier `quality` sur le nouveau commit de `main`, puis synchroniser `dev` immédiatement avec la procédure d'avance rapide ci-dessus, sans reset ni force-push.
