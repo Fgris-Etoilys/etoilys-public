@@ -1,0 +1,167 @@
+name: Dependency audit
+
+on:
+  schedule:
+    - cron: '17 7 * * 3'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-audit-production:
+    name: Dependency audit (production)
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        id: install
+        run: npm ci
+
+      - name: Audit runtime dependencies
+        run: npm audit --omit=dev --audit-level=moderate
+
+      - name: Capture full audit report
+        id: full
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        continue-on-error: true
+        run: |
+          exit_code=0
+          npm audit --json > "$RUNNER_TEMP/npm-audit-full.json" || exit_code=$?
+          printf 'exit_code=%s\n' "$exit_code" >> "$GITHUB_OUTPUT"
+          exit "$exit_code"
+
+      - name: Capture production audit report
+        id: production
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        continue-on-error: true
+        run: |
+          exit_code=0
+          npm audit --omit=dev --json > "$RUNNER_TEMP/npm-audit-production.json" || exit_code=$?
+          printf 'exit_code=%s\n' "$exit_code" >> "$GITHUB_OUTPUT"
+          exit "$exit_code"
+
+      - name: Summarize dependency audits
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
+        env:
+          FULL_AUDIT_EXIT_CODE: ${{ steps.full.outputs.exit_code }}
+          PRODUCTION_AUDIT_EXIT_CODE: ${{ steps.production.outputs.exit_code }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFileSync, readFileSync } from 'node:fs';
+          import { join } from 'node:path';
+
+          const severities = ['info', 'low', 'moderate', 'high', 'critical'];
+          const errors = [];
+          const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+          const markdownCell = (value) => String(value).replaceAll('|', '\\|').replaceAll(/\r?\n/g, ' ');
+
+          function loadReport(filename, label, exitCodeText) {
+            if (!/^[01]$/.test(exitCodeText || '')) {
+              errors.push(`${label}: invalid npm audit exit code (${exitCodeText || 'missing'}).`);
+            }
+
+            let report;
+            try {
+              report = JSON.parse(readFileSync(join(process.env.RUNNER_TEMP, filename), 'utf8'));
+            } catch (error) {
+              errors.push(`${label}: report is missing or invalid JSON (${error.message}).`);
+              return null;
+            }
+
+            const counts = report?.metadata?.vulnerabilities;
+            if (!isRecord(report) || !isRecord(report.vulnerabilities) || !isRecord(counts)) {
+              errors.push(`${label}: report is missing npm audit vulnerabilities or metadata.`);
+              return null;
+            }
+
+            for (const severity of [...severities, 'total']) {
+              if (!Number.isSafeInteger(counts[severity]) || counts[severity] < 0) {
+                errors.push(`${label}: invalid ${severity} vulnerability count.`);
+              }
+            }
+            for (const [name, vulnerability] of Object.entries(report.vulnerabilities)) {
+              if (!isRecord(vulnerability) || !severities.includes(vulnerability.severity)) {
+                errors.push(`${label}: invalid vulnerability entry for ${name}.`);
+              }
+            }
+            return report;
+          }
+
+          function formatFix(fix) {
+            if (fix === false) return 'No';
+            if (fix === true) return 'Yes';
+            if (isRecord(fix)) {
+              const target = fix.name && fix.version ? `${fix.name}@${fix.version}` : 'available';
+              return `Yes (${target}${fix.isSemVerMajor ? ', major update' : ''})`;
+            }
+            return 'Not specified';
+          }
+
+          const full = loadReport('npm-audit-full.json', 'Full audit', process.env.FULL_AUDIT_EXIT_CODE);
+          const production = loadReport('npm-audit-production.json', 'Production audit', process.env.PRODUCTION_AUDIT_EXIT_CODE);
+          const lines = [
+            '## Dependency audit',
+            '',
+            `Full audit exit code: ${process.env.FULL_AUDIT_EXIT_CODE || 'missing'}`,
+            `Production JSON audit exit code: ${process.env.PRODUCTION_AUDIT_EXIT_CODE || 'missing'}`,
+            '',
+          ];
+
+          if (errors.length > 0) {
+            lines.push('### Report errors', '', ...errors.map((error) => `- ${error}`), '');
+            process.exitCode = 1;
+          } else {
+            const productionNames = new Set(Object.keys(production.vulnerabilities));
+            const devCounts = Object.fromEntries(severities.map((severity) => [severity, 0]));
+            for (const [name, vulnerability] of Object.entries(full.vulnerabilities)) {
+              if (!productionNames.has(name)) devCounts[vulnerability.severity] += 1;
+            }
+            const countRow = (label, counts) =>
+              `| ${label} | ${severities.map((severity) => counts[severity]).join(' | ')} | ${counts.total ?? severities.reduce((sum, severity) => sum + counts[severity], 0)} |`;
+
+            lines.push(
+              '### Vulnerabilities by severity',
+              '',
+              '| Scope | Info | Low | Moderate | High | Critical | Total |',
+              '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+              countRow('Production', production.metadata.vulnerabilities),
+              countRow('All dependencies', full.metadata.vulnerabilities),
+              countRow('Development/build only', devCounts),
+              '',
+              '### Affected packages and available fixes',
+              '',
+              '| Package | Scope | Severity | Fix available |',
+              '| --- | --- | --- | --- |'
+            );
+
+            const names = [...new Set([
+              ...Object.keys(full.vulnerabilities),
+              ...Object.keys(production.vulnerabilities),
+            ])].sort();
+            for (const name of names) {
+              const isProduction = productionNames.has(name);
+              const vulnerability = isProduction
+                ? production.vulnerabilities[name]
+                : full.vulnerabilities[name];
+              lines.push(`| ${markdownCell(name)} | ${isProduction ? 'Production' : 'Development/build'} | ${markdownCell(vulnerability.severity)} | ${markdownCell(formatFix(vulnerability.fixAvailable))} |`);
+            }
+            if (names.length === 0) lines.push('| None | — | — | — |');
+            lines.push('', 'Development/build packages appear in the full report but not in the production report.', '');
+          }
+
+          appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${lines.join('\n')}\n`);
+          NODE
