@@ -13,6 +13,7 @@ import {
   getConsentStatus,
   setConsentPreferences,
   setCookielessAudienceOptOut,
+  subscribeConsent,
   type ConsentChoice,
   type ConsentWriteResult,
 } from './consent';
@@ -271,6 +272,7 @@ let cookielessAudiencePostHogClient: PostHogClient | null = null;
 let postHogImportPromise: Promise<PostHogClient | null> | null = null;
 let postHogInitializationPromise: Promise<PostHogClient | null> | null = null;
 let cookielessAudienceInitializationPromise: Promise<PostHogClient | null> | null = null;
+let consentSubscriptionUnsubscribe: (() => void) | null = null;
 
 function readLocalStorage(key: string): string | null {
   const storage = getBrowserLocalStorage();
@@ -696,7 +698,7 @@ function sanitizeCookielessAudienceProperties(
 }
 
 function beforeSend(event: CaptureResult | null): CaptureResult | null {
-  if (!event) {
+  if (!event || !isDetailedAnalyticsEnabled()) {
     return null;
   }
 
@@ -753,7 +755,7 @@ async function ensurePostHogInitialized(): Promise<PostHogClient | null> {
   postHogInitializationPromise = (async () => {
     const posthog = await loadPostHogClient();
     const token = getPostHogToken();
-    if (!posthog || !token) return null;
+    if (!posthog || !token || readConsent() !== 'accepted') return null;
 
     posthog.init(token, {
       api_host: getPostHogHost(),
@@ -922,7 +924,28 @@ async function initializePostHog(): Promise<PostHogClient | null> {
   return posthog;
 }
 
+function revokeDetailedPostHog(): void {
+  lastTrackedPathname = null;
+  clearSessionAcquisitionRegistration();
+  removeLocalStorage(SESSION_ACQUISITION_STORAGE_KEY);
+
+  if (!isPostHogInitialized || !postHogClient || postHogMode !== 'consented') return;
+
+  postHogMode = 'uninitialized';
+  postHogClient.opt_out_capturing();
+  postHogClient.reset();
+  // reset() clears the SDK's consent value, so restore the explicit refusal last.
+  postHogClient.opt_out_capturing();
+}
+
+function ensureConsentSubscription(): void {
+  consentSubscriptionUnsubscribe ??= subscribeConsent(() => {
+    if (readConsent() !== 'accepted') revokeDetailedPostHog();
+  });
+}
+
 export function initializeAnalytics(): void {
+  ensureConsentSubscription();
   if (typeof window !== 'undefined') {
     const params = new URLSearchParams(window.location.search);
 
@@ -942,6 +965,7 @@ export function initializeAnalytics(): void {
 }
 
 export function acceptAnalyticsConsent(): ConsentWriteResult {
+  ensureConsentSubscription();
   const previousConsent = readConsent();
   const result = setConsentPreferences({ analytics: 'accepted' });
   if (previousConsent === 'accepted') return result;
@@ -955,17 +979,9 @@ export function acceptAnalyticsConsent(): ConsentWriteResult {
 }
 
 export function rejectAnalyticsConsent(): ConsentWriteResult {
-  const previousConsent = readConsent();
+  ensureConsentSubscription();
   const result = setConsentPreferences({ analytics: 'refused' });
-  lastTrackedPathname = null;
-  clearSessionAcquisitionRegistration();
-  removeLocalStorage(SESSION_ACQUISITION_STORAGE_KEY);
-
-  if (previousConsent === 'accepted' && isPostHogInitialized && postHogClient) {
-    postHogClient.opt_out_capturing();
-    postHogClient.reset();
-    postHogMode = 'uninitialized';
-  }
+  revokeDetailedPostHog();
   return result;
 }
 
@@ -1373,6 +1389,8 @@ export const analyticsInternalsForTests = {
   sanitizeCustomProperties,
   sanitizePostHogProperties,
   reset: () => {
+    consentSubscriptionUnsubscribe?.();
+    consentSubscriptionUnsubscribe = null;
     isPostHogInitialized = false;
     isCookielessAudiencePostHogInitialized = false;
     postHogMode = 'uninitialized';
