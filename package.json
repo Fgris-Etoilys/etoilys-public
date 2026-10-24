@@ -31,11 +31,11 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@posthog/react": "^1.9.0",
+    "@posthog/react": "^1.11.3",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "lucide-react": "^0.577.0",
-    "posthog-js": "^1.372.5",
+    "posthog-js": "^1.438.13",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-router-dom": "^7.18.4"
