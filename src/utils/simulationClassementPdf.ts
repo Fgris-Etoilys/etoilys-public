@@ -10,6 +10,7 @@ import {
   formatRequestedCategory,
 } from './simulatorLabels';
 import {
+  formatPdfNumber,
   getAutoTableFinalY,
   getEtoilysLogoPngAsset,
   getSimulatorPdfPalette,
@@ -17,10 +18,7 @@ import {
   type PdfColor,
 } from './simulatorPdfShared';
 
-const number = (value: number | null | undefined, unit = '') =>
-  typeof value === 'number' && Number.isFinite(value)
-    ? `${value.toLocaleString('fr-FR', { maximumFractionDigits: 2 })}${unit}`
-    : 'Non renseigné';
+const number = formatPdfNumber;
 
 export async function createSimulationClassementPdf({
   grid,
@@ -30,6 +28,7 @@ export async function createSimulationClassementPdf({
   totalSleepingCapacity,
   generatedAt,
   simulationId,
+  factuelle,
 }: SimulationClassementPdfInput): Promise<jsPDF> {
   const palette = getSimulatorPdfPalette();
   const doc = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
@@ -49,6 +48,9 @@ export async function createSimulationClassementPdf({
   const logo = await getEtoilysLogoPngAsset('/logo-etoilys-editorial.svg');
   const date = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' }).format(generatedAt);
   const success = rapport.resultat === true;
+  const category = formatRequestedCategory(grille?.categorie_demandee);
+  // FACTUELLE : la catégorie exportée peut différer de la demande, jamais présentée comme l'objectif.
+  const classement = factuelle ? `le classement ${category}` : 'le classement demandé';
   let y = 100;
 
   const font = (size: number, bold = false, color: PdfColor = palette.ink, serif = false) => {
@@ -170,7 +172,7 @@ export async function createSimulationClassementPdf({
   doc.setFillColor(...(success ? palette.sage : palette.warm));
   doc.roundedRect(margin, y, contentWidth, 108, 4, 4, 'F');
   text(
-    `OBJECTIF : ${formatRequestedCategory(grille?.categorie_demandee).toLocaleUpperCase('fr-FR')}`,
+    `${factuelle ? 'RÉSULTAT' : 'OBJECTIF'} : ${category.toLocaleUpperCase('fr-FR')}`,
     margin + 20,
     y + 16,
     contentWidth - 40,
@@ -189,8 +191,8 @@ export async function createSimulationClassementPdf({
   );
   text(
     success
-      ? 'Vos réponses atteignent les conditions évaluées pour le classement demandé.'
-      : 'Vos réponses ne permettent pas encore d’atteindre le classement demandé.',
+      ? `Vos réponses atteignent les conditions évaluées pour ${classement}.`
+      : `Vos réponses ne permettent pas encore d’atteindre ${classement}.`,
     margin + 20,
     y + 77,
     contentWidth - 40,
@@ -246,7 +248,7 @@ export async function createSimulationClassementPdf({
   });
   y += 122;
 
-  const parameters: Array<[string, string]> = [
+  const parameters: Array<[string, string]> = factuelle?.parameters ?? [
     ['Type de logement', formatHousingType(grille?.type_habitation)],
     ['Étage', formatFloor(grille?.etage)],
     ['Capacité d’accueil', number(grille?.capacite_accueil, ' pers.')],
@@ -335,7 +337,12 @@ export async function createSimulationClassementPdf({
     [0.78, 0.22]
   );
 
-  const invalid = rapport.criteres_obligatoires_non_valides ?? [];
+  const onc = new Set(factuelle?.oncNonValides ?? []);
+  const invalid = factuelle
+    ? [...new Set([...(rapport.criteres_obligatoires_non_valides ?? []), ...onc])].sort(
+        (first, second) => first - second
+      )
+    : (rapport.criteres_obligatoires_non_valides ?? []);
   section('Les points à revoir');
   paragraph(
     success
@@ -347,9 +354,10 @@ export async function createSimulationClassementPdf({
       ['N°', 'Critère obligatoire non validé', 'Points'],
       invalid.map((criterionNumber) => {
         const criterion = getCriterionByNumber(grid, criterionNumber);
+        const libelle = criterion?.libelle ?? 'Intitulé non disponible dans la grille';
         return [
           String(criterionNumber),
-          criterion?.libelle ?? 'Intitulé non disponible dans la grille',
+          onc.has(criterionNumber) ? `${libelle} (non compensable)` : libelle,
           number(criterion?.points),
         ];
       }),
@@ -364,9 +372,21 @@ export async function createSimulationClassementPdf({
   ensure(300);
   section('Votre logement en détail', 27);
   paragraph(
-    'Pièces et espaces renseignés dans la simulation. Les couchages correspondent à la capacité déclarée dans chaque pièce.'
+    factuelle
+      ? 'Pièces et espaces renseignés dans la simulation. Les couchages déclarés ne sont comptabilisés que dans les pièces d’habitation reconnues.'
+      : 'Pièces et espaces renseignés dans la simulation. Les couchages correspondent à la capacité déclarée dans chaque pièce.'
   );
-  if (logement?.pieces?.length) {
+  if (factuelle) {
+    if (factuelle.pieces.length) {
+      table(
+        ['Pièce / espace', 'Surface', 'Couchages déclarés', 'Pièce d’habitation'],
+        factuelle.pieces,
+        [0.44, 0.15, 0.2, 0.21]
+      );
+    } else {
+      paragraph('Le détail des pièces n’est pas disponible dans ce compte rendu.');
+    }
+  } else if (logement?.pieces?.length) {
     table(
       ['Pièce / espace', 'Surface', 'Couchages', 'Ouvrant'],
       logement.pieces.map((piece) => [

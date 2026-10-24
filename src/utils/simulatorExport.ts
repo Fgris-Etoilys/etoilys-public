@@ -45,5 +45,10 @@ export async function exportSimulationClassementPdf(
   const { createSimulationClassementPdf } = await import('./simulationClassementPdf');
   const doc = await createSimulationClassementPdf(input);
   const safeId = input.simulationId.replace(/[^a-zA-Z0-9_-]/g, '-');
-  doc.save(`simulation-classement-${safeId}-${formatFilenameDate(input.generatedAt)}.pdf`);
+  // FACTUELLE : une catégorie par fichier, deux exports successifs restent distincts.
+  const stars = input.factuelle ? input.grille?.categorie_demandee?.charAt(0) : undefined;
+  const category = stars && /^[1-5]$/.test(stars) ? `-${stars}-etoiles` : '';
+  doc.save(
+    `simulation-classement-${safeId}${category}-${formatFilenameDate(input.generatedAt)}.pdf`
+  );
 }

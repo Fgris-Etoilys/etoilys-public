@@ -21,6 +21,8 @@ Exigence backend : la configuration CORS de `api-prod.etoilys.fr` doit autoriser
 ## Client frontend
 
 Toutes les actions du simulateur public doivent passer par `src/utils/simulatorApi.ts`.
+Les simulations en mode FACTUELLE (faits du logement, ETOILYS-436/437) utilisent en plus
+`src/utils/simulatorFactuelleApi.ts` ; voir `docs/tech/simulateur-factuelle.md`.
 La grille de contrôle affichée dans `/simulateur/:simulationId` est chargée depuis
 `GET /public/simulations/modele`; le frontend ne doit pas utiliser de copie locale de la grille
 comme fallback runtime.
@@ -116,6 +118,9 @@ Endpoints disponibles d’après le Swagger local :
 - `POST /public/simulations/{id}/verifier`
 - `GET /public/simulations/{id}/verification`
 - `GET /public/simulations/{id}/rapport`
+- FACTUELLE : `PUT /{id}/studio`, `GET /{id}/comparaison` et les routes `/{id}/faits/*`
+  décrites dans `docs/tech/simulateur-factuelle.md`. `/verifier` et `/verification` sont
+  partagés ; `/logement`, `/pieces`, `/reponse` et `/rapport` restent réservés à LEGACY.
 
 ## Suppression
 
@@ -155,6 +160,9 @@ frontend. Les codes métier simulateur explicitement gérés sont :
 - `UNAUTHORIZED`
 - `FORBIDDEN`
 - `CONFLICT`
+- FACTUELLE : `PARAMETRES_GRILLE_INCOMPLETS`, `MODE_GRILLE_INCOMPATIBLE`,
+  `EVALUATION_FACTUELLE_INDISPONIBLE`, `GRILLE_FACTUELLE_INCOMPLETE` (409 de `/comparaison` :
+  une seule relecture de `/verification`).
 
 Les réponses HTTP `429 Too Many Requests` peuvent être émises par Cloudflare avant le backend
 applicatif. Le frontend les traite donc par statut HTTP, même si le body n'est pas au format JSON,

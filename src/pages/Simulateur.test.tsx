@@ -142,6 +142,7 @@ describe('Simulateur public de classement', () => {
     fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
       target: { value: '6' },
     });
+    fireEvent.click(screen.getByRole('radio', { name: 'Non' }));
     fireEvent.click(screen.getByRole('button', { name: /démarrer la simulation/i }));
 
     await waitFor(() => {
@@ -158,6 +159,7 @@ describe('Simulateur public de classement', () => {
         capacite_accueil: 6,
         etage: 2,
         type_habitation: 'COLLECTIF',
+        studio: false,
       }),
     });
     expect(fetchMock).toHaveBeenCalledTimes(2);
@@ -167,6 +169,24 @@ describe('Simulateur public de classement', () => {
       floor: 2,
       capacity: 6,
     });
+  });
+
+  it('exige une réponse explicite à Studio, sans présélection, avant toute création', async () => {
+    const fetchMock = mockFetchJsonSequence([{ body: [] }]);
+
+    renderSimulateur();
+
+    await findEmptySimulationState();
+
+    expect(screen.getByRole('radio', { name: 'Oui' })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Non' })).not.toBeChecked();
+    fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
+      target: { value: '4' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: /démarrer la simulation/i }));
+
+    expect(await screen.findByText(/indiquez si le logement est un studio/i)).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('affiche un message dédié quand la limite de simulations publiques est atteinte', async () => {
@@ -188,6 +208,7 @@ describe('Simulateur public de classement', () => {
     fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
       target: { value: '4' },
     });
+    fireEvent.click(screen.getByRole('radio', { name: 'Oui' }));
     fireEvent.click(screen.getByRole('button', { name: /démarrer la simulation/i }));
 
     expect(await screen.findByText(/nombre maximal de simulations/i)).toBeInTheDocument();
@@ -205,6 +226,7 @@ describe('Simulateur public de classement', () => {
     fireEvent.change(screen.getByLabelText(/capacité d’accueil/i), {
       target: { value: '4' },
     });
+    fireEvent.click(screen.getByRole('radio', { name: 'Oui' }));
     fireEvent.click(screen.getByRole('button', { name: /démarrer la simulation/i }));
 
     expect(

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, FolderOpen, LoaderCircle } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Check, FolderOpen, LoaderCircle } from 'lucide-react';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Select from '../components/ui/Select';
@@ -34,7 +34,13 @@ type SimulationsStatus = 'loading' | 'success' | 'error';
 
 interface FormErrors {
   capacity?: string;
+  studio?: string;
 }
+
+const STUDIO_OPTIONS = [
+  { value: true, label: 'Oui' },
+  { value: false, label: 'Non' },
+] as const;
 
 interface SimulationStatusBadge {
   label: string;
@@ -93,6 +99,8 @@ export default function Simulateur() {
   const [housingType, setHousingType] = useState<HousingType>('INDIVIDUEL');
   const [floor, setFloor] = useState('0');
   const [capacity, setCapacity] = useState('');
+  // Cinquième paramètre FACTUELLE, sans présélection : Non est une réponse connue.
+  const [studio, setStudio] = useState<boolean | null>(null);
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isCreatingSimulation, setIsCreatingSimulation] = useState(false);
   const [simulationsStatus, setSimulationsStatus] = useState<SimulationsStatus>('loading');
@@ -153,8 +161,15 @@ export default function Simulateur() {
     const parsedCapacity = Number(capacity);
     const parsedFloor = Number(floor);
 
+    const nextErrors: FormErrors = {};
     if (!Number.isInteger(parsedCapacity) || parsedCapacity <= 0) {
-      setFormErrors({ capacity: 'Indiquez une capacité d’accueil valide.' });
+      nextErrors.capacity = 'Indiquez une capacité d’accueil valide.';
+    }
+    if (studio === null) {
+      nextErrors.studio = 'Indiquez si le logement est un studio.';
+    }
+    if (nextErrors.capacity || nextErrors.studio) {
+      setFormErrors(nextErrors);
       return;
     }
 
@@ -167,6 +182,7 @@ export default function Simulateur() {
         capacite_accueil: parsedCapacity,
         etage: parsedFloor,
         type_habitation: housingType,
+        studio: studio === true,
       });
 
       if (createdSimulation.id) {
@@ -184,6 +200,7 @@ export default function Simulateur() {
       setFloor('0');
       setRequestedCategory('3*');
       setHousingType('INDIVIDUEL');
+      setStudio(null);
       await loadSimulations();
       showToast('La simulation a été créée.', { type: 'success' });
     } catch (error) {
@@ -253,7 +270,7 @@ export default function Simulateur() {
               <p className="simulator-eyebrow">Votre point de départ</p>
               <h2 id="new-simulation-title">Nouvelle simulation</h2>
               <p className="mt-2 text-sm text-muted">
-                Quatre informations pour commencer. Vous pourrez les modifier à tout moment.
+                Cinq informations pour commencer. Vous pourrez les modifier à tout moment.
               </p>
             </div>
 
@@ -304,6 +321,44 @@ export default function Simulateur() {
                   error={formErrors.capacity}
                 />
               </div>
+
+              <fieldset
+                className="simulator-fieldset"
+                aria-describedby={formErrors.studio ? 'studio-error' : undefined}
+              >
+                <legend>Studio ?</legend>
+                <div className="simulator-rate-options grid-cols-2">
+                  {STUDIO_OPTIONS.map((option) => (
+                    <label key={option.label}>
+                      <input
+                        className="sr-only ui-focus"
+                        type="radio"
+                        name="studio"
+                        value={String(option.value)}
+                        checked={studio === option.value}
+                        aria-invalid={formErrors.studio ? true : undefined}
+                        onChange={() => {
+                          setStudio(option.value);
+                          if (formErrors.studio) {
+                            setFormErrors((current) =>
+                              current.capacity ? { capacity: current.capacity } : {}
+                            );
+                          }
+                        }}
+                      />
+                      <span>
+                        {option.label}
+                        {studio === option.value && <Check aria-hidden="true" size={12} />}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+                {formErrors.studio && (
+                  <p id="studio-error" role="alert" className="mt-2 text-sm text-alert-400">
+                    {formErrors.studio}
+                  </p>
+                )}
+              </fieldset>
 
               <Button
                 type="submit"

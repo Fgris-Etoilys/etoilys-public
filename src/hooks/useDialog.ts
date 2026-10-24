@@ -5,13 +5,17 @@ export function useDialog({
   dialogRef,
   initialFocus,
   onClose,
+  paused = false,
 }: {
   isOpen: boolean;
   dialogRef: RefObject<HTMLElement | null>;
   initialFocus: string;
   onClose: () => void;
+  /** Dialogue imbriqué ouvert par-dessus : Échap et Tab lui appartiennent. */
+  paused?: boolean;
 }) {
   const close = useEffectEvent(onClose);
+  const isPaused = useEffectEvent(() => paused);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -24,6 +28,7 @@ export function useDialog({
     (dialog.querySelector<HTMLElement>(initialFocus) ?? dialog).focus({ preventScroll: true });
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      if (isPaused()) return;
       if (event.key === 'Escape') {
         close();
         return;
