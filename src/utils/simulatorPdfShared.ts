@@ -5,6 +5,13 @@ export interface PdfLogoAsset {
 
 export type PdfColor = [number, number, number];
 
+/** Nombre au format français ; une valeur absente reste « Non renseigné », jamais zéro. */
+export function formatPdfNumber(value: number | null | undefined, unit = ''): string {
+  return typeof value === 'number' && Number.isFinite(value)
+    ? `${value.toLocaleString('fr-FR', { maximumFractionDigits: 2 })}${unit}`
+    : 'Non renseigné';
+}
+
 // Shared by the three simulators. Fallbacks support PDF generation without a stylesheet.
 export function getSimulatorPdfPalette() {
   const color = (token: string, fallback: PdfColor): PdfColor => {

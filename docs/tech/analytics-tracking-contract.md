@@ -102,6 +102,7 @@ Le SDK ajoute les propriétés techniques strictement nécessaires au transport 
 - `simulator_step_viewed`, `simulator_piece_saved`, `simulator_piece_deleted` ;
 - `simulator_grid_response_saved`, `simulator_grid_progress_reached` ;
 - `simulator_result_requested`, `simulator_result_blocked`, `simulator_pdf_exported`, `simulator_help_opened` ;
+  en FACTUELLE, `simulator_pdf_exported` porte aussi `exported_category` (catégorie exportée) et `requested_category` ; consulter une autre catégorie n'émet aucun événement ;
 - `$autocapture` : clics consentis uniquement, limités par les allowlists natives du SDK aux liens, boutons, éléments `role="button"` et éléments explicitement marqués `data-ph-autocapture="true"`.
 
 Les clics de contact ne reconnaissent que `+33 6 49 55 15 40` et `contact@etoilys.fr`. Les coordonnées de tiers, notamment celles de l’hébergeur dans les mentions légales, sont exclues.

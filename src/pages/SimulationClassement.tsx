@@ -57,6 +57,22 @@ import {
 } from '../utils/analytics';
 import { exportSimulationClassementPdf } from '../utils/simulatorExport';
 import { useDialog } from '../hooks/useDialog';
+import { readEvaluation, useFactuelleSimulation } from '../hooks/useFactuelleSimulation';
+import { requestedOutcome, useFactuelleResult } from '../hooks/useFactuelleResult';
+import FactuellePiecesTab from '../components/simulator/factuelle/FactuellePiecesTab';
+import FactuelleGridTab, {
+  type FactuelleAnswerSaved,
+} from '../components/simulator/factuelle/FactuelleGridTab';
+import FactuelleResultPanel from '../components/simulator/factuelle/FactuelleResultPanel';
+import { pieceNeeds } from '../utils/factuellePieces';
+import {
+  factuelleProgressSummary,
+  type FactuelleGridTarget,
+  type FactuelleSource,
+} from '../utils/factuelleGrille';
+import { buildFactuellePdfInput } from '../utils/simulationClassementFactuellePdf';
+import type { FactuellePieceTarget } from '../utils/simulatorFactuelle.types';
+import type { ComparaisonCategorie } from '../utils/simulatorFactuelleResultats.types';
 import {
   createPiece,
   deletePiece,
@@ -66,11 +82,13 @@ import {
   getSimulationLogement,
   getSimulatorApiErrorMessage,
   getVerification,
+  resolveGridMode,
   updateCapacity,
   updateFloor,
   updateHousingType,
   updatePiece,
   updateRequestedCategory,
+  updateStudio,
   verifySimulation,
   type CriterionValidationStatus,
   type HousingType,
@@ -154,6 +172,22 @@ const DEFAULT_SIMULATION_PARAMETERS_FORM: SimulationParametersForm = {
 
 const PARAMETER_REFRESH_ERROR_MESSAGE =
   'Les paramètres ont été enregistrés, mais certaines données de la simulation n’ont pas pu être actualisées. Réessayez avant de consulter le résultat.';
+
+/** Contrôle du panneau de paramètres ciblé par un besoin ou un blocage `PARAMETRES` (champ API). */
+const PARAMETER_FIELD_IDS: Record<string, string> = {
+  categorie_demandee: 'simulationRequestedCategory',
+  capacite_accueil: 'simulationCapacity',
+  etage: 'simulationFloor',
+  type_habitation: 'simulationHousingType',
+  studio: 'simulationStudio',
+};
+
+const STUDIO_OPTIONS = [
+  { value: 'true', label: 'Oui' },
+  { value: 'false', label: 'Non' },
+];
+
+const FACTUELLE_BLOCKED_MESSAGE = 'Une autre modification est en cours. Réessayez dans un instant.';
 
 function isPieceType(value: string): value is PieceType {
   return [...INTERIOR_PIECE_TYPES, ...EXTERIOR_PIECE_TYPES].includes(value as PieceType);
@@ -744,6 +778,17 @@ export default function SimulationClassement() {
   const pieceDialogRef = useRef<HTMLDivElement>(null);
   const latestParameterSaveRequestIdRef = useRef(0);
   const latestGridModelRequestIdRef = useRef(0);
+  const latestLoadRequestIdRef = useRef(0);
+  // Une relecture FACTUELLE (issue incertaine, actualisation) rapporte aussi paramètres et statut.
+  const factuelle = useFactuelleSimulation(simulationId, setSimulation);
+  const loadFactuelle = factuelle.load;
+  const [factuellePiecesTarget, setFactuellePiecesTarget] = useState<FactuellePieceTarget | null>(
+    null
+  );
+  const [factuelleGridTarget, setFactuelleGridTarget] = useState<FactuelleGridTarget | null>(null);
+  const navigationRequestIdRef = useRef(0);
+  const factuelleResult = useFactuelleResult(simulationId, factuelle);
+  const hydrateFactuelleResult = factuelleResult.hydrate;
   const hasTrackedWorkspaceResumeRef = useRef(false);
   const viewedTabsRef = useRef(new Set<ActiveTab>());
   const hasInitializedProgressTrackingRef = useRef(false);
@@ -754,12 +799,21 @@ export default function SimulationClassement() {
   );
   const grille = simulation?.grille;
   const requestedGridCategory = getRequestedGridCategory(grille?.categorie_demandee);
+  // Le mode est attribué par le backend et immuable : FACTUELLE n'appelle aucune route LEGACY.
+  const isFactuelle = simulation !== null && resolveGridMode(simulation) === 'FACTUELLE';
+  const factuelleSnapshot = isFactuelle ? factuelle.snapshot : null;
+  const isFactuelleWriteLocked =
+    isFactuelle && (factuelle.pending !== null || factuelle.needsRefresh || factuelle.isRefreshing);
 
   const loadSimulation = useCallback(async () => {
     if (!simulationId) {
       setLoadStatus('error');
       return;
     }
+
+    const loadRequestId = latestLoadRequestIdRef.current + 1;
+    latestLoadRequestIdRef.current = loadRequestId;
+    const isCurrentLoad = () => latestLoadRequestIdRef.current === loadRequestId;
 
     setLoadStatus('loading');
     setResultState(null);
@@ -768,16 +822,36 @@ export default function SimulationClassement() {
     setIsAutoRecalculatingResult(false);
 
     let nextSimulation: PublicSimulationDto;
-    let nextLogement: LogementDto;
+    let nextLogement: LogementDto | null = null;
     try {
-      [nextSimulation, nextLogement] = await Promise.all([
-        getPublicSimulation(simulationId),
-        getSimulationLogement(simulationId),
-      ]);
+      // Le mode est connu avant tout appel métier : une simulation FACTUELLE ne lit pas `/logement`.
+      nextSimulation = await getPublicSimulation(simulationId);
+      const gridMode = resolveGridMode(nextSimulation);
+      if (gridMode === null) {
+        throw new Error('Mode de grille inconnu');
+      }
+      if (gridMode === 'FACTUELLE') {
+        const isLoaded = await loadFactuelle(
+          simulationId,
+          readEvaluation(nextSimulation.grille?.evaluation)
+        );
+        if (!isLoaded) {
+          return;
+        }
+      } else {
+        nextLogement = await getSimulationLogement(simulationId);
+      }
     } catch {
+      if (!isCurrentLoad()) {
+        return;
+      }
       setSimulation(null);
       setLogement(null);
       setLoadStatus('error');
+      return;
+    }
+
+    if (!isCurrentLoad()) {
       return;
     }
 
@@ -793,6 +867,13 @@ export default function SimulationClassement() {
           capacity: nextSimulation.grille?.capacite_accueil,
         });
       }
+    }
+
+    if (resolveGridMode(nextSimulation) === 'FACTUELLE') {
+      // Reprise : le résultat enregistré est relu selon le statut, sans écriture.
+      void hydrateFactuelleResult(simulationId, nextSimulation.statut);
+      setLoadStatus('success');
+      return;
     }
 
     try {
@@ -819,7 +900,7 @@ export default function SimulationClassement() {
     } finally {
       setLoadStatus('success');
     }
-  }, [simulationId]);
+  }, [hydrateFactuelleResult, loadFactuelle, simulationId]);
 
   const loadGridModel = useCallback(async (category: RequestedCategory) => {
     const requestId = latestGridModelRequestIdRef.current + 1;
@@ -884,23 +965,69 @@ export default function SimulationClassement() {
   const totalSleepingCapacity = useMemo(() => getTotalSleepingCapacity(pieces), [pieces]);
   const activePieceSupportsSleepingCapacity = canPieceHaveSleepingCapacity(pieceForm.type);
   const activePieceCanHaveExteriorOpening = canPieceHaveExteriorOpening(pieceForm.type);
-  const hasSimulationResult = resultState !== null || resultStatus === 'stale';
-  const isCheckingResult = resultStatus === 'checking';
+  const factuelleResultState = factuelleResult.state;
+  // FACTUELLE : blocages et comparaison s'affichent comme un résultat à jour de l'onglet Résultat.
+  const displayedResultStatus: ResultStatus = !isFactuelle
+    ? resultStatus
+    : factuelleResultState.status === 'blocked'
+      ? 'fresh'
+      : factuelleResultState.status;
+  const hasSimulationResult = isFactuelle
+    ? displayedResultStatus === 'fresh' || displayedResultStatus === 'stale'
+    : resultState !== null || resultStatus === 'stale';
+  const isCheckingResult = displayedResultStatus === 'checking';
   const resultActionLabel = hasSimulationResult
     ? 'Relancer la simulation'
     : 'Voir le résultat de ma simulation';
-  const resultStatusLabel = getResultStatusLabel(resultStatus, resultState);
-  const isResultBusinessSuccess =
-    resultStatus === 'fresh' &&
-    resultState?.kind === 'rapport' &&
-    resultState.rapport.resultat === true;
+  // Écriture FACTUELLE ou relecture canonique en cours : l'ancien résultat n'est plus garanti à jour
+  // (ni verdict, ni consultation, ni export). Il réapparaît après un refus certain ; un succès ou une
+  // issue incertaine l'invalident.
+  const hasSuspendedFactuelleResult =
+    isFactuelle &&
+    ((factuelle.pending !== null && factuelle.pending.kind !== 'verify') ||
+      factuelle.isRefreshing) &&
+    (factuelleResultState.status === 'blocked' || factuelleResultState.status === 'fresh');
+  const isResultBusinessSuccess = isFactuelle
+    ? !hasSuspendedFactuelleResult &&
+      factuelleResultState.status === 'fresh' &&
+      requestedOutcome(factuelleResultState.comparaison) === 'favorable'
+    : resultStatus === 'fresh' &&
+      resultState?.kind === 'rapport' &&
+      resultState.rapport.resultat === true;
   const isResultCalculatedWithoutSuccess =
-    resultStatus === 'fresh' &&
-    !(resultState?.kind === 'rapport' && resultState.rapport.resultat === true);
-  const gridProgressSummary = useMemo(
+    displayedResultStatus === 'fresh' && !hasSuspendedFactuelleResult && !isResultBusinessSuccess;
+  const resultStatusLabel = !isFactuelle
+    ? getResultStatusLabel(resultStatus, resultState)
+    : hasSuspendedFactuelleResult
+      ? 'Mise à jour en cours'
+      : factuelleResultState.status === 'blocked'
+        ? 'À compléter'
+        : isResultBusinessSuccess
+          ? 'Classement atteint'
+          : getResultStatusLabel(displayedResultStatus, null);
+  const resultErrorText =
+    isFactuelle && factuelleResultState.status === 'error'
+      ? factuelleResultState.message
+      : resultErrorMessage;
+  const legacyGridProgressSummary = useMemo(
     () => buildGridProgressSummary(gridSummary, grille?.reponses ?? [], grille?.categorie_demandee),
     [gridSummary, grille?.categorie_demandee, grille?.reponses]
   );
+  // FACTUELLE : progression dérivée des besoins backend (union des cinq catégories).
+  const factuelleProgress = useMemo(
+    () =>
+      factuelleProgressSummary(
+        gridSummary,
+        factuelleSnapshot?.evaluation ?? null,
+        factuelleSnapshot?.faits.parametres.categorie_demandee ?? null
+      ),
+    [
+      factuelleSnapshot?.evaluation,
+      factuelleSnapshot?.faits.parametres.categorie_demandee,
+      gridSummary,
+    ]
+  );
+  const gridProgressSummary = isFactuelle ? factuelleProgress : legacyGridProgressSummary;
   const gridStepSummary =
     gridModelStatus === 'success'
       ? `${gridProgressSummary.answeredCount} critères sur ${gridProgressSummary.totalCount} renseignés`
@@ -916,6 +1043,27 @@ export default function SimulationClassement() {
       }),
     [grille?.capacite_accueil, pieces, totalSleepingCapacity]
   );
+  const factuellePieces = factuelleSnapshot?.faits.logement.pieces ?? [];
+  const factuelleSurfaces = factuelleSnapshot?.evaluation?.surfaces ?? null;
+  const isFactuellePiecesComplete =
+    factuellePieces.length > 0 &&
+    factuelleSnapshot?.evaluation != null &&
+    factuellePieces.every(
+      (piece) => !pieceNeeds(factuelleSnapshot.evaluation, piece.id).some((need) => need.manquant)
+    );
+  const piecesStepSummary = isFactuelle
+    ? [
+        `${factuellePieces.length} ${factuellePieces.length > 1 ? 'pièces' : 'pièce'}`,
+        ...(factuelleSurfaces?.surface_totale != null
+          ? [formatSurfaceCompact(factuelleSurfaces.surface_totale)]
+          : []),
+        ...(factuelleSurfaces?.nombre_couchages != null
+          ? [formatSleepingCount(factuelleSurfaces.nombre_couchages)]
+          : []),
+      ].join(' · ')
+    : `${pieces.length} ${pieces.length > 1 ? 'pièces' : 'pièce'} · ${formatSurfaceCompact(
+        logement?.surface_totale
+      )} · ${formatSleepingCount(totalSleepingCapacity)}`;
   const parametersSummary = [
     formatRequestedCategory(grille?.categorie_demandee),
     grille?.capacite_accueil
@@ -923,6 +1071,15 @@ export default function SimulationClassement() {
       : 'Capacité non renseignée',
     formatHousingType(grille?.type_habitation),
     formatFloor(grille?.etage),
+    ...(isFactuelle
+      ? [
+          grille?.studio === true
+            ? 'Studio'
+            : grille?.studio === false
+              ? 'Hors studio'
+              : 'Studio non renseigné',
+        ]
+      : []),
   ].join(' · ');
 
   useEffect(() => {
@@ -954,7 +1111,7 @@ export default function SimulationClassement() {
   }, [activeTab, grille?.capacite_accueil, grille?.categorie_demandee, loadStatus]);
 
   useEffect(() => {
-    if (gridModelStatus !== 'success' || gridProgressSummary.totalCount <= 0) {
+    if (isFactuelle || gridModelStatus !== 'success' || gridProgressSummary.totalCount <= 0) {
       return;
     }
 
@@ -983,6 +1140,7 @@ export default function SimulationClassement() {
     gridProgressSummary.missingMandatoryCount,
     gridProgressSummary.remainingCount,
     gridProgressSummary.totalCount,
+    isFactuelle,
   ]);
 
   async function handleExportPdf() {
@@ -1133,6 +1291,15 @@ export default function SimulationClassement() {
   function markResultStale({
     clearCriterionFilter = true,
   }: { clearCriterionFilter?: boolean } = {}) {
+    if (isFactuelle) {
+      // Mutation réelle : le statut backend devient A_COMPLETER ou A_RECALCULER, relu à la reprise.
+      factuelleResult.invalidate();
+      if (clearCriterionFilter) {
+        setCriterionFilterNumbers([]);
+      }
+      return;
+    }
+
     setResultErrorMessage(null);
     setIsAutoRecalculatingResult(false);
     if (clearCriterionFilter) {
@@ -1182,6 +1349,10 @@ export default function SimulationClassement() {
         ? { ...currentSimulation, statut: getSimulationStatusFromResult(result) }
         : currentSimulation
     );
+    showResultTab();
+  }
+
+  function showResultTab() {
     setActiveTab('result');
     window.requestAnimationFrame(() => {
       try {
@@ -1194,6 +1365,138 @@ export default function SimulationClassement() {
       } catch {
         // Certains environnements de test ne prennent pas en charge window.scrollTo.
       }
+    });
+  }
+
+  /**
+   * FACTUELLE : `POST /verifier` puis blocages ou comparaison, sous le verrou des écritures. Le statut
+   * FAVORABLE / DEFAVORABLE reflète la catégorie demandée ; consulter une autre catégorie n'écrit rien.
+   */
+  async function runFactuelleCheck() {
+    trackClassementSimulatorResultRequested({
+      progressBucket: getGridProgressBucket(factuelleProgress),
+      remainingCriteriaCount: factuelleProgress.remainingCount,
+      missingMandatoryCount: factuelleProgress.missingMandatoryCount,
+    });
+    const outcome = await factuelleResult.check();
+    if (!outcome) {
+      return;
+    }
+    if (outcome.kind === 'busy') {
+      showToast(FACTUELLE_BLOCKED_MESSAGE, { type: 'info' });
+      return;
+    }
+    if (outcome.kind === 'blocked') {
+      const codes = outcome.verification.blocages.map((blocage) => blocage.code);
+      trackClassementSimulatorResultBlocked({
+        hasSleepingCapacityIssue: codes.includes('COUCHAGES_CAPACITE_INCOHERENTS'),
+        hasMissingCriteria: codes.some(
+          (code) => code === 'FAIT_MANQUANT' || code === 'REPONSE_MANQUANTE'
+        ),
+        missingMandatoryCount: factuelleProgress.missingMandatoryCount,
+        remainingCriteriaCount: factuelleProgress.remainingCount,
+      });
+    } else if (outcome.kind === 'comparaison') {
+      trackClassementSimulatorCalculated({
+        resultOutcome: requestedOutcome(outcome.comparaison),
+        progressBucket: getGridProgressBucket(factuelleProgress),
+        remainingCriteriaCount: factuelleProgress.remainingCount,
+        missingMandatoryCount: factuelleProgress.missingMandatoryCount,
+      });
+    }
+    setCriterionFilterNumbers([]);
+    showResultTab();
+  }
+
+  /** Données figées au clic depuis l'entrée consultée ; ni statut, ni catégorie demandée, ni faits modifiés. */
+  async function handleExportFactuellePdf(entry: ComparaisonCategorie) {
+    if (!simulationId || factuelleResultState.status !== 'fresh') {
+      showToast('Aucun résultat à exporter.', { type: 'info' });
+      return;
+    }
+    // Verrou lu de façon synchrone : une écriture ou une relecture démarrée avant le rendu suivant
+    // suffit à refuser l'export d'un résultat qui n'est plus garanti à jour.
+    if (hasSuspendedFactuelleResult || factuelle.isBusy()) {
+      showToast('Le résultat est en cours de mise à jour. Réessayez dans un instant.', {
+        type: 'info',
+      });
+      return;
+    }
+
+    const { comparaison } = factuelleResultState;
+    try {
+      await exportSimulationClassementPdf(
+        buildFactuellePdfInput({
+          comparaison,
+          entry,
+          surfaces: factuelleSnapshot?.evaluation?.surfaces ?? null,
+          generatedAt: new Date(),
+          simulationId,
+        })
+      );
+      trackClassementSimulatorPdfExported({
+        resultOutcome: entry.rapport.resultat ? 'favorable' : 'defavorable',
+        exportedCategory: entry.categorie,
+        requestedCategory: comparaison.categorie_demandee,
+      });
+      showToast('PDF généré.', { type: 'success' });
+    } catch {
+      showToast('Impossible de générer le PDF.', { type: 'error' });
+    }
+  }
+
+  function focusParameter(champ: string) {
+    setAreParametersExpanded(true);
+    window.setTimeout(() => {
+      const control = document.getElementById(PARAMETER_FIELD_IDS[champ] ?? '');
+      control?.scrollIntoView?.({ block: 'center' });
+      control?.focus({ preventScroll: true });
+    }, 0);
+  }
+
+  /** Navigation exacte depuis un besoin ou un blocage FACTUELLE : paramètre, pièce, bloc ou critère. */
+  function openFactuelleSource(source: FactuelleSource) {
+    navigationRequestIdRef.current += 1;
+    const requestId = navigationRequestIdRef.current;
+    switch (source.kind) {
+      case 'parametre':
+        focusParameter(source.champ);
+        return;
+      case 'piece':
+        setFactuellePiecesTarget({ requestId, ...source.target });
+        setActiveTab('pieces');
+        return;
+      case 'global':
+        setCriterionFilterNumbers([]);
+        setFactuelleGridTarget({
+          requestId,
+          numero: source.numero,
+          bloc: source.bloc,
+          champ: source.champ,
+        });
+        setActiveTab('grid');
+        return;
+      case 'critere':
+        setCriterionFilterNumbers([]);
+        setFactuelleGridTarget({ requestId, numero: source.numero });
+        setActiveTab('grid');
+        return;
+    }
+  }
+
+  function handleFactuelleAnswerSaved(saved: FactuelleAnswerSaved) {
+    const progress = factuelleProgressSummary(
+      gridSummary,
+      saved.evaluation,
+      factuelleSnapshot?.faits.parametres.categorie_demandee ?? null
+    );
+    trackClassementSimulatorGridResponseSaved({
+      criterionNumber: saved.criterionNumber,
+      criterionStatus: saved.criterionStatus,
+      validationStatus: saved.validationStatus,
+      progressBucket: getGridProgressBucket(progress),
+      remainingCriteriaCount: progress.remainingCount,
+      missingMandatoryCount: progress.missingMandatoryCount,
     });
   }
 
@@ -1216,6 +1519,11 @@ export default function SimulationClassement() {
   }
 
   function handleManualSimulationCheck() {
+    if (isFactuelle) {
+      void runFactuelleCheck();
+      return;
+    }
+
     trackClassementSimulatorResultRequested({
       progressBucket: getGridProgressBucket(gridProgressSummary),
       remainingCriteriaCount: gridProgressSummary.remainingCount,
@@ -1231,7 +1539,7 @@ export default function SimulationClassement() {
     parameterRequestId?: number;
     requestedCategory?: RequestedCategory;
   } = {}) {
-    if (!simulationId) {
+    if (!simulationId || isFactuelle) {
       return;
     }
 
@@ -1332,6 +1640,11 @@ export default function SimulationClassement() {
       return;
     }
 
+    if (isFactuelle) {
+      await applyFactuelleParameterMutation(mutation);
+      return;
+    }
+
     const requestId = latestParameterSaveRequestIdRef.current + 1;
     latestParameterSaveRequestIdRef.current = requestId;
     const previousResultStatus = resultStatus;
@@ -1412,6 +1725,65 @@ export default function SimulationClassement() {
     }
   }
 
+  /**
+   * FACTUELLE : la réponse du PUT porte les paramètres et l'évaluation recalculée, sans relecture de
+   * `/logement` ni recalcul LEGACY. Le hook sérialise les écritures, ignore une réponse arrivée après
+   * un changement de simulation et relit l'état canonique après une issue incertaine, sans rejeu.
+   */
+  async function applyFactuelleParameterMutation(
+    mutation: () => Promise<PublicSimulationDto>
+  ): Promise<void> {
+    const requestId = latestParameterSaveRequestIdRef.current + 1;
+    latestParameterSaveRequestIdRef.current = requestId;
+
+    setIsSavingParameters(true);
+    setParameterErrors({});
+    showToast('Enregistrement des paramètres...', { type: 'info', durationMs: 1500 });
+
+    const outcome = await factuelle.mutateParameters(mutation);
+    if (latestParameterSaveRequestIdRef.current !== requestId) {
+      return;
+    }
+    setIsSavingParameters(false);
+
+    switch (outcome.status) {
+      case 'success':
+        setSimulation(outcome.simulation);
+        setParameterForm(createSimulationParametersForm(outcome.simulation.grille));
+        markResultStale();
+        showToast('Les paramètres ont été enregistrés.', { type: 'success' });
+        return;
+      case 'refused':
+        setParameterForm(createSimulationParametersForm(grille));
+        showToast(
+          getSimulatorApiErrorMessage(
+            outcome.error,
+            'Les paramètres n’ont pas pu être enregistrés. Veuillez réessayer.',
+            'saveParameters'
+          ),
+          { type: 'error' }
+        );
+        return;
+      case 'uncertain':
+        markResultStale();
+        showToast(
+          outcome.reconciled
+            ? 'L’enregistrement des paramètres n’a pas pu être confirmé. Les valeurs enregistrées ont été rechargées.'
+            : 'L’enregistrement des paramètres n’a pas pu être confirmé. Actualisez les pièces avant de continuer.',
+          { type: 'error' }
+        );
+        return;
+      case 'blocked':
+        setParameterForm(createSimulationParametersForm(grille));
+        showToast('Une autre modification est en cours. Réessayez dans un instant.', {
+          type: 'info',
+        });
+        return;
+      case 'stale':
+        return;
+    }
+  }
+
   function handleRequestedCategoryChange(event: ChangeEvent<HTMLSelectElement>) {
     const nextCategory = event.target.value;
     if (!isRequestedCategory(nextCategory)) {
@@ -1462,6 +1834,21 @@ export default function SimulationClassement() {
     void applyParameterMutation(() => updateFloor(simulationId ?? '', parsedFloor), {
       autoRecalculateResult: activeTab === 'result',
     });
+  }
+
+  /** FACTUELLE uniquement : cinquième paramètre, `false` est une réponse connue. */
+  function handleStudioChange(event: ChangeEvent<HTMLSelectElement>) {
+    const value = event.target.value;
+    if (value !== 'true' && value !== 'false') {
+      return;
+    }
+
+    const nextStudio = value === 'true';
+    if (nextStudio === grille?.studio) {
+      return;
+    }
+
+    void applyParameterMutation(() => updateStudio(simulationId ?? '', nextStudio));
   }
 
   function handleCapacityChange(event: ChangeEvent<HTMLInputElement>) {
@@ -2166,14 +2553,16 @@ export default function SimulationClassement() {
                     Ces paramètres peuvent modifier les critères applicables et le résultat de la
                     simulation.
                   </p>
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  <div
+                    className={`grid gap-4 sm:grid-cols-2 ${isFactuelle ? 'lg:grid-cols-5' : 'lg:grid-cols-4'}`}
+                  >
                     <Select
                       id="simulationRequestedCategory"
                       name="simulationRequestedCategory"
                       label="Classement demandé"
                       options={REQUESTED_CATEGORY_OPTIONS}
                       value={parameterForm.requestedCategory}
-                      disabled={isSavingParameters}
+                      disabled={isSavingParameters || isFactuelleWriteLocked}
                       onChange={handleRequestedCategoryChange}
                     />
 
@@ -2184,7 +2573,7 @@ export default function SimulationClassement() {
                       inputMode="numeric"
                       min="1"
                       value={parameterForm.capacity}
-                      disabled={isSavingParameters}
+                      disabled={isSavingParameters || isFactuelleWriteLocked}
                       onChange={handleCapacityChange}
                       onBlur={handleCapacityBlur}
                       error={parameterErrors.capacity}
@@ -2196,7 +2585,7 @@ export default function SimulationClassement() {
                       label="Type d’habitation"
                       options={HOUSING_TYPE_OPTIONS}
                       value={parameterForm.housingType}
-                      disabled={isSavingParameters}
+                      disabled={isSavingParameters || isFactuelleWriteLocked}
                       onChange={handleHousingTypeChange}
                     />
 
@@ -2206,9 +2595,25 @@ export default function SimulationClassement() {
                       label="Étage"
                       options={FLOOR_OPTIONS}
                       value={parameterForm.floor}
-                      disabled={isSavingParameters}
+                      disabled={isSavingParameters || isFactuelleWriteLocked}
                       onChange={handleFloorChange}
                     />
+
+                    {isFactuelle && (
+                      <Select
+                        id="simulationStudio"
+                        name="simulationStudio"
+                        label="Studio"
+                        options={
+                          grille?.studio == null
+                            ? [{ value: '', label: 'Non renseigné' }, ...STUDIO_OPTIONS]
+                            : STUDIO_OPTIONS
+                        }
+                        value={grille?.studio == null ? '' : String(grille.studio)}
+                        disabled={isSavingParameters || isFactuelleWriteLocked}
+                        onChange={handleStudioChange}
+                      />
+                    )}
                   </div>
                 </div>
               )}
@@ -2220,15 +2625,13 @@ export default function SimulationClassement() {
                   id: 'pieces' as const,
                   step: '1',
                   label: 'Pièces du logement',
-                  summary: `${pieces.length} ${pieces.length > 1 ? 'pièces' : 'pièce'} · ${formatSurfaceCompact(
-                    logement?.surface_totale
-                  )} · ${formatSleepingCount(totalSleepingCapacity)}`,
+                  summary: piecesStepSummary,
                 },
                 {
                   id: 'grid' as const,
                   step: '2',
                   label: 'Grille de contrôle',
-                  summary: gridStepSummary,
+                  summary: isFactuelle && !factuelleSnapshot?.evaluation ? '' : gridStepSummary,
                 },
                 {
                   id: 'result' as const,
@@ -2239,7 +2642,10 @@ export default function SimulationClassement() {
               ].map((tab, index) => {
                 const isActive = activeTab === tab.id;
                 const isComplete =
-                  (tab.id === 'pieces' && pieceCompletionWarnings.length === 0) ||
+                  (tab.id === 'pieces' &&
+                    (isFactuelle
+                      ? isFactuellePiecesComplete
+                      : pieceCompletionWarnings.length === 0)) ||
                   (tab.id === 'grid' &&
                     gridProgressSummary.totalCount > 0 &&
                     gridProgressSummary.remainingCount === 0) ||
@@ -2281,7 +2687,52 @@ export default function SimulationClassement() {
               })}
             </div>
 
-            {activeTab === 'pieces' && (
+            {activeTab === 'pieces' && isFactuelle && (
+              <div
+                id="simulation-panel-pieces"
+                role="tabpanel"
+                aria-labelledby="simulation-tab-pieces"
+                className="classement-pieces-panel"
+              >
+                <div className="classement-panel-heading">
+                  <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-3xl">
+                      <span className="simulator-eyebrow">ÉTAPE 1 — PIÈCES DU LOGEMENT</span>
+                      <h2 className="mb-2 mt-2">Renseignez les pièces de votre logement</h2>
+                      <p className="text-sm leading-comfortable text-muted">
+                        Décrivez chaque pièce, ses couchages et ses équipements.
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="simulator-tool-link w-full sm:w-auto"
+                      onClick={handleGoToGrid}
+                    >
+                      Passer à la grille de contrôle
+                    </Button>
+                  </div>
+                </div>
+
+                {factuelleSnapshot ? (
+                  <FactuellePiecesTab
+                    factuelle={factuelle}
+                    snapshot={factuelleSnapshot}
+                    gridSummary={gridSummary}
+                    contextBusy={isSavingParameters}
+                    target={factuellePiecesTarget}
+                    onTargetHandled={() => setFactuellePiecesTarget(null)}
+                    onFactsChanged={() => markResultStale()}
+                  />
+                ) : (
+                  <div className="classement-piece-sections" role="status">
+                    <p className="text-sm text-muted">Chargement des pièces...</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === 'pieces' && !isFactuelle && (
               <div
                 id="simulation-panel-pieces"
                 role="tabpanel"
@@ -2416,7 +2867,43 @@ export default function SimulationClassement() {
               </div>
             )}
 
-            {activeTab === 'grid' && (
+            {activeTab === 'grid' && isFactuelle && (
+              <div id="simulation-panel-grid" role="tabpanel" aria-labelledby="simulation-tab-grid">
+                {!factuelleSnapshot ? (
+                  <div className="classement-piece-sections" role="status">
+                    <p className="text-sm text-muted">Chargement de la grille...</p>
+                  </div>
+                ) : gridModelStatus === 'success' && gridSummary ? (
+                  <FactuelleGridTab
+                    factuelle={factuelle}
+                    snapshot={factuelleSnapshot}
+                    grid={gridSummary}
+                    contextBusy={isSavingParameters}
+                    criterionFilterNumbers={criterionFilterNumbers}
+                    target={factuelleGridTarget}
+                    onTargetHandled={() => setFactuelleGridTarget(null)}
+                    onClearCriterionFilter={() => setCriterionFilterNumbers([])}
+                    onOpenSource={openFactuelleSource}
+                    onFactsChanged={() => markResultStale({ clearCriterionFilter: false })}
+                    onAnswerSaved={handleFactuelleAnswerSaved}
+                    resultActionLabel={resultActionLabel}
+                    isCheckingResult={isCheckingResult}
+                    onCheckResult={handleManualSimulationCheck}
+                  />
+                ) : (
+                  <SimulationGridModelState
+                    status={gridModelStatus}
+                    onRetry={
+                      requestedGridCategory
+                        ? () => void loadGridModel(requestedGridCategory)
+                        : undefined
+                    }
+                  />
+                )}
+              </div>
+            )}
+
+            {activeTab === 'grid' && !isFactuelle && (
               <div id="simulation-panel-grid" role="tabpanel" aria-labelledby="simulation-tab-grid">
                 {gridModelStatus === 'success' && gridSummary ? (
                   <SimulationGridTab
@@ -2453,7 +2940,7 @@ export default function SimulationClassement() {
                 aria-labelledby="simulation-tab-result"
                 className="scroll-mt-28 space-y-6"
               >
-                {resultStatus === 'none' && (
+                {displayedResultStatus === 'none' && (
                   <Card hover={false} className="classement-feedback">
                     <p className="simulator-eyebrow">Votre estimation</p>
                     <h2 className="mb-3">Aucun résultat pour le moment</h2>
@@ -2473,7 +2960,7 @@ export default function SimulationClassement() {
                   </Card>
                 )}
 
-                {resultStatus === 'stale' && (
+                {displayedResultStatus === 'stale' && (
                   <Card
                     hover={false}
                     className="classement-feedback classement-feedback-stale"
@@ -2497,7 +2984,7 @@ export default function SimulationClassement() {
                   </Card>
                 )}
 
-                {resultStatus === 'checking' && (
+                {displayedResultStatus === 'checking' && (
                   <Card hover={false} className="classement-feedback" role="status">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                       <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ink/15 bg-white text-copper">
@@ -2517,11 +3004,11 @@ export default function SimulationClassement() {
                   </Card>
                 )}
 
-                {resultStatus === 'error' && (
+                {displayedResultStatus === 'error' && (
                   <Card hover={false} className="classement-feedback border-alert-200" role="alert">
                     <h2 className="mb-3 text-gray-900">Erreur de calcul</h2>
                     <p className="max-w-3xl text-sm text-alert-500">
-                      {resultErrorMessage ??
+                      {resultErrorText ??
                         'Le résultat n’a pas pu être calculé pour le moment. Veuillez réessayer.'}
                     </p>
                     <Button
@@ -2559,6 +3046,40 @@ export default function SimulationClassement() {
                     onReturnToGrid={returnToFullGrid}
                   />
                 )}
+
+                {hasSuspendedFactuelleResult && (
+                  <Card hover={false} className="classement-feedback" role="status">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-ink/15 bg-white text-copper">
+                        <Loader2 aria-hidden="true" className="h-5 w-5 animate-spin" />
+                      </span>
+                      <div>
+                        <h2 className="mb-3 text-gray-900">Mise à jour en cours</h2>
+                        <p className="max-w-3xl text-sm text-muted">
+                          Une modification de la simulation est en cours d’enregistrement. Le
+                          résultat sera actualisé une fois celle-ci terminée.
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                )}
+
+                {isFactuelle &&
+                  factuelleSnapshot &&
+                  !hasSuspendedFactuelleResult &&
+                  (factuelleResultState.status === 'blocked' ||
+                    factuelleResultState.status === 'fresh') && (
+                    <FactuelleResultPanel
+                      result={factuelleResultState}
+                      snapshot={factuelleSnapshot}
+                      grid={gridSummary}
+                      onOpenSource={openFactuelleSource}
+                      onShowCriteria={showCriteriaInGrid}
+                      onReturnToPieces={() => setActiveTab('pieces')}
+                      onReturnToGrid={returnToFullGrid}
+                      onExportPdf={(entry) => void handleExportFactuellePdf(entry)}
+                    />
+                  )}
               </div>
             )}
           </div>

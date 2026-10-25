@@ -29,7 +29,12 @@ export interface PublicSimulationCreateRequest {
   capacite_accueil: number;
   etage: number;
   type_habitation: HousingType;
+  /** Cinquième paramètre préalable FACTUELLE, stocké sans effet sur une création LEGACY. */
+  studio?: boolean;
 }
+
+/** Mode attribué par le backend à la création, immuable ; absent avant le déploiement FACTUELLE. */
+export type GridMode = 'LEGACY' | 'FACTUELLE';
 
 export type PieceType =
   | 'CUISINE'
@@ -110,6 +115,11 @@ export interface PublicSimulationGridDto {
   type_habitation?: string;
   reponses?: ReponseDto[];
   logement?: LogementDto;
+  mode_grille?: string;
+  studio?: boolean | null;
+  parametres_manquants?: string[];
+  /** Évaluation FACTUELLE, validée par `parseEvaluationFactuelle`. */
+  evaluation?: unknown;
 }
 
 export interface PublicSimulationDto {
@@ -168,7 +178,11 @@ export type SimulatorApiErrorCode =
   | 'NOT_FOUND'
   | 'UNAUTHORIZED'
   | 'FORBIDDEN'
-  | 'CONFLICT';
+  | 'CONFLICT'
+  | 'PARAMETRES_GRILLE_INCOMPLETS'
+  | 'MODE_GRILLE_INCOMPATIBLE'
+  | 'EVALUATION_FACTUELLE_INDISPONIBLE'
+  | 'GRILLE_FACTUELLE_INCOMPLETE';
 
 type SimulatorErrorContext =
   | 'createSimulation'
@@ -278,7 +292,17 @@ function parsePublicSimulation(value: unknown): PublicSimulationDto {
   return value;
 }
 
-function encodePathSegment(value: string | number): string {
+/** `null` : mode inconnu, aucune mutation ne doit partir. */
+export function resolveGridMode(simulation: PublicSimulationDto): GridMode | null {
+  const mode = simulation.grille?.mode_grille;
+  if (mode === undefined || mode === 'LEGACY') {
+    return 'LEGACY';
+  }
+
+  return mode === 'FACTUELLE' ? 'FACTUELLE' : null;
+}
+
+export function encodePathSegment(value: string | number): string {
   return encodeURIComponent(String(value));
 }
 
@@ -367,12 +391,20 @@ export function getSimulatorApiErrorMessage(
       return 'La limite de terrasses ou jardins privatifs est déjà atteinte pour cette simulation.';
     case 'TOO_MANY_PARKS':
       return 'La limite de parcs ou jardins est déjà atteinte pour cette simulation.';
+    case 'PARAMETRES_GRILLE_INCOMPLETS':
+      return 'Renseignez d’abord les paramètres de la simulation.';
+    case 'MODE_GRILLE_INCOMPATIBLE':
+      return 'Cette action n’est pas disponible pour cette simulation.';
+    case 'EVALUATION_FACTUELLE_INDISPONIBLE':
+      return 'L’évaluation de la simulation est momentanément indisponible. Veuillez réessayer.';
+    case 'GRILLE_FACTUELLE_INCOMPLETE':
+      return 'Des informations restent à compléter avant de consulter le résultat.';
     default:
       return getGenericSimulatorErrorMessage(error.code, context, fallbackMessage);
   }
 }
 
-async function requestSimulatorJson<T>(
+export async function requestSimulatorJson<T>(
   endpoint: string,
   options: {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -415,6 +447,7 @@ export function createPublicSimulation(
       capacite_accueil: payload.capacite_accueil,
       etage: payload.etage,
       type_habitation: payload.type_habitation,
+      ...(payload.studio === undefined ? {} : { studio: payload.studio }),
     },
   }).then(parsePublicSimulation);
 }
@@ -469,6 +502,14 @@ export function updateHousingType(
     `/public/simulations/${encodePathSegment(id)}/typeHabitation/${encodePathSegment(housingType)}`,
     { method: 'PUT' }
   ).then(parsePublicSimulation);
+}
+
+/** FACTUELLE uniquement (LEGACY : 409 `MODE_GRILLE_INCOMPATIBLE`). */
+export function updateStudio(id: string, studio: boolean): Promise<PublicSimulationDto> {
+  return requestSimulatorJson<unknown>(`/public/simulations/${encodePathSegment(id)}/studio`, {
+    method: 'PUT',
+    body: { studio },
+  }).then(parsePublicSimulation);
 }
 
 export function getSimulationLogement(id: string): Promise<LogementDto> {

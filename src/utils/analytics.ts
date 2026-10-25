@@ -190,6 +190,7 @@ const ALLOWED_CUSTOM_PROPERTIES = new Set<string>([
   'result_outcome',
   'has_sleeping_capacity_issue',
   'has_missing_criteria',
+  'exported_category',
 ]);
 
 const POSTHOG_REQUIRED_PROPERTY_KEYS = new Set(['token', 'distinct_id']);
@@ -1355,13 +1356,29 @@ export function trackClassementSimulatorCalculated(input: {
   });
 }
 
+/**
+ * FACTUELLE : `exportedCategory` (catégorie consultée et exportée) peut différer de
+ * `requestedCategory` ; `resultOutcome` porte sur la catégorie exportée.
+ */
 export function trackClassementSimulatorPdfExported(input: {
   resultOutcome: Exclude<ClassementSimulatorResultOutcome, 'needs_completion'>;
+  exportedCategory?: string | undefined;
+  requestedCategory?: string | undefined;
 }): void {
-  trackEvent('simulator_pdf_exported', {
+  const properties: AnalyticsProperties = {
     simulator: 'classement',
     result_outcome: input.resultOutcome,
-  });
+  };
+
+  if (input.exportedCategory) {
+    properties.exported_category = input.exportedCategory;
+  }
+
+  if (input.requestedCategory) {
+    properties.requested_category = input.requestedCategory;
+  }
+
+  trackEvent('simulator_pdf_exported', properties);
 }
 
 export function trackClassementSimulatorHelpOpened(input: {
