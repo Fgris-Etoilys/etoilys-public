@@ -409,7 +409,7 @@ def fetch_all_markets(
     requested_page_size: int,
     request_delay: float,
     limit: int | None,
-) -> tuple[list[dict[str, Any]], dict[str, int]]:
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     token = get_app_token(session_path)
     markets: list[dict[str, Any]] = []
     seen_market_ids: set[str] = set()
@@ -418,10 +418,12 @@ def fetch_all_markets(
     raw_market_count = 0
     offset = 0
     pages_fetched = 0
+    collection_end: str | None = None
 
     while pages_fetched < MAX_PAGES:
         remaining = limit - len(markets) if limit is not None else None
         if remaining is not None and remaining <= 0:
+            collection_end = "limit"
             break
         current_page_size = (
             min(requested_page_size, remaining)
@@ -457,6 +459,7 @@ def fetch_all_markets(
 
         pages_fetched += 1
         if not raw_page:
+            collection_end = "empty_page"
             break
 
         signature = tuple(str(market.get("id")) for market in raw_page)
@@ -478,18 +481,22 @@ def fetch_all_markets(
 
         if limit is not None and len(markets) >= limit:
             markets = markets[:limit]
+            collection_end = "limit"
             break
         if len(raw_page) < current_page_size:
+            collection_end = "short_page"
             break
         offset += current_page_size
 
-    if pages_fetched >= MAX_PAGES:
+    if collection_end is None:
         raise RuntimeError(f"Pagination exceeded the safety limit of {MAX_PAGES} pages.")
 
     return markets, {
         "pages_fetched": pages_fetched,
         "raw_market_count": raw_market_count,
         "duplicate_market_count": duplicate_count,
+        "collection_complete": collection_end in {"empty_page", "short_page"},
+        "collection_end": collection_end,
     }
 
 
@@ -831,7 +838,7 @@ def enrich_markets(
 def build_output(
     markets: list[dict[str, Any]],
     commune_index: CommuneIndex,
-    pagination: dict[str, int],
+    pagination: dict[str, Any],
     *,
     commune_source: Path,
     page_size_value: int,
@@ -852,6 +859,8 @@ def build_output(
             "airdna_request_delay_seconds": request_delay,
             "raw_market_count": pagination["raw_market_count"],
             "duplicate_market_count": pagination["duplicate_market_count"],
+            "collection_complete": pagination["collection_complete"],
+            "collection_end": pagination["collection_end"],
             "count": len(markets),
             "administrative_matches": matched_count,
             "administrative_match_methods": match_methods,
