@@ -33,7 +33,7 @@ L'original est le fichier local ignoré par Git `exports/airdna-france-2026-10-2
 {
   "original_sha256": "69251636DC384FBF5947F536998D501C99677E347AB5285AB301A53FB85EDA82",
   "attestation": {
-    "operator": "ETOILYS-491",
+    "operator": "Nom et prénom de l'opérateur réel à renseigner",
     "reason": "Complétude de l'export du 21 octobre confirmée lors de la validation du plan ETOILYS-491."
   },
   "corrections": []
@@ -58,7 +58,7 @@ Une correction manuelle se fait en ajoutant une entrée à `corrections`, puis e
 {
   "market_id": "37986",
   "code_insee": "91692",
-  "operator": "ETOILYS-491",
+  "operator": "Nom et prénom de l'opérateur réel à renseigner",
   "reason": "Nom Les Ulis confirmé pour le millésime 2026."
 }
 ```
