@@ -117,7 +117,7 @@ Lors d'un renommage ou retrait de route, l'ancienne URL doit aussi être soumise
 
 ## Notes CI/CD
 
-- Le déploiement Vercel doit exécuter `npm run build:seo` et publier `dist` (config versionnée dans `vercel.json`).
+- Le déploiement Vercel doit exécuter `npm run build:seo` et publier `dist` (config versionnée dans `vercel.ts`).
 - La CI doit exécuter `npm run images:check` pour bloquer les sources images modifiées sans artefacts optimisés, manifeste régénéré, source hero trop panoramique ou source hero trop petite.
 - Le prerender ne doit pas avoir de fallback qui injecte seulement le `<head>` SEO. Un échec de rendu React, de sitemap ou de validation HTML doit faire échouer le build.
 - Ne pas réintroduire de rewrite SPA global `/(.*) -> /index.html` en production, afin de conserver un vrai statut HTTP 404 sur les routes inconnues.

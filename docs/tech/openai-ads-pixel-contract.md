@@ -28,7 +28,7 @@ L'idempotence du chargement/`init` et la transition de l'état `consent` sont de
 - `etoilys_ads_debug` : active `debug: true` à l'init, réglé via `?etoilys_ads_debug=1`. Totalement indépendant du flag `etoilys_analytics_debug` de PostHog ;
 - `etoilys_openai_ads_oppref` / `etoilys_openai_ads_oppref_captured_at` (`sessionStorage`, pas `localStorage`) : copie technique temporaire de `oppref`, voir section dédiée ci-dessous.
 - `VITE_ENABLE_OPENAI_ADS_IN_DEV=false` : bloque le chargement du Pixel en développement local sauf test explicite ;
-- `VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false` : bloque le Pixel hors `www.etoilys.fr` sauf recette contrôlée.
+- `VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false` : bloque le Pixel hors `www.etoilys.fr`. Conserver ce blocage sur les Previews pour qu’aucune conversion de production ne parte de staging, même après consentement et succès métier.
 
 `etoilys_advertising_consent` n'existait pas avant l'introduction de cette finalité : elle est absente pour tous les utilisateurs qui n'ont jamais vu la nouvelle bannière, y compris ceux ayant déjà accepté PostHog. Le code ne lit jamais `etoilys_analytics_consent` pour déterminer ce consentement — aucun opt-in publicitaire implicite n'est possible.
 
@@ -97,9 +97,20 @@ Le code du site n'envoie explicitement aucun nom, e-mail, téléphone, adresse o
 
 ## Runbook manuel de validation (Ads Manager)
 
-La campagne reste en pause tant que ce runbook n'a pas été exécuté et validé sur un environnement de preview.
+La recette Preview valide le blocage de la mesure. La recette de mesure réelle se déroule séparément sur le domaine canonique, après autorisation des soumissions de recette et respect des conditions de bascule du [runbook des API publiques](public-api-routing.md). Aucun projet analytics ni Pixel de test supplémentaire n’est nécessaire pour ETOILYS-429.
 
-1. Déployer sur une preview Vercel avec `VITE_OPENAI_ADS_PIXEL_ID` renseigné.
+### Preview : absence de conversions de production
+
+1. Conserver `VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false` sur la Preview, même si un Pixel ID de production est disponible dans son environnement.
+2. Sur l’alias fixe `etoilys-public-git-dev-scratchones-projects.vercel.app`, ouvrir les outils réseau et vérifier l’absence de chargement du SDK OpenAI Ads.
+3. Accepter les deux consentements, puis soumettre une demande de classement valide à staging. Vérifier le succès métier, l’absence de `lead_created`, l’absence d’initialisation PostHog et l’absence d’appels vers les systèmes de mesure de production.
+4. Répéter après rechargement avec les consentements mémorisés. Ne pas activer le flag de mesure non canonique pour cette recette.
+
+### Domaine canonique : recette de mesure réelle
+
+La campagne reste en pause tant que cette recette de mesure n’a pas été exécutée et validée. La réussite de la recette Preview ne prouve pas la réception d’une conversion réelle dans Ads Manager.
+
+1. Utiliser `https://www.etoilys.fr` avec `VITE_OPENAI_ADS_PIXEL_ID` renseigné et des données de recette identifiables, après validation de la bascule vers `api-prod`.
 2. Storage vide, DevTools réseau/console ouverts → vérifier l'absence de tout script `bzrcdn.openai.com` et de `window.oaiq`.
 3. Accepter uniquement « Analytics détaillés » → toujours absent.
 4. Atterrir avec `?oppref=test123` sur `/classement-meuble-tourisme-dordogne`, naviguer vers `/demande-classement` **sans** accepter la mesure publicitaire, puis accepter sur le formulaire → vérifier dans l'onglet Réseau que l'URL au moment du chargement du script SDK contient bien `oppref=test123`, et qu'elle en est retirée juste après (`?etoilys_ads_debug=1` pour voir `consent(true)` puis `init` en console).

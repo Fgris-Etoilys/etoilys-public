@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   acceptAdvertisingConsent,
   getAdvertisingConsentStatus,
@@ -37,6 +37,11 @@ describe('openAiAds', () => {
     delete (window as { oaiq?: unknown }).oaiq;
     document.getElementById(SCRIPT_ID)?.remove();
     window.history.pushState({}, 'Test', '/test');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
   });
 
   describe('advertising consent and pixel initialization', () => {
@@ -165,6 +170,30 @@ describe('openAiAds', () => {
 
       expect(document.getElementById(SCRIPT_ID)).toBeNull();
       expect(window.oaiq).toBeUndefined();
+    });
+
+    it('does not initialize or emit conversions on Preview after consent and business success', () => {
+      vi.stubEnv('DEV', false);
+      vi.stubEnv('MODE', 'production');
+      vi.stubEnv('VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST', 'false');
+      vi.stubGlobal(
+        'location',
+        new URL('https://etoilys-public-git-dev-scratchones-projects.vercel.app/contact')
+      );
+
+      acceptAdvertisingConsent();
+      initOpenAiAdsPixelIfConsented();
+      trackLeadCreatedConversion();
+
+      expect(getAdvertisingConsentStatus()).toBe('accepted');
+      expect(document.getElementById(SCRIPT_ID)).toBeNull();
+      expect(window.oaiq).toBeUndefined();
+
+      const oaiqMock = vi.fn();
+      window.oaiq = oaiqMock;
+      trackLeadCreatedConversion();
+
+      expect(oaiqMock).not.toHaveBeenCalled();
     });
 
     it('never calls measure without accepted consent', () => {
