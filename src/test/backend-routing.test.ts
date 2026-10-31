@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { EventEmitter } from 'node:events';
 import type { ClientRequest } from 'node:http';
+import { getTransformedRoutes, isHandler } from '@vercel/routing-utils';
 import { loadEnv, type ProxyOptions } from 'vite';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import viteConfig from '../../vite.config';
@@ -17,13 +18,13 @@ const localApiSources = [
   '/api/public/communes',
 ];
 
-const vercelApiPaths = [
-  '/public/forms/contact',
-  '/public/forms/classement',
-  '/public/simulations',
-  '/public/simulations/:path*',
-  '/public/communes',
-  '/public/communes/:codeInsee',
+const vercelApiRoutes = [
+  { src: '^/api/public/forms/contact$', path: '/public/forms/contact' },
+  { src: '^/api/public/forms/classement$', path: '/public/forms/classement' },
+  { src: '^/api/public/simulations$', path: '/public/simulations' },
+  { src: '^/api/public/simulations/(.*)$', path: '/public/simulations/$1' },
+  { src: '^/api/public/communes$', path: '/public/communes' },
+  { src: '^/api/public/communes/([^/]+)$', path: '/public/communes/$1' },
 ];
 
 async function getViteProxies(env: Record<string, string> = {}) {
@@ -48,6 +49,18 @@ function getProxyOptions(
 async function getVercelConfig(environment: string | undefined) {
   vi.stubEnv('VERCEL_ENV', environment);
   return (await import('../../vercel')).config;
+}
+
+async function getCompiledVercelConfig(environment: string) {
+  const config = await getVercelConfig(environment);
+  const compiled = getTransformedRoutes(config);
+  expect(compiled.error).toBeNull();
+  if (!compiled.routes) throw new Error('Expected compiled Vercel routes');
+  const routes = compiled.routes.map((route) => {
+    if (isHandler(route)) throw new Error('Expected a route with a source pattern');
+    return route;
+  });
+  return { config, routes };
 }
 
 beforeEach(() => {
@@ -150,16 +163,15 @@ describe('Vercel backend routing', () => {
     { environment: 'preview', origin: 'https://api-dev.etoilys.fr' },
     { environment: 'development', origin: 'https://api-dev.etoilys.fr' },
   ])('isolates all public APIs in $environment', async ({ environment, origin }) => {
-    const config = await getVercelConfig(environment);
-    const apiRewrites = config.rewrites.filter(({ source }) => source.startsWith('/api'));
+    const { routes } = await getCompiledVercelConfig(environment);
+    const apiRoutes = routes.filter(({ dest }) => dest?.startsWith('https://'));
 
-    expect(apiRewrites).toEqual(
-      vercelApiPaths.map((path) => ({ source: `/api${path}`, destination: `${origin}${path}` }))
+    expect(apiRoutes).toEqual(
+      vercelApiRoutes.map(({ src, path }) => ({ src, dest: `${origin}${path}` }))
     );
-    expect(config.rewrites).toHaveLength(vercelApiPaths.length + 1);
-    expect(config.rewrites).toContainEqual({
-      source: '/simulateur/:simulationId',
-      destination: '/simulation-noindex.html',
+    expect(routes).toContainEqual({
+      src: '^/simulateur/([^/]+)$',
+      dest: '/simulation-noindex.html',
     });
   });
 
@@ -167,39 +179,125 @@ describe('Vercel backend routing', () => {
     await expect(getVercelConfig(environment)).rejects.toThrow(/VERCEL_ENV/);
   });
 
-  it('keeps the SEO build settings and security headers', async () => {
-    const config = await getVercelConfig('production');
+  it('uses only the legacy routes schema accepted by the Vercel compiler', async () => {
+    const { config, routes } = await getCompiledVercelConfig('production');
+
+    // getTransformedRoutes normalizes routes but does not reject mixed routing formats.
+    for (const property of ['rewrites', 'headers', 'redirects', 'cleanUrls', 'trailingSlash']) {
+      expect(config).not.toHaveProperty(property);
+    }
+    expect(routes).toHaveLength(13);
+    for (const route of config.routes) {
+      expect(route).toHaveProperty('src');
+      expect(route).not.toHaveProperty('source');
+      expect(route).not.toHaveProperty('destination');
+      expect(route).not.toHaveProperty('statusCode');
+    }
+  });
+
+  it('keeps the SEO build settings and applies every header before terminal routes', async () => {
+    const { config, routes } = await getCompiledVercelConfig('production');
 
     expect(config).toMatchObject({
       buildCommand: 'npm run build:seo',
       outputDirectory: 'dist',
-      trailingSlash: false,
     });
-    expect(config.headers).toEqual([
+    expect(routes.slice(0, 3)).toEqual([
       {
-        source: '/(.*)',
-        headers: [
-          { key: 'Strict-Transport-Security', value: 'max-age=31536000' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=(), payment=()',
-          },
-        ],
+        src: '^/(.*)$',
+        headers: {
+          'Strict-Transport-Security': 'max-age=31536000',
+          'X-Content-Type-Options': 'nosniff',
+          'X-Frame-Options': 'DENY',
+          'Referrer-Policy': 'strict-origin-when-cross-origin',
+          'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+        },
+        continue: true,
       },
       {
-        source: '/documents/clients/(.*)',
-        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
+        src: '^/documents/clients/(.*)$',
+        headers: { 'X-Robots-Tag': 'noindex' },
+        continue: true,
       },
       {
-        source: '/email-signatures/(.*)',
-        headers: [
-          { key: 'X-Robots-Tag', value: 'noindex, noimageindex, nosnippet, noarchive' },
-          { key: 'Cache-Control', value: 'public, max-age=86400' },
-        ],
+        src: '^/email-signatures/(.*)$',
+        headers: {
+          'X-Robots-Tag': 'noindex, noimageindex, nosnippet, noarchive',
+          'Cache-Control': 'public, max-age=86400',
+        },
+        continue: true,
       },
     ]);
+    expect(routes.slice(3).every((route) => route.continue !== true)).toBe(true);
+  });
+
+  it('removes trailing slashes with a permanent redirect before 404s and rewrites', async () => {
+    const { routes } = await getCompiledVercelConfig('production');
+    const redirect = routes[3];
+    if (!redirect) throw new Error('Expected trailing slash redirect');
+
+    expect(redirect).toEqual({
+      src: '^/(.*)/$',
+      headers: { Location: '/$1' },
+      status: 308,
+    });
+    const matcher = new RegExp(redirect.src);
+    for (const pathname of ['/en/contact/', '/en/unknown/', '/api/public/simulations/id/']) {
+      expect(matcher.test(pathname)).toBe(true);
+      expect(pathname.replace(matcher, redirect.headers?.Location ?? '')).toBe(
+        pathname.slice(0, -1)
+      );
+    }
+    expect(matcher.test('/')).toBe(false);
+    expect(matcher.test('/en/contact')).toBe(false);
+  });
+
+  it.each([
+    ['/api/public/forms/contact', '/public/forms/contact'],
+    ['/api/public/forms/classement', '/public/forms/classement'],
+    ['/api/public/simulations', '/public/simulations'],
+    ['/api/public/simulations/simulation-id/answers', '/public/simulations/simulation-id/answers'],
+    ['/api/public/communes', '/public/communes'],
+    ['/api/public/communes/33063', '/public/communes/33063'],
+  ])('preserves the backend path for %s', async (pathname, destinationPath) => {
+    const { routes } = await getCompiledVercelConfig('preview');
+    const matches = routes.filter(
+      ({ src, dest }) => dest?.startsWith('https://') && new RegExp(src).test(pathname)
+    );
+
+    expect(matches).toHaveLength(1);
+    const [route] = matches;
+    if (!route?.dest) throw new Error('Expected matching API destination');
+    expect(pathname.replace(new RegExp(route.src), route.dest)).toBe(
+      `https://api-dev.etoilys.fr${destinationPath}`
+    );
+  });
+
+  it.each([
+    '/api/private',
+    '/api/public/forms/contact/extra',
+    '/api/public/forms/classement-extra',
+    '/api/public/simulations-extra',
+    '/api/public/communes-extra',
+    '/api/public/communes/33063/extra',
+  ])('does not introduce a generic API proxy for %s', async (pathname) => {
+    const { routes } = await getCompiledVercelConfig('preview');
+    expect(
+      routes.some(({ src, dest }) => dest?.startsWith('https://') && new RegExp(src).test(pathname))
+    ).toBe(false);
+  });
+
+  it('rewrites only a single nonempty simulator identifier to its dedicated HTML', async () => {
+    const { routes } = await getCompiledVercelConfig('preview');
+    const simulator = routes.find(({ dest }) => dest === '/simulation-noindex.html');
+    expect(simulator).toBeDefined();
+    const matcher = new RegExp(simulator?.src ?? '');
+
+    expect('/simulateur/simulation-id'.replace(matcher, simulator?.dest ?? '')).toBe(
+      '/simulation-noindex.html'
+    );
+    for (const pathname of ['/simulateur', '/simulateur/', '/simulateur/id/answers']) {
+      expect(matcher.test(pathname)).toBe(false);
+    }
   });
 });

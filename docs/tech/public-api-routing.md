@@ -34,6 +34,10 @@ Vercel transmet `Origin` au backend : le CORS backend doit autoriser l’origine
 
 ## Validation du dépôt et première Preview
 
+La configuration utilise un seul tableau `routes` au format Vercel `src`/`dest`. Ne pas le mélanger avec les propriétés de premier niveau `rewrites`, `redirects`, `headers`, `cleanUrls` ou `trailingSlash`. Les règles de headers s’appliquent en premier avec `continue: true`, puis viennent la redirection 308 supprimant le slash final (équivalent de `trailingSlash: false`), les 404 EN/NL, les six routes API et le shell du simulateur. Les paramètres dynamiques utilisent des groupes regex et `$1` dans la destination ; le détail communal et le simulateur acceptent un seul segment.
+
+Les tests vérifient les routes compilées par `getTransformedRoutes` de `@vercel/routing-utils`, ainsi que l’absence de propriétés de routage incompatibles. Cette compilation des routes ne remplace pas la validation du déploiement Git : attendre le statut `READY` de la Preview du commit poussé avant de considérer le problème de schéma résolu.
+
 Utiliser Node 22, puis exécuter `npm run lint`, `npm run test:run`, `npm run build:seo`, le contrôle UTF-8 sans BOM/mojibake des fichiers modifiés et enfin `npm run typecheck`. Sous PowerShell, `npm.cmd` peut remplacer `npm` si le script `npm.ps1` est bloqué.
 
 Les commandes locales `dev`, `test:run` et `build:seo` ne nécessitent pas `VERCEL_ENV` : Vite n’importe pas la configuration Vercel et les tests définissent/restaurent explicitement les environnements. Les tests vérifient les destinations, les échecs de chargement, les règles conservées, les proxies Vite et l’absence de mesure de production sur Preview après consentement.

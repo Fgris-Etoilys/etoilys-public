@@ -17,8 +17,38 @@ const publicApiBaseUrl = getPublicApiBaseUrl();
 export const config = {
   buildCommand: 'npm run build:seo',
   outputDirectory: 'dist',
-  trailingSlash: false,
   routes: [
+    // Headers must run before terminal redirects, localized 404s and API rewrites.
+    {
+      src: '/(.*)',
+      headers: {
+        'Strict-Transport-Security': 'max-age=31536000',
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+      },
+      continue: true,
+    },
+    {
+      src: '/documents/clients/(.*)',
+      headers: { 'X-Robots-Tag': 'noindex' },
+      continue: true,
+    },
+    {
+      src: '/email-signatures/(.*)',
+      headers: {
+        'X-Robots-Tag': 'noindex, noimageindex, nosnippet, noarchive',
+        'Cache-Control': 'public, max-age=86400',
+      },
+      continue: true,
+    },
+    // Equivalent to trailingSlash: false, without mixing routing formats.
+    {
+      src: '^/(.*)/$',
+      headers: { Location: '/$1' },
+      status: 308,
+    },
     {
       src: '/en/(?!(furnished-tourist-accommodation-classification|benefits-of-furnished-tourist-accommodation-classification|classification-requirements|classification-process|faq|contact|request-a-classification|privacy-policy|tourist-tax-simulator|furnished-tourist-accommodation-tax-simulator|articles/prepare-holiday-rental-star-rating-inspection)/?$).+',
       dest: '/en/404.html',
@@ -29,84 +59,33 @@ export const config = {
       dest: '/nl/404.html',
       status: 404,
     },
-  ],
-  headers: [
     {
-      source: '/(.*)',
-      headers: [
-        {
-          key: 'Strict-Transport-Security',
-          value: 'max-age=31536000',
-        },
-        {
-          key: 'X-Content-Type-Options',
-          value: 'nosniff',
-        },
-        {
-          key: 'X-Frame-Options',
-          value: 'DENY',
-        },
-        {
-          key: 'Referrer-Policy',
-          value: 'strict-origin-when-cross-origin',
-        },
-        {
-          key: 'Permissions-Policy',
-          value: 'camera=(), microphone=(), geolocation=(), payment=()',
-        },
-      ],
+      src: '/api/public/forms/contact',
+      dest: `${publicApiBaseUrl}/public/forms/contact`,
     },
     {
-      source: '/documents/clients/(.*)',
-      headers: [
-        {
-          key: 'X-Robots-Tag',
-          value: 'noindex',
-        },
-      ],
+      src: '/api/public/forms/classement',
+      dest: `${publicApiBaseUrl}/public/forms/classement`,
     },
     {
-      source: '/email-signatures/(.*)',
-      headers: [
-        {
-          key: 'X-Robots-Tag',
-          value: 'noindex, noimageindex, nosnippet, noarchive',
-        },
-        {
-          key: 'Cache-Control',
-          value: 'public, max-age=86400',
-        },
-      ],
-    },
-  ],
-  rewrites: [
-    {
-      source: '/api/public/forms/contact',
-      destination: `${publicApiBaseUrl}/public/forms/contact`,
+      src: '/api/public/simulations',
+      dest: `${publicApiBaseUrl}/public/simulations`,
     },
     {
-      source: '/api/public/forms/classement',
-      destination: `${publicApiBaseUrl}/public/forms/classement`,
+      src: '/api/public/simulations/(.*)',
+      dest: `${publicApiBaseUrl}/public/simulations/$1`,
     },
     {
-      source: '/api/public/simulations',
-      destination: `${publicApiBaseUrl}/public/simulations`,
+      src: '/api/public/communes',
+      dest: `${publicApiBaseUrl}/public/communes`,
     },
     {
-      source: '/api/public/simulations/:path*',
-      destination: `${publicApiBaseUrl}/public/simulations/:path*`,
+      src: '/api/public/communes/([^/]+)',
+      dest: `${publicApiBaseUrl}/public/communes/$1`,
     },
     {
-      source: '/api/public/communes',
-      destination: `${publicApiBaseUrl}/public/communes`,
-    },
-    {
-      source: '/api/public/communes/:codeInsee',
-      destination: `${publicApiBaseUrl}/public/communes/:codeInsee`,
-    },
-    {
-      source: '/simulateur/:simulationId',
-      destination: '/simulation-noindex.html',
+      src: '/simulateur/([^/]+)',
+      dest: '/simulation-noindex.html',
     },
   ],
 } satisfies VercelConfig;
