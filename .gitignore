@@ -45,6 +45,9 @@ docs/data/lot-et-garonne-tourisme-meubles.json
 tools/airdna/reference/*.geojson
 tools/airdna/exports/*.json
 
+# Python bytecode cache
+__pycache__/
+
 .vercel
 .env*
 
