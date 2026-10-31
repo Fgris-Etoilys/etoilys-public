@@ -137,14 +137,18 @@ const lotPricingProfile: PricingProfile = {
   note: standardProfileValues.note,
 };
 
-// Aude : tarif unique sans paliers multi-logements ni tarif partenaire ; un tarif dégressif
-// reste possible sur demande, sans montant prédéfini.
+// Aude : tarif public et tarif adhérents OT partenaires, sans paliers multi-logements ; un tarif
+// dégressif reste possible sur demande, sans montant prédéfini.
 const audePricingProfile: PricingProfile = {
   id: 'aude-standard',
   kind: 'flat',
   standard: {
     label: 'Tarif public',
     amount: '240 €',
+    qualifier: 'TTC',
+  },
+  partner: {
+    amount: '200 €',
     qualifier: 'TTC',
   },
   note: standardProfileValues.note,

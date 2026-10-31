@@ -857,7 +857,6 @@ describe('DepartmentLandingPage', () => {
     renderDepartmentPage(AUDE_LOCAL_LANDING_PAGE_V6);
     expect(document.body).not.toHaveTextContent(/tarifs dégressifs s’appliquent/i);
     expect(document.body).not.toHaveTextContent(/visités le même jour dans le même secteur/i);
-    expect(document.body).not.toHaveTextContent(/office de tourisme partenaire/i);
     expect(
       screen.getByRole('button', { name: 'Intervenez-vous dans toutes les communes de l’Aude ?' })
     ).toBeInTheDocument();

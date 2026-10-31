@@ -365,7 +365,10 @@ describe('Department pricing picker', () => {
       amount: '240 €',
       qualifier: 'TTC',
     });
-    expect(audeProfile.partner).toBeUndefined();
+    expect(audeProfile.partner).toEqual({ amount: '200 €', qualifier: 'TTC' });
+    expect(audeProfile.partner).not.toBe(
+      requireFlatProfile(PRICING_PROFILES['dordogne-standard']).partner
+    );
     expect(audeProfile.multiProperty).toBeUndefined();
     expect(audeProfile.offer).toBeUndefined();
     expect(AUDE_LOCAL_LANDING_PAGE_V6.pricing.picker.communeIndexUrl).toBe(
@@ -376,7 +379,7 @@ describe('Department pricing picker', () => {
   });
 
   it.each(['Carcassonne', 'Narbonne', 'Gruissan', 'Castelnaudary', 'Limoux', 'Leucate', 'Quillan'])(
-    'resolves %s from the generated Aude index at 240 € TTC',
+    'resolves %s from the generated Aude index at 240 € TTC with the OT partner tariff',
     async (commune) => {
       const audeIndex: unknown = JSON.parse(
         readFileSync('public/data/communes-aude-index.v1.json', 'utf8')
@@ -402,10 +405,12 @@ describe('Department pricing picker', () => {
 
       expect(screen.getByText(`Votre meublé à ${commune}`)).toBeInTheDocument();
       expect(container.querySelector('.local-v6-pricing-amount')).toHaveTextContent('240 € TTC');
-      expect(screen.queryByText(/office de tourisme partenaire/i)).not.toBeInTheDocument();
+      expect(container.querySelector('.local-v6-pricing-partner')).toHaveTextContent('200 € TTC');
+      expect(
+        screen.getByText('Si vous êtes adhérent à un office de tourisme partenaire d’Etoilys.')
+      ).toBeInTheDocument();
       expect(screen.queryByText(/plusieurs logements/i)).not.toBeInTheDocument();
       expect(container.querySelector('.local-v6-pricing-multiple')).toBeNull();
-      expect(container.querySelector('.local-v6-pricing-partner')).toBeNull();
     }
   );
 
