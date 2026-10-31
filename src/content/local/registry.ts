@@ -325,6 +325,34 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
     },
   },
+  {
+    id: 'aude',
+    kind: 'department',
+    name: 'Aude',
+    path: '/classement-meuble-tourisme-aude',
+    departmentCode: '11',
+    regionId: 'occitanie',
+    status: 'published',
+    coverageMode: 'department',
+    displayOrder: 60,
+    hubDescription:
+      'De la Cité de Carcassonne aux étangs du littoral narbonnais, l’Aude accueille des gîtes et maisons de vacances dans des territoires très variés : Lauragais, Corbières, Minervois et Pyrénées audoises. Etoilys intervient dans l’ensemble du département.',
+    hubLinkLabel: 'Classement dans l’Aude →',
+    communeIndex: {
+      departmentCode: '11',
+      outputFileName: 'communes-aude-index.v1.json',
+    },
+    seo: {
+      lastModified: '2026-10-31',
+      title: 'Classement gîte, Airbnb et meublé de tourisme dans l’Aude',
+      description:
+        'Faites classer votre gîte ou meublé de tourisme dans l’Aude avec Etoilys, organisme accrédité Cofrac. Visite sur place et demande en ligne.',
+      breadcrumbLabel: 'Aude',
+      ogImageKey: 'audeHero',
+      lcpImageKey: 'audeHero',
+      lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
+    },
+  },
 ];
 
 export const DEPARTMENT_INTERVENTION_AREAS = LOCAL_REGISTRY.filter(

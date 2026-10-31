@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "331c63ff42e146ca8ad73b311b17d9e4c02b870dd8ff4745c332375e97eff9bf",
+  "pipelineSignature": "4a5932441181778c12862b0796b4dea61e20bd2a732b4618bc89a1dc3e90dceb",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "5aade09903dfc1e89854b200ad3c57a14974a348c51fe57bffb75eec0ebd2e35"
+    "sha256": "c999adb066f26b57f6223bef81a90c3a310a9b5e763190035290ab7820b30045"
   },
   "sources": [
     {
@@ -122,9 +122,19 @@
       "sha256": "bee602291bbfbb0d0502822e58c6742357fc9fbab96fc6dbab9bbf896f2c7ad2"
     },
     {
+      "key": "audeHero",
+      "path": "src/assets/seo-images/source/carcassonne-cite-pont-vieux-hero-crop.jpg",
+      "sha256": "4898cdf5e4878b7472ccd037a65276379d6a15f5665c1f53f18d6451dd572bf0"
+    },
+    {
       "key": "figeacGrandFigeacHero",
       "path": "src/assets/seo-images/source/figeac-place-ecritures-hero-crop-go69-wikimedia.jpg",
       "sha256": "ca2d8910daf467a5b22638b4a96709c8568b12fd5d964f9d70ee1c3edec851a1"
+    },
+    {
+      "key": "audeGruissan",
+      "path": "src/assets/seo-images/source/gruissan-tour-barberousse-etang.webp",
+      "sha256": "ffa5f3e93952b21304da687a7bccef33ef68114a3ce8405d63e95d0a61b7e2cd"
     },
     {
       "key": "simulateurClassement",
@@ -1544,6 +1554,41 @@
       "sha256": "619360a0fa7c8c5581b242769108932865de10c4e570ba056df419efb37117a1"
     },
     {
+      "path": "/images/optimized/carcassonne-cite-pont-vieux-1200.avif",
+      "bytes": 219760,
+      "sha256": "c4a85dcc05a87b3d4d6d1e03eda236f0dcfa9c299092834e7179acd862ca3b00"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-pont-vieux-1200.jpg",
+      "bytes": 270251,
+      "sha256": "d3101ac6b678981b9c567e5acf62790947499044eaab3c66f14ab2983e6aa4f3"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-pont-vieux-1200.webp",
+      "bytes": 280062,
+      "sha256": "a737b8b2d3a7823af12af9497cbd942e68f8e0d4015295e8eb3bfe235564381a"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-pont-vieux-480.avif",
+      "bytes": 36179,
+      "sha256": "fee7864210d8bf6b3b95a0e72c0116f7c332389489521755fd93b8f0bbf7ca40"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-pont-vieux-480.webp",
+      "bytes": 44646,
+      "sha256": "d45debcab6319cb0f06f9dc374b7cf0e6f33ed0c9a3354562c708915cc3666ce"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-pont-vieux-768.avif",
+      "bytes": 93311,
+      "sha256": "6b3bac3a2e58421643f98f77f9d2a96ab2c1cc6317d0f1be7ddf84db605dba87"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-pont-vieux-768.webp",
+      "bytes": 115400,
+      "sha256": "8c3953a1e036af1e3877e38f27541e4019dfb6815a1899d2eb3a836eb63e22d6"
+    },
+    {
       "path": "/images/optimized/figeac-place-ecritures-1200.avif",
       "bytes": 97718,
       "sha256": "3f8e4eb5508190900a24f944544fc3320b8114d469704fd7393357021925bb23"
@@ -1597,6 +1642,61 @@
       "path": "/images/optimized/figeac-place-ecritures-768.webp",
       "bytes": 59778,
       "sha256": "bb7f736fe762ecf8e2c3c6c12abb4387a34e0bcc5282e25343f64aa7f825d936"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-1200.avif",
+      "bytes": 200457,
+      "sha256": "de56be95db7d34e03b6665efc4e80d164cde9c6c11532c22044210bbfebedcbb"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-1200.jpg",
+      "bytes": 172290,
+      "sha256": "f186fbb9598187d628464420468b7b8f8977e9d2520d4268283abc5dbbef790b"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-1200.webp",
+      "bytes": 186944,
+      "sha256": "a6c68ee1d9ec8ec20920ff6a38b7966c4920fa9bb5db08a1dbf496bba0eee09c"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-1600.avif",
+      "bytes": 337850,
+      "sha256": "f997578b6598a7287899cedf08cc2115126b88ebdccf513d71934a4c1cb569a4"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-1600.webp",
+      "bytes": 322198,
+      "sha256": "f20f758d9fecab0baf2aeab7d6a279494318562c8aeb75be2daf84d289ecad2e"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-1920.avif",
+      "bytes": 454303,
+      "sha256": "5c3da61619c2afe164d584580f2a8bcee237325c74535a43051e3b8af9002539"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-1920.webp",
+      "bytes": 443452,
+      "sha256": "eb1dc1fccc5477e447e1a02759f7122572b555ff2978805a21a6b03bff21aadf"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-480.avif",
+      "bytes": 33847,
+      "sha256": "b2f77ca9cef6e0c90bece25c52b6381c73260f576c48351c2959f22dfbb5c806"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-480.webp",
+      "bytes": 31404,
+      "sha256": "bb614b41b7946f4f9bf894b36df22300383dca18926a6795d9e7f34147dfaefb"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-768.avif",
+      "bytes": 88342,
+      "sha256": "2b334801a232ba1159f153a0c6f2f988f530a84a68c75bacbe58a20d2c73779f"
+    },
+    {
+      "path": "/images/optimized/gruissan-tour-barberousse-etang-768.webp",
+      "bytes": 79020,
+      "sha256": "741d7cd340bb35bb74b778c0b9a2c29447f7f4f3b35464eda4885d8ccabc1c87"
     },
     {
       "path": "/images/optimized/home-hero-1200.avif",

@@ -22,6 +22,7 @@ const FORCE_REBUILD = process.argv.includes('--force');
 const CHECK_MODE = process.argv.includes('--check');
 const HERO_ASSET_KEYS = new Set([
   'homeHero',
+  'audeHero',
   'aveyronHero',
   'dordogneHero',
   'dordogneLaRoqueGageac',
@@ -45,6 +46,19 @@ const LEGACY_HERO_ASPECT_RATIO_ALLOWLIST = new Set([
   'lotHero',
   'lotEtGaronneHero',
   'medocAtlantiqueHero',
+]);
+// Explicit exceptions to the hero minimum-dimension check only: the aspect-ratio check still
+// applies. Each entry pins the exact source dimensions, so any other file under the same key fails.
+const HERO_SOURCE_DIMENSION_EXCEPTIONS = new Map([
+  [
+    'audeHero',
+    {
+      width: 1250,
+      height: 1000,
+      reason:
+        'Imposed photo publicly available at 1500x1000 at most; dedicated hero crop without upscaling. Sharpness must be checked at 390, 768, 1024 and 1440 px.',
+    },
+  ],
 ]);
 
 const IMAGE_ASSETS = [
@@ -116,6 +130,16 @@ const IMAGE_ASSETS = [
     fileName: 'article-plf-2027-meubles-tourisme.png',
   },
   { key: 'dordogneHero', fileName: 'pexels-slimmars-13-197677686-14298615.jpg' },
+  {
+    key: 'audeHero',
+    fileName: 'carcassonne-cite-pont-vieux-hero-crop.jpg',
+    outputName: 'carcassonne-cite-pont-vieux',
+  },
+  {
+    key: 'audeGruissan',
+    fileName: 'gruissan-tour-barberousse-etang.webp',
+    outputName: 'gruissan-tour-barberousse-etang',
+  },
   { key: 'aveyronHero', fileName: 'belcastel-4-kallerna-wikimedia.jpg' },
   { key: 'aveyronTerritory', fileName: 'joran-quinten-wYzuwwLKmGM-unsplash.jpg' },
   { key: 'dordogneLaRoqueGageac', fileName: 'jametlene-reskp-0MF_yWx470o-unsplash.jpg' },
@@ -309,6 +333,9 @@ function buildPipelineSignature() {
         minHeroSourceHeight: MIN_HERO_SOURCE_HEIGHT,
         heroAssetKeys: [...HERO_ASSET_KEYS].sort(),
         legacyHeroAspectRatioAllowlist: [...LEGACY_HERO_ASPECT_RATIO_ALLOWLIST].sort(),
+        heroSourceDimensionExceptions: [...HERO_SOURCE_DIMENSION_EXCEPTIONS].sort(([a], [b]) =>
+          a.localeCompare(b)
+        ),
         imageAssets: IMAGE_ASSETS,
         sharpVersion: sharp.versions.sharp,
         formatSrcSet: normalizeFnSource(formatSrcSet),
@@ -563,6 +590,15 @@ function assertHeroSourceDimensions(asset, metadata, sourcePath) {
   }
 
   if (metadata.width >= MIN_HERO_SOURCE_WIDTH && metadata.height >= MIN_HERO_SOURCE_HEIGHT) {
+    return;
+  }
+
+  const dimensionException = HERO_SOURCE_DIMENSION_EXCEPTIONS.get(asset.key);
+  if (
+    dimensionException &&
+    metadata.width === dimensionException.width &&
+    metadata.height === dimensionException.height
+  ) {
     return;
   }
 

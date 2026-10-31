@@ -1,3 +1,4 @@
+export { AUDE_LOCAL_LANDING_PAGE_V6 } from './departments/audePage';
 export { AVEYRON_LOCAL_LANDING_PAGE_V6 } from './departments/aveyronPage';
 export { DORDOGNE_LOCAL_LANDING_PAGE_V6 } from './departments/dordognePage';
 export { BERGERAC_LOCAL_LANDING_PAGE_V6 } from './cities/bergeracPage';

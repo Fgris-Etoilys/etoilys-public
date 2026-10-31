@@ -4,7 +4,13 @@ import type { ImageAssetKey } from '../imageManifest';
 import type { DescribedImageAssetKey } from '../imageAltText';
 import type { PricingProfileId } from './pricing';
 
-export type DepartmentAreaId = 'aveyron' | 'dordogne' | 'gironde' | 'lot' | 'lot-et-garonne';
+export type DepartmentAreaId =
+  | 'aude'
+  | 'aveyron'
+  | 'dordogne'
+  | 'gironde'
+  | 'lot'
+  | 'lot-et-garonne';
 
 export type CityAreaId = 'bergerac' | 'bordeaux';
 

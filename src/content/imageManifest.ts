@@ -22,6 +22,8 @@ export type ImageAssetKey =
   | 'articleRipostVoyageurRefuseQuitter'
   | 'articlePlf2027MeublesTourisme'
   | 'dordogneHero'
+  | 'audeHero'
+  | 'audeGruissan'
   | 'aveyronHero'
   | 'aveyronTerritory'
   | 'dordogneLaRoqueGageac'
@@ -264,6 +266,24 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/pexels-slimmars-13-197677686-14298615-480.webp 480w, /images/optimized/pexels-slimmars-13-197677686-14298615-768.webp 768w, /images/optimized/pexels-slimmars-13-197677686-14298615-1200.webp 1200w, /images/optimized/pexels-slimmars-13-197677686-14298615-1600.webp 1600w, /images/optimized/pexels-slimmars-13-197677686-14298615-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/pexels-slimmars-13-197677686-14298615-480.avif 480w, /images/optimized/pexels-slimmars-13-197677686-14298615-768.avif 768w, /images/optimized/pexels-slimmars-13-197677686-14298615-1200.avif 1200w, /images/optimized/pexels-slimmars-13-197677686-14298615-1600.avif 1600w, /images/optimized/pexels-slimmars-13-197677686-14298615-1920.avif 1920w',
+  },
+  audeHero: {
+    width: 1250,
+    height: 1000,
+    src: '/images/optimized/carcassonne-cite-pont-vieux-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/carcassonne-cite-pont-vieux-480.webp 480w, /images/optimized/carcassonne-cite-pont-vieux-768.webp 768w, /images/optimized/carcassonne-cite-pont-vieux-1200.webp 1200w',
+    srcSetAvif:
+      '/images/optimized/carcassonne-cite-pont-vieux-480.avif 480w, /images/optimized/carcassonne-cite-pont-vieux-768.avif 768w, /images/optimized/carcassonne-cite-pont-vieux-1200.avif 1200w',
+  },
+  audeGruissan: {
+    width: 5616,
+    height: 3744,
+    src: '/images/optimized/gruissan-tour-barberousse-etang-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/gruissan-tour-barberousse-etang-480.webp 480w, /images/optimized/gruissan-tour-barberousse-etang-768.webp 768w, /images/optimized/gruissan-tour-barberousse-etang-1200.webp 1200w, /images/optimized/gruissan-tour-barberousse-etang-1600.webp 1600w, /images/optimized/gruissan-tour-barberousse-etang-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/gruissan-tour-barberousse-etang-480.avif 480w, /images/optimized/gruissan-tour-barberousse-etang-768.avif 768w, /images/optimized/gruissan-tour-barberousse-etang-1200.avif 1200w, /images/optimized/gruissan-tour-barberousse-etang-1600.avif 1600w, /images/optimized/gruissan-tour-barberousse-etang-1920.avif 1920w',
   },
   aveyronHero: {
     width: 5200,

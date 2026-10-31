@@ -6,6 +6,7 @@ import PourquoiClasser from './pages/PourquoiClasser';
 import Prerequis from './pages/Prerequis';
 import Procedure from './pages/Procedure';
 import ZonesIntervention from './pages/ZonesIntervention';
+import ClassementAude from './pages/locales/ClassementAude';
 import ClassementAveyron from './pages/locales/ClassementAveyron';
 import ClassementBassinArcachon from './pages/locales/ClassementBassinArcachon';
 import ClassementBergerac from './pages/locales/ClassementBergerac';
@@ -58,6 +59,7 @@ export default function AppRoutes() {
         <Route path="prerequis-au-classement" element={<Prerequis />} />
         <Route path="procedure" element={<Procedure />} />
         <Route path="zones-intervention" element={<ZonesIntervention />} />
+        <Route path="classement-meuble-tourisme-aude" element={<ClassementAude />} />
         <Route path="classement-meuble-tourisme-aveyron" element={<ClassementAveyron />} />
         <Route
           path="classement-meuble-tourisme-bassin-arcachon"

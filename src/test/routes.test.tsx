@@ -114,6 +114,7 @@ describe('routing', () => {
     expect(screen.getByRole('heading', { level: 3, name: 'Occitanie' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Lot' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 4, name: 'Aveyron' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: 'Aude' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Classement en Dordogne' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-dordogne'
@@ -144,6 +145,10 @@ describe('routing', () => {
     expect(screen.getByRole('link', { name: 'Classement en Aveyron' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-aveyron'
+    );
+    expect(screen.getByRole('link', { name: 'Classement dans l’Aude' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-aude'
     );
   });
 
@@ -274,6 +279,12 @@ describe('routing', () => {
     expect(screen.getByText('12 / L’AVEYRON')).toBeInTheDocument();
   });
 
+  it('renders Aude local landing page', () => {
+    renderAt('/classement-meuble-tourisme-aude');
+    expectPageHeading(/classement/i, /l’aude/i);
+    expect(screen.getByText('11 / L’AUDE')).toBeInTheDocument();
+  });
+
   it('exposes service areas in classement navigation and keeps footer hub-focused', () => {
     renderAt('/');
 
@@ -294,6 +305,7 @@ describe('routing', () => {
     expect(screen.queryByRole('link', { name: /classement en gironde/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement dans le lot/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement en aveyron/i })).toBeNull();
+    expect(screen.queryByRole('link', { name: /classement dans l’aude/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /classement en lot-et-garonne/i })).toBeNull();
     expect(screen.queryByRole('link', { name: /bergerac et le bergeracois/i })).toBeNull();
   });

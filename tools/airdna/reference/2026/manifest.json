@@ -1,0 +1,25 @@
+{
+  "millesime": 2026,
+  "sources": {
+    "cog": {
+      "file": "v_commune_2026.csv",
+      "url": "https://www.insee.fr/fr/statistiques/fichier/8740222/v_commune_2026.csv",
+      "sha256": "7BE1153DE3A63DF48FA0CA77F8490C8A0C5C9C4EB12F5CEC1CA7F70B0237B1D3"
+    },
+    "history": {
+      "file": "v_commune_depuis_1943.csv",
+      "url": "https://www.insee.fr/fr/statistiques/fichier/8740222/v_commune_depuis_1943.csv",
+      "sha256": "08C532ED8DADE0A048AA4E1D72B8A25852A3AA05CE79C7911276031235D6EEEE"
+    },
+    "events": {
+      "file": "v_mvt_commune_2026.csv",
+      "url": "https://www.insee.fr/fr/statistiques/fichier/8740222/v_mvt_commune_2026.csv",
+      "sha256": "8B339FAD8232E97233AF3FD9468715AF845E2CF8B14CB67B24D9A301EF8645F1"
+    },
+    "contours": {
+      "file": "communes-100m.geojson.gz",
+      "url": "https://etalab-datasets.geo.data.gouv.fr/contours-administratifs/2026/geojson/communes-100m.geojson.gz",
+      "sha256": "4530CBF87A3AF387C2DA95935376F74B93EABD0A7595EACC5B7E0ED94A0B3778"
+    }
+  }
+}

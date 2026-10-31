@@ -24,6 +24,7 @@ import {
 import { trackCtaClick } from '../../utils/analytics';
 import {
   DEPARTMENT_LOCAL_V6_FAQ_ITEMS,
+  AUDE_LOCAL_LANDING_PAGE_V6,
   AVEYRON_LOCAL_LANDING_PAGE_V6,
   BASSIN_ARCACHON_LOCAL_LANDING_PAGE_V6,
   BERGERAC_LOCAL_LANDING_PAGE_V6,
@@ -46,6 +47,7 @@ const departmentConfigs = [
   LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
   AVEYRON_LOCAL_LANDING_PAGE_V6,
+  AUDE_LOCAL_LANDING_PAGE_V6,
 ] as const;
 
 const localPagesLabelsByDepartment = {
@@ -54,6 +56,7 @@ const localPagesLabelsByDepartment = {
   lot: 'Nos pages locales dans le Lot',
   'lot-et-garonne': 'Nos pages locales dans le Lot-et-Garonne',
   aveyron: 'Nos pages locales en Aveyron',
+  aude: 'Nos pages locales dans l’Aude',
 } as const satisfies Record<DepartmentAreaId, string>;
 
 vi.mock('../../utils/analytics', async (importOriginal) => ({
@@ -346,6 +349,7 @@ describe('DepartmentLandingPage', () => {
       GIRONDE_LOCAL_LANDING_PAGE_V6,
       LOT_LOCAL_LANDING_PAGE_V6,
       LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
+      AUDE_LOCAL_LANDING_PAGE_V6,
     ].forEach((config) => {
       expect(config.hero.description).toBe(LOCAL_V6_DEPARTMENT_HERO_DESCRIPTION);
       expect(config.hero.image.index).toBe(LOCAL_V6_DEPARTMENT_HERO_INDEXES[config.departmentId]);
@@ -671,6 +675,9 @@ describe('DepartmentLandingPage', () => {
       'https://www.tourisme-lot.com/pros-centre-de-ressources/nos-services/promotion-visibilite/sit/outils-pratiques-et-accompagnement/',
       'https://www.aveyron-attractivite.fr/fin-de-lagrement-pour-le-classement-des-meubles-de-tourisme-29-avril-2026/',
       'https://www.tourisme-paysdecazevillois.fr/les-meubles-de-tourisme/',
+      'https://pro.audetourisme.com/accompagnement/systeme-information/mettre-a-jour-vos-donnees/',
+      'https://carcassonne.taxesejour.fr/',
+      'https://ville-gruissan.fr/economie-tourisme/fiscalite-locale/',
     ].forEach((href) => {
       const hasVisibleLink = departmentConfigs.some((config) =>
         config.localModule.items.some(
@@ -779,6 +786,7 @@ describe('DepartmentLandingPage', () => {
     [GIRONDE_LOCAL_LANDING_PAGE_V6.departmentId, GIRONDE_LOCAL_LANDING_PAGE_V6],
     [LOT_LOCAL_LANDING_PAGE_V6.departmentId, LOT_LOCAL_LANDING_PAGE_V6],
     [LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6.departmentId, LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6],
+    [AUDE_LOCAL_LANDING_PAGE_V6.departmentId, AUDE_LOCAL_LANDING_PAGE_V6],
   ])('renders department FAQ items before the two automatic V6 items for %s', (_, config) => {
     renderDepartmentPage(config);
 
@@ -817,6 +825,84 @@ describe('DepartmentLandingPage', () => {
       'Intervenez-vous dans ma commune dans le Lot-et-Garonne ?',
       ...baseQuestions,
     ]);
+    expect(AUDE_LOCAL_LANDING_PAGE_V6.faq.items.map((item) => item.question)).toEqual([
+      'Intervenez-vous dans toutes les communes de l’Aude ?',
+      ...baseQuestions,
+    ]);
+  });
+
+  it('replaces only the Aude multi-property answer without announcing an automatic discount', () => {
+    const multiPropertyQuestion = 'Proposez-vous un tarif pour plusieurs meublés ?';
+    const sharedMultiPropertyItem = DEPARTMENT_LOCAL_V6_FAQ_ITEMS.find(
+      (item) => item.question === multiPropertyQuestion
+    );
+    const audeMultiPropertyItem = AUDE_LOCAL_LANDING_PAGE_V6.faq.items.find(
+      (item) => item.question === multiPropertyQuestion
+    );
+
+    expect(audeMultiPropertyItem).toBeDefined();
+    expect(audeMultiPropertyItem).not.toBe(sharedMultiPropertyItem);
+    expect(audeMultiPropertyItem?.answer).toBe(
+      'Oui. Un tarif dégressif peut être proposé sur demande pour plusieurs meublés. Précisez le nombre de logements dans votre demande : nous vous confirmons le tarif avant tout engagement.'
+    );
+    departmentConfigs
+      .filter((config) => config.departmentId !== 'aude')
+      .forEach((config) => {
+        expect(
+          config.faq.items.find((item) => item.question === multiPropertyQuestion),
+          config.departmentId
+        ).toBe(sharedMultiPropertyItem);
+      });
+
+    renderDepartmentPage(AUDE_LOCAL_LANDING_PAGE_V6);
+    expect(document.body).not.toHaveTextContent(/tarifs dégressifs s’appliquent/i);
+    expect(document.body).not.toHaveTextContent(/visités le même jour dans le même secteur/i);
+    expect(document.body).not.toHaveTextContent(/office de tourisme partenaire/i);
+    expect(
+      screen.getByRole('button', { name: 'Intervenez-vous dans toutes les communes de l’Aude ?' })
+    ).toBeInTheDocument();
+  });
+
+  it('renders the Aude territorial module with exactly three sourced items', () => {
+    renderDepartmentPage(AUDE_LOCAL_LANDING_PAGE_V6);
+
+    const module = document.getElementById('local-v6-territorial-title')?.closest('section');
+    if (!module) throw new Error('Missing Aude territorial module');
+    expect(
+      within(module).getByRole('heading', {
+        level: 2,
+        name: 'Les démarches utiles pour votre meublé dans l’Aude',
+      })
+    ).toBeInTheDocument();
+    expect(
+      within(module)
+        .getAllByRole('heading', { level: 3 })
+        .map((heading) => normalizeText(heading.textContent ?? ''))
+    ).toEqual([
+      'Mettre à jour votre fiche touristique',
+      'Carcassonne : quel portail de taxe de séjour ?',
+      'Narbonne et Gruissan : des modalités différentes',
+    ]);
+    const expectedLinks = [
+      [
+        'Retrouver mon office de tourisme dans l’Aude',
+        'https://pro.audetourisme.com/accompagnement/systeme-information/mettre-a-jour-vos-donnees/',
+      ],
+      ['Accéder au portail de taxe de séjour de Carcassonne', 'https://carcassonne.taxesejour.fr/'],
+      [
+        'Consulter les règles de taxe de séjour à Gruissan',
+        'https://ville-gruissan.fr/economie-tourisme/fiscalite-locale/',
+      ],
+    ] as const;
+    expectedLinks.forEach(([name, href]) => {
+      const link = within(module).getByRole('link', { name });
+      expect(link).toHaveAttribute('href', href);
+      expect(link).toHaveAttribute('target', '_blank');
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+    expect(within(module).getAllByRole('link')).toHaveLength(3);
+    expect(document.querySelector('a[href*="carcassonne"]:not([target])')).toBeNull();
+    expect(document.querySelector('a[href*="narbonne"]')).toBeNull();
   });
 
   it.each([
@@ -868,6 +954,11 @@ describe('DepartmentLandingPage', () => {
       'Lot-et-Garonne',
       LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
       ['Nérac, Lot-et-Garonne', 'Monflanquin, Lot-et-Garonne.'],
+    ],
+    [
+      'Aude',
+      AUDE_LOCAL_LANDING_PAGE_V6,
+      ['Cité de Carcassonne, Aude', 'Gruissan et la tour Barberousse, Aude.'],
     ],
   ])('renders required local V6 media captions for %s', (_, config, captions) => {
     renderLocalPage(config);

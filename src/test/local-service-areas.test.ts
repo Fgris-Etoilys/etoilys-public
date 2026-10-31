@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { readFileSync } from 'node:fs';
 import {
+  AUDE_LOCAL_LANDING_PAGE_V6,
   AVEYRON_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
@@ -148,6 +149,7 @@ const publishedCityWithoutParent: LocalRegistryEntry = {
 };
 
 const departmentPageConfigs = [
+  AUDE_LOCAL_LANDING_PAGE_V6,
   AVEYRON_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
@@ -155,13 +157,16 @@ const departmentPageConfigs = [
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
 ];
 
-const strictCommuneIndexDepartmentPageConfigs = [AVEYRON_LOCAL_LANDING_PAGE_V6];
+const strictCommuneIndexDepartmentPageConfigs = [
+  AVEYRON_LOCAL_LANDING_PAGE_V6,
+  AUDE_LOCAL_LANDING_PAGE_V6,
+];
 
 describe('local service areas data', () => {
   it('keeps stable published department ids in display order', () => {
     const ids = getActiveDepartmentInterventionAreas().map((area) => area.id);
 
-    expect(ids).toEqual(['dordogne', 'gironde', 'lot-et-garonne', 'lot', 'aveyron']);
+    expect(ids).toEqual(['dordogne', 'gironde', 'lot-et-garonne', 'lot', 'aveyron', 'aude']);
   });
 
   it('keeps published local paths unique, routable, indexable and prerenderable', () => {
@@ -272,6 +277,43 @@ describe('local service areas data', () => {
     expect(getDepartmentEntryByCode('2B', fixtureEntries)?.kind).toBe('department');
     expect(getDepartmentEntryByCode('99', fixtureEntries)).toBeUndefined();
     expect(getDepartmentEntryByCode('33')?.id).toBe('gironde');
+    expect(getDepartmentEntryByCode('11')?.id).toBe('aude');
+  });
+
+  it('publishes Aude in Occitanie with full coverage, no local child and a complete commune index', () => {
+    const aude = getDepartmentInterventionArea('aude');
+    const occitanie = groupActiveDepartmentsByRegion().find(
+      (group) => group.region.id === 'occitanie'
+    );
+
+    expect(aude).toMatchObject({
+      departmentCode: '11',
+      regionId: 'occitanie',
+      status: 'published',
+      coverageMode: 'department',
+      path: '/classement-meuble-tourisme-aude',
+    });
+    expect(aude.localPages).toEqual([]);
+    expect(occitanie?.departments.map((department) => department.id)).toEqual([
+      'lot',
+      'aveyron',
+      'aude',
+    ]);
+
+    const cogAudeCodes = readFileSync('tools/airdna/reference/2026/v_commune_2026.csv', 'utf8')
+      .split(/\r?\n/)
+      .map((line) => [...line.matchAll(/"([^"]*)"/g)].map((match) => match[1]))
+      .filter(([type, , , department]) => type === 'COM' && department === '11')
+      .map(([, code]) => code);
+    const indexedCodes = (
+      JSON.parse(readFileSync('public/data/communes-aude-index.v1.json', 'utf8')) as {
+        c: Array<{ id: string; departmentCode: string }>;
+      }
+    ).c;
+
+    expect(cogAudeCodes).toHaveLength(433);
+    expect(indexedCodes.map((commune) => commune.id).sort()).toEqual(cogAudeCodes.sort());
+    expect(new Set(indexedCodes.map((commune) => commune.departmentCode))).toEqual(new Set(['11']));
   });
 
   it('excludes drafts from public outputs and lets unknown paths use NotFound SEO', () => {
@@ -303,7 +345,9 @@ describe('local service areas data', () => {
   });
 
   it('keeps structured data areaServed derived from published departments only', () => {
-    expect(getClassificationAreaServed()).toBe('Dordogne, Gironde, Lot-et-Garonne, Lot et Aveyron');
+    expect(getClassificationAreaServed()).toBe(
+      'Dordogne, Gironde, Lot-et-Garonne, Lot, Aveyron et Aude'
+    );
     expect(getClassificationAreaServed([draftDepartment, publishedCorsicaDepartment])).toBe(
       'Corse-du-Sud'
     );
@@ -311,6 +355,7 @@ describe('local service areas data', () => {
 
   it('keeps department landing configs linked to registry entries', () => {
     expect(departmentPageConfigs.map((config) => config.departmentId)).toEqual([
+      'aude',
       'aveyron',
       'dordogne',
       'gironde',
