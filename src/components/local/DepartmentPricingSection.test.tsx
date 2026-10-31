@@ -1,9 +1,11 @@
+import { readFileSync } from 'node:fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import DepartmentPricingSection, { LocalPricingProfileSummary } from './DepartmentPricingSection';
 import { getPricingProfile, PRICING_PROFILES } from '../../content/local/pricing';
 import {
+  AUDE_LOCAL_LANDING_PAGE_V6,
   AVEYRON_LOCAL_LANDING_PAGE_V6,
   BORDEAUX_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
@@ -352,6 +354,60 @@ describe('Department pricing picker', () => {
       dordogneProfile.standard.amount = dordogneAmount;
     }
   });
+
+  it('keeps the Aude profile independent, flat and without automatic discounts', () => {
+    const audeProfile = requireFlatProfile(PRICING_PROFILES['aude-standard']);
+
+    expect(audeProfile.id).toBe('aude-standard');
+    expect(audeProfile).not.toBe(PRICING_PROFILES['aveyron-standard']);
+    expect(audeProfile.standard).toEqual({
+      label: 'Tarif public',
+      amount: '240 €',
+      qualifier: 'TTC',
+    });
+    expect(audeProfile.partner).toBeUndefined();
+    expect(audeProfile.multiProperty).toBeUndefined();
+    expect(audeProfile.offer).toBeUndefined();
+    expect(AUDE_LOCAL_LANDING_PAGE_V6.pricing.picker.communeIndexUrl).toBe(
+      '/data/communes-aude-index.v1.json'
+    );
+    expect(AUDE_LOCAL_LANDING_PAGE_V6.pricing.picker.defaultPricingProfileId).toBe('aude-standard');
+    expect(AUDE_LOCAL_LANDING_PAGE_V6.pricing.picker.overrides).toEqual({});
+  });
+
+  it.each(['Carcassonne', 'Narbonne', 'Gruissan', 'Castelnaudary', 'Limoux', 'Leucate', 'Quillan'])(
+    'resolves %s from the generated Aude index at 240 € TTC',
+    async (commune) => {
+      const audeIndex: unknown = JSON.parse(
+        readFileSync('public/data/communes-aude-index.v1.json', 'utf8')
+      );
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async () => ({ ok: true, json: async () => audeIndex }))
+      );
+
+      const { container } = render(
+        <MemoryRouter>
+          <DepartmentPricingSection
+            config={AUDE_LOCAL_LANDING_PAGE_V6.pricing.picker}
+            presentation="panel"
+          />
+        </MemoryRouter>
+      );
+
+      const input = screen.getByRole('combobox', { name: 'Commune' });
+      fireEvent.focus(input);
+      fireEvent.change(input, { target: { value: commune } });
+      fireEvent.mouseDown(await screen.findByRole('option', { name: commune }));
+
+      expect(screen.getByText(`Votre meublé à ${commune}`)).toBeInTheDocument();
+      expect(container.querySelector('.local-v6-pricing-amount')).toHaveTextContent('240 € TTC');
+      expect(screen.queryByText(/office de tourisme partenaire/i)).not.toBeInTheDocument();
+      expect(screen.queryByText(/plusieurs logements/i)).not.toBeInTheDocument();
+      expect(container.querySelector('.local-v6-pricing-multiple')).toBeNull();
+      expect(container.querySelector('.local-v6-pricing-partner')).toBeNull();
+    }
+  );
 
   it('keeps direct pricing compact without picker divider or duplicated note', () => {
     const profile = getPricingProfile('dordogne-standard');

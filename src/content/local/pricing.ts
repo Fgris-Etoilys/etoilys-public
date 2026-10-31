@@ -1,4 +1,5 @@
 export type PricingProfileId =
+  | 'aude-standard'
   | 'aveyron-standard'
   | 'dordogne-standard'
   | 'gironde-standard'
@@ -136,6 +137,19 @@ const lotPricingProfile: PricingProfile = {
   note: standardProfileValues.note,
 };
 
+// Aude : tarif unique sans paliers multi-logements ni tarif partenaire ; un tarif dégressif
+// reste possible sur demande, sans montant prédéfini.
+const audePricingProfile: PricingProfile = {
+  id: 'aude-standard',
+  kind: 'flat',
+  standard: {
+    label: 'Tarif public',
+    amount: '240 €',
+    qualifier: 'TTC',
+  },
+  note: standardProfileValues.note,
+};
+
 const girondeStandardProfileValues = {
   kind: 'tiered',
   standardTitle: 'Tarif standard',
@@ -192,6 +206,7 @@ function createGirondePricingProfile(
 }
 
 export const PRICING_PROFILES: Record<PricingProfileId, PricingProfile> = {
+  'aude-standard': audePricingProfile,
   'aveyron-standard': createStandardPricingProfile('aveyron-standard'),
   'dordogne-standard': createStandardPricingProfile('dordogne-standard'),
   'gironde-standard': createGirondePricingProfile('gironde-standard'),

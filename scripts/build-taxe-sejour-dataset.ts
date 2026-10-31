@@ -69,6 +69,18 @@ export interface CommuneIndexDataset {
 }
 
 const COMMUNE_LABEL_OVERRIDES_BY_INSEE: Record<string, string> = {
+  '11008': 'Alet-les-Bains',
+  '11099': 'Conques-sur-Orbiel',
+  '11115': 'Cuxac-Cabardès',
+  '11129': 'Espéraza',
+  '11145': 'Fleury',
+  '11203': 'Lézignan-Corbières',
+  '11254': 'Montréal',
+  '11266': 'Port-la-Nouvelle',
+  '11285': 'Peyriac-de-Mer',
+  '11309': 'Rennes-le-Château',
+  '11322': 'Roquefort-des-Corbières',
+  '11397': 'Trèbes',
   '24335': 'Port-Sainte-Foy-et-Ponchapt',
   '24274': 'Monbazillac',
   '24322': 'Périgueux',

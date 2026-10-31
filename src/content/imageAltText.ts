@@ -120,6 +120,9 @@ export const IMAGE_ALT_TEXT = {
   aveyronHero: {
     fr: 'Village de Belcastel et château au bord de la rivière Aveyron',
   },
+  audeHero: {
+    fr: 'La Cité médiévale de Carcassonne et le Pont Vieux sur l’Aude',
+  },
 } as const satisfies Partial<Record<ImageAssetKey, ImageAltText>>;
 
 export type DescribedImageAssetKey = keyof typeof IMAGE_ALT_TEXT;

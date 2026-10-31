@@ -175,6 +175,7 @@ export const LOCAL_V6_DEPARTMENT_PRICING_INTRO =
   'Indiquez la commune de votre logement pour consulter le tarif prévu. Nous confirmons ensuite les modalités et la possibilité d’intervenir à votre adresse.';
 
 export const LOCAL_V6_DEPARTMENT_HERO_INDEXES = {
+  aude: '11 / L’AUDE',
   aveyron: '12 / L’AVEYRON',
   dordogne: '24 / LE PÉRIGORD',
   gironde: '33 / LA GIRONDE',
@@ -209,6 +210,17 @@ export const dordogneCoverageQuestion = {
   ),
 } satisfies LocalFaqItem;
 
+export const DEPARTMENT_MULTI_PROPERTY_FAQ_ITEM = {
+  question: 'Proposez-vous un tarif pour plusieurs meublés ?',
+  answer: (
+    <>
+      Oui, des tarifs dégressifs s’appliquent pour plusieurs meublés visités le même jour dans le
+      même secteur. Précisez le nombre de logements dans votre demande : nous vous confirmons le
+      tarif adapté.
+    </>
+  ),
+} as const satisfies LocalFaqItem;
+
 export const DEPARTMENT_LOCAL_V6_FAQ_ITEMS = [
   {
     question: 'Quel est le prix d’une visite de classement ?',
@@ -229,16 +241,7 @@ export const DEPARTMENT_LOCAL_V6_FAQ_ITEMS = [
       </>
     ),
   },
-  {
-    question: 'Proposez-vous un tarif pour plusieurs meublés ?',
-    answer: (
-      <>
-        Oui, des tarifs dégressifs s’appliquent pour plusieurs meublés visités le même jour dans le
-        même secteur. Précisez le nombre de logements dans votre demande : nous vous confirmons le
-        tarif adapté.
-      </>
-    ),
-  },
+  DEPARTMENT_MULTI_PROPERTY_FAQ_ITEM,
   {
     question: 'Etoilys est-il accrédité pour réaliser le classement ?',
     answer: (
@@ -301,9 +304,23 @@ export const dordogneQuestions = [
   ...DEPARTMENT_LOCAL_V6_FAQ_ITEMS,
 ] as const satisfies readonly LocalFaqItem[];
 
+interface DepartmentFaqOptions {
+  /** Remplace la réponse multi-logements commune quand le profil tarifaire local diffère. */
+  multiPropertyItem?: LocalFaqItem;
+}
+
 export function buildDepartmentFaqItems(
   coverageItem: LocalFaqItem,
-  localItems: readonly LocalFaqItem[] = []
+  localItems: readonly LocalFaqItem[] = [],
+  { multiPropertyItem }: DepartmentFaqOptions = {}
 ) {
-  return [coverageItem, ...DEPARTMENT_LOCAL_V6_FAQ_ITEMS, ...localItems] satisfies LocalFaqItem[];
+  const baseItems: readonly LocalFaqItem[] = DEPARTMENT_LOCAL_V6_FAQ_ITEMS;
+
+  return [
+    coverageItem,
+    ...baseItems.map((item) =>
+      item === DEPARTMENT_MULTI_PROPERTY_FAQ_ITEM && multiPropertyItem ? multiPropertyItem : item
+    ),
+    ...localItems,
+  ] satisfies LocalFaqItem[];
 }
