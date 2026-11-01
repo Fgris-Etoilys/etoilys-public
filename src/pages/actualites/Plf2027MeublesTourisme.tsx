@@ -4,19 +4,24 @@ import KeyTakeaways from '../../components/ui/KeyTakeaways';
 import ArticleSources from '../../components/ui/ArticleSources';
 import ArticleLayout from '../../components/ui/ArticleLayout';
 import ArticleSectionHeading from '../../components/ui/ArticleSectionHeading';
+import ResponsiveComparisonTable from '../../components/ui/ResponsiveComparisonTable';
 import type { ArticleTableOfContentsItem } from '../../components/ui/ArticleTableOfContents';
 import { getActualiteArticleByHref, getRelatedArticles } from '../../content/actualitesArticles';
 import { getArticleAuthor } from '../../content/articleAuthors';
 
 const PLF_DOSSIER_URL = 'https://www.assemblee-nationale.fr/dyn/17/dossiers/PLF_2027';
 const PLF_TEXTE_URL = 'https://www.assemblee-nationale.fr/dyn/17/textes/l17b3210_projet-loi';
+const AMENDEMENT_I540_URL = 'https://www.assemblee-nationale.fr/dyn/17/amendements/3210A/AN/540';
+const SCRUTIN_9366_URL = 'https://www.assemblee-nationale.fr/dyn/17/scrutins/9366';
+const AMENDEMENT_I96_URL = 'https://www.assemblee-nationale.fr/dyn/17/amendements/3210A/AN/96';
+const SCRUTIN_9359_URL = 'https://www.assemblee-nationale.fr/dyn/17/scrutins/9359';
+const ARTICLE_50_0_URL = 'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000042159220/';
 const ARTICLE_39_C_URL =
   'https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000029355753/2026-01-29';
 const MICRO_BIC_2026_URL =
   'https://www.economie.gouv.fr/particuliers/impots-et-fiscalite/gerer-mon-impot-sur-le-revenu/location-meublee-de-tourisme-quelles-sont-les-regles-respecter-pour-sa-residence';
-const RAPPORT_LE_MEUR_URL =
-  'https://portail.documentation.developpement-durable.gouv.fr/pub/CGE00001131-propositions-reforme-fiscalite-locative-appui-mme.html';
 const MICRO_BIC_ARTICLE_HREF = '/actualites/micro-bic-2026-meuble-classe-vs-non-classe';
+const AVANTAGES_CLASSEMENT_HREF = '/les-avantages-du-classement';
 
 const officialSources = [
   {
@@ -31,42 +36,67 @@ const officialSources = [
     title: 'Projet de loi de finances pour 2027 n° 3210, articles 7 et 33',
     url: PLF_TEXTE_URL,
     detail:
-      'Version analysée : projet initial du Gouvernement déposé le 1er octobre 2026. L’article 7 porte sur l’amortissement, l’article 33 sur l’entrée en vigueur des mesures fiscales.',
+      'Version analysée : projet initial du Gouvernement déposé le 1er octobre 2026. Les alinéas 7 à 24 de l’article 7, sur l’amortissement des locations meublées, ont été supprimés en séance le 30 octobre 2026. L’article 33 porte sur l’entrée en vigueur des mesures fiscales.',
   },
   {
-    id: 'legifrance-article-39-c-cgi-3',
+    id: 'assemblee-nationale-amendement-i-540-plf-2027-3',
+    organization: 'Assemblée nationale',
+    title: 'Amendement n° I-540 après l’article 7 du PLF 2027',
+    url: AMENDEMENT_I540_URL,
+    detail:
+      'Modifie l’article 50-0 du CGI pour les meublés de tourisme classés, les chambres d’hôtes et les gîtes ruraux. Adopté en séance publique le 30 octobre 2026.',
+  },
+  {
+    id: 'assemblee-nationale-scrutin-9366-4',
+    organization: 'Assemblée nationale',
+    title: 'Scrutin public n° 9366 sur l’amendement n° I-540',
+    url: SCRUTIN_9366_URL,
+    detail: '30 octobre 2026 : 37 voix pour, 35 contre, 2 abstentions.',
+  },
+  {
+    id: 'legifrance-article-50-0-cgi-5',
+    organization: 'Légifrance',
+    title:
+      'Article 50-0 du Code général des impôts (version en vigueur depuis le 1er juillet 2026)',
+    url: ARTICLE_50_0_URL,
+  },
+  {
+    id: 'assemblee-nationale-amendement-i-96-plf-2027-6',
+    organization: 'Assemblée nationale',
+    title: 'Amendement n° I-96 à l’article 7 du PLF 2027',
+    url: AMENDEMENT_I96_URL,
+    detail:
+      'Supprime les alinéas 7 à 24 de l’article 7. Adopté en séance publique le 30 octobre 2026, avec plusieurs amendements identiques.',
+  },
+  {
+    id: 'assemblee-nationale-scrutin-9359-7',
+    organization: 'Assemblée nationale',
+    title: 'Scrutin public n° 9359 sur l’amendement n° I-96',
+    url: SCRUTIN_9359_URL,
+    detail: '30 octobre 2026 : 45 voix pour, 41 contre.',
+  },
+  {
+    id: 'legifrance-article-39-c-cgi-8',
     organization: 'Légifrance',
     title: 'Article 39 C du Code général des impôts (version en vigueur)',
     url: ARTICLE_39_C_URL,
   },
   {
-    id: 'economie-gouv-fr-micro-bic-meubles-tourisme-4',
+    id: 'economie-gouv-fr-micro-bic-meubles-tourisme-9',
     organization: 'economie.gouv.fr',
     title: 'Location meublée de tourisme : règles fiscales et seuils micro-BIC',
     url: MICRO_BIC_2026_URL,
-  },
-  {
-    id: 'igf-igedd-rapport-le-meur-fiscalite-locative-5',
-    organization: 'IGF / IGEDD',
-    title: 'Propositions de réforme de la fiscalité locative (appui à Annaïg Le Meur, mai 2024)',
-    url: RAPPORT_LE_MEUR_URL,
-    detail:
-      'Tableau 14 : déclarants LMNP par régime d’imposition en 2021, d’après la Direction de la législation fiscale.',
   },
 ];
 
 const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   {
-    id: 'le-plf-2027-veut-fortement-limiter-lamortissement-des-meubles-de-tourisme',
-    label: 'Le PLF 2027 veut fortement limiter l’amortissement des meublés de tourisme',
+    id: 'micro-bic-les-deputes-votent-71-dabattement-pour-les-meubles-classes',
+    label: 'Micro-BIC : les députés votent 71 % d’abattement pour les meublés classés',
   },
   {
-    id: 'qui-serait-reellement-concerne',
-    label: 'Qui serait réellement concerné ?',
-  },
-  {
-    id: 'le-projet-change-aussi-le-sort-des-amortissements-non-deduits',
-    label: 'Le projet change aussi le sort des amortissements non déduits',
+    id: 'amortissement-lmnp-le-plafonnement-prevu-a-ete-retire-du-texte',
+    label: 'Amortissement LMNP : le plafonnement prévu a été retiré du texte',
   },
   {
     id: 'ce-qui-peut-encore-changer-pendant-lexamen-du-budget',
@@ -78,13 +108,11 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
   },
 ];
 
-const pointsToWatch = [
-  'le taux de 1,5 % et le plafond de 5 000 € prévus pour les meublés de tourisme ;',
-  'l’écart de traitement avec les autres locations meublées (2,5 % et 7 000 €) ;',
-  'la fin du report des amortissements non déduits ;',
-  'le sort du stock accumulé avant 2027 : délai jusqu’en 2036 et limite de 50 % ;',
-  'le calendrier d’application ;',
-  'l’apparition d’une autre mesure visant les meublés de tourisme, notamment sur le micro-BIC.',
+const removedAmortizationMeasures = [
+  'un plafond de 1,5 % et 5 000 € par an et par foyer fiscal pour l’amortissement d’un meublé de tourisme ;',
+  'un plafond de 2,5 % et 7 000 € pour les autres locations meublées non professionnelles ;',
+  'la fin du report de l’amortissement non déduit, pour les exercices clos à compter du 1er janvier 2027 ;',
+  'un délai pour utiliser l’amortissement accumulé avant 2027 : jusqu’au 31 décembre 2036, dans la limite de la moitié du résultat imposable.',
 ];
 
 const keyTakeawaysBlock = (
@@ -95,10 +123,10 @@ const keyTakeawaysBlock = (
         id: 'plf2027meublestourisme-takeaway-1',
         content: (
           <>
-            Pour les meublés de tourisme, le Gouvernement propose de plafonner la déduction de
-            l’amortissement du logement à{' '}
-            <strong>1,5 % et 5 000 € par an et par foyer fiscal</strong>, contre 2,5 % et 7 000 €
-            pour les autres locations meublées non professionnelles.
+            Le 30 octobre 2026, les députés ont voté un{' '}
+            <strong>micro-BIC à 71 % d’abattement pour les meublés de tourisme classés</strong>,
+            avec un plafond de recettes de 203 100 €. Pour les revenus 2026, ce régime est de 50 %
+            et 83 600 €.
           </>
         ),
       },
@@ -106,9 +134,11 @@ const keyTakeawaysBlock = (
         id: 'plf2027meublestourisme-takeaway-2',
         content: (
           <>
-            Pour les exercices clos à compter du 1er janvier 2027, l’amortissement qui ne pourrait
-            pas être déduit dans l’année <strong>ne serait plus reportable</strong> sur les
-            exercices suivants.
+            Les meublés non classés restent à 30 % d’abattement et 15 000 € de plafond.{' '}
+            <strong>
+              L’écart d’abattement entre classé et non classé passerait de 20 à 41 points
+            </strong>{' '}
+            : le classement deviendrait un levier fiscal bien plus puissant qu’aujourd’hui.
           </>
         ),
       },
@@ -116,9 +146,9 @@ const keyTakeawaysBlock = (
         id: 'plf2027meublestourisme-takeaway-3',
         content: (
           <>
-            Les amortissements accumulés avant 2027 resteraient utilisables{' '}
-            <strong>jusqu’au 31 décembre 2036</strong>, mais dans la limite de la moitié du résultat
-            imposable restant après application des nouvelles règles.
+            Les députés ont aussi <strong>supprimé le plafonnement de l’amortissement</strong> prévu
+            pour les LMNP au régime réel : 1,5 % et 5 000 € par an pour un meublé de tourisme, 2,5 %
+            et 7 000 € pour les autres locations meublées.
           </>
         ),
       },
@@ -126,10 +156,9 @@ const keyTakeawaysBlock = (
         id: 'plf2027meublestourisme-takeaway-4',
         content: (
           <>
-            La mesure vise les <strong>LMNP au régime réel</strong>. Au micro-BIC, vous ne déduisez
-            pas d’amortissement : ce plafonnement ne vous concerne pas. Pour les revenus 2026, un
-            meublé classé y conserve un plafond de 83 600 € avec 50 % d’abattement, contre 15 000 €
-            et 30 % pour un non-classé.
+            La <strong>fin du report</strong> des amortissements non déduits et la limitation du
+            stock accumulé avant 2027 ont également été retirées. Au régime réel, les règles
+            actuelles restent donc les mêmes à ce stade.
           </>
         ),
       },
@@ -137,8 +166,9 @@ const keyTakeawaysBlock = (
         id: 'plf2027meublestourisme-takeaway-5',
         content: (
           <>
-            Rien n’est encore définitif : ces règles correspondent au projet déposé le 1er octobre
-            2026 et peuvent encore évoluer avant l’adoption du budget.
+            Ces votes ont eu lieu en première lecture à l’Assemblée nationale. Ils peuvent encore
+            être remis en cause d’ici l’adoption définitive du budget : pour l’instant, les règles
+            actuelles continuent de s’appliquer.
           </>
         ),
       },
@@ -157,11 +187,12 @@ export default function ArticlePlf2027MeublesTourisme() {
       tableOfContents={tableOfContents}
       lede={
         <p className="text-xl leading-comfortable text-muted mb-6">
-          Le PLF 2027 s’attaque directement à l’un des grands avantages du LMNP au régime réel :
-          l’amortissement. Pour les meublés de tourisme, le Gouvernement propose de limiter beaucoup
-          plus fortement ce qui peut être déduit chaque année. Si vous êtes au micro-BIC, cette
-          mesure ne vous concerne pas. Si vous êtes au réel, en revanche, le changement peut être
-          important.
+          Le 30 octobre 2026, les députés ont voté un avantage fiscal majeur pour les meublés de
+          tourisme classés : un micro-BIC à 71 % d’abattement, contre 50 % aujourd’hui, avec un
+          plafond de recettes porté à 203 100 €. Les non-classés restant à 30 %, l’écart
+          d’abattement entre les deux ferait plus que doubler. Les députés ont aussi retiré le
+          plafonnement de l’amortissement prévu pour les loueurs au régime réel. Rien n’est encore
+          définitif : tant que le budget n’est pas adopté, les règles actuelles s’appliquent.
         </p>
       }
       keyTakeaways={keyTakeawaysBlock}
@@ -169,9 +200,9 @@ export default function ArticlePlf2027MeublesTourisme() {
         <div className="article-cta-panel mb-12 mt-12 p-8">
           <h2 className="text-h4 mb-3">Vous êtes au micro-BIC ?</h2>
           <p className="text-muted leading-comfortable mb-6">
-            Cette réforme de l’amortissement ne vous concerne pas directement. Pour vous, les
-            repères restent les seuils et abattements du micro-BIC, qui diffèrent fortement entre
-            meublés classés et non classés.
+            Pour vos revenus 2026, le classement change déjà nettement votre imposition. Notre
+            décryptage détaille les seuils et abattements qui s’appliquent aujourd’hui, en attendant
+            le vote définitif du budget.
           </p>
           <Button href={MICRO_BIC_ARTICLE_HREF} variant="primary">
             Lire notre décryptage du micro-BIC 2026
@@ -182,9 +213,186 @@ export default function ArticlePlf2027MeublesTourisme() {
       relatedArticles={getRelatedArticles(article)}
       author={getArticleAuthor(article.authorId)}
     >
-      <ArticleSectionHeading id="le-plf-2027-veut-fortement-limiter-lamortissement-des-meubles-de-tourisme">
-        Le PLF 2027 veut fortement limiter l’amortissement des meublés de tourisme
+      <ArticleSectionHeading id="micro-bic-les-deputes-votent-71-dabattement-pour-les-meubles-classes">
+        Micro-BIC : les députés votent 71 % d’abattement pour les meublés classés
       </ArticleSectionHeading>
+      <p className="text-muted leading-comfortable mb-4">
+        Le 30 octobre 2026, les députés ont adopté{' '}
+        <a
+          href={AMENDEMENT_I540_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="article-inline-link"
+        >
+          l’amendement n° I-540
+        </a>
+        , qui donne un sérieux coup de pouce aux meublés de tourisme classés au micro-BIC. Dans ce
+        régime, vous ne déduisez ni vos charges ni l’amortissement : l’administration applique un
+        abattement forfaitaire sur vos recettes, et vous êtes imposé sur le reste.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        L’amendement porte cet abattement à <strong>71 %</strong> pour les meublés de tourisme
+        classés, contre 50 % pour les revenus 2026. Le plafond de recettes pour rester au micro-BIC
+        passerait de 83 600 € à <strong>203 100 €</strong>. Les chambres d’hôtes et les gîtes ruraux
+        sont aussi concernés. Le vote a été acquis par 37 voix contre 35.
+      </p>
+
+      <ResponsiveComparisonTable
+        appearance="editorial"
+        className="mb-6"
+        caption="Micro-BIC des meublés de tourisme : règles des revenus 2026 et amendement voté le 30 octobre 2026"
+        primaryColumnKey="logement"
+        columns={[
+          {
+            key: 'logement',
+            label: 'Logement',
+            align: 'center',
+            widthClassName: 'w-1/3',
+          },
+          {
+            key: 'revenus2026',
+            label: (
+              <>
+                Revenus 2026
+                <br />
+                (règles actuelles)
+              </>
+            ),
+            mobileLabel: 'Revenus 2026 (règles actuelles)',
+            align: 'center',
+            widthClassName: 'w-1/3',
+          },
+          {
+            key: 'amendement',
+            label: (
+              <>
+                Avec l’amendement
+                <br />
+                du 30 octobre
+              </>
+            ),
+            mobileLabel: 'Avec l’amendement du 30 octobre',
+            align: 'center',
+            widthClassName: 'w-1/3',
+          },
+        ]}
+        rows={[
+          {
+            key: 'classe',
+            cells: {
+              logement: 'Meublé de tourisme classé',
+              revenus2026: (
+                <>
+                  50 % d’abattement
+                  <br />
+                  plafond de 83 600 €<span className="sr-only"> pour les revenus 2026</span>
+                </>
+              ),
+              amendement: (
+                <span className="font-semibold text-copper">
+                  71 % d’abattement
+                  <br />
+                  plafond de 203 100 €
+                </span>
+              ),
+            },
+          },
+          {
+            key: 'non-classe',
+            cells: {
+              logement: 'Meublé de tourisme non classé',
+              revenus2026: (
+                <>
+                  30 % d’abattement
+                  <br />
+                  plafond de 15 000 €
+                </>
+              ),
+              amendement: (
+                <>
+                  Inchangé : 30 % d’abattement
+                  <br />
+                  plafond de 15 000 €
+                </>
+              ),
+            },
+          },
+        ]}
+        desktopWrapperClassName="hidden md:block"
+        headerCellClassName="p-3 font-semibold break-words"
+        mobileContainerClassName="md:hidden space-y-3"
+        mobileTitleClassName="text-sm font-semibold text-ink mb-3"
+        mobileLabelClassName="text-xs font-medium text-muted"
+      />
+
+      <p className="text-muted leading-comfortable mb-4">
+        C’est surtout l’écart avec les meublés non classés qui changerait d’échelle. L’amendement ne
+        les concerne pas : ils restent à 30 % d’abattement, dans la limite de 15 000 € de recettes.
+        La différence d’abattement entre un meublé classé et un meublé non classé passerait ainsi de
+        20 à 41 points.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        Ce ne serait donc pas un simple retour en arrière. Avant la loi Le Meur de 2024, les meublés
+        classés bénéficiaient déjà de 71 %, mais les non-classés relevaient en général de 50 %, soit
+        21 points d’écart. Avec cet amendement, l’avantage du classement serait deux fois plus
+        important.
+      </p>
+      <div className="article-callout-muted mb-6 p-5">
+        <p className="text-muted leading-comfortable">
+          <strong className="text-ink">Exemple.</strong> Prenons un logement qui encaisse 12 000 €
+          de recettes dans l’année. Non classé, il est imposé sur 8 400 €. Classé, il l’est
+          aujourd’hui sur 6 000 €, et le serait sur 3 480 € avec l’amendement voté le 30 octobre :
+          un montant imposable près de deux fois et demie plus faible que pour le même logement non
+          classé. Ce calcul porte sur le revenu soumis à l’impôt, avant application de votre taux
+          d’imposition et des prélèvements sociaux.
+        </p>
+      </div>
+      <p className="text-muted leading-comfortable mb-4">
+        Le point important : ce vote ne change pas encore vos règles. Tant que la loi de finances
+        n’est pas définitivement adoptée, un meublé classé au micro-BIC reste soumis à un abattement
+        de 50 %, dans la limite de 83 600 € de recettes pour les revenus 2026.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        L’amendement ne fixe pas lui-même de date d’application. Dans ce cas,{' '}
+        <a
+          href={PLF_TEXTE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="article-inline-link"
+        >
+          l’article 33 du projet
+        </a>{' '}
+        prévoit une entrée en vigueur au 31 décembre 2026 pour les impôts calculés sur l’année
+        civile, comme l’impôt sur le revenu. Si la mesure restait inchangée jusqu’au vote final,
+        elle pourrait donc s’appliquer dès les revenus 2026. Tout dépendra du texte définitivement
+        adopté.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        Si cette mesure est confirmée, faire classer son meublé deviendrait un levier fiscal bien
+        plus puissant qu’aujourd’hui pour les loueurs au micro-BIC. Aujourd’hui déjà, le classement
+        change nettement le calcul de votre impôt : retrouvez{' '}
+        <Link to={AVANTAGES_CLASSEMENT_HREF} className="article-inline-link">
+          les avantages du classement de votre meublé
+        </Link>{' '}
+        et le détail des seuils actuels dans{' '}
+        <Link to={MICRO_BIC_ARTICLE_HREF} className="article-inline-link">
+          notre décryptage du micro-BIC 2026
+        </Link>
+        .
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        Si vous êtes au réel avec un meublé classé, un abattement de 71 % pourrait aussi rendre le
+        micro-BIC plus intéressant dans certains cas. La comparaison ne pourra se faire qu’une fois
+        les règles définitives connues.
+      </p>
+
+      <ArticleSectionHeading id="amortissement-lmnp-le-plafonnement-prevu-a-ete-retire-du-texte">
+        Amortissement LMNP : le plafonnement prévu a été retiré du texte
+      </ArticleSectionHeading>
+      <p className="text-muted leading-comfortable mb-4">
+        Le même jour, les députés ont aussi retiré du texte la principale mesure qui visait les
+        loueurs au régime réel : le plafonnement de l’amortissement.
+      </p>
       <p className="text-muted leading-comfortable mb-4">
         Au régime réel, un loueur en meublé non professionnel (LMNP) ne paie pas l’impôt sur ses
         loyers bruts. Il déduit ses charges réelles (intérêts d’emprunt, assurance, taxe foncière,
@@ -207,118 +415,38 @@ export default function ArticlePlf2027MeublesTourisme() {
         .
       </p>
       <p className="text-muted leading-comfortable mb-4">
-        Le projet veut surtout changer deux choses : le montant déductible chaque année, et le sort
-        de ce qui n’est pas déduit.
+        Le projet initial du Gouvernement, déposé le 1er octobre 2026, voulait fortement restreindre
+        ce mécanisme. Il prévoyait :
       </p>
+      <ul className="space-y-2 mb-6 text-muted">
+        {removedAmortizationMeasures.map((measure) => (
+          <li key={measure} className="flex gap-3">
+            <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
+              •
+            </span>
+            <span>{measure}</span>
+          </li>
+        ))}
+      </ul>
       <p className="text-muted leading-comfortable mb-4">
-        Pour toutes les locations meublées non professionnelles, l’amortissement du logement serait
-        déductible dans la limite d’un taux de <strong>2,5 %</strong>, sans dépasser{' '}
-        <strong>7 000 €</strong> par an et par foyer fiscal. Pour un meublé de tourisme, la règle
-        serait plus stricte : <strong>1,5 %</strong> et <strong>5 000 €</strong> au maximum. Le
-        plafond est fixé par foyer fiscal, et non par logement.
-      </p>
-      <div className="article-callout-muted mb-6 p-5">
-        <p className="text-muted leading-comfortable">
-          <strong className="text-ink">Concrètement.</strong> Prenons un propriétaire qui exploite
-          un seul meublé de tourisme et dont la comptabilité fait apparaître 8 000 € d’amortissement
-          sur l’exercice 2027. Avec le projet actuel, il ne pourrait pas en déduire plus de 5 000 €.
-          Selon la valeur du logement, le taux de 1,5 % peut même conduire à une déduction plus
-          faible. Au moins 3 000 € ne seraient donc pas déductibles au titre de cet exercice et ne
-          pourraient plus être reportés sur les exercices suivants.
-        </p>
-      </div>
-      <p className="text-muted leading-comfortable mb-4">
-        Pour un propriétaire, cela signifie un résultat imposable plus élevé, donc, selon les cas,
-        davantage d’impôt. Le montant exact dépend de ses autres charges, de son résultat et de la
-        situation fiscale de son foyer.
-      </p>
-
-      <ArticleSectionHeading id="qui-serait-reellement-concerne">
-        Qui serait réellement concerné ?
-      </ArticleSectionHeading>
-      <p className="text-muted leading-comfortable mb-4">
-        La mesure vise les loueurs en meublé non professionnels au régime réel. Les loueurs en
-        meublé professionnels (LMP) ne sont pas concernés par ce nouveau plafonnement.
-      </p>
-      <p className="text-muted leading-comfortable mb-4">
-        Si vous êtes au micro-BIC, vous n’êtes pas directement concerné. L’administration applique
-        un abattement forfaitaire sur vos recettes : vous ne déduisez ni vos charges réelles ni
-        d’amortissement. Un plafond d’amortissement ne change donc rien à votre calcul.
-      </p>
-      <p className="text-muted leading-comfortable mb-4">
-        Pour les revenus 2026, un meublé de tourisme classé peut actuellement rester au micro-BIC
-        jusqu’à 83 600 € de recettes avec un abattement de 50 %, contre 15 000 € et 30 % pour un
-        meublé non classé. Le détail figure dans{' '}
-        <Link to={MICRO_BIC_ARTICLE_HREF} className="article-inline-link">
-          notre décryptage du micro-BIC 2026
-        </Link>
-        .
-      </p>
-      <p className="text-muted leading-comfortable mb-4">
-        À titre d’ordre de grandeur, les données fiscales 2021 reprises dans le{' '}
+        Le 30 octobre 2026, les députés ont supprimé l’ensemble de ces mesures avec{' '}
         <a
-          href={RAPPORT_LE_MEUR_URL}
+          href={AMENDEMENT_I96_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="article-inline-link"
         >
-          rapport Le Meur
+          l’amendement n° I-96
         </a>{' '}
-        comptaient environ 305 000 déclarants LMNP au régime réel sur un peu plus d’un million au
-        total, soit près de 30 %. Ce chiffre concerne l’ensemble de la location meublée non
-        professionnelle, pas uniquement les meublés de tourisme.
-      </p>
-      <p className="text-muted leading-comfortable mb-4">
-        Le rapport relève aussi que le choix du réel n’est presque jamais lié à un dépassement des
-        seuils du micro : il tient surtout à l’intérêt de déduire ses charges et l’amortissement du
-        bien. C’est précisément ce levier que vise le projet.
-      </p>
-      <p className="text-muted leading-comfortable mb-4">
-        Dans la rédaction actuelle du PLF, le plafond spécifique vise les meublés de tourisme sans
-        distinguer les logements classés des non-classés.
-      </p>
-
-      <ArticleSectionHeading id="le-projet-change-aussi-le-sort-des-amortissements-non-deduits">
-        Le projet change aussi le sort des amortissements non déduits
-      </ArticleSectionHeading>
-      <p className="text-muted leading-comfortable mb-4">
-        La réforme ne se limite pas au couple 1,5 % / 5 000 €. Elle change aussi ce qui arrive à
-        l’amortissement que vous ne pouvez pas déduire dans l’année.
-      </p>
-
-      <h3 className="mt-8 mb-3">1. L’amortissement à venir ne serait plus reportable</h3>
-      <p className="text-muted leading-comfortable mb-4">
-        Aujourd’hui, l’amortissement non déduit faute de bénéfice suffisant est mis de côté, puis
-        utilisé plus tard, sans limite de temps. C’est ce qui permet souvent de neutraliser l’impôt
-        sur les loyers pendant plusieurs années.
-      </p>
-      <p className="text-muted leading-comfortable mb-4">
-        Avec le projet, pour les exercices clos à compter du 1er janvier 2027, l’amortissement non
-        déduit ne pourrait plus être reporté sur les exercices suivants, qu’il dépasse le nouveau
-        plafond ou la limite existante des loyers diminués des charges. Il ne servirait donc plus à
-        réduire l’impôt des années suivantes.
-      </p>
-
-      <h3 className="mt-8 mb-3">
-        2. Le stock accumulé avant 2027 : jusqu’en 2036, avec une limite
-      </h3>
-      <p className="text-muted leading-comfortable mb-4">
-        L’amortissement accumulé et non déduit avant le 1er janvier 2027 ne disparaîtrait pas du
-        jour au lendemain. Il resterait déductible des résultats des exercices clos jusqu’au
-        31&nbsp;décembre&nbsp;2036, mais pas librement : chaque année, il ne pourrait réduire que la
-        moitié du résultat imposable restant après application des nouvelles règles. Le texte ne
-        prévoit pas de déduction au-delà de 2036.
-      </p>
-      <p className="text-muted leading-comfortable mb-4">
-        Aujourd’hui, ce stock s’utilise sans limite de durée et sans plafond de moitié.
+        et plusieurs amendements identiques, adoptés par 45 voix contre 41. Elles ne figurent plus
+        dans le texte examiné.
       </p>
       <div className="article-callout-muted mb-6 p-5">
         <p className="text-muted leading-comfortable">
-          <strong className="text-ink">Exemple.</strong> Un propriétaire arrive au 31 décembre 2026
-          avec 20 000 € d’amortissements non encore déduits. En 2027, après ses charges et
-          l’amortissement de l’année, son résultat imposable s’élève à 6 000 €. Avec le projet, son
-          stock ne pourrait réduire ce résultat que de 3 000 € cette année-là. Il lui resterait
-          17&nbsp;000&nbsp;€ à utiliser, dans les mêmes limites, jusqu’en 2036.
+          <strong className="text-ink">Concrètement.</strong> Si vous êtes au régime réel, vos
+          règles d’amortissement restent celles d’aujourd’hui, y compris le report sans limite de
+          durée. Gardez seulement en tête qu’une mesure supprimée par l’Assemblée peut revenir plus
+          tard dans la discussion du budget.
         </p>
       </div>
 
@@ -326,34 +454,28 @@ export default function ArticlePlf2027MeublesTourisme() {
         Ce qui peut encore changer pendant l’examen du budget
       </ArticleSectionHeading>
       <p className="text-muted leading-comfortable mb-4">
-        Le texte présenté ici est celui du Gouvernement. Avant de considérer la réforme comme
-        acquise, voici les points à surveiller :
+        Les votes du 30 octobre modifient le texte en discussion, pas encore la loi. Deux questions
+        restent ouvertes.
       </p>
-      <ul className="space-y-2 mb-6 text-muted">
-        {pointsToWatch.map((point) => (
-          <li key={point} className="flex gap-3">
-            <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
-              •
-            </span>
-            <span>{point}</span>
-          </li>
-        ))}
-      </ul>
       <p className="text-muted leading-comfortable mb-4">
-        Le calendrier mérite une attention particulière. Le projet ne fixe pas de date d’application
-        propre au nouveau plafond. Sauf disposition contraire, son{' '}
-        <a
-          href={PLF_TEXTE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="article-inline-link"
-        >
-          article 33
-        </a>{' '}
-        prévoit une entrée en vigueur au 31 décembre 2026 pour les impositions dont le fait
-        générateur est l’achèvement de l’année civile ou la clôture de l’exercice comptable. La fin
-        du report et le régime du stock visent, eux, expressément les exercices clos à compter du
-        1er janvier 2027.
+        <strong className="text-ink">
+          Les 71 % pour les meublés classés seront-ils confirmés ?
+        </strong>{' '}
+        Rien ne le garantit. L’amendement a été adopté de justesse et peut encore être modifié ou
+        supprimé avant le vote définitif.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        <strong className="text-ink">Le plafonnement de l’amortissement peut-il revenir ?</strong>{' '}
+        C’est possible. Une mesure supprimée par les députés peut être réintroduite plus tard, par
+        exemple par le Sénat ou dans la version finale du budget.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        Plusieurs étapes peuvent encore faire évoluer le texte : le vote des députés sur l’ensemble
+        du budget, l’examen au Sénat, puis la recherche d’une version commune entre les deux
+        assemblées. Si le Gouvernement engage sa responsabilité avec l’article 49.3 de la
+        Constitution, c’est lui qui choisit les amendements conservés. Et si les députés rejetaient
+        le budget, le Sénat repartirait du projet initial du Gouvernement : sans la mesure sur le
+        micro-BIC, et avec les restrictions sur l’amortissement.
       </p>
       <p className="text-muted leading-comfortable mb-4">
         Seules les modifications adoptées comptent : un amendement simplement déposé ne change pas
@@ -365,9 +487,9 @@ export default function ArticlePlf2027MeublesTourisme() {
       </ArticleSectionHeading>
       <p className="text-muted leading-comfortable mb-4">
         Le projet de loi de finances pour 2027 a été déposé par le Gouvernement le 1er octobre 2026.
-        Les mesures présentées dans cet article correspondent à l’état actuel du texte : elles
-        peuvent encore être amendées, supprimées ou remplacées avant l’adoption définitive du
-        budget.
+        Il est en cours d’examen en première lecture à l’Assemblée nationale. Les votes du 30
+        octobre modifient le texte, mais ne valent pas adoption de la loi de finances : le budget
+        doit encore être voté par les députés, puis examiné par le Sénat.
       </p>
 
       <h3 className="mt-8 mb-3">Historique des étapes importantes</h3>
@@ -381,6 +503,19 @@ export default function ArticlePlf2027MeublesTourisme() {
             plus strict pour les meublés de tourisme : 1,5 % et 5 000 € par an et par foyer fiscal.
             Il propose aussi de supprimer le report des amortissements non déduits à partir des
             exercices clos en 2027.
+          </p>
+        </li>
+        <li>
+          <p className="font-semibold text-ink mb-1">
+            <time dateTime="2026-10-30">30 octobre 2026</time> — Votes des députés en séance
+            publique
+          </p>
+          <p className="leading-comfortable">
+            Les députés adoptent l’amendement n° I-540, qui porte à 71 % l’abattement micro-BIC des
+            meublés de tourisme classés, des chambres d’hôtes et des gîtes ruraux, avec un plafond
+            de 203 100 € (37 voix contre 35). Ils suppriment aussi l’ensemble des restrictions sur
+            l’amortissement des LMNP (amendement n° I-96 et amendements identiques, 45 voix contre
+            41).
           </p>
         </li>
       </ol>

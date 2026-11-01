@@ -313,10 +313,10 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'articleRipostVoyageurRefuseQuitter',
   },
   '/actualites/plf-2027-meubles-tourisme': {
-    lastModified: '2026-10-04',
+    lastModified: '2026-11-01',
     title: 'PLF 2027 et meublés de tourisme : les mesures à suivre',
     description:
-      'Amortissement LMNP, régime réel, micro-BIC : les mesures du PLF 2027 qui concernent les propriétaires de meublés de tourisme.',
+      'Micro-BIC à 71 % pour les meublés classés, plafonnement de l’amortissement LMNP retiré : ce que les députés ont changé dans le PLF 2027 le 30 octobre.',
     breadcrumbLabel: 'PLF 2027 et meublés de tourisme',
     ogImageKey: 'articlePlf2027MeublesTourisme',
   },

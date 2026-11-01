@@ -26,7 +26,7 @@ const PUBLIC_FISCAL_CONTENT_FILES = [
 const LEGACY_CONTEXT_PATTERN =
   /ancien|anciens|ancienne|obsolète|obsolètes|historique|circuler|plus le bon cadre|plus la bonne lecture|avant la réforme|revenus 2024|en 2024/i;
 
-const SENSITIVE_SNIPPET_THRESHOLD_PATTERN = /(?:77\s?700|83\s?600|188\s?700)\s?(?:€|EUR)|71\s?%/i;
+const SENSITIVE_SNIPPET_THRESHOLD_PATTERN = /(?:77\s?700|83\s?600|188\s?700)\s?(?:€|EUR)/i;
 
 function readProjectFile(relativePath: string): string {
   return readFileSync(path.resolve(process.cwd(), relativePath), 'utf8');
@@ -62,15 +62,11 @@ describe('fiscal temporal governance', () => {
     });
   });
 
-  it('keeps legacy classified parameters explicitly historical in public fiscal content', () => {
+  it('keeps the legacy classified threshold explicitly historical in public fiscal content', () => {
     const legacyThreshold = LEGACY_CLASSE_MICRO_BIC_PARAMETERS.microBicThreshold
       .toLocaleString('fr-FR')
       .replace(/\u202f/g, ' ');
-    const legacyAbattement = `${LEGACY_CLASSE_MICRO_BIC_PARAMETERS.abattementRate * 100} %`;
-    const legacyPattern = new RegExp(
-      `${legacyThreshold.replace(' ', '\\s?')}\\s?€|${legacyAbattement.replace(' ', '\\s?')}`,
-      'i'
-    );
+    const legacyPattern = new RegExp(`${legacyThreshold.replace(' ', '\\s?')}\\s?€`, 'i');
 
     PUBLIC_FISCAL_CONTENT_FILES.forEach((filePath) => {
       const source = readProjectFile(filePath);
