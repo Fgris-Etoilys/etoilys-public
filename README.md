@@ -38,17 +38,15 @@ VITE_OPENAI_ADS_PIXEL_ID=your_openai_ads_pixel_id
 VITE_ENABLE_OPENAI_ADS_IN_DEV=false
 VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false
 ETOILYS_API_BASE_URL=https://api-dev.etoilys.fr
-ETOILYS_SIMULATOR_API_BASE_URL=https://api-dev.etoilys.fr
 ```
 
 `VITE_API_BASE_URL` reste sur `/api` pour garder des URLs frontend same-origin.
-`ETOILYS_API_BASE_URL` est la cible Starsmanager utilisée uniquement en développement local par le proxy Vite pour les formulaires publics et le simulateur public.
-`ETOILYS_SIMULATOR_API_BASE_URL` reste supporté temporairement comme fallback local.
+`ETOILYS_API_BASE_URL` est l’unique cible utilisée en développement local par les quatre proxies Vite : Contact, Classement, Simulations et Communes. Elle vaut `https://api-dev.etoilys.fr` par défaut. Les slashs finaux sont supprimés et `http://api-dev.etoilys.fr` est normalisé vers HTTPS.
 `VITE_ENABLE_ANALYTICS_IN_DEV=false` évite les appels PostHog en local, même si un ancien consentement analytics est stocké dans le navigateur. Utiliser `true` uniquement pour tester explicitement l’analytics.
 `VITE_ENABLE_COOKIELESS_AUDIENCE=false` maintient la mesure minimale après refus désactivée. Ce flag ne doit passer à `true` qu’après validation des textes, contrôle du payload réel, configuration du projet PostHog et test live.
 `VITE_OPENAI_ADS_PIXEL_ID` est l'identifiant public du Pixel OpenAI Ads (source « Etoilys | Site web »). Le laisser vide en local pour ne jamais charger le SDK pendant le développement ; ne le définir que sur les environnements où la mesure `lead_created` doit réellement être active.
 `VITE_ENABLE_OPENAI_ADS_IN_DEV=false` évite le chargement du Pixel OpenAI Ads en développement local, même avec un consentement publicitaire stocké.
-`VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false` bloque PostHog et OpenAI Ads hors `www.etoilys.fr` par défaut. Utiliser `true` uniquement pour une recette contrôlée sur preview ou environnement isolé.
+`VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST=false` bloque PostHog et OpenAI Ads hors `www.etoilys.fr`, y compris après consentement. Conserver cette valeur sur les Previews : aucune mesure ni conversion de production ne doit partir de staging.
 
 ## Backends publics
 
@@ -60,20 +58,26 @@ Le site public consomme Starsmanager via des URLs same-origin :
 - Simulateur public :
   - `/api/public/simulations`
   - `/api/public/simulations/*`
+- Communes :
+  - `/api/public/communes`
+  - `/api/public/communes/:codeInsee` (un seul segment)
 
-Les appels frontend restent en `/api/...`. En développement, Vite route ces chemins vers Starsmanager. En production, Vercel applique les rewrites équivalents.
+Les appels frontend restent en `/api/...`. Vite et Vercel retirent le préfixe `/api` en conservant les sous-chemins et paramètres de recherche. Vite retire aussi l’en-tête `Origin` pour les quatre familles. Vercel transmet cet en-tête : le CORS backend doit autoriser l’origine du site concerné. Aucun proxy global `/api/*` n’est déclaré.
 
 Les simulations publiques sont associées au navigateur par le backend. Les appels simulateur doivent passer par `src/utils/simulatorApi.ts`, qui utilise `credentials: 'include'`.
 
-## Configuration Vercel (prod)
+## Configuration Vercel
 
-Pour garder `VITE_API_BASE_URL=/api` aussi en production, ce repo inclut un `vercel.json` qui rewrite :
+Le fichier unique `vercel.ts` exporte `config` et sélectionne la même cible pour les six rewrites API à partir de la seule variable système `VERCEL_ENV` :
 
-- `/api/public/forms/contact` -> `api-dev.etoilys.fr/public/forms/contact`
-- `/api/public/forms/classement` -> `api-dev.etoilys.fr/public/forms/classement`
-- `/api/public/simulations` et sous-routes -> `api-prod.etoilys.fr/public/simulations`
+| Contexte                             | Cible des API publiques                    |
+| ------------------------------------ | ------------------------------------------ |
+| Vercel `production`                  | `https://api-prod.etoilys.fr`              |
+| Vercel `preview` ou `development`    | `https://api-dev.etoilys.fr`               |
+| `VERCEL_ENV` absent, vide ou inconnu | Erreur au chargement de la configuration   |
+| Vite local                           | `ETOILYS_API_BASE_URL`, staging par défaut |
 
-Le simulateur public pointe donc sur le backend de production, contrairement aux formulaires (toujours sur `api-dev.etoilys.fr`). Les rewrites de `vercel.json` sont codés en dur et s'appliquent aussi aux déploiements Preview. En local, le proxy Vite garde `ETOILYS_API_BASE_URL` (dev par défaut). Le CORS du backend de production doit autoriser l'origine `https://www.etoilys.fr` : Vercel transmet l'en-tête `Origin` du navigateur, et le backend répond `403 Invalid CORS request` sinon.
+`npm run dev`, `npm run test:run` et `npm run build:seo` ne demandent pas de définir `VERCEL_ENV` dans le terminal ou les fichiers `.env`. Vite ne charge pas `vercel.ts` et les tests définissent explicitement leurs environnements. La disponibilité de la variable système lors de l’évaluation par l’intégration Git Vercel doit être confirmée par la première Preview ; les validations locales ne le prouvent pas.
 
 Variables à définir dans Vercel :
 
@@ -82,9 +86,11 @@ Variables à définir dans Vercel :
 
 Vérifier aussi :
 
-- Les hostnames Turnstile autorisés (domaine prod + domaines preview Vercel).
+- Conserver le widget Turnstile actuel pendant la transition ; faire autoriser uniquement l’alias Preview fixe `etoilys-public-git-dev-scratchones-projects.vercel.app` en plus des domaines publics existants.
 - Les secrets/configurations Starsmanager nécessaires à Turnstile et Resend.
-- L’accessibilité du backend Starsmanager. En production, privilégier HTTPS côté backend, ou conserver le routage same-origin via Vercel.
+- La protection des Previews et le blocage de PostHog/OpenAI Ads sur les domaines non canoniques.
+
+La mise en production dépend du jalon backend ETOILYS-428. Le déroulé Preview/Production, la réception des emails, la séparation ultérieure des widgets et la fermeture explicite du rollback sont détaillés dans le [runbook des API publiques](docs/tech/public-api-routing.md). Ces actions opérationnelles et configurations externes ne sont pas validées par les tests du dépôt.
 
 ## Scripts utiles
 

@@ -3,7 +3,7 @@
 ## Source du contrat
 
 Le contrat local utilisé pour l’intégration est `docs/data/swagger.json`, généré pour l’API Starsmanager.
-Le serveur indiqué par le Swagger est `http://api-dev.etoilys.fr`, mais le proxy frontend cible `https://api-dev.etoilys.fr` pour éviter une redirection HTTP vers HTTPS visible par le navigateur.
+Le serveur indiqué par le Swagger est `http://api-dev.etoilys.fr`, mais le proxy local utilise `https://api-dev.etoilys.fr` par défaut pour éviter une redirection HTTP vers HTTPS visible par le navigateur. Les déploiements Vercel sélectionnent leur backend selon l’environnement, comme décrit ci-dessous.
 
 ## Routage frontend
 
@@ -11,12 +11,15 @@ Le frontend appelle toujours des URLs same-origin sous `/api`.
 
 - `/api/public/forms/contact` et `/api/public/forms/classement` sont routés vers Starsmanager.
 - `/api/public/simulations` et `/api/public/simulations/*` sont routés vers Starsmanager.
+- `/api/public/communes` et `/api/public/communes/:codeInsee` sont aussi routés vers ce backend ; leur disponibilité dépend de la livraison backend ETOILYS-477.
 
-En développement, le routage est défini dans `vite.config.ts`.
-Le proxy Vite retire l’en-tête `Origin` sur les routes simulateur, afin que le backend ne traite pas les appels serveur-à-serveur comme une requête CORS venant de `localhost`.
-En production, le routage est défini dans `vercel.json`. Les rewrites `/api/public/simulations` et `/api/public/simulations/*` ciblent le backend de production `https://api-prod.etoilys.fr`, alors que `/api/public/forms/*` cible toujours `https://api-dev.etoilys.fr`. Ces destinations sont codées en dur (pas de variable d’environnement Vercel) et valent aussi pour les déploiements Preview.
+En développement local, `vite.config.ts` utilise uniquement `ETOILYS_API_BASE_URL`, avec staging HTTPS par défaut, pour les quatre familles. Le proxy Vite retire le préfixe `/api` et l’en-tête `Origin` sur chacune, afin que le backend ne traite pas les appels serveur-à-serveur comme une requête CORS venant de `localhost`. Les sous-chemins et paramètres de recherche sont conservés.
 
-Exigence backend : la configuration CORS de `api-prod.etoilys.fr` doit autoriser l’origine `https://www.etoilys.fr`. Vercel transmet l’en-tête `Origin` du navigateur (sur les requêtes `POST`/`PUT`/`DELETE` en particulier) et le backend répond `403 Invalid CORS request` pour une origine non autorisée. Ne pas contourner côté frontend.
+Sur Vercel, `vercel.ts` sélectionne une cible commune pour les six rewrites API à partir de `VERCEL_ENV` : `production` cible `https://api-prod.etoilys.fr`, `preview` et `development` ciblent `https://api-dev.etoilys.fr`. Une variable absente, vide ou inconnue bloque le chargement. Les commandes Vite et les tests locaux ne demandent aucune définition manuelle de cette variable.
+
+Exigence backend : la configuration CORS doit autoriser l’origine du site concerné, notamment `https://www.etoilys.fr` en production et l’alias Preview fixe `https://etoilys-public-git-dev-scratchones-projects.vercel.app` sur staging. Vercel transmet l’en-tête `Origin` du navigateur (sur les requêtes `POST`/`PUT`/`DELETE` en particulier) et le backend répond `403 Invalid CORS request` pour une origine non autorisée. Ne pas contourner côté frontend.
+
+La validation de la première Preview, les conditions de bascule et le rollback sont détaillés dans le [runbook des API publiques](public-api-routing.md). Les anciennes simulations créées depuis une Preview contre production ne sont plus accessibles depuis cette Preview après isolation ; aucun retour automatique vers production n’est prévu.
 
 ## Client frontend
 

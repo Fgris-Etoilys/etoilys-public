@@ -5,12 +5,14 @@ import { expect, vi } from 'vitest';
 
 expect.extend(axeMatchers);
 
-Object.defineProperty(window, 'scrollTo', {
-  writable: true,
-  value: vi.fn(),
-});
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'scrollTo', {
+    writable: true,
+    value: vi.fn(),
+  });
 
-Object.defineProperty(window.HTMLElement.prototype, 'scrollIntoView', {
-  writable: true,
-  value: vi.fn(),
-});
+  Object.defineProperty(window.HTMLElement.prototype, 'scrollIntoView', {
+    writable: true,
+    value: vi.fn(),
+  });
+}

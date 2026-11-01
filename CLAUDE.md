@@ -127,6 +127,9 @@ npm run preview
 - Frontend API URLs use `VITE_API_BASE_URL` (usually `/api`) and are routed by Vite/Vercel.
 - Public forms use Starsmanager through same-origin `/api/public/forms/*` URLs and `submitToApi`.
 - Public simulator calls use the dedicated `src/utils/simulatorApi.ts` client and the Etoilys simulator backend.
+- `vercel.ts` exports the Vercel config and strictly selects the public API target from `VERCEL_ENV`: `production` uses `https://api-prod.etoilys.fr`; `preview` and `development` use `https://api-dev.etoilys.fr`. Missing, empty or unknown values fail at config load.
+- Vite keeps four explicit proxies (Contact, Classement, Simulations, Communes) with one local target. Each removes `/api` and the request `Origin`; Vercel preserves `Origin`, so backend CORS must authorize the relevant site origin.
+- Public API deployment, Turnstile transition and rollback procedure: `docs/tech/public-api-routing.md`. Local dev/test/build commands do not require `VERCEL_ENV`.
 
 ## UI Rules (Web)
 
@@ -169,5 +172,5 @@ npm run preview
 ## Environment Variables
 
 - `VITE_API_BASE_URL` (usually `/api`, same-origin frontend API prefix)
-- `ETOILYS_API_BASE_URL` (development proxy target for Starsmanager public APIs)
-- `ETOILYS_SIMULATOR_API_BASE_URL` (development proxy target for the public simulator backend)
+- `ETOILYS_API_BASE_URL` (only development proxy target for all four public API families; defaults to `https://api-dev.etoilys.fr`)
+- `VERCEL_ENV` (Vercel system variable, required only when loading `vercel.ts`; do not add it to local `.env` files)
