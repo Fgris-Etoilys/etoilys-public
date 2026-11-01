@@ -578,6 +578,8 @@ Relier les contenus à des personnes identifiables et rendre explicite la métho
 
 État au 22 juillet 2026 : le lot est considéré livré côté repo. Les règles micro-BIC courantes sont centralisées dans `src/content/microBicFiscalRules.ts` et les contenus publics sensibles sont couverts par `src/test/fiscal-temporal-governance.test.ts`.
 
+Mise à jour du 1er novembre 2026 : l’abattement de `71 %` n’est plus bloqué par ces tests, ni dans les contenus ni dans les snippets SEO, car il redevient un paramètre d’actualité avec l’amendement n° I-540 du PLF 2027 (meublés de tourisme classés). L’ancien plafond de `188 700 €` reste traité comme un repère historique explicite, et les seuils de `77 700 €` et `83 600 €` restent rattachés à leur période fiscale.
+
 ## 7.1 Audit transversal
 
 - [x] **`[CODEX]`** Rechercher dans le repo toutes les occurrences de :

@@ -28,11 +28,7 @@ export interface ActualiteArticle {
 }
 
 export type ArticleCategory =
-  | 'classement'
-  | 'fiscalite'
-  | 'reglementation'
-  | 'obligations'
-  | 'guides-pratiques';
+  'classement' | 'fiscalite' | 'reglementation' | 'obligations' | 'guides-pratiques';
 
 export type ArticleLocale = Locale;
 
@@ -338,13 +334,13 @@ const articleContent: ActualiteArticleContent[] = [
   {
     title: 'PLF 2027 : ce qui pourrait changer pour les propriétaires de meublés de tourisme',
     excerpt:
-      'Amortissement plafonné à 1,5 % et 5 000 € par an, fin du report : ce que le PLF 2027 propose pour les meublés de tourisme au régime réel.',
+      'Les députés ont voté un micro-BIC à 71 % d’abattement pour les meublés de tourisme classés et retiré le plafonnement de l’amortissement LMNP. Ce qui change, ce qui reste à confirmer.',
     relatedSummary:
-      'Amortissement plafonné et fin du report : ce que le projet de budget 2027 prévoit pour les meublés de tourisme au réel.',
+      'Micro-BIC à 71 % pour les meublés classés, plafonnement de l’amortissement retiré : ce que les députés ont voté sur le PLF 2027.',
     imageKey: 'articlePlf2027MeublesTourisme',
     href: '/actualites/plf-2027-meubles-tourisme',
     category: 'fiscalite',
-    readingTimeMinutes: 7,
+    readingTimeMinutes: 8,
     relatedArticleSlugs: [
       'micro-bic-2026-meuble-classe-vs-non-classe',
       'meuble-classe-non-classe-seuils-micro-bic',

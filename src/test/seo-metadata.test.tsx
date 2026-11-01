@@ -145,7 +145,7 @@ describe('central SEO metadata resolver', () => {
     });
     expect(metadata.image.url).toContain('article-plf-2027');
     expect(metadata.article?.publishedTime).toBe('2026-10-04');
-    expect(metadata.article?.modifiedTime).toBe('2026-10-04');
+    expect(metadata.article?.modifiedTime).toBe('2026-11-01');
     expect(metadata.article?.structuredData.image).toBe(metadata.image.url);
     expect(parseRobotsDirectives(metadata.robots)).toEqual(
       expect.arrayContaining(['index', 'follow', 'max-image-preview:large'])
@@ -155,7 +155,7 @@ describe('central SEO metadata resolver', () => {
       IMAGE_ALT_TEXT.articlePlf2027MeublesTourisme.fr
     );
     expect(getMetaTagContent(ARTICLE_PATH, 'article:published_time')).toBe('2026-10-04');
-    expect(getMetaTagContent(ARTICLE_PATH, 'article:modified_time')).toBe('2026-10-04');
+    expect(getMetaTagContent(ARTICLE_PATH, 'article:modified_time')).toBe('2026-11-01');
   });
 
   it('resolves the Dutch article SEO, Open Graph and BlogPosting contract', () => {
