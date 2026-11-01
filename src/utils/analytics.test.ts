@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   acceptAnalyticsConsent,
   ANALYTICS_CONSENT_STORAGE_KEY,
@@ -88,6 +88,11 @@ describe('analytics', () => {
     vi.stubEnv('VITE_ENABLE_COOKIELESS_AUDIENCE', 'false');
     window.localStorage.clear();
     window.history.pushState({}, 'Test', '/test?secret=value#hash');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.unstubAllGlobals();
   });
 
   it('does not initialize PostHog without accepted consent', () => {
@@ -314,6 +319,27 @@ describe('analytics', () => {
     acceptAnalyticsConsent();
     trackPageView('/contact');
 
+    expect(posthogMock.init).not.toHaveBeenCalled();
+    expect(posthogMock.capture).not.toHaveBeenCalled();
+  });
+
+  it('does not initialize detailed analytics on Preview after accepted consent', async () => {
+    vi.stubEnv('DEV', false);
+    vi.stubEnv('MODE', 'production');
+    vi.stubEnv('VITE_ALLOW_MEASUREMENT_ON_NON_CANONICAL_HOST', 'false');
+    vi.stubGlobal(
+      'location',
+      new URL('https://etoilys-public-git-dev-scratchones-projects.vercel.app/contact')
+    );
+
+    initializeAnalytics();
+    acceptAnalyticsConsent();
+    await flushAnalyticsImports();
+    trackPageView('/contact');
+    trackEvent('form_submit_succeeded', { form_name: 'contact' });
+    await flushAnalyticsImports();
+
+    expect(getAnalyticsConsentStatus()).toBe('accepted');
     expect(posthogMock.init).not.toHaveBeenCalled();
     expect(posthogMock.capture).not.toHaveBeenCalled();
   });

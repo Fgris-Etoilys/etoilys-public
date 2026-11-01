@@ -20,7 +20,7 @@ Les affirmations juridiques et fiscales doivent rester sourcées.
 - SEO/prerender : configuration centralisée dans `src/content/seoRoutes.ts`, génération sitemap, prerender Playwright.
 - Images SEO/CWV : pipeline local Sharp via `npm run images:build`, manifeste typé dans `src/content/imageManifest.ts`, contrôle rapide via `npm run images:check`.
 - Analytics : PostHog via `src/utils/analytics.ts`, consentement cookies via le layout.
-- Backend public : Starsmanager `api-dev.etoilys.fr` pour les formulaires publics ; le simulateur public est routé vers `api-prod.etoilys.fr` par `vercel.json` (en local, le proxy Vite garde `api-dev.etoilys.fr` par défaut).
+- Backend public : `vercel.ts` route les formulaires, simulations et communes vers Starsmanager `api-prod.etoilys.fr` en Production et `api-dev.etoilys.fr` en Preview/Development, selon `VERCEL_ENV`. En local, Vite garde `api-dev.etoilys.fr` par défaut. Voir le [runbook de routage](public-api-routing.md).
 
 La source de vérité des versions est `package.json`. Si une ancienne doc mentionne React 18, elle est obsolète pour l’état actuel du repo.
 
@@ -51,10 +51,10 @@ Variables principales côté frontend/local :
 - `VITE_API_BASE_URL` : préfixe API same-origin, généralement `/api`.
 - `VITE_TURNSTILE_SITE_KEY` : clé publique Cloudflare Turnstile.
 - `VITE_ENABLE_ANALYTICS_IN_DEV` : `false` par défaut recommandé en local.
-- `ETOILYS_API_BASE_URL` : cible proxy Vite pour Starsmanager en développement.
-- `ETOILYS_SIMULATOR_API_BASE_URL` : ancien nom encore supporté comme fallback local temporaire.
+- `ETOILYS_API_BASE_URL` : unique cible des quatre proxies Vite en développement local (Contact, Classement, Simulations, Communes), staging par défaut.
+- `VERCEL_ENV` : variable système Vercel lue exclusivement par `vercel.ts`. Valeurs acceptées : `production`, `preview`, `development` ; une valeur absente, vide ou inconnue bloque le chargement. Ne pas l’ajouter aux fichiers `.env` locaux.
 
-Les appels frontend doivent rester en `/api/...`. Le routage vers les backends se fait par le proxy Vite en local et par les rewrites Vercel en production.
+Les appels frontend doivent rester en `/api/...`. Le routage vers les backends se fait par le proxy Vite en local et par les rewrites Vercel sur les déploiements Production et Preview. Les commandes locales de développement, tests et build SEO ne nécessitent pas `VERCEL_ENV`.
 
 ## Structure fonctionnelle du site
 
@@ -271,8 +271,8 @@ Le frontend ne doit pas masquer durablement un contrat backend absent ou incorre
 Routage API :
 
 - En frontend, construire les URLs avec `getApiUrl` ou les clients dédiés.
-- En local, `vite.config.ts` route `/api/public/forms/*` et `/api/public/simulations*` vers Starsmanager.
-- En production, `vercel.json` applique les rewrites équivalents.
+- En local, `vite.config.ts` garde quatre entrées explicites (Contact, Classement, Simulations, Communes), retire `/api` et `Origin`, et conserve sous-chemins et paramètres de recherche.
+- Sur Vercel, `vercel.ts` applique six rewrites API explicites avec une cible commune selon l’environnement. Vercel transmet `Origin` : le CORS backend doit autoriser l’origine du site. Aucun proxy global `/api/*` n’est déclaré.
 
 ## Déploiement et SEO build
 
@@ -292,7 +292,7 @@ Cette commande exécute :
 
 Vercel ne régénère pas les images optimisées. Les fichiers sous `public/images/optimized`, `src/content/imageManifest.ts` et `src/content/imageManifest.integrity.json` sont des artefacts versionnés. Après modification d'une source image, lancer `npm run images:build` puis `npm run images:check` avant commit.
 
-Le fichier `vercel.json` définit aussi les rewrites API et la route dynamique `/simulateur/:simulationId` vers `simulation-noindex.html`.
+Le fichier `vercel.ts` définit aussi les rewrites API et la route dynamique `/simulateur/:simulationId` vers `simulation-noindex.html`. La première Preview doit confirmer que l’intégration Git expose `VERCEL_ENV` lors du chargement de cette configuration. La préparation backend 428, la transition Turnstile et la fermeture du rollback sont décrites dans le [runbook des API publiques](public-api-routing.md).
 
 ## Checklist avant livraison
 
