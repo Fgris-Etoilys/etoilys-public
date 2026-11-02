@@ -109,10 +109,11 @@ function getPostExpertiseSurfaces(config: LocalLandingPageV6Config): {
     };
   }
 
+  // Ville/destination : les interlocuteurs locaux occupent l’emplacement de la notice.
   return {
     localModuleSurface: 'bg-surface-neutral',
     noticeSurface: 'bg-paper',
-    faqSurface: config.localNotice ? 'bg-surface-neutral' : 'bg-paper',
+    faqSurface: config.localNotice || config.territorialModule ? 'bg-surface-neutral' : 'bg-paper',
   };
 }
 
@@ -139,12 +140,21 @@ export default function LocalLandingPageV6({ config }: { config: LocalLandingPag
           surfaceClassName={surfaces.localModuleSurface}
         />
       ) : (
-        config.localModule && (
-          <LocalV6TaxModuleSection
-            module={config.localModule}
-            surfaceClassName={surfaces.localModuleSurface}
-          />
-        )
+        <>
+          {config.localModule && (
+            <LocalV6TaxModuleSection
+              module={config.localModule}
+              surfaceClassName={surfaces.localModuleSurface}
+            />
+          )}
+          {config.territorialModule && (
+            <LocalV6TerritorialModuleSection
+              module={config.territorialModule}
+              departmentId={config.serviceArea.parentLink.localEntryId}
+              surfaceClassName={surfaces.noticeSurface}
+            />
+          )}
+        </>
       )}
       {config.localNotice && (
         <LocalV6EditorialNoticeSection

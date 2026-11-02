@@ -36,6 +36,7 @@ const HERO_ASSET_KEYS = new Set([
   'lotEtGaronneHero',
   'bergeracHero',
   'bordeauxHero',
+  'sarlatPerigordNoirHero',
 ]);
 // Legacy hero sources already validated visually. Re-crop these if softness appears.
 const LEGACY_HERO_ASPECT_RATIO_ALLOWLIST = new Set([
@@ -49,6 +50,8 @@ const LEGACY_HERO_ASPECT_RATIO_ALLOWLIST = new Set([
 ]);
 // Explicit exceptions to the hero minimum-dimension check only: the aspect-ratio check still
 // applies. Each entry pins the exact source dimensions, so any other file under the same key fails.
+// `includeSourceWidthVariant` also emits the native source width when it is not a target width,
+// so a small imposed source is not reduced to its largest standard variant.
 const HERO_SOURCE_DIMENSION_EXCEPTIONS = new Map([
   [
     'audeHero',
@@ -57,6 +60,16 @@ const HERO_SOURCE_DIMENSION_EXCEPTIONS = new Map([
       height: 1000,
       reason:
         'Imposed photo publicly available at 1500x1000 at most; dedicated hero crop without upscaling. Sharpness must be checked at 390, 768, 1024 and 1440 px.',
+    },
+  ],
+  [
+    'sarlatPerigordNoirHero',
+    {
+      width: 750,
+      height: 578,
+      includeSourceWidthVariant: true,
+      reason:
+        'Imposed photo supplied at 866x578 with no higher-definition version found; dedicated hero crop without upscaling. Native 750 px variant kept because 480 px is the only standard width available. Sharpness must be checked at 390, 768, 1024 and 1440 px.',
     },
   ],
 ]);
@@ -221,6 +234,16 @@ const IMAGE_ASSETS = [
     key: 'bordeauxExpertise',
     fileName: 'bordeaux-jardin-public-marc-ryckaert.jpg',
     outputName: 'bordeaux-jardin-public',
+  },
+  {
+    key: 'sarlatPerigordNoirHero',
+    fileName: 'sarlat-perigord-noir-castelnaud-hero-crop.jpg',
+    outputName: 'sarlat-perigord-noir-castelnaud',
+  },
+  {
+    key: 'sarlatPlaceLiberte',
+    fileName: 'sarlat-place-liberte-jean-christophe-benoist-wikimedia.jpg',
+    outputName: 'sarlat-place-liberte',
   },
 ];
 
@@ -627,6 +650,15 @@ async function createAssetPlan(asset, previousIntegrity, pipelineChanged) {
   assertHeroSourceDimensions(asset, metadata, sourcePath);
 
   const validWidths = TARGET_WIDTHS.filter((width) => width <= metadata.width);
+  const dimensionException = HERO_SOURCE_DIMENSION_EXCEPTIONS.get(asset.key);
+  if (
+    dimensionException?.includeSourceWidthVariant &&
+    metadata.width === dimensionException.width &&
+    metadata.height === dimensionException.height &&
+    !validWidths.includes(metadata.width)
+  ) {
+    validWidths.push(metadata.width);
+  }
   const widths = validWidths.length > 0 ? validWidths : [metadata.width];
   const defaultWidth = widths.includes(DEFAULT_WIDTH) ? DEFAULT_WIDTH : widths[widths.length - 1];
   const outputHeight = asset.ogComposition

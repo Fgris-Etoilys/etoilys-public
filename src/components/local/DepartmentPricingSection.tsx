@@ -8,7 +8,7 @@ import {
   getPricingProfile,
   type PricingProfile,
   type PricingProfileId,
-  type PricingTierRow,
+  type PricingTierListRow,
 } from '../../content/local/pricing';
 import type { DepartmentPricingResolutionConfig } from '../../content/local/types';
 import {
@@ -448,15 +448,19 @@ export function LocalPricingProfileSummary({
   );
 }
 
-function PricingTierList({ tiers }: { tiers: readonly PricingTierRow[] }) {
+function PricingTierList({ tiers }: { tiers: readonly PricingTierListRow[] }) {
   return (
     <dl className="local-v6-pricing-tiers">
       {tiers.map((tier) => (
         <div key={tier.key}>
           <dt>{tier.label}</dt>
-          <dd>
-            {tier.amount} <small>{tier.qualifier}</small>
-          </dd>
+          {'quote' in tier ? (
+            <dd>{tier.quote}</dd>
+          ) : (
+            <dd>
+              {tier.amount} <small>{tier.qualifier}</small>
+            </dd>
+          )}
         </div>
       ))}
     </dl>
