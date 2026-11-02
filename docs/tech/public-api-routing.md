@@ -92,3 +92,26 @@ Après validation de 429, respecter cet ordre :
 4. Refaire la recette Preview avant la recette ETOILYS-482/483 et le déploiement du contrat strict 483 sur staging.
 
 Après déploiement de 483 sur staging, le retour des formulaires de production vers `api-dev` est exclu.
+
+## Activation du mini-wizard ETOILYS-482
+
+Le wizard n'a pas de feature flag et n'accepte qu'un seul contrat. Il est développé sur `dev` et ne part sur `main` qu'avec 483, 484 et 485.
+
+Conditions avant le merge `dev` → `main` :
+
+- 477 déployé sur `api-prod`, référentiel 2026 actif, `GET /public/communes?codePostal=24200` en `200` ;
+- 483 et 484 déployés en production, 485 livré ;
+- recette commune validée sur l'alias `dev`.
+
+En attendant, toute livraison vers `main` part d'une branche créée depuis `main`, jamais depuis `dev`. Remerger ensuite `main` dans `dev` pour éviter les conflits à la mise en production. Dependabot cible `dev` : un correctif de sécurité urgent passe aussi par une branche dédiée.
+
+Ordre de bascule : backend en production, smoke communes, puis merge `dev` → `main` aussitôt. Entre les deux, le formulaire encore en ligne échoue : l'ancien bundle reçoit `FORM_OUTDATED` et affiche « Erreur HTTP 400 » jusqu'au rechargement, car il ne connaît pas ce code. Seuls les bundles livrés avec 482 affichent l'invitation à actualiser la page.
+
+### Rollback coordonné
+
+Frontend et backend reviennent ensemble à leur version précédente. Aucun des deux ne peut revenir seul :
+
+- ancien frontend + nouveau backend : l'ancien payload est refusé avec `FORM_OUTDATED` ;
+- nouveau frontend + ancien backend : `/public/communes` ne répond plus, le wizard reste bloqué à l'étape Logement avec « Réessayer » et le téléphone.
+
+Procédure : revenir d'abord sur le backend, puis déployer aussitôt le revert du merge sur `main`. Pendant ce court intervalle, le blocage avec téléphone est préférable à un échec au dernier clic. Avant tout retour arrière, vérifier côté backend la compatibilité de la version précédente avec le schéma migré. Conserver les demandes entrantes déjà enregistrées et les traiter manuellement. Ne jamais rerouter la production vers `api-dev`.

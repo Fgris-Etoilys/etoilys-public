@@ -1,13 +1,28 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ContactForm from '../components/forms/ContactForm';
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
 import { formContent } from '../i18n/formContent';
+import {
+  completeCoordonneesStep,
+  completeLogementStep,
+  installTurnstileMock,
+  mockDemandeApi,
+} from './demandeClassementWizard';
 
 describe('legal links in forms', () => {
+  beforeEach(() => {
+    vi.stubEnv('VITE_TURNSTILE_SITE_KEY', 'test-key');
+    installTurnstileMock();
+    mockDemandeApi();
+  });
+
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
+    vi.unstubAllEnvs();
+    delete window.turnstile;
   });
 
   it('renders privacy link in contact form', () => {
@@ -60,12 +75,14 @@ describe('legal links in forms', () => {
     expect(checkbox).not.toBeChecked();
   });
 
-  it('toggles classification request consent from the label text without toggling when clicking the privacy link', () => {
+  it('toggles classification request consent from the label text without toggling when clicking the privacy link', async () => {
     render(
       <MemoryRouter>
         <DemandeClassementForm locale="en" />
       </MemoryRouter>
     );
+    await completeLogementStep('en');
+    completeCoordonneesStep('en');
 
     const checkbox = screen.getByRole('checkbox');
 
@@ -79,12 +96,14 @@ describe('legal links in forms', () => {
     expect(checkbox).not.toBeChecked();
   });
 
-  it('renders privacy link in demande classement form', () => {
+  it('renders privacy link in demande classement form', async () => {
     render(
       <MemoryRouter>
         <DemandeClassementForm />
       </MemoryRouter>
     );
+    await completeLogementStep('fr');
+    completeCoordonneesStep('fr');
 
     const links = screen.getAllByRole('link', {
       name: /politique de confidentialit(?:e|é)/i,
@@ -92,7 +111,7 @@ describe('legal links in forms', () => {
     expect(links[0]).toHaveAttribute('href', '/confidentialite');
   });
 
-  it('renders English privacy link in demande classement form', () => {
+  it('renders English privacy link in demande classement form', async () => {
     render(
       <MemoryRouter>
         <DemandeClassementForm locale="en" />
@@ -102,8 +121,12 @@ describe('legal links in forms', () => {
     expect(
       screen.getByRole('heading', { level: 2, name: formContent.en.demandeClassement.title })
     ).toBeInTheDocument();
+    expect(screen.getByLabelText(/accommodation postcode/i)).toBeRequired();
+
+    await completeLogementStep('en');
     expect(screen.getByLabelText(/last name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/accommodation address/i)).toBeRequired();
+    completeCoordonneesStep('en');
+
     expect(screen.getByRole('button', { name: /send my request/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /privacy policy/i })).toHaveAttribute(
       'href',

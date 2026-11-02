@@ -126,6 +126,7 @@ npm run preview
 - Shared UI lives in `src/components/ui`; forms in `src/components/forms`; helpers in `src/utils`.
 - Frontend API URLs use `VITE_API_BASE_URL` (usually `/api`) and are routed by Vite/Vercel.
 - Public forms use Starsmanager through same-origin `/api/public/forms/*` URLs and `submitToApi`.
+- The classification request is a 3-step wizard. Its communes come only from `/api/public/communes` through `src/utils/communesApi.ts` and `src/hooks/useCommuneLookup.ts`; activation and coordinated rollback are in `docs/tech/public-api-routing.md`.
 - Public simulator calls use the dedicated `src/utils/simulatorApi.ts` client and the Etoilys simulator backend.
 - `vercel.ts` exports the Vercel config and strictly selects the public API target from `VERCEL_ENV`: `production` uses `https://api-prod.etoilys.fr`; `preview` and `development` use `https://api-dev.etoilys.fr`. Missing, empty or unknown values fail at config load.
 - Vite keeps four explicit proxies (Contact, Classement, Simulations, Communes) with one local target. Each removes `/api` and the request `Origin`; Vercel preserves `Origin`, so backend CORS must authorize the relevant site origin.

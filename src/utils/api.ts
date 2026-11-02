@@ -12,11 +12,22 @@ export const API_ERROR_CODES = [
   'RATE_LIMITED',
   'RATE_LIMIT_UNAVAILABLE',
   'NOTIFICATION_FAILED',
+  'FORM_OUTDATED',
+  'SUBMISSION_CONFLICT',
+  'REFERENTIAL_UNAVAILABLE',
+  'PERSISTENCE_UNAVAILABLE',
 ] as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];
 
-export const FIELD_ERROR_CODES = ['REQUIRED', 'INVALID_EMAIL', 'INVALID_PHONE'] as const;
+export const FIELD_ERROR_CODES = [
+  'REQUIRED',
+  'INVALID_EMAIL',
+  'INVALID_PHONE',
+  'INVALID_VALUE',
+  'TOO_LONG',
+  'INVALID_COMMUNE',
+] as const;
 
 export type FieldErrorCode = (typeof FIELD_ERROR_CODES)[number];
 

@@ -1,5 +1,6 @@
 import { DEFAULT_LOCALE, type Locale } from './locales';
 import type { ApiErrorCode, FieldErrorCode } from '../utils/api';
+import type { ClassementActuelDeclare } from '../utils/formValidation';
 
 type FieldErrorMessages = Partial<Record<FieldErrorCode, string>>;
 
@@ -25,22 +26,38 @@ type FormContent = {
     title: string;
     intro: string;
     requiredNote: string;
-    sections: { contact: string; property: string };
+    progressLabel: string;
+    steps: readonly [string, string, string];
+    sections: { property: string; contact: string; request: string };
+    actions: { previous: string; next: string };
     labels: {
+      codePostal: string;
+      commune: string;
       nom: string;
       prenom: string;
       email: string;
       telephone: string;
       adresse: string;
+      classementActuelDeclare: string;
       message: string;
     };
     placeholders: {
+      codePostal: string;
+      commune: string;
       nom: string;
       prenom: string;
       email: string;
       telephone: string;
       adresse: string;
+      classementActuelDeclare: string;
       message: string;
+    };
+    classementOptions: Record<ClassementActuelDeclare, string>;
+    communeLookup: {
+      loading: string;
+      notFound: string;
+      unavailable: string;
+      retry: string;
     };
     consentPrefix: string;
     privacyLinkLabel: string;
@@ -58,6 +75,11 @@ type FormContent = {
     telephoneRequired: string;
     telephoneInvalid: string;
     adresseRequired: string;
+    adresseTooLong: string;
+    codePostalRequired: string;
+    codePostalInvalid: string;
+    communeRequired: string;
+    classementRequired: string;
     messageRequired: string;
     consentRequired: string;
   };
@@ -106,22 +128,52 @@ export const formContent = {
       title: 'Votre demande de classement',
       intro: 'Vos coordonnées et l’adresse du logement, simplement.',
       requiredNote: '* Champs obligatoires',
-      sections: { contact: 'Vos coordonnées', property: 'Votre logement' },
+      progressLabel: 'Progression de la demande',
+      steps: ['Logement', 'Coordonnées', 'Demande'],
+      sections: {
+        property: 'Votre logement',
+        contact: 'Vos coordonnées',
+        request: 'Votre demande',
+      },
+      actions: { previous: 'Précédent', next: 'Suivant' },
       labels: {
+        codePostal: 'Code postal du logement',
+        commune: 'Commune',
         nom: 'Nom',
         prenom: 'Prénom',
         email: 'Email',
         telephone: 'Téléphone',
         adresse: 'Adresse du logement',
+        classementActuelDeclare: 'Classement actuel',
         message: 'Message (optionnel)',
       },
       placeholders: {
+        codePostal: '24200',
+        commune: 'Sélectionnez votre commune',
         nom: 'Votre nom',
         prenom: 'Votre prénom',
         email: 'vous@exemple.fr',
         telephone: '06 12 34 56 78',
-        adresse: 'Numéro, rue, code postal et commune',
-        message: 'Une précision utile sur votre logement ou vos disponibilités ?',
+        adresse: 'Numéro, rue ou lieu-dit',
+        classementActuelDeclare: 'Sélectionnez votre situation',
+        message:
+          'Une précision sur votre logement ou vos disponibilités ? D’autres logements à classer ? Indiquez-les ici.',
+      },
+      classementOptions: {
+        NC: 'Non classé',
+        UNE_ETOILE: '1 étoile',
+        DEUX_ETOILES: '2 étoiles',
+        TROIS_ETOILES: '3 étoiles',
+        QUATRE_ETOILES: '4 étoiles',
+        CINQ_ETOILES: '5 étoiles',
+        INCONNU: 'Je ne sais pas',
+      },
+      communeLookup: {
+        loading: 'Recherche des communes...',
+        notFound: 'Aucune commune ne correspond à ce code postal. Merci de le corriger.',
+        unavailable:
+          'La recherche des communes est momentanément indisponible. Réessayez ou appelez-nous.',
+        retry: 'Réessayer',
       },
       consentPrefix: "J'accepte que mes données soient traitées conformément à la",
       privacyLinkLabel: 'politique de confidentialité',
@@ -140,6 +192,11 @@ export const formContent = {
       telephoneRequired: 'Le téléphone est requis',
       telephoneInvalid: "Le numéro de téléphone n'est pas valide",
       adresseRequired: "L'adresse du bien est requise",
+      adresseTooLong: "L'adresse du logement ne doit pas dépasser 255 caractères",
+      codePostalRequired: 'Le code postal est requis',
+      codePostalInvalid: 'Le code postal doit contenir 5 chiffres',
+      communeRequired: 'Sélectionnez votre commune',
+      classementRequired: 'Sélectionnez votre situation',
       messageRequired: 'Le message est requis',
       consentRequired: 'Vous devez accepter la politique de confidentialité',
     },
@@ -164,11 +221,22 @@ export const formContent = {
         RATE_LIMITED: 'Trop de requêtes envoyées en peu de temps. Réessayez dans quelques minutes.',
         RATE_LIMIT_UNAVAILABLE: 'Une erreur est survenue. Merci de réessayer plus tard.',
         NOTIFICATION_FAILED: 'Votre demande n’a pas pu être envoyée. Merci de réessayer plus tard.',
+        FORM_OUTDATED:
+          'Ce formulaire a été mis à jour. Merci d’actualiser la page avant de réessayer.',
+        SUBMISSION_CONFLICT:
+          'Votre demande a déjà été enregistrée avec d’autres informations. Pour la corriger, appelez-nous.',
+        REFERENTIAL_UNAVAILABLE:
+          'La vérification de la commune est momentanément indisponible. Réessayez dans quelques instants ou appelez-nous.',
+        PERSISTENCE_UNAVAILABLE:
+          'Votre demande n’a pas pu être enregistrée pour le moment. Merci de réessayer.',
       },
       fieldErrorCodes: {
         REQUIRED: 'Ce champ est requis.',
         INVALID_EMAIL: "L'email n'est pas valide.",
         INVALID_PHONE: "Le numéro de téléphone n'est pas valide.",
+        INVALID_VALUE: "Cette valeur n'est pas valide.",
+        TOO_LONG: 'Cette valeur est trop longue.',
+        INVALID_COMMUNE: 'La commune sélectionnée ne correspond pas au code postal.',
       },
       fieldErrors: {
         nom: { REQUIRED: 'Le nom est requis.' },
@@ -181,7 +249,23 @@ export const formContent = {
           REQUIRED: 'Le téléphone est requis.',
           INVALID_PHONE: "Le numéro de téléphone n'est pas valide.",
         },
-        adresse: { REQUIRED: "L'adresse du bien est requise." },
+        adresse: {
+          REQUIRED: "L'adresse du bien est requise.",
+          TOO_LONG: "L'adresse du logement ne doit pas dépasser 255 caractères.",
+        },
+        codePostal: {
+          REQUIRED: 'Le code postal est requis.',
+          INVALID_VALUE: 'Le code postal doit contenir 5 chiffres.',
+        },
+        commune: {
+          REQUIRED: 'La commune est requise.',
+          INVALID_COMMUNE:
+            'La commune sélectionnée ne correspond pas au code postal. Merci de vérifier votre choix.',
+        },
+        classementActuelDeclare: {
+          REQUIRED: 'Le classement actuel est requis.',
+          INVALID_VALUE: "Le classement actuel n'est pas valide.",
+        },
         message: { REQUIRED: 'Le message est requis.' },
         consent: { REQUIRED: 'Le consentement est requis.' },
         consentVersion: { REQUIRED: 'La version de consentement est requise.' },
@@ -215,22 +299,51 @@ export const formContent = {
       title: 'Your classification request',
       intro: 'Just your contact details and the accommodation address.',
       requiredNote: '* Required fields',
-      sections: { contact: 'Your contact details', property: 'Your accommodation' },
+      progressLabel: 'Request progress',
+      steps: ['Accommodation', 'Contact details', 'Request'],
+      sections: {
+        property: 'Your accommodation',
+        contact: 'Your contact details',
+        request: 'Your request',
+      },
+      actions: { previous: 'Previous', next: 'Next' },
       labels: {
+        codePostal: 'Accommodation postcode',
+        commune: 'Town',
         nom: 'Last name',
         prenom: 'First name',
         email: 'Email',
         telephone: 'Phone',
         adresse: 'Accommodation address',
+        classementActuelDeclare: 'Current classification',
         message: 'Message (optional)',
       },
       placeholders: {
+        codePostal: '24200',
+        commune: 'Select your town',
         nom: 'Your last name',
         prenom: 'Your first name',
         email: 'you@example.com',
         telephone: '+44 7700 900123',
-        adresse: 'Number, street, postcode and town',
-        message: 'Anything to add about your accommodation or availability?',
+        adresse: 'Number and street, or locality',
+        classementActuelDeclare: 'Select your situation',
+        message:
+          'Anything to add about your accommodation or availability? Other properties to classify? Mention them here.',
+      },
+      classementOptions: {
+        NC: 'Not classified',
+        UNE_ETOILE: '1 star',
+        DEUX_ETOILES: '2 stars',
+        TROIS_ETOILES: '3 stars',
+        QUATRE_ETOILES: '4 stars',
+        CINQ_ETOILES: '5 stars',
+        INCONNU: "I don't know",
+      },
+      communeLookup: {
+        loading: 'Searching for towns...',
+        notFound: 'No town matches this postcode. Please correct it.',
+        unavailable: 'Town search is temporarily unavailable. Please try again or call us.',
+        retry: 'Try again',
       },
       consentPrefix: 'I agree that my data may be processed in accordance with the',
       privacyLinkLabel: 'privacy policy',
@@ -249,6 +362,11 @@ export const formContent = {
       telephoneRequired: 'Phone number is required',
       telephoneInvalid: 'Phone number is not valid',
       adresseRequired: 'Accommodation address is required',
+      adresseTooLong: 'Accommodation address must not exceed 255 characters',
+      codePostalRequired: 'Postcode is required',
+      codePostalInvalid: 'Postcode must contain 5 digits',
+      communeRequired: 'Select your town',
+      classementRequired: 'Select your situation',
       messageRequired: 'Message is required',
       consentRequired: 'You must accept the privacy policy',
     },
@@ -275,11 +393,20 @@ export const formContent = {
           'Too many requests were sent in a short time. Please try again in a few minutes.',
         RATE_LIMIT_UNAVAILABLE: 'An unexpected error occurred. Please try again later.',
         NOTIFICATION_FAILED: 'Your request could not be sent. Please try again later.',
+        FORM_OUTDATED: 'This form has been updated. Please refresh the page before trying again.',
+        SUBMISSION_CONFLICT:
+          'Your request has already been recorded with different details. To correct it, please call us.',
+        REFERENTIAL_UNAVAILABLE:
+          'Town verification is temporarily unavailable. Please try again in a moment or call us.',
+        PERSISTENCE_UNAVAILABLE: 'Your request could not be saved right now. Please try again.',
       },
       fieldErrorCodes: {
         REQUIRED: 'This field is required.',
         INVALID_EMAIL: 'Email is not valid.',
         INVALID_PHONE: 'Phone number is not valid.',
+        INVALID_VALUE: 'This value is not valid.',
+        TOO_LONG: 'This value is too long.',
+        INVALID_COMMUNE: 'The selected town does not match the postcode.',
       },
       fieldErrors: {
         nom: { REQUIRED: 'Name is required.' },
@@ -292,7 +419,23 @@ export const formContent = {
           REQUIRED: 'Phone number is required.',
           INVALID_PHONE: 'Phone number is not valid.',
         },
-        adresse: { REQUIRED: 'Accommodation address is required.' },
+        adresse: {
+          REQUIRED: 'Accommodation address is required.',
+          TOO_LONG: 'Accommodation address must not exceed 255 characters.',
+        },
+        codePostal: {
+          REQUIRED: 'Postcode is required.',
+          INVALID_VALUE: 'Postcode must contain 5 digits.',
+        },
+        commune: {
+          REQUIRED: 'Town is required.',
+          INVALID_COMMUNE:
+            'The selected town does not match the postcode. Please check your choice.',
+        },
+        classementActuelDeclare: {
+          REQUIRED: 'Current classification is required.',
+          INVALID_VALUE: 'Current classification is not valid.',
+        },
         message: { REQUIRED: 'Message is required.' },
         consent: { REQUIRED: 'Consent is required.' },
         consentVersion: { REQUIRED: 'Consent version is required.' },
@@ -326,22 +469,52 @@ export const formContent = {
       title: 'Uw classificatieaanvraag',
       intro: 'Alleen uw contactgegevens en het adres van de vakantiewoning.',
       requiredNote: '* Verplichte velden',
-      sections: { contact: 'Uw contactgegevens', property: 'Uw vakantiewoning' },
+      progressLabel: 'Voortgang van de aanvraag',
+      steps: ['Vakantiewoning', 'Contactgegevens', 'Aanvraag'],
+      sections: {
+        property: 'Uw vakantiewoning',
+        contact: 'Uw contactgegevens',
+        request: 'Uw aanvraag',
+      },
+      actions: { previous: 'Vorige', next: 'Volgende' },
       labels: {
+        codePostal: 'Postcode van de vakantiewoning',
+        commune: 'Gemeente',
         nom: 'Achternaam',
         prenom: 'Voornaam',
         email: 'E-mail',
         telephone: 'Telefoon',
         adresse: 'Adres van de vakantiewoning',
+        classementActuelDeclare: 'Huidige classificatie',
         message: 'Bericht (optioneel)',
       },
       placeholders: {
+        codePostal: '24200',
+        commune: 'Selecteer uw gemeente',
         nom: 'Uw achternaam',
         prenom: 'Uw voornaam',
         email: 'u@voorbeeld.nl',
         telephone: '+31 6 12345678',
-        adresse: 'Huisnummer, straat, postcode en plaats',
-        message: 'Iets toe te voegen over uw woning of beschikbaarheid?',
+        adresse: 'Huisnummer en straat, of plaatsaanduiding',
+        classementActuelDeclare: 'Selecteer uw situatie',
+        message:
+          'Iets toe te voegen over uw woning of beschikbaarheid? Nog andere woningen te classificeren? Vermeld ze hier.',
+      },
+      classementOptions: {
+        NC: 'Niet geclassificeerd',
+        UNE_ETOILE: '1 ster',
+        DEUX_ETOILES: '2 sterren',
+        TROIS_ETOILES: '3 sterren',
+        QUATRE_ETOILES: '4 sterren',
+        CINQ_ETOILES: '5 sterren',
+        INCONNU: 'Ik weet het niet',
+      },
+      communeLookup: {
+        loading: 'Gemeenten zoeken...',
+        notFound: 'Geen enkele gemeente komt overeen met deze postcode. Corrigeer de postcode.',
+        unavailable:
+          'Het zoeken naar gemeenten is tijdelijk niet beschikbaar. Probeer het opnieuw of bel ons.',
+        retry: 'Opnieuw proberen',
       },
       consentPrefix: 'Ik ga ermee akkoord dat mijn gegevens worden verwerkt volgens het',
       privacyLinkLabel: 'privacybeleid',
@@ -360,6 +533,11 @@ export const formContent = {
       telephoneRequired: 'Telefoonnummer is verplicht',
       telephoneInvalid: 'Telefoonnummer is niet geldig',
       adresseRequired: 'Adres van de vakantiewoning is verplicht',
+      adresseTooLong: 'Het adres van de vakantiewoning mag niet langer zijn dan 255 tekens',
+      codePostalRequired: 'Postcode is verplicht',
+      codePostalInvalid: 'De postcode moet uit 5 cijfers bestaan',
+      communeRequired: 'Selecteer uw gemeente',
+      classementRequired: 'Selecteer uw situatie',
       messageRequired: 'Bericht is verplicht',
       consentRequired: 'U moet het privacybeleid accepteren',
     },
@@ -386,11 +564,22 @@ export const formContent = {
           'Er zijn te veel verzoeken in korte tijd verzonden. Probeer het over enkele minuten opnieuw.',
         RATE_LIMIT_UNAVAILABLE: 'Er is een onverwachte fout opgetreden. Probeer het later opnieuw.',
         NOTIFICATION_FAILED: 'Uw aanvraag kon niet worden verzonden. Probeer het later opnieuw.',
+        FORM_OUTDATED:
+          'Dit formulier is bijgewerkt. Vernieuw de pagina voordat u het opnieuw probeert.',
+        SUBMISSION_CONFLICT:
+          'Uw aanvraag is al geregistreerd met andere gegevens. Bel ons om deze te corrigeren.',
+        REFERENTIAL_UNAVAILABLE:
+          'De controle van de gemeente is tijdelijk niet beschikbaar. Probeer het zo meteen opnieuw of bel ons.',
+        PERSISTENCE_UNAVAILABLE:
+          'Uw aanvraag kon op dit moment niet worden opgeslagen. Probeer het opnieuw.',
       },
       fieldErrorCodes: {
         REQUIRED: 'Dit veld is verplicht.',
         INVALID_EMAIL: 'E-mail is niet geldig.',
         INVALID_PHONE: 'Telefoonnummer is niet geldig.',
+        INVALID_VALUE: 'Deze waarde is niet geldig.',
+        TOO_LONG: 'Deze waarde is te lang.',
+        INVALID_COMMUNE: 'De geselecteerde gemeente komt niet overeen met de postcode.',
       },
       fieldErrors: {
         nom: { REQUIRED: 'Naam is verplicht.' },
@@ -403,7 +592,23 @@ export const formContent = {
           REQUIRED: 'Telefoonnummer is verplicht.',
           INVALID_PHONE: 'Telefoonnummer is niet geldig.',
         },
-        adresse: { REQUIRED: 'Adres van de vakantiewoning is verplicht.' },
+        adresse: {
+          REQUIRED: 'Adres van de vakantiewoning is verplicht.',
+          TOO_LONG: 'Het adres van de vakantiewoning mag niet langer zijn dan 255 tekens.',
+        },
+        codePostal: {
+          REQUIRED: 'Postcode is verplicht.',
+          INVALID_VALUE: 'De postcode moet uit 5 cijfers bestaan.',
+        },
+        commune: {
+          REQUIRED: 'Gemeente is verplicht.',
+          INVALID_COMMUNE:
+            'De geselecteerde gemeente komt niet overeen met de postcode. Controleer uw keuze.',
+        },
+        classementActuelDeclare: {
+          REQUIRED: 'Huidige classificatie is verplicht.',
+          INVALID_VALUE: 'Huidige classificatie is niet geldig.',
+        },
         message: { REQUIRED: 'Bericht is verplicht.' },
         consent: { REQUIRED: 'Toestemming is verplicht.' },
         consentVersion: { REQUIRED: 'Versie van de toestemming is verplicht.' },

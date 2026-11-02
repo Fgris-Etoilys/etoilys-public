@@ -218,6 +218,15 @@ Les deux passent par :
 - `TurnstileField` pour la vérification anti-spam.
 - `src/utils/analytics.ts` pour le tracking des étapes formulaire.
 
+La demande de classement est un mini-wizard en trois étapes : Logement, Coordonnées, Demande.
+
+- La recherche de commune passe par `src/hooks/useCommuneLookup.ts`, monté dans le formulaire pour que résultats et sélection survivent aux changements d'étape. Une réponse tardive n'écrase jamais le code postal courant.
+- `src/utils/communesApi.ts` lit `GET /api/public/communes` avec `taille=50` et parcourt les pages jusqu'à la première incomplète. Toute panne reste bloquante, avec « Réessayer » et le téléphone.
+- `TurnstileField` n'est rendu qu'à la dernière étape. Son jeton est vidé en quittant cette étape.
+- Un `submissionId` stable permet l'idempotence côté backend. La conversion est dédupliquée sur ce même identifiant.
+
+Contrat : `README.md`. Activation et rollback : `docs/tech/public-api-routing.md`.
+
 Les deux endpoints sont traités par Starsmanager via les rewrites/proxy `/api/public/forms/*`.
 
 ## Simulateur public
