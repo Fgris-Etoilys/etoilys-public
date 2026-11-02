@@ -42,7 +42,6 @@ export default function CommuneLookupField({
           type="text"
           inputMode="numeric"
           autoComplete="postal-code"
-          className="inquiry-postal-code"
           value={codePostal}
           onChange={onCodePostalChange}
           error={lookup.status === 'empty' ? content.communeLookup.notFound : codePostalError}

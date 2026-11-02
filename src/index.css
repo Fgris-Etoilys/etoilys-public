@@ -1546,9 +1546,6 @@
     @apply font-semibold text-ink;
   }
 
-  .inquiry-form .inquiry-postal-code {
-    @apply sm:max-w-[13rem];
-  }
   .inquiry-commune-status:not(:empty) {
     @apply mt-6;
   }

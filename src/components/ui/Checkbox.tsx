@@ -22,7 +22,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             ref={ref}
             id={checkboxId}
             type="checkbox"
-            className={`ui-focus mt-1 h-5 w-5 rounded border-ink/30 accent-ink transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 ${error ? 'ui-field-error' : ''} ${className}`}
+            className={`ui-focus mt-px h-5 w-5 rounded border-ink/30 accent-ink transition-colors cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 ${error ? 'ui-field-error' : ''} ${className}`}
             required={required}
             {...props}
             aria-invalid={props['aria-invalid'] ?? (error ? true : undefined)}
