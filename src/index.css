@@ -1513,19 +1513,28 @@
   .inquiry-fieldset {
     @apply min-w-0 border-0 p-0;
   }
+  /* La progression affiche déjà le nom de l'étape : le titre reste pour les lecteurs d'écran. */
   .inquiry-fieldset > legend {
-    @apply mb-5 w-full text-base font-semibold text-ink;
-  }
-  .inquiry-fieldset > legend:focus {
-    outline: none;
+    @apply sr-only;
   }
 
   .inquiry-steps {
-    @apply grid min-w-0 grid-cols-3 gap-2;
+    @apply grid min-w-0 grid-cols-3;
   }
   .inquiry-step {
-    @apply flex min-w-0 flex-col items-center gap-2 text-center text-xs text-muted;
+    @apply relative flex min-w-0 flex-col items-center gap-2 px-1 text-center text-xs text-muted sm:text-sm;
     overflow-wrap: anywhere;
+  }
+  /* Trait vers l'étape précédente, entre les deux ronds de 1,75rem. */
+  .inquiry-step:not(:first-child)::before {
+    @apply absolute h-px bg-ink/20;
+    content: '';
+    top: 0.875rem;
+    left: calc(-50% + 1.125rem);
+    right: calc(50% + 1.125rem);
+  }
+  .inquiry-step-reached:not(:first-child)::before {
+    @apply bg-ink;
   }
   .inquiry-step-number {
     @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-ink/25 text-xs font-medium;
@@ -1535,6 +1544,13 @@
   }
   .inquiry-step[aria-current='step'] {
     @apply font-semibold text-ink;
+  }
+
+  .inquiry-form .inquiry-postal-code {
+    @apply sm:max-w-[13rem];
+  }
+  .inquiry-commune-status:not(:empty) {
+    @apply mt-6;
   }
 
   .inquiry-commune {

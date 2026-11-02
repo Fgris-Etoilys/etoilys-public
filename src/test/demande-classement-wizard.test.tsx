@@ -428,10 +428,13 @@ describe('navigation entre les étapes', () => {
 
       expect(currentStepLabel()).toContain(steps[1]);
       expect(screen.getByText(sections.contact)).toHaveFocus();
+      expect(document.querySelectorAll('.inquiry-step-number svg')).toHaveLength(1);
+      expect(document.querySelector('[aria-current="step"] svg')).toBeNull();
 
       clickPrevious(locale);
       expect(currentStepLabel()).toContain(steps[0]);
       expect(screen.getByText(sections.property)).toHaveFocus();
+      expect(document.querySelectorAll('.inquiry-step-number svg')).toHaveLength(0);
     }
   );
 

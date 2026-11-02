@@ -35,32 +35,36 @@ export default function CommuneLookupField({
 
   return (
     <>
-      <Input
-        label={content.labels.codePostal}
-        name="codePostal"
-        type="text"
-        inputMode="numeric"
-        autoComplete="postal-code"
-        value={codePostal}
-        onChange={onCodePostalChange}
-        error={lookup.status === 'empty' ? content.communeLookup.notFound : codePostalError}
-        placeholder={content.placeholders.codePostal}
-        required
-      />
+      <div>
+        <Input
+          label={content.labels.codePostal}
+          name="codePostal"
+          type="text"
+          inputMode="numeric"
+          autoComplete="postal-code"
+          className="inquiry-postal-code"
+          value={codePostal}
+          onChange={onCodePostalChange}
+          error={lookup.status === 'empty' ? content.communeLookup.notFound : codePostalError}
+          placeholder={content.placeholders.codePostal}
+          required
+        />
 
-      <div aria-live="polite">
-        {lookup.status === 'loading' && (
-          <p className="inquiry-form-note">{content.communeLookup.loading}</p>
-        )}
-        {uniqueCommune && (
-          <p className="inquiry-commune">
-            <span className="inquiry-commune-label">{content.labels.commune}</span>
-            <span className="inquiry-commune-name">{uniqueCommune.nom}</span>
-          </p>
-        )}
-        {communeError && (lookup.status === 'loading' || uniqueCommune) && (
-          <p className="mt-2 text-sm text-alert-400">{communeError}</p>
-        )}
+        {/* Dans le même bloc que le champ : vide, cette zone d'annonce n'ajoute aucun espace. */}
+        <div aria-live="polite" className="inquiry-commune-status">
+          {lookup.status === 'loading' && (
+            <p className="inquiry-form-note">{content.communeLookup.loading}</p>
+          )}
+          {uniqueCommune && (
+            <p className="inquiry-commune">
+              <span className="inquiry-commune-label">{content.labels.commune}</span>
+              <span className="inquiry-commune-name">{uniqueCommune.nom}</span>
+            </p>
+          )}
+          {communeError && (lookup.status === 'loading' || uniqueCommune) && (
+            <p className="mt-2 text-sm text-alert-400">{communeError}</p>
+          )}
+        </div>
       </div>
 
       {communes.length > 1 && (

@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useCallback, useEffect, useId, useRef, useState } from 'react';
-import { ArrowRight, LoaderCircle } from 'lucide-react';
+import { ArrowRight, Check, LoaderCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
@@ -428,7 +428,7 @@ export default function DemandeClassementForm({
               aria-current={index === step ? 'step' : undefined}
             >
               <span className="inquiry-step-number" aria-hidden="true">
-                {index + 1}
+                {index < step ? <Check size={14} /> : index + 1}
               </span>
               <span>{label}</span>
             </li>
