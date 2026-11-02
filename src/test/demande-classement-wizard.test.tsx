@@ -64,6 +64,13 @@ const reachVerifiedFinalStep = async (locale: Locale = 'fr', token = 'first-toke
   turnstile.verify(token);
 };
 
+// Après une erreur, le widget n'est réinitialisé qu'une fois l'alerte rendue : ce reset effacerait
+// un jeton fourni trop tôt, ce qui rendrait le test dépendant du temps d'exécution.
+const renewTurnstileToken = async (token: string) => {
+  await waitFor(() => expect(turnstile.reset).toHaveBeenCalled());
+  turnstile.verify(token);
+};
+
 beforeEach(() => {
   Object.values(analytics).forEach((mock) => mock.mockClear());
   analytics.trackFormStarted.mockReturnValue(true);
@@ -120,6 +127,7 @@ describe('étape Logement', () => {
 
     expect(await screen.findByText(COMMUNE_UNIQUE.nom)).toBeVisible();
     expect(hasField('commune')).toBe(false);
+    await waitFor(() => expect(hasField('adresse')).toBe(true));
     expect(fieldByName('adresse')).toBeRequired();
     expect(document.body).not.toHaveTextContent(COMMUNE_UNIQUE.codeInsee);
     expect(document.body).not.toHaveTextContent(COMMUNE_UNIQUE.territoire.siren);
@@ -225,7 +233,7 @@ describe('étape Logement', () => {
       fireEvent.click(screen.getByRole('button', { name: communeLookup.retry }));
 
       expect(await screen.findByText(COMMUNE_UNIQUE.nom)).toBeVisible();
-      expect(fieldByName('adresse')).toBeVisible();
+      await waitFor(() => expect(hasField('adresse')).toBe(true));
       expect(screen.queryByText(communeLookup.unavailable)).not.toBeInTheDocument();
       expect(communesRequests()).toHaveLength(2);
     }
@@ -587,7 +595,7 @@ describe('limite de longueur de l’adresse', () => {
         formContent.en.api.fieldErrors.adresse.TOO_LONG
       )
     );
-    expect(fieldByName('adresse')).toHaveFocus();
+    await waitFor(() => expect(fieldByName('adresse')).toHaveFocus());
   });
 });
 
@@ -716,7 +724,7 @@ describe('soumission', () => {
 
       const alert = await screen.findByRole('alert');
       expect(alert).toHaveTextContent(api.errorCodes.SUBMISSION_CONFLICT);
-      expect(alert).toHaveFocus();
+      await waitFor(() => expect(alert).toHaveFocus());
       expect(container.querySelector(`.inquiry-error ${PHONE_LINK}`)).toBeVisible();
       expect(currentStepLabel()).toContain(demandeClassement.steps[2]);
       expect(analytics.trackFormSubmitSucceeded).not.toHaveBeenCalled();
@@ -736,7 +744,7 @@ describe('soumission', () => {
     await screen.findByRole('alert');
     const firstId = submitBody().submissionId;
 
-    turnstile.verify('second-token');
+    await renewTurnstileToken('second-token');
     clickSubmit('fr');
     await waitFor(() => expect(submitRequests()).toHaveLength(2));
 
@@ -779,7 +787,7 @@ describe('soumission', () => {
       expect(container.querySelector(`.inquiry-error ${PHONE_LINK}`) !== null).toBe(showsPhone);
       const firstId = submitBody().submissionId;
 
-      turnstile.verify('second-token');
+      await renewTurnstileToken('second-token');
       clickSubmit('fr');
       await waitFor(() => expect(submitRequests()).toHaveLength(2));
       expect(submitBody().submissionId).toBe(firstId);
@@ -909,7 +917,7 @@ describe('commune refusée par le backend', () => {
 
       await waitFor(() => expect(communesRequests()).toHaveLength(2));
       expect(postalCodeOf(String(communesRequests()[1]?.[0]))).toBe('24200');
-      expect(currentStepLabel()).toContain(demandeClassement.steps[0]);
+      await waitFor(() => expect(currentStepLabel()).toContain(demandeClassement.steps[0]));
       await waitFor(() => expect(hasField('commune')).toBe(true));
       const select = fieldByName<HTMLSelectElement>('commune');
       expect(select).toHaveValue('');
@@ -996,7 +1004,7 @@ describe('nouvelle demande après un succès', () => {
       clickSubmit(locale);
 
       const success = await screen.findByRole('status');
-      expect(success).toHaveFocus();
+      await waitFor(() => expect(success).toHaveFocus());
       expect(form).not.toBeVisible();
       const firstId = submitBody().submissionId;
 
