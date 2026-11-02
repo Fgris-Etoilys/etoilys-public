@@ -226,9 +226,6 @@ export default function DemandeClassementForm({
 
   const handleTurnstileChange = useCallback((token: string | null) => {
     setTurnstileToken(token);
-    if (token !== null) {
-      setSubmitError(null);
-    }
     setErrors((prev) => {
       if (!prev.turnstileToken) return prev;
       const nextErrors = { ...prev };

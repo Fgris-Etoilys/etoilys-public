@@ -252,4 +252,25 @@ describe('form interaction contracts', () => {
     expect(analytics.trackFormSubmitSucceeded).not.toHaveBeenCalled();
     expect(reset).toHaveBeenCalledWith('test-widget');
   });
+
+  it('keeps the submission error visible when a new Turnstile token arrives', async () => {
+    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
+      new Response(JSON.stringify({ success: false, error: 'Échec', errorCode: 'RATE_LIMITED' }), {
+        status: 429,
+      })
+    );
+    const form = renderForm('fr');
+    const message = formContent.fr.api.errorCodes.RATE_LIMITED;
+    fill(form);
+    reset.mockClear();
+    fireEvent.submit(form);
+
+    await screen.findByRole('alert');
+    await waitFor(() => expect(reset).toHaveBeenCalledWith('test-widget'));
+    act(() => verify('renewed-token'));
+    expect(screen.getByRole('alert')).toHaveTextContent(message);
+
+    fireEvent.change(field(form, 'message'), { target: { value: 'Une précision' } });
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
 });

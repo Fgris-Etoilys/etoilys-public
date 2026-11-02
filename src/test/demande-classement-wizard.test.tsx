@@ -751,6 +751,72 @@ describe('soumission', () => {
     expect(submitBody().submissionId).toBe(firstId);
   });
 
+  it.each([
+    { errorCode: 'SUBMISSION_CONFLICT', status: 409 },
+    { errorCode: 'FORM_OUTDATED', status: 400 },
+    { errorCode: 'REFERENTIAL_UNAVAILABLE', status: 503 },
+    { errorCode: 'TURNSTILE_INVALID', status: 403 },
+  ] as const)(
+    'keeps the $errorCode message visible when a new Turnstile token arrives',
+    async ({ errorCode, status }) => {
+      mockDemandeApi({
+        submit: () => jsonResponse({ success: false, error: 'Échec', errorCode }, status),
+      });
+      renderForm();
+
+      await reachVerifiedFinalStep();
+      clickSubmit('fr');
+      await screen.findByRole('alert');
+
+      await renewTurnstileToken('second-token');
+
+      expect(screen.getByRole('alert')).toHaveTextContent(formContent.fr.api.errorCodes[errorCode]);
+    }
+  );
+
+  it('clears the submission error on the next submission', async () => {
+    let attempts = 0;
+    mockDemandeApi({
+      submit: () => {
+        attempts += 1;
+        return attempts === 1
+          ? jsonResponse(
+              { success: false, error: 'Échec', errorCode: 'PERSISTENCE_UNAVAILABLE' },
+              503
+            )
+          : jsonResponse(SUCCESS_BODY);
+      },
+    });
+    renderForm();
+
+    await reachVerifiedFinalStep();
+    clickSubmit('fr');
+    await screen.findByRole('alert');
+    await renewTurnstileToken('second-token');
+
+    clickSubmit('fr');
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    await screen.findByRole('status');
+  });
+
+  it('clears the submission error when a field changes', async () => {
+    mockDemandeApi({
+      submit: () =>
+        jsonResponse({ success: false, error: 'Échec', errorCode: 'SUBMISSION_CONFLICT' }, 409),
+    });
+    renderForm();
+
+    await reachVerifiedFinalStep();
+    clickSubmit('fr');
+    await screen.findByRole('alert');
+    await renewTurnstileToken('second-token');
+
+    setField('message', 'Une précision');
+
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
   it.each(locales)('asks to refresh an outdated form: %s', async (locale) => {
     mockDemandeApi({
       submit: () =>
