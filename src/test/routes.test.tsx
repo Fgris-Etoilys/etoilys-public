@@ -126,6 +126,10 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-bergerac'
     );
+    expect(screen.getByRole('link', { name: 'Sarlat et le Périgord Noir' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-sarlat'
+    );
     expect(screen.getByRole('link', { name: 'Bordeaux et sa métropole' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-bordeaux'
@@ -205,12 +209,26 @@ describe('routing', () => {
     expect(
       document.querySelector('a[href="/classement-meuble-tourisme-bergerac"]')
     ).toBeInTheDocument();
+    const navigation = screen.getByRole('navigation', { name: 'Pages locales du département' });
+    expect(
+      within(navigation).getByRole('link', { name: 'Sarlat et le Périgord Noir' })
+    ).toHaveAttribute('href', '/classement-meuble-tourisme-sarlat');
   });
 
   it('renders Bergerac city local landing page', () => {
     renderAt('/classement-meuble-tourisme-bergerac');
     expectPageHeading(/classement/i, /bergerac/i, /bergeracois/i);
     expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+  });
+
+  it('renders Sarlat and Périgord Noir destination local landing page', () => {
+    renderAt('/classement-meuble-tourisme-sarlat');
+    expectPageHeading(/classement/i, /sarlat/i, /périgord noir/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d.intervention en Dordogne/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-dordogne'
+    );
   });
 
   it('renders Gironde local landing page', () => {

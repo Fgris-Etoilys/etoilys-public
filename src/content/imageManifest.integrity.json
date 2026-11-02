@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "4a5932441181778c12862b0796b4dea61e20bd2a732b4618bc89a1dc3e90dceb",
+  "pipelineSignature": "f05e21fdf53242e4cf0e134ce5feaa4d42c55d3a895a95e8287eebfed957d2b4",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "c999adb066f26b57f6223bef81a90c3a310a9b5e763190035290ab7820b30045"
+    "sha256": "ec197f04fcb752a6081a0e76174b96ba246eea408ada04b2cd098787a8d89bed"
   },
   "sources": [
     {
@@ -245,6 +245,16 @@
       "key": "lotRocamadour",
       "path": "src/assets/seo-images/source/rocamadour-2025-114909.jpg",
       "sha256": "bd477e3027f939f4831e629b329f540155f65d34af6328792e0da603a1c46968"
+    },
+    {
+      "key": "sarlatPerigordNoirHero",
+      "path": "src/assets/seo-images/source/sarlat-perigord-noir-castelnaud-hero-crop.jpg",
+      "sha256": "f2bb80d8e69afff3d06196ec2d0530435a79ea3a4b809ebc958a874ae30de2fb"
+    },
+    {
+      "key": "sarlatPlaceLiberte",
+      "path": "src/assets/seo-images/source/sarlat-place-liberte-jean-christophe-benoist-wikimedia.jpg",
+      "sha256": "1be29c4734063d3b1b8ae91d71ccc61e27d69822d9a7a66826274ca2b62aaa07"
     },
     {
       "key": "articleFacturationElectronique2026",
@@ -2647,6 +2657,86 @@
       "path": "/images/optimized/rocamadour-2025-114909-768.webp",
       "bytes": 128092,
       "sha256": "5150b92bd670ea045925b16c6def864c22569b60c92b2d02b40b9015f7ddcfdf"
+    },
+    {
+      "path": "/images/optimized/sarlat-perigord-noir-castelnaud-480.avif",
+      "bytes": 37424,
+      "sha256": "f9abca3eb8704325859b3cd2430d9cc88f8fe33778b275a8c14053da173ed120"
+    },
+    {
+      "path": "/images/optimized/sarlat-perigord-noir-castelnaud-480.webp",
+      "bytes": 44032,
+      "sha256": "851704a05d25d9fbbd422280cbe86d18b3e1862dd65a54823797a01a7259c94c"
+    },
+    {
+      "path": "/images/optimized/sarlat-perigord-noir-castelnaud-750.avif",
+      "bytes": 82255,
+      "sha256": "221e556971d0a55f6fcba55f594d73896c442dde2f10c322ca58779faa89876d"
+    },
+    {
+      "path": "/images/optimized/sarlat-perigord-noir-castelnaud-750.jpg",
+      "bytes": 101012,
+      "sha256": "9c7ef227be250ade69ff3c6db79d610d58a0b9bb6d628fa50cabb2d9ef5e22b0"
+    },
+    {
+      "path": "/images/optimized/sarlat-perigord-noir-castelnaud-750.webp",
+      "bytes": 99276,
+      "sha256": "768509eb7b5abe3e189ac684cab1f70b92472661ae4eb498aa6787b0a44cbcbf"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-1200.avif",
+      "bytes": 195200,
+      "sha256": "8d0dd6718230bfb464453dd719c1237694ca5b75babb3cf7fa09e6dbc69738f2"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-1200.jpg",
+      "bytes": 177576,
+      "sha256": "f876ccc27f8bda5dd19c232b923855a0b660009db81089d2793036e303807d12"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-1200.webp",
+      "bytes": 183648,
+      "sha256": "1fafd39ae1d97db4e83556bebb7822e61e22763c48d10469ef524d47d31884ad"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-1600.avif",
+      "bytes": 320104,
+      "sha256": "47b4c2fee5bf8136f03908007db51c4c23b216acf25543fdbf381a60031bbadd"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-1600.webp",
+      "bytes": 306228,
+      "sha256": "d772a93db3cd38d707ad2df725366d06c9540597371c551e8100f8c476e4a1ff"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-1920.avif",
+      "bytes": 436212,
+      "sha256": "d1640d6156956b2c3760c5293284b71b416e5d671e7a6aa10590659aa628d3d8"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-1920.webp",
+      "bytes": 425608,
+      "sha256": "5082a8d7f842097a8985079c079f27bb281f2a10205bf5d70e256c2a87127092"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-480.avif",
+      "bytes": 37108,
+      "sha256": "7b5fa35d0a1e09f56f6c7f678816cd365eae7d9c1a4cc613e7fd2dcf85c88f22"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-480.webp",
+      "bytes": 33660,
+      "sha256": "8fe00656cca2e5fc6bf464ed6e78026263e5e4194cea2beb9936eaf6569141d9"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-768.avif",
+      "bytes": 87212,
+      "sha256": "f36883a0bf2bcc218eea126336d0c1acb4e8324f5b06eab099adb8c6f39c6c2f"
+    },
+    {
+      "path": "/images/optimized/sarlat-place-liberte-768.webp",
+      "bytes": 80808,
+      "sha256": "e7ca22b4bc6033a07b545c89463caa8a8a89b53016963865d2c45918a99cb783"
     },
     {
       "path": "/images/optimized/simulateur-classement-og-1200.avif",

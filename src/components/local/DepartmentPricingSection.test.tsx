@@ -11,6 +11,7 @@ import {
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
   LOT_LOCAL_LANDING_PAGE_V6,
+  SARLAT_PERIGORD_NOIR_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
 import type { PricingProfile } from '../../content/local/pricing';
 
@@ -257,6 +258,84 @@ describe('Department pricing picker', () => {
     expect(
       screen.queryByText(getPricingProfile('bordeaux-standard').note ?? '')
     ).not.toBeInTheDocument();
+  });
+
+  it('renders Sarlat direct and OT partner grids with quote rows without currency', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <LocalPricingProfileSummary
+          pricingProfile={getPricingProfile(
+            SARLAT_PERIGORD_NOIR_LOCAL_LANDING_PAGE_V6.pricing.pricingProfileId
+          )}
+          localityHeading="Votre meublé à Sarlat et dans le Périgord Noir"
+          presentation="direct"
+        />
+      </MemoryRouter>
+    );
+
+    const groups = [...container.querySelectorAll('.local-v6-pricing-tier-group')];
+    const readRows = (group: Element) =>
+      [...group.querySelectorAll('.local-v6-pricing-tiers > div')].map((row) => [
+        row.querySelector('dt')?.textContent,
+        row.querySelector('dd')?.textContent,
+      ]);
+
+    expect(groups).toHaveLength(2);
+    const [directGroup, partnerGroup] = groups;
+    if (!directGroup || !partnerGroup) throw new Error('Missing Sarlat pricing groups');
+    expect(directGroup.querySelector('h3')).toHaveTextContent('Tarif direct');
+    expect(readRows(directGroup)).toEqual([
+      ['1er logement', '200 € TTC'],
+      ['2e logement', '150 € TTC'],
+      ['3e, 4e et 5e logement (chacun)', '120 € TTC'],
+      ['À partir du 6e logement', 'Sur devis'],
+    ]);
+    expect(partnerGroup.querySelector('h3')).toHaveTextContent(
+      'Tarif partenaire office de tourisme'
+    );
+    expect(partnerGroup).toHaveTextContent(
+      'Réservé aux propriétaires adhérents d’un office de tourisme partenaire d’Etoilys.'
+    );
+    expect(readRows(partnerGroup)).toEqual([
+      ['1er logement', '160 € TTC'],
+      ['2e logement', '120 € TTC'],
+      ['3e, 4e et 5e logement (chacun)', '100 € TTC'],
+      ['À partir du 6e logement', 'Sur devis'],
+    ]);
+
+    const quoteCells = [...container.querySelectorAll('dd')].filter(
+      (cell) => cell.textContent === 'Sur devis'
+    );
+    expect(quoteCells).toHaveLength(2);
+    quoteCells.forEach((cell) => expect(cell.querySelector('small')).toBeNull());
+    expect(container).not.toHaveTextContent(/Sur devis\s*(TTC|HT|€)/);
+    expect(container).not.toHaveTextContent(/(^|\D)0\s€/);
+  });
+
+  it('keeps the Sarlat pricing profile independent from existing profiles', () => {
+    const sarlatProfile = PRICING_PROFILES['sarlat-perigord-noir'];
+
+    expect(sarlatProfile.id).toBe('sarlat-perigord-noir');
+    expect(sarlatProfile.kind).toBe('tiered');
+    expect(PRICING_PROFILES['dordogne-standard']).toMatchObject({
+      kind: 'flat',
+      standard: { amount: '240 €', qualifier: 'TTC' },
+      partner: { amount: '200 €', qualifier: 'TTC' },
+    });
+    expect(PRICING_PROFILES['gironde-standard']).toMatchObject({
+      kind: 'tiered',
+      tiers: [
+        { key: 'studio-t1-t4', amount: '200 €', qualifier: 'TTC' },
+        { key: 't5-plus', amount: '250 €', qualifier: 'TTC' },
+      ],
+    });
+    Object.values(PRICING_PROFILES)
+      .flatMap((profile) =>
+        profile.id !== 'sarlat-perigord-noir' && profile.kind === 'tiered'
+          ? [...profile.tiers, ...(profile.preferential?.tiers ?? [])]
+          : []
+      )
+      .forEach((tier) => expect('quote' in tier).toBe(false));
   });
 
   it('allows direct pricing to override the locality heading', () => {

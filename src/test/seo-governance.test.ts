@@ -148,6 +148,18 @@ describe('seo governance', () => {
     ]);
   });
 
+  it('builds the Sarlat and Périgord Noir breadcrumb hierarchy from zones to Dordogne', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-sarlat')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Dordogne', url: `${SITE_URL}/classement-meuble-tourisme-dordogne` },
+      {
+        name: 'Sarlat et le Périgord Noir',
+        url: `${SITE_URL}/classement-meuble-tourisme-sarlat`,
+      },
+    ]);
+  });
+
   it('builds the Bordeaux breadcrumb hierarchy from zones to Gironde', () => {
     expect(getBreadcrumbItems('/classement-meuble-tourisme-bordeaux')).toEqual([
       { name: 'Accueil', url: `${SITE_URL}/` },
@@ -339,6 +351,7 @@ describe('seo governance', () => {
       '/classement-meuble-tourisme-gironde',
       '/classement-meuble-tourisme-lot',
       '/classement-meuble-tourisme-lot-et-garonne',
+      '/classement-meuble-tourisme-sarlat',
       '/recrutement',
       '/mentions-legales',
     ].forEach((pathname) => {

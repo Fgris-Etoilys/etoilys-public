@@ -328,7 +328,10 @@ describe('local service areas data', () => {
     const gironde = getDepartmentInterventionArea('gironde');
     const lot = getDepartmentInterventionArea('lot');
 
-    expect(dordogne.localPages.map((localPage) => localPage.id)).toEqual(['bergerac']);
+    expect(dordogne.localPages.map((localPage) => localPage.id)).toEqual([
+      'bergerac',
+      'sarlat-perigord-noir',
+    ]);
     expect(gironde.localPages.map((localPage) => localPage.id)).toEqual([
       'bordeaux',
       'bassin-arcachon',

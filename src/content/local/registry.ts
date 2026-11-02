@@ -43,7 +43,7 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       outputFileName: 'communes-dordogne-index.v1.json',
     },
     seo: {
-      lastModified: '2026-09-17',
+      lastModified: '2026-11-02',
       title: 'Classement de meublé de tourisme en Dordogne',
       description:
         'Classez votre gîte ou meublé de tourisme en Dordogne avec Etoilys, organisme accrédité Cofrac. Consultez les tarifs. Rappel sous 24 h ouvrées.',
@@ -72,6 +72,29 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
       breadcrumbLabel: 'Bergerac',
       ogImageKey: 'bergeracHero',
       lcpImageKey: 'bergeracHero',
+      lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
+    },
+  },
+  {
+    id: 'sarlat-perigord-noir',
+    kind: 'destination',
+    name: 'Sarlat et le Périgord Noir',
+    path: '/classement-meuble-tourisme-sarlat',
+    departmentCode: '24',
+    regionId: 'nouvelle-aquitaine',
+    parentId: 'dordogne',
+    status: 'published',
+    displayOrder: 20,
+    hubLabel: 'Sarlat et le Périgord Noir',
+    departmentLabel: 'Sarlat et le Périgord Noir',
+    seo: {
+      lastModified: '2026-11-02',
+      title: 'Classement meublé de tourisme à Sarlat et en Périgord Noir',
+      description:
+        'Faites classer votre gîte ou meublé de tourisme à Sarlat et dans le Périgord Noir avec Etoilys. Visite officielle, tarifs dégressifs et demande en ligne.',
+      breadcrumbLabel: 'Sarlat et le Périgord Noir',
+      ogImageKey: 'sarlatPerigordNoirHero',
+      lcpImageKey: 'sarlatPerigordNoirHero',
       lcpImageSizes: '(min-width: 1336px) 570px, (min-width: 900px) 45vw, 100vw',
     },
   },

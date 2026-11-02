@@ -5,12 +5,7 @@ import type { DescribedImageAssetKey } from '../imageAltText';
 import type { PricingProfileId } from './pricing';
 
 export type DepartmentAreaId =
-  | 'aude'
-  | 'aveyron'
-  | 'dordogne'
-  | 'gironde'
-  | 'lot'
-  | 'lot-et-garonne';
+  'aude' | 'aveyron' | 'dordogne' | 'gironde' | 'lot' | 'lot-et-garonne';
 
 export type CityAreaId = 'bergerac' | 'bordeaux';
 
@@ -19,6 +14,7 @@ export type DestinationAreaId =
   | 'cahors-vallee-lot'
   | 'figeac-grand-figeac'
   | 'medoc-atlantique'
+  | 'sarlat-perigord-noir'
   | 'vallee-dordogne';
 
 export type LocalChildAreaId = CityAreaId | DestinationAreaId;
@@ -364,6 +360,8 @@ export interface LocalLandingPageV6CityConfig extends LocalLandingPageV6Base {
   serviceArea: LocalV6CityServiceArea;
   pricing: LocalV6DirectPricing;
   localModule?: LocalV6TaxModule;
+  /** Interlocuteurs locaux facultatifs, rendus comme le module territorial d’un département. */
+  territorialModule?: LocalV6TerritorialModule;
 }
 
 export interface LocalLandingPageV6DestinationConfig extends LocalLandingPageV6Base {
@@ -373,6 +371,8 @@ export interface LocalLandingPageV6DestinationConfig extends LocalLandingPageV6B
   serviceArea: LocalV6CityServiceArea;
   pricing: LocalV6DirectPricing;
   localModule?: LocalV6TaxModule;
+  /** Interlocuteurs locaux facultatifs, rendus comme le module territorial d’un département. */
+  territorialModule?: LocalV6TerritorialModule;
 }
 
 export interface LocalLandingPageV6DepartmentConfig extends LocalLandingPageV6Base {

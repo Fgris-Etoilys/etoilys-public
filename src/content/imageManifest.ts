@@ -49,7 +49,9 @@ export type ImageAssetKey =
   | 'bergeracHero'
   | 'bergeracSaintJacquesCyrano'
   | 'bordeauxHero'
-  | 'bordeauxExpertise';
+  | 'bordeauxExpertise'
+  | 'sarlatPerigordNoirHero'
+  | 'sarlatPlaceLiberte';
 
 export interface ImageManifestEntry {
   width: number;
@@ -518,5 +520,23 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/bordeaux-jardin-public-480.webp 480w, /images/optimized/bordeaux-jardin-public-768.webp 768w, /images/optimized/bordeaux-jardin-public-1200.webp 1200w, /images/optimized/bordeaux-jardin-public-1600.webp 1600w, /images/optimized/bordeaux-jardin-public-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/bordeaux-jardin-public-480.avif 480w, /images/optimized/bordeaux-jardin-public-768.avif 768w, /images/optimized/bordeaux-jardin-public-1200.avif 1200w, /images/optimized/bordeaux-jardin-public-1600.avif 1600w, /images/optimized/bordeaux-jardin-public-1920.avif 1920w',
+  },
+  sarlatPerigordNoirHero: {
+    width: 750,
+    height: 578,
+    src: '/images/optimized/sarlat-perigord-noir-castelnaud-750.jpg',
+    srcSetWebp:
+      '/images/optimized/sarlat-perigord-noir-castelnaud-480.webp 480w, /images/optimized/sarlat-perigord-noir-castelnaud-750.webp 750w',
+    srcSetAvif:
+      '/images/optimized/sarlat-perigord-noir-castelnaud-480.avif 480w, /images/optimized/sarlat-perigord-noir-castelnaud-750.avif 750w',
+  },
+  sarlatPlaceLiberte: {
+    width: 5904,
+    height: 3917,
+    src: '/images/optimized/sarlat-place-liberte-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/sarlat-place-liberte-480.webp 480w, /images/optimized/sarlat-place-liberte-768.webp 768w, /images/optimized/sarlat-place-liberte-1200.webp 1200w, /images/optimized/sarlat-place-liberte-1600.webp 1600w, /images/optimized/sarlat-place-liberte-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/sarlat-place-liberte-480.avif 480w, /images/optimized/sarlat-place-liberte-768.avif 768w, /images/optimized/sarlat-place-liberte-1200.avif 1200w, /images/optimized/sarlat-place-liberte-1600.avif 1600w, /images/optimized/sarlat-place-liberte-1920.avif 1920w',
   },
 };

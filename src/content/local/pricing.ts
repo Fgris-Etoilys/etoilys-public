@@ -5,7 +5,8 @@ export type PricingProfileId =
   | 'gironde-standard'
   | 'lot-standard'
   | 'lot-et-garonne-standard'
-  | 'bordeaux-standard';
+  | 'bordeaux-standard'
+  | 'sarlat-perigord-noir';
 
 export interface PricingAmount {
   label: string;
@@ -37,10 +38,19 @@ export interface PricingTierRow {
   qualifier: 'TTC' | 'HT';
 }
 
+/** Ligne sans montant prédéfini : affichée sans unité monétaire ni qualificatif TTC/HT. */
+export interface PricingQuoteTierRow {
+  key: string;
+  label: string;
+  quote: 'Sur devis';
+}
+
+export type PricingTierListRow = PricingTierRow | PricingQuoteTierRow;
+
 export interface PreferentialTieredPricing {
   title: string;
   description: string;
-  tiers: PricingTierRow[];
+  tiers: PricingTierListRow[];
 }
 
 export interface FlatPricingProfile {
@@ -59,7 +69,7 @@ export interface TieredPricingProfile {
   kind: 'tiered';
   id: PricingProfileId;
   standardTitle?: string;
-  tiers: PricingTierRow[];
+  tiers: PricingTierListRow[];
   preferential?: PreferentialTieredPricing;
   note?: string;
 }
@@ -209,6 +219,42 @@ function createGirondePricingProfile(
   };
 }
 
+// Sarlat et le Périgord Noir : grille par rang de logement, au tarif direct ou au tarif réservé aux
+// adhérents d’un office de tourisme partenaire d’Etoilys ; devis à partir du sixième logement.
+const sarlatPerigordNoirPricingProfile: PricingProfile = {
+  id: 'sarlat-perigord-noir',
+  kind: 'tiered',
+  standardTitle: 'Tarif direct',
+  tiers: [
+    { key: 'first', label: '1er logement', amount: '200 €', qualifier: 'TTC' },
+    { key: 'second', label: '2e logement', amount: '150 €', qualifier: 'TTC' },
+    {
+      key: 'third-to-fifth',
+      label: '3e, 4e et 5e logement (chacun)',
+      amount: '120 €',
+      qualifier: 'TTC',
+    },
+    { key: 'sixth-and-next', label: 'À partir du 6e logement', quote: 'Sur devis' },
+  ],
+  preferential: {
+    title: 'Tarif partenaire office de tourisme',
+    description:
+      'Réservé aux propriétaires adhérents d’un office de tourisme partenaire d’Etoilys.',
+    tiers: [
+      { key: 'partner-first', label: '1er logement', amount: '160 €', qualifier: 'TTC' },
+      { key: 'partner-second', label: '2e logement', amount: '120 €', qualifier: 'TTC' },
+      {
+        key: 'partner-third-to-fifth',
+        label: '3e, 4e et 5e logement (chacun)',
+        amount: '100 €',
+        qualifier: 'TTC',
+      },
+      { key: 'partner-sixth-and-next', label: 'À partir du 6e logement', quote: 'Sur devis' },
+    ],
+  },
+  note: standardProfileValues.note,
+};
+
 export const PRICING_PROFILES: Record<PricingProfileId, PricingProfile> = {
   'aude-standard': audePricingProfile,
   'aveyron-standard': createStandardPricingProfile('aveyron-standard'),
@@ -217,6 +263,7 @@ export const PRICING_PROFILES: Record<PricingProfileId, PricingProfile> = {
   'lot-standard': lotPricingProfile,
   'lot-et-garonne-standard': createStandardPricingProfile('lot-et-garonne-standard'),
   'bordeaux-standard': createGirondePricingProfile('bordeaux-standard'),
+  'sarlat-perigord-noir': sarlatPerigordNoirPricingProfile,
 };
 
 export function getPricingProfile(profileId: PricingProfileId): PricingProfile {
