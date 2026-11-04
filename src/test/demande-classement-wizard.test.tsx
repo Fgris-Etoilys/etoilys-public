@@ -7,6 +7,8 @@ import type { Locale } from '../i18n/locales';
 import { localizedRoutes } from '../i18n/localizedRoutes';
 import { expectNoA11yViolations } from './a11y';
 import {
+  chooseRadio,
+  CLIENT_VALUES,
   clickNext,
   clickPrevious,
   clickSubmit,
@@ -18,11 +20,13 @@ import {
   completeLogementStep,
   currentStepLabel,
   fieldByName,
+  fillIdentiteFields,
   flushPromises,
   hasField,
   installTurnstileMock,
   jsonResponse,
   mockDemandeApi,
+  radioByValue,
   reachFinalStep,
   setField,
   submitBody,
@@ -56,6 +60,8 @@ const renderForm = (locale: Locale = 'fr') => {
   );
   return container;
 };
+
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const postalCodeOf = (url: string) => new URL(url, 'http://test').searchParams.get('codePostal');
 
@@ -420,6 +426,7 @@ describe('navigation entre les étapes', () => {
     fireEvent.submit(form);
     expect(hasField('nom')).toBe(true);
 
+    chooseRadio('civilite', 'Madame');
     fireEvent.submit(form);
     expect(fieldByName('nom')).toHaveAttribute('aria-invalid', 'true');
     expect(fieldByName('nom')).toHaveFocus();
@@ -620,6 +627,7 @@ describe('soumission', () => {
       commune: COMMUNE_UNIQUE.nom,
       codeInsee: COMMUNE_UNIQUE.codeInsee,
       ...WIZARD_VALUES,
+      ...CLIENT_VALUES,
       classementActuelDeclare: 'NC',
       message: 'Deux autres gîtes',
       consent: true,
@@ -1130,6 +1138,564 @@ describe('nouvelle demande après un succès', () => {
 
     expect(analytics.trackFormStarted).toHaveBeenCalledTimes(1);
   });
+});
+
+describe('coordonnées du client', () => {
+  const reachCoordonnees = async (locale: Locale = 'fr') => {
+    renderForm(locale);
+    await completeLogementStep(locale);
+    fillIdentiteFields();
+  };
+
+  const finishAndSubmit = async (locale: Locale = 'fr') => {
+    clickNext(locale);
+    setField('classementActuelDeclare', 'NC');
+    fireEvent.click(fieldByName('consent'));
+    turnstile.verify('token');
+    clickSubmit(locale);
+    await screen.findByRole('status');
+  };
+
+  const fillDistinctAddress = (codePostal = '01000') => {
+    setField('adresseClient', '15 rue du Commerce');
+    setField('codePostalClient', codePostal);
+    setField('villeClient', 'Bourg-en-Bresse');
+  };
+
+  const fillSociete = () => {
+    setField('raisonSociale', 'Les Gîtes du Moulin');
+    setField('numSiret', '01234567890123');
+  };
+
+  const expectAbsent = (fields: string[]) => {
+    const body = submitBody();
+    fields.forEach((field) => expect(body).not.toHaveProperty(field));
+  };
+
+  const ADDRESS_FIELDS = [
+    'adresseClient',
+    'complementAdresseClient',
+    'codePostalClient',
+    'villeClient',
+    'paysClient',
+  ];
+  const SOCIETE_FIELDS = ['raisonSociale', 'numSiret'];
+
+  it.each(locales)(
+    'preselects nothing and asks the address question after the type, with its label: %s',
+    async (locale) => {
+      renderForm(locale);
+      const { labels } = formContent[locale].demandeClassement;
+
+      await completeLogementStep(locale);
+
+      expect(radioByValue('civilite', 'Madame')).not.toBeChecked();
+      expect(radioByValue('civilite', 'Monsieur')).not.toBeChecked();
+      expect(radioByValue('typeClient', 'PARTICULIER')).not.toBeChecked();
+      expect(radioByValue('typeClient', 'PROFESSIONNEL')).not.toBeChecked();
+      expect(hasField('adresseClientIdentiqueLogement')).toBe(false);
+      expect(hasField('raisonSociale')).toBe(false);
+
+      chooseRadio('typeClient', 'PARTICULIER');
+      expect(
+        screen.getByRole('radiogroup', {
+          name: new RegExp(escapeRegExp(labels.adresseIdentiqueParticulier)),
+        })
+      ).toBeVisible();
+      expect(radioByValue('adresseClientIdentiqueLogement', 'oui')).not.toBeChecked();
+      expect(radioByValue('adresseClientIdentiqueLogement', 'non')).not.toBeChecked();
+
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+      expect(
+        screen.getByRole('radiogroup', {
+          name: new RegExp(escapeRegExp(labels.adresseIdentiqueSociete)),
+        })
+      ).toBeVisible();
+      expect(hasField('raisonSociale')).toBe(true);
+      expect(hasField('numSiret')).toBe(true);
+    }
+  );
+
+  it('sends only the three structural fields for an individual at the property address', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PARTICULIER');
+    chooseRadio('adresseClientIdentiqueLogement', 'oui');
+
+    await finishAndSubmit();
+
+    expect(submitBody()).toMatchObject({
+      civilite: 'Madame',
+      typeClient: 'PARTICULIER',
+      adresseClientIdentiqueLogement: true,
+    });
+    expectAbsent([...ADDRESS_FIELDS, ...SOCIETE_FIELDS]);
+  });
+
+  it('sends a French distinct address for an individual', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PARTICULIER');
+    chooseRadio('adresseClientIdentiqueLogement', 'non');
+    expect(fieldByName('paysClient')).toHaveValue('FR');
+    fillDistinctAddress();
+    setField('complementAdresseClient', 'Bâtiment B');
+
+    await finishAndSubmit();
+
+    expect(submitBody()).toMatchObject({
+      typeClient: 'PARTICULIER',
+      adresseClientIdentiqueLogement: false,
+      adresseClient: '15 rue du Commerce',
+      complementAdresseClient: 'Bâtiment B',
+      codePostalClient: '01000',
+      villeClient: 'Bourg-en-Bresse',
+      paysClient: 'FR',
+    });
+    expectAbsent(SOCIETE_FIELDS);
+  });
+
+  it.each([
+    ['with', 'SW1A 2AA'],
+    ['without', ''],
+  ])('sends a foreign address %s a postal code', async (_label, codePostal) => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PARTICULIER');
+    chooseRadio('adresseClientIdentiqueLogement', 'non');
+    setField('paysClient', 'GB');
+    setField('adresseClient', '5 High Street');
+    setField('codePostalClient', codePostal);
+    setField('villeClient', 'London');
+
+    await finishAndSubmit();
+
+    expect(submitBody()).toMatchObject({
+      adresseClientIdentiqueLogement: false,
+      adresseClient: '5 High Street',
+      villeClient: 'London',
+      paysClient: 'GB',
+    });
+    if (codePostal) {
+      expect(submitBody().codePostalClient).toBe(codePostal);
+    } else {
+      expectAbsent(['codePostalClient', 'complementAdresseClient']);
+    }
+  });
+
+  it('sends a company at the property address without any address field', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PROFESSIONNEL');
+    fillSociete();
+    chooseRadio('adresseClientIdentiqueLogement', 'oui');
+
+    await finishAndSubmit();
+
+    expect(submitBody()).toMatchObject({
+      typeClient: 'PROFESSIONNEL',
+      raisonSociale: 'Les Gîtes du Moulin',
+      numSiret: '01234567890123',
+      adresseClientIdentiqueLogement: true,
+    });
+    expectAbsent(ADDRESS_FIELDS);
+  });
+
+  it('hides the country of a company and sends FR with its distinct address', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PROFESSIONNEL');
+    fillSociete();
+    chooseRadio('adresseClientIdentiqueLogement', 'non');
+    expect(hasField('paysClient')).toBe(false);
+    fillDistinctAddress();
+
+    await finishAndSubmit();
+
+    expect(submitBody()).toMatchObject({
+      adresseClientIdentiqueLogement: false,
+      codePostalClient: '01000',
+      paysClient: 'FR',
+    });
+  });
+
+  it.each(locales)(
+    'blocks progress on missing choices and focuses the first one: %s',
+    async (locale) => {
+      renderForm(locale);
+      const { validation, demandeClassement } = formContent[locale];
+
+      await completeLogementStep(locale);
+      setField('nom', WIZARD_VALUES.nom);
+      setField('prenom', WIZARD_VALUES.prenom);
+      setField('email', WIZARD_VALUES.email);
+      setField('telephone', WIZARD_VALUES.telephone);
+      clickNext(locale);
+
+      expect(currentStepLabel()).toContain(demandeClassement.steps[1]);
+      const civiliteGroup = screen.getByRole('radiogroup', {
+        name: new RegExp(escapeRegExp(demandeClassement.labels.civilite)),
+      });
+      expect(civiliteGroup).toHaveAttribute('aria-invalid', 'true');
+      expect(civiliteGroup).toHaveFocus();
+      expect(civiliteGroup).toHaveAccessibleDescription(validation.civiliteRequired);
+      expect(screen.getByText(validation.typeClientRequired)).toBeVisible();
+      expect(analytics.trackFormValidationFailed).toHaveBeenCalledWith('demande_classement', [
+        'civilite',
+        'typeClient',
+      ]);
+
+      chooseRadio('civilite', 'Monsieur');
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+      clickNext(locale);
+
+      expect(screen.getByText(validation.raisonSocialeRequired)).toBeVisible();
+      expect(screen.getByText(validation.numSiretRequired)).toBeVisible();
+      expect(screen.getByText(validation.adresseIdentiqueRequired)).toBeVisible();
+      expect(fieldByName('raisonSociale')).toHaveFocus();
+    }
+  );
+
+  it('rejects an invalid SIRET and keeps digits only when pasted', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PROFESSIONNEL');
+    setField('raisonSociale', 'SCI');
+    chooseRadio('adresseClientIdentiqueLogement', 'oui');
+
+    setField('numSiret', '123 456');
+    expect(fieldByName('numSiret')).toHaveValue('123456');
+    clickNext('fr');
+    expect(fieldByName('numSiret')).toHaveAccessibleDescription(
+      formContent.fr.validation.numSiretInvalid
+    );
+    expect(fieldByName('numSiret')).toHaveFocus();
+
+    setField('numSiret', '012 345 678 90123 999');
+    expect(fieldByName('numSiret')).toHaveValue('01234567890123');
+    expect(fieldByName('numSiret')).not.toHaveAttribute('aria-invalid');
+  });
+
+  it('validates the distinct address next to its fields according to the country', async () => {
+    await reachCoordonnees();
+    const { validation } = formContent.fr;
+    chooseRadio('typeClient', 'PARTICULIER');
+    chooseRadio('adresseClientIdentiqueLogement', 'non');
+
+    clickNext('fr');
+    expect(fieldByName('adresseClient')).toHaveAccessibleDescription(
+      validation.adresseClientRequired
+    );
+    expect(fieldByName('villeClient')).toHaveAccessibleDescription(validation.villeClientRequired);
+    expect(fieldByName('codePostalClient')).toHaveAccessibleDescription(
+      validation.codePostalRequired
+    );
+
+    setField('paysClient', 'GB');
+    setField('adresseClient', '5 High Street');
+    setField('villeClient', 'London');
+    setField('codePostalClient', 'SW1A_2AA');
+    clickNext('fr');
+    expect(fieldByName('codePostalClient')).toHaveAccessibleDescription(
+      validation.codePostalEtrangerInvalid
+    );
+
+    setField('codePostalClient', '');
+    clickNext('fr');
+    expect(currentStepLabel()).toContain(formContent.fr.demandeClassement.steps[2]);
+  });
+
+  it('accepts digits only in a French postal code', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PARTICULIER');
+    chooseRadio('adresseClientIdentiqueLogement', 'non');
+
+    setField('codePostalClient', '01a000999');
+    expect(fieldByName('codePostalClient')).toHaveValue('01000');
+  });
+
+  describe('changements de sélection', () => {
+    it('clears the company fields when a company becomes an individual, and keeps the address', async () => {
+      await reachCoordonnees();
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+      fillSociete();
+      chooseRadio('adresseClientIdentiqueLogement', 'non');
+      fillDistinctAddress();
+
+      chooseRadio('typeClient', 'PARTICULIER');
+
+      expect(hasField('raisonSociale')).toBe(false);
+      expect(radioByValue('adresseClientIdentiqueLogement', 'non')).toBeChecked();
+      expect(fieldByName('adresseClient')).toHaveValue('15 rue du Commerce');
+      expect(fieldByName('paysClient')).toHaveValue('FR');
+
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+      expect(fieldByName('raisonSociale')).toHaveValue('');
+      expect(fieldByName('numSiret')).toHaveValue('');
+
+      chooseRadio('typeClient', 'PARTICULIER');
+      await finishAndSubmit();
+      expect(submitBody()).toMatchObject({
+        typeClient: 'PARTICULIER',
+        villeClient: 'Bourg-en-Bresse',
+      });
+      expectAbsent(SOCIETE_FIELDS);
+    });
+
+    it('keeps a French address when an individual becomes a company', async () => {
+      await reachCoordonnees();
+      chooseRadio('typeClient', 'PARTICULIER');
+      chooseRadio('adresseClientIdentiqueLogement', 'non');
+      fillDistinctAddress();
+      setField('complementAdresseClient', 'Bâtiment B');
+
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+
+      expect(radioByValue('adresseClientIdentiqueLogement', 'non')).toBeChecked();
+      expect(fieldByName('adresseClient')).toHaveValue('15 rue du Commerce');
+      expect(fieldByName('complementAdresseClient')).toHaveValue('Bâtiment B');
+      expect(fieldByName('codePostalClient')).toHaveValue('01000');
+      expect(fieldByName('villeClient')).toHaveValue('Bourg-en-Bresse');
+      expect(hasField('paysClient')).toBe(false);
+    });
+
+    it.each([
+      ['with', 'SW1A 2AA'],
+      ['with a five-digit', '12345'],
+      ['without', ''],
+    ])(
+      'never turns a foreign address %s postal code into a French company address',
+      async (_label, codePostal) => {
+        await reachCoordonnees();
+        const { validation } = formContent.fr;
+        chooseRadio('typeClient', 'PARTICULIER');
+        chooseRadio('adresseClientIdentiqueLogement', 'non');
+        setField('paysClient', 'GB');
+        setField('adresseClient', '5 High Street');
+        setField('complementAdresseClient', 'Flat 2');
+        setField('codePostalClient', codePostal);
+        setField('villeClient', 'London');
+
+        chooseRadio('typeClient', 'PROFESSIONNEL');
+        fillSociete();
+
+        expect(radioByValue('adresseClientIdentiqueLogement', 'non')).toBeChecked();
+        expect(hasField('paysClient')).toBe(false);
+        expect(fieldByName('adresseClient')).toHaveValue('');
+        expect(fieldByName('complementAdresseClient')).toHaveValue('');
+        expect(fieldByName('codePostalClient')).toHaveValue('');
+        expect(fieldByName('villeClient')).toHaveValue('');
+
+        clickNext('fr');
+        expect(currentStepLabel()).toContain(formContent.fr.demandeClassement.steps[1]);
+        expect(fieldByName('adresseClient')).toHaveAccessibleDescription(
+          validation.adresseClientRequired
+        );
+        expect(fieldByName('codePostalClient')).toHaveAccessibleDescription(
+          validation.codePostalRequired
+        );
+        expect(fieldByName('villeClient')).toHaveAccessibleDescription(
+          validation.villeClientRequired
+        );
+
+        fillDistinctAddress();
+        await finishAndSubmit();
+        expect(submitBody()).toMatchObject({
+          adresseClient: '15 rue du Commerce',
+          codePostalClient: '01000',
+          villeClient: 'Bourg-en-Bresse',
+          paysClient: 'FR',
+        });
+        expectAbsent(['complementAdresseClient']);
+      }
+    );
+
+    it('clears the distinct address when the visitor answers yes', async () => {
+      await reachCoordonnees();
+      chooseRadio('typeClient', 'PARTICULIER');
+      chooseRadio('adresseClientIdentiqueLogement', 'non');
+      setField('paysClient', 'GB');
+      setField('adresseClient', '5 High Street');
+      setField('villeClient', 'London');
+
+      chooseRadio('adresseClientIdentiqueLogement', 'oui');
+      expect(hasField('adresseClient')).toBe(false);
+
+      chooseRadio('adresseClientIdentiqueLogement', 'non');
+      expect(fieldByName('adresseClient')).toHaveValue('');
+      expect(fieldByName('villeClient')).toHaveValue('');
+      expect(fieldByName('paysClient')).toHaveValue('FR');
+
+      chooseRadio('adresseClientIdentiqueLogement', 'oui');
+      await finishAndSubmit();
+      expect(submitBody().adresseClientIdentiqueLogement).toBe(true);
+      expectAbsent(ADDRESS_FIELDS);
+    });
+
+    it('clears a postal code only when it no longer suits the new country', async () => {
+      await reachCoordonnees();
+      chooseRadio('typeClient', 'PARTICULIER');
+      chooseRadio('adresseClientIdentiqueLogement', 'non');
+
+      setField('codePostalClient', '75001');
+      setField('paysClient', 'GB');
+      expect(fieldByName('codePostalClient')).toHaveValue('75001');
+
+      setField('codePostalClient', 'SW1A 2AA');
+      setField('paysClient', 'FR');
+      expect(fieldByName('codePostalClient')).toHaveValue('');
+    });
+
+    it('clears the error of a field that disappears', async () => {
+      await reachCoordonnees();
+      const { validation } = formContent.fr;
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+      clickNext('fr');
+      expect(screen.getByText(validation.numSiretRequired)).toBeVisible();
+
+      chooseRadio('typeClient', 'PARTICULIER');
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+      expect(screen.queryByText(validation.numSiretRequired)).not.toBeInTheDocument();
+    });
+  });
+
+  it('keeps every answer when navigating between the steps', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PROFESSIONNEL');
+    fillSociete();
+    chooseRadio('adresseClientIdentiqueLogement', 'non');
+    fillDistinctAddress();
+
+    clickNext('fr');
+    clickPrevious('fr');
+    expect(radioByValue('civilite', 'Madame')).toBeChecked();
+    expect(radioByValue('typeClient', 'PROFESSIONNEL')).toBeChecked();
+    expect(radioByValue('adresseClientIdentiqueLogement', 'non')).toBeChecked();
+    expect(fieldByName('numSiret')).toHaveValue('01234567890123');
+    expect(fieldByName('codePostalClient')).toHaveValue('01000');
+
+    clickPrevious('fr');
+    expect(fieldByName('adresse')).toHaveValue(WIZARD_VALUES.adresse);
+    clickNext('fr');
+    expect(fieldByName('raisonSociale')).toHaveValue('Les Gîtes du Moulin');
+    expect(fieldByName('villeClient')).toHaveValue('Bourg-en-Bresse');
+  });
+
+  it.each(locales)(
+    'returns to the contact step with a localized message on a backend error: %s',
+    async (locale) => {
+      mockDemandeApi({
+        submit: () =>
+          jsonResponse(
+            {
+              success: false,
+              error: 'Données invalides.',
+              errorCode: 'VALIDATION_FAILED',
+              fieldErrors: {
+                numSiret: 'Le SIRET doit comporter exactement 14 chiffres.',
+                codePostalClient: 'Ce champ est requis.',
+              },
+              fieldErrorCodes: { numSiret: 'INVALID_VALUE', codePostalClient: 'REQUIRED' },
+            },
+            400
+          ),
+      });
+      await reachCoordonnees(locale);
+      const { api, demandeClassement } = formContent[locale];
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+      fillSociete();
+      chooseRadio('adresseClientIdentiqueLogement', 'non');
+      fillDistinctAddress();
+      clickNext(locale);
+      setField('classementActuelDeclare', 'NC');
+      fireEvent.click(fieldByName('consent'));
+      turnstile.verify('token');
+      clickSubmit(locale);
+
+      await waitFor(() => expect(currentStepLabel()).toContain(demandeClassement.steps[1]));
+      expect(fieldByName('numSiret')).toHaveAccessibleDescription(
+        api.fieldErrors.numSiret.INVALID_VALUE
+      );
+      expect(fieldByName('codePostalClient')).toHaveAccessibleDescription(
+        api.fieldErrors.codePostalClient.REQUIRED
+      );
+      expect(analytics.trackFormSubmitFailed).toHaveBeenCalledWith('demande_classement', 'api', [
+        'codePostalClient',
+        'numSiret',
+      ]);
+    }
+  );
+
+  it('retries with the same UUID and identical data, with one conversion', async () => {
+    let attempts = 0;
+    mockDemandeApi({
+      submit: () => {
+        attempts += 1;
+        if (attempts === 1) throw new Error('response lost');
+        return jsonResponse(SUCCESS_BODY);
+      },
+    });
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PROFESSIONNEL');
+    fillSociete();
+    chooseRadio('adresseClientIdentiqueLogement', 'non');
+    fillDistinctAddress();
+    clickNext('fr');
+    setField('classementActuelDeclare', 'NC');
+    fireEvent.click(fieldByName('consent'));
+    turnstile.verify('first-token');
+    clickSubmit('fr');
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(formContent.fr.api.genericError);
+    const firstBody = submitBody();
+    await renewTurnstileToken('second-token');
+    clickSubmit('fr');
+
+    await screen.findByRole('status');
+    expect(submitBody()).toEqual({ ...firstBody, turnstileToken: 'second-token' });
+    expect(openAiAds.trackLeadCreatedConversion).toHaveBeenCalledTimes(1);
+  });
+
+  it('never gives analytics the values of the fields', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PROFESSIONNEL');
+    setField('raisonSociale', 'Les Gîtes du Moulin');
+    setField('numSiret', '1234');
+    chooseRadio('adresseClientIdentiqueLogement', 'oui');
+    clickNext('fr');
+
+    expect(analytics.trackFormValidationFailed).toHaveBeenLastCalledWith('demande_classement', [
+      'numSiret',
+    ]);
+    expect(JSON.stringify(analytics.trackFormValidationFailed.mock.calls)).not.toContain('Moulin');
+  });
+
+  it('starts from empty choices after a successful request', async () => {
+    await reachCoordonnees();
+    chooseRadio('typeClient', 'PROFESSIONNEL');
+    fillSociete();
+    chooseRadio('adresseClientIdentiqueLogement', 'oui');
+    await finishAndSubmit();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: formContent.fr.demandeClassement.successAction })
+    );
+    await completeLogementStep('fr');
+
+    expect(radioByValue('civilite', 'Madame')).not.toBeChecked();
+    expect(radioByValue('typeClient', 'PROFESSIONNEL')).not.toBeChecked();
+    expect(hasField('raisonSociale')).toBe(false);
+    expect(hasField('adresseClientIdentiqueLogement')).toBe(false);
+  });
+
+  it.each(locales)(
+    'has no accessibility violation with every field displayed: %s',
+    async (locale) => {
+      const container = renderForm(locale);
+      await completeLogementStep(locale);
+      chooseRadio('typeClient', 'PROFESSIONNEL');
+      chooseRadio('adresseClientIdentiqueLogement', 'non');
+      clickNext(locale);
+      await expectNoA11yViolations(container);
+
+      chooseRadio('typeClient', 'PARTICULIER');
+      await expectNoA11yViolations(container);
+    }
+  );
 });
 
 describe('contenu public', () => {

@@ -17,6 +17,7 @@ import {
   submitBody,
   submitRequests,
   SUCCESS_BODY,
+  CLIENT_VALUES,
   WIZARD_VALUES,
 } from './demandeClassementWizard';
 
@@ -342,6 +343,7 @@ describe('localized form submissions', () => {
         await waitFor(() => expect(submitRequests()).toHaveLength(1));
         expect(submitBody()).toMatchObject({
           ...WIZARD_VALUES,
+          ...CLIENT_VALUES,
           codePostal: '24150',
           commune: COMMUNE_UNIQUE.nom,
           codeInsee: COMMUNE_UNIQUE.codeInsee,

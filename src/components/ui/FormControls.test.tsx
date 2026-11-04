@@ -1,10 +1,11 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ComponentProps } from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import Input from './Input';
 import Textarea from './Textarea';
 import Select from './Select';
 import Checkbox from './Checkbox';
+import RadioGroup from './RadioGroup';
 
 afterEach(cleanup);
 
@@ -61,5 +62,37 @@ describe('shared form controls', () => {
     expect(checkbox).toHaveAttribute('aria-invalid', 'true');
     fireEvent.click(screen.getByText('Consent'));
     expect(checkbox).toBeChecked();
+  });
+
+  it('exposes a focusable radio group without any default choice', () => {
+    const onChange = vi.fn();
+    render(
+      <RadioGroup
+        label="Choice"
+        name="choice"
+        value=""
+        options={[
+          { value: 'one', label: 'One' },
+          { value: 'two', label: 'Two' },
+        ]}
+        onChange={onChange}
+        error="Choice required"
+        required
+      />
+    );
+
+    const group = screen.getByRole('radiogroup', { name: /Choice/ });
+    expect(group).toHaveAttribute('aria-required', 'true');
+    expect(group).toHaveAttribute('aria-invalid', 'true');
+    expect(group).toHaveAttribute('data-replay-block', 'true');
+    expect(group).toHaveAccessibleDescription('Choice required');
+    expect(screen.getByText('Choice required')).toHaveAttribute('role', 'alert');
+    group.focus();
+    expect(group).toHaveFocus();
+
+    expect(screen.getByRole('radio', { name: 'One' })).not.toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Two' })).not.toBeChecked();
+    fireEvent.click(screen.getByText('Two'));
+    expect(onChange).toHaveBeenCalledWith('two');
   });
 });

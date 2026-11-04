@@ -36,6 +36,12 @@ export const WIZARD_VALUES = {
   telephone: '06 12 34 56 78',
 };
 
+export const CLIENT_VALUES = {
+  civilite: 'Madame',
+  typeClient: 'PARTICULIER',
+  adresseClientIdentiqueLogement: true,
+};
+
 const isCommunesRequest = (input: unknown) => String(input).includes('/public/communes');
 
 /** Route `fetch` selon l'URL : le wizard enchaîne des GET communes et le POST du formulaire. */
@@ -92,6 +98,16 @@ export const setField = (name: string, value: string) => {
   fireEvent.change(fieldByName(name), { target: { value } });
 };
 
+export const radioByValue = (name: string, value: string): HTMLInputElement => {
+  const radio = document.querySelector<HTMLInputElement>(`[name="${name}"][value="${value}"]`);
+  if (!radio) throw new Error(`Missing radio: ${name}=${value}`);
+  return radio;
+};
+
+export const chooseRadio = (name: string, value: string) => {
+  fireEvent.click(radioByValue(name, value));
+};
+
 export const clickNext = (locale: Locale) => {
   fireEvent.click(
     screen.getByRole('button', { name: formContent[locale].demandeClassement.actions.next })
@@ -120,11 +136,19 @@ export const completeLogementStep = async (locale: Locale, codePostal = '24150')
   clickNext(locale);
 };
 
-export const completeCoordonneesStep = (locale: Locale) => {
+/** Civilité et champs historiques : le type et l'adresse restent au choix du test. */
+export const fillIdentiteFields = () => {
+  chooseRadio('civilite', CLIENT_VALUES.civilite);
   setField('nom', WIZARD_VALUES.nom);
   setField('prenom', WIZARD_VALUES.prenom);
   setField('email', WIZARD_VALUES.email);
   setField('telephone', WIZARD_VALUES.telephone);
+};
+
+export const completeCoordonneesStep = (locale: Locale) => {
+  fillIdentiteFields();
+  chooseRadio('typeClient', CLIENT_VALUES.typeClient);
+  chooseRadio('adresseClientIdentiqueLogement', 'oui');
   clickNext(locale);
 };
 

@@ -1599,7 +1599,8 @@
   .inquiry-form label {
     @apply leading-relaxed;
   }
-  .inquiry-form label > span.text-alert-400 {
+  .inquiry-form label > span.text-alert-400,
+  .inquiry-form [role='radiogroup'] > p > span.text-alert-400 {
     @apply text-muted;
   }
   .inquiry-form input[type='checkbox'] {

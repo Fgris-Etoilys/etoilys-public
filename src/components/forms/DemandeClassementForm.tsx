@@ -6,19 +6,28 @@ import Select from '../ui/Select';
 import Textarea from '../ui/Textarea';
 import Checkbox from '../ui/Checkbox';
 import Button from '../ui/Button';
+import RadioGroup from '../ui/RadioGroup';
+import ClientCoordonneesFields from './ClientCoordonneesFields';
 import CommuneLookupField from './CommuneLookupField';
 import FormPhoneLink from './FormPhoneLink';
 import TurnstileField from './TurnstileField';
 import FormSuccess from './FormSuccess';
 import { useCommuneLookup } from '../../hooks/useCommuneLookup';
 import {
+  buildDemandeClassementPayload,
+  CIVILITE_VALUES,
   CLASSEMENT_ACTUEL_DECLARE_VALUES,
   DEMANDE_CLASSEMENT_LAST_STEP,
   getFirstDemandeClassementStepWithError,
+  isPostalCodeValidForCountry,
+  PAYS_FRANCE,
   validateDemandeClassementForm,
   validateDemandeClassementStep,
+  type AdresseIdentique,
+  type Civilite,
   type DemandeClassementFormData,
   type DemandeClassementStep,
+  type TypeClient,
   type ValidationError,
 } from '../../utils/formValidation';
 import { submitToApi, type ApiErrorCode, type FieldErrorCode } from '../../utils/api';
@@ -44,7 +53,7 @@ type DemandeClassementFormProps = {
   locale?: Locale;
 };
 
-type DemandeClassementSubmissionPayload = DemandeClassementFormData & {
+type DemandeClassementSubmissionPayload = ReturnType<typeof buildDemandeClassementPayload> & {
   submissionId: string;
   turnstileToken: string;
   consentVersion: typeof CONSENT_VERSION;
@@ -83,15 +92,31 @@ const ERROR_CODES_WITH_PHONE: readonly ApiErrorCode[] = [
   'REFERENTIAL_UNAVAILABLE',
 ];
 
+const EMPTY_ADRESSE_CLIENT = {
+  adresseClient: '',
+  complementAdresseClient: '',
+  codePostalClient: '',
+  villeClient: '',
+  paysClient: PAYS_FRANCE,
+};
+
+const ADRESSE_CLIENT_FIELDS = Object.keys(EMPTY_ADRESSE_CLIENT);
+
 const INITIAL_FORM_DATA: DemandeClassementFormData = {
   codePostal: '',
   commune: '',
   codeInsee: '',
   adresse: '',
+  civilite: '',
   nom: '',
   prenom: '',
   email: '',
   telephone: '',
+  typeClient: '',
+  raisonSociale: '',
+  numSiret: '',
+  adresseClientIdentiqueLogement: '',
+  ...EMPTY_ADRESSE_CLIENT,
   classementActuelDeclare: '',
   message: '',
   consent: false,
@@ -224,6 +249,58 @@ export default function DemandeClassementForm({
     void runCommuneSearch(formData.codePostal);
   };
 
+  const updateCoordonnees = (changes: Partial<DemandeClassementFormData>, fields: string[]) => {
+    markFormStarted();
+    setFormData((prev) => ({ ...prev, ...changes }));
+    setSubmitError(null);
+    clearFieldErrors(fields);
+  };
+
+  const handleCiviliteChange = (civilite: Civilite) => {
+    updateCoordonnees({ civilite }, ['civilite']);
+  };
+
+  const handleTypeClientChange = (typeClient: TypeClient) => {
+    // Une adresse étrangère n'est pas celle d'une société française : elle est ressaisie, jamais requalifiée en FR.
+    const resetsAdresse = typeClient === 'PROFESSIONNEL' && formData.paysClient !== PAYS_FRANCE;
+    updateCoordonnees(
+      {
+        typeClient,
+        raisonSociale: '',
+        numSiret: '',
+        ...(resetsAdresse ? EMPTY_ADRESSE_CLIENT : {}),
+      },
+      ['typeClient', 'raisonSociale', 'numSiret', ...(resetsAdresse ? ADRESSE_CLIENT_FIELDS : [])]
+    );
+  };
+
+  const handleAdresseIdentiqueChange = (adresseClientIdentiqueLogement: AdresseIdentique) => {
+    updateCoordonnees({ adresseClientIdentiqueLogement, ...EMPTY_ADRESSE_CLIENT }, [
+      'adresseClientIdentiqueLogement',
+      ...ADRESSE_CLIENT_FIELDS,
+    ]);
+  };
+
+  const handleNumSiretChange = (e: ChangeEvent<HTMLInputElement>) => {
+    updateCoordonnees({ numSiret: e.target.value.replace(/\D/g, '').slice(0, 14) }, ['numSiret']);
+  };
+
+  const handleCodePostalClientChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    const codePostalClient =
+      formData.paysClient === PAYS_FRANCE ? value.replace(/\D/g, '').slice(0, 5) : value;
+    updateCoordonnees({ codePostalClient }, ['codePostalClient']);
+  };
+
+  const handlePaysClientChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const paysClient = e.target.value;
+    const isCompatible = isPostalCodeValidForCountry(paysClient, formData.codePostalClient);
+    updateCoordonnees({ paysClient, ...(isCompatible ? {} : { codePostalClient: '' }) }, [
+      'paysClient',
+      'codePostalClient',
+    ]);
+  };
+
   const handleTurnstileChange = useCallback((token: string | null) => {
     setTurnstileToken(token);
     setErrors((prev) => {
@@ -322,7 +399,7 @@ export default function DemandeClassementForm({
     submissionId.current = currentSubmissionId;
 
     const payload: DemandeClassementSubmissionPayload = {
-      ...formData,
+      ...buildDemandeClassementPayload(formData),
       submissionId: currentSubmissionId,
       turnstileToken,
       consentVersion: CONSENT_VERSION,
@@ -468,6 +545,18 @@ export default function DemandeClassementForm({
           <fieldset className="inquiry-fieldset">
             <legend tabIndex={-1}>{demandeContent.sections.contact}</legend>
             <div className="inquiry-fields">
+              <RadioGroup
+                label={demandeContent.labels.civilite}
+                name="civilite"
+                value={formData.civilite}
+                options={CIVILITE_VALUES.map((value) => ({
+                  value,
+                  label: demandeContent.civiliteOptions[value],
+                }))}
+                onChange={handleCiviliteChange}
+                error={errors.civilite}
+                required
+              />
               <div className="inquiry-field-grid">
                 <Input
                   label={demandeContent.labels.nom}
@@ -523,6 +612,18 @@ export default function DemandeClassementForm({
                   required
                 />
               </div>
+              <ClientCoordonneesFields
+                content={demandeContent}
+                locale={locale}
+                data={formData}
+                errors={errors}
+                onChange={handleChange}
+                onTypeClientChange={handleTypeClientChange}
+                onAdresseIdentiqueChange={handleAdresseIdentiqueChange}
+                onNumSiretChange={handleNumSiretChange}
+                onCodePostalClientChange={handleCodePostalClientChange}
+                onPaysClientChange={handlePaysClientChange}
+              />
             </div>
           </fieldset>
         )}

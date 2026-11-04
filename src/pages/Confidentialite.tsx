@@ -95,7 +95,9 @@ export default function Confidentialite() {
                     <strong className="text-ink">
                       données d&apos;identification et de contact
                     </strong>{' '}
-                    : nom, prénom, adresse e-mail, numéro de téléphone ;
+                    : civilité, nom, prénom, adresse e-mail, numéro de téléphone, adresse postale
+                    et, si vous louez au nom d&apos;une société, sa raison sociale et son numéro
+                    SIRET ;
                   </li>
                   <li>
                     <strong className="text-ink">données relatives à votre demande</strong> : objet

@@ -1,6 +1,11 @@
 import { DEFAULT_LOCALE, type Locale } from './locales';
 import type { ApiErrorCode, FieldErrorCode } from '../utils/api';
-import type { ClassementActuelDeclare } from '../utils/formValidation';
+import type {
+  AdresseIdentique,
+  Civilite,
+  ClassementActuelDeclare,
+  TypeClient,
+} from '../utils/formValidation';
 
 type FieldErrorMessages = Partial<Record<FieldErrorCode, string>>;
 
@@ -40,6 +45,17 @@ type FormContent = {
       adresse: string;
       classementActuelDeclare: string;
       message: string;
+      civilite: string;
+      typeClient: string;
+      raisonSociale: string;
+      numSiret: string;
+      adresseIdentiqueParticulier: string;
+      adresseIdentiqueSociete: string;
+      adresseClient: string;
+      complementAdresseClient: string;
+      codePostalClient: string;
+      villeClient: string;
+      paysClient: string;
     };
     placeholders: {
       codePostal: string;
@@ -51,8 +67,12 @@ type FormContent = {
       adresse: string;
       classementActuelDeclare: string;
       message: string;
+      numSiret: string;
     };
     classementOptions: Record<ClassementActuelDeclare, string>;
+    civiliteOptions: Record<Civilite, string>;
+    typeClientOptions: Record<TypeClient, string>;
+    adresseIdentiqueOptions: Record<AdresseIdentique, string>;
     communeLookup: {
       loading: string;
       notFound: string;
@@ -82,6 +102,15 @@ type FormContent = {
     classementRequired: string;
     messageRequired: string;
     consentRequired: string;
+    civiliteRequired: string;
+    typeClientRequired: string;
+    raisonSocialeRequired: string;
+    numSiretRequired: string;
+    numSiretInvalid: string;
+    adresseIdentiqueRequired: string;
+    adresseClientRequired: string;
+    villeClientRequired: string;
+    codePostalEtrangerInvalid: string;
   };
   turnstile: {
     label: string;
@@ -146,6 +175,19 @@ export const formContent = {
         adresse: 'Adresse du logement',
         classementActuelDeclare: 'Classement actuel',
         message: 'Message (optionnel)',
+        civilite: 'Civilité',
+        typeClient: 'Vous louez ce logement :',
+        raisonSociale: 'Nom de la société',
+        numSiret: 'Numéro SIRET',
+        adresseIdentiqueParticulier:
+          'Votre adresse postale est-elle la même que celle du logement ?',
+        adresseIdentiqueSociete:
+          'L’adresse de votre société est-elle la même que celle du logement ?',
+        adresseClient: 'Adresse 1',
+        complementAdresseClient: 'Adresse 2 (facultatif)',
+        codePostalClient: 'Code postal',
+        villeClient: 'Ville',
+        paysClient: 'Pays',
       },
       placeholders: {
         codePostal: '24200',
@@ -158,6 +200,7 @@ export const formContent = {
         classementActuelDeclare: 'Sélectionnez votre situation',
         message:
           'Une précision sur votre logement ou vos disponibilités ? D’autres logements à classer ? Indiquez-les ici.',
+        numSiret: '14 chiffres',
       },
       classementOptions: {
         NC: 'Non classé',
@@ -168,6 +211,12 @@ export const formContent = {
         CINQ_ETOILES: '5 étoiles',
         INCONNU: 'Je ne sais pas',
       },
+      civiliteOptions: { Madame: 'Madame', Monsieur: 'Monsieur' },
+      typeClientOptions: {
+        PARTICULIER: 'En votre nom propre (y compris LMNP)',
+        PROFESSIONNEL: 'Au nom d’une société (SCI, SARL, SAS…)',
+      },
+      adresseIdentiqueOptions: { oui: 'Oui', non: 'Non' },
       communeLookup: {
         loading: 'Recherche des communes...',
         notFound: 'Aucune commune ne correspond à ce code postal. Merci de le corriger.',
@@ -199,6 +248,16 @@ export const formContent = {
       classementRequired: 'Sélectionnez votre situation',
       messageRequired: 'Le message est requis',
       consentRequired: 'Vous devez accepter la politique de confidentialité',
+      civiliteRequired: 'Sélectionnez votre civilité',
+      typeClientRequired: 'Indiquez à quel titre vous louez ce logement',
+      raisonSocialeRequired: 'Le nom de la société est requis',
+      numSiretRequired: 'Le numéro SIRET est requis',
+      numSiretInvalid: 'Le numéro SIRET doit contenir 14 chiffres',
+      adresseIdentiqueRequired: "Indiquez si l'adresse est la même que celle du logement",
+      adresseClientRequired: "L'adresse est requise",
+      villeClientRequired: 'La ville est requise',
+      codePostalEtrangerInvalid:
+        'Le code postal doit comporter au plus 10 lettres, chiffres, espaces ou tirets',
     },
     turnstile: {
       label: 'Vérification anti-spam',
@@ -270,6 +329,43 @@ export const formContent = {
         consent: { REQUIRED: 'Le consentement est requis.' },
         consentVersion: { REQUIRED: 'La version de consentement est requise.' },
         turnstileToken: { REQUIRED: 'La vérification anti-spam est requise.' },
+        civilite: {
+          REQUIRED: 'La civilité est requise.',
+          INVALID_VALUE: "La civilité n'est pas valide.",
+        },
+        typeClient: {
+          REQUIRED: 'Indiquez à quel titre vous louez ce logement.',
+          INVALID_VALUE: "Ce choix n'est pas valide.",
+        },
+        raisonSociale: {
+          REQUIRED: 'Le nom de la société est requis.',
+          TOO_LONG: 'Le nom de la société ne doit pas dépasser 255 caractères.',
+        },
+        numSiret: {
+          REQUIRED: 'Le numéro SIRET est requis.',
+          INVALID_VALUE: 'Le numéro SIRET doit contenir 14 chiffres.',
+        },
+        adresseClientIdentiqueLogement: {
+          REQUIRED: "Indiquez si l'adresse est la même que celle du logement.",
+          INVALID_VALUE: "Ce choix n'est pas valide.",
+        },
+        adresseClient: {
+          REQUIRED: "L'adresse est requise.",
+          TOO_LONG: "L'adresse ne doit pas dépasser 255 caractères.",
+        },
+        complementAdresseClient: { TOO_LONG: "L'adresse 2 ne doit pas dépasser 255 caractères." },
+        codePostalClient: {
+          REQUIRED: 'Le code postal est requis.',
+          INVALID_VALUE: "Le code postal n'est pas valide pour ce pays.",
+        },
+        villeClient: {
+          REQUIRED: 'La ville est requise.',
+          TOO_LONG: 'La ville ne doit pas dépasser 255 caractères.',
+        },
+        paysClient: {
+          REQUIRED: 'Le pays est requis.',
+          INVALID_VALUE: "Ce pays n'est pas valide.",
+        },
       },
     },
   },
@@ -317,6 +413,18 @@ export const formContent = {
         adresse: 'Accommodation address',
         classementActuelDeclare: 'Current classification',
         message: 'Message (optional)',
+        civilite: 'Title',
+        typeClient: 'You rent out this accommodation:',
+        raisonSociale: 'Company name',
+        numSiret: 'SIRET number',
+        adresseIdentiqueParticulier:
+          'Is your postal address the same as the accommodation address?',
+        adresseIdentiqueSociete: 'Is your company’s address the same as the accommodation address?',
+        adresseClient: 'Address line 1',
+        complementAdresseClient: 'Address line 2 (optional)',
+        codePostalClient: 'Postcode',
+        villeClient: 'City',
+        paysClient: 'Country',
       },
       placeholders: {
         codePostal: '24200',
@@ -329,6 +437,7 @@ export const formContent = {
         classementActuelDeclare: 'Select your situation',
         message:
           'Anything to add about your accommodation or availability? Other properties to classify? Mention them here.',
+        numSiret: '14 digits',
       },
       classementOptions: {
         NC: 'Not classified',
@@ -339,6 +448,12 @@ export const formContent = {
         CINQ_ETOILES: '5 stars',
         INCONNU: "I don't know",
       },
+      civiliteOptions: { Madame: 'Ms', Monsieur: 'Mr' },
+      typeClientOptions: {
+        PARTICULIER: 'In your own name (including LMNP)',
+        PROFESSIONNEL: 'Through a company (SCI, SARL, SAS…)',
+      },
+      adresseIdentiqueOptions: { oui: 'Yes', non: 'No' },
       communeLookup: {
         loading: 'Searching for towns...',
         notFound: 'No town matches this postcode. Please correct it.',
@@ -369,6 +484,16 @@ export const formContent = {
       classementRequired: 'Select your situation',
       messageRequired: 'Message is required',
       consentRequired: 'You must accept the privacy policy',
+      civiliteRequired: 'Select your title',
+      typeClientRequired: 'Tell us how you rent out this accommodation',
+      raisonSocialeRequired: 'Company name is required',
+      numSiretRequired: 'SIRET number is required',
+      numSiretInvalid: 'SIRET number must contain 14 digits',
+      adresseIdentiqueRequired: 'Tell us whether the address is the same as the accommodation',
+      adresseClientRequired: 'Address is required',
+      villeClientRequired: 'City is required',
+      codePostalEtrangerInvalid:
+        'Postcode must contain at most 10 letters, digits, spaces or hyphens',
     },
     turnstile: {
       label: 'Anti-spam verification',
@@ -440,6 +565,43 @@ export const formContent = {
         consent: { REQUIRED: 'Consent is required.' },
         consentVersion: { REQUIRED: 'Consent version is required.' },
         turnstileToken: { REQUIRED: 'Anti-spam verification is required.' },
+        civilite: {
+          REQUIRED: 'Title is required.',
+          INVALID_VALUE: 'Title is not valid.',
+        },
+        typeClient: {
+          REQUIRED: 'Tell us how you rent out this accommodation.',
+          INVALID_VALUE: 'This choice is not valid.',
+        },
+        raisonSociale: {
+          REQUIRED: 'Company name is required.',
+          TOO_LONG: 'Company name must not exceed 255 characters.',
+        },
+        numSiret: {
+          REQUIRED: 'SIRET number is required.',
+          INVALID_VALUE: 'SIRET number must contain 14 digits.',
+        },
+        adresseClientIdentiqueLogement: {
+          REQUIRED: 'Tell us whether the address is the same as the accommodation.',
+          INVALID_VALUE: 'This choice is not valid.',
+        },
+        adresseClient: {
+          REQUIRED: 'Address is required.',
+          TOO_LONG: 'Address must not exceed 255 characters.',
+        },
+        complementAdresseClient: { TOO_LONG: 'Address line 2 must not exceed 255 characters.' },
+        codePostalClient: {
+          REQUIRED: 'Postcode is required.',
+          INVALID_VALUE: 'Postcode is not valid for this country.',
+        },
+        villeClient: {
+          REQUIRED: 'City is required.',
+          TOO_LONG: 'City must not exceed 255 characters.',
+        },
+        paysClient: {
+          REQUIRED: 'Country is required.',
+          INVALID_VALUE: 'This country is not valid.',
+        },
       },
     },
   },
@@ -487,6 +649,19 @@ export const formContent = {
         adresse: 'Adres van de vakantiewoning',
         classementActuelDeclare: 'Huidige classificatie',
         message: 'Bericht (optioneel)',
+        civilite: 'Aanhef',
+        typeClient: 'U verhuurt deze vakantiewoning:',
+        raisonSociale: 'Naam van de vennootschap',
+        numSiret: 'SIRET-nummer',
+        adresseIdentiqueParticulier:
+          'Is uw postadres hetzelfde als het adres van de vakantiewoning?',
+        adresseIdentiqueSociete:
+          'Is het adres van uw vennootschap hetzelfde als het adres van de vakantiewoning?',
+        adresseClient: 'Adresregel 1',
+        complementAdresseClient: 'Adresregel 2 (optioneel)',
+        codePostalClient: 'Postcode',
+        villeClient: 'Plaats',
+        paysClient: 'Land',
       },
       placeholders: {
         codePostal: '24200',
@@ -499,6 +674,7 @@ export const formContent = {
         classementActuelDeclare: 'Selecteer uw situatie',
         message:
           'Iets toe te voegen over uw woning of beschikbaarheid? Nog andere woningen te classificeren? Vermeld ze hier.',
+        numSiret: '14 cijfers',
       },
       classementOptions: {
         NC: 'Niet geclassificeerd',
@@ -509,6 +685,12 @@ export const formContent = {
         CINQ_ETOILES: '5 sterren',
         INCONNU: 'Ik weet het niet',
       },
+      civiliteOptions: { Madame: 'Mevrouw', Monsieur: 'De heer' },
+      typeClientOptions: {
+        PARTICULIER: 'Op eigen naam (inclusief LMNP)',
+        PROFESSIONNEL: 'Via een vennootschap (SCI, SARL, SAS…)',
+      },
+      adresseIdentiqueOptions: { oui: 'Ja', non: 'Nee' },
       communeLookup: {
         loading: 'Gemeenten zoeken...',
         notFound: 'Geen enkele gemeente komt overeen met deze postcode. Corrigeer de postcode.',
@@ -540,6 +722,16 @@ export const formContent = {
       classementRequired: 'Selecteer uw situatie',
       messageRequired: 'Bericht is verplicht',
       consentRequired: 'U moet het privacybeleid accepteren',
+      civiliteRequired: 'Selecteer uw aanhef',
+      typeClientRequired: 'Geef aan hoe u deze vakantiewoning verhuurt',
+      raisonSocialeRequired: 'Naam van de vennootschap is verplicht',
+      numSiretRequired: 'SIRET-nummer is verplicht',
+      numSiretInvalid: 'Het SIRET-nummer moet uit 14 cijfers bestaan',
+      adresseIdentiqueRequired: 'Geef aan of het adres hetzelfde is als dat van de vakantiewoning',
+      adresseClientRequired: 'Adres is verplicht',
+      villeClientRequired: 'Plaats is verplicht',
+      codePostalEtrangerInvalid:
+        'De postcode mag maximaal 10 letters, cijfers, spaties of koppeltekens bevatten',
     },
     turnstile: {
       label: 'Antispamcontrole',
@@ -613,6 +805,43 @@ export const formContent = {
         consent: { REQUIRED: 'Toestemming is verplicht.' },
         consentVersion: { REQUIRED: 'Versie van de toestemming is verplicht.' },
         turnstileToken: { REQUIRED: 'Antispamcontrole is verplicht.' },
+        civilite: {
+          REQUIRED: 'Aanhef is verplicht.',
+          INVALID_VALUE: 'Aanhef is niet geldig.',
+        },
+        typeClient: {
+          REQUIRED: 'Geef aan hoe u deze vakantiewoning verhuurt.',
+          INVALID_VALUE: 'Deze keuze is niet geldig.',
+        },
+        raisonSociale: {
+          REQUIRED: 'Naam van de vennootschap is verplicht.',
+          TOO_LONG: 'De naam van de vennootschap mag niet langer zijn dan 255 tekens.',
+        },
+        numSiret: {
+          REQUIRED: 'SIRET-nummer is verplicht.',
+          INVALID_VALUE: 'Het SIRET-nummer moet uit 14 cijfers bestaan.',
+        },
+        adresseClientIdentiqueLogement: {
+          REQUIRED: 'Geef aan of het adres hetzelfde is als dat van de vakantiewoning.',
+          INVALID_VALUE: 'Deze keuze is niet geldig.',
+        },
+        adresseClient: {
+          REQUIRED: 'Adres is verplicht.',
+          TOO_LONG: 'Het adres mag niet langer zijn dan 255 tekens.',
+        },
+        complementAdresseClient: { TOO_LONG: 'Adresregel 2 mag niet langer zijn dan 255 tekens.' },
+        codePostalClient: {
+          REQUIRED: 'Postcode is verplicht.',
+          INVALID_VALUE: 'De postcode is niet geldig voor dit land.',
+        },
+        villeClient: {
+          REQUIRED: 'Plaats is verplicht.',
+          TOO_LONG: 'De plaats mag niet langer zijn dan 255 tekens.',
+        },
+        paysClient: {
+          REQUIRED: 'Land is verplicht.',
+          INVALID_VALUE: 'Dit land is niet geldig.',
+        },
       },
     },
   },
