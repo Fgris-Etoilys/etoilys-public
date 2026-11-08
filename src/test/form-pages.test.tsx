@@ -34,15 +34,19 @@ describe('public form pages', () => {
     const phone = container.querySelector('a[href="tel:+33649551540"]');
     expect(phone).toBeVisible();
     expect(phone).toHaveAccessibleName();
-    const privacy = container.querySelector(`a[href="${localizedRoutes.confidentialite[locale]}"]`);
-    expect(privacy).toBeVisible();
-    expect(privacy).toHaveAccessibleName();
 
     if (kind === 'contact') {
+      const privacy = container.querySelector(
+        `a[href="${localizedRoutes.confidentialite[locale]}"]`
+      );
+      expect(privacy).toBeVisible();
+      expect(privacy).toHaveAccessibleName();
       expect(container.querySelector('a[href="mailto:contact@etoilys.fr"]')).toBeVisible();
       expect(container).not.toHaveTextContent('1345 route de Dautres');
       expect(container).not.toHaveTextContent('24150 Mauzac et Grand Castang');
     } else {
+      // Le lien de confidentialité accompagne le consentement, à la dernière étape du wizard :
+      // voir demande-classement-wizard.test.tsx.
       if (locale === 'fr') {
         expect(screen.getByRole('link', { name: /Lire le guide/i })).toHaveAttribute(
           'href',

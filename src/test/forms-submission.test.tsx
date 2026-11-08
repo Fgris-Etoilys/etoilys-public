@@ -4,6 +4,22 @@ import { MemoryRouter } from 'react-router-dom';
 import ContactForm from '../components/forms/ContactForm';
 import DemandeClassementForm from '../components/forms/DemandeClassementForm';
 import { formContent } from '../i18n/formContent';
+import type { Locale } from '../i18n/locales';
+import {
+  clickNext,
+  clickSubmit,
+  COMMUNE_UNIQUE,
+  fieldByName,
+  jsonResponse,
+  mockDemandeApi,
+  reachFinalStep,
+  setField,
+  submitBody,
+  submitRequests,
+  SUCCESS_BODY,
+  CLIENT_VALUES,
+  WIZARD_VALUES,
+} from './demandeClassementWizard';
 
 const openAiAdsMock = vi.hoisted(() => ({
   trackLeadCreatedConversion: vi.fn(),
@@ -291,398 +307,206 @@ describe('localized form submissions', () => {
     expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'second-turnstile-token' });
   });
 
-  it('sends preferredLanguage en from the English classification request form', async () => {
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="en" />
-      </MemoryRouter>
+  describe('classification request', () => {
+    const fillClassementWizard = async (locale: Locale, token = 'turnstile-token') => {
+      await reachFinalStep(locale);
+      setField('message', 'Classement');
+      await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
+      act(() => {
+        turnstileCallback?.(token);
+      });
+    };
+
+    const renderClassementForm = (locale: Locale) =>
+      render(
+        <MemoryRouter>
+          <DemandeClassementForm locale={locale} />
+        </MemoryRouter>
+      );
+
+    beforeEach(() => {
+      mockDemandeApi();
+    });
+
+    it.each(['en', 'nl', 'fr'] as const)(
+      'sends preferredLanguage %s from the classification request form',
+      async (locale) => {
+        renderClassementForm(locale);
+
+        await fillClassementWizard(locale);
+        expect(renderTurnstile).toHaveBeenLastCalledWith(
+          expect.any(HTMLElement),
+          expect.objectContaining({ language: locale })
+        );
+        clickSubmit(locale);
+
+        await waitFor(() => expect(submitRequests()).toHaveLength(1));
+        expect(submitBody()).toMatchObject({
+          ...WIZARD_VALUES,
+          ...CLIENT_VALUES,
+          codePostal: '24150',
+          commune: COMMUNE_UNIQUE.nom,
+          codeInsee: COMMUNE_UNIQUE.codeInsee,
+          classementActuelDeclare: 'NC',
+          message: 'Classement',
+          consent: true,
+          turnstileToken: 'turnstile-token',
+          consentVersion: 'privacy-v1',
+          preferredLanguage: locale,
+        });
+      }
     );
 
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('turnstile-token');
+    it('disables the classification request submit button while the request is pending', async () => {
+      const deferred = createDeferredResponse();
+      mockDemandeApi({ submit: () => deferred.promise });
+      renderClassementForm('fr');
+
+      await fillClassementWizard('fr');
+      const submitButton = screen.getByRole('button', { name: /envoyer ma demande/i });
+      fireEvent.click(submitButton);
+
+      await waitFor(() => expect(submitButton).toBeDisabled());
+
+      await act(async () => {
+        deferred.resolveSuccess();
+        await deferred.promise;
+      });
     });
 
-    fillInput(/^last name/i, 'Doe');
-    fillInput(/^first name/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^phone/i, '+33 6 12 34 56 78');
-    fillInput(/^accommodation address/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classification');
-    fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: /send my request/i }));
+    it('resets the classification request Turnstile token after an API error and accepts a new token on retry', async () => {
+      let attempts = 0;
+      mockDemandeApi({
+        submit: () => {
+          attempts += 1;
+          return attempts === 1
+            ? jsonResponse(
+                {
+                  success: false,
+                  error: 'Envoi impossible.',
+                  errorCode: 'PERSISTENCE_UNAVAILABLE',
+                },
+                503
+              )
+            : jsonResponse(SUCCESS_BODY);
+        },
+      });
+      renderClassementForm('fr');
 
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
+      await fillClassementWizard('fr', 'first-turnstile-token');
+      const submitButton = screen.getByRole('button', { name: /envoyer ma demande/i });
+      fireEvent.click(submitButton);
 
-    expect(getLastFetchBody()).toMatchObject({
-      nom: 'Doe',
-      prenom: 'Jane',
-      email: 'jane@example.com',
-      telephone: '+33 6 12 34 56 78',
-      adresse: '1 rue de test, 24150 Mauzac',
-      message: 'Classification',
-      consent: true,
-      turnstileToken: 'turnstile-token',
-      consentVersion: 'privacy-v1',
-      preferredLanguage: 'en',
-    });
-  });
+      await waitFor(() => expect(submitRequests()).toHaveLength(1));
+      expect(submitBody()).toMatchObject({ turnstileToken: 'first-turnstile-token' });
+      expect(await screen.findByRole('alert')).toBeVisible();
+      await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
 
-  it('sends preferredLanguage nl from the Dutch classification request form', async () => {
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="nl" />
-      </MemoryRouter>
-    );
+      fireEvent.click(submitButton);
 
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    expect(renderTurnstile).toHaveBeenLastCalledWith(
-      expect.any(HTMLElement),
-      expect.objectContaining({ language: 'nl' })
-    );
-    act(() => {
-      turnstileCallback?.('turnstile-token');
-    });
+      expect(submitRequests()).toHaveLength(1);
+      expect(await screen.findByText(/merci de valider la vérification anti-spam/i)).toBeVisible();
 
-    fillInput(/^achternaam/i, 'Doe');
-    fillInput(/^voornaam/i, 'Jane');
-    fillInput(/^e-mail/i, 'jane@example.com');
-    fillInput(/^telefoon/i, '+33 6 12 34 56 78');
-    fillInput(/^adres van de vakantiewoning/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classificatie');
-    fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: /mijn aanvraag versturen/i }));
+      act(() => {
+        turnstileCallback?.('second-turnstile-token');
+      });
+      fireEvent.click(submitButton);
 
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
-
-    expect(getLastFetchBody()).toMatchObject({
-      nom: 'Doe',
-      prenom: 'Jane',
-      email: 'jane@example.com',
-      telephone: '+33 6 12 34 56 78',
-      adresse: '1 rue de test, 24150 Mauzac',
-      message: 'Classificatie',
-      consent: true,
-      turnstileToken: 'turnstile-token',
-      consentVersion: 'privacy-v1',
-      preferredLanguage: 'nl',
-    });
-  });
-
-  it('sends preferredLanguage fr from the French classification request form', async () => {
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('turnstile-token');
+      await waitFor(() => expect(submitRequests()).toHaveLength(2));
+      expect(submitBody()).toMatchObject({ turnstileToken: 'second-turnstile-token' });
     });
 
-    fillInput(/^nom/i, 'Doe');
-    fillInput(/^prénom/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
-    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classement');
-    fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
+    it('triggers the OpenAI Ads lead_created conversion only after a confirmed classification request success', async () => {
+      renderClassementForm('fr');
 
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
+      await fillClassementWizard('fr');
+      clickSubmit('fr');
 
-    expect(getLastFetchBody()).toMatchObject({
-      nom: 'Doe',
-      prenom: 'Jane',
-      email: 'jane@example.com',
-      telephone: '+33 6 12 34 56 78',
-      adresse: '1 rue de test, 24150 Mauzac',
-      message: 'Classement',
-      consent: true,
-      turnstileToken: 'turnstile-token',
-      consentVersion: 'privacy-v1',
-      preferredLanguage: 'fr',
-    });
-  });
-
-  it('disables the classification request submit button while the request is pending', async () => {
-    const deferred = createDeferredResponse();
-    vi.mocked(globalThis.fetch).mockReturnValueOnce(deferred.promise);
-
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('turnstile-token');
+      await waitFor(() => expect(submitRequests()).toHaveLength(1));
+      await waitFor(() =>
+        expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1)
+      );
+      expect(await screen.findByRole('status')).toBeVisible();
+      expect(screen.getByRole('status')).toHaveTextContent(
+        formContent.fr.demandeClassement.success
+      );
     });
 
-    fillInput(/^nom/i, 'Doe');
-    fillInput(/^prénom/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
-    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classement');
-    fireEvent.click(screen.getByRole('checkbox'));
+    it('does not trigger the OpenAI Ads conversion on frontend validation failure', () => {
+      renderClassementForm('fr');
 
-    const submitButton = screen.getByRole('button', { name: /envoyer ma demande/i });
-    fireEvent.click(submitButton);
+      // Aucun champ renseigné : la progression est bloquée avant tout appel API.
+      clickNext('fr');
 
-    await waitFor(() => expect(submitButton).toBeDisabled());
-
-    await act(async () => {
-      deferred.resolveSuccess();
-      await deferred.promise;
+      expect(globalThis.fetch).not.toHaveBeenCalled();
+      expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
     });
-  });
 
-  it('resets the classification request Turnstile token after an API error and accepts a new token on retry', async () => {
-    vi.mocked(globalThis.fetch)
-      .mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({
+    it('does not trigger the OpenAI Ads conversion on a network error', async () => {
+      mockDemandeApi({
+        submit: () => {
+          throw new Error('network down');
+        },
+      });
+      renderClassementForm('fr');
+
+      await fillClassementWizard('fr');
+      clickSubmit('fr');
+
+      await waitFor(() => expect(submitRequests()).toHaveLength(1));
+      await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
+      expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
+    });
+
+    it('does not trigger the OpenAI Ads conversion on an HTTP error response', async () => {
+      mockDemandeApi({
+        submit: () => jsonResponse({ success: false, error: 'Erreur serveur.' }, 500),
+      });
+      renderClassementForm('fr');
+
+      await fillClassementWizard('fr');
+      clickSubmit('fr');
+
+      await waitFor(() => expect(submitRequests()).toHaveLength(1));
+      await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
+      expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
+    });
+
+    it('does not trigger the OpenAI Ads conversion when the API reports a business failure', async () => {
+      mockDemandeApi({
+        submit: () =>
+          jsonResponse({
             success: false,
             error: 'Envoi impossible.',
             errorCode: 'NOTIFICATION_FAILED',
           }),
-          {
-            status: 503,
-            headers: { 'Content-Type': 'application/json' },
-          }
-        )
-      )
-      .mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({
-            success: true,
-            message: 'ok',
-          }),
-          {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-          }
-        )
+      });
+      renderClassementForm('fr');
+
+      await fillClassementWizard('fr');
+      clickSubmit('fr');
+
+      await waitFor(() => expect(submitRequests()).toHaveLength(1));
+      await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
+      expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
+    });
+
+    it('still shows the business success state and resets the form even if the OpenAI Ads helper throws', async () => {
+      openAiAdsMock.trackLeadCreatedConversion.mockImplementation(() => {
+        throw new Error('OpenAI Ads SDK exploded');
+      });
+      renderClassementForm('fr');
+
+      await fillClassementWizard('fr');
+      clickSubmit('fr');
+
+      await waitFor(() =>
+        expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1)
       );
-
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('first-turnstile-token');
+      expect(await screen.findByRole('status')).toHaveTextContent(
+        formContent.fr.demandeClassement.success
+      );
+      expect(fieldByName('codePostal')).toHaveValue('');
     });
-
-    fillInput(/^nom/i, 'Doe');
-    fillInput(/^prénom/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
-    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classement');
-    fireEvent.click(screen.getByRole('checkbox'));
-
-    const submitButton = screen.getByRole('button', { name: /envoyer ma demande/i });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
-    expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'first-turnstile-token' });
-    expect(await screen.findByRole('alert')).toBeVisible();
-    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
-
-    fireEvent.click(submitButton);
-
-    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
-    expect(await screen.findByText(/merci de valider la vérification anti-spam/i)).toBeVisible();
-
-    act(() => {
-      turnstileCallback?.('second-turnstile-token');
-    });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(2));
-    expect(getLastFetchBody()).toMatchObject({ turnstileToken: 'second-turnstile-token' });
-  });
-
-  it('triggers the OpenAI Ads lead_created conversion only after a confirmed classification request success', async () => {
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('turnstile-token');
-    });
-
-    fillInput(/^nom/i, 'Doe');
-    fillInput(/^prénom/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
-    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classement');
-    fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
-
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled());
-    await waitFor(() => expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1));
-    expect(await screen.findByRole('status')).toBeVisible();
-    expect(screen.getByRole('status')).toHaveTextContent(formContent.fr.demandeClassement.success);
-  });
-
-  it('does not trigger the OpenAI Ads conversion on frontend validation failure', async () => {
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    // No fields filled in and no Turnstile token provided: submit should be blocked before any API call.
-    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
-
-    expect(globalThis.fetch).not.toHaveBeenCalled();
-    expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
-  });
-
-  it('does not trigger the OpenAI Ads conversion on a network error', async () => {
-    vi.mocked(globalThis.fetch).mockRejectedValueOnce(new Error('network down'));
-
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('turnstile-token');
-    });
-
-    fillInput(/^nom/i, 'Doe');
-    fillInput(/^prénom/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
-    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classement');
-    fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
-
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
-    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
-    expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
-  });
-
-  it('does not trigger the OpenAI Ads conversion on an HTTP error response', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
-      new Response(JSON.stringify({ success: false, error: 'Erreur serveur.' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      })
-    );
-
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('turnstile-token');
-    });
-
-    fillInput(/^nom/i, 'Doe');
-    fillInput(/^prénom/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
-    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classement');
-    fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
-
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
-    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
-    expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
-  });
-
-  it('does not trigger the OpenAI Ads conversion when the API reports a business failure', async () => {
-    vi.mocked(globalThis.fetch).mockResolvedValueOnce(
-      new Response(
-        JSON.stringify({
-          success: false,
-          error: 'Envoi impossible.',
-          errorCode: 'NOTIFICATION_FAILED',
-        }),
-        {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }
-      )
-    );
-
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('turnstile-token');
-    });
-
-    fillInput(/^nom/i, 'Doe');
-    fillInput(/^prénom/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
-    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classement');
-    fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
-
-    await waitFor(() => expect(globalThis.fetch).toHaveBeenCalledTimes(1));
-    await waitFor(() => expect(resetTurnstile).toHaveBeenCalledWith('turnstile-widget'));
-    expect(openAiAdsMock.trackLeadCreatedConversion).not.toHaveBeenCalled();
-  });
-
-  it('still shows the business success state and resets the form even if the OpenAI Ads helper throws', async () => {
-    openAiAdsMock.trackLeadCreatedConversion.mockImplementation(() => {
-      throw new Error('OpenAI Ads SDK exploded');
-    });
-
-    render(
-      <MemoryRouter>
-        <DemandeClassementForm locale="fr" />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => expect(renderTurnstile).toHaveBeenCalled());
-    act(() => {
-      turnstileCallback?.('turnstile-token');
-    });
-
-    fillInput(/^nom/i, 'Doe');
-    fillInput(/^prénom/i, 'Jane');
-    fillInput(/^email/i, 'jane@example.com');
-    fillInput(/^téléphone/i, '+33 6 12 34 56 78');
-    fillInput(/^adresse/i, '1 rue de test, 24150 Mauzac');
-    fillTextarea('message', 'Classement');
-    fireEvent.click(screen.getByRole('checkbox'));
-    fireEvent.click(screen.getByRole('button', { name: /envoyer ma demande/i }));
-
-    await waitFor(() => expect(openAiAdsMock.trackLeadCreatedConversion).toHaveBeenCalledTimes(1));
-    expect(await screen.findByRole('status')).toHaveTextContent(
-      formContent.fr.demandeClassement.success
-    );
-
-    const nameInput = screen.getByLabelText(/^nom/i) as HTMLInputElement;
-    expect(nameInput.value).toBe('');
   });
 });

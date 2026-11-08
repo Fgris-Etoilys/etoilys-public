@@ -62,6 +62,7 @@ export default function TurnstileField({
   const containerRef = useRef<HTMLDivElement>(null);
   const errorId = useId();
   const widgetIdRef = useRef<string | null>(null);
+  const lastResetKeyRef = useRef(resetKey);
   const [localError, setLocalError] = useState<string | null>(null);
   const [widgetSize, setWidgetSize] = useState<TurnstileSize>('normal');
 
@@ -155,6 +156,10 @@ export default function TurnstileField({
   }, [siteKey, onTokenChange, messages, widgetSize, locale]);
 
   useEffect(() => {
+    // Au montage, le widget vient d'être rendu : le réinitialiser relancerait le défi pour rien.
+    if (lastResetKeyRef.current === resetKey) return;
+    lastResetKeyRef.current = resetKey;
+
     if (widgetIdRef.current && window.turnstile) {
       window.turnstile.reset(widgetIdRef.current);
       onTokenChange(null);

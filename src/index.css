@@ -1513,16 +1513,70 @@
   .inquiry-fieldset {
     @apply min-w-0 border-0 p-0;
   }
-  .inquiry-fieldset-divider {
-    @apply border-t border-ink/15;
-    margin-block: -2px -10px;
-  }
+  /* La progression affiche déjà le nom de l'étape : le titre reste pour les lecteurs d'écran. */
   .inquiry-fieldset > legend {
-    @apply mb-5 w-full text-base font-semibold text-ink;
+    @apply sr-only;
   }
-  .inquiry-fieldset-divider + .inquiry-fieldset > legend {
-    @apply mb-3;
+
+  .inquiry-steps {
+    @apply grid min-w-0 grid-cols-3;
   }
+  .inquiry-step {
+    @apply relative flex min-w-0 flex-col items-center gap-2 px-1 text-center text-xs text-muted sm:text-sm;
+    overflow-wrap: anywhere;
+  }
+  /* Trait vers l'étape précédente, entre les deux ronds de 1,75rem. */
+  .inquiry-step:not(:first-child)::before {
+    @apply absolute h-px bg-ink/20;
+    content: '';
+    top: 0.875rem;
+    left: calc(-50% + 1.125rem);
+    right: calc(50% + 1.125rem);
+  }
+  .inquiry-step-reached:not(:first-child)::before {
+    @apply bg-ink;
+  }
+  .inquiry-step-number {
+    @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-ink/25 text-xs font-medium;
+  }
+  .inquiry-step-reached .inquiry-step-number {
+    @apply border-ink bg-ink text-paper;
+  }
+  .inquiry-step[aria-current='step'] {
+    @apply font-semibold text-ink;
+  }
+
+  .inquiry-commune-status:not(:empty) {
+    @apply mt-6;
+  }
+
+  .inquiry-commune {
+    @apply flex min-w-0 flex-col gap-1;
+  }
+  .inquiry-commune-label {
+    @apply text-sm font-medium text-ink;
+  }
+  .inquiry-commune-name {
+    @apply text-base text-ink;
+  }
+
+  .inquiry-lookup-error {
+    @apply grid gap-3;
+  }
+  .inquiry-lookup-actions {
+    @apply flex flex-wrap items-center gap-4;
+  }
+
+  .inquiry-wizard-actions {
+    @apply flex flex-col-reverse gap-3 sm:flex-row;
+  }
+  .inquiry-wizard-actions .inquiry-submit-button {
+    @apply sm:flex-1;
+  }
+  .inquiry-previous-button {
+    @apply min-h-14 w-full sm:w-auto;
+  }
+
   .inquiry-form .ui-field {
     @apply min-h-[52px] rounded-control border-ink/25 bg-paper/30 text-base;
   }
@@ -1545,7 +1599,8 @@
   .inquiry-form label {
     @apply leading-relaxed;
   }
-  .inquiry-form label > span.text-alert-400 {
+  .inquiry-form label > span.text-alert-400,
+  .inquiry-form [role='radiogroup'] > p > span.text-alert-400 {
     @apply text-muted;
   }
   .inquiry-form input[type='checkbox'] {
@@ -1554,7 +1609,7 @@
   .inquiry-form input[type='checkbox'] + label {
     min-height: 44px;
   }
-  .inquiry-form :is(input, textarea, [tabindex='-1']) {
+  .inquiry-form :is(input, select, textarea, [tabindex='-1']) {
     scroll-margin-block: calc(var(--etoilys-header-height, 81px) + 24px) 24px;
   }
 

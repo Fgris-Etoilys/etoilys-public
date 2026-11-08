@@ -15,13 +15,13 @@ const strongClassName = 'text-ink';
 export const privacyPolicyContent = {
   fr: {
     title: 'Politique de confidentialité',
-    lastUpdated: 'Dernière mise à jour : 29 septembre 2026',
+    lastUpdated: 'Dernière mise à jour : 4 novembre 2026',
     cookiePreferencesLabel: 'Gérer mes cookies',
     body: undefined,
   },
   en: {
     title: 'Privacy policy',
-    lastUpdated: 'Last updated: September 29, 2026',
+    lastUpdated: 'Last updated: November 4, 2026',
     cookiePreferencesLabel: 'Manage cookies',
     body: (
       <>
@@ -85,8 +85,9 @@ export const privacyPolicyContent = {
           </p>
           <ul className="list-disc list-inside space-y-1.5 pl-2 mb-4">
             <li>
-              <strong className={strongClassName}>identification and contact data</strong>: last
-              name, first name, email address, phone number;
+              <strong className={strongClassName}>identification and contact data</strong>: title,
+              last name, first name, email address, phone number, postal address and, if you rent
+              through a company, its company name and SIRET number;
             </li>
             <li>
               <strong className={strongClassName}>data relating to your request</strong>: subject of
@@ -389,7 +390,7 @@ export const privacyPolicyContent = {
   },
   nl: {
     title: 'Privacybeleid',
-    lastUpdated: 'Laatst bijgewerkt: 29 september 2026',
+    lastUpdated: 'Laatst bijgewerkt: 4 november 2026',
     cookiePreferencesLabel: 'Cookies beheren',
     body: (
       <>
@@ -454,8 +455,9 @@ export const privacyPolicyContent = {
           </p>
           <ul className="list-disc list-inside space-y-1.5 pl-2 mb-4">
             <li>
-              <strong className={strongClassName}>identificatie- en contactgegevens</strong>: naam,
-              voornaam, e-mailadres, telefoonnummer;
+              <strong className={strongClassName}>identificatie- en contactgegevens</strong>:
+              aanhef, naam, voornaam, e-mailadres, telefoonnummer, postadres en, als u via een
+              vennootschap verhuurt, de naam en het SIRET-nummer daarvan;
             </li>
             <li>
               <strong className={strongClassName}>gegevens over uw aanvraag</strong>: onderwerp van

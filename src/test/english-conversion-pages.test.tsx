@@ -188,7 +188,8 @@ describe('English conversion pages', () => {
 
     const main = screen.getByRole('main');
 
-    expectHref(main, '/en/privacy-policy');
+    // Le lien de confidentialité accompagne le consentement, à la dernière étape du wizard :
+    // voir demande-classement-wizard.test.tsx.
     expectHref(main, ENGLISH_ARTICLE_PATH);
     expectEnglishMvpPageGovernance();
   });

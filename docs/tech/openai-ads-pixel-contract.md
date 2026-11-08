@@ -76,6 +76,7 @@ oaiq('measure', 'lead_created', { type: 'customer_action' });
 ```
 
 - Déclenché dans `src/components/forms/DemandeClassementForm.tsx`, immédiatement après `trackFormSubmitSucceeded('demande_classement')`, uniquement si `response.success === true` et `response.data.success === true`.
+- Une même demande ne déclenche qu'une conversion : `DemandeClassementForm` la déduplique sur son `submissionId`, conservé lors d'un retry. Un conflit `SUBMISSION_CONFLICT` (409) n'en déclenche aucune.
 - Le helper `trackLeadCreatedConversion()` ne reçoit aucun paramètre de l'appelant : il est structurellement impossible de lui faire transporter une donnée de formulaire.
 - Protégé par un `try/catch` interne au helper et par un second `try/catch` au point d'appel dans le formulaire : aucune défaillance du SDK OpenAI Ads ne peut empêcher l'affichage du succès métier ni la réinitialisation du formulaire.
 

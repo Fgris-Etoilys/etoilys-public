@@ -133,6 +133,68 @@ describe('submitToApi', () => {
     });
   });
 
+  it.each([
+    [
+      'FORM_OUTDATED',
+      400,
+      'This form has been updated. Please refresh the page before trying again.',
+    ],
+    [
+      'SUBMISSION_CONFLICT',
+      409,
+      'Your request has already been recorded with different details. To correct it, please call us.',
+    ],
+    [
+      'REFERENTIAL_UNAVAILABLE',
+      503,
+      'Town verification is temporarily unavailable. Please try again in a moment or call us.',
+    ],
+    [
+      'PERSISTENCE_UNAVAILABLE',
+      503,
+      'Your request could not be saved right now. Please try again.',
+    ],
+  ])(
+    'maps the classification request error %s to a localized message',
+    async (errorCode, status, error) => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+        new Response(JSON.stringify({ success: false, error: 'Message backend', errorCode }), {
+          status,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
+
+      await expect(
+        submitToApi('/public/forms/classement', { message: 'test' }, { locale: 'en' })
+      ).resolves.toEqual({ success: false, status, error, errorCode });
+    }
+  );
+
+  it.each(['INVALID_VALUE', 'TOO_LONG', 'INVALID_COMMUNE'])(
+    'keeps the field error code %s instead of rejecting the whole response',
+    async (fieldErrorCode) => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            success: false,
+            error: 'Données invalides.',
+            errorCode: 'VALIDATION_FAILED',
+            fieldErrors: { commune: 'Message backend' },
+            fieldErrorCodes: { commune: fieldErrorCode },
+          }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        )
+      );
+
+      await expect(
+        submitToApi('/public/forms/classement', { message: 'test' }, { locale: 'en' })
+      ).resolves.toMatchObject({
+        errorCode: 'VALIDATION_FAILED',
+        fieldErrorCodes: { commune: fieldErrorCode },
+      });
+    }
+  );
+
   it('preserves Starsmanager ValidationErrorResponse fieldErrors without inventing fieldErrorCodes', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(

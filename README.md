@@ -132,6 +132,41 @@ Réponse erreur transverse Starsmanager :
 { "code": "INVALID_REQUEST", "message": "...", "fieldErrors": { "champ": "..." } }
 ```
 
+### Demande de classement (ETOILYS-482)
+
+Le formulaire est un mini-wizard en trois étapes : Logement, Coordonnées, Demande. Il envoie un contrat unique, sans fallback vers l'ancien payload :
+
+```json
+{
+  "submissionId": "uuid stable pour une même demande",
+  "nom": "...",
+  "prenom": "...",
+  "email": "...",
+  "telephone": "...",
+  "adresse": "1 rue du Moulin",
+  "codePostal": "24200",
+  "commune": "Sarlat-la-Canéda",
+  "codeInsee": "24520",
+  "civilite": "Madame",
+  "typeClient": "PARTICULIER",
+  "adresseClientIdentiqueLogement": true,
+  "classementActuelDeclare": "INCONNU",
+  "message": "",
+  "consent": true,
+  "consentVersion": "privacy-v1",
+  "preferredLanguage": "fr",
+  "turnstileToken": "..."
+}
+```
+
+- `classementActuelDeclare` : `NC`, `UNE_ETOILE`, `DEUX_ETOILES`, `TROIS_ETOILES`, `QUATRE_ETOILES`, `CINQ_ETOILES` ou `INCONNU`. Aucune valeur n'est présélectionnée : `NC` et `INCONNU` restent deux déclarations distinctes.
+- `adresse` : 255 caractères maximum. Un dépassement affiche une erreur, sans troncature.
+- Coordonnées client : `civilite` (`Madame` ou `Monsieur`), `typeClient` (`PARTICULIER` ou `PROFESSIONNEL`) et `adresseClientIdentiqueLogement` (booléen) sont requis, sans valeur présélectionnée. Pour `PROFESSIONNEL`, ajouter `raisonSociale` et `numSiret` (14 chiffres). Pour une adresse différente (`false`), ajouter `adresseClient`, `villeClient`, `paysClient` (ISO alpha-2, `FR` pour une société), `codePostalClient` (requis en France, facultatif à l'étranger) et `complementAdresseClient` (facultatif). `buildDemandeClassementPayload` n'envoie que les champs applicables, car le backend refuse une valeur devenue sans objet.
+- La commune provient toujours d'une réponse de `GET /api/public/communes?codePostal=...` (`src/utils/communesApi.ts`). Le code INSEE reste technique : il n'est jamais affiché, pas plus que le SIREN ou l'IT destinataire.
+- `submissionId` est conservé après toute erreur et tout renouvellement Turnstile, puis renouvelé après un succès.
+
+Activation, ordre de bascule et rollback : `docs/tech/public-api-routing.md`.
+
 En développement, Vite proxy ces routes vers Starsmanager :
 
 - `/public/forms/contact`

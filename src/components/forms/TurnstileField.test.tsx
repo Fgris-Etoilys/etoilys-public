@@ -60,6 +60,17 @@ describe('Turnstile lifecycle', () => {
     }
   );
 
+  it('does not reset a widget that has just been rendered', () => {
+    reset.mockClear();
+    onTokenChange.mockClear();
+
+    render(<TurnstileField locale="fr" resetKey={3} onTokenChange={onTokenChange} />);
+
+    expect(window.turnstile?.render).toHaveBeenCalledTimes(1);
+    expect(reset).not.toHaveBeenCalled();
+    expect(onTokenChange).not.toHaveBeenCalled();
+  });
+
   it('blocks verification when the site key is missing', () => {
     vi.stubEnv('VITE_TURNSTILE_SITE_KEY', '');
     render(<TurnstileField locale="fr" resetKey={0} onTokenChange={onTokenChange} />);
