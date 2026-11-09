@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Award, Calculator, CheckCircle, Globe, Percent, PiggyBank, Ticket } from 'lucide-react';
 import Button from '../components/ui/Button';
 import PageCta from '../components/ui/PageCta';
@@ -319,6 +319,13 @@ export default function PourquoiClasser() {
                   {content.touristTax.cta.label}
                 </Button>
               </div>
+            )}
+            {content.touristTax.articleLink && (
+              <p className="mt-4 text-center text-sm">
+                <Link to={content.touristTax.articleLink.href} className="editorial-inline-link">
+                  {content.touristTax.articleLink.label}
+                </Link>
+              </p>
             )}
           </div>
         </div>

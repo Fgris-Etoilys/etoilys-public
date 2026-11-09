@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -1932,6 +1932,19 @@ export default function SimulateurTaxeSejour() {
               )}
             </div>
           </div>
+
+          {locale === 'fr' && (
+            <p className="mt-6 text-sm leading-relaxed text-muted">
+              Pour comprendre le calcul, lisez{' '}
+              <Link
+                to="/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne"
+                className="editorial-inline-link"
+              >
+                notre analyse de la taxe de séjour selon le classement
+              </Link>
+              .
+            </p>
+          )}
 
           <details className="simulator-disclosure simulator-method">
             <summary>Méthode, hypothèses et sources</summary>
