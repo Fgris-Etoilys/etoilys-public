@@ -393,9 +393,11 @@ describe('ClassementNarbonneCoteDuMidi', () => {
     });
     expect(isLocalRegistryEntryPublished('narbonne-cote-du-midi')).toBe(true);
     expect(getPublishedLocalChildEntriesForDepartment('aude').map((child) => child.id)).toEqual([
+      'carcassonne',
       'narbonne-cote-du-midi',
     ]);
     expect(getDepartmentInterventionArea('aude').localPages.map((page) => page.id)).toEqual([
+      'carcassonne',
       'narbonne-cote-du-midi',
     ]);
     expect(getIndexablePaths()).toContain(NARBONNE_PATH);

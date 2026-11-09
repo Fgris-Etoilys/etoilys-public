@@ -129,6 +129,9 @@ export const IMAGE_ALT_TEXT = {
   narbonneCoteDuMidiHero: {
     fr: 'Canal de la Robine et bâtiments du centre historique de Narbonne',
   },
+  carcassonneHero: {
+    fr: 'Cité médiévale de Carcassonne et Pont-Vieux au-dessus de l’Aude',
+  },
 } as const satisfies Partial<Record<ImageAssetKey, ImageAltText>>;
 
 export type DescribedImageAssetKey = keyof typeof IMAGE_ALT_TEXT;

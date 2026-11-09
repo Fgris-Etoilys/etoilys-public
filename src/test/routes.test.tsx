@@ -154,6 +154,10 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-aude'
     );
+    expect(screen.getByRole('link', { name: 'Carcassonne et le Carcassonnais' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-carcassonne'
+    );
     expect(screen.getByRole('link', { name: 'Narbonne et la Côte du Midi' })).toHaveAttribute(
       'href',
       '/classement-meuble-tourisme-narbonne'
@@ -307,8 +311,21 @@ describe('routing', () => {
     expect(screen.getByText('11 / L’AUDE')).toBeInTheDocument();
     const navigation = screen.getByRole('navigation', { name: 'Pages locales du département' });
     expect(
+      within(navigation).getByRole('link', { name: 'Carcassonne et le Carcassonnais' })
+    ).toHaveAttribute('href', '/classement-meuble-tourisme-carcassonne');
+    expect(
       within(navigation).getByRole('link', { name: 'Narbonne et la Côte du Midi' })
     ).toHaveAttribute('href', '/classement-meuble-tourisme-narbonne');
+  });
+
+  it('renders Carcassonne city local landing page', () => {
+    renderAt('/classement-meuble-tourisme-carcassonne');
+    expectPageHeading(/classement/i, /carcassonne/i, /carcassonnais/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d.intervention dans l.Aude/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-aude'
+    );
   });
 
   it('renders Narbonne and Côte du Midi destination local landing page', () => {

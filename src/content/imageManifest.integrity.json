@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "9734a25dd57f8ce28ad7306edb59aacd89486c004f7118a01b15fb495d64d9aa",
+  "pipelineSignature": "4cf7b7bb3a9bb0b759ba818aa70d532927894a0ed4fcd440eb37f5fe971a72db",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "3cc8d5a377a63765f393c3378bf0b73cf76e983e1c7f7f492c58347ed1447005"
+    "sha256": "3a88e9d7968c634cd14e319e1610f8c45b38c5f13d4435c96e6f9b422db632db"
   },
   "sources": [
     {
@@ -125,6 +125,16 @@
       "key": "audeHero",
       "path": "src/assets/seo-images/source/carcassonne-cite-pont-vieux-hero-crop.jpg",
       "sha256": "4898cdf5e4878b7472ccd037a65276379d6a15f5665c1f53f18d6451dd572bf0"
+    },
+    {
+      "key": "carcassonneExpertise",
+      "path": "src/assets/seo-images/source/carcassonne-pont-vieux-sue-winston-unsplash.jpg",
+      "sha256": "f9b3f37289839d47a7c85f6472d90e7da874ebd6dcfe4d44e26f26d6a4971d0d"
+    },
+    {
+      "key": "carcassonneHero",
+      "path": "src/assets/seo-images/source/cite-carcassonne-pont-vieux-hero-crop-lynx1211-wikimedia.jpg",
+      "sha256": "55af351896c6eb569b99f06d57edfba959ac9bfad36d0ce2498c342bf31b697e"
     },
     {
       "key": "figeacGrandFigeacHero",
@@ -1574,6 +1584,61 @@
       "sha256": "619360a0fa7c8c5581b242769108932865de10c4e570ba056df419efb37117a1"
     },
     {
+      "path": "/images/optimized/carcassonne-cite-panorama-1200.avif",
+      "bytes": 96308,
+      "sha256": "e525c883cb4bc22a2adf7e3c52e87633be27849d267e2b8b826ebccfed31f8b7"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1200.jpg",
+      "bytes": 148668,
+      "sha256": "8135b097fbf09dd671b2f4112e55e01327ee5a01594499e542ac02e8ae4f7476"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1200.webp",
+      "bytes": 137984,
+      "sha256": "490091d00407ebff872a8f4ee3eae1997946b25545b20a7d48b43d3574aaa9be"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1600.avif",
+      "bytes": 200439,
+      "sha256": "b0c14a197db14dbb264fac3568da91a5d5e956d3226888e9df0e0c35555d3bf5"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1600.webp",
+      "bytes": 255462,
+      "sha256": "e57b7e72bb0a1aa221d1af33101730e5bc1e990ee2f25f48942f65879592ce39"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1920.avif",
+      "bytes": 289819,
+      "sha256": "f61437d099b10fbabb8932f8cef67131926175ed560aa441bd0cb50784c603b6"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1920.webp",
+      "bytes": 368470,
+      "sha256": "14bddd8d9bddefdd2f3f5cde3c95534dc0881acf82c042dcad7d1561b52419e1"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-480.avif",
+      "bytes": 13083,
+      "sha256": "9ea6c1c9a3c05cb9c6998ea29cc7db5f48903ba1f1fe6cd42b8caac2b0c5cbda"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-480.webp",
+      "bytes": 19342,
+      "sha256": "a7d5ab5a75c345d065c8bd60fdda338fec621d6eabc6d153bf9b66aae759198a"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-768.avif",
+      "bytes": 31582,
+      "sha256": "d53d5794fb6253982081d4e7d3a87a7fda2e8aeeb313295ab56015cf6a276f7c"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-768.webp",
+      "bytes": 48446,
+      "sha256": "58c85ec37cf2a937330b7f06146b7cbbbc895296d42f6e30acd7c7b7e2276917"
+    },
+    {
       "path": "/images/optimized/carcassonne-cite-pont-vieux-1200.avif",
       "bytes": 219760,
       "sha256": "c4a85dcc05a87b3d4d6d1e03eda236f0dcfa9c299092834e7179acd862ca3b00"
@@ -1607,6 +1672,61 @@
       "path": "/images/optimized/carcassonne-cite-pont-vieux-768.webp",
       "bytes": 115400,
       "sha256": "8c3953a1e036af1e3877e38f27541e4019dfb6815a1899d2eb3a836eb63e22d6"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1200.avif",
+      "bytes": 199850,
+      "sha256": "e1d79ec5aca6abff5fe45a18490bebc148f31a3c6dc98e908fb0e8421fcccf53"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1200.jpg",
+      "bytes": 176038,
+      "sha256": "498a4b6009e0f4959f93934ba135b010c3229dd91ea4c95fa0c15c35a5a82e62"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1200.webp",
+      "bytes": 195500,
+      "sha256": "4e287652124787f3290f71e1b30a3845678c870571238b36c4ec6903e4a9e67b"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1600.avif",
+      "bytes": 350256,
+      "sha256": "5d8c91021a743da4556129720e6a88089d38c1f1fd5ca88abb47d5f775cdb4de"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1600.webp",
+      "bytes": 342612,
+      "sha256": "9970b84bbe2e070faacc41a524256784c9d3db13a7d546defbe776f290f74a0c"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1920.avif",
+      "bytes": 483132,
+      "sha256": "81d6009dbf5025a30e965caa2f77a106dca0dcd4e4506ded7d4c597e6e8673e8"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1920.webp",
+      "bytes": 478920,
+      "sha256": "e470209c82403546febd53619fef3e15fe10fe9a4aa8a03f1800a7b3eb4747e2"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-480.avif",
+      "bytes": 37157,
+      "sha256": "49cb06379e475173e5f6179cd12f7ad666180ad22f7045960a6b871fbbdf0b00"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-480.webp",
+      "bytes": 35448,
+      "sha256": "cc04362fef72090783803bdb05427e24d406375444ab087066b41cdc2e1bad19"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-768.avif",
+      "bytes": 82847,
+      "sha256": "5719d658d18ae4f532fd12e3cf8164aff6d7ba8351d86cc631b396c89c68d2b1"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-768.webp",
+      "bytes": 82612,
+      "sha256": "b3f5ce4eb85f91807d214c4b771fb3dd19aee389b2bd0918a8c0a9e5f59a5495"
     },
     {
       "path": "/images/optimized/figeac-place-ecritures-1200.avif",

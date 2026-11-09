@@ -12,6 +12,7 @@ import ClassementBassinArcachon from './pages/locales/ClassementBassinArcachon';
 import ClassementBergerac from './pages/locales/ClassementBergerac';
 import ClassementBordeaux from './pages/locales/ClassementBordeaux';
 import ClassementCahorsValleeLot from './pages/locales/ClassementCahorsValleeLot';
+import ClassementCarcassonne from './pages/locales/ClassementCarcassonne';
 import ClassementDordogne from './pages/locales/ClassementDordogne';
 import ClassementFigeacGrandFigeac from './pages/locales/ClassementFigeacGrandFigeac';
 import ClassementGironde from './pages/locales/ClassementGironde';
@@ -70,6 +71,7 @@ export default function AppRoutes() {
         <Route path="classement-meuble-tourisme-bergerac" element={<ClassementBergerac />} />
         <Route path="classement-meuble-tourisme-bordeaux" element={<ClassementBordeaux />} />
         <Route path="classement-meuble-tourisme-cahors" element={<ClassementCahorsValleeLot />} />
+        <Route path="classement-meuble-tourisme-carcassonne" element={<ClassementCarcassonne />} />
         <Route path="classement-meuble-tourisme-dordogne" element={<ClassementDordogne />} />
         <Route path="classement-meuble-tourisme-figeac" element={<ClassementFigeacGrandFigeac />} />
         <Route path="classement-meuble-tourisme-gironde" element={<ClassementGironde />} />

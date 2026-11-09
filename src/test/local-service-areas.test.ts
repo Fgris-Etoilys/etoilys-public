@@ -280,7 +280,7 @@ describe('local service areas data', () => {
     expect(getDepartmentEntryByCode('11')?.id).toBe('aude');
   });
 
-  it('publishes Aude in Occitanie with full coverage, its local child and a complete commune index', () => {
+  it('publishes Aude in Occitanie with full coverage, its local children and a complete commune index', () => {
     const aude = getDepartmentInterventionArea('aude');
     const occitanie = groupActiveDepartmentsByRegion().find(
       (group) => group.region.id === 'occitanie'
@@ -293,7 +293,10 @@ describe('local service areas data', () => {
       coverageMode: 'department',
       path: '/classement-meuble-tourisme-aude',
     });
-    expect(aude.localPages.map((localPage) => localPage.id)).toEqual(['narbonne-cote-du-midi']);
+    expect(aude.localPages.map((localPage) => localPage.id)).toEqual([
+      'carcassonne',
+      'narbonne-cote-du-midi',
+    ]);
     expect(occitanie?.departments.map((department) => department.id)).toEqual([
       'lot',
       'aveyron',

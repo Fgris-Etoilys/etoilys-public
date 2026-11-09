@@ -30,6 +30,7 @@ import {
   BERGERAC_LOCAL_LANDING_PAGE_V6,
   BORDEAUX_LOCAL_LANDING_PAGE_V6,
   CAHORS_VALLEE_LOT_LOCAL_LANDING_PAGE_V6,
+  CARCASSONNE_LOCAL_LANDING_PAGE_V6,
   DORDOGNE_LOCAL_LANDING_PAGE_V6,
   FIGEAC_GRAND_FIGEAC_LOCAL_LANDING_PAGE_V6,
   GIRONDE_LOCAL_LANDING_PAGE_V6,
@@ -901,8 +902,8 @@ describe('DepartmentLandingPage', () => {
       expect(link).toHaveAttribute('rel', 'noopener noreferrer');
     });
     expect(within(module).getAllByRole('link')).toHaveLength(3);
-    expect(document.querySelector('a[href*="carcassonne"]:not([target])')).toBeNull();
-    // Le lien vers la page fille reste dans la navigation de zone, pas dans le module territorial.
+    // Les liens vers les pages filles restent dans la navigation de zone, pas dans le module territorial.
+    expect(module.querySelector('a[href*="carcassonne"]:not([target])')).toBeNull();
     expect(module.querySelector('a[href*="narbonne"]')).toBeNull();
   });
 
@@ -960,6 +961,11 @@ describe('DepartmentLandingPage', () => {
       'Aude',
       AUDE_LOCAL_LANDING_PAGE_V6,
       ['Cité de Carcassonne, Aude', 'Gruissan et la tour Barberousse, Aude.'],
+    ],
+    [
+      'Carcassonne et le Carcassonnais',
+      CARCASSONNE_LOCAL_LANDING_PAGE_V6,
+      ['Cité de Carcassonne et Pont-Vieux', 'Pont-Vieux et Cité médiévale de Carcassonne'],
     ],
     [
       'Narbonne et la Côte du Midi',

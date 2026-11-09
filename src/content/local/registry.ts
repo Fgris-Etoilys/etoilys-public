@@ -377,6 +377,30 @@ export const LOCAL_REGISTRY: LocalRegistryEntry[] = [
     },
   },
   {
+    id: 'carcassonne',
+    kind: 'city',
+    name: 'Carcassonne et le Carcassonnais',
+    path: '/classement-meuble-tourisme-carcassonne',
+    departmentCode: '11',
+    regionId: 'occitanie',
+    parentId: 'aude',
+    status: 'published',
+    displayOrder: 5,
+    hubLabel: 'Carcassonne et le Carcassonnais',
+    departmentLabel: 'Carcassonne et le Carcassonnais',
+    seo: {
+      lastModified: '2026-11-09',
+      title: 'Classement meublé de tourisme à Carcassonne',
+      description:
+        'Faites classer votre gîte ou meublé de tourisme à Carcassonne et dans le Carcassonnais avec Etoilys. Visite officielle, tarifs clairs et demande en ligne.',
+      breadcrumbLabel: 'Carcassonne et le Carcassonnais',
+      ogImageKey: 'carcassonneHero',
+      lcpImageKey: 'carcassonneHero',
+      // Sur desktop, l’image remplit un cadre de 530 px de haut : 663 px de large au ratio 1,25.
+      lcpImageSizes: '(min-width: 900px) 663px, 100vw',
+    },
+  },
+  {
     id: 'narbonne-cote-du-midi',
     kind: 'destination',
     name: 'Narbonne et la Côte du Midi',

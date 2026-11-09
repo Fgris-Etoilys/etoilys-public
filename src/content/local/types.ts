@@ -7,7 +7,7 @@ import type { PricingProfileId } from './pricing';
 export type DepartmentAreaId =
   'aude' | 'aveyron' | 'dordogne' | 'gironde' | 'lot' | 'lot-et-garonne';
 
-export type CityAreaId = 'bergerac' | 'bordeaux';
+export type CityAreaId = 'bergerac' | 'bordeaux' | 'carcassonne';
 
 export type DestinationAreaId =
   | 'bassin-arcachon'

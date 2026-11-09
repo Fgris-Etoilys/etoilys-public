@@ -160,6 +160,18 @@ describe('seo governance', () => {
     ]);
   });
 
+  it('builds the Carcassonne breadcrumb hierarchy from zones to Aude', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-carcassonne')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Aude', url: `${SITE_URL}/classement-meuble-tourisme-aude` },
+      {
+        name: 'Carcassonne et le Carcassonnais',
+        url: `${SITE_URL}/classement-meuble-tourisme-carcassonne`,
+      },
+    ]);
+  });
+
   it('builds the Narbonne and Côte du Midi breadcrumb hierarchy from zones to Aude', () => {
     expect(getBreadcrumbItems('/classement-meuble-tourisme-narbonne')).toEqual([
       { name: 'Accueil', url: `${SITE_URL}/` },
@@ -360,6 +372,7 @@ describe('seo governance', () => {
       '/classement-meuble-tourisme-aveyron',
       '/classement-meuble-tourisme-bergerac',
       '/classement-meuble-tourisme-bordeaux',
+      '/classement-meuble-tourisme-carcassonne',
       '/classement-meuble-tourisme-gironde',
       '/classement-meuble-tourisme-lot',
       '/classement-meuble-tourisme-lot-et-garonne',

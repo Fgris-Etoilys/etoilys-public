@@ -53,7 +53,9 @@ export type ImageAssetKey =
   | 'sarlatPerigordNoirHero'
   | 'sarlatPlaceLiberte'
   | 'narbonneCoteDuMidiHero'
-  | 'narbonneCoteDuMidiPeyriac';
+  | 'narbonneCoteDuMidiPeyriac'
+  | 'carcassonneHero'
+  | 'carcassonneExpertise';
 
 export interface ImageManifestEntry {
   width: number;
@@ -558,5 +560,23 @@ export const IMAGE_MANIFEST: Record<ImageAssetKey, ImageManifestEntry> = {
       '/images/optimized/peyriac-de-mer-etang-ponton-480.webp 480w, /images/optimized/peyriac-de-mer-etang-ponton-768.webp 768w, /images/optimized/peyriac-de-mer-etang-ponton-1200.webp 1200w, /images/optimized/peyriac-de-mer-etang-ponton-1600.webp 1600w, /images/optimized/peyriac-de-mer-etang-ponton-1920.webp 1920w',
     srcSetAvif:
       '/images/optimized/peyriac-de-mer-etang-ponton-480.avif 480w, /images/optimized/peyriac-de-mer-etang-ponton-768.avif 768w, /images/optimized/peyriac-de-mer-etang-ponton-1200.avif 1200w, /images/optimized/peyriac-de-mer-etang-ponton-1600.avif 1600w, /images/optimized/peyriac-de-mer-etang-ponton-1920.avif 1920w',
+  },
+  carcassonneHero: {
+    width: 4320,
+    height: 3456,
+    src: '/images/optimized/carcassonne-cite-panorama-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/carcassonne-cite-panorama-480.webp 480w, /images/optimized/carcassonne-cite-panorama-768.webp 768w, /images/optimized/carcassonne-cite-panorama-1200.webp 1200w, /images/optimized/carcassonne-cite-panorama-1600.webp 1600w, /images/optimized/carcassonne-cite-panorama-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/carcassonne-cite-panorama-480.avif 480w, /images/optimized/carcassonne-cite-panorama-768.avif 768w, /images/optimized/carcassonne-cite-panorama-1200.avif 1200w, /images/optimized/carcassonne-cite-panorama-1600.avif 1600w, /images/optimized/carcassonne-cite-panorama-1920.avif 1920w',
+  },
+  carcassonneExpertise: {
+    width: 7310,
+    height: 4573,
+    src: '/images/optimized/carcassonne-pont-vieux-promeneurs-1200.jpg',
+    srcSetWebp:
+      '/images/optimized/carcassonne-pont-vieux-promeneurs-480.webp 480w, /images/optimized/carcassonne-pont-vieux-promeneurs-768.webp 768w, /images/optimized/carcassonne-pont-vieux-promeneurs-1200.webp 1200w, /images/optimized/carcassonne-pont-vieux-promeneurs-1600.webp 1600w, /images/optimized/carcassonne-pont-vieux-promeneurs-1920.webp 1920w',
+    srcSetAvif:
+      '/images/optimized/carcassonne-pont-vieux-promeneurs-480.avif 480w, /images/optimized/carcassonne-pont-vieux-promeneurs-768.avif 768w, /images/optimized/carcassonne-pont-vieux-promeneurs-1200.avif 1200w, /images/optimized/carcassonne-pont-vieux-promeneurs-1600.avif 1600w, /images/optimized/carcassonne-pont-vieux-promeneurs-1920.avif 1920w',
   },
 };
