@@ -160,6 +160,18 @@ describe('seo governance', () => {
     ]);
   });
 
+  it('builds the Narbonne and Côte du Midi breadcrumb hierarchy from zones to Aude', () => {
+    expect(getBreadcrumbItems('/classement-meuble-tourisme-narbonne')).toEqual([
+      { name: 'Accueil', url: `${SITE_URL}/` },
+      { name: 'Zones d’intervention', url: `${SITE_URL}/zones-intervention` },
+      { name: 'Aude', url: `${SITE_URL}/classement-meuble-tourisme-aude` },
+      {
+        name: 'Narbonne et la Côte du Midi',
+        url: `${SITE_URL}/classement-meuble-tourisme-narbonne`,
+      },
+    ]);
+  });
+
   it('builds the Bordeaux breadcrumb hierarchy from zones to Gironde', () => {
     expect(getBreadcrumbItems('/classement-meuble-tourisme-bordeaux')).toEqual([
       { name: 'Accueil', url: `${SITE_URL}/` },
@@ -351,6 +363,7 @@ describe('seo governance', () => {
       '/classement-meuble-tourisme-gironde',
       '/classement-meuble-tourisme-lot',
       '/classement-meuble-tourisme-lot-et-garonne',
+      '/classement-meuble-tourisme-narbonne',
       '/classement-meuble-tourisme-sarlat',
       '/recrutement',
       '/mentions-legales',

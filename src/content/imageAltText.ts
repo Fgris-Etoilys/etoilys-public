@@ -126,6 +126,9 @@ export const IMAGE_ALT_TEXT = {
   sarlatPerigordNoirHero: {
     fr: 'Château de Castelnaud dominant le village et la vallée de la Dordogne, dans le Périgord Noir',
   },
+  narbonneCoteDuMidiHero: {
+    fr: 'Canal de la Robine et bâtiments du centre historique de Narbonne',
+  },
 } as const satisfies Partial<Record<ImageAssetKey, ImageAltText>>;
 
 export type DescribedImageAssetKey = keyof typeof IMAGE_ALT_TEXT;

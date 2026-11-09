@@ -154,6 +154,10 @@ describe('routing', () => {
       'href',
       '/classement-meuble-tourisme-aude'
     );
+    expect(screen.getByRole('link', { name: 'Narbonne et la Côte du Midi' })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-narbonne'
+    );
   });
 
   it('renders visible breadcrumbs only for the local perimeter and keeps them aligned with JSON-LD', async () => {
@@ -301,6 +305,20 @@ describe('routing', () => {
     renderAt('/classement-meuble-tourisme-aude');
     expectPageHeading(/classement/i, /l’aude/i);
     expect(screen.getByText('11 / L’AUDE')).toBeInTheDocument();
+    const navigation = screen.getByRole('navigation', { name: 'Pages locales du département' });
+    expect(
+      within(navigation).getByRole('link', { name: 'Narbonne et la Côte du Midi' })
+    ).toHaveAttribute('href', '/classement-meuble-tourisme-narbonne');
+  });
+
+  it('renders Narbonne and Côte du Midi destination local landing page', () => {
+    renderAt('/classement-meuble-tourisme-narbonne');
+    expectPageHeading(/classement/i, /narbonne/i, /côte du midi/i);
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    expect(screen.getByRole('link', { name: /zone d.intervention dans l.Aude/i })).toHaveAttribute(
+      'href',
+      '/classement-meuble-tourisme-aude'
+    );
   });
 
   it('exposes service areas in classement navigation and keeps footer hub-focused', () => {

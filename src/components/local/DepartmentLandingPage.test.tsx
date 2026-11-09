@@ -38,6 +38,7 @@ import {
   LOT_LOCAL_LANDING_PAGE_V6,
   LOT_ET_GARONNE_LOCAL_LANDING_PAGE_V6,
   MEDOC_ATLANTIQUE_LOCAL_LANDING_PAGE_V6,
+  NARBONNE_COTE_DU_MIDI_LOCAL_LANDING_PAGE_V6,
   VALLEE_DORDOGNE_LOCAL_LANDING_PAGE_V6,
 } from '../../content/local/v6Pages';
 
@@ -901,7 +902,8 @@ describe('DepartmentLandingPage', () => {
     });
     expect(within(module).getAllByRole('link')).toHaveLength(3);
     expect(document.querySelector('a[href*="carcassonne"]:not([target])')).toBeNull();
-    expect(document.querySelector('a[href*="narbonne"]')).toBeNull();
+    // Le lien vers la page fille reste dans la navigation de zone, pas dans le module territorial.
+    expect(module.querySelector('a[href*="narbonne"]')).toBeNull();
   });
 
   it.each([
@@ -958,6 +960,11 @@ describe('DepartmentLandingPage', () => {
       'Aude',
       AUDE_LOCAL_LANDING_PAGE_V6,
       ['Cité de Carcassonne, Aude', 'Gruissan et la tour Barberousse, Aude.'],
+    ],
+    [
+      'Narbonne et la Côte du Midi',
+      NARBONNE_COTE_DU_MIDI_LOCAL_LANDING_PAGE_V6,
+      ['Canal de la Robine, Narbonne', 'Ponton de bois sur l’étang, Peyriac-de-Mer'],
     ],
   ])('renders required local V6 media captions for %s', (_, config, captions) => {
     renderLocalPage(config);

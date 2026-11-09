@@ -14,6 +14,7 @@ export type DestinationAreaId =
   | 'cahors-vallee-lot'
   | 'figeac-grand-figeac'
   | 'medoc-atlantique'
+  | 'narbonne-cote-du-midi'
   | 'sarlat-perigord-noir'
   | 'vallee-dordogne';
 

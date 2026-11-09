@@ -18,6 +18,7 @@ import ClassementGironde from './pages/locales/ClassementGironde';
 import ClassementLot from './pages/locales/ClassementLot';
 import ClassementLotEtGaronne from './pages/locales/ClassementLotEtGaronne';
 import ClassementMedocAtlantique from './pages/locales/ClassementMedocAtlantique';
+import ClassementNarbonneCoteDuMidi from './pages/locales/ClassementNarbonneCoteDuMidi';
 import ClassementSarlatPerigordNoir from './pages/locales/ClassementSarlatPerigordNoir';
 import ClassementValleeDordogne from './pages/locales/ClassementValleeDordogne';
 import SimulateurTaxeSejour from './pages/SimulateurTaxeSejour';
@@ -77,6 +78,10 @@ export default function AppRoutes() {
           element={<ClassementMedocAtlantique />}
         />
         <Route path="classement-meuble-tourisme-lot" element={<ClassementLot />} />
+        <Route
+          path="classement-meuble-tourisme-narbonne"
+          element={<ClassementNarbonneCoteDuMidi />}
+        />
         <Route
           path="classement-meuble-tourisme-sarlat"
           element={<ClassementSarlatPerigordNoir />}
