@@ -12,12 +12,14 @@ import ClassementBassinArcachon from './pages/locales/ClassementBassinArcachon';
 import ClassementBergerac from './pages/locales/ClassementBergerac';
 import ClassementBordeaux from './pages/locales/ClassementBordeaux';
 import ClassementCahorsValleeLot from './pages/locales/ClassementCahorsValleeLot';
+import ClassementCarcassonne from './pages/locales/ClassementCarcassonne';
 import ClassementDordogne from './pages/locales/ClassementDordogne';
 import ClassementFigeacGrandFigeac from './pages/locales/ClassementFigeacGrandFigeac';
 import ClassementGironde from './pages/locales/ClassementGironde';
 import ClassementLot from './pages/locales/ClassementLot';
 import ClassementLotEtGaronne from './pages/locales/ClassementLotEtGaronne';
 import ClassementMedocAtlantique from './pages/locales/ClassementMedocAtlantique';
+import ClassementNarbonneCoteDuMidi from './pages/locales/ClassementNarbonneCoteDuMidi';
 import ClassementSarlatPerigordNoir from './pages/locales/ClassementSarlatPerigordNoir';
 import ClassementValleeDordogne from './pages/locales/ClassementValleeDordogne';
 import SimulateurTaxeSejour from './pages/SimulateurTaxeSejour';
@@ -69,6 +71,7 @@ export default function AppRoutes() {
         <Route path="classement-meuble-tourisme-bergerac" element={<ClassementBergerac />} />
         <Route path="classement-meuble-tourisme-bordeaux" element={<ClassementBordeaux />} />
         <Route path="classement-meuble-tourisme-cahors" element={<ClassementCahorsValleeLot />} />
+        <Route path="classement-meuble-tourisme-carcassonne" element={<ClassementCarcassonne />} />
         <Route path="classement-meuble-tourisme-dordogne" element={<ClassementDordogne />} />
         <Route path="classement-meuble-tourisme-figeac" element={<ClassementFigeacGrandFigeac />} />
         <Route path="classement-meuble-tourisme-gironde" element={<ClassementGironde />} />
@@ -77,6 +80,10 @@ export default function AppRoutes() {
           element={<ClassementMedocAtlantique />}
         />
         <Route path="classement-meuble-tourisme-lot" element={<ClassementLot />} />
+        <Route
+          path="classement-meuble-tourisme-narbonne"
+          element={<ClassementNarbonneCoteDuMidi />}
+        />
         <Route
           path="classement-meuble-tourisme-sarlat"
           element={<ClassementSarlatPerigordNoir />}

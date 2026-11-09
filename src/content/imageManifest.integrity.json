@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "pipelineSignature": "f05e21fdf53242e4cf0e134ce5feaa4d42c55d3a895a95e8287eebfed957d2b4",
+  "pipelineSignature": "4cf7b7bb3a9bb0b759ba818aa70d532927894a0ed4fcd440eb37f5fe971a72db",
   "manifest": {
     "path": "src/content/imageManifest.ts",
-    "sha256": "ec197f04fcb752a6081a0e76174b96ba246eea408ada04b2cd098787a8d89bed"
+    "sha256": "3a88e9d7968c634cd14e319e1610f8c45b38c5f13d4435c96e6f9b422db632db"
   },
   "sources": [
     {
@@ -127,6 +127,16 @@
       "sha256": "4898cdf5e4878b7472ccd037a65276379d6a15f5665c1f53f18d6451dd572bf0"
     },
     {
+      "key": "carcassonneExpertise",
+      "path": "src/assets/seo-images/source/carcassonne-pont-vieux-sue-winston-unsplash.jpg",
+      "sha256": "f9b3f37289839d47a7c85f6472d90e7da874ebd6dcfe4d44e26f26d6a4971d0d"
+    },
+    {
+      "key": "carcassonneHero",
+      "path": "src/assets/seo-images/source/cite-carcassonne-pont-vieux-hero-crop-lynx1211-wikimedia.jpg",
+      "sha256": "55af351896c6eb569b99f06d57edfba959ac9bfad36d0ce2498c342bf31b697e"
+    },
+    {
       "key": "figeacGrandFigeacHero",
       "path": "src/assets/seo-images/source/figeac-place-ecritures-hero-crop-go69-wikimedia.jpg",
       "sha256": "ca2d8910daf467a5b22638b4a96709c8568b12fd5d964f9d70ee1c3edec851a1"
@@ -192,6 +202,11 @@
       "sha256": "adc7b276b334282e1daf9175ba17333259d61af6c21758ddca2677268bdd3f05"
     },
     {
+      "key": "narbonneCoteDuMidiHero",
+      "path": "src/assets/seo-images/source/narbonne-canal-robine-hero-crop.jpg",
+      "sha256": "92b3c9a62e9a1dd9702b110cd4ddd87ec9836487e8cfa69ea3475aa52dec70da"
+    },
+    {
       "key": "simulateurTaxeSejour",
       "path": "src/assets/seo-images/source/pexels-arnaud-32767039.jpg",
       "sha256": "cabe963bb75fe2f8e6c17122f96afc0ee726c6f0497f451136c381025930c75a"
@@ -230,6 +245,11 @@
       "key": "lotHero",
       "path": "src/assets/seo-images/source/pexels-tyvalloire-35860040.jpg",
       "sha256": "9bfc0fcf3d8ba13be010cd56bcc8ef6c05446ceacaa95836e64d9803347ae2ba"
+    },
+    {
+      "key": "narbonneCoteDuMidiPeyriac",
+      "path": "src/assets/seo-images/source/peyriac-de-mer-ponton-christian-ferrer-wikimedia.jpg",
+      "sha256": "d720592af49d543ccf5fc8fda078e229c13dd3381e70c324168ea159d806a151"
     },
     {
       "key": "pourquoiReferencement",
@@ -1564,6 +1584,61 @@
       "sha256": "619360a0fa7c8c5581b242769108932865de10c4e570ba056df419efb37117a1"
     },
     {
+      "path": "/images/optimized/carcassonne-cite-panorama-1200.avif",
+      "bytes": 96308,
+      "sha256": "e525c883cb4bc22a2adf7e3c52e87633be27849d267e2b8b826ebccfed31f8b7"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1200.jpg",
+      "bytes": 148668,
+      "sha256": "8135b097fbf09dd671b2f4112e55e01327ee5a01594499e542ac02e8ae4f7476"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1200.webp",
+      "bytes": 137984,
+      "sha256": "490091d00407ebff872a8f4ee3eae1997946b25545b20a7d48b43d3574aaa9be"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1600.avif",
+      "bytes": 200439,
+      "sha256": "b0c14a197db14dbb264fac3568da91a5d5e956d3226888e9df0e0c35555d3bf5"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1600.webp",
+      "bytes": 255462,
+      "sha256": "e57b7e72bb0a1aa221d1af33101730e5bc1e990ee2f25f48942f65879592ce39"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1920.avif",
+      "bytes": 289819,
+      "sha256": "f61437d099b10fbabb8932f8cef67131926175ed560aa441bd0cb50784c603b6"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-1920.webp",
+      "bytes": 368470,
+      "sha256": "14bddd8d9bddefdd2f3f5cde3c95534dc0881acf82c042dcad7d1561b52419e1"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-480.avif",
+      "bytes": 13083,
+      "sha256": "9ea6c1c9a3c05cb9c6998ea29cc7db5f48903ba1f1fe6cd42b8caac2b0c5cbda"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-480.webp",
+      "bytes": 19342,
+      "sha256": "a7d5ab5a75c345d065c8bd60fdda338fec621d6eabc6d153bf9b66aae759198a"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-768.avif",
+      "bytes": 31582,
+      "sha256": "d53d5794fb6253982081d4e7d3a87a7fda2e8aeeb313295ab56015cf6a276f7c"
+    },
+    {
+      "path": "/images/optimized/carcassonne-cite-panorama-768.webp",
+      "bytes": 48446,
+      "sha256": "58c85ec37cf2a937330b7f06146b7cbbbc895296d42f6e30acd7c7b7e2276917"
+    },
+    {
       "path": "/images/optimized/carcassonne-cite-pont-vieux-1200.avif",
       "bytes": 219760,
       "sha256": "c4a85dcc05a87b3d4d6d1e03eda236f0dcfa9c299092834e7179acd862ca3b00"
@@ -1597,6 +1672,61 @@
       "path": "/images/optimized/carcassonne-cite-pont-vieux-768.webp",
       "bytes": 115400,
       "sha256": "8c3953a1e036af1e3877e38f27541e4019dfb6815a1899d2eb3a836eb63e22d6"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1200.avif",
+      "bytes": 199850,
+      "sha256": "e1d79ec5aca6abff5fe45a18490bebc148f31a3c6dc98e908fb0e8421fcccf53"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1200.jpg",
+      "bytes": 176038,
+      "sha256": "498a4b6009e0f4959f93934ba135b010c3229dd91ea4c95fa0c15c35a5a82e62"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1200.webp",
+      "bytes": 195500,
+      "sha256": "4e287652124787f3290f71e1b30a3845678c870571238b36c4ec6903e4a9e67b"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1600.avif",
+      "bytes": 350256,
+      "sha256": "5d8c91021a743da4556129720e6a88089d38c1f1fd5ca88abb47d5f775cdb4de"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1600.webp",
+      "bytes": 342612,
+      "sha256": "9970b84bbe2e070faacc41a524256784c9d3db13a7d546defbe776f290f74a0c"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1920.avif",
+      "bytes": 483132,
+      "sha256": "81d6009dbf5025a30e965caa2f77a106dca0dcd4e4506ded7d4c597e6e8673e8"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-1920.webp",
+      "bytes": 478920,
+      "sha256": "e470209c82403546febd53619fef3e15fe10fe9a4aa8a03f1800a7b3eb4747e2"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-480.avif",
+      "bytes": 37157,
+      "sha256": "49cb06379e475173e5f6179cd12f7ad666180ad22f7045960a6b871fbbdf0b00"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-480.webp",
+      "bytes": 35448,
+      "sha256": "cc04362fef72090783803bdb05427e24d406375444ab087066b41cdc2e1bad19"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-768.avif",
+      "bytes": 82847,
+      "sha256": "5719d658d18ae4f532fd12e3cf8164aff6d7ba8351d86cc631b396c89c68d2b1"
+    },
+    {
+      "path": "/images/optimized/carcassonne-pont-vieux-promeneurs-768.webp",
+      "bytes": 82612,
+      "sha256": "b3f5ce4eb85f91807d214c4b771fb3dd19aee389b2bd0918a8c0a9e5f59a5495"
     },
     {
       "path": "/images/optimized/figeac-place-ecritures-1200.avif",
@@ -2184,6 +2314,61 @@
       "sha256": "f2065c39ccf6b8c0a12daf315f0195cc423882f291d284515838ba59bdbd92a5"
     },
     {
+      "path": "/images/optimized/narbonne-canal-robine-1200.avif",
+      "bytes": 121280,
+      "sha256": "de69de5870a93d3eb77199b9b33f699dcac9288decce91d4bb986a8fa50a962c"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-1200.jpg",
+      "bytes": 178498,
+      "sha256": "5492392cd62377d43d0429c37723c51666415410b0baedbcfd167e66f61b8adb"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-1200.webp",
+      "bytes": 157550,
+      "sha256": "f0ee9574d92521f17d2dbc3e8715b7fc9b5fcb2a6b3c019838b738896ba6fa04"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-1600.avif",
+      "bytes": 204446,
+      "sha256": "798f7c96e7bedbc2b179ffa8cf3cfa41c1b53ddda8273c01fbf982f724910ec2"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-1600.webp",
+      "bytes": 248634,
+      "sha256": "438abc7397206fdda73a8c2851c8e6c49b767903189f2f665c9a6427faabab9c"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-1920.avif",
+      "bytes": 262790,
+      "sha256": "d918a3a2a2648a9bba3344b5166eaacebeb81e2b7fbc99aacbb12374e3819cfb"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-1920.webp",
+      "bytes": 327584,
+      "sha256": "02a6ac1b5dd4328f391aa2b5838dd62b8537e5aa83d1eb9c3bb096740ff16329"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-480.avif",
+      "bytes": 22415,
+      "sha256": "dafc431465b6141da31b631f58925c0828866aca47f090553fc01363ea474dd7"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-480.webp",
+      "bytes": 28370,
+      "sha256": "d28099e7b512ba7de6ce5d5bdcc31901139c54d0d05611ccd5670694112095e5"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-768.avif",
+      "bytes": 48631,
+      "sha256": "d11f9a259549fcb7a2131b40bc17fdca32a4ae63d2d6f7058814a5d63852f915"
+    },
+    {
+      "path": "/images/optimized/narbonne-canal-robine-768.webp",
+      "bytes": 64182,
+      "sha256": "bdedbc9fcc9dd04c44ed39297fd3cddd3b1b1d37d64e543939522841d44fd52d"
+    },
+    {
       "path": "/images/optimized/pexels-d-goth-37724280-1200.avif",
       "bytes": 462773,
       "sha256": "396fc43d0d01ffce7fbf8b6cf8f895a600ac52ee47663ff19def9a3daccb0e1c"
@@ -2492,6 +2677,61 @@
       "path": "/images/optimized/pexels-tyvalloire-35860040-768.webp",
       "bytes": 85926,
       "sha256": "cdd55f9c76b11c68042ae75ec4b0ef94c0b39fa3f853ab6bc814741fad9c8830"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-1200.avif",
+      "bytes": 82202,
+      "sha256": "919cde04d3f068026805cd6b625dcdfc56fadeef0079a3a89cc12f500b42bf22"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-1200.jpg",
+      "bytes": 98431,
+      "sha256": "50f6e34aedf634ab488c7b653275e2de2d2812ee3d40909e8bddf576ccff9568"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-1200.webp",
+      "bytes": 87938,
+      "sha256": "1b62de0c575590b25290946eb1d7cba537db7d79edd2ef6fdae75ac5d95c412b"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-1600.avif",
+      "bytes": 137429,
+      "sha256": "6978e8d320560e4657542929bb53355e8352818bfda60ba975401800522f07df"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-1600.webp",
+      "bytes": 150138,
+      "sha256": "73fa8db5bc29fd52d63d5c0e6c3c1c4ad47e1acd1fb1d5c3c0d0b821e4f96cf7"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-1920.avif",
+      "bytes": 184379,
+      "sha256": "d57981c663d88b73e6ed96bb7291330bebea496c470afa850a53a50efe74d88d"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-1920.webp",
+      "bytes": 202718,
+      "sha256": "ea27927baf7f2aa8d5335d66763ec1fb52c96c7914ec718e2319ae268d6f8aeb"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-480.avif",
+      "bytes": 17492,
+      "sha256": "3ea4d90d8b08b06360893b51dff72facce3c176dff9e542c69b0aec3fbdb8ed3"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-480.webp",
+      "bytes": 18040,
+      "sha256": "2e1ce226e81aead695cd656359dd74cd6a36d651934fed56105aaad4b95bcefa"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-768.avif",
+      "bytes": 36780,
+      "sha256": "3be1d695bfa7a043fc4b7a9e612c53931273a64f1bacdf4e513651a45dfe11ed"
+    },
+    {
+      "path": "/images/optimized/peyriac-de-mer-etang-ponton-768.webp",
+      "bytes": 39016,
+      "sha256": "b36b4e349540d25ecf1692528f5325435b367543e34ed3d873f51411a8529067"
     },
     {
       "path": "/images/optimized/pourquoi-referencement-1200.avif",

@@ -212,14 +212,17 @@ function HighlightedTitle({
   title: string;
   highlightedText?: string | undefined;
 }) {
-  if (!highlightedText || !title.endsWith(highlightedText)) {
+  const highlightIndex = highlightedText ? title.lastIndexOf(highlightedText) : -1;
+
+  if (!highlightedText || highlightIndex === -1) {
     return <>{title}</>;
   }
 
   return (
     <>
-      {title.slice(0, -highlightedText.length)}
+      {title.slice(0, highlightIndex)}
       <span className="text-copper">{highlightedText}</span>
+      {title.slice(highlightIndex + highlightedText.length)}
     </>
   );
 }

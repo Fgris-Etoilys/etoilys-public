@@ -36,6 +36,8 @@ const HERO_ASSET_KEYS = new Set([
   'lotEtGaronneHero',
   'bergeracHero',
   'bordeauxHero',
+  'carcassonneHero',
+  'narbonneCoteDuMidiHero',
   'sarlatPerigordNoirHero',
 ]);
 // Legacy hero sources already validated visually. Re-crop these if softness appears.
@@ -244,6 +246,26 @@ const IMAGE_ASSETS = [
     key: 'sarlatPlaceLiberte',
     fileName: 'sarlat-place-liberte-jean-christophe-benoist-wikimedia.jpg',
     outputName: 'sarlat-place-liberte',
+  },
+  {
+    key: 'narbonneCoteDuMidiHero',
+    fileName: 'narbonne-canal-robine-hero-crop.jpg',
+    outputName: 'narbonne-canal-robine',
+  },
+  {
+    key: 'narbonneCoteDuMidiPeyriac',
+    fileName: 'peyriac-de-mer-ponton-christian-ferrer-wikimedia.jpg',
+    outputName: 'peyriac-de-mer-etang-ponton',
+  },
+  {
+    key: 'carcassonneHero',
+    fileName: 'cite-carcassonne-pont-vieux-hero-crop-lynx1211-wikimedia.jpg',
+    outputName: 'carcassonne-cite-panorama',
+  },
+  {
+    key: 'carcassonneExpertise',
+    fileName: 'carcassonne-pont-vieux-sue-winston-unsplash.jpg',
+    outputName: 'carcassonne-pont-vieux-promeneurs',
   },
 ];
 
