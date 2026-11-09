@@ -212,7 +212,7 @@ const articleContent: ActualiteArticleContent[] = [
     imageKey: 'articleResidence90Jours',
     href: '/actualites/airbnb-residence-principale-limite-90-jours',
     category: 'reglementation',
-    readingTimeMinutes: 8,
+    readingTimeMinutes: 9,
     relatedArticleSlugs: [
       'meubles-de-tourisme-ce-qui-change-vraiment-en-2025-2026',
       'copropriete-location-touristique-reglement',
@@ -238,13 +238,13 @@ const articleContent: ActualiteArticleContent[] = [
   {
     title: 'Taxe de séjour 2026 : pourquoi le classement change la donne',
     excerpt:
-      'Meublé classé ou non classé, barème 2026, taux, plafonds et surtaxes : comment le classement change concrètement la taxe de séjour.',
+      'Meublé classé ou non classé, barèmes 2026 et 2027, taux, plafonds et surtaxes : comment le classement change concrètement la taxe de séjour.',
     relatedSummary:
       'Comprendre la différence de calcul de la taxe de séjour entre un meublé classé et non classé.',
     imageKey: 'articleTaxeDeSejour2026',
     href: '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne',
     category: 'fiscalite',
-    readingTimeMinutes: 8,
+    readingTimeMinutes: 9,
     relatedArticleSlugs: [
       'micro-bic-2026-meuble-classe-vs-non-classe',
       'meuble-classe-non-classe-seuils-micro-bic',

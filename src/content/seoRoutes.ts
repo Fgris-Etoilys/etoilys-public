@@ -137,7 +137,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'classement',
   },
   '/les-avantages-du-classement': {
-    lastModified: '2026-06-25',
+    lastModified: '2026-11-09',
     title: 'Pourquoi faire classer son meublé de tourisme ?',
     description:
       'Fiscalité, taxe de séjour, visibilité, confiance des voyageurs : découvrez les avantages concrets du classement officiel d’un meublé de tourisme.',
@@ -232,9 +232,9 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     ogImageKey: 'articleMicroBic2026',
   },
   '/actualites/airbnb-residence-principale-limite-90-jours': {
-    title: 'Résidence principale : limite des 90 jours',
+    title: 'Airbnb en résidence principale : la limite des 90 jours',
     description:
-      "Comprendre qui est concerné par la limite des 90 jours et dans quels cas elle s'applique.",
+      "Airbnb en résidence principale : 120 jours par an par défaut, jusqu'à 90 si la commune l'abaisse. Qui est concerné, quelle amende, que vérifier ?",
     breadcrumbLabel: 'Limite des 90 jours',
     ogImageKey: 'articleResidence90Jours',
   },
@@ -248,7 +248,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
   '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne': {
     title: 'Taxe de séjour 2026 : pourquoi le classement change la donne',
     description:
-      'Meublé classé ou non classé, barème 2026, taux, plafonds et surtaxes : voici comment le classement change concrètement la taxe de séjour.',
+      'Meublé classé ou non classé, barèmes 2026 et 2027, taux, plafonds et surtaxes : voici comment le classement change concrètement la taxe de séjour.',
     breadcrumbLabel: 'Taxe de séjour 2026',
     ogImageKey: 'articleTaxeDeSejour2026',
   },
@@ -398,7 +398,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'classement',
   },
   '/en/benefits-of-furnished-tourist-accommodation-classification': {
-    lastModified: '2026-07-10',
+    lastModified: '2026-11-09',
     title: 'Benefits of official furnished tourist accommodation classification',
     description:
       'Tax regime, tourist tax, visibility, traveller trust and official signs: discover the benefits of official furnished tourist accommodation classification.',
@@ -483,7 +483,7 @@ export const SEO_ROUTES: Record<string, SeoRouteConfig> = {
     routeId: 'classement',
   },
   '/nl/voordelen-classificatie-vakantiewoning': {
-    lastModified: '2026-07-11',
+    lastModified: '2026-11-09',
     title: 'Voordelen van classificatie voor uw vakantiewoning',
     description:
       'Fiscaal regime, toeristenbelasting, officiële sterren en toeristische referenties: de concrete effecten van de classificatie van een Franse vakantiewoning.',

@@ -23,6 +23,10 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
     label: 'Le barème 2026 à retenir pour les meublés classés',
   },
   {
+    id: 'et-en-2027-le-bareme-national-reprend-les-memes-bornes',
+    label: 'Et en 2027 : le barème national reprend les mêmes bornes',
+  },
+  {
     id: 'les-taxes-additionnelles-le-detail-qu-il-ne-faut-surtout-pas-oublier',
     label: "Les taxes additionnelles : le détail qu'il ne faut surtout pas oublier",
   },
@@ -84,8 +88,9 @@ const keyTakeawaysBlock = (
         id: 'taxedesejour2026-takeaway-5',
         content: (
           <>
-            Avant de raisonner « à la louche », il faut vérifier le <strong>barème local</strong> et
-            les <strong>majorations applicables</strong> dans la commune du bien.
+            Le barème national publié pour <strong>2027</strong> reprend les mêmes bornes : pour
+            connaître le montant réel, il faut vérifier le <strong>barème local</strong> et les{' '}
+            <strong>majorations applicables</strong> dans la commune du bien.
           </>
         ),
       },
@@ -138,6 +143,18 @@ const articleSources = (
         organization: 'Service-Public',
         title: 'actualité officielle sur les tarifs 2026 à Paris',
         url: 'https://www.service-public.fr/particuliers/actualites/A17929',
+      },
+      {
+        id: 'collectivites-locales-bareme-applicable-pour-2027-8',
+        organization: 'collectivites-locales.gouv.fr',
+        title: 'Taxe de séjour : barème applicable pour 2027',
+        url: 'https://www.collectivites-locales.gouv.fr/files/files/2.%20G%C3%A9rer%20les%20finances%20publiques%20locales/3.%20La%20fiscalit%C3%A9%20locale/Fiscalit%C3%A9%20indirecte%20locale/Taxe%20de%20s%C3%A9jour/TS_TarifsMax2027.pdf',
+      },
+      {
+        id: 'collectivites-locales-taxe-de-sejour-9',
+        organization: 'collectivites-locales.gouv.fr',
+        title: 'Taxe de séjour : délibérations et barèmes',
+        url: 'https://www.collectivites-locales.gouv.fr/taxe-de-sejour',
       },
     ]}
   />
@@ -365,6 +382,40 @@ export default function ArticleTaxeDeSejour2026() {
         Le classement ne fixe pas le montant exact partout en France. Il fait entrer le bien dans
         une catégorie de barème local plus lisible.
       </blockquote>
+
+      {/* Section 2027 */}
+      <ArticleSectionHeading id="et-en-2027-le-bareme-national-reprend-les-memes-bornes">
+        Et en 2027 : le barème national reprend les mêmes bornes
+      </ArticleSectionHeading>
+      <p className="text-muted leading-comfortable mb-4">
+        Le{' '}
+        <a
+          href="https://www.collectivites-locales.gouv.fr/files/files/2.%20G%C3%A9rer%20les%20finances%20publiques%20locales/3.%20La%20fiscalit%C3%A9%20locale/Fiscalit%C3%A9%20indirecte%20locale/Taxe%20de%20s%C3%A9jour/TS_TarifsMax2027.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="article-inline-link"
+        >
+          barème applicable pour 2027
+        </a>{' '}
+        reprend, pour les meublés de tourisme classés, les mêmes minimums et maximums que le tableau
+        ci-dessus. La règle des non classés ne change pas non plus : entre{' '}
+        <strong>1 % et 5 %</strong> du coût par personne de la nuitée HT, dans la limite du tarif le
+        plus élevé adopté par la collectivité.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        Cela ne garantit pas un montant identique dans votre commune. Le barème national ne fixe que
+        des bornes, et{' '}
+        <a
+          href="https://www.collectivites-locales.gouv.fr/taxe-de-sejour"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="article-inline-link"
+        >
+          une délibération prise avant le 1er juillet
+        </a>{' '}
+        s'applique à compter du 1er janvier de l'année suivante. Pour 2027, vérifiez donc le tarif
+        voté par votre commune ou votre EPCI.
+      </p>
 
       {/* Section 4 */}
       <ArticleSectionHeading id="les-taxes-additionnelles-le-detail-qu-il-ne-faut-surtout-pas-oublier">

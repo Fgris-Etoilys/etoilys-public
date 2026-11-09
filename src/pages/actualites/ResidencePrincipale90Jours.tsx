@@ -28,6 +28,10 @@ const tableOfContents: readonly ArticleTableOfContentsItem[] = [
     label: "Dépasser le plafond dans une commune qui l'a abaissé : qu'est-ce que cela change ?",
   },
   {
+    id: 'sur-airbnb-que-se-passe-t-il-quand-le-plafond-est-atteint',
+    label: 'Sur Airbnb, que se passe-t-il quand le plafond est atteint ?',
+  },
+  {
     id: 'le-classement-change-t-il-quelque-chose-a-cette-limite',
     label: 'Le classement change-t-il quelque chose à cette limite ?',
   },
@@ -109,6 +113,15 @@ const keyTakeawaysBlock = (
           </>
         ),
       },
+      {
+        id: 'residence-principale-airbnb-calendrier',
+        content: (
+          <>
+            Sur <strong>Airbnb</strong>, le calendrier peut se fermer automatiquement une fois le
+            plafond atteint, mais la limite vaut pour l'ensemble des canaux de location.
+          </>
+        ),
+      },
     ]}
   />
 );
@@ -165,8 +178,20 @@ const articleSources = (
         id: 'direction-generale-des-entreprises-api-meubles-guichet-unique-de-centralisation-des-donnees-d-activ-8',
         organization: 'Direction générale des Entreprises',
         title:
-          "API Meublés, guichet unique de centralisation des données d'activité des intermédiaires de meublés de tourisme—publié le 5 mars 2026, mis à jour le 25 mars 2026",
+          "API Meublés, guichet unique de centralisation des données d'activité des intermédiaires de meublés de tourisme—publié le 5 mars 2026, mis à jour le 23 juillet 2026",
         url: 'https://www.entreprises.gouv.fr/espace-entreprises/s-informer-sur-la-reglementation/lapi-meubles-guichet-unique-de-centralisation',
+      },
+      {
+        id: 'ville-de-paris-location-limitee-a-90-jours-9',
+        organization: 'Ville de Paris',
+        title: 'Location limitée à 90 jours : Paris serre la vis sur les meublés touristiques',
+        url: 'https://www.paris.fr/pages/location-limitee-a-90-jours-paris-serre-la-vis-sur-les-meubles-touristiques-29653',
+      },
+      {
+        id: 'airbnb-reglementation-france-10',
+        organization: 'Airbnb',
+        title: 'Centre d’aide : réglementation applicable aux hôtes en France',
+        url: 'https://www.airbnb.com/e/reglementation',
       },
     ]}
   />
@@ -316,7 +341,9 @@ export default function ArticleResidencePrincipale90Jours() {
         résidence secondaire n'entre pas dans ce régime "résidence principale louée ponctuellement".
         Elle peut être soumise à des règles beaucoup plus contraignantes, notamment en matière de{' '}
         <strong>déclaration</strong>, de <strong>numéro d'enregistrement</strong> ou de{' '}
-        <strong>changement d'usage</strong> selon la commune.
+        <strong>changement d'usage</strong> selon la commune. Le plafond de 120 jours, ou le plafond
+        abaissé par la commune, est prévu pour le meublé déclaré comme résidence principale : il ne
+        se transpose pas tel quel à une résidence secondaire.
       </p>
       <p className="text-muted leading-comfortable mb-4">
         Autrement dit, la question "suis-je concerné par la limite des 90 jours ?" doit d'abord être
@@ -422,6 +449,26 @@ export default function ArticleResidencePrincipale90Jours() {
         automatique applicable partout : il faut vérifier la délibération locale et la
         réglementation en vigueur dans la commune du logement.
       </blockquote>
+
+      <h3 className="mt-8 mb-3">L'exemple de Paris : 90 jours par an depuis le 1er janvier 2025</h3>
+      <p className="text-muted leading-comfortable mb-4">
+        Paris illustre ce mécanisme. La{' '}
+        <a
+          href="https://www.paris.fr/pages/location-limitee-a-90-jours-paris-serre-la-vis-sur-les-meubles-touristiques-29653"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="article-inline-link"
+        >
+          Ville de Paris
+        </a>{' '}
+        indique qu'à partir du <strong>1er janvier 2025</strong>, la location d'une résidence
+        principale en meublé touristique y est limitée à <strong>90 jours par an</strong>, au lieu
+        de 120 auparavant.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        Ce cas ne vaut que pour Paris. Ailleurs, le plafond dépend de la délibération de la commune
+        et, à défaut, il reste de 120 jours.
+      </p>
 
       {/* Section 4 */}
       <ArticleSectionHeading id="le-piege-des-90-jours-il-y-a-en-realite-plusieurs-regles-differentes">
@@ -556,6 +603,64 @@ export default function ArticleResidencePrincipale90Jours() {
         ))}
       </div>
 
+      {/* Section Airbnb */}
+      <ArticleSectionHeading id="sur-airbnb-que-se-passe-t-il-quand-le-plafond-est-atteint">
+        Sur Airbnb, que se passe-t-il quand le plafond est atteint ?
+      </ArticleSectionHeading>
+      <p className="text-muted leading-comfortable mb-4">
+        Dans sa{' '}
+        <a
+          href="https://www.airbnb.com/e/reglementation"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="article-inline-link"
+        >
+          page consacrée à la réglementation en France
+        </a>
+        , Airbnb explique que ce plafond vise les résidences principales louées en{' '}
+        <strong>logement entier</strong> : 120 nuits par année civile par défaut, et jusqu'à 90
+        nuits dans les communes qui l'ont abaissé.
+      </p>
+      <p className="text-muted leading-comfortable mb-4">
+        Concrètement, la plateforme indique que :
+      </p>
+      <ul className="space-y-2 mb-6 text-muted">
+        <li className="flex gap-3">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
+            •
+          </span>
+          <span>
+            le <strong>calendrier des annonces concernées se ferme automatiquement</strong> une fois
+            le plafond atteint, dans les communes où l'enregistrement des meublés de tourisme a été
+            mis en place ;
+          </span>
+        </li>
+        <li className="flex gap-3">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
+            •
+          </span>
+          <span>
+            la location d'une <strong>chambre</strong> dans sa résidence principale n'est pas
+            concernée par ce plafond ;
+          </span>
+        </li>
+        <li className="flex gap-3">
+          <span className="mt-0.5 shrink-0 font-bold text-copper" aria-hidden="true">
+            •
+          </span>
+          <span>
+            une <strong>demande d'exemption</strong> peut être faite depuis les préférences de
+            l'annonce, rubrique « Réglementations », notamment pour raison de santé, obligation
+            professionnelle, force majeure ou location en bail mobilité.
+          </span>
+        </li>
+      </ul>
+      <p className="text-muted leading-comfortable mb-4">
+        Ne vous fiez pas pour autant au seul compteur d'une plateforme. La limite légale porte sur
+        le logement, pas sur un site de réservation : les nuits louées via Airbnb, Abritel, Booking
+        ou en direct doivent donc être additionnées.
+      </p>
+
       {/* Section 6 */}
       <ArticleSectionHeading id="le-classement-change-t-il-quelque-chose-a-cette-limite">
         Le classement change-t-il quelque chose à cette limite ?
@@ -632,10 +737,11 @@ export default function ArticleResidencePrincipale90Jours() {
                   <p className="mb-3">
                     Depuis le 20 mai 2026, le Code du tourisme prévoit une déclaration soumise à
                     enregistrement via un téléservice national pour les meublés de tourisme. En
-                    pratique, la DGE indique que le dispositif API Meublés est encore en phase de
-                    transition : pendant la version bêta, les loueurs continuent à s'enregistrer
-                    auprès de leur commune, puis la version finale prévue au second semestre 2026
-                    doit permettre l'enregistrement national direct par les loueurs.
+                    pratique, la DGE indiquait dans sa mise à jour du 23 juillet 2026 que la version
+                    suivante d'API Meublés et ce téléservice sont annoncés pour le quatrième
+                    trimestre 2026. Jusqu'à sa mise en service, vos obligations restent celles
+                    prévues dans votre commune : si elle a mis en place une procédure
+                    d'enregistrement, vous devez continuer à l'utiliser.
                   </p>
                   <p>
                     Avant de louer, vérifiez donc à la fois les consignes de votre commune et l'état

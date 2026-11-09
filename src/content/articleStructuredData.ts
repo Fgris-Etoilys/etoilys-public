@@ -87,9 +87,9 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     path: '/actualites/airbnb-residence-principale-limite-90-jours',
     headline: 'Airbnb en résidence principale : la limite des 90 jours, qui est concerné ?',
     description:
-      "La limite des 90 jours ne s'applique pas partout automatiquement. Points de contexte et conditions locales.",
+      "Airbnb en résidence principale : 120 jours par an par défaut, jusqu'à 90 si la commune l'abaisse. Qui est concerné, quelle amende, que vérifier ?",
     datePublished: '2026-03-27',
-    dateModified: '2026-06-07',
+    dateModified: '2026-11-09',
     imageKey: 'articleResidence90Jours',
     authorId: 'florian-grisorio',
   },
@@ -107,9 +107,9 @@ export const ARTICLE_STRUCTURED_DATA: ArticleStructuredDataConfig[] = [
     path: '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne',
     headline: 'Taxe de séjour 2026 : pourquoi le classement change la donne',
     description:
-      'Meublé classé ou non classé, barème 2026, taux, plafonds et surtaxes : comment le classement change concrètement la taxe de séjour.',
+      'Meublé classé ou non classé, barèmes 2026 et 2027, taux, plafonds et surtaxes : comment le classement change concrètement la taxe de séjour.',
     datePublished: '2026-04-17',
-    dateModified: '2026-04-17',
+    dateModified: '2026-11-09',
     imageKey: 'articleTaxeDeSejour2026',
     authorId: 'florian-grisorio',
   },

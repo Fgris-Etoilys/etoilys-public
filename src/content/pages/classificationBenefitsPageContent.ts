@@ -98,6 +98,10 @@ export type ClassificationBenefitsPageContent = {
       label: string;
       href: string;
     };
+    articleLink?: {
+      label: string;
+      href: string;
+    };
   };
   socialRegime: {
     title: string;
@@ -266,7 +270,7 @@ export const classificationBenefitsPageContent = {
       },
       example: {
         title: 'Exemple à Paris — meublé 3★, loué 120 € / nuit à 2 personnes (60 € HT / pers)',
-        note: 'Paris applique une surtaxe départementale (+10 %) et une surtaxe Île-de-France Mobilités (+200 %) sur la base de la taxe de séjour.',
+        note: 'Paris applique une surtaxe départementale (+10 %), une surtaxe régionale (+15 %) et une surtaxe Île-de-France Mobilités (+200 %) sur la base de la taxe de séjour.',
         headers: ['Détail', 'Non classé', 'Classé 3★'],
         rows: [
           {
@@ -275,20 +279,25 @@ export const classificationBenefitsPageContent = {
             classified: '1,70 €',
           },
           { label: '+ Surtaxe dépt. (10 %)', unclassified: '0,30 €', classified: '0,17 €' },
+          { label: '+ Surtaxe régionale (15 %)', unclassified: '0,45 €', classified: '0,26 €' },
           {
             label: '+ Surtaxe IDF Mobilités (200 %)',
             unclassified: '6,00 €',
             classified: '3,40 €',
           },
-          { label: 'Total / pers / nuit', unclassified: '9,30 €', classified: '5,27 €' },
-          { label: 'Total 2 pers / nuit', unclassified: '18,60 €', classified: '10,54 €' },
+          { label: 'Total / pers / nuit', unclassified: '9,75 €', classified: '5,53 €' },
+          { label: 'Total 2 pers / nuit', unclassified: '19,50 €', classified: '11,06 €' },
         ],
-        totalValue: '8,06 €',
+        totalValue: '8,44 €',
         totalLabel: 'de taxe de séjour en moins par nuit, répercutés sur le voyageur',
       },
       cta: {
         label: 'Simuler l’impact du classement sur la taxe de séjour',
         href: '/simulateur-taxe-sejour',
+      },
+      articleLink: {
+        label: 'Lire notre analyse détaillée de la taxe de séjour selon le classement',
+        href: '/actualites/taxe-de-sejour-2026-pourquoi-le-classement-change-la-donne',
       },
     },
     socialRegime: {
@@ -523,16 +532,17 @@ export const classificationBenefitsPageContent = {
       example: {
         title:
           'Example in Paris — 3★ accommodation, rented for €120 / night for 2 people (€60 excl. tax / person)',
-        note: 'Paris applies a departmental surtax (+10%) and an Île-de-France Mobilités surtax (+200%) on the tourist tax base.',
+        note: 'Paris applies a departmental surtax (+10%), a regional surtax (+15%) and an Île-de-France Mobilités surtax (+200%) on the tourist tax base.',
         headers: ['Item', 'Non-classified', 'Classified 3★'],
         rows: [
           { label: 'Tourist tax base', unclassified: '5% × €60 = €3.00', classified: '€1.70' },
           { label: '+ Departmental surtax (10%)', unclassified: '€0.30', classified: '€0.17' },
+          { label: '+ Regional surtax (15%)', unclassified: '€0.45', classified: '€0.26' },
           { label: '+ IDF Mobilités surtax (200%)', unclassified: '€6.00', classified: '€3.40' },
-          { label: 'Total / person / night', unclassified: '€9.30', classified: '€5.27' },
-          { label: 'Total 2 people / night', unclassified: '€18.60', classified: '€10.54' },
+          { label: 'Total / person / night', unclassified: '€9.75', classified: '€5.53' },
+          { label: 'Total 2 people / night', unclassified: '€19.50', classified: '€11.06' },
         ],
-        totalValue: '€8.06',
+        totalValue: '€8.44',
         totalLabel:
           'less tourist tax per night in this example, reflected in the amount paid by the traveller',
       },
@@ -774,7 +784,7 @@ export const classificationBenefitsPageContent = {
       example: {
         title:
           'Voorbeeld in Parijs — 3★-woning, verhuurd voor 120 euro / nacht aan 2 personen (60 euro excl. btw / pers.)',
-        note: 'Parijs past een departementale toeslag (+10%) en een Île-de-France Mobilités-toeslag (+200%) toe op de basis van de toeristenbelasting.',
+        note: 'Parijs past een departementale toeslag (+10%), een regionale toeslag (+15%) en een Île-de-France Mobilités-toeslag (+200%) toe op de basis van de toeristenbelasting.',
         headers: ['Onderdeel', 'Niet geclassificeerd', 'Geclassificeerd 3★'],
         rows: [
           {
@@ -788,14 +798,19 @@ export const classificationBenefitsPageContent = {
             classified: '0,17 euro',
           },
           {
+            label: '+ Regionale toeslag (15%)',
+            unclassified: '0,45 euro',
+            classified: '0,26 euro',
+          },
+          {
             label: '+ Toeslag IDF Mobilités (200%)',
             unclassified: '6,00 euro',
             classified: '3,40 euro',
           },
-          { label: 'Totaal / pers. / nacht', unclassified: '9,30 euro', classified: '5,27 euro' },
-          { label: 'Totaal 2 pers. / nacht', unclassified: '18,60 euro', classified: '10,54 euro' },
+          { label: 'Totaal / pers. / nacht', unclassified: '9,75 euro', classified: '5,53 euro' },
+          { label: 'Totaal 2 pers. / nacht', unclassified: '19,50 euro', classified: '11,06 euro' },
         ],
-        totalValue: '8,06 euro',
+        totalValue: '8,44 euro',
         totalLabel:
           'minder toeristenbelasting per nacht in dit voorbeeld, doorberekend aan de reiziger',
       },
